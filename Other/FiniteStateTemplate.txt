@@ -1,0 +1,66 @@
+﻿/**************************
+ * Creator: HuTao 987947865@QQ.com
+ * Company: HuaJiao Technology
+ * CopyRight© 2018
+ **************************/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using HT.Framework;
+using DG.Tweening;
+/// <summary>
+/// 新建状态
+/// </summary>
+[FiniteStateName("新建状态组/#STATENAME#")]
+public class #SCRIPTNAME# : FiniteState
+{
+	/// <summary>
+	/// 初始化
+	/// </summary>
+    public override void OnInit()
+    {
+
+    }
+
+	/// <summary>
+	/// 进入状态
+	/// </summary>
+    public override void OnEnter()
+    {
+        
+    }
+    
+	/// <summary>
+	/// 离开状态
+	/// </summary>
+    public override void OnLeave()
+    {
+        
+    }
+
+	/// <summary>
+	/// 切换状态的动机
+	/// </summary>
+    public override void OnReason()
+    {
+       
+    }
+
+	/// <summary>
+	/// 状态帧刷新
+	/// </summary>
+    public override void OnUpdate()
+    {
+
+    }
+
+	/// <summary>
+	/// 状态终结
+	/// </summary>
+    public override void OnTermination()
+    {
+       
+    }
+}

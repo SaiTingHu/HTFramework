@@ -1,0 +1,33 @@
+﻿/**************************
+ * Creator: HuTao 987947865@QQ.com
+ * Company: HuaJiao Technology
+ * CopyRight© 2018
+ **************************/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using HT.Framework;
+using DG.Tweening;
+/// <summary>
+/// 新建事件
+/// </summary>
+public class #SCRIPTNAME# : EventHandler
+{
+    /// <summary>
+    /// 填充数据，所有属性、字段的初始化工作可以在这里完成
+    /// </summary>
+    public #SCRIPTNAME# Fill()
+    {
+        return this;
+    }
+
+    /// <summary>
+    /// 重置引用，当被引用池回收时调用
+    /// </summary>
+    public override void Reset()
+    {
+        
+    }
+}

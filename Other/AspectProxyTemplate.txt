@@ -1,0 +1,33 @@
+﻿/**************************
+ * Creator: HuTao 987947865@QQ.com
+ * Company: HuaJiao Technology
+ * CopyRight© 2018
+ **************************/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using HT.Framework;
+using DG.Tweening;
+using System.Reflection;
+/// <summary>
+/// 新建切面代理
+/// </summary>
+public class #SCRIPTNAME#<T> : AspectProxy<T> where T : I#SCRIPTNAME#
+{
+    public #SCRIPTNAME#(T realObject) : base(realObject) { }
+
+    public override object[] BeforeInvoke(MethodBase method, object[] args)
+    {
+		return args;
+    }
+
+    public override void AfterInvoke(MethodBase method, object returnValue)
+    {
+    }
+}
+
+public interface I#SCRIPTNAME# : IAspectTrackObject
+{
+}

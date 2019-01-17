@@ -1,0 +1,57 @@
+﻿/**************************
+ * Creator: HuTao 987947865@QQ.com
+ * Company: HuaJiao Technology
+ * CopyRight© 2018
+ **************************/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using HT.Framework;
+using DG.Tweening;
+/// <summary>
+/// 新建流程
+/// </summary>
+public class #SCRIPTNAME# : Procedure
+{
+    /// <summary>
+    /// 流程初始化
+    /// </summary>
+    public override void OnInit()
+    {
+
+    }
+
+    /// <summary>
+    /// 进入流程
+    /// </summary>
+    public override void OnEnter()
+    {
+        
+    }
+    
+    /// <summary>
+    /// 离开流程
+    /// </summary>
+    public override void OnLeave()
+    {
+        
+    }
+
+    /// <summary>
+    /// 流程帧刷新
+    /// </summary>
+    public override void OnUpdate()
+    {
+        
+    }
+
+    /// <summary>
+    /// 流程帧刷新（秒）
+    /// </summary>
+    public override void OnUpdateSecond()
+    {
+        
+    }
+}

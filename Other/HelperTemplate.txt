@@ -1,0 +1,69 @@
+﻿/**************************
+ * Creator: HuTao 987947865@QQ.com
+ * Company: HuaJiao Technology
+ * CopyRight© 2018
+ **************************/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEditor;
+using HT.Framework;
+using DG.Tweening;
+/// <summary>
+/// 新建助手
+/// </summary>
+[CustomHelper("新建助手组/#HELPERNAME#")]
+public class #SCRIPTNAME# : StepHelper
+{
+	/// <summary>
+	/// 跳过时生命周期（仅在跳过时生效）
+	/// </summary>
+    public override float SkipLifeTime
+    {
+        get
+        {
+            return 0;
+        }
+    }
+
+	/// <summary>
+	/// 跳过步骤（仅在跳过时执行）
+	/// </summary>
+    public override void OnSkip()
+    {
+        
+    }
+
+	/// <summary>
+	/// 初始化
+	/// </summary>
+    public override void OnInit()
+    {
+        
+    }
+
+	/// <summary>
+	/// 帧刷新
+	/// </summary>
+    public override void OnUpdate()
+    {
+        
+    }
+
+	/// <summary>
+	/// 销毁
+	/// </summary>
+    public override void OnTermination()
+    {
+        
+    }
+
+	/// <summary>
+    /// 步骤执行
+    /// </summary>
+    private void Execute()
+    {
+        Target.State = StepTargetState.Done;
+    }
+}
