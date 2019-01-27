@@ -19,7 +19,6 @@ namespace HT.Framework
         public string TargetPath = "<None>";
         public string Name = "Step Name";
         public StepTrigger Trigger = StepTrigger.MouseClick;
-        public StepTargetState TriggerState = StepTargetState.Done;
         public string Prompt = "Step Prompt";
         public string Ancillary = "";
         public Vector3 BestView = new Vector3(90, 30, 2);
@@ -46,7 +45,6 @@ namespace HT.Framework
             content.TargetPath = TargetPath;
             content.Name = Name;
             content.Trigger = Trigger;
-            content.TriggerState = TriggerState;
             content.Prompt = Prompt;
             content.Ancillary = Ancillary;
             content.BestView = BestView;

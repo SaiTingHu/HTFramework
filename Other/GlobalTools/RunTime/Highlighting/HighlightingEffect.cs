@@ -8,7 +8,6 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class HighlightingEffect : MonoBehaviour
     {
-        // Event used to notify highlightable objects to change their materials before rendering to the highlighting buffer begins
         public static event HighlightingEventHandler highlightingEvent;
 
         #region Inspector Fields
@@ -179,8 +178,7 @@ namespace HT.Framework
             }
         }
         #endregion
-
-
+        
         void Awake()
         {
             go = gameObject;
@@ -291,7 +289,6 @@ namespace HT.Framework
             blurMaterial.SetFloat("_Intensity", _blurIntensity);
         }
 
-        // Performs one blur iteration
         public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
         {
             float off = blurMinSpread + iteration * blurSpread;
@@ -299,7 +296,6 @@ namespace HT.Framework
             Graphics.Blit(source, dest, blurMaterial);
         }
 
-        // Downsamples source texture
         private void DownSample4x(RenderTexture source, RenderTexture dest)
         {
             float off = 1.0f;
@@ -307,7 +303,6 @@ namespace HT.Framework
             Graphics.Blit(source, dest, blurMaterial);
         }
 
-        // Render all highlighted objects to the stencil buffer
         void OnPreRender()
         {
 #if UNITY_4_0
@@ -367,7 +362,6 @@ namespace HT.Framework
             }
         }
 
-        // Compose final frame with highlighting
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
             // If stencilBuffer is not created by some reason

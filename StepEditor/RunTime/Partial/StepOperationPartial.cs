@@ -11,14 +11,18 @@ namespace HT.Framework
 {
     public sealed partial class StepOperation
     {
-        public Vector3 Vector3Result = Vector3.zero;
-        public Vector2 Vector2Result = Vector2.zero;
-        public Color ColorResult = Color.white;
-        public int IntResult = 0;
-        public float FloatResult = 0;
-        public string StringResult = "<None>";
-        public bool BoolResult = false;
+        public Vector3 Vector3Value = Vector3.zero;
+        public Vector2 Vector2Value = Vector2.zero;
+        public Color ColorValue = Color.white;
+        public int IntValue = 0;
+        public float FloatValue = 0;
+        public string StringValue = "<None>";
+        public bool BoolValue = false;
         public Ease AnimationEase = Ease.Linear;
+
+        public Vector3 Vector3Value2 = Vector3.zero;
+        public string StringValue2 = "<None>";
+        public bool BoolValue2 = false;
 
         /// <summary>
         /// 克隆
@@ -36,14 +40,18 @@ namespace HT.Framework
             operation.Name = Name;
             operation.OperationType = OperationType;
 
-            operation.Vector3Result = Vector3Result;
-            operation.Vector2Result = Vector2Result;
-            operation.ColorResult = ColorResult;
-            operation.IntResult = IntResult;
-            operation.FloatResult = FloatResult;
-            operation.StringResult = StringResult;
-            operation.BoolResult = BoolResult;
+            operation.Vector3Value = Vector3Value;
+            operation.Vector2Value = Vector2Value;
+            operation.ColorValue = ColorValue;
+            operation.IntValue = IntValue;
+            operation.FloatValue = FloatValue;
+            operation.StringValue = StringValue;
+            operation.BoolValue = BoolValue;
             operation.AnimationEase = AnimationEase;
+
+            operation.Vector3Value2 = Vector3Value2;
+            operation.StringValue2 = StringValue2;
+            operation.BoolValue2 = BoolValue2;
 
             return operation;
         }
@@ -70,6 +78,9 @@ namespace HT.Framework
                 case StepOperationType.Action:
                     ActionExecute();
                     break;
+                case StepOperationType.ActionArgs:
+                    ActionArgsExecute();
+                    break;
                 case StepOperationType.CameraFollow:
                     CameraFollowExecute();
                     break;
@@ -95,73 +106,87 @@ namespace HT.Framework
         }
         private void MoveExecute()
         {
-            if (BoolResult)
+            if (BoolValue)
             {
-                Target.transform.localPosition = Vector3Result;
+                Target.transform.localPosition = Vector3Value;
             }
             else
             {
-                Target.transform.DOLocalMove(Vector3Result, ElapseTime).SetEase(AnimationEase);
+                Target.transform.DOLocalMove(Vector3Value, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void RotateExecute()
         {
-            if (BoolResult)
+            if (BoolValue2)
             {
-                Target.transform.DOLocalRotate(Vector3Result, ElapseTime, RotateMode.LocalAxisAdd).SetEase(AnimationEase);
+                Target.transform.localRotation = Quaternion.Euler(Vector3Value);
             }
             else
             {
-                Target.transform.DOLocalRotate(Vector3Result, ElapseTime).SetEase(AnimationEase);
+                if (BoolValue)
+                {
+                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime, RotateMode.LocalAxisAdd).SetEase(AnimationEase);
+                }
+                else
+                {
+                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime).SetEase(AnimationEase);
+                }
             }
         }
         private void ScaleExecute()
         {
-            if (BoolResult)
+            if (BoolValue)
             {
-                Target.transform.localScale = Vector3Result;
+                Target.transform.localScale = Vector3Value;
             }
             else
             {
-                Target.transform.DOScale(Vector3Result, ElapseTime).SetEase(AnimationEase);
+                Target.transform.DOScale(Vector3Value, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void ColorExecute()
         {
-            if (BoolResult)
+            if (BoolValue)
             {
                 if (!Target.GetComponent<Renderer>())
                 {
                     GlobalTools.LogError("目标 " + Target + " 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
-                Target.GetComponent<Renderer>().material.DOColor(ColorResult, ElapseTime).SetEase(AnimationEase);
+                Target.GetComponent<Renderer>().material.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
             }
-            else
+            if (BoolValue2)
             {
                 if (!Target.GetComponent<Graphic>())
                 {
                     GlobalTools.LogError("目标 " + Target + " 丢失组件Graphic！无法播放颜色改变动画！");
                     return;
                 }
-                Target.GetComponent<Graphic>().DOColor(ColorResult, ElapseTime).SetEase(AnimationEase);
+                Target.GetComponent<Graphic>().DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void ActiveExecute()
         {
-            Target.SetActive(BoolResult);
+            Target.SetActive(BoolValue);
         }
         private void ActionExecute()
         {
-            if (StringResult != "<None>")
+            if (StringValue != "<None>")
             {
-                Target.SendMessage(StringResult);
+                Target.SendMessage(StringValue);
+            }
+        }
+        private void ActionArgsExecute()
+        {
+            if (StringValue != "<None>")
+            {
+                Target.SendMessage(StringValue, StringValue2);
             }
         }
         private void CameraFollowExecute()
         {
-            MousePosition.Instance.SetPosition(Vector3Result, true);
-            MouseRotation.Instance.SetAngle(Vector2Result, FloatResult, true);
+            MousePosition.Instance.SetPosition(Vector3Value, true);
+            MouseRotation.Instance.SetAngle(Vector2Value, FloatValue, true);
         }
         private void TextMeshExecute()
         {
@@ -170,17 +195,17 @@ namespace HT.Framework
                 GlobalTools.LogError("目标 " + Target + " 丢失组件TextMesh！无法设置TextMesh文本！");
                 return;
             }
-            Target.GetComponent<TextMesh>().text = StringResult;
+            Target.GetComponent<TextMesh>().text = StringValue;
         }
         private void PromptExecute()
         {
-            Main.m_StepMaster.ShowPrompt(StringResult);
+            Main.m_StepMaster.ShowPrompt(StringValue);
         }
         private void FSMExecute()
         {
-            if (StringResult != "<None>")
+            if (StringValue != "<None>")
             {
-                Target.GetComponent<FSM>().SwitchState(Type.GetType(StringResult));
+                Target.GetComponent<FSM>().SwitchState(Type.GetType(StringValue));
             }
         }
         private void DelayExecute()
@@ -188,20 +213,20 @@ namespace HT.Framework
         }
         private void ActiveComponentExecute()
         {
-            Type type = Type.GetType(StringResult.Contains("UnityEngine") ? StringResult + ",UnityEngine" : StringResult);
+            Type type = Type.GetType(StringValue.Contains("UnityEngine") ? StringValue + ",UnityEngine" : StringValue);
             if (type != null)
             {
                 Component component = Target.GetComponent(type);
                 Behaviour behaviour = component as Behaviour;
                 Collider collider = component as Collider;
                 Renderer renderer = component as Renderer;
-                if (behaviour) behaviour.enabled = BoolResult;
-                else if (collider) collider.enabled = BoolResult;
-                else if (renderer) renderer.enabled = BoolResult;
+                if (behaviour) behaviour.enabled = BoolValue;
+                else if (collider) collider.enabled = BoolValue;
+                else if (renderer) renderer.enabled = BoolValue;
             }
             else
             {
-                GlobalTools.LogError("未获取到类型 " + StringResult + "！");
+                GlobalTools.LogError("未获取到类型 " + StringValue + "！");
             }
         }
 
@@ -226,6 +251,9 @@ namespace HT.Framework
                     break;
                 case StepOperationType.Action:
                     ActionSkip();
+                    break;
+                case StepOperationType.ActionArgs:
+                    ActionArgsSkip();
                     break;
                 case StepOperationType.CameraFollow:
                     CameraFollowSkip();
@@ -252,73 +280,87 @@ namespace HT.Framework
         }
         private void MoveSkip()
         {
-            if (BoolResult)
+            if (BoolValue)
             {
-                Target.transform.localPosition = Vector3Result;
+                Target.transform.localPosition = Vector3Value;
             }
             else
             {
-                Target.transform.DOLocalMove(Vector3Result, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                Target.transform.DOLocalMove(Vector3Value, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
             }
         }
         private void RotateSkip()
         {
-            if (BoolResult)
+            if (BoolValue2)
             {
-                Target.transform.DOLocalRotate(Vector3Result, ElapseTime / StepMaster.SkipMultiple, RotateMode.LocalAxisAdd).SetEase(AnimationEase);
+                Target.transform.localRotation = Quaternion.Euler(Vector3Value);
             }
             else
             {
-                Target.transform.DOLocalRotate(Vector3Result, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                if (BoolValue)
+                {
+                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime / StepMaster.SkipMultiple, RotateMode.LocalAxisAdd).SetEase(AnimationEase);
+                }
+                else
+                {
+                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                }
             }
         }
         private void ScaleSkip()
         {
-            if (BoolResult)
+            if (BoolValue)
             {
-                Target.transform.localScale = Vector3Result;
+                Target.transform.localScale = Vector3Value;
             }
             else
             {
-                Target.transform.DOScale(Vector3Result, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                Target.transform.DOScale(Vector3Value, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
             }
         }
         private void ColorSkip()
         {
-            if (BoolResult)
+            if (BoolValue)
             {
                 if (!Target.GetComponent<Renderer>())
                 {
                     GlobalTools.LogError("目标 " + Target + " 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
-                Target.GetComponent<Renderer>().material.DOColor(ColorResult, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                Target.GetComponent<Renderer>().material.DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
             }
-            else
+            if (BoolValue2)
             {
                 if (!Target.GetComponent<Graphic>())
                 {
                     GlobalTools.LogError("目标 " + Target + " 丢失组件Graphic！无法播放颜色改变动画！");
                     return;
                 }
-                Target.GetComponent<Graphic>().DOColor(ColorResult, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                Target.GetComponent<Graphic>().DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
             }
         }
         private void ActiveSkip()
         {
-            Target.SetActive(BoolResult);
+            Target.SetActive(BoolValue);
         }
         private void ActionSkip()
         {
-            if (StringResult != "<None>")
+            if (StringValue != "<None>")
             {
-                Target.SendMessage(StringResult);
+                Target.SendMessage(StringValue);
+            }
+        }
+        private void ActionArgsSkip()
+        {
+            if (StringValue != "<None>")
+            {
+                Target.SendMessage(StringValue, StringValue2);
             }
         }
         private void CameraFollowSkip()
         {
-            MousePosition.Instance.SetPosition(Vector3Result, false);
-            MouseRotation.Instance.SetAngle(Vector2Result, FloatResult, true);
+            MousePosition.Instance.SetPosition(Vector3Value, false);
+            MouseRotation.Instance.SetAngle(Vector2Value, FloatValue, true);
         }
         private void TextMeshSkip()
         {
@@ -327,17 +369,17 @@ namespace HT.Framework
                 GlobalTools.LogError("目标 " + Target + " 丢失组件TextMesh！无法设置TextMesh文本！");
                 return;
             }
-            Target.GetComponent<TextMesh>().text = StringResult;
+            Target.GetComponent<TextMesh>().text = StringValue;
         }
         private void PromptSkip()
         {
-            Main.m_StepMaster.ShowPrompt(StringResult);
+            Main.m_StepMaster.ShowPrompt(StringValue);
         }
         private void FSMSkip()
         {
-            if (StringResult != "<None>")
+            if (StringValue != "<None>")
             {
-                Target.GetComponent<FSM>().SwitchState(Type.GetType(StringResult));
+                Target.GetComponent<FSM>().SwitchState(Type.GetType(StringValue));
             }
         }
         private void DelaySkip()
@@ -345,20 +387,20 @@ namespace HT.Framework
         }
         private void ActiveComponentSkip()
         {
-            Type type = Type.GetType(StringResult.Contains("UnityEngine") ? StringResult + ",UnityEngine" : StringResult);
+            Type type = Type.GetType(StringValue.Contains("UnityEngine") ? StringValue + ",UnityEngine" : StringValue);
             if (type != null)
             {
                 Component component = Target.GetComponent(type);
                 Behaviour behaviour = component as Behaviour;
                 Collider collider = component as Collider;
                 Renderer renderer = component as Renderer;
-                if (behaviour) behaviour.enabled = BoolResult;
-                else if (collider) collider.enabled = BoolResult;
-                else if (renderer) renderer.enabled = BoolResult;
+                if (behaviour) behaviour.enabled = BoolValue;
+                else if (collider) collider.enabled = BoolValue;
+                else if (renderer) renderer.enabled = BoolValue;
             }
             else
             {
-                GlobalTools.LogError("未获取到类型 " + StringResult + "！");
+                GlobalTools.LogError("未获取到类型 " + StringValue + "！");
             }
         }
 
@@ -384,6 +426,9 @@ namespace HT.Framework
                     break;
                 case StepOperationType.Action:
                     ActionGUI();
+                    break;
+                case StepOperationType.ActionArgs:
+                    ActionArgsGUI();
                     break;
                 case StepOperationType.CameraFollow:
                     CameraFollowGUI();
@@ -413,23 +458,27 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Move to:", GUILayout.Width(60));
             GUILayout.FlexibleSpace();
+            GUI.enabled = Target;
             if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
             {
-                Vector3Result = Target.transform.localPosition;
+                Vector3Value = Target.transform.localPosition;
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Vector3Result = EditorGUILayout.Vector3Field("", Vector3Result, GUILayout.Width(180));
+            Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
             GUILayout.EndHorizontal();
 
+            GUI.enabled = !BoolValue;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Ease:", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
+            GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            BoolResult = GUILayout.Toggle(BoolResult, "Transformation");
+            BoolValue = GUILayout.Toggle(BoolValue, "Transformation");
             GUILayout.EndHorizontal();
         }
         private void RotateGUI()
@@ -437,23 +486,31 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Rotate to:", GUILayout.Width(60));
             GUILayout.FlexibleSpace();
+            GUI.enabled = Target;
             if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
             {
-                Vector3Result = Target.transform.localRotation.eulerAngles;
+                Vector3Value = Target.transform.localRotation.eulerAngles;
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Vector3Result = EditorGUILayout.Vector3Field("", Vector3Result, GUILayout.Width(180));
+            Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
             GUILayout.EndHorizontal();
 
+            GUI.enabled = !BoolValue2;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Ease:", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            BoolValue = GUILayout.Toggle(BoolValue, "Is Axis Add");
+            GUILayout.EndHorizontal();
+            GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            BoolResult = GUILayout.Toggle(BoolResult, "Is Axis Add");
+            BoolValue2 = GUILayout.Toggle(BoolValue2, "Transformation");
             GUILayout.EndHorizontal();
         }
         private void ScaleGUI()
@@ -461,23 +518,27 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Scale to:", GUILayout.Width(60));
             GUILayout.FlexibleSpace();
+            GUI.enabled = Target;
             if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
             {
-                Vector3Result = Target.transform.localScale;
+                Vector3Value = Target.transform.localScale;
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Vector3Result = EditorGUILayout.Vector3Field("", Vector3Result, GUILayout.Width(180));
+            Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
             GUILayout.EndHorizontal();
 
+            GUI.enabled = !BoolValue;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Ease:", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
+            GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            BoolResult = GUILayout.Toggle(BoolResult, "Transformation");
+            BoolValue = GUILayout.Toggle(BoolValue, "Transformation");
             GUILayout.EndHorizontal();
         }
         private void ColorGUI()
@@ -487,46 +548,36 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            ColorResult = EditorGUILayout.ColorField(ColorResult, GUILayout.Width(180));
+            ColorValue = EditorGUILayout.ColorField(ColorValue, GUILayout.Width(180));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Ease:", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
-
+            
             GUILayout.BeginHorizontal();
-            bool isRenderer = BoolResult;
-            isRenderer = GUILayout.Toggle(isRenderer, "Renderer");
-            if (isRenderer != BoolResult)
-            {
-                BoolResult = isRenderer;
-            }
+            BoolValue = GUILayout.Toggle(BoolValue, "Act Renderer");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            bool isGraphic = !BoolResult;
-            isGraphic = GUILayout.Toggle(isGraphic, "Graphic");
-            if (isGraphic != !BoolResult)
-            {
-                BoolResult = !isGraphic;
-            }
+            BoolValue2 = GUILayout.Toggle(BoolValue2, "Act Graphic");
             GUILayout.EndHorizontal();
         }
         private void ActiveGUI()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Set Active:", GUILayout.Width(80));
-            if (GUILayout.Button(BoolResult ? "true" : "false", "MiniPopup", GUILayout.Width(100)))
+            if (GUILayout.Button(BoolValue ? "true" : "false", "MiniPopup", GUILayout.Width(100)))
             {
                 GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("true"), BoolResult, () =>
+                gm.AddItem(new GUIContent("true"), BoolValue, () =>
                 {
-                    BoolResult = true;
+                    BoolValue = true;
                 });
-                gm.AddItem(new GUIContent("false"), !BoolResult, () =>
+                gm.AddItem(new GUIContent("false"), !BoolValue, () =>
                 {
-                    BoolResult = false;
+                    BoolValue = false;
                 });
                 gm.ShowAsContext();
             }
@@ -537,7 +588,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUI.enabled = Target;
             GUILayout.Label("Action:", GUILayout.Width(50));
-            if (GUILayout.Button(StringResult, "MiniPopup", GUILayout.Width(130)))
+            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(130)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -546,13 +597,13 @@ namespace HT.Framework
                     MethodInfo[] mis = mono.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                     foreach (MethodInfo mi in mis)
                     {
-                        if (mi.Name.Contains("set_") || mi.Name.Contains("get_"))
+                        if (mi.Name.Contains("set_") || mi.Name.Contains("get_") || mi.GetParameters().Length > 0 || mi.ReturnType.Name != "Void")
                         {
                             continue;
                         }
-                        gm.AddItem(new GUIContent(mono.GetType().Name + "/" + mi.Name), StringResult == mi.Name, () =>
+                        gm.AddItem(new GUIContent(mono.GetType().Name + "/" + mi.Name + "()"), StringValue == mi.Name, () =>
                         {
-                            StringResult = mi.Name;
+                            StringValue = mi.Name;
                         });
                     }
                 }
@@ -560,6 +611,43 @@ namespace HT.Framework
             }
             GUI.enabled = true;
             GUILayout.EndHorizontal();
+        }
+        private void ActionArgsGUI()
+        {
+            GUI.enabled = Target;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Action:", GUILayout.Width(50));
+            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(130)))
+            {
+                GenericMenu gm = new GenericMenu();
+                Component[] monos = Target.GetComponents<Component>();
+                foreach (Component mono in monos)
+                {
+                    MethodInfo[] mis = mono.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    foreach (MethodInfo mi in mis)
+                    {
+                        ParameterInfo[] pis = mi.GetParameters();
+                        if (mi.Name.Contains("set_") || mi.Name.Contains("get_") || pis.Length != 1 || pis[0].ParameterType.Name != "String" || mi.ReturnType.Name != "Void")
+                        {
+                            continue;
+                        }
+                        gm.AddItem(new GUIContent(mono.GetType().Name + "/" + mi.Name + "(string)"), StringValue == mi.Name, () =>
+                        {
+                            StringValue = mi.Name;
+                        });
+                    }
+                }
+                gm.ShowAsContext();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Args:", GUILayout.Width(50));
+            StringValue2 = EditorGUILayout.TextField(StringValue2);
+            GUILayout.EndHorizontal();
+
+            GUI.enabled = true;
         }
         private void CameraFollowGUI()
         {
@@ -577,14 +665,14 @@ namespace HT.Framework
                     vector3[2] = vector3[2].Replace("f", "");
                     if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
                     {
-                        Vector3Result = new Vector3(x, y, z);
+                        Vector3Value = new Vector3(x, y, z);
                     }
                 }
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Vector3Result = EditorGUILayout.Vector3Field("", Vector3Result, GUILayout.Width(180));
+            Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -601,15 +689,15 @@ namespace HT.Framework
                     vector3[2] = vector3[2].Replace("f", "");
                     if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
                     {
-                        Vector2Result = new Vector3(x, y);
-                        FloatResult = z;
+                        Vector2Value = new Vector3(x, y);
+                        FloatValue = z;
                     }
                 }
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Vector2Result = EditorGUILayout.Vector2Field("", Vector2Result, GUILayout.Width(180));
+            Vector2Value = EditorGUILayout.Vector2Field("", Vector2Value, GUILayout.Width(180));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -617,7 +705,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatResult = EditorGUILayout.FloatField("", FloatResult, GUILayout.Width(180));
+            FloatValue = EditorGUILayout.FloatField("", FloatValue, GUILayout.Width(180));
             GUILayout.EndHorizontal();
         }
         private void TextMeshGUI()
@@ -627,7 +715,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            StringResult = EditorGUILayout.TextField(StringResult);
+            StringValue = EditorGUILayout.TextField(StringValue);
             GUILayout.EndHorizontal();
         }
         private void PromptGUI()
@@ -637,7 +725,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            StringResult = EditorGUILayout.TextField(StringResult);
+            StringValue = EditorGUILayout.TextField(StringValue);
             GUILayout.EndHorizontal();
         }
         private void FSMGUI()
@@ -649,7 +737,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUI.enabled = Target;
             GUILayout.Label("State:", GUILayout.Width(50));
-            if (GUILayout.Button(StringResult, "MiniPopup", GUILayout.Width(130)))
+            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(130)))
             {
                 FSM fsm = Target.GetComponent<FSM>();
                 if (fsm)
@@ -658,9 +746,9 @@ namespace HT.Framework
                     for (int i = 0; i < fsm.States.Count; i++)
                     {
                         int j = i;
-                        gm.AddItem(new GUIContent(fsm.States[j]), StringResult == fsm.States[j], () =>
+                        gm.AddItem(new GUIContent(fsm.States[j]), StringValue == fsm.States[j], () =>
                         {
-                            StringResult = fsm.States[j];
+                            StringValue = fsm.States[j];
                         });
                     }
                     gm.ShowAsContext();
@@ -682,7 +770,9 @@ namespace HT.Framework
             else
             {
                 GUILayout.BeginHorizontal();
+                GUI.color = Color.cyan;
                 GUILayout.Label("Delay time " + ElapseTime + " second!");
+                GUI.color = Color.white;
                 GUILayout.EndHorizontal();
             }
         }
@@ -691,7 +781,7 @@ namespace HT.Framework
             GUI.enabled = Target;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Component:", GUILayout.Width(80));
-            if (GUILayout.Button(StringResult, "MiniPopup", GUILayout.Width(100)))
+            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(100)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -700,9 +790,9 @@ namespace HT.Framework
                     if (mono is Behaviour || mono is Collider || mono is Renderer)
                     {
                         string type = mono.GetType().FullName;
-                        gm.AddItem(new GUIContent(type), StringResult == type, () =>
+                        gm.AddItem(new GUIContent(type), StringValue == type, () =>
                         {
-                            StringResult = type;
+                            StringValue = type;
                         });
                     }
                 }
@@ -712,16 +802,16 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Set Active:", GUILayout.Width(80));
-            if (GUILayout.Button(BoolResult ? "true" : "false", "MiniPopup", GUILayout.Width(100)))
+            if (GUILayout.Button(BoolValue ? "true" : "false", "MiniPopup", GUILayout.Width(100)))
             {
                 GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("true"), BoolResult, () =>
+                gm.AddItem(new GUIContent("true"), BoolValue, () =>
                 {
-                    BoolResult = true;
+                    BoolValue = true;
                 });
-                gm.AddItem(new GUIContent("false"), !BoolResult, () =>
+                gm.AddItem(new GUIContent("false"), !BoolValue, () =>
                 {
-                    BoolResult = false;
+                    BoolValue = false;
                 });
                 gm.ShowAsContext();
             }
@@ -749,21 +839,29 @@ namespace HT.Framework
         /// </summary>
         Scale,
         /// <summary>
+        /// 颜色改变
+        /// </summary>
+        Color,
+        /// <summary>
+        /// 延时
+        /// </summary>
+        Delay,
+        /// <summary>
         /// 激活与隐藏
         /// </summary>
         Active,
         /// <summary>
-        /// 执行其他自定义动作
+        /// 执行自定义方法 void Action()
         /// </summary>
         Action,
         /// <summary>
-        /// 摄像机跟随
+        /// 执行自定义方法 void Action(string args)
         /// </summary>
-        CameraFollow,
+        ActionArgs,
         /// <summary>
-        /// 颜色改变
+        /// FSM切换状态
         /// </summary>
-        Color,
+        FSM,
         /// <summary>
         /// TextMesh文本改变
         /// </summary>
@@ -773,13 +871,9 @@ namespace HT.Framework
         /// </summary>
         Prompt,
         /// <summary>
-        /// FSM切换状态
+        /// 摄像机跟随
         /// </summary>
-        FSM,
-        /// <summary>
-        /// 延时
-        /// </summary>
-        Delay,
+        CameraFollow,
         /// <summary>
         /// 激活与隐藏组件
         /// </summary>

@@ -56,8 +56,8 @@ namespace HT.Framework
 
         private void OnEnable()
         {
-            //SelectStepContent(-1);
-            //SelectStepOperation(-1);
+            SelectStepContent(_currentStep);
+            SelectStepOperation(_currentOperation);
 
             _background = Resources.Load<Texture>("background");
 
@@ -1013,36 +1013,63 @@ namespace HT.Framework
                     operation.GUID = Guid.NewGuid().ToString();
                     operation.OperationType = type;
                     operation.Anchor = _mouseDownPos;
-                    _contentAsset.Content[_currentStep].Operations.Add(operation);
-                    if (type == StepOperationType.Active || type == StepOperationType.Action || type == StepOperationType.CameraFollow
-                    || type == StepOperationType.ActiveComponent || type == StepOperationType.TextMesh)
+                    operation.Instant = false;
+                    string showName = "";
+                    switch (type)
                     {
-                        operation.Instant = true;
+                        case StepOperationType.Move:
+                            showName = "移动";
+                            break;
+                        case StepOperationType.Rotate:
+                            showName = "旋转";
+                            break;
+                        case StepOperationType.Scale:
+                            showName = "缩放";
+                            break;
+                        case StepOperationType.Color:
+                            showName = "颜色改变";
+                            break;
+                        case StepOperationType.Delay:
+                            showName = "延时";
+                            break;
+                        case StepOperationType.Active:
+                            operation.Instant = true;
+                            showName = "激活";
+                            break;
+                        case StepOperationType.Action:
+                            operation.Instant = true;
+                            showName = "呼叫方法";
+                            break;
+                        case StepOperationType.ActionArgs:
+                            operation.Instant = true;
+                            showName = "呼叫方法";
+                            break;
+                        case StepOperationType.FSM:
+                            operation.Instant = true;
+                            showName = "切换状态";
+                            break;
+                        case StepOperationType.TextMesh:
+                            operation.Instant = true;
+                            showName = "3D文本";
+                            break;
+                        case StepOperationType.Prompt:
+                            operation.Instant = true;
+                            showName = "提示";
+                            break;
+                        case StepOperationType.CameraFollow:
+                            operation.Instant = true;
+                            showName = "摄像机跟随";
+                            break;
+                        case StepOperationType.ActiveComponent:
+                            operation.Instant = true;
+                            showName = "激活组件";
+                            break;
+                        default:
+                            showName = "未知节点";
+                            break;
                     }
-                    if (type == StepOperationType.Move)
-                        operation.Name = "移动" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.Rotate)
-                        operation.Name = "旋转" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.Scale)
-                        operation.Name = "缩放" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.Active)
-                        operation.Name = "激活与隐藏" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.Action)
-                        operation.Name = "自定义操作" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.CameraFollow)
-                        operation.Name = "摄像机跟随" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.Color)
-                        operation.Name = "颜色改变" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.TextMesh)
-                        operation.Name = "3D文本改变" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.Prompt)
-                        operation.Name = "提示" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.FSM)
-                        operation.Name = "状态机切换状态" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.Delay)
-                        operation.Name = "延时" + _currentStepObj.GetOperationsCout(type);
-                    else if (type == StepOperationType.ActiveComponent)
-                        operation.Name = "激活与隐藏组件" + _currentStepObj.GetOperationsCout(type);
+                    operation.Name = showName + _currentStepObj.GetOperationsCout(type);
+                    _contentAsset.Content[_currentStep].Operations.Add(operation);
                     Repaint();
                 });
             }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -54,6 +55,7 @@ namespace HT.Framework
         private StepContent _currentContent;
         private StepTarget _currentTarget;
         private StepHelper _currentHelper;
+        private Button _currentButton;
         //跳过的目标步骤
         private int _skipIndex = 0;
         //步骤控制者工作中
@@ -62,7 +64,9 @@ namespace HT.Framework
         private bool _running = false;
         //本帧中是否触发步骤的执行操作
         private bool _execute = false;
-        
+        //UGUI按钮点击触发型步骤，当前是否被点击
+        private bool _isButtonClick = false;
+
         public override void Initialization()
         {
             if (ContentAsset)
@@ -137,7 +141,6 @@ namespace HT.Framework
                     _execute = false;
                     switch (ContentAsset.Content[_currentStep].Trigger)
                     {
-                        //鼠标点击触发
                         case StepTrigger.MouseClick:
                             if (Input.GetMouseButtonDown(0))
                             {
@@ -155,14 +158,18 @@ namespace HT.Framework
                                 }
                             }
                             break;
-                        //状态改变触发
-                        case StepTrigger.StateChange:
-                            if (_currentTarget.State == _currentContent.TriggerState)
+                        case StepTrigger.ButtonClick:
+                            if (_isButtonClick)
                             {
                                 _execute = true;
                             }
                             break;
-                        //自动触发
+                        case StepTrigger.StateChange:
+                            if (_currentTarget.State == StepTargetState.Done)
+                            {
+                                _execute = true;
+                            }
+                            break;
                         case StepTrigger.AutoExecute:
                             _execute = true;
                             break;
@@ -305,11 +312,26 @@ namespace HT.Framework
             _currentContent = ContentAsset.Content[_currentStep];
             _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
+            //UGUI按钮点击型步骤，注册监听
+            if (_currentContent.Trigger == StepTrigger.ButtonClick)
+            {
+                _isButtonClick = false;
+                _currentButton = _currentContent.Target.GetComponent<Button>();
+                if (_currentButton)
+                {
+                    _currentButton.onClick.AddListener(ButtonClickCallback);
+                }
+                else
+                {
+                    GlobalTools.LogError("【步骤：" + (_currentStep + 1) + "】的目标丢失Button组件！");
+                }
+            }
             //状态改变触发类型的步骤，自动重置状态
-            if (_currentContent.Trigger == StepTrigger.StateChange)
+            else if (_currentContent.Trigger == StepTrigger.StateChange)
             {
                 _currentTarget.State = StepTargetState.Normal;
             }
+
             //创建步骤助手
             if (_currentContent.Helper != "<None>")
             {
@@ -337,6 +359,13 @@ namespace HT.Framework
             _running = true;
             _currentContent.Execute(this);
 
+            //UGUI按钮点击型步骤，取消按钮注册
+            if (_currentButton)
+            {
+                _currentButton.onClick.RemoveListener(ButtonClickCallback);
+                _currentButton = null;
+            }
+
             //销毁步骤助手
             if (_currentHelper != null)
             {
@@ -362,6 +391,28 @@ namespace HT.Framework
 
                 if (SkipStepEvent != null)
                     SkipStepEvent(_currentContent);
+
+                //UGUI按钮点击型步骤，自动执行按钮事件
+                if (_currentContent.Trigger == StepTrigger.ButtonClick)
+                {
+                    if (_currentButton)
+                    {
+                        _currentButton.onClick.Invoke();
+                    }
+                    else
+                    {
+                        _currentButton = _currentContent.Target.GetComponent<Button>();
+                        if (_currentButton)
+                        {
+                            _currentButton.onClick.Invoke();
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("【步骤：" + (_currentStep + 1) + "】的目标丢失Button组件！");
+                        }
+                    }
+                    _currentButton = null;
+                }
 
                 //创建步骤助手
                 if (_currentHelper == null && _currentContent.Helper != "<None>")
@@ -410,6 +461,14 @@ namespace HT.Framework
             {
                 End();
             }
+        }
+
+        /// <summary>
+        /// 鼠标点击UGUI按钮触发步骤的回调
+        /// </summary>
+        private void ButtonClickCallback()
+        {
+            _isButtonClick = true;
         }
     }
 }

@@ -6,6 +6,7 @@ namespace HT.Framework
     /// 摄像机注视目标旋转控制
     /// </summary>
     [RequireComponent(typeof(Camera))]
+    [DefaultExecutionOrder(-800)]
     public sealed class MouseRotation : MonoBehaviour
     {
         //注视点x、y轴偏移，若都为0，则注视点等于注视目标的transform.position，类似目标是角色时，注视点可能会上下偏移

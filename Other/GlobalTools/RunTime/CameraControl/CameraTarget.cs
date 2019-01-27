@@ -5,6 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 摄像机注视目标
     /// </summary>
+    [DefaultExecutionOrder(-802)]
     public sealed class CameraTarget : MonoBehaviour
     {
         private static CameraTarget _instance;

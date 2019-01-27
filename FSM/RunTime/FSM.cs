@@ -9,6 +9,7 @@ namespace HT.Framework
     /// </summary>
     [AddComponentMenu("HTFramework/FSM")]
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(-900)]
     public sealed class FSM : MonoBehaviour
     {
         public string Name = "New Finite State Machine";
@@ -24,7 +25,7 @@ namespace HT.Framework
         private Dictionary<Type, FiniteState> _stateInstances = new Dictionary<Type, FiniteState>();
         private FiniteState _currentState;
 
-        private void Start()
+        private void Awake()
         {
             Main.m_FSM.RegisterFSM(this);
             //加载数据类

@@ -86,7 +86,7 @@ namespace HT.Framework
         {
             if (Selection.gameObjects.Length <= 1)
             {
-                GlobalTools.LogWarning("请先选中至少2个以上的待合并物体！");
+                GlobalTools.LogWarning("请先选中至少2个以上的待合并网格！");
                 return;
             }
 
@@ -95,8 +95,7 @@ namespace HT.Framework
             List<Material> materials = new List<Material>();
             for (int i = 0; i < objs.Length; i++)
             {
-                EditorUtility.DisplayProgressBar("合并网格", "正在合并网格及应用纹理......（" + i + "/" + objs.Length + "）",
-                    ((float)i) / ((float)objs.Length));
+                EditorUtility.DisplayProgressBar("合并网格", "正在合并网格及纹理......（" + i + "/" + objs.Length + "）", ((float)i) / objs.Length);
 
                 if (!objs[i].GetComponent<MeshRenderer>() || !objs[i].GetComponent<MeshFilter>())
                     continue;
@@ -104,10 +103,7 @@ namespace HT.Framework
                 Material[] mats = objs[i].GetComponent<MeshRenderer>().sharedMaterials;
                 for (int j = 0; j < mats.Length; j++)
                 {
-                    if (!materials.Contains(mats[j]))
-                    {
-                        materials.Add(mats[j]);
-                    }
+                    materials.Add(mats[j]);
                 }
 
                 combines[i].mesh = objs[i].GetComponent<MeshFilter>().sharedMesh;
@@ -121,11 +117,13 @@ namespace HT.Framework
             GameObject newMesh = new GameObject("CombineMesh");
             newMesh.AddComponent<MeshFilter>();
             newMesh.AddComponent<MeshRenderer>();
-
             newMesh.GetComponent<MeshFilter>().sharedMesh = new Mesh();
             //false表示合并为子网格列表，多个材质混用时必须这样设置
             newMesh.GetComponent<MeshFilter>().sharedMesh.CombineMeshes(combines, false);
             newMesh.GetComponent<MeshRenderer>().sharedMaterials = materials.ToArray();
+
+            AssetDatabase.CreateAsset(newMesh.GetComponent<MeshFilter>().sharedMesh, "Assets/CombineMesh.asset");
+            AssetDatabase.SaveAssets();
 
             EditorUtility.ClearProgressBar();
         }

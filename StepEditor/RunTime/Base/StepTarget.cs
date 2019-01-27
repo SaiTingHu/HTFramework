@@ -17,15 +17,19 @@ namespace HT.Framework
     public enum StepTrigger
     {
         /// <summary>
-        /// 鼠标点击目标
+        /// 鼠标点击目标触发
         /// </summary>
         MouseClick,
         /// <summary>
-        /// 目标状态改变
+        /// 鼠标点击UGUI按钮触发
+        /// </summary>
+        ButtonClick,
+        /// <summary>
+        /// 目标状态变为Done时触发
         /// </summary>
         StateChange,
         /// <summary>
-        /// 自动执行
+        /// 自动触发
         /// </summary>
         AutoExecute
     }

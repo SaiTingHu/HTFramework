@@ -7,6 +7,7 @@ namespace HT.Framework
     /// 鼠标位置发射射线捕获目标
     /// </summary>
     [RequireComponent(typeof(Camera))]
+    [DefaultExecutionOrder(-803)]
     public sealed class MouseRay : MonoBehaviour
     {
         public bool IsOpenRay = true;
