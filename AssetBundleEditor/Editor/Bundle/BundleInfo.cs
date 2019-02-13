@@ -62,6 +62,16 @@ namespace HT.Framework.AssetBundleEditor
             asset.Bundled = this;
             _fileInfos.Add(asset);
 
+            for (int i = 0; i < asset.Dependencies.Count; i++)
+            {
+                FileInfo depen = asset.Dependencies[i];
+                if (!depen.IndirectBundled.ContainsKey(this))
+                {
+                    depen.IndirectBundled.Add(this, 0);
+                }
+                depen.IndirectBundled[this] = depen.IndirectBundled[this] + 1;
+            }
+
             AssetImporter import = AssetImporter.GetAtPath(asset.Path);
             import.assetBundleName = Name;
         }
@@ -75,6 +85,20 @@ namespace HT.Framework.AssetBundleEditor
             {
                 asset.Bundled = null;
                 _fileInfos.Remove(asset);
+
+                for (int i = 0; i < asset.Dependencies.Count; i++)
+                {
+                    FileInfo depen = asset.Dependencies[i];
+                    if (!depen.IndirectBundled.ContainsKey(this))
+                    {
+                        continue;
+                    }
+                    depen.IndirectBundled[this] = depen.IndirectBundled[this] - 1;
+                    if (depen.IndirectBundled[this] <= 0)
+                    {
+                        depen.IndirectBundled.Remove(this);
+                    }
+                }
             }
 
             AssetImporter import = AssetImporter.GetAtPath(asset.Path);
@@ -89,6 +113,20 @@ namespace HT.Framework.AssetBundleEditor
             for (int i = 0; i < _fileInfos.Count; i++)
             {
                 _fileInfos[i].Bundled = null;
+
+                for (int j = 0; j < _fileInfos[i].Dependencies.Count; j++)
+                {
+                    FileInfo depen = _fileInfos[i].Dependencies[j];
+                    if (!depen.IndirectBundled.ContainsKey(this))
+                    {
+                        continue;
+                    }
+                    depen.IndirectBundled[this] = depen.IndirectBundled[this] - 1;
+                    if (depen.IndirectBundled[this] <= 0)
+                    {
+                        depen.IndirectBundled.Remove(this);
+                    }
+                }
 
                 AssetImporter import = AssetImporter.GetAtPath(_fileInfos[i].Path);
                 import.assetBundleName = "";

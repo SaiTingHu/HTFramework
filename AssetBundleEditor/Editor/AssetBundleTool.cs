@@ -14,12 +14,14 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 读取资源文件夹下的所有子资源
         /// </summary>
-        public static void ReadAssetsInChildren(FolderInfo asset, List<FileInfo> validFilesCache)
+        public static void ReadAssetsInChildren(FolderInfo asset, Dictionary<string, FileInfo> validFilesCache)
         {
             DirectoryInfo di = new DirectoryInfo(asset.FullPath);
             FileSystemInfo[] fileinfos = di.GetFileSystemInfos();
             foreach (FileSystemInfo fileinfo in fileinfos)
             {
+                EditorUtility.DisplayProgressBar("Hold On", "Collect Assets[" + validFilesCache.Count + "]......", 1);
+                
                 if (fileinfo is DirectoryInfo)
                 {
                     if (IsValidFolder(fileinfo.Name))
@@ -39,7 +41,31 @@ namespace HT.Framework.AssetBundleEditor
 
                         if (fi.IsValid)
                         {
-                            validFilesCache.Add(fi);
+                            validFilesCache.Add(fi.Path, fi);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 读取所有资源的依赖关系
+        /// </summary>
+        public static void ReadAssetsDependencies(Dictionary<string, FileInfo> validFilesCache)
+        {
+            foreach (KeyValuePair<string, FileInfo> file in validFilesCache)
+            {
+                EditorUtility.DisplayProgressBar("Hold On", "Collect Dependencies[" + file.Key + "]", 1);
+
+                string[] paths = AssetDatabase.GetDependencies(file.Key);
+                for (int j = 0; j < paths.Length; j++)
+                {
+                    if (file.Key != paths[j])
+                    {
+                        if (validFilesCache.ContainsKey(paths[j]))
+                        {
+                            file.Value.Dependencies.Add(validFilesCache[paths[j]]);
+                            validFilesCache[paths[j]].BeDependencies.Add(file.Value);
                         }
                     }
                 }
@@ -49,42 +75,70 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 读取AB包配置信息
         /// </summary>
-        public static void ReadAssetBundleConfig(AssetBundleInfo abInfo, List<FileInfo> validAssetsCache)
+        public static void ReadAssetBundleConfig(AssetBundleInfo abInfo, Dictionary<string, FileInfo> validAssetsCache)
         {
             string[] names = AssetDatabase.GetAllAssetBundleNames();
             for (int i = 0; i < names.Length; i++)
             {
+                EditorUtility.DisplayProgressBar("Hold On", "Collect AssetBundle Config[" + i + "/" + names.Length + "]......", (float)i / names.Length);
+
                 BundleInfo build = new BundleInfo(names[i]);
                 string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(names[i]);
                 for (int j = 0; j < assets.Length; j++)
                 {
-                    FileInfo fi = validAssetsCache.Find((f) => { return f.GUID == AssetDatabase.AssetPathToGUID(assets[j]); });
-                    if (fi != null)
+                    if (validAssetsCache.ContainsKey(assets[j]))
                     {
-                        build.AddAsset(fi);
-                        fi.IsChecked = false;
+                        build.AddAsset(validAssetsCache[assets[j]]);
+                        validAssetsCache[assets[j]].IsChecked = false;
                     }
                 }
                 abInfo.AddBundle(build);
             }
+            EditorUtility.ClearProgressBar();
         } 
         
         /// <summary>
         /// 获取所有被选中的有效资源
         /// </summary>
-        public static List<FileInfo> GetCheckedAssets(this List<FileInfo> validAssetList)
+        public static List<FileInfo> GetCheckedAssets(this Dictionary<string, FileInfo> validAssetList)
         {
             List<FileInfo> checkedAssets = new List<FileInfo>();
-            for (int i = 0; i < validAssetList.Count; i++)
+            foreach (KeyValuePair<string, FileInfo> file in validAssetList)
             {
-                if (validAssetList[i].IsChecked)
+                if (file.Value.IsChecked)
                 {
-                    checkedAssets.Add(validAssetList[i]);
+                    checkedAssets.Add(file.Value);
                 }
             }
             return checkedAssets;
         }
-        
+
+        /// <summary>
+        /// 判断资源是否是冗余资源
+        /// </summary>
+        public static void IsRedundantFile(this FileInfo fileInfo)
+        {
+            if (fileInfo.Bundled != null)
+            {
+                if (fileInfo.IndirectBundled.Count < 1)
+                {
+                    fileInfo.IsRedundant = false;
+                }
+                else if (fileInfo.IndirectBundled.Count == 1)
+                {
+                    fileInfo.IsRedundant = !fileInfo.IndirectBundled.ContainsKey(fileInfo.Bundled);
+                }
+                else
+                {
+                    fileInfo.IsRedundant = true;
+                }
+            }
+            else
+            {
+                fileInfo.IsRedundant = fileInfo.IndirectBundled.Count > 1;
+            }
+        }
+
         /// <summary>
         /// 通过文件后缀名判断是否是有效的文件
         /// </summary>

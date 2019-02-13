@@ -49,7 +49,29 @@ namespace HT.Framework
             {
                 procedureInstance.Value.OnInit();
             }
+        }
 
+        public override void Refresh()
+        {
+            //流程帧刷新
+            if (_currentProcedure != null)
+            {
+                _currentProcedure.OnUpdate();
+
+                if (_timer < 1)
+                {
+                    _timer += Time.deltaTime;
+                }
+                else
+                {
+                    _timer = 0;
+                    _currentProcedure.OnUpdateSecond();
+                }
+            }
+        }
+
+        private void Start()
+        {
             //进入默认流程
             if (DefaultProcedure != "")
             {
@@ -69,25 +91,6 @@ namespace HT.Framework
                 else
                 {
                     GlobalTools.LogError("进入流程失败：丢失流程 " + DefaultProcedure + "！");
-                }
-            }
-        }
-
-        public override void Refresh()
-        {
-            //流程帧刷新
-            if (_currentProcedure != null)
-            {
-                _currentProcedure.OnUpdate();
-
-                if (_timer < 1)
-                {
-                    _timer += Time.deltaTime;
-                }
-                else
-                {
-                    _timer = 0;
-                    _currentProcedure.OnUpdateSecond();
                 }
             }
         }

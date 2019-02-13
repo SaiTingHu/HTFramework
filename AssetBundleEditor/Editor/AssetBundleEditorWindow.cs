@@ -16,8 +16,9 @@ namespace HT.Framework.AssetBundleEditor
 
         #region fields
         private FolderInfo _assetRootFolder;
-        private List<FileInfo> _validFilesCache;
+        private Dictionary<string, FileInfo> _validFilesCache;
         private AssetBundleInfo _assetBundleInfo;
+        private FileInfo _currentFile;
         private int _currentAB = -1;
         private int _currentABAsset = -1;
         private bool _isRename = false;
@@ -39,6 +40,11 @@ namespace HT.Framework.AssetBundleEditor
         private Vector2 _assetScroll;
         private int _assetViewHeight = 0;
 
+        private Rect _dependenciesViewRect;
+        private Rect _dependenciesScrollRect;
+        private Vector2 _dependenciesScroll;
+        private int _dependenciesViewHeight = 0;
+
         private bool _hideInvalidAsset = false;
         private bool _hideBundleAsset = false;
 
@@ -50,6 +56,7 @@ namespace HT.Framework.AssetBundleEditor
         private GUIStyle _preDropDown = new GUIStyle("PreDropDown");
         private GUIStyle _LRSelect = new GUIStyle("LODSliderRangeSelected");
         private GUIStyle _prefabLabel = new GUIStyle("PR PrefabLabel");
+        private GUIStyle _brokenPrefabLabel = new GUIStyle("PR BrokenPrefabLabel");
         private GUIStyle _miniButtonLeft = new GUIStyle("MiniButtonLeft");
         private GUIStyle _miniButtonRight = new GUIStyle("MiniButtonRight");
         private GUIStyle _oLMinus = new GUIStyle("OL Minus");
@@ -58,8 +65,10 @@ namespace HT.Framework.AssetBundleEditor
         private void Init()
         {
             _assetRootFolder = new FolderInfo(Application.dataPath, "Assets", "");
-            _validFilesCache = new List<FileInfo>();
+            _validFilesCache = new Dictionary<string, FileInfo>();
             AssetBundleTool.ReadAssetsInChildren(_assetRootFolder, _validFilesCache);
+
+            AssetBundleTool.ReadAssetsDependencies(_validFilesCache);
 
             _assetBundleInfo = new AssetBundleInfo();
             AssetBundleTool.ReadAssetBundleConfig(_assetBundleInfo, _validFilesCache);
@@ -107,12 +116,14 @@ namespace HT.Framework.AssetBundleEditor
             AssetBundlesGUI();
             CurrentAssetBundlesGUI();
             AssetsGUI();
+            DependenciesGUI();
         }
         private void Update()
         {
             if (EditorApplication.isCompiling)
             {
                 Close();
+                Resources.UnloadUnusedAssets();
             }
         }
         private void TitleGUI()
@@ -354,7 +365,7 @@ namespace HT.Framework.AssetBundleEditor
 
             AssetGUI(_assetRootFolder, 0);
 
-            _assetViewHeight += 5;
+            _assetViewHeight += 20;
             if (_assetViewHeight < _assetViewRect.height)
             {
                 _assetViewHeight = (int)_assetViewRect.height;
@@ -414,6 +425,20 @@ namespace HT.Framework.AssetBundleEditor
                 {
                     GUILayout.Label("[" + fileInfo.Bundled + "]", _prefabLabel);
                 }
+
+                fileInfo.IsRedundantFile();
+                if(fileInfo.IsRedundant)
+                {
+                    GUIContent redLight = EditorGUIUtility.IconContent("lightMeter/redLight");
+                    redLight.text = "Redundant";
+                    if (GUILayout.Button(redLight, _brokenPrefabLabel, GUILayout.Height(20)))
+                    {
+                        if (_currentFile != fileInfo)
+                            _currentFile = fileInfo;
+                        else
+                            _currentFile = null;
+                    }
+                }
             }
             _assetViewHeight += 20;
             GUILayout.FlexibleSpace();
@@ -426,6 +451,91 @@ namespace HT.Framework.AssetBundleEditor
                     AssetGUI(folderInfo.ChildAssetInfo[i], indentation + 1);
                 }
             }
-        }        
+        }
+        private void DependenciesGUI()
+        {
+            if (_currentFile != null)
+            {
+                if (!_currentFile.IsRedundant)
+                {
+                    _currentFile = null;
+                    return;
+                }
+
+                _dependenciesViewRect = new Rect((int)position.width - 220, 50, 200, 200);
+                _dependenciesScrollRect = new Rect((int)position.width - 220, 50, 200, _dependenciesViewHeight);
+                _dependenciesScroll = GUI.BeginScrollView(_dependenciesViewRect, _dependenciesScroll, _dependenciesScrollRect);
+                GUI.BeginGroup(_dependenciesScrollRect, _box);
+
+                _dependenciesViewHeight = 5;
+
+                GUIContent content = EditorGUIUtility.ObjectContent(null, _currentFile.AssetType);
+                content.text = _currentFile.Name;
+                GUI.Label(new Rect(5, _dependenciesViewHeight, 35, 15), "Asset");
+                if (GUI.Button(new Rect(45, _dependenciesViewHeight, 150, 15), content, _prefabLabel))
+                {
+                    Object obj = AssetDatabase.LoadAssetAtPath(_currentFile.Path, _currentFile.AssetType);
+                    Selection.activeObject = obj;
+                    EditorGUIUtility.PingObject(obj);
+                }
+                _dependenciesViewHeight += 20;
+
+                if (_currentFile.Dependencies.Count > 0)
+                {
+                    GUI.Label(new Rect(5, _dependenciesViewHeight, 190, 15), "Dependencies");
+                    _dependenciesViewHeight += 20;
+                    for (int i = 0; i < _currentFile.Dependencies.Count; i++)
+                    {
+                        content = EditorGUIUtility.ObjectContent(null, _currentFile.Dependencies[i].AssetType);
+                        content.text = _currentFile.Dependencies[i].Name;
+                        if (GUI.Button(new Rect(45, _dependenciesViewHeight, 150, 15), content, _prefabLabel))
+                        {
+                            Object obj = AssetDatabase.LoadAssetAtPath(_currentFile.Dependencies[i].Path, _currentFile.Dependencies[i].AssetType);
+                            Selection.activeObject = obj;
+                            EditorGUIUtility.PingObject(obj);
+                        }
+                        _dependenciesViewHeight += 20;
+                    }
+                }
+
+                if (_currentFile.BeDependencies.Count > 0)
+                {
+                    GUI.Label(new Rect(5, _dependenciesViewHeight, 190, 15), "Be Dependencies");
+                    _dependenciesViewHeight += 20;
+                    for (int i = 0; i < _currentFile.BeDependencies.Count; i++)
+                    {
+                        content = EditorGUIUtility.ObjectContent(null, _currentFile.BeDependencies[i].AssetType);
+                        content.text = _currentFile.BeDependencies[i].Name;
+                        if (GUI.Button(new Rect(45, _dependenciesViewHeight, 150, 15), content, _prefabLabel))
+                        {
+                            Object obj = AssetDatabase.LoadAssetAtPath(_currentFile.BeDependencies[i].Path, _currentFile.BeDependencies[i].AssetType);
+                            Selection.activeObject = obj;
+                            EditorGUIUtility.PingObject(obj);
+                        }
+                        _dependenciesViewHeight += 20;
+                    }
+                }
+
+                if (_currentFile.IndirectBundled.Count > 0)
+                {
+                    GUI.Label(new Rect(5, _dependenciesViewHeight, 190, 15), "Indirect Bundled");
+                    _dependenciesViewHeight += 20;
+                    foreach (KeyValuePair<BundleInfo, int> bundle in _currentFile.IndirectBundled)
+                    {
+                        GUI.Label(new Rect(45, _dependenciesViewHeight, 150, 15), bundle.Key.Name + " >> " + bundle.Value, _prefabLabel);
+                        _dependenciesViewHeight += 20;
+                    }
+                }
+
+                _dependenciesViewHeight += 5;
+                if (_dependenciesViewHeight < _dependenciesViewRect.height)
+                {
+                    _dependenciesViewHeight = (int)_dependenciesViewRect.height;
+                }
+
+                GUI.EndGroup();
+                GUI.EndScrollView();
+            }
+        }
     }
 }

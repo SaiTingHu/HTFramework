@@ -384,6 +384,41 @@ namespace HT.Framework
                 }
             }
         }
+
+        /// <summary>
+        /// 新建UILogic类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/UILogic Script", false, 5)]
+        private static void CreateUILogic()
+        {
+            string path = EditorUtility.SaveFilePanel("新建 UILogic 类", Application.dataPath, "NewUILogic", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Other/UILogicTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError("新建UILogic失败，已存在类型 " + className);
+                }
+            }
+        }
         #endregion
     }
 }

@@ -77,7 +77,7 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public void ClearBundle()
         {
-            for (int i = 0; i < _bundleInfos.Count; i++)
+            for (int i = 0; i < _bundleInfos.Count;)
             {
                 DeleteBundle(i);
             }

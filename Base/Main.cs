@@ -52,6 +52,10 @@ namespace HT.Framework
         /// </summary>
         public static StepMaster m_StepMaster { get; private set; }
         /// <summary>
+        /// UI模块
+        /// </summary>
+        public static UIManager m_UI { get; private set; }
+        /// <summary>
         /// Web请求模块
         /// </summary>
         public static WebRequestManager m_WebRequest { get; private set; }
@@ -77,6 +81,7 @@ namespace HT.Framework
             m_Procedure = transform.GetComponentByChild<ProcedureManager>("Procedure");
             m_ReferencePool = transform.GetComponentByChild<ReferencePoolManager>("ReferencePool");
             m_StepMaster = transform.GetComponentByChild<StepMaster>("StepMaster");
+            m_UI = transform.GetComponentByChild<UIManager>("UI");
             m_WebRequest = transform.GetComponentByChild<WebRequestManager>("WebRequest");
 
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_AspectTrack));
@@ -88,6 +93,7 @@ namespace HT.Framework
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Procedure));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ReferencePool));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_StepMaster));
+            _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_UI));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_WebRequest));
             for (int i = 0; i < _moduleProxys.Count; i++)
             {
@@ -110,6 +116,7 @@ namespace HT.Framework
             m_Procedure.Refresh();
             m_ReferencePool.Refresh();
             m_StepMaster.Refresh();
+            m_UI.Refresh();
             m_WebRequest.Refresh();
         }
 
@@ -124,6 +131,7 @@ namespace HT.Framework
             m_Procedure.Termination();
             m_ReferencePool.Termination();
             m_StepMaster.Termination();
+            m_UI.Termination();
             m_WebRequest.Termination();
         }
     }

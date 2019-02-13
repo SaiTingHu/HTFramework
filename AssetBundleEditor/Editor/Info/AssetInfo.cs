@@ -28,6 +28,7 @@ namespace HT.Framework.AssetBundleEditor
         {
             FullPath = fullPath;
             Path = "Assets" + fullPath.Replace(Application.dataPath.Replace("/", "\\"), "");
+            Path = Path.Replace("\\", "/");
             Name = name;
             IsChecked = false;
         }
