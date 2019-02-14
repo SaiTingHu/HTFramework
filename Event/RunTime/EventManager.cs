@@ -27,6 +27,11 @@ namespace HT.Framework
             }
         }
 
+        public override void Termination()
+        {
+            _eventHandlerList.Clear();
+        }
+
         /// <summary>
         /// 订阅事件
         /// </summary>
