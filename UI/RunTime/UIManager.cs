@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace HT.Framework
@@ -10,17 +11,10 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class UIManager : ModuleManager
     {
-        [SerializeField]
-        public List<string> UIs = new List<string>();
-        [SerializeField]
-        public List<GameObject> UIEntitys = new List<GameObject>();
-
         //当前打开的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentTemporaryUI;
-        //所有已激活UI
+        //所有UI
         private Dictionary<Type, UILogic> _UIs = new Dictionary<Type, UILogic>();
-        //所有已激活UI的实体
-        private Dictionary<Type, GameObject> _UIEntitys = new Dictionary<Type, GameObject>();
 
         private Transform _uiRoot;
         private Transform _residentPanel;
@@ -31,28 +25,14 @@ namespace HT.Framework
             _uiRoot = transform.Find("UIRoot");
             _residentPanel = _uiRoot.Find("ResidentPanel");
             _temporaryPanel = _uiRoot.Find("TemporaryPanel");
-            //创建所有已激活的UI
-            for (int i = 0; i < UIs.Count; i++)
+            //创建所有UI的逻辑对象
+            Assembly assembly = Assembly.GetAssembly(typeof(UILogic));
+            Type[] types = assembly.GetTypes();
+            for (int i = 0; i < types.Length; i++)
             {
-                Type type = Type.GetType(UIs[i]);
-                if (type != null)
+                if (types[i].BaseType == typeof(UILogicResident) || types[i].BaseType == typeof(UILogicTemporary))
                 {
-                    if (type.BaseType == typeof(UILogicResident) || type.BaseType == typeof(UILogicTemporary))
-                    {
-                        if (!_UIs.ContainsKey(type))
-                        {
-                            _UIs.Add(type, Activator.CreateInstance(type) as UILogic);
-                            _UIEntitys.Add(type, UIEntitys[i]);
-                        }
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("创建UI对象失败：UI对象 " + UIs[i] + " 必须继承至UI基类：UILogicResident 或 UILogicTemporary！");
-                    }
-                }
-                else
-                {
-                    GlobalTools.LogError("创建UI对象失败：丢失UI对象 " + UIs[i] + "！");
+                    _UIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogic);
                 }
             }
         }
@@ -84,20 +64,38 @@ namespace HT.Framework
 
                 if (!ui.IsCreated)
                 {
-                    ui.UIEntity = Instantiate(_UIEntitys[typeof(T)], _residentPanel);
-                    ui.UIEntity.rectTransform().anchoredPosition = _UIEntitys[typeof(T)].rectTransform().anchoredPosition;
-                    ui.UIEntity.transform.localRotation = Quaternion.identity;
-                    ui.UIEntity.transform.localScale = Vector3.one;
-                    ui.OnInit();
+                    object[] atts = typeof(T).GetCustomAttributes(typeof(UIResourceAttribute), false);
+                    if (atts.Length != 1)
+                    {
+                        GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
+                        return;
+                    }
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), (obj, vec) =>
+                    {
+                        if (obj)
+                        {
+                            ui.UIEntity = obj;
+                            ui.UIEntity.transform.SetParent(_residentPanel);
+                            ui.UIEntity.rectTransform().anchoredPosition3D = vec;
+                            ui.UIEntity.transform.localRotation = Quaternion.identity;
+                            ui.UIEntity.transform.localScale = Vector3.one;
+                            ui.UIEntity.transform.SetAsLastSibling();
+                            ui.UIEntity.SetActive(true);
+                            ui.OnInit();
+                            ui.OnOpen();
+                        }
+                    }, true);
                 }
-
-                ui.UIEntity.transform.SetAsLastSibling();
-                ui.UIEntity.SetActive(true);
-                ui.OnOpen();
+                else
+                {
+                    ui.UIEntity.transform.SetAsLastSibling();
+                    ui.UIEntity.SetActive(true);
+                    ui.OnOpen();
+                }
             }
             else
             {
-                GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未存在于激活列表！");
+                GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
             }
         }
 
@@ -115,30 +113,50 @@ namespace HT.Framework
                     return;
                 }
 
-                if (!ui.IsCreated)
-                {
-                    ui.UIEntity = Instantiate(_UIEntitys[typeof(T)], _temporaryPanel);
-                    ui.UIEntity.rectTransform().anchoredPosition = _UIEntitys[typeof(T)].rectTransform().anchoredPosition;
-                    ui.UIEntity.transform.localRotation = Quaternion.identity;
-                    ui.UIEntity.transform.localScale = Vector3.one;
-                    ui.OnInit();
-                }
-
                 //关闭当前打开的非常驻UI
                 if (_currentTemporaryUI != null && _currentTemporaryUI.IsOpened)
                 {
                     _currentTemporaryUI.UIEntity.SetActive(false);
                     _currentTemporaryUI.OnClose();
+                    _currentTemporaryUI = null;
                 }
 
-                _currentTemporaryUI = ui as UILogicTemporary;
-                _currentTemporaryUI.UIEntity.transform.SetAsLastSibling();
-                _currentTemporaryUI.UIEntity.SetActive(true);
-                _currentTemporaryUI.OnOpen();
+                if (!ui.IsCreated)
+                {
+                    object[] atts = typeof(T).GetCustomAttributes(typeof(UIResourceAttribute), false);
+                    if (atts.Length != 1)
+                    {
+                        GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
+                        return;
+                    }
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), (obj, vec) =>
+                    {
+                        if (obj)
+                        {
+                            ui.UIEntity = obj;
+                            ui.UIEntity.transform.SetParent(_temporaryPanel);
+                            ui.UIEntity.rectTransform().anchoredPosition3D = vec;
+                            ui.UIEntity.transform.localRotation = Quaternion.identity;
+                            ui.UIEntity.transform.localScale = Vector3.one;
+                            ui.UIEntity.transform.SetAsLastSibling();
+                            ui.UIEntity.SetActive(true);
+                            ui.OnInit();
+                            ui.OnOpen();
+                            _currentTemporaryUI = ui as UILogicTemporary;
+                        }
+                    }, true);
+                }
+                else
+                {
+                    ui.UIEntity.transform.SetAsLastSibling();
+                    ui.UIEntity.SetActive(true);
+                    ui.OnOpen();
+                    _currentTemporaryUI = ui as UILogicTemporary;
+                }
             }
             else
             {
-                GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未存在于激活列表！");
+                GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
             }
         }
 
@@ -166,7 +184,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("关闭UI失败：UI对象 " + typeof(T).Name + " 并未存在于激活列表！");
+                GlobalTools.LogError("关闭UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
             }
         }
 
@@ -195,7 +213,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("销毁UI失败：UI对象 " + typeof(T).Name + " 并未存在于激活列表！");
+                GlobalTools.LogError("销毁UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
             }
         }
     }

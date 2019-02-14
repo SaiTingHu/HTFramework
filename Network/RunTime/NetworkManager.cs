@@ -16,11 +16,11 @@ namespace HT.Framework
     {
         private Socket _client;
         private Thread _receiveThread;
-        private string _ip;
-        private int _port;
         private List<byte[]> _sendDataBuffer = new List<byte[]>();
         private bool _isSending = false;
 
+        public string IP;
+        public int Port;
         public event Action BeginConnectEvent;
         public event Action ConnectSuccessEvent;
         public event Action ConnectFailEvent;
@@ -44,8 +44,8 @@ namespace HT.Framework
 
         public void SetIP(string ip, int port)
         {
-            _ip = ip;
-            _port = port;
+            IP = ip;
+            Port = port;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace HT.Framework
                 try
                 {
                     _client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    _client.Connect(IPAddress.Parse(_ip), _port);
+                    _client.Connect(IPAddress.Parse(IP), Port);
                 }
                 catch (Exception e)
                 {

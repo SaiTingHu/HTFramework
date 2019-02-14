@@ -48,6 +48,10 @@ namespace HT.Framework
         /// </summary>
         public static ReferencePoolManager m_ReferencePool { get; private set; }
         /// <summary>
+        /// 资源模块
+        /// </summary>
+        public static ResourceManager m_Resource { get; private set; }
+        /// <summary>
         /// 步骤模块
         /// </summary>
         public static StepMaster m_StepMaster { get; private set; }
@@ -80,6 +84,7 @@ namespace HT.Framework
             m_ObjectPool = transform.GetComponentByChild<ObjectPoolManager>("ObjectPool");
             m_Procedure = transform.GetComponentByChild<ProcedureManager>("Procedure");
             m_ReferencePool = transform.GetComponentByChild<ReferencePoolManager>("ReferencePool");
+            m_Resource = transform.GetComponentByChild<ResourceManager>("Resource");
             m_StepMaster = transform.GetComponentByChild<StepMaster>("StepMaster");
             m_UI = transform.GetComponentByChild<UIManager>("UI");
             m_WebRequest = transform.GetComponentByChild<WebRequestManager>("WebRequest");
@@ -92,6 +97,7 @@ namespace HT.Framework
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ObjectPool));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Procedure));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ReferencePool));
+            _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Resource));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_StepMaster));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_UI));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_WebRequest));
@@ -115,6 +121,7 @@ namespace HT.Framework
             m_ObjectPool.Refresh();
             m_Procedure.Refresh();
             m_ReferencePool.Refresh();
+            m_Resource.Refresh();
             m_StepMaster.Refresh();
             m_UI.Refresh();
             m_WebRequest.Refresh();
@@ -130,6 +137,7 @@ namespace HT.Framework
             m_ObjectPool.Termination();
             m_Procedure.Termination();
             m_ReferencePool.Termination();
+            m_Resource.Termination();
             m_StepMaster.Termination();
             m_UI.Termination();
             m_WebRequest.Termination();
