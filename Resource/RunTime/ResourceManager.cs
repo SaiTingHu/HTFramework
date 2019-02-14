@@ -26,6 +26,11 @@ namespace HT.Framework
             _isHttpPath = _assetBundlePath.Contains("http:");
         }
 
+        public override void Termination()
+        {
+            UnLoadAllPrefab();
+        }
+
         /// <summary>
         /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
         /// </summary>
@@ -154,6 +159,7 @@ namespace HT.Framework
                     asset.Value.Unload(false);
                 }
                 _assetBundles.Clear();
+                AssetBundle.UnloadAllAssetBundles(false);
             }
         }
     }
