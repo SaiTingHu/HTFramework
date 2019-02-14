@@ -197,6 +197,11 @@ namespace HT.Framework
             }
         }
 
+        public override void Termination()
+        {
+            _targets.Clear();
+        }
+
         /// <summary>
         /// 当前步骤索引
         /// </summary>
