@@ -70,6 +70,11 @@ namespace HT.Framework
             }
         }
 
+        public override void Termination()
+        {
+            _procedureInstances.Clear();
+        }
+
         private void Start()
         {
             //进入默认流程
