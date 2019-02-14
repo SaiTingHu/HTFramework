@@ -1,5 +1,4 @@
 using System.Reflection;
-using UnityEngine;
 
 namespace HT.Framework
 {
@@ -12,13 +11,13 @@ namespace HT.Framework
 
         protected override object[] BeforeInvoke(MethodBase method, object[] args)
         {
-            Debug.Log(_realObject + " 初始化开始！");
+            GlobalTools.LogInfo(_realObject + " -> " + method.Name + " 开始执行！");
             return args;
         }
 
         protected override void AfterInvoke(MethodBase method, object returnValue)
         {
-            Debug.Log(_realObject + " 初始化完成！");
+            GlobalTools.LogInfo(_realObject + " -> " + method.Name + " 执行完成！");
         }
     }
 
