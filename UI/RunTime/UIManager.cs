@@ -48,6 +48,24 @@ namespace HT.Framework
             }
         }
 
+        public override void Termination()
+        {
+            foreach (KeyValuePair<Type, UILogic> ui in _UIs)
+            {
+                UILogic uiLogic = ui.Value;
+
+                if (!uiLogic.IsCreated)
+                {
+                    return;
+                }
+
+                uiLogic.OnDestroy();
+                Destroy(uiLogic.UIEntity);
+                uiLogic.UIEntity = null;
+            }
+            _UIs.Clear();
+        }
+
         /// <summary>
         /// 打开常驻UI
         /// </summary>
