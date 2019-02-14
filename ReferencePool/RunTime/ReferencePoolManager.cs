@@ -66,5 +66,10 @@ namespace HT.Framework
             }
             _spawnPools.Clear();
         }
+
+        public override void Termination()
+        {
+            Clear();
+        }
     }
 }
