@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace HT.Framework
 {
@@ -67,6 +70,19 @@ namespace HT.Framework
             }
             else
             {
+#if UNITY_EDITOR
+                assetTem = AssetDatabase.LoadAssetAtPath<GameObject>(info.AssetBundlePath);
+                yield return assetTem;
+                if (assetTem)
+                {
+                    asset = Instantiate(assetTem) as GameObject;
+                    yield return asset;
+                }
+                else
+                {
+                    GlobalTools.LogError("加载预制体失败：路径中不存在资源 " + info.AssetBundlePath);
+                }
+#else
                 if (_assetBundles.ContainsKey(info.AssetBundleName))
                 {
                     assetTem = _assetBundles[info.AssetBundleName].LoadAsset(info.AssetBundlePath) as GameObject;
@@ -115,6 +131,7 @@ namespace HT.Framework
                     www.Dispose();
                     www = null;
                 }
+#endif
             }
             if (assetTem && asset)
             {

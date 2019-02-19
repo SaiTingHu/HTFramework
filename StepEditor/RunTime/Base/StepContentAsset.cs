@@ -11,7 +11,6 @@ namespace HT.Framework
     [Serializable]
     public sealed class StepContentAsset : ScriptableObject
     {
-
         [SerializeField]
         public List<StepContent> Content = new List<StepContent>();
     }

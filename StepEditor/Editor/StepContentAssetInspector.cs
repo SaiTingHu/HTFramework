@@ -21,7 +21,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Export Step Data To TXT"))
+            if (GUILayout.Button("Export Step Data To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("保存数据文件", Application.dataPath, _target.name, "txt");
                 if (path != "")
@@ -42,6 +42,15 @@ namespace HT.Framework
                 StepEditorWindow.ShowWindow(_target);
             }
             GUILayout.EndHorizontal();
+
+            for (int i = 0; i < _target.Content.Count; i++)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label((i + 1) + "." + _target.Content[i].Name);
+                GUILayout.FlexibleSpace();
+                GUILayout.Label("[" + _target.Content[i].Trigger + "]");
+                GUILayout.EndHorizontal();
+            }
         }
     }
 }
