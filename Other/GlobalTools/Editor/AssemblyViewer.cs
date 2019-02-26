@@ -34,10 +34,15 @@ namespace HT.Framework
         private FieldInfo _currentField;
         private MethodInfo[] _methods;
         private MethodInfo _currentMethod;
+        private PropertyInfo[] _propertys;
+        private PropertyInfo _currentProperty;
         private ParameterInfo[] _parameterInfos;
         private Vector2 _memberScroll = Vector2.zero;
         private string _memberFilter = "";
         private bool _onlyShowStaticMember = true;
+        private bool _showField = true;
+        private bool _showMethod = true;
+        private bool _showProperty = true;
 
         private void OnEnable()
         {
@@ -46,6 +51,7 @@ namespace HT.Framework
             _currentType = null;
             _currentMethod = null;
             _currentField = null;
+            _currentProperty = null;
         }
 
         private void OnGUI()
@@ -117,6 +123,7 @@ namespace HT.Framework
                         _currentType = null;
                         _currentMethod = null;
                         _currentField = null;
+                        _currentProperty = null;
                     }
                     GUILayout.EndHorizontal();
 
@@ -187,19 +194,21 @@ namespace HT.Framework
                             _currentType = _types[i];
                             _fields = _currentType.GetFields(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                             _methods = _currentType.GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            _propertys = _currentType.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                             _currentMethod = null;
                             _currentField = null;
+                            _currentProperty = null;
                         }
                         GUILayout.EndHorizontal();
 
                         if (_currentType == _types[i])
                         {
                             GUILayout.BeginHorizontal();
-                            GUILayout.Label("namespace " + _currentType.Namespace);
+                            EditorGUILayout.TextField("namespace " + _currentType.Namespace);
                             GUILayout.EndHorizontal();
 
                             GUILayout.BeginHorizontal();
-                            GUILayout.Label(FormatTypeInfo(_currentType));
+                            EditorGUILayout.TextField(FormatTypeInfo(_currentType));
                             GUILayout.EndHorizontal();
                         }
                         GUI.color = Color.white;
@@ -223,6 +232,9 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             _onlyShowStaticMember = GUILayout.Toggle(_onlyShowStaticMember, "Only Show Static");
+            _showField = GUILayout.Toggle(_showField, "Show Field");
+            _showMethod = GUILayout.Toggle(_showMethod, "Show Method");
+            _showProperty = GUILayout.Toggle(_showProperty, "Show Property");
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -241,59 +253,98 @@ namespace HT.Framework
 
             if (_currentType != null)
             {
-                for (int i = 0; i < _fields.Length; i++)
+                if (_showField)
                 {
-                    if (_fields[i].Name.Contains(_memberFilter))
+                    for (int i = 0; i < _fields.Length; i++)
                     {
-                        if (_onlyShowStaticMember && !_fields[i].IsStatic)
+                        if (_fields[i].Name.Contains(_memberFilter))
                         {
-                            continue;
-                        }
+                            if (_onlyShowStaticMember && !_fields[i].IsStatic)
+                            {
+                                continue;
+                            }
 
-                        GUI.color = _currentField == _fields[i] ? Color.cyan : Color.white;
-                        GUILayout.BeginHorizontal();
-                        if (GUILayout.Button("[Field] " + _fields[i].Name, "Toolbarbutton"))
-                        {
-                            _currentField = _fields[i];
-                            _currentMethod = null;
-                        }
-                        GUILayout.EndHorizontal();
-
-                        if (_currentField == _fields[i])
-                        {
+                            GUI.color = _currentField == _fields[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            GUILayout.Label(FormatFieldInfo(_currentField));
+                            if (GUILayout.Button("[Field] " + _fields[i].Name, "Toolbarbutton"))
+                            {
+                                _currentField = _fields[i];
+                                _currentMethod = null;
+                                _currentProperty = null;
+                            }
                             GUILayout.EndHorizontal();
+
+                            if (_currentField == _fields[i])
+                            {
+                                GUILayout.BeginHorizontal();
+                                EditorGUILayout.TextField(FormatFieldInfo(_currentField));
+                                GUILayout.EndHorizontal();
+                            }
+                            GUI.color = Color.white;
                         }
-                        GUI.color = Color.white;
                     }
                 }
-                for (int i = 0; i < _methods.Length; i++)
+                if (_showMethod)
                 {
-                    if (_methods[i].Name.Contains(_memberFilter))
+                    for (int i = 0; i < _methods.Length; i++)
                     {
-                        if (_onlyShowStaticMember && !_methods[i].IsStatic)
+                        if (_methods[i].Name.Contains(_memberFilter))
                         {
-                            continue;
-                        }
+                            if (_onlyShowStaticMember && !_methods[i].IsStatic)
+                            {
+                                continue;
+                            }
 
-                        GUI.color = _currentMethod == _methods[i] ? Color.cyan : Color.white;
-                        GUILayout.BeginHorizontal();
-                        if (GUILayout.Button("[Method] " + _methods[i].Name, "Toolbarbutton"))
-                        {
-                            _currentMethod = _methods[i];
-                            _parameterInfos = _currentMethod.GetParameters();
-                            _currentField = null;
-                        }
-                        GUILayout.EndHorizontal();
-
-                        if (_currentMethod == _methods[i])
-                        {
+                            GUI.color = _currentMethod == _methods[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            GUILayout.Label(FormatMethodInfo(_currentMethod));
+                            if (GUILayout.Button("[Method] " + _methods[i].Name, "Toolbarbutton"))
+                            {
+                                _currentMethod = _methods[i];
+                                _parameterInfos = _currentMethod.GetParameters();
+                                _currentField = null;
+                                _currentProperty = null;
+                            }
                             GUILayout.EndHorizontal();
+
+                            if (_currentMethod == _methods[i])
+                            {
+                                GUILayout.BeginHorizontal();
+                                EditorGUILayout.TextField(FormatMethodInfo(_currentMethod));
+                                GUILayout.EndHorizontal();
+                            }
+                            GUI.color = Color.white;
                         }
-                        GUI.color = Color.white;
+                    }
+                }
+                if (_showProperty)
+                {
+                    for (int i = 0; i < _propertys.Length; i++)
+                    {
+                        if (_propertys[i].Name.Contains(_memberFilter))
+                        {
+                            if (_onlyShowStaticMember && !IsStatic(_propertys[i]))
+                            {
+                                continue;
+                            }
+
+                            GUI.color = _currentProperty == _propertys[i] ? Color.cyan : Color.white;
+                            GUILayout.BeginHorizontal();
+                            if (GUILayout.Button("[Property] " + _propertys[i].Name, "Toolbarbutton"))
+                            {
+                                _currentProperty = _propertys[i];
+                                _currentMethod = null;
+                                _currentField = null;
+                            }
+                            GUILayout.EndHorizontal();
+
+                            if (_currentProperty == _propertys[i])
+                            {
+                                GUILayout.BeginHorizontal();
+                                EditorGUILayout.TextField(FormatPropertyInfo(_currentProperty));
+                                GUILayout.EndHorizontal();
+                            }
+                            GUI.color = Color.white;
+                        }
                     }
                 }
             }
@@ -328,7 +379,7 @@ namespace HT.Framework
         private string FormatFieldInfo(FieldInfo field)
         {
             string info = "";
-            info += field.IsFamily ? "protected " : (_currentField.IsPublic ? "public " : "private ");
+            info += field.IsFamily ? "protected " : (field.IsPublic ? "public " : "private ");
             info += field.IsStatic ? "static " : "";
             info += field.IsAssembly ? "internal " : "";
             info += field.FieldType.Name + " ";
@@ -359,6 +410,43 @@ namespace HT.Framework
 
             info += ")";
             return info;
+        }
+        private string FormatPropertyInfo(PropertyInfo property)
+        {
+            MethodInfo get = property.GetGetMethod();
+            MethodInfo set = property.GetSetMethod();
+            MethodInfo method = (get != null ? get : set);
+            if (method == null)
+            {
+                return "Invalid property! He has neither get nor set method!";
+            }
+
+            string info = "";
+            info += method.IsFamily ? "protected " : (method.IsPublic ? "public " : "private ");
+            info += method.IsStatic ? "static " : "";
+            info += method.IsAssembly ? "internal " : "";
+            info += method.IsAbstract ? "abstract " : "";
+            info += method.IsVirtual ? "virtual " : "";
+            info += property.PropertyType.Name + " ";
+            info += property.Name + " { " + (get != null ? "get;" : "") + (set != null ? "set;" : "") + " }";
+            return info;
+        }
+        private bool IsStatic(PropertyInfo property)
+        {
+            MethodInfo getMethod = property.GetGetMethod();
+            MethodInfo setMethod = property.GetSetMethod();
+            if (getMethod != null)
+            {
+                return getMethod.IsStatic;
+            }
+            else if (setMethod != null)
+            {
+                return setMethod.IsStatic;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
