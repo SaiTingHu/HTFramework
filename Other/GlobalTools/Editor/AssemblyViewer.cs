@@ -418,7 +418,7 @@ namespace HT.Framework
             MethodInfo method = (get != null ? get : set);
             if (method == null)
             {
-                return "Invalid property! He has neither get nor set method!";
+                return "private " + property.PropertyType.Name + " " + property.Name + " {}";
             }
 
             string info = "";
