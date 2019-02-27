@@ -278,6 +278,21 @@ namespace HT.Framework
                 EndEvent();
         }
         /// <summary>
+        /// 跳过当前步骤
+        /// </summary>
+        public bool SkipCurrentStep()
+        {
+            if (_ongoing && !_running)
+            {
+                StartCoroutine(SkipCurrentStepCoroutine());
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
         /// 跳过到指定步骤
         /// </summary>
         public bool SkipStep(int index)
@@ -287,7 +302,7 @@ namespace HT.Framework
                 if (index <= _currentStep || index > ContentAsset.Content.Count - 1)
                     return false;
 
-                StartCoroutine(SkipSteps(index));
+                StartCoroutine(SkipStepCoroutine(index));
                 return true;
             }
             else
@@ -381,7 +396,72 @@ namespace HT.Framework
             if (ExecuteStepEvent != null)
                 ExecuteStepEvent(_currentContent);
         }
-        private IEnumerator SkipSteps(int index)
+        private IEnumerator SkipCurrentStepCoroutine()
+        {
+            _running = true;
+
+            MousePosition.Instance.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, false);
+            MouseRotation.Instance.SetAngle(_currentContent.BestView, true);
+
+            if (SkipStepEvent != null)
+                SkipStepEvent(_currentContent);
+
+            //UGUI按钮点击型步骤，自动执行按钮事件
+            if (_currentContent.Trigger == StepTrigger.ButtonClick)
+            {
+                if (_currentButton)
+                {
+                    _currentButton.onClick.Invoke();
+                }
+                else
+                {
+                    _currentButton = _currentContent.Target.GetComponent<Button>();
+                    if (_currentButton)
+                    {
+                        _currentButton.onClick.Invoke();
+                    }
+                    else
+                    {
+                        GlobalTools.LogError("【步骤：" + (_currentStep + 1) + "】的目标丢失Button组件！");
+                    }
+                }
+                _currentButton = null;
+            }
+
+            //创建步骤助手
+            if (_currentHelper == null && _currentContent.Helper != "<None>")
+            {
+                Type type = Type.GetType(_currentContent.Helper);
+                if (type != null)
+                {
+                    _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                    _currentHelper.Target = _currentTarget;
+                    _currentHelper.OnInit();
+                }
+                else
+                {
+                    GlobalTools.LogError("【步骤：" + (_currentStep + 1) + "】的助手 " + _currentContent.Helper + " 丢失！");
+                }
+            }
+            //助手执行跳过，等待生命周期结束后销毁助手
+            if (_currentHelper != null)
+            {
+                _currentHelper.OnSkip();
+                yield return new WaitForSeconds(_currentHelper.SkipLifeTime / SkipMultiple);
+                _currentHelper.OnTermination();
+                _currentHelper = null;
+            }
+
+            _currentContent.Skip(this);
+
+            yield return new WaitForSeconds(_currentContent.ElapseTime / SkipMultiple);
+            
+            if (SkipStepDoneEvent != null)
+                SkipStepDoneEvent();
+
+            ChangeNextStep();
+        }
+        private IEnumerator SkipStepCoroutine(int index)
         {
             _running = true;
             _skipIndex = index;
