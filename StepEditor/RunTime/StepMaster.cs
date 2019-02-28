@@ -246,14 +246,14 @@ namespace HT.Framework
         /// <summary>
         /// 开始整个流程
         /// </summary>
-        public void Begin()
+        public void Begin(int beginIndex = 0)
         {
             if (!ContentAsset)
             {
                 return;
             }
 
-            _currentStep = 0;
+            _currentStep = ((beginIndex < 0 || beginIndex > ContentAsset.Content.Count - 1) ? 0 : beginIndex);
             _currentContent = null;
             _currentTarget = null;
             _ongoing = true;
@@ -261,7 +261,7 @@ namespace HT.Framework
 
             if (BeginEvent != null)
                 BeginEvent();
-
+            
             BeginCurrentStep();
         }
         /// <summary>
@@ -455,9 +455,6 @@ namespace HT.Framework
             _currentContent.Skip(this);
 
             yield return new WaitForSeconds(_currentContent.ElapseTime / SkipMultiple);
-            
-            if (SkipStepDoneEvent != null)
-                SkipStepDoneEvent();
 
             ChangeNextStep();
         }

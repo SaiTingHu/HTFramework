@@ -88,13 +88,17 @@ namespace HT.Framework
                         GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
                         return;
                     }
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), (obj, vec) =>
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), (obj, traf) =>
                     {
                         if (obj)
                         {
+                            RectTransform rt = traf as RectTransform;
                             ui.UIEntity = obj;
                             ui.UIEntity.transform.SetParent(_residentPanel);
-                            ui.UIEntity.rectTransform().anchoredPosition3D = vec;
+                            ui.UIEntity.rectTransform().anchoredPosition3D = rt.anchoredPosition3D;
+                            ui.UIEntity.rectTransform().sizeDelta = rt.sizeDelta;
+                            ui.UIEntity.rectTransform().anchorMin = rt.anchorMin;
+                            ui.UIEntity.rectTransform().anchorMax = rt.anchorMax;
                             ui.UIEntity.transform.localRotation = Quaternion.identity;
                             ui.UIEntity.transform.localScale = Vector3.one;
                             ui.UIEntity.transform.SetAsLastSibling();
@@ -147,13 +151,17 @@ namespace HT.Framework
                         GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
                         return;
                     }
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), (obj, vec) =>
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), (obj, traf) =>
                     {
                         if (obj)
                         {
+                            RectTransform rt = traf as RectTransform;
                             ui.UIEntity = obj;
                             ui.UIEntity.transform.SetParent(_temporaryPanel);
-                            ui.UIEntity.rectTransform().anchoredPosition3D = vec;
+                            ui.UIEntity.rectTransform().anchoredPosition3D = rt.anchoredPosition3D;
+                            ui.UIEntity.rectTransform().sizeDelta = rt.sizeDelta;
+                            ui.UIEntity.rectTransform().anchorMin = rt.anchorMin;
+                            ui.UIEntity.rectTransform().anchorMax = rt.anchorMax;
                             ui.UIEntity.transform.localRotation = Quaternion.identity;
                             ui.UIEntity.transform.localScale = Vector3.one;
                             ui.UIEntity.transform.SetAsLastSibling();
@@ -175,6 +183,31 @@ namespace HT.Framework
             else
             {
                 GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
+            }
+        }
+
+        /// <summary>
+        /// 获取已经打开的UI
+        /// </summary>
+        public T GetOpenedUI<T>() where T : UILogic
+        {
+            if (_UIs.ContainsKey(typeof(T)))
+            {
+                UILogic ui = _UIs[typeof(T)];
+
+                if (ui.IsOpened)
+                {
+                    return ui as T;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                GlobalTools.LogError("获取UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
+                return null;
             }
         }
 

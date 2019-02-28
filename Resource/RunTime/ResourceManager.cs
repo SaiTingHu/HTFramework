@@ -46,11 +46,11 @@ namespace HT.Framework
         /// <summary>
         /// 加载预制体（异步）
         /// </summary>
-        public void LoadPrefab(PrefabInfo info, Action<GameObject, Vector3> loadDoneAction, bool isUI = false)
+        public void LoadPrefab(PrefabInfo info, Action<GameObject, Transform> loadDoneAction, bool isUI = false)
         {
             StartCoroutine(LoadPrefabCoroutine(info, loadDoneAction, isUI));
         }
-        private System.Collections.IEnumerator LoadPrefabCoroutine(PrefabInfo info, Action<GameObject, Vector3> loadDoneAction, bool isUI)
+        private System.Collections.IEnumerator LoadPrefabCoroutine(PrefabInfo info, Action<GameObject, Transform> loadDoneAction, bool isUI)
         {
             GameObject assetTem = null;
             GameObject asset = null;
@@ -135,7 +135,7 @@ namespace HT.Framework
             }
             if (assetTem && asset)
             {
-                loadDoneAction(asset, isUI ? assetTem.rectTransform().anchoredPosition3D : assetTem.transform.localPosition);
+                loadDoneAction(asset, isUI ? assetTem.rectTransform() : assetTem.transform);
                 assetTem = null;
                 asset = null;
             }
