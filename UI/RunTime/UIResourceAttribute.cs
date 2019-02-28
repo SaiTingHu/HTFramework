@@ -9,13 +9,13 @@ namespace HT.Framework
     public sealed class UIResourceAttribute : Attribute
     {
         public string AssetBundleName;
-        public string AssetBundlePath;
+        public string AssetPath;
         public string ResourcePath;
 
-        public UIResourceAttribute(string assetBundleName, string assetBundlePath, string resourcePath)
+        public UIResourceAttribute(string assetBundleName, string assetPath, string resourcePath)
         {
             AssetBundleName = assetBundleName;
-            AssetBundlePath = assetBundlePath;
+            AssetPath = assetPath;
             ResourcePath = resourcePath;
         }
     }

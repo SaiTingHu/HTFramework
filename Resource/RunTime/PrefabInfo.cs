@@ -10,25 +10,25 @@
         /// </summary>
         public string AssetBundleName;
         /// <summary>
-        /// AssetBundle中的路径
+        /// Asset的路径
         /// </summary>
-        public string AssetBundlePath;
+        public string AssetPath;
         /// <summary>
         /// Resources文件夹中的路径
         /// </summary>
         public string ResourcePath;
 
-        public PrefabInfo(string assetBundleName, string assetBundlePath, string resourcePath)
+        public PrefabInfo(string assetBundleName, string assetPath, string resourcePath)
         {
             AssetBundleName = assetBundleName;
-            AssetBundlePath = assetBundlePath;
+            AssetPath = assetPath;
             ResourcePath = resourcePath;
         }
 
         public PrefabInfo(UIResourceAttribute att)
         {
             AssetBundleName = att.AssetBundleName;
-            AssetBundlePath = att.AssetBundlePath;
+            AssetPath = att.AssetPath;
             ResourcePath = att.ResourcePath;
         }
     }

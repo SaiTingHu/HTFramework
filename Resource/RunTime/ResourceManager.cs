@@ -46,14 +46,15 @@ namespace HT.Framework
         /// <summary>
         /// 加载预制体（异步）
         /// </summary>
-        public void LoadPrefab(PrefabInfo info, Action<GameObject, Transform> loadDoneAction, bool isUI = false)
+        public void LoadPrefab(PrefabInfo info, Transform parent, Action<GameObject> loadDoneAction, bool isUI = false)
         {
-            StartCoroutine(LoadPrefabCoroutine(info, loadDoneAction, isUI));
+            StartCoroutine(LoadPrefabCoroutine(info, parent, loadDoneAction, isUI));
         }
-        private System.Collections.IEnumerator LoadPrefabCoroutine(PrefabInfo info, Action<GameObject, Transform> loadDoneAction, bool isUI)
+        private System.Collections.IEnumerator LoadPrefabCoroutine(PrefabInfo info, Transform parent, Action<GameObject> loadDoneAction, bool isUI)
         {
             GameObject assetTem = null;
             GameObject asset = null;
+
             if (Mode == ResourceMode.Resource)
             {
                 assetTem = Resources.Load<GameObject>(info.ResourcePath);
@@ -71,7 +72,7 @@ namespace HT.Framework
             else
             {
 #if UNITY_EDITOR
-                assetTem = AssetDatabase.LoadAssetAtPath<GameObject>(info.AssetBundlePath);
+                assetTem = AssetDatabase.LoadAssetAtPath<GameObject>(info.AssetPath);
                 yield return assetTem;
                 if (assetTem)
                 {
@@ -80,12 +81,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("加载预制体失败：路径中不存在资源 " + info.AssetBundlePath);
+                    GlobalTools.LogError("加载预制体失败：路径中不存在资源 " + info.AssetPath);
                 }
 #else
                 if (_assetBundles.ContainsKey(info.AssetBundleName))
                 {
-                    assetTem = _assetBundles[info.AssetBundleName].LoadAsset(info.AssetBundlePath) as GameObject;
+                    assetTem = _assetBundles[info.AssetBundleName].LoadAsset(info.AssetPath) as GameObject;
                     yield return assetTem;
                     if (assetTem)
                     {
@@ -94,7 +95,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError("加载预制体失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetBundlePath);
+                        GlobalTools.LogError("加载预制体失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
                     }
                 }
                 else
@@ -103,7 +104,7 @@ namespace HT.Framework
                     yield return www;
                     if (www.assetBundle)
                     {
-                        assetTem = www.assetBundle.LoadAsset(info.AssetBundlePath) as GameObject;
+                        assetTem = www.assetBundle.LoadAsset(info.AssetPath) as GameObject;
                         yield return assetTem;
                         if (assetTem)
                         {
@@ -112,7 +113,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError("加载预制体失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetBundlePath);
+                            GlobalTools.LogError("加载预制体失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
                         }
 
                         if (IsCacheAssetBundle)
@@ -133,12 +134,35 @@ namespace HT.Framework
                 }
 #endif
             }
-            if (assetTem && asset)
+
+            if (asset)
             {
-                loadDoneAction(asset, isUI ? assetTem.rectTransform() : assetTem.transform);
-                assetTem = null;
-                asset = null;
+                if (parent)
+                {
+                    asset.transform.SetParent(parent);
+                }
+
+                if (isUI)
+                {
+                    asset.rectTransform().anchoredPosition3D = assetTem.rectTransform().anchoredPosition3D;
+                    asset.rectTransform().sizeDelta = assetTem.rectTransform().sizeDelta;
+                    asset.rectTransform().anchorMin = assetTem.rectTransform().anchorMin;
+                    asset.rectTransform().anchorMax = assetTem.rectTransform().anchorMax;
+                    asset.transform.localRotation = Quaternion.identity;
+                    asset.transform.localScale = Vector3.one;
+                }
+                else
+                {
+                    asset.transform.localPosition = assetTem.transform.localPosition;
+                    asset.transform.localRotation = Quaternion.identity;
+                    asset.transform.localScale = Vector3.one;
+                }
+
+                loadDoneAction(asset);
             }
+
+            assetTem = null;
+            asset = null;
         }
 
         /// <summary>

@@ -38,7 +38,7 @@ namespace HT.Framework
         {
         }
 
-        public virtual void OnOpen()
+        public virtual void OnOpen(params object[] args)
         {
         }
 

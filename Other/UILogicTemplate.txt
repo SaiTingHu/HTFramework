@@ -7,7 +7,7 @@ using DG.Tweening;
 /// <summary>
 /// 新建UI逻辑类
 /// </summary>
-[UIResource("AssetBundleName", "AssetBundlePath", "ResourcePath")]
+[UIResource("AssetBundleName", "AssetPath", "ResourcePath")]
 public class #SCRIPTNAME# : UILogicResident
 {
 	/// <summary>
@@ -21,7 +21,7 @@ public class #SCRIPTNAME# : UILogicResident
 	/// <summary>
 	/// 打开UI
 	/// </summary>
-    public override void OnOpen()
+    public override void OnOpen(params object[] args)
     {
         
     }
