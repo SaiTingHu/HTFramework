@@ -158,6 +158,7 @@ namespace HT.Framework
                     asset.transform.localScale = Vector3.one;
                 }
 
+                asset.SetActive(false);
                 loadDoneAction(asset);
             }
 

@@ -13,6 +13,11 @@ namespace HT.Framework
         public virtual void Initialization()
         { }
         /// <summary>
+        /// 准备工作
+        /// </summary>
+        public virtual void Preparatory()
+        { }
+        /// <summary>
         /// 刷新模块
         /// </summary>
         public virtual void Refresh()

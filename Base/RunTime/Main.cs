@@ -109,6 +109,19 @@ namespace HT.Framework
             {
                 _moduleProxysObj[i].Initialization();
             }
+
+            m_AspectTrack.Preparatory();
+            m_Event.Preparatory();
+            m_ExceptionHandler.Preparatory();
+            m_FSM.Preparatory();
+            m_Network.Preparatory();
+            m_ObjectPool.Preparatory();
+            m_Procedure.Preparatory();
+            m_ReferencePool.Preparatory();
+            m_Resource.Preparatory();
+            m_StepMaster.Preparatory();
+            m_UI.Preparatory();
+            m_WebRequest.Preparatory();
         }
 
         private void Update()

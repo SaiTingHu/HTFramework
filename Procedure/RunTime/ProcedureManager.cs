@@ -43,11 +43,36 @@ namespace HT.Framework
                     GlobalTools.LogError("创建流程失败：丢失流程 " + ActivatedProcedures[i] + "！");
                 }
             }
+        }
 
+        public override void Preparatory()
+        {
             //流程初始化
             foreach (KeyValuePair<Type, Procedure> procedureInstance in _procedureInstances)
             {
                 procedureInstance.Value.OnInit();
+            }
+
+            //进入默认流程
+            if (DefaultProcedure != "")
+            {
+                Type type = Type.GetType(DefaultProcedure);
+                if (type != null)
+                {
+                    if (_procedureInstances.ContainsKey(type))
+                    {
+                        _currentProcedure = _procedureInstances[type];
+                        _currentProcedure.OnEnter();
+                    }
+                    else
+                    {
+                        GlobalTools.LogError("进入流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError("进入流程失败：丢失流程 " + DefaultProcedure + "！");
+                }
             }
         }
 
@@ -73,31 +98,6 @@ namespace HT.Framework
         public override void Termination()
         {
             _procedureInstances.Clear();
-        }
-
-        private void Start()
-        {
-            //进入默认流程
-            if (DefaultProcedure != "")
-            {
-                Type type = Type.GetType(DefaultProcedure);
-                if (type != null)
-                {
-                    if (_procedureInstances.ContainsKey(type))
-                    {
-                        _currentProcedure = _procedureInstances[type];
-                        _currentProcedure.OnEnter();
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("进入流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
-                    }
-                }
-                else
-                {
-                    GlobalTools.LogError("进入流程失败：丢失流程 " + DefaultProcedure + "！");
-                }
-            }
         }
 
         /// <summary>
