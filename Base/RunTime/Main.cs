@@ -155,5 +155,21 @@ namespace HT.Framework
             m_UI.Termination();
             m_WebRequest.Termination();
         }
+
+        /// <summary>
+        /// 克隆实例
+        /// </summary>
+        public static T Clone<T>(T original) where T : Object
+        {
+            return Instantiate(original);
+        }
+
+        /// <summary>
+        /// 杀死实例
+        /// </summary>
+        public static void Kill(Object obj)
+        {
+            Destroy(obj);
+        }
     }
 }
