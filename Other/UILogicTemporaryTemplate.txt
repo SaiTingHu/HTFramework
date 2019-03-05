@@ -8,7 +8,7 @@ using DG.Tweening;
 /// 新建UI逻辑类
 /// </summary>
 [UIResource("AssetBundleName", "AssetPath", "ResourcePath")]
-public class #SCRIPTNAME# : UILogicResident
+public class #SCRIPTNAME# : UILogicTemporary
 {
 	/// <summary>
 	/// 初始化

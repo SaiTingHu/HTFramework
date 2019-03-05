@@ -133,7 +133,7 @@ namespace HT.Framework
         {
             if (_UIs.ContainsKey(typeof(T)))
             {
-                UILogic ui = _UIs[typeof(T)];
+                UILogicResident ui = _UIs[typeof(T)] as UILogicResident;
 
                 if (ui.IsOpened)
                 {
@@ -155,6 +155,7 @@ namespace HT.Framework
                         ui.UIEntity.SetActive(true);
                         ui.OnInit();
                         ui.OnOpen(args);
+                        ui.OnPlaceTop();
                     }, true);
                 }
                 else
@@ -162,6 +163,7 @@ namespace HT.Framework
                     ui.UIEntity.transform.SetAsLastSibling();
                     ui.UIEntity.SetActive(true);
                     ui.OnOpen(args);
+                    ui.OnPlaceTop();
                 }
             }
             else
@@ -177,7 +179,7 @@ namespace HT.Framework
         {
             if (_UIs.ContainsKey(typeof(T)))
             {
-                UILogic ui = _UIs[typeof(T)];
+                UILogicTemporary ui = _UIs[typeof(T)] as UILogicTemporary;
 
                 if (ui.IsOpened)
                 {
@@ -207,7 +209,7 @@ namespace HT.Framework
                         ui.UIEntity.SetActive(true);
                         ui.OnInit();
                         ui.OnOpen(args);
-                        _currentTemporaryUI = ui as UILogicTemporary;
+                        _currentTemporaryUI = ui;
                     }, true);
                 }
                 else
@@ -215,7 +217,7 @@ namespace HT.Framework
                     ui.UIEntity.transform.SetAsLastSibling();
                     ui.UIEntity.SetActive(true);
                     ui.OnOpen(args);
-                    _currentTemporaryUI = ui as UILogicTemporary;
+                    _currentTemporaryUI = ui;
                 }
             }
             else
@@ -246,6 +248,29 @@ namespace HT.Framework
             {
                 GlobalTools.LogError("获取UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// 置顶常驻UI
+        /// </summary>
+        public void PlaceTop<T>() where T : UILogicResident
+        {
+            if (_UIs.ContainsKey(typeof(T)))
+            {
+                UILogicResident ui = _UIs[typeof(T)] as UILogicResident;
+
+                if (!ui.IsOpened)
+                {
+                    return;
+                }
+
+                ui.UIEntity.transform.SetAsLastSibling();
+                ui.OnPlaceTop();
+            }
+            else
+            {
+                GlobalTools.LogError("置顶UI失败：UI对象 " + typeof(T).Name + " 并未存在！");
             }
         }
 

@@ -386,18 +386,18 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 新建UILogic类
+        /// 新建UILogicResident类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/UILogic Script", false, 5)]
-        private static void CreateUILogic()
+        [@MenuItem("Assets/Create/HTFramework/UILogicResident Script", false, 5)]
+        private static void CreateUILogicResident()
         {
-            string path = EditorUtility.SaveFilePanel("新建 UILogic 类", Application.dataPath, "NewUILogic", "cs");
+            string path = EditorUtility.SaveFilePanel("新建 UILogicResident 类", Application.dataPath, "NewUILogicResident", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
                 if (!File.Exists(path))
                 {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Other/UILogicTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Other/UILogicResidentTemplate.txt", typeof(TextAsset)) as TextAsset;
                     if (asset)
                     {
                         string code = asset.text;
@@ -415,7 +415,42 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建UILogic失败，已存在类型 " + className);
+                    GlobalTools.LogError("新建UILogicResident失败，已存在类型 " + className);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 新建UILogicTemporary类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/UILogicTemporary Script", false, 6)]
+        private static void CreateUILogicTemporary()
+        {
+            string path = EditorUtility.SaveFilePanel("新建 UILogicTemporary 类", Application.dataPath, "NewUILogicTemporary", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Other/UILogicTemporaryTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError("新建UILogicTemporary失败，已存在类型 " + className);
                 }
             }
         }

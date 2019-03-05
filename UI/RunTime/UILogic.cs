@@ -34,22 +34,37 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
         public virtual void OnInit()
         {
         }
 
+        /// <summary>
+        /// 打开UI
+        /// </summary>
         public virtual void OnOpen(params object[] args)
         {
         }
 
+        /// <summary>
+        /// 关闭UI
+        /// </summary>
         public virtual void OnClose()
         {
         }
 
+        /// <summary>
+        /// 销毁UI
+        /// </summary>
         public virtual void OnDestroy()
         {
         }
 
+        /// <summary>
+        /// UI逻辑刷新
+        /// </summary>
         public virtual void OnUpdate()
         {
         }
