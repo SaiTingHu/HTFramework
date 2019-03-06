@@ -91,6 +91,43 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 批量回收对象
+        /// </summary>
+        public void Despawns(string name, GameObject[] targets)
+        {
+            if (_spawnPools.ContainsKey(name))
+            {
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    _spawnPools[name].Despawn(targets[i]);
+                }
+            }
+            else
+            {
+                GlobalTools.LogError("回收对象失败：不存在对象池 " + name + " ！");
+            }
+        }
+
+        /// <summary>
+        /// 批量回收对象
+        /// </summary>
+        public void Despawns(string name, List<GameObject> targets)
+        {
+            if (_spawnPools.ContainsKey(name))
+            {
+                for (int i = 0; i < targets.Count; i++)
+                {
+                    _spawnPools[name].Despawn(targets[i]);
+                }
+                targets.Clear();
+            }
+            else
+            {
+                GlobalTools.LogError("回收对象失败：不存在对象池 " + name + " ！");
+            }
+        }
+
+        /// <summary>
         /// 销毁所有对象池
         /// </summary>
         public void Clear()

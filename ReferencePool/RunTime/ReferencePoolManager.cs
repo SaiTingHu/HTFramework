@@ -56,6 +56,41 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 批量回收引用
+        /// </summary>
+        public void Despawns<T>(List<T> refes) where T : IReference
+        {
+            Type type = typeof(T);
+            if (!_spawnPools.ContainsKey(type))
+            {
+                _spawnPools.Add(type, new ReferenceSpawnPool(Limit));
+            }
+
+            for (int i = 0; i < refes.Count; i++)
+            {
+                _spawnPools[type].Despawn(refes[i]);
+            }
+            refes.Clear();
+        }
+
+        /// <summary>
+        /// 批量回收引用
+        /// </summary>
+        public void Despawns<T>(T[] refes) where T : IReference
+        {
+            Type type = typeof(T);
+            if (!_spawnPools.ContainsKey(type))
+            {
+                _spawnPools.Add(type, new ReferenceSpawnPool(Limit));
+            }
+
+            for (int i = 0; i < refes.Length; i++)
+            {
+                _spawnPools[type].Despawn(refes[i]);
+            }
+        }
+
+        /// <summary>
         /// 销毁所有引用池
         /// </summary>
         public void Clear()
