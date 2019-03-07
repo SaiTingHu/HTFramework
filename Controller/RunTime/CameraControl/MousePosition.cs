@@ -7,6 +7,7 @@ namespace HT.Framework
     /// 摄像机注视目标移动控制
     /// </summary>
     [RequireComponent(typeof(Camera))]
+    [DisallowMultipleComponent]
     public sealed class MousePosition : MonoBehaviour
     {
         //注视目标

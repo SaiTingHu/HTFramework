@@ -6,6 +6,7 @@ namespace HT.Framework
     /// 摄像机注视目标旋转控制
     /// </summary>
     [RequireComponent(typeof(Camera))]
+    [DisallowMultipleComponent]
     public sealed class MouseRotation : MonoBehaviour
     {
         //注视目标

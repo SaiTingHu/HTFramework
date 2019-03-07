@@ -143,6 +143,36 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 自由控制：是否启用摄像机移动控制
+        /// </summary>
+        public bool EnablePositionControl
+        {
+            get
+            {
+                return _mousePosition.CanControl;
+            }
+            set
+            {
+                _mousePosition.CanControl = value;
+            }
+        }
+
+        /// <summary>
+        /// 自由控制：是否启用摄像机旋转控制
+        /// </summary>
+        public bool EnableRotationControl
+        {
+            get
+            {
+                return _mouseRotation.CanControl;
+            }
+            set
+            {
+                _mouseRotation.CanControl = value;
+            }
+        }
+
+        /// <summary>
         /// 自由控制：设置摄像机平移点
         /// </summary>
         public void SetPosition(Vector3 position, bool damping)
