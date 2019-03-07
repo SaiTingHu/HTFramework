@@ -6,9 +6,10 @@ namespace HT.Framework
     /// 摄像机注视目标旋转控制
     /// </summary>
     [RequireComponent(typeof(Camera))]
-    [DefaultExecutionOrder(-800)]
     public sealed class MouseRotation : MonoBehaviour
     {
+        //注视目标
+        public CameraTarget Target;
         //注视点x、y轴偏移，若都为0，则注视点等于注视目标的transform.position，类似目标是角色时，注视点可能会上下偏移
         public float OffsetY = 0f;
         public float OffsetX = 0f;
@@ -39,47 +40,25 @@ namespace HT.Framework
         public float ZMinLimit = -5, ZMaxLimit = 5;
         //在UGUI目标上是否可以控制
         public bool IsCanOnUGUI = false;
-
-        //注视目标
-        private CameraTarget _target;
+        
         //注视点（注视目标的准确位置，经过偏移后的位置）
         private Vector3 _targetPoint;
         //插值量
         private float _damping = 5.0f;
         //系数
         private float _factor = 0.02f;
-        //是否可以控制
-        private bool _isCanControl = true;
+
         //目标位置
         private Quaternion _rotation;
         private Vector3 _position;
         private Vector3 _disVector;
         //最终的位置
-        private Vector3 _finalPosition;       
+        private Vector3 _finalPosition;
 
-        private static MouseRotation _instance;
-        public static MouseRotation Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
-
-        private void Awake()
-        {
-            _instance = this;
-        }
-
-        private void Start()
-        {
-            _target = CameraTarget.Instance;
-
-            if (!_target)
-            {
-                _target = FindObjectOfType<CameraTarget>();
-            }
-        }
+        /// <summary>
+        /// 是否可以控制
+        /// </summary>
+        public bool CanControl { get; set; } = true;
 
         /// <summary>
         /// 设置旋转限定最小值
@@ -132,28 +111,21 @@ namespace HT.Framework
                 SwitchAngle(damping);
             }
         }
-
+        
         /// <summary>
-        /// 是否可以控制
+        /// 刷新
         /// </summary>
-        public bool CanControl
+        public void Refresh()
         {
-            get
-            {
-                return _isCanControl;
-            }
-            set
-            {
-                _isCanControl = value;
-            }
+            //控制
+            Control();
+            //应用
+            ApplyRotation();
         }
 
-        private void Update()
+        private void Control()
         {
-            if (!_target)
-                return;
-
-            if (!_isCanControl)
+            if (!CanControl)
                 return;
 
             if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
@@ -173,16 +145,13 @@ namespace HT.Framework
 
                 if (Distance <= MinDistance)
                 {
-                    _target.transform.Translate(transform.forward * Input.GetAxis("Mouse ScrollWheel"));
+                    Target.transform.Translate(transform.forward * Input.GetAxis("Mouse ScrollWheel"));
                 }
             }
         }
 
-        private void LateUpdate()
+        private void ApplyRotation()
         {
-            if (!_target)
-                return;
-
             //重新计算视角
             CalculateAngle();
 
@@ -201,14 +170,14 @@ namespace HT.Framework
             Distance = Mathf.Clamp(Distance, MinDistance, MaxDistance);
 
             //重新获取摄像机注视点
-            _targetPoint.Set(_target.transform.position.x + OffsetX, _target.transform.position.y + OffsetY, _target.transform.position.z);
+            _targetPoint.Set(Target.transform.position.x + OffsetX, Target.transform.position.y + OffsetY, Target.transform.position.z);
 
             //摄像机的最新旋转角度
             _rotation = Quaternion.Euler(Y, X, 0.0f);
             //摄像机与注视点的距离向量
             _disVector.Set(0.0f, 0.0f, -Distance);
             //摄像机的最新旋转角度*摄像机与注视点的距离，得出摄像机与注视点的相对位置，再由注视点的位置加上相对位置便等于摄像机的位置
-            _position = _target.transform.position + _rotation * _disVector;
+            _position = Target.transform.position + _rotation * _disVector;
         }
 
         private void SwitchAngle(bool damping)

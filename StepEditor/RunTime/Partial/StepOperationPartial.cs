@@ -185,8 +185,8 @@ namespace HT.Framework
         }
         private void CameraFollowExecute()
         {
-            MousePosition.Instance.SetPosition(Vector3Value, true);
-            MouseRotation.Instance.SetAngle(Vector2Value, FloatValue, true);
+            Main.m_Controller.SetPosition(Vector3Value, true);
+            Main.m_Controller.SetAngle(Vector2Value, FloatValue, true);
         }
         private void TextMeshExecute()
         {
@@ -359,8 +359,8 @@ namespace HT.Framework
         }
         private void CameraFollowSkip()
         {
-            MousePosition.Instance.SetPosition(Vector3Value, false);
-            MouseRotation.Instance.SetAngle(Vector2Value, FloatValue, true);
+            Main.m_Controller.SetPosition(Vector3Value, false);
+            Main.m_Controller.SetAngle(Vector2Value, FloatValue, true);
         }
         private void TextMeshSkip()
         {

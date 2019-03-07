@@ -7,7 +7,6 @@ namespace HT.Framework
     /// 鼠标位置发射射线捕获目标
     /// </summary>
     [RequireComponent(typeof(Camera))]
-    [DefaultExecutionOrder(-803)]
     public sealed class MouseRay : MonoBehaviour
     {
         public bool IsOpenRay = true;
@@ -20,27 +19,23 @@ namespace HT.Framework
         public Image RayHitImage;
         public Text RayHitText;
 
-        private Camera _camera;
-        private MouseRayTarget _rayTarget;
         private Ray _ray;
         private RaycastHit _hit;
 
-        private static MouseRay _instance;
-        public static MouseRay Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        /// <summary>
+        /// 射线发射摄像机
+        /// </summary>
+        public Camera RayCamera { get; set; }
 
-        private void Awake()
-        {
-            _camera = GetComponent<Camera>();
-            _instance = this;
-        }
+        /// <summary>
+        /// 当前被射线捕获的目标
+        /// </summary>
+        public MouseRayTarget Target { get; private set; }
 
-        private void Update()
+        /// <summary>
+        /// 刷新
+        /// </summary>
+        public void Refresh()
         {
             if (IsOpenRay)
             {
@@ -50,7 +45,7 @@ namespace HT.Framework
                     return;
                 }
 
-                _ray = _camera.ScreenPointToRay(Input.mousePosition);
+                _ray = RayCamera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(_ray, out _hit, 100, ActivatedLayer))
                 {
                     RaycastHiting(_hit.transform.GetComponent<MouseRayTarget>());
@@ -69,35 +64,35 @@ namespace HT.Framework
         /// </summary>
         private void RaycastHiting(MouseRayTarget target)
         {
-            if (_rayTarget == target)
+            if (Target == target)
             {
                 return;
             }
 
-            if (_rayTarget)
+            if (Target)
             {
                 switch (TriggerHighlighting)
                 {
                     case HighlightingType.Normal:
-                        _rayTarget.gameObject.CloseHighLight(true);
+                        Target.gameObject.CloseHighLight(true);
                         break;
                     case HighlightingType.Flash:
-                        _rayTarget.gameObject.CloseFlashHighLight(true);
+                        Target.gameObject.CloseFlashHighLight(true);
                         break;
                 }
-                _rayTarget = null;
+                Target = null;
             }
 
-            _rayTarget = target;
-            if (_rayTarget)
+            Target = target;
+            if (Target)
             {
                 switch (TriggerHighlighting)
                 {
                     case HighlightingType.Normal:
-                        _rayTarget.gameObject.OpenHighLight(NormalColor);
+                        Target.gameObject.OpenHighLight(NormalColor);
                         break;
                     case HighlightingType.Flash:
-                        _rayTarget.gameObject.OpenFlashHighLight(FlashColor1, FlashColor2);
+                        Target.gameObject.OpenFlashHighLight(FlashColor1, FlashColor2);
                         break;
                 }
 
@@ -106,7 +101,7 @@ namespace HT.Framework
                     if (RayHitImage && RayHitText)
                     {
                         RayHitImage.gameObject.SetActive(true);
-                        RayHitText.text = _rayTarget.Name;
+                        RayHitText.text = Target.Name;
                     }
                 }
             }
@@ -128,38 +123,13 @@ namespace HT.Framework
         /// </summary>
         private void RaycastHitImageFlow()
         {
-            if (IsOpenPrompt && _rayTarget && RayHitImage && RayHitImage.gameObject.activeSelf)
+            if (IsOpenPrompt && Target && RayHitImage && RayHitImage.gameObject.activeSelf)
             {
-                RayHitImage.transform.position = _camera.WorldToScreenPoint(_rayTarget.transform.position) + new Vector3(0, 20, 0);
+                RayHitImage.transform.position = RayCamera.WorldToScreenPoint(Target.transform.position) + new Vector3(0, 20, 0);
                 RayHitImage.rectTransform.sizeDelta = new Vector2(RayHitText.rectTransform.sizeDelta.x + 40, RayHitImage.rectTransform.sizeDelta.y);
             }
         }
-
-        /// <summary>
-        /// 当前被射线捕获的目标
-        /// </summary>
-        public MouseRayTarget Target
-        {
-            get
-            {
-                return _rayTarget;
-            }
-        }
-
-        /// <summary>
-        /// 当前被射线捕获的目标
-        /// </summary>
-        public GameObject TargetObj
-        {
-            get
-            {
-                if (_rayTarget)
-                    return _rayTarget.gameObject;
-                else
-                    return null;
-            }
-        }
-
+        
         public enum HighlightingType
         {
             Normal,

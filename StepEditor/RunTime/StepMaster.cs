@@ -144,15 +144,15 @@ namespace HT.Framework
                         case StepTrigger.MouseClick:
                             if (Input.GetMouseButtonDown(0))
                             {
-                                if (MouseRay.Instance.TargetObj)
+                                if (Main.m_Controller.RayTargetObj)
                                 {
-                                    if (MouseRay.Instance.TargetObj == _currentContent.Target)
+                                    if (Main.m_Controller.RayTargetObj == _currentContent.Target)
                                     {
                                         _execute = true;
                                     }
                                     else
                                     {
-                                        if (MouseRay.Instance.TargetObj.GetComponent<StepTarget>() && ClickWrongTarget != null)
+                                        if (Main.m_Controller.RayTargetObj.GetComponent<StepTarget>() && ClickWrongTarget != null)
                                             ClickWrongTarget();
                                     }
                                 }
@@ -368,8 +368,8 @@ namespace HT.Framework
                 }
             }
 
-            MousePosition.Instance.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, true);
-            MouseRotation.Instance.SetAngle(_currentContent.BestView, true);
+            Main.m_Controller.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, true);
+            Main.m_Controller.SetAngle(_currentContent.BestView, true);
 
             if (BeginStepEvent != null)
                 BeginStepEvent(_currentContent);
@@ -400,8 +400,8 @@ namespace HT.Framework
         {
             _running = true;
 
-            MousePosition.Instance.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, false);
-            MouseRotation.Instance.SetAngle(_currentContent.BestView, true);
+            Main.m_Controller.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, false);
+            Main.m_Controller.SetAngle(_currentContent.BestView, true);
 
             if (SkipStepEvent != null)
                 SkipStepEvent(_currentContent);
@@ -468,8 +468,8 @@ namespace HT.Framework
                 _currentContent = ContentAsset.Content[_currentStep];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
-                MousePosition.Instance.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, false);
-                MouseRotation.Instance.SetAngle(_currentContent.BestView, true);
+                Main.m_Controller.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, false);
+                Main.m_Controller.SetAngle(_currentContent.BestView, true);
 
                 if (SkipStepEvent != null)
                     SkipStepEvent(_currentContent);
