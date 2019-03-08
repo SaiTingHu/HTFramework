@@ -61,6 +61,7 @@ namespace HT.Framework
 
         public override void Refresh()
         {
+            _mouseRay.Refresh();
             switch (Mode)
             {
                 case ControlMode.FreeControl:
@@ -69,7 +70,6 @@ namespace HT.Framework
 
                     _mousePosition.Refresh();
                     _mouseRotation.Refresh();
-                    _mouseRay.Refresh();
                     break;
                 case ControlMode.FirstPerson:
                     if (FirstPersonUpdateEvent != null)
