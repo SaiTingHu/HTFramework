@@ -64,9 +64,12 @@ namespace HT.Framework
         /// </summary>
         public void SetPosition(Vector3 position, bool damping)
         {
-            position.x = Mathf.Clamp(position.x, XMinLimit, XMaxLimit);
-            position.y = Mathf.Clamp(position.y, YMinLimit, YMaxLimit);
-            position.z = Mathf.Clamp(position.z, ZMinLimit, ZMaxLimit);
+            if (NeedLimit)
+            {
+                position.x = Mathf.Clamp(position.x, XMinLimit, XMaxLimit);
+                position.y = Mathf.Clamp(position.y, YMinLimit, YMaxLimit);
+                position.z = Mathf.Clamp(position.z, ZMinLimit, ZMaxLimit);
+            }
 
             if (_moveTweener != null)
             {

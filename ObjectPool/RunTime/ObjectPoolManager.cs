@@ -55,7 +55,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("移除对象池失败：不存在对象池 " + name + " ！");
+                GlobalTools.LogWarning("移除对象池失败：不存在对象池 " + name + " ！");
             }
         }
 

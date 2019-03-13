@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -94,21 +95,24 @@ namespace HT.Framework
         {
             set
             {
-                _mode = value;
-                switch (_mode)
+                if (_mode != value)
                 {
-                    case ControlMode.FreeControl:
-                        if (SwitchToFreeControlEvent != null)
-                            SwitchToFreeControlEvent();
-                        break;
-                    case ControlMode.FirstPerson:
-                        if (SwitchToFirstPersonEvent != null)
-                            SwitchToFirstPersonEvent();
-                        break;
-                    case ControlMode.ThirdPerson:
-                        if (SwitchToThirdPersonEvent != null)
-                            SwitchToThirdPersonEvent();
-                        break;
+                    _mode = value;
+                    switch (_mode)
+                    {
+                        case ControlMode.FreeControl:
+                            if (SwitchToFreeControlEvent != null)
+                                SwitchToFreeControlEvent();
+                            break;
+                        case ControlMode.FirstPerson:
+                            if (SwitchToFirstPersonEvent != null)
+                                SwitchToFirstPersonEvent();
+                            break;
+                        case ControlMode.ThirdPerson:
+                            if (SwitchToThirdPersonEvent != null)
+                                SwitchToThirdPersonEvent();
+                            break;
+                    }
                 }
             }
             get
@@ -117,6 +121,17 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 自由控制：是否限制控制外围
+        /// </summary>
+        public bool NeedLimit
+        {
+            set
+            {
+                _mousePosition.NeedLimit = value;
+                _mouseRotation.NeedLimit = value;
+            }           
+        }
         /// <summary>
         /// 当前射线击中的目标
         /// </summary>
@@ -127,7 +142,6 @@ namespace HT.Framework
                 return _mouseRay.Target;
             }
         }
-
         /// <summary>
         /// 当前射线击中的目标
         /// </summary>
@@ -156,7 +170,6 @@ namespace HT.Framework
                 _mousePosition.CanControl = value;
             }
         }
-
         /// <summary>
         /// 自由控制：是否启用摄像机旋转控制
         /// </summary>
@@ -171,6 +184,23 @@ namespace HT.Framework
                 _mouseRotation.CanControl = value;
             }
         }
+        
+        /// <summary>
+        /// 自由控制：设置控制外围限定最小值
+        /// </summary>
+        public void SetMinLimit(Vector3 value)
+        {
+            _mousePosition.SetMinLimit(value);
+            _mouseRotation.SetMinLimit(value);
+        }
+        /// <summary>
+        /// 自由控制：设置控制外围限定最大值
+        /// </summary>
+        public void SetMaxLimit(Vector3 value)
+        {
+            _mousePosition.SetMaxLimit(value);
+            _mouseRotation.SetMaxLimit(value);
+        }
 
         /// <summary>
         /// 自由控制：设置摄像机平移点
@@ -179,7 +209,6 @@ namespace HT.Framework
         {
             _mousePosition.SetPosition(position, damping);
         }
-
         /// <summary>
         /// 自由控制：设置摄像机旋转角度
         /// </summary>
@@ -187,13 +216,21 @@ namespace HT.Framework
         {
             _mouseRotation.SetAngle(angle, damping);
         }
-
         /// <summary>
         /// 自由控制：设置摄像机旋转角度
         /// </summary>
         public void SetAngle(Vector2 angle, float distance, bool damping)
         {
             _mouseRotation.SetAngle(angle, distance, damping);
+        }
+
+        /// <summary>
+        /// 设置射线发射器的焦点提示框
+        /// </summary>
+        public void SetMouseRayFocusImage(Image bg, Text content)
+        {
+            _mouseRay.RayHitImage = bg;
+            _mouseRay.RayHitText = content;
         }
     }
 
