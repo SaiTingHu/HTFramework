@@ -1,9 +1,9 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 预制体信息
+    /// 资源信息
     /// </summary>
-    public sealed class PrefabInfo
+    public sealed class AssetInfo
     {
         /// <summary>
         /// AssetBundle的名称
@@ -18,18 +18,11 @@
         /// </summary>
         public string ResourcePath;
 
-        public PrefabInfo(string assetBundleName, string assetPath, string resourcePath)
+        public AssetInfo(string assetBundleName, string assetPath, string resourcePath)
         {
             AssetBundleName = assetBundleName;
             AssetPath = assetPath;
             ResourcePath = resourcePath;
-        }
-
-        public PrefabInfo(UIResourceAttribute att)
-        {
-            AssetBundleName = att.AssetBundleName;
-            AssetPath = att.AssetPath;
-            ResourcePath = att.ResourcePath;
         }
     }
 }
