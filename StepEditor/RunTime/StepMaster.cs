@@ -318,14 +318,50 @@ namespace HT.Framework
             _skipIndex = _currentStep;
         }
         /// <summary>
-        /// 展示步骤提示
+        /// 展示提示（“提示”节点调用）
         /// </summary>
         public void ShowPrompt(string content)
         {
             if (ShowPromptEvent != null)
                 ShowPromptEvent(content);
         }
-        
+        /// <summary>
+        /// 指引当前步骤
+        /// </summary>
+        public void Guide()
+        {
+            if (CurrentStepContent != null)
+            {
+                GameObject target = CurrentStepContent.Target;
+                if (target.GetComponent<Collider>())
+                {
+                    target.OpenFlashHighLight(Color.red, Color.white);
+                }
+
+                Main.m_Controller.SetLookPoint(target.transform.position + CurrentStepContent.ViewOffset, true);
+                Main.m_Controller.SetLookAngle(CurrentStepContent.BestView, true);
+
+                if (_currentHelper != null)
+                {
+                    _currentHelper.OnGuide();
+                }
+            }
+            else
+            {
+                ShowPrompt("当前不存在指引目标！");
+            }
+        }
+        /// <summary>
+        /// 完成当前步骤（只用于“状态改变”型步骤）
+        /// </summary>
+        public void CompleteCurrentStep()
+        {
+            if (CurrentStepContent.Trigger == StepTrigger.StateChange)
+            {
+                _currentTarget.State = StepTargetState.Done;
+            }
+        }
+
         private void BeginCurrentStep()
         {
             _running = false;
@@ -368,8 +404,8 @@ namespace HT.Framework
                 }
             }
 
-            Main.m_Controller.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, true);
-            Main.m_Controller.SetAngle(_currentContent.BestView, true);
+            Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, true);
+            Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
 
             if (BeginStepEvent != null)
                 BeginStepEvent(_currentContent);
@@ -400,8 +436,8 @@ namespace HT.Framework
         {
             _running = true;
 
-            Main.m_Controller.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, false);
-            Main.m_Controller.SetAngle(_currentContent.BestView, true);
+            Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, false);
+            Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
 
             if (SkipStepEvent != null)
                 SkipStepEvent(_currentContent);
@@ -468,8 +504,8 @@ namespace HT.Framework
                 _currentContent = ContentAsset.Content[_currentStep];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
-                Main.m_Controller.SetPosition(_currentTarget.transform.position + _currentContent.ViewOffset, false);
-                Main.m_Controller.SetAngle(_currentContent.BestView, true);
+                Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, false);
+                Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
 
                 if (SkipStepEvent != null)
                     SkipStepEvent(_currentContent);

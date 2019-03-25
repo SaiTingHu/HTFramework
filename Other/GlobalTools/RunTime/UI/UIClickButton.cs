@@ -1,10 +1,4 @@
-﻿/**************************
- * Creator: HuTao 987947865@QQ.com
- * Company: HuaJiao Technology
- * CopyRight© 2018
- **************************/
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;

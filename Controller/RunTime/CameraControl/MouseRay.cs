@@ -126,7 +126,7 @@ namespace HT.Framework
         {
             if (IsOpenPrompt && Target && RayHitImage && RayHitImage.gameObject.activeSelf)
             {
-                RayHitImage.transform.position = RayCamera.WorldToScreenPoint(Target.transform.position) + new Vector3(0, 20, 0);
+                RayHitImage.transform.position = Input.mousePosition + new Vector3(0, 20, 0);
                 RayHitImage.rectTransform.sizeDelta = new Vector2(RayHitText.rectTransform.sizeDelta.x + 40, RayHitImage.rectTransform.sizeDelta.y);
             }
         }

@@ -37,7 +37,7 @@ namespace HT.Framework
                     if (type.BaseType == typeof(FSMData))
                     {
                         _data = Activator.CreateInstance(type) as FSMData;
-                        _data.OwnStateMachine = this;
+                        _data.StateMachine = this;
                         _data.OnInit();
                     }
                     else
@@ -61,7 +61,7 @@ namespace HT.Framework
                         if (!_stateInstances.ContainsKey(type))
                         {
                             FiniteState state = Activator.CreateInstance(type) as FiniteState;
-                            state.OwnStateMachine = this;
+                            state.StateMachine = this;
                             state.OnInit();
                             _stateInstances.Add(type, state);
                         }
@@ -112,6 +112,11 @@ namespace HT.Framework
 
         private void OnDestroy()
         {
+            foreach (KeyValuePair<Type, FiniteState> state in _stateInstances)
+            {
+                state.Value.OnTermination();
+            }
+
             Main.m_FSM.UnRegisterFSM(this);
         }
 
@@ -230,7 +235,7 @@ namespace HT.Framework
             if (!_stateInstances.ContainsKey(typeof(T)))
             {
                 FiniteState state = Activator.CreateInstance(typeof(T)) as FiniteState;
-                state.OwnStateMachine = this;
+                state.StateMachine = this;
                 state.OnInit();
                 _stateInstances.Add(typeof(T), state);
             }

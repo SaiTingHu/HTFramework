@@ -87,6 +87,19 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
 
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy Position", "MiniButton"))
+            {
+                if (_mousePosition.Target)
+                {
+                    GUIUtility.systemCopyBuffer =
+                            _mousePosition.Target.transform.localPosition.x.ToString("F2") + "f," +
+                            _mousePosition.Target.transform.localPosition.y.ToString("F2") + "f," +
+                            _mousePosition.Target.transform.localPosition.z.ToString("F2") + "f";
+                }
+            }
+            GUILayout.EndHorizontal();
+
             if (GUI.changed)
             {
                 EditorUtility.SetDirty(_mousePosition);

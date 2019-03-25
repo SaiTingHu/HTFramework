@@ -813,7 +813,7 @@ MonoBehaviour:
   XSpeed: 0.1
   YSpeed: 0.1
   MSpeed: 1
-  NeedLimit: 1
+  NeedLimit: 0
   XMinLimit: -7
   XMaxLimit: 7
   YMinLimit: -7

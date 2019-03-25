@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
     /// 步骤的助手，步骤开始时自动创建，结束后自动销毁
@@ -27,6 +25,14 @@ namespace HT.Framework
         /// 跳过步骤（仅在跳过时执行）
         /// </summary>
         public virtual void OnSkip()
+        {
+
+        }
+
+        /// <summary>
+        /// 步骤指引
+        /// </summary>
+        public virtual void OnGuide()
         {
 
         }

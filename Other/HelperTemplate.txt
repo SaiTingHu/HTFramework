@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using HT.Framework;
 using DG.Tweening;
 /// <summary>
@@ -26,7 +25,15 @@ public class #SCRIPTNAME# : StepHelper
 	/// </summary>
     public override void OnSkip()
     {
-        
+        Execute();
+    }
+
+    /// <summary>
+    /// 步骤指引
+    /// </summary>
+    public override void OnGuide()
+    {
+
     }
 
 	/// <summary>

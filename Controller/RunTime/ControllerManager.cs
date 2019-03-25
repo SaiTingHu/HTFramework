@@ -41,7 +41,7 @@ namespace HT.Framework
         private MouseRay _mouseRay;
         private HighlightingEffect _highlightingEffect;
 
-        private ControlMode _mode;
+        private ControlMode _controlMode;
 
         public override void Initialization()
         {
@@ -57,13 +57,13 @@ namespace HT.Framework
             _mouseRotation.Target = _cameraTarget;
             _mouseRay.RayCamera = MainCamera;
 
-            Mode = ControlMode.FreeControl;
+            ControlMode = ControlMode.FreeControl;
         }
 
         public override void Refresh()
         {
             _mouseRay.Refresh();
-            switch (Mode)
+            switch (ControlMode)
             {
                 case ControlMode.FreeControl:
                     if (FreeControlUpdateEvent != null)
@@ -91,14 +91,14 @@ namespace HT.Framework
         /// <summary>
         /// 控制模式
         /// </summary>
-        public ControlMode Mode
+        public ControlMode ControlMode
         {
             set
             {
-                if (_mode != value)
+                if (_controlMode != value)
                 {
-                    _mode = value;
-                    switch (_mode)
+                    _controlMode = value;
+                    switch (_controlMode)
                     {
                         case ControlMode.FreeControl:
                             if (SwitchToFreeControlEvent != null)
@@ -117,7 +117,7 @@ namespace HT.Framework
             }
             get
             {
-                return _mode;
+                return _controlMode;
             }
         }
 
@@ -203,23 +203,23 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 自由控制：设置摄像机平移点
+        /// 自由控制：设置摄像机注视点
         /// </summary>
-        public void SetPosition(Vector3 position, bool damping)
+        public void SetLookPoint(Vector3 point, bool damping)
         {
-            _mousePosition.SetPosition(position, damping);
+            _mousePosition.SetPosition(point, damping);
         }
         /// <summary>
-        /// 自由控制：设置摄像机旋转角度
+        /// 自由控制：设置摄像机注视角度
         /// </summary>
-        public void SetAngle(Vector3 angle, bool damping)
+        public void SetLookAngle(Vector3 angle, bool damping)
         {
             _mouseRotation.SetAngle(angle, damping);
         }
         /// <summary>
-        /// 自由控制：设置摄像机旋转角度
+        /// 自由控制：设置摄像机注视角度
         /// </summary>
-        public void SetAngle(Vector2 angle, float distance, bool damping)
+        public void SetLookAngle(Vector2 angle, float distance, bool damping)
         {
             _mouseRotation.SetAngle(angle, distance, damping);
         }
@@ -227,9 +227,9 @@ namespace HT.Framework
         /// <summary>
         /// 设置射线发射器的焦点提示框
         /// </summary>
-        public void SetMouseRayFocusImage(Image bg, Text content)
+        public void SetMouseRayFocusImage(Image background, Text content)
         {
-            _mouseRay.RayHitImage = bg;
+            _mouseRay.RayHitImage = background;
             _mouseRay.RayHitText = content;
         }
     }

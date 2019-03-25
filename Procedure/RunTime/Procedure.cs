@@ -25,5 +25,13 @@
         /// 流程帧刷新（秒）
         /// </summary>
         public abstract void OnUpdateSecond();
+
+        /// <summary>
+        /// 切换流程
+        /// </summary>
+        protected void SwitchProcedure<T>() where T : Procedure
+        {
+            Main.m_Procedure.SwitchProcedure<T>();
+        }
     }
 }

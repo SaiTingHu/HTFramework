@@ -8,7 +8,7 @@
         /// <summary>
         /// 所属状态机
         /// </summary>
-        public FSM OwnStateMachine;
+        public FSM StateMachine;
 
         /// <summary>
         /// 数据初始化

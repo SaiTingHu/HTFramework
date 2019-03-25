@@ -75,6 +75,18 @@ namespace HT.Framework
                 objs[i].GetComponent<MouseRayTarget>().Name = objs[i].name;
             }
         }
+
+        /// <summary>
+        /// 设置网格渲染器组件
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 24)]
+        private static void SetMeshRendererBatch()
+        {
+            MeshRendererBatch mrb = EditorWindow.GetWindow<MeshRendererBatch>();
+            mrb.titleContent.text = "MeshRendererBatch";
+            mrb.position = new Rect(200, 200, 300, 250);
+            mrb.Show();
+        }
         #endregion
 
         #region 网格工具

@@ -79,6 +79,8 @@ namespace HT.Framework
 
         private void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+
             Current = this;
             m_AspectTrack = transform.GetComponentByChild<AspectTracker>("AspectTrack");
             m_Controller = transform.GetComponentByChild<ControllerManager>("Controller");
