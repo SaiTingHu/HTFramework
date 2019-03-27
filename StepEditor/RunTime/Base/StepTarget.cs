@@ -5,6 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 步骤操作的目标
     /// </summary>
+    [DisallowMultipleComponent]
     public sealed class StepTarget : MonoBehaviour
     {
         public string GUID = "<None>";

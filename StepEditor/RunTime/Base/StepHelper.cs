@@ -1,4 +1,7 @@
-﻿namespace HT.Framework
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+namespace HT.Framework
 {
     /// <summary>
     /// 步骤的助手，步骤开始时自动创建，结束后自动销毁
@@ -9,6 +12,11 @@
         /// 步骤目标
         /// </summary>
         public StepTarget Target;
+
+        /// <summary>
+        /// 步骤辅助目标
+        /// </summary>
+        public List<GameObject> AuxiliaryTarget = new List<GameObject>();
 
         /// <summary>
         /// 跳过时生命周期（仅在跳过时生效）

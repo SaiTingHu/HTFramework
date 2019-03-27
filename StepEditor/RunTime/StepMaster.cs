@@ -42,9 +42,9 @@ namespace HT.Framework
         /// </summary>
         public event Action SkipStepDoneEvent;
         /// <summary>
-        /// 鼠标点击触发的步骤，点击了错误的目标事件
+        /// 点击了错误的步骤目标事件（正确目标：步骤的当前目标、辅助目标）
         /// </summary>
-        public event Action ClickWrongTarget;
+        public event Action ClickWrongTargetEvent;
         /// <summary>
         /// 流程结束事件
         /// </summary>
@@ -144,7 +144,7 @@ namespace HT.Framework
                         case StepTrigger.MouseClick:
                             if (Input.GetMouseButtonDown(0))
                             {
-                                if (Main.m_Controller.RayTargetObj)
+                                if (Main.m_Controller.RayTarget)
                                 {
                                     if (Main.m_Controller.RayTargetObj == _currentContent.Target)
                                     {
@@ -152,19 +152,77 @@ namespace HT.Framework
                                     }
                                     else
                                     {
-                                        if (Main.m_Controller.RayTargetObj.GetComponent<StepTarget>() && ClickWrongTarget != null)
-                                            ClickWrongTarget();
+                                        if (Main.m_Controller.RayTarget.IsStepTarget)
+                                        {
+                                            if (_currentHelper != null)
+                                            {
+                                                if (!_currentHelper.AuxiliaryTarget.Contains(Main.m_Controller.RayTargetObj))
+                                                {
+                                                    if (ClickWrongTargetEvent != null)
+                                                        ClickWrongTargetEvent();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (ClickWrongTargetEvent != null)
+                                                    ClickWrongTargetEvent();
+                                            }
+                                        }
                                     }
                                 }
                             }
                             break;
                         case StepTrigger.ButtonClick:
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                if (Main.m_Controller.RayTarget && Main.m_Controller.RayTarget.IsStepTarget)
+                                {
+                                    if (Main.m_Controller.RayTargetObj != _currentContent.Target)
+                                    {
+                                        if (_currentHelper != null)
+                                        {
+                                            if (!_currentHelper.AuxiliaryTarget.Contains(Main.m_Controller.RayTargetObj))
+                                            {
+                                                if (ClickWrongTargetEvent != null)
+                                                    ClickWrongTargetEvent();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (ClickWrongTargetEvent != null)
+                                                ClickWrongTargetEvent();
+                                        }
+                                    }
+                                }
+                            }
                             if (_isButtonClick)
                             {
                                 _execute = true;
                             }
                             break;
                         case StepTrigger.StateChange:
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                if (Main.m_Controller.RayTarget && Main.m_Controller.RayTarget.IsStepTarget)
+                                {
+                                    if (Main.m_Controller.RayTargetObj != _currentContent.Target)
+                                    {
+                                        if (_currentHelper != null)
+                                        {
+                                            if (!_currentHelper.AuxiliaryTarget.Contains(Main.m_Controller.RayTargetObj))
+                                            {
+                                                if (ClickWrongTargetEvent != null)
+                                                    ClickWrongTargetEvent();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (ClickWrongTargetEvent != null)
+                                                ClickWrongTargetEvent();
+                                        }
+                                    }
+                                }
+                            }
                             if (_currentTarget.State == StepTargetState.Done)
                             {
                                 _execute = true;
