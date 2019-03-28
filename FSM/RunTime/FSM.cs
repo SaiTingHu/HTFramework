@@ -165,6 +165,11 @@ namespace HT.Framework
         {
             if (_stateInstances.ContainsKey(typeof(T)))
             {
+                if (_currentState == _stateInstances[typeof(T)])
+                {
+                    return;
+                }
+
                 if (_currentState != null)
                 {
                     _currentState.OnLeave();

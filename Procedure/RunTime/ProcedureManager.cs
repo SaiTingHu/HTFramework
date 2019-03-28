@@ -134,6 +134,11 @@ namespace HT.Framework
         {
             if (_procedureInstances.ContainsKey(typeof(T)))
             {
+                if (_currentProcedure == _procedureInstances[typeof(T)])
+                {
+                    return;
+                }
+
                 if (_currentProcedure != null)
                 {
                     _currentProcedure.OnLeave();
