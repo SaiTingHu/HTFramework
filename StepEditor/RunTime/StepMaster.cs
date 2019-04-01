@@ -142,7 +142,7 @@ namespace HT.Framework
                     switch (ContentAsset.Content[_currentStep].Trigger)
                     {
                         case StepTrigger.MouseClick:
-                            if (Input.GetMouseButtonDown(0))
+                            if (Main.m_Input.GetButtonDown("MouseLeft"))
                             {
                                 if (Main.m_Controller.RayTarget)
                                 {
@@ -173,7 +173,7 @@ namespace HT.Framework
                             }
                             break;
                         case StepTrigger.ButtonClick:
-                            if (Input.GetMouseButtonDown(0))
+                            if (Main.m_Input.GetButtonDown("MouseLeft"))
                             {
                                 if (Main.m_Controller.RayTarget && Main.m_Controller.RayTarget.IsStepTarget)
                                 {
@@ -201,7 +201,7 @@ namespace HT.Framework
                             }
                             break;
                         case StepTrigger.StateChange:
-                            if (Input.GetMouseButtonDown(0))
+                            if (Main.m_Input.GetButtonDown("MouseLeft"))
                             {
                                 if (Main.m_Controller.RayTarget && Main.m_Controller.RayTarget.IsStepTarget)
                                 {

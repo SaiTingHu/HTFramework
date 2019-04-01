@@ -23,7 +23,7 @@ namespace HT.Framework
         public void OnPointerDown(PointerEventData eventData)
         {
             _isDrag = true;
-            _lastPos = Input.mousePosition;
+            _lastPos = Main.m_Input.MousePosition;
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -35,9 +35,9 @@ namespace HT.Framework
         {
             if (_isDrag)
             {
-                Vector3 direction = Input.mousePosition - _lastPos;
+                Vector3 direction = Main.m_Input.MousePosition - _lastPos;
                 DragTarget.transform.position += direction;
-                _lastPos = Input.mousePosition;
+                _lastPos = Main.m_Input.MousePosition;
             }
         }
     }

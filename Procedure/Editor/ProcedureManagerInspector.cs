@@ -111,15 +111,15 @@ namespace HT.Framework
                     if (types[i].BaseType == typeof(Procedure))
                     {
                         int j = i;
-                        if (_target.ActivatedProcedures.Contains(types[j].Name))
+                        if (_target.ActivatedProcedures.Contains(types[j].FullName))
                         {
-                            gm.AddDisabledItem(new GUIContent(types[j].Name));
+                            gm.AddDisabledItem(new GUIContent(types[j].FullName));
                         }
                         else
                         {
-                            gm.AddItem(new GUIContent(types[j].Name), false, () =>
+                            gm.AddItem(new GUIContent(types[j].FullName), false, () =>
                             {
-                                _target.ActivatedProcedures.Add(types[j].Name);
+                                _target.ActivatedProcedures.Add(types[j].FullName);
 
                                 if (_target.DefaultProcedure == "")
                                 {

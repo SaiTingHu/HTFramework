@@ -56,14 +56,17 @@ namespace HT.Framework
             _mousePosition.MR = _mouseRotation;
             _mouseRotation.Target = _cameraTarget;
             _mouseRay.RayCamera = MainCamera;
+        }
 
-            ControlMode = ControlMode.FreeControl;
+        public override void Preparatory()
+        {
+            TheControlMode = ControlMode.FreeControl;
         }
 
         public override void Refresh()
         {
             _mouseRay.Refresh();
-            switch (ControlMode)
+            switch (TheControlMode)
             {
                 case ControlMode.FreeControl:
                     if (FreeControlUpdateEvent != null)
@@ -91,7 +94,7 @@ namespace HT.Framework
         /// <summary>
         /// 控制模式
         /// </summary>
-        public ControlMode ControlMode
+        public ControlMode TheControlMode
         {
             set
             {
@@ -153,6 +156,16 @@ namespace HT.Framework
                     return _mouseRay.Target.gameObject;
                 else
                     return null;
+            }
+        }
+        /// <summary>
+        /// 当前射线击中的点
+        /// </summary>
+        public Vector3 RayHitPoint
+        {
+            get
+            {
+                return _mouseRay.HitPoint;
             }
         }
 

@@ -98,15 +98,26 @@ namespace HT.Framework
             if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
                 return;
 
-            if (Input.GetMouseButton(2))
+            if (Main.m_Input.GetButton("MouseMiddle"))
             {
                 if (_moveTweener != null)
                 {
                     _moveTweener.Kill();
                     _moveTweener = null;
                 }
-                Target.transform.Translate(transform.right * Input.GetAxis("Mouse X") * XSpeed * MR.Distance * -1);
-                Target.transform.Translate(transform.up * Input.GetAxis("Mouse Y") * YSpeed * MR.Distance * -1);
+                Target.transform.Translate(transform.right * Main.m_Input.GetAxis("MouseX") * XSpeed * MR.Distance * -1);
+                Target.transform.Translate(transform.up * Main.m_Input.GetAxis("MouseY") * YSpeed * MR.Distance * -1);
+                MR.NeedDamping = false;
+            }
+            else if (Main.m_Input.GetAxisRaw("Horizontal") != 0 || Main.m_Input.GetAxisRaw("Vertical") != 0)
+            {
+                if (_moveTweener != null)
+                {
+                    _moveTweener.Kill();
+                    _moveTweener = null;
+                }
+                Target.transform.Translate(transform.right * Main.m_Input.GetAxisRaw("Horizontal") * XSpeed);
+                Target.transform.Translate(transform.forward * Main.m_Input.GetAxisRaw("Vertical") * YSpeed);
                 MR.NeedDamping = false;
             }
             else

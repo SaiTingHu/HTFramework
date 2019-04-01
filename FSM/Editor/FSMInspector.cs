@@ -44,9 +44,9 @@ namespace HT.Framework
                     if (types[i].BaseType == typeof(FSMData))
                     {
                         int j = i;
-                        gm.AddItem(new GUIContent(types[j].Name), _target.Data == types[j].Name, () =>
+                        gm.AddItem(new GUIContent(types[j].FullName), _target.Data == types[j].FullName, () =>
                         {
-                            _target.Data = types[j].Name;
+                            _target.Data = types[j].FullName;
                             //挂载此脚本的对象是预制体时，必须设置，否则重新编译后属性会被预制体还原
                             EditorUtility.SetDirty(_target);
                         });
@@ -119,7 +119,7 @@ namespace HT.Framework
                     if (types[i].BaseType == typeof(FiniteState))
                     {
                         int j = i;
-                        string stateName = types[j].Name;
+                        string stateName = types[j].FullName;
                         object[] atts = types[j].GetCustomAttributes(false);
                         foreach (object att in atts)
                         {
@@ -131,7 +131,7 @@ namespace HT.Framework
                             }
                         }
                         
-                        if (_target.States.Contains(types[j].Name))
+                        if (_target.States.Contains(types[j].FullName))
                         {
                             gm.AddDisabledItem(new GUIContent(stateName));
                         }
@@ -139,7 +139,7 @@ namespace HT.Framework
                         {
                             gm.AddItem(new GUIContent(stateName), false, () =>
                             {
-                                _target.States.Add(types[j].Name);
+                                _target.States.Add(types[j].FullName);
                                 _target.StateNames.Add(stateName);
 
                                 if (_target.DefaultStateName == "")

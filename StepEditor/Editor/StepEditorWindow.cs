@@ -529,9 +529,9 @@ namespace HT.Framework
                                 CustomHelperAttribute helper = att as CustomHelperAttribute;
                                 if (helper != null)
                                 {
-                                    gm.AddItem(new GUIContent(helper.Name), _currentStepObj.Helper == type.Name, () =>
+                                    gm.AddItem(new GUIContent(helper.Name), _currentStepObj.Helper == type.FullName, () =>
                                     {
-                                        _currentStepObj.Helper = type.Name;
+                                        _currentStepObj.Helper = type.FullName;
                                     });
                                     break;
                                 }

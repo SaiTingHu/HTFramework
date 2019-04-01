@@ -132,21 +132,21 @@ namespace HT.Framework
             if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
                 return;
 
-            if (Input.GetMouseButton(1))
+            if (Main.m_Input.GetButton("MouseRight"))
             {
                 //记录鼠标横向移动量
-                X += Input.GetAxis("Mouse X") * XSpeed * _factor;
+                X += Main.m_Input.GetAxis("MouseX") * XSpeed * _factor;
                 //记录鼠标纵向移动量
-                Y -= Input.GetAxis("Mouse Y") * YSpeed * _factor;
+                Y -= Main.m_Input.GetAxis("MouseY") * YSpeed * _factor;
             }
-            if (Input.GetAxis("Mouse ScrollWheel") != 0)
+            if (Main.m_Input.GetAxis("MouseScrollWheel") != 0)
             {
                 //鼠标滚轮缩放视角距离
-                Distance -= Input.GetAxis("Mouse ScrollWheel") * MSpeed * Time.deltaTime;
+                Distance -= Main.m_Input.GetAxis("MouseScrollWheel") * MSpeed * Time.deltaTime;
 
                 if (Distance <= MinDistance)
                 {
-                    Target.transform.Translate(transform.forward * Input.GetAxis("Mouse ScrollWheel"));
+                    Target.transform.Translate(transform.forward * Main.m_Input.GetAxis("MouseScrollWheel"));
                 }
             }
         }

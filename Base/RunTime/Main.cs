@@ -36,6 +36,10 @@ namespace HT.Framework
         /// </summary>
         public static FSMManager m_FSM { get; private set; }
         /// <summary>
+        /// 输入模块
+        /// </summary>
+        public static InputManager m_Input { get; private set; }
+        /// <summary>
         /// 网络模块
         /// </summary>
         public static NetworkManager m_Network { get; private set; }
@@ -87,6 +91,7 @@ namespace HT.Framework
             m_Event = transform.GetComponentByChild<EventManager>("Event");
             m_ExceptionHandler = transform.GetComponentByChild<ExceptionHandler>("ExceptionHandler");
             m_FSM = transform.GetComponentByChild<FSMManager>("FSM");
+            m_Input = transform.GetComponentByChild<InputManager>("Input");
             m_Network = transform.GetComponentByChild<NetworkManager>("Network");
             m_ObjectPool = transform.GetComponentByChild<ObjectPoolManager>("ObjectPool");
             m_Procedure = transform.GetComponentByChild<ProcedureManager>("Procedure");
@@ -101,6 +106,7 @@ namespace HT.Framework
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Event));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ExceptionHandler));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_FSM));
+            _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Input));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Network));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ObjectPool));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Procedure));
@@ -123,6 +129,7 @@ namespace HT.Framework
             m_Event.Preparatory();
             m_ExceptionHandler.Preparatory();
             m_FSM.Preparatory();
+            m_Input.Preparatory();
             m_Network.Preparatory();
             m_ObjectPool.Preparatory();
             m_Procedure.Preparatory();
@@ -140,6 +147,7 @@ namespace HT.Framework
             m_Event.Refresh();
             m_ExceptionHandler.Refresh();
             m_FSM.Refresh();
+            m_Input.Refresh();
             m_Network.Refresh();
             m_ObjectPool.Refresh();
             m_Procedure.Refresh();
@@ -157,6 +165,7 @@ namespace HT.Framework
             m_Event.Termination();
             m_ExceptionHandler.Termination();
             m_FSM.Termination();
+            m_Input.Termination();
             m_Network.Termination();
             m_ObjectPool.Termination();
             m_Procedure.Termination();

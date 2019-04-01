@@ -34,6 +34,11 @@ namespace HT.Framework
         public MouseRayTarget Target { get; private set; }
 
         /// <summary>
+        /// 当前被射线击中的点
+        /// </summary>
+        public Vector3 HitPoint { get; private set; }
+
+        /// <summary>
         /// 刷新
         /// </summary>
         public void Refresh()
@@ -46,9 +51,10 @@ namespace HT.Framework
                     return;
                 }
 
-                _ray = RayCamera.ScreenPointToRay(Input.mousePosition);
+                _ray = RayCamera.ScreenPointToRay(Main.m_Input.MousePosition);
                 if (Physics.Raycast(_ray, out _hit, 100, ActivatedLayer))
                 {
+                    HitPoint = _hit.point;
                     RaycastHiting(_hit.transform.GetComponent<MouseRayTarget>());
                 }
                 else
@@ -126,7 +132,7 @@ namespace HT.Framework
         {
             if (IsOpenPrompt && Target && RayHitImage && RayHitImage.gameObject.activeSelf)
             {
-                RayHitImage.transform.position = Input.mousePosition + new Vector3(0, 20, 0);
+                RayHitImage.transform.position = Main.m_Input.MousePosition + new Vector3(0, 20, 0);
                 RayHitImage.rectTransform.sizeDelta = new Vector2(RayHitText.rectTransform.sizeDelta.x + 40, RayHitImage.rectTransform.sizeDelta.y);
             }
         }
