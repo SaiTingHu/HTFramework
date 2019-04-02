@@ -169,14 +169,14 @@ namespace HT.Framework
             _inputModule.SetButtonUp(name);
         }
         /// <summary>
-        /// 设置轴线值为正数最大值
+        /// 设置轴线值为正方向1
         /// </summary>
         public void SetAxisPositive(string name)
         {
             _inputModule.SetAxisPositive(name);
         }
         /// <summary>
-        /// 设置轴线值为负数最小值
+        /// 设置轴线值为负方向-1
         /// </summary>
         public void SetAxisNegative(string name)
         {

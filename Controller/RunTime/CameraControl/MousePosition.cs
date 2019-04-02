@@ -116,8 +116,8 @@ namespace HT.Framework
                     _moveTweener.Kill();
                     _moveTweener = null;
                 }
-                Target.transform.Translate(transform.right * Main.m_Input.GetAxisRaw("Horizontal") * XSpeed);
-                Target.transform.Translate(transform.forward * Main.m_Input.GetAxisRaw("Vertical") * YSpeed);
+                Target.transform.Translate(transform.right * Main.m_Input.GetAxis("Horizontal") * XSpeed);
+                Target.transform.Translate(transform.forward * Main.m_Input.GetAxis("Vertical") * YSpeed);
                 MR.NeedDamping = false;
             }
             else

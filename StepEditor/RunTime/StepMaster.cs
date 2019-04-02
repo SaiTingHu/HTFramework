@@ -51,6 +51,7 @@ namespace HT.Framework
         public event Action EndEvent;
 
         private Dictionary<string, StepTarget> _targets = new Dictionary<string, StepTarget>();
+        private List<StepContent> _stepContents = new List<StepContent>();
         private int _currentStep = -1;
         private StepContent _currentContent;
         private StepTarget _currentTarget;
@@ -66,67 +67,7 @@ namespace HT.Framework
         private bool _execute = false;
         //UGUI按钮点击触发型步骤，当前是否被点击
         private bool _isButtonClick = false;
-
-        public override void Initialization()
-        {
-            if (ContentAsset)
-            {
-                _targets.Clear();
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
-                foreach (GameObject rootObj in rootObjs)
-                {
-                    StepTarget[] targets = rootObj.transform.GetComponentsInChildren<StepTarget>(true);
-                    foreach (StepTarget target in targets)
-                    {
-                        if (!_targets.ContainsKey(target.GUID))
-                        {
-                            _targets.Add(target.GUID, target);
-                        }
-                        else
-                        {
-                            GlobalTools.LogWarning("发现相同GUID的目标！GUID：" + target.GUID + "！\r\n目标物体：" + _targets[target.GUID].transform.FullName() + " 和 " + target.transform.FullName());
-                        }
-                    }
-                }
-
-                for (int i = 0; i < ContentAsset.Content.Count; i++)
-                {
-                    StepContent content = ContentAsset.Content[i];
-                    if (_targets.ContainsKey(content.TargetGUID))
-                    {
-                        content.Target = _targets[content.TargetGUID].gameObject;
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("【步骤：" + (i + 1) + "】" + content.Name + "，目标没有找到，目标路径：" + content.TargetPath);
-                    }
-
-                    for (int j = 0; j < content.Operations.Count; j++)
-                    {
-                        StepOperation operation = content.Operations[j];
-                        if (_targets.ContainsKey(operation.TargetGUID))
-                        {
-                            operation.Target = _targets[operation.TargetGUID].gameObject;
-                        }
-                        else
-                        {
-                            GlobalTools.LogError("【步骤：" + (i + 1) + "】" + "操作：" + operation.Name + "，目标没有找到，目标路径：" + operation.TargetPath);
-                        }
-                    }
-                }
-
-                _currentStep = 0;
-                _currentContent = null;
-                _currentTarget = null;
-                _ongoing = false;
-                _running = false;
-            }
-            else
-            {
-                GlobalTools.LogWarning("步骤控制器丢失了步骤资源 Content Asset！");
-            }
-        }
-
+        
         public override void Refresh()
         {
             if (_ongoing)
@@ -139,7 +80,7 @@ namespace HT.Framework
                     }
 
                     _execute = false;
-                    switch (ContentAsset.Content[_currentStep].Trigger)
+                    switch (_stepContents[_currentStep].Trigger)
                     {
                         case StepTrigger.MouseClick:
                             if (Main.m_Input.GetButtonDown("MouseLeft"))
@@ -258,6 +199,7 @@ namespace HT.Framework
         public override void Termination()
         {
             _targets.Clear();
+            _stepContents.Clear();
         }
 
         /// <summary>
@@ -287,7 +229,7 @@ namespace HT.Framework
         {
             get
             {
-                return ContentAsset.Content;
+                return _stepContents;
             }
         }
         /// <summary>
@@ -297,10 +239,111 @@ namespace HT.Framework
         {
             get
             {
-                return ContentAsset.Content.Count;
+                return _stepContents.Count;
             }
         }
-        
+
+        /// <summary>
+        /// 重新编译步骤内容
+        /// </summary>
+        /// <param name="enabledStepIndex">启用的步骤索引列表（当为null时启用所有步骤）</param>
+        public void RecompileStepContent(List<int> enabledStepIndex = null)
+        {
+            if (ContentAsset)
+            {
+                _targets.Clear();
+                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                foreach (GameObject rootObj in rootObjs)
+                {
+                    StepTarget[] targets = rootObj.transform.GetComponentsInChildren<StepTarget>(true);
+                    foreach (StepTarget target in targets)
+                    {
+                        if (!_targets.ContainsKey(target.GUID))
+                        {
+                            _targets.Add(target.GUID, target);
+                        }
+                        else
+                        {
+                            GlobalTools.LogWarning("发现相同GUID的目标！GUID：" + target.GUID + "！\r\n目标物体：" + _targets[target.GUID].transform.FullName() + " 和 " + target.transform.FullName());
+                        }
+                    }
+                }
+
+                _stepContents.Clear();
+                //启用所有步骤
+                if (enabledStepIndex == null)
+                {
+                    for (int i = 0; i < ContentAsset.Content.Count; i++)
+                    {
+                        StepContent content = ContentAsset.Content[i];
+                        if (_targets.ContainsKey(content.TargetGUID))
+                        {
+                            content.Target = _targets[content.TargetGUID].gameObject;
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("【步骤：" + (i + 1) + "】【" + content.Name + "】目标没有找到，目标路径：" + content.TargetPath);
+                        }
+
+                        for (int j = 0; j < content.Operations.Count; j++)
+                        {
+                            StepOperation operation = content.Operations[j];
+                            if (_targets.ContainsKey(operation.TargetGUID))
+                            {
+                                operation.Target = _targets[operation.TargetGUID].gameObject;
+                            }
+                            else
+                            {
+                                GlobalTools.LogError("【步骤：" + (i + 1) + "】【操作：" + operation.Name + "】目标没有找到，目标路径：" + operation.TargetPath);
+                            }
+                        }
+
+                        _stepContents.Add(content);
+                    }
+                }
+                //启用 enabledStepIndex 指定的步骤
+                else
+                {
+                    for (int i = 0; i < enabledStepIndex.Count; i++)
+                    {
+                        StepContent content = ContentAsset.Content[enabledStepIndex[i]];
+                        if (_targets.ContainsKey(content.TargetGUID))
+                        {
+                            content.Target = _targets[content.TargetGUID].gameObject;
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("【步骤：" + (i + 1) + "】【" + content.Name + "】目标没有找到，目标路径：" + content.TargetPath);
+                        }
+
+                        for (int j = 0; j < content.Operations.Count; j++)
+                        {
+                            StepOperation operation = content.Operations[j];
+                            if (_targets.ContainsKey(operation.TargetGUID))
+                            {
+                                operation.Target = _targets[operation.TargetGUID].gameObject;
+                            }
+                            else
+                            {
+                                GlobalTools.LogError("【步骤：" + (i + 1) + "】【操作：" + operation.Name + "】目标没有找到，目标路径：" + operation.TargetPath);
+                            }
+                        }
+
+                        _stepContents.Add(content);
+                    }
+                }
+
+                _currentStep = 0;
+                _currentContent = null;
+                _currentTarget = null;
+                _ongoing = false;
+                _running = false;
+            }
+            else
+            {
+                GlobalTools.LogWarning("步骤控制器丢失了步骤资源 Step Content Asset！");
+            }
+        }
         /// <summary>
         /// 开始整个流程
         /// </summary>
@@ -311,7 +354,7 @@ namespace HT.Framework
                 return;
             }
 
-            _currentStep = ((beginIndex < 0 || beginIndex > ContentAsset.Content.Count - 1) ? 0 : beginIndex);
+            _currentStep = ((beginIndex < 0 || beginIndex > _stepContents.Count - 1) ? 0 : beginIndex);
             _currentContent = null;
             _currentTarget = null;
             _ongoing = true;
@@ -357,7 +400,7 @@ namespace HT.Framework
         {
             if (_ongoing && !_running)
             {
-                if (index <= _currentStep || index > ContentAsset.Content.Count - 1)
+                if (index <= _currentStep || index > _stepContents.Count - 1)
                     return false;
 
                 StartCoroutine(SkipStepCoroutine(index));
@@ -423,7 +466,7 @@ namespace HT.Framework
         private void BeginCurrentStep()
         {
             _running = false;
-            _currentContent = ContentAsset.Content[_currentStep];
+            _currentContent = _stepContents[_currentStep];
             _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
             //UGUI按钮点击型步骤，注册监听
@@ -559,7 +602,7 @@ namespace HT.Framework
 
             while (_currentStep < _skipIndex)
             {
-                _currentContent = ContentAsset.Content[_currentStep];
+                _currentContent = _stepContents[_currentStep];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
                 Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, false);
@@ -628,7 +671,7 @@ namespace HT.Framework
         }
         private void ChangeNextStep()
         {
-            if (_currentStep < ContentAsset.Content.Count - 1)
+            if (_currentStep < _stepContents.Count - 1)
             {
                 _currentStep += 1;
                 BeginCurrentStep();
