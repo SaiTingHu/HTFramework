@@ -447,7 +447,7 @@ namespace HT.Framework
         /// 文件窗口参数
         /// </summary>
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class OpenAndSaveFileAttribute
+        public sealed class OpenAndSaveFileAttribute
         {
             public int structSize = 0;
             public IntPtr dlgOwner = IntPtr.Zero;
@@ -477,7 +477,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开或保存文件
         /// </summary>
-        public class OpenAndSaveFile
+        public sealed class OpenAndSaveFile
         {
             /// <summary>
             /// 打开一个文件打开界面
@@ -758,6 +758,27 @@ namespace HT.Framework
             else
             {
                 return value;
+            }
+        }
+        #endregion
+
+        #region 数组工具
+        /// <summary>
+        /// 打乱数组
+        /// </summary>
+        public static void Disrupt<T>(this T[] array)
+        {
+            int index = 0;
+            T tmp;
+            for (int i = 0; i < array.Length; i++)
+            {
+                index = UnityEngine.Random.Range(0, array.Length);
+                if (index != i)
+                {
+                    tmp = array[i];
+                    array[i] = array[index];
+                    array[index] = tmp;
+                }
             }
         }
         #endregion

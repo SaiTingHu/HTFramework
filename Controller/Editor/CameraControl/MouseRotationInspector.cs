@@ -182,6 +182,7 @@ namespace HT.Framework
 
 
             GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.cyan;
             if (GUILayout.Button("Copy Angle", "MiniButton"))
             {
                 GUIUtility.systemCopyBuffer =
@@ -189,6 +190,7 @@ namespace HT.Framework
                         _mouseRotation.Y.ToString("F2") + "f," +
                         _mouseRotation.Distance.ToString("F2") + "f";
             }
+            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
             if (GUI.changed)

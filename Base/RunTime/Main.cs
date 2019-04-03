@@ -20,6 +20,10 @@ namespace HT.Framework
         /// </summary>
         public static AspectTracker m_AspectTrack { get; private set; }
         /// <summary>
+        /// 音频模块
+        /// </summary>
+        public static AudioManager m_Audio { get; private set; }
+        /// <summary>
         /// 操作控制模块
         /// </summary>
         public static ControllerManager m_Controller { get; private set; }
@@ -87,6 +91,7 @@ namespace HT.Framework
 
             Current = this;
             m_AspectTrack = transform.GetComponentByChild<AspectTracker>("AspectTrack");
+            m_Audio = transform.GetComponentByChild<AudioManager>("Audio");
             m_Controller = transform.GetComponentByChild<ControllerManager>("Controller");
             m_Event = transform.GetComponentByChild<EventManager>("Event");
             m_ExceptionHandler = transform.GetComponentByChild<ExceptionHandler>("ExceptionHandler");
@@ -102,6 +107,7 @@ namespace HT.Framework
             m_WebRequest = transform.GetComponentByChild<WebRequestManager>("WebRequest");
 
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_AspectTrack));
+            _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Audio));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Controller));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Event));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ExceptionHandler));
@@ -125,6 +131,7 @@ namespace HT.Framework
             }
 
             m_AspectTrack.Preparatory();
+            m_Audio.Preparatory();
             m_Controller.Preparatory();
             m_Event.Preparatory();
             m_ExceptionHandler.Preparatory();
@@ -143,6 +150,7 @@ namespace HT.Framework
         private void Update()
         {
             m_AspectTrack.Refresh();
+            m_Audio.Refresh();
             m_Controller.Refresh();
             m_Event.Refresh();
             m_ExceptionHandler.Refresh();
@@ -161,6 +169,7 @@ namespace HT.Framework
         private void OnDestroy()
         {
             m_AspectTrack.Termination();
+            m_Audio.Termination();
             m_Controller.Termination();
             m_Event.Termination();
             m_ExceptionHandler.Termination();

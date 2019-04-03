@@ -88,6 +88,7 @@ namespace HT.Framework
 
 
             GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.cyan;
             if (GUILayout.Button("Copy Position", "MiniButton"))
             {
                 if (_mousePosition.Target)
@@ -98,6 +99,7 @@ namespace HT.Framework
                             _mousePosition.Target.transform.localPosition.z.ToString("F2") + "f";
                 }
             }
+            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
             if (GUI.changed)

@@ -8,7 +8,7 @@ namespace HT.Framework
     public sealed class StepContentAssetInspector : Editor
     {
         private StepContentAsset _target;
-        private Vector2 _scroll;
+        private Vector2 _scroll = Vector2.zero;
 
         private void OnEnable()
         {
