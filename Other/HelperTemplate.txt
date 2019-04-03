@@ -28,6 +28,14 @@ public class #SCRIPTNAME# : StepHelper
         Execute();
     }
 
+	/// <summary>
+	/// 恢复步骤（仅在倒退时执行）
+	/// </summary>
+    public override void OnRestore()
+    {
+        
+    }
+
     /// <summary>
     /// 步骤指引
     /// </summary>

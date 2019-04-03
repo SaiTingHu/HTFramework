@@ -30,6 +30,10 @@ namespace HT.Framework
         /// </summary>
         public event Action<StepContent> SkipStepEvent;
         /// <summary>
+        /// 步骤恢复事件
+        /// </summary>
+        public event Action<StepContent> RestoreStepEvent;
+        /// <summary>
         /// 显示提示事件
         /// </summary>
         public event Action<string> ShowPromptEvent;
@@ -38,7 +42,7 @@ namespace HT.Framework
         /// </summary>
         public event Action BeginEvent;
         /// <summary>
-        /// 跳过步骤完成事件
+        /// 连续跳过步骤完成事件
         /// </summary>
         public event Action SkipStepDoneEvent;
         /// <summary>
@@ -378,6 +382,7 @@ namespace HT.Framework
             if (EndEvent != null)
                 EndEvent();
         }
+
         /// <summary>
         /// 跳过当前步骤
         /// </summary>
@@ -418,6 +423,60 @@ namespace HT.Framework
         {
             _skipIndex = _currentStep;
         }
+
+        /// <summary>
+        /// 恢复到指定步骤
+        /// </summary>
+        public bool RestoreStep(int index)
+        {
+            if (_ongoing && !_running)
+            {
+                if (index < 0 || index >= _currentStep)
+                    return false;
+
+                while (_currentStep > index)
+                {
+                    _currentContent = _stepContents[_currentStep];
+                    _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
+                    
+                    if (RestoreStepEvent != null)
+                        RestoreStepEvent(_currentContent);
+                    
+                    //创建步骤助手
+                    if (_currentHelper == null && _currentContent.Helper != "<None>")
+                    {
+                        Type type = Type.GetType(_currentContent.Helper);
+                        if (type != null)
+                        {
+                            _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                            _currentHelper.Target = _currentTarget;
+                            _currentHelper.OnInit();
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("【步骤：" + (_currentStep + 1) + "】的助手 " + _currentContent.Helper + " 丢失！");
+                        }
+                    }
+                    //助手执行恢复
+                    if (_currentHelper != null)
+                    {
+                        _currentHelper.OnRestore();
+                        _currentHelper.OnTermination();
+                        _currentHelper = null;
+                    }
+                    
+                    _currentStep -= 1;
+                }
+
+                BeginCurrentStep();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// 展示提示（“提示”节点调用）
         /// </summary>

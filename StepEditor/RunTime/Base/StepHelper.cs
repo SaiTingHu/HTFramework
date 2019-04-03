@@ -38,6 +38,14 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 恢复步骤（仅在倒退时执行）
+        /// </summary>
+        public virtual void OnRestore()
+        {
+
+        }
+
+        /// <summary>
         /// 步骤指引
         /// </summary>
         public virtual void OnGuide()
