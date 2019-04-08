@@ -48,6 +48,21 @@ namespace HT.Framework
             GUILayout.Label("Multiple Volume", GUILayout.Width(120));
             _target.MultipleVolume = EditorGUILayout.Slider(_target.MultipleVolume, 0f, 1f);
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("WorldSound Priority", GUILayout.Width(120));
+            _target.WorldPriority = EditorGUILayout.IntSlider(_target.WorldPriority, 0, 256);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("WorldSound Volume", GUILayout.Width(120));
+            _target.WorldVolume = EditorGUILayout.Slider(_target.WorldVolume, 0f, 1f);
+            GUILayout.EndHorizontal();
+
+            if (GUI.changed)
+            {
+                EditorUtility.SetDirty(_target);
+            }
         }
     }
 }
