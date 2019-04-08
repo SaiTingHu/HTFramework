@@ -28,6 +28,10 @@ namespace HT.Framework
         /// </summary>
         public static ControllerManager m_Controller { get; private set; }
         /// <summary>
+        /// 数据集模块
+        /// </summary>
+        public static DataSetManager m_DataSet { get; private set; }
+        /// <summary>
         /// 事件模块
         /// </summary>
         public static EventManager m_Event { get; private set; }
@@ -93,6 +97,7 @@ namespace HT.Framework
             m_AspectTrack = transform.GetComponentByChild<AspectTracker>("AspectTrack");
             m_Audio = transform.GetComponentByChild<AudioManager>("Audio");
             m_Controller = transform.GetComponentByChild<ControllerManager>("Controller");
+            m_DataSet = transform.GetComponentByChild<DataSetManager>("DataSet");
             m_Event = transform.GetComponentByChild<EventManager>("Event");
             m_ExceptionHandler = transform.GetComponentByChild<ExceptionHandler>("ExceptionHandler");
             m_FSM = transform.GetComponentByChild<FSMManager>("FSM");
@@ -109,6 +114,7 @@ namespace HT.Framework
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_AspectTrack));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Audio));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Controller));
+            _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_DataSet));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Event));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ExceptionHandler));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_FSM));
@@ -133,6 +139,7 @@ namespace HT.Framework
             m_AspectTrack.Preparatory();
             m_Audio.Preparatory();
             m_Controller.Preparatory();
+            m_DataSet.Preparatory();
             m_Event.Preparatory();
             m_ExceptionHandler.Preparatory();
             m_FSM.Preparatory();
@@ -152,6 +159,7 @@ namespace HT.Framework
             m_AspectTrack.Refresh();
             m_Audio.Refresh();
             m_Controller.Refresh();
+            m_DataSet.Refresh();
             m_Event.Refresh();
             m_ExceptionHandler.Refresh();
             m_FSM.Refresh();
@@ -171,6 +179,7 @@ namespace HT.Framework
             m_AspectTrack.Termination();
             m_Audio.Termination();
             m_Controller.Termination();
+            m_DataSet.Termination();
             m_Event.Termination();
             m_ExceptionHandler.Termination();
             m_FSM.Termination();

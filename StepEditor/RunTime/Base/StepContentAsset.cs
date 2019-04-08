@@ -7,7 +7,7 @@ namespace HT.Framework
     /// <summary>
     /// 步骤内容序列化资源
     /// </summary>
-    [CreateAssetMenu(menuName = "HTFramework/StepContentAsset", order = -1)]
+    [CreateAssetMenu(menuName = "HTFramework/Step Content Asset", order = 0)]
     [Serializable]
     public sealed class StepContentAsset : ScriptableObject
     {

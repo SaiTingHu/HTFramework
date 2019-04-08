@@ -1,21 +1,9 @@
-#region Header
-/**
- * Lexer.cs
- *   JSON lexer implementation based on a finite state machine.
- *
- * The authors disclaim copyright to this source code. For more details, see
- * the COPYING file included with this distribution.
- **/
-#endregion
-
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-
-namespace LitJson
+namespace HT.Framework
 {
     internal class FsmContext
     {

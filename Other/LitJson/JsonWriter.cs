@@ -1,22 +1,10 @@
-#region Header
-/**
- * JsonWriter.cs
- *   Stream-like facility to output JSON text.
- *
- * The authors disclaim copyright to this source code. For more details, see
- * the COPYING file included with this distribution.
- **/
-#endregion
-
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 
-
-namespace LitJson
+namespace HT.Framework
 {
     internal enum Condition
     {

@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,15 +20,35 @@ namespace HT.Framework
         public float MultipleVolume = 1;
         public float WorldVolume = 1;
 
+        /// <summary>
+        /// 单通道音效播放结束事件
+        /// </summary>
+        public event Action SingleSoundEndOfPlayEvent;
+
         private AudioSource _backgroundAudio;
         private AudioSource _singleAudio;
         private List<AudioSource> _multipleAudio = new List<AudioSource>();
         private Dictionary<GameObject, AudioSource> _worldAudio = new Dictionary<GameObject, AudioSource>();
+        private bool _isMute = false;
+        private bool _singleSoundPlayDetector = false;
 
         public override void Initialization()
         {
             _backgroundAudio = CreateAudioSource("BackgroundAudio", BackgroundPriority, BackgroundVolume);
             _singleAudio = CreateAudioSource("SingleAudio", SinglePriority, SingleVolume);
+        }
+
+        public override void Refresh()
+        {
+            if (_singleSoundPlayDetector)
+            {
+                if (!_singleAudio.isPlaying)
+                {
+                    _singleSoundPlayDetector = false;
+                    if (SingleSoundEndOfPlayEvent != null)
+                        SingleSoundEndOfPlayEvent();
+                }
+            }
         }
 
         /// <summary>
@@ -46,6 +67,10 @@ namespace HT.Framework
                 for (int i = 0; i < _multipleAudio.Count; i++)
                 {
                     _multipleAudio[i].mute = value;
+                }
+                foreach (KeyValuePair<GameObject, AudioSource> audio in _worldAudio)
+                {
+                    audio.Value.mute = value;
                 }
             }
         }
@@ -126,6 +151,7 @@ namespace HT.Framework
             _singleAudio.pitch = speed;
             _singleAudio.spatialBlend = 0;
             _singleAudio.Play();
+            _singleSoundPlayDetector = true;
         }
         /// <summary>
         /// 暂停播放单通道音效
@@ -342,6 +368,7 @@ namespace HT.Framework
             audio.playOnAwake = false;
             audio.priority = priority;
             audio.volume = volume;
+            audio.mute = _isMute;
             return audio;
         }
         /// <summary>
@@ -353,6 +380,7 @@ namespace HT.Framework
             audio.playOnAwake = false;
             audio.priority = priority;
             audio.volume = volume;
+            audio.mute = _isMute;
             return audio;
         }
         /// <summary>

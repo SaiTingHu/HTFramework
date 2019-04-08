@@ -223,7 +223,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建Helper类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/Helper Script", false, 0)]
+        [@MenuItem("Assets/Create/HTFramework/C# Helper Script", false, 11)]
         private static void CreateHelper()
         {
             string path = EditorUtility.SaveFilePanel("新建 Helper 类", Application.dataPath, "NewHelper", "cs");
@@ -259,7 +259,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建FiniteState类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/FiniteState Script", false, 1)]
+        [@MenuItem("Assets/Create/HTFramework/C# FiniteState Script", false, 12)]
         private static void CreateFiniteState()
         {
             string path = EditorUtility.SaveFilePanel("新建 FiniteState 类", Application.dataPath, "NewFiniteState", "cs");
@@ -295,7 +295,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建Procedure类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/Procedure Script", false, 2)]
+        [@MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 13)]
         private static void CreateProcedure()
         {
             string path = EditorUtility.SaveFilePanel("新建 Procedure 类", Application.dataPath, "NewProcedure", "cs");
@@ -330,7 +330,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建EventHandler类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/EventHandler Script", false, 3)]
+        [@MenuItem("Assets/Create/HTFramework/C# EventHandler Script", false, 14)]
         private static void CreateEventHandler()
         {
             string path = EditorUtility.SaveFilePanel("新建 EventHandler 类", Application.dataPath, "NewEventHandler", "cs");
@@ -365,7 +365,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建AspectProxy类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/AspectProxy Script", false, 4)]
+        [@MenuItem("Assets/Create/HTFramework/C# AspectProxy Script", false, 15)]
         private static void CreateAspectProxy()
         {
             string path = EditorUtility.SaveFilePanel("新建 AspectProxy 类", Application.dataPath, "NewAspectProxy", "cs");
@@ -400,7 +400,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicResident类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/UILogicResident Script", false, 5)]
+        [@MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 16)]
         private static void CreateUILogicResident()
         {
             string path = EditorUtility.SaveFilePanel("新建 UILogicResident 类", Application.dataPath, "NewUILogicResident", "cs");
@@ -435,7 +435,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicTemporary类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/UILogicTemporary Script", false, 6)]
+        [@MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 17)]
         private static void CreateUILogicTemporary()
         {
             string path = EditorUtility.SaveFilePanel("新建 UILogicTemporary 类", Application.dataPath, "NewUILogicTemporary", "cs");
@@ -463,6 +463,41 @@ namespace HT.Framework
                 else
                 {
                     GlobalTools.LogError("新建UILogicTemporary失败，已存在类型 " + className);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 新建DataSet类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/C# DataSet Script", false, 18)]
+        private static void CreateDataSet()
+        {
+            string path = EditorUtility.SaveFilePanel("新建 DataSet 类", Application.dataPath, "NewDataSet", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Other/DataSetTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError("新建DataSet失败，已存在类型 " + className);
                 }
             }
         }
