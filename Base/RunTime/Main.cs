@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -88,7 +89,7 @@ namespace HT.Framework
         /// 所有模块的切面追踪代理者实例
         /// </summary>
         private static List<IAspectProxyModule> _moduleProxysObj = new List<IAspectProxyModule>();
-
+        
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -152,8 +153,9 @@ namespace HT.Framework
             m_StepMaster.Preparatory();
             m_UI.Preparatory();
             m_WebRequest.Preparatory();
-        }
 
+            LicenseAwake();
+        }
         private void Update()
         {
             m_AspectTrack.Refresh();
@@ -172,8 +174,9 @@ namespace HT.Framework
             m_StepMaster.Refresh();
             m_UI.Refresh();
             m_WebRequest.Refresh();
-        }
 
+            LicenseUpdate();
+        }
         private void OnDestroy()
         {
             m_AspectTrack.Termination();
@@ -193,21 +196,68 @@ namespace HT.Framework
             m_UI.Termination();
             m_WebRequest.Termination();
         }
+        private void OnGUI()
+        {
+            LicenseOnGUI();
+        }
 
         /// <summary>
         /// 克隆实例
         /// </summary>
-        public static T Clone<T>(T original) where T : Object
+        public static T Clone<T>(T original) where T : UnityEngine.Object
         {
             return Instantiate(original);
         }
-
         /// <summary>
         /// 杀死实例
         /// </summary>
-        public static void Kill(Object obj)
+        public static void Kill(UnityEngine.Object obj)
         {
             Destroy(obj);
         }
+
+        #region License
+        /// <summary>
+        /// 永久授权
+        /// </summary>
+        public bool IsPermanentLicense = true;
+        public int Year = 5000;
+        public int Month = 5;
+        public int Day = 5;
+        public string EndingPrompt = "授权已到期！";
+
+        private DateTime _endingTime;
+        private GUIStyle _promptStyle;
+
+        private void LicenseAwake()
+        {
+            _endingTime = new DateTime(Year, Month, Day);
+            _promptStyle = new GUIStyle();
+            _promptStyle.alignment = TextAnchor.MiddleCenter;
+            _promptStyle.normal.textColor = Color.red;
+            _promptStyle.fontSize = 30;
+        }
+        private void LicenseUpdate()
+        {
+            if(!IsPermanentLicense)
+            {
+                if (DateTime.Now > _endingTime)
+                {
+                    m_Controller.MainCamera.enabled = false;
+                    m_UI.HideAll = true;
+                }
+            }
+        }
+        private void LicenseOnGUI()
+        {
+            if (!IsPermanentLicense)
+            {
+                if (DateTime.Now > _endingTime)
+                {
+                    GUI.Label(new Rect(0, 0, Screen.width, Screen.height), EndingPrompt, _promptStyle);
+                }
+            }
+        }
+        #endregion
     }
 }

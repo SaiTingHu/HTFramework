@@ -76,5 +76,13 @@ namespace HT.Framework
         {
 
         }
+
+        /// <summary>
+        /// 步骤执行
+        /// </summary>
+        protected void Execute()
+        {
+            Target.State = StepTargetState.Done;
+        }
     }
 }

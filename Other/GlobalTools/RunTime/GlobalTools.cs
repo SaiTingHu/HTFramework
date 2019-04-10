@@ -11,6 +11,7 @@ using System.Net.NetworkInformation;
 using System.IO;
 using System.Runtime.InteropServices;
 using DG.Tweening;
+using System.Reflection;
 
 namespace HT.Framework
 {
@@ -778,6 +779,63 @@ namespace HT.Framework
                     array[i] = array[index];
                     array[index] = tmp;
                 }
+            }
+        }
+        /// <summary>
+        /// 强制转换List的类型（使用as强转）
+        /// </summary>
+        /// <typeparam name="TOutput">目标类型</typeparam>
+        /// <typeparam name="TInput">原类型</typeparam>
+        public static List<TOutput> ConvertAllAS<TOutput, TInput>(this List<TInput> array) where TOutput : class where TInput : class
+        {
+            List<TOutput> convertArray = new List<TOutput>();
+            for (int i = 0; i < array.Count; i++)
+            {
+                convertArray.Add(array[i] as TOutput);
+            }
+            return convertArray;
+        }
+        #endregion
+
+        #region 枚举工具
+        /// <summary>
+        /// 获取枚举的备注信息
+        /// </summary>
+        public static string GetRemark(this Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi == null)
+            {
+                return value.ToString();
+            }
+            object[] attributes = fi.GetCustomAttributes(typeof(RemarkAttribute), false);
+            if (attributes.Length > 0)
+            {
+                return ((RemarkAttribute)attributes[0]).Remark;
+            }
+            else
+            {
+                return value.ToString();
+            }
+        }
+        /// <summary>
+        /// 判断枚举是否标记有指定特性
+        /// </summary>
+        public static bool IsExistAttribute<T>(this Enum value) where T : Attribute
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi == null)
+            {
+                return false;
+            }
+            object[] attributes = fi.GetCustomAttributes(typeof(T), false);
+            if (attributes.Length > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
         #endregion

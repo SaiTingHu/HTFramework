@@ -67,6 +67,21 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 是否隐藏所有UI实体
+        /// </summary>
+        public bool HideAll
+        {
+            set
+            {
+                _uiRoot.gameObject.SetActive(!value);
+            }
+            get
+            {
+                return !_uiRoot.gameObject.activeSelf;
+            }
+        }
+
+        /// <summary>
         /// 预加载常驻UI
         /// </summary>
         public void PreloadingResidentUI<T>() where T : UILogicResident

@@ -302,6 +302,15 @@ namespace HT.Framework
                 AssetBundle.UnloadAllAssetBundles(unloadAllLoadedObjects);
             }
         }
+
+        /// <summary>
+        /// 清理内存，释放空闲内存
+        /// </summary>
+        public void ClearMemory()
+        {
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
+        }
     }
 
     /// <summary>
