@@ -14,6 +14,11 @@ namespace HT.Framework
         public StepTarget Target;
 
         /// <summary>
+        /// 助手当前执行的任务
+        /// </summary>
+        public StepHelperTask Task;
+
+        /// <summary>
         /// 步骤辅助目标
         /// </summary>
         public List<GameObject> AuxiliaryTarget = new List<GameObject>();
@@ -84,5 +89,24 @@ namespace HT.Framework
         {
             Target.State = StepTargetState.Done;
         }
+    }
+
+    /// <summary>
+    /// 步骤助手的任务
+    /// </summary>
+    public enum StepHelperTask
+    {
+        /// <summary>
+        /// 常规执行任务
+        /// </summary>
+        Execute,
+        /// <summary>
+        /// 跳过任务
+        /// </summary>
+        Skip,
+        /// <summary>
+        /// 恢复任务
+        /// </summary>
+        Restore
     }
 }

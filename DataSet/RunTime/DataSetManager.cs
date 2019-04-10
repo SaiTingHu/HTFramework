@@ -289,6 +289,61 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 根据索引获取一条数据集
+        /// </summary>
+        /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
+        public T GetDataSet<T>(int index, bool isCut = false) where T : DataSet
+        {
+            Type type = typeof(T);
+            if (_dataSets.ContainsKey(type))
+            {
+                if (index >= 0 && index < _dataSets[type].Count)
+                {
+                    DataSet dataset = _dataSets[type][index];
+                    if (isCut)
+                    {
+                        _dataSets[type].RemoveAt(index);
+                    }
+                    return dataset as T;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 根据索引获取一条数据集
+        /// </summary>
+        /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
+        public DataSet GetDataSet(Type type, int index, bool isCut = false)
+        {
+            if (_dataSets.ContainsKey(type))
+            {
+                if (index >= 0 && index < _dataSets[type].Count)
+                {
+                    DataSet dataset = _dataSets[type][index];
+                    if (isCut)
+                    {
+                        _dataSets[type].RemoveAt(index);
+                    }
+                    return dataset;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
         /// 获取数据集仓库中的数据集数量
         /// </summary>
         public int GetCount<T>() where T : DataSet

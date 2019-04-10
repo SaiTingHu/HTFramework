@@ -167,6 +167,7 @@ namespace HT.Framework
                     GUI.color = (_currentStep == i ? Color.cyan : Color.white);
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
                     content.text = (i + 1) + "." + _contentAsset.Content[i].Name;
+                    content.tooltip = _contentAsset.Content[i].Prompt;
                     GUILayout.Label(content,GUILayout.Height(16));
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("-->", "Minibutton"))

@@ -434,7 +434,7 @@ namespace HT.Framework
                 if (index < 0 || index >= _currentStep)
                     return false;
 
-                while (_currentStep > index)
+                while (_currentStep >= index)
                 {
                     _currentContent = _stepContents[_currentStep];
                     _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
@@ -450,6 +450,7 @@ namespace HT.Framework
                         {
                             _currentHelper = Activator.CreateInstance(type) as StepHelper;
                             _currentHelper.Target = _currentTarget;
+                            _currentHelper.Task = StepHelperTask.Restore;
                             _currentHelper.OnInit();
                         }
                         else
@@ -468,6 +469,7 @@ namespace HT.Framework
                     _currentStep -= 1;
                 }
 
+                _currentStep = index;
                 BeginCurrentStep();
                 return true;
             }
@@ -556,6 +558,7 @@ namespace HT.Framework
                 {
                     _currentHelper = Activator.CreateInstance(type) as StepHelper;
                     _currentHelper.Target = _currentTarget;
+                    _currentHelper.Task = StepHelperTask.Execute;
                     _currentHelper.OnInit();
                 }
                 else
@@ -632,6 +635,7 @@ namespace HT.Framework
                 {
                     _currentHelper = Activator.CreateInstance(type) as StepHelper;
                     _currentHelper.Target = _currentTarget;
+                    _currentHelper.Task = StepHelperTask.Skip;
                     _currentHelper.OnInit();
                 }
                 else
@@ -700,6 +704,7 @@ namespace HT.Framework
                     {
                         _currentHelper = Activator.CreateInstance(type) as StepHelper;
                         _currentHelper.Target = _currentTarget;
+                        _currentHelper.Task = StepHelperTask.Skip;
                         _currentHelper.OnInit();
                     }
                     else

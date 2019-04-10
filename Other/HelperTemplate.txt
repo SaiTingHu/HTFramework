@@ -25,7 +25,7 @@ public class #SCRIPTNAME# : StepHelper
 	/// </summary>
     public override void OnSkip()
     {
-        Execute();
+        
     }
 
 	/// <summary>

@@ -33,6 +33,7 @@ namespace HT.Framework
         public override void Termination()
         {
             UnLoadAllAsset();
+            ClearMemory();
         }
 
         /// <summary>
