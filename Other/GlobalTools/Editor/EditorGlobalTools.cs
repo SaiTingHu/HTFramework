@@ -14,45 +14,9 @@ namespace HT.Framework
     {
         #region 批处理工具
         /// <summary>
-        /// 打开ReplaceFontBatch窗口
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Batch", false, 0)]
-        private static void OpenReplaceFontBatch()
-        {
-            ReplaceFontBatch rfb = EditorWindow.GetWindow<ReplaceFontBatch>();
-            rfb.titleContent.text = "ReplaceFont";
-            rfb.position = new Rect(200, 200, 300, 100);
-            rfb.Show();
-        }
-
-        /// <summary>
-        /// 打开ReplaceFontColorBatch窗口
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Color Batch", false, 1)]
-        private static void OpenReplaceFontColorBatch()
-        {
-            ReplaceFontColorBatch rfb = EditorWindow.GetWindow<ReplaceFontColorBatch>();
-            rfb.titleContent.text = "ReplaceFontColor";
-            rfb.position = new Rect(200, 200, 300, 100);
-            rfb.Show();
-        }
-
-        /// <summary>
-        /// 打开SetRaycastTargetBatch窗口
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Raycast Target Batch", false, 2)]
-        private static void OpenSetRaycastTargetBatch()
-        {
-            SetRaycastTargetBatch srtb = EditorWindow.GetWindow<SetRaycastTargetBatch>();
-            srtb.titleContent.text = "SetRaycastTarget";
-            srtb.position = new Rect(200, 200, 300, 250);
-            srtb.Show();
-        }
-
-        /// <summary>
         /// 设置鼠标射线可捕获目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 13)]
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 0)]
         private static void SetMouseRayTarget()
         {
             if (Selection.gameObjects.Length <= 0)
@@ -77,15 +41,63 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 打开ReplaceFontBatch窗口
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Replace Font Batch", false, 11)]
+        private static void OpenReplaceFontBatch()
+        {
+            ReplaceFontBatch rfb = EditorWindow.GetWindow<ReplaceFontBatch>();
+            rfb.titleContent.text = "ReplaceFont";
+            rfb.position = new Rect(200, 200, 300, 100);
+            rfb.Show();
+        }
+
+        /// <summary>
+        /// 打开ReplaceFontColorBatch窗口
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Replace Font Color Batch", false, 12)]
+        private static void OpenReplaceFontColorBatch()
+        {
+            ReplaceFontColorBatch rfb = EditorWindow.GetWindow<ReplaceFontColorBatch>();
+            rfb.titleContent.text = "ReplaceFontColor";
+            rfb.position = new Rect(200, 200, 300, 100);
+            rfb.Show();
+        }
+
+        /// <summary>
+        /// 打开SetRaycastTargetBatch窗口
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Set Raycast Target Batch", false, 13)]
+        private static void OpenSetRaycastTargetBatch()
+        {
+            SetRaycastTargetBatch srtb = EditorWindow.GetWindow<SetRaycastTargetBatch>();
+            srtb.titleContent.text = "SetRaycastTarget";
+            srtb.position = new Rect(200, 200, 300, 250);
+            srtb.Show();
+        }
+        
+        /// <summary>
         /// 设置网格渲染器组件
         /// </summary>
-        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 24)]
+        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 30)]
         private static void SetMeshRendererBatch()
         {
             MeshRendererBatch mrb = EditorWindow.GetWindow<MeshRendererBatch>();
             mrb.titleContent.text = "MeshRendererBatch";
             mrb.position = new Rect(200, 200, 300, 250);
             mrb.Show();
+        }
+
+        /// <summary>
+        /// 设置Texture导入参数
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Texture ImportSettings Batch", false, 50)]
+        private static void SetTextureImportSettingsBatch()
+        {
+            TextureImportSettingsBatch tisb = EditorWindow.GetWindow<TextureImportSettingsBatch>();
+            tisb.titleContent.text = "TextureBatch";
+            tisb.position = new Rect(200, 200, 300, 250);
+            tisb.Show();
         }
         #endregion
 
