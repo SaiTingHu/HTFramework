@@ -131,6 +131,43 @@ namespace HT.Framework
                 Selection.activeObject = _contentAsset;
                 EditorGUIUtility.PingObject(_contentAsset);
             }
+            if (GUILayout.Button("Clear Unused GUID", "Toolbarbutton"))
+            {
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure clear unused GUID in the current opened scene？", "Yes", "No"))
+                {
+                    Dictionary<string, bool> usedTargets = new Dictionary<string, bool>();
+                    for (int i = 0; i < _contentAsset.Content.Count; i++)
+                    {
+                        StepContent content = _contentAsset.Content[i];
+                        if (!usedTargets.ContainsKey(content.TargetGUID) && content.TargetGUID != "<None>")
+                        {
+                            usedTargets.Add(content.TargetGUID, false);
+                        }
+
+                        for (int j = 0; j < content.Operations.Count; j++)
+                        {
+                            StepOperation operation = content.Operations[j];
+                            if (!usedTargets.ContainsKey(operation.TargetGUID) && operation.TargetGUID != "<None>")
+                            {
+                                usedTargets.Add(operation.TargetGUID, false);
+                            }
+                        }
+                    }
+
+                    GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                    foreach (GameObject rootObj in rootObjs)
+                    {
+                        StepTarget[] targets = rootObj.transform.GetComponentsInChildren<StepTarget>(true);
+                        foreach (StepTarget target in targets)
+                        {
+                            if (!usedTargets.ContainsKey(target.GUID))
+                            {
+                                DestroyImmediate(target);
+                            }
+                        }
+                    }
+                }
+            }
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Browse Ease Type", "Toolbarbutton"))
             {
