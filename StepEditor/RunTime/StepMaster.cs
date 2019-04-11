@@ -461,6 +461,7 @@ namespace HT.Framework
                     //助手执行恢复
                     if (_currentHelper != null)
                     {
+                        _currentHelper.Task = StepHelperTask.Restore;
                         _currentHelper.OnRestore();
                         _currentHelper.OnTermination();
                         _currentHelper = null;
@@ -500,6 +501,7 @@ namespace HT.Framework
                     target.OpenFlashHighLight(Color.red, Color.white);
                 }
 
+                Main.m_Controller.TheControlMode = _currentContent.InitialMode;
                 Main.m_Controller.SetLookPoint(target.transform.position + CurrentStepContent.ViewOffset, true);
                 Main.m_Controller.SetLookAngle(CurrentStepContent.BestView, true);
 
@@ -567,6 +569,7 @@ namespace HT.Framework
                 }
             }
 
+            Main.m_Controller.TheControlMode = _currentContent.InitialMode;
             Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, true);
             Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
 
@@ -599,6 +602,7 @@ namespace HT.Framework
         {
             _running = true;
 
+            Main.m_Controller.TheControlMode = _currentContent.InitialMode;
             Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, false);
             Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
 
@@ -646,6 +650,7 @@ namespace HT.Framework
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
+                _currentHelper.Task = StepHelperTask.Skip;
                 _currentHelper.OnSkip();
                 yield return new WaitForSeconds(_currentHelper.SkipLifeTime / SkipMultiple);
                 _currentHelper.OnTermination();
@@ -668,6 +673,7 @@ namespace HT.Framework
                 _currentContent = _stepContents[_currentStep];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
+                Main.m_Controller.TheControlMode = _currentContent.InitialMode;
                 Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, false);
                 Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
 
@@ -715,6 +721,7 @@ namespace HT.Framework
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
+                    _currentHelper.Task = StepHelperTask.Skip;
                     _currentHelper.OnSkip();
                     yield return new WaitForSeconds(_currentHelper.SkipLifeTime / SkipMultiple);
                     _currentHelper.OnTermination();

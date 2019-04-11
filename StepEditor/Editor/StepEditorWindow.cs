@@ -50,6 +50,7 @@ namespace HT.Framework
         private CameraTarget _ct;
         private MousePosition _mp;
         private MouseRotation _mr;
+        private Transform _player;
 
         private Type _baseType = typeof(StepHelper);
         private Dictionary<string, string> _helpers = new Dictionary<string, string>();
@@ -64,6 +65,7 @@ namespace HT.Framework
             _ct = FindObjectOfType<CameraTarget>();
             _mp = FindObjectOfType<MousePosition>();
             _mr = FindObjectOfType<MouseRotation>();
+            _player = null;
 
             _helpers.Clear();
             string[] helpers = AssetDatabase.GetAllAssetPaths();
@@ -304,7 +306,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
 
                 #region 步骤的属性
-                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(350));
+                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(400));
 
                 GUILayout.BeginHorizontal("Icon.OutlineBorder");
                 GUILayout.Label("Step Content Properties", "BoldLabel");
@@ -452,7 +454,12 @@ namespace HT.Framework
                 GUILayout.Label("Trigger:", GUILayout.Width(50));
                 _currentStepObj.Trigger = (StepTrigger)EditorGUILayout.EnumPopup(_currentStepObj.Trigger, GUILayout.Width(130));
                 GUILayout.EndHorizontal();
-                
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Initial Mode:", GUILayout.Width(80));
+                _currentStepObj.InitialMode = (ControlMode)EditorGUILayout.EnumPopup(_currentStepObj.InitialMode, GUILayout.Width(100));
+                GUILayout.EndHorizontal();
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Best View:", GUILayout.Width(80));
                 GUILayout.FlexibleSpace();
@@ -478,11 +485,26 @@ namespace HT.Framework
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
-
+                
                 GUILayout.BeginHorizontal();
                 _currentStepObj.ViewOffset = EditorGUILayout.Vector3Field("", _currentStepObj.ViewOffset, GUILayout.Width(180));
                 GUILayout.EndHorizontal();
 
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Best Pos:", GUILayout.Width(80));
+                GUILayout.FlexibleSpace();
+                GUI.enabled = _player && _currentStepObj.Target;
+                if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(40)))
+                {
+                    _currentStepObj.BestPos = _player.transform.position;
+                }
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                _currentStepObj.BestPos = EditorGUILayout.Vector3Field("", _currentStepObj.BestPos, GUILayout.Width(180));
+                GUILayout.EndHorizontal();
+                
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Helper:", GUILayout.Width(50));
                 if (GUILayout.Button(_currentStepObj.Helper, "MiniPopup", GUILayout.Width(100)))
@@ -570,7 +592,7 @@ namespace HT.Framework
                 #endregion
 
                 #region 摄像机组件
-                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(100));
+                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(120));
 
                 GUILayout.BeginHorizontal("Icon.OutlineBorder");
                 GUILayout.Label("Camera Control", "BoldLabel");
@@ -598,6 +620,13 @@ namespace HT.Framework
                 GUILayout.Label("MP:", GUILayout.Width(30));
                 GUI.color = _mp ? Color.white : Color.gray;
                 _mp = EditorGUILayout.ObjectField(_mp, typeof(MousePosition), true, GUILayout.Width(150)) as MousePosition;
+                GUI.color = Color.white;
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("P:", GUILayout.Width(30));
+                GUI.color = _player ? Color.white : Color.gray;
+                _player = EditorGUILayout.ObjectField(_player, typeof(Transform), true, GUILayout.Width(150)) as Transform;
                 GUI.color = Color.white;
                 GUILayout.EndHorizontal();
 

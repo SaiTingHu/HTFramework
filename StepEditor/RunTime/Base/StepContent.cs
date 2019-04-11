@@ -22,7 +22,9 @@ namespace HT.Framework
         public string Prompt = "Step Prompt";
         public string Ancillary = "";
         public Vector3 BestView = new Vector3(90, 30, 2);
-        public Vector3 ViewOffset = new Vector3(0, 0, 0);
+        public Vector3 ViewOffset = Vector3.zero;
+        public Vector3 BestPos = Vector3.zero;
+        public ControlMode InitialMode = ControlMode.FreeControl;
         public string Helper = "<None>";
 
         [SerializeField]
