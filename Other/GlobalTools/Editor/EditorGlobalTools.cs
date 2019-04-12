@@ -173,7 +173,7 @@ namespace HT.Framework
         /// <summary>
         /// 清理控制台
         /// </summary>
-        [@MenuItem("HTFramework/Console/Clear &C")]
+        [@MenuItem("HTFramework/Console/Clear &1")]
         private static void ClearConsole()
         {
             Assembly assembly = Assembly.GetAssembly(typeof(Editor));
@@ -214,7 +214,7 @@ namespace HT.Framework
         /// <summary>
         /// 运行场景
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Run &R")]
+        [@MenuItem("HTFramework/Editor/Run &2")]
         private static void RunScene()
         {
             EditorApplication.isPlaying = !EditorApplication.isPlaying;
@@ -232,13 +232,23 @@ namespace HT.Framework
         #endregion
 
         #region 工程视图新建菜单
+        private static readonly string HelperScriptDirectory = ".Helper";
+        private static readonly string FiniteStateScriptDirectory = ".FiniteState";
+        private static readonly string ProcedureScriptDirectory = ".Procedure";
+        private static readonly string EventHandlerScriptDirectory = ".EventHandler";
+        private static readonly string AspectProxyScriptDirectory = ".AspectProxy";
+        private static readonly string UILogicResidentScriptDirectory = ".UILogicResident";
+        private static readonly string UILogicTemporaryScriptDirectory = ".UILogicTemporary";
+        private static readonly string DataSetScriptDirectory = ".DataSet";
+
         /// <summary>
         /// 新建Helper类
         /// </summary>
         [@MenuItem("Assets/Create/HTFramework/C# Helper Script", false, 11)]
         private static void CreateHelper()
         {
-            string path = EditorUtility.SaveFilePanel("新建 Helper 类", Application.dataPath, "NewHelper", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + HelperScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 Helper 类", directory, "NewHelper", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -259,6 +269,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + HelperScriptDirectory, path);
                     }
                 }
                 else
@@ -274,7 +285,8 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# FiniteState Script", false, 12)]
         private static void CreateFiniteState()
         {
-            string path = EditorUtility.SaveFilePanel("新建 FiniteState 类", Application.dataPath, "NewFiniteState", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + FiniteStateScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 FiniteState 类", directory, "NewFiniteState", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -295,6 +307,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + FiniteStateScriptDirectory, path);
                     }
                 }
                 else
@@ -310,7 +323,8 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 13)]
         private static void CreateProcedure()
         {
-            string path = EditorUtility.SaveFilePanel("新建 Procedure 类", Application.dataPath, "NewProcedure", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + ProcedureScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 Procedure 类", directory, "NewProcedure", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -330,6 +344,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + ProcedureScriptDirectory, path);
                     }
                 }
                 else
@@ -345,7 +360,8 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# EventHandler Script", false, 14)]
         private static void CreateEventHandler()
         {
-            string path = EditorUtility.SaveFilePanel("新建 EventHandler 类", Application.dataPath, "NewEventHandler", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + EventHandlerScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 EventHandler 类", directory, "NewEventHandler", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -365,6 +381,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + EventHandlerScriptDirectory, path);
                     }
                 }
                 else
@@ -380,7 +397,8 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# AspectProxy Script", false, 15)]
         private static void CreateAspectProxy()
         {
-            string path = EditorUtility.SaveFilePanel("新建 AspectProxy 类", Application.dataPath, "NewAspectProxy", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + AspectProxyScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 AspectProxy 类", directory, "NewAspectProxy", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -400,6 +418,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + AspectProxyScriptDirectory, path);
                     }
                 }
                 else
@@ -415,7 +434,8 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 16)]
         private static void CreateUILogicResident()
         {
-            string path = EditorUtility.SaveFilePanel("新建 UILogicResident 类", Application.dataPath, "NewUILogicResident", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + UILogicResidentScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 UILogicResident 类", directory, "NewUILogicResident", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -435,6 +455,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + UILogicResidentScriptDirectory, path);
                     }
                 }
                 else
@@ -450,7 +471,8 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 17)]
         private static void CreateUILogicTemporary()
         {
-            string path = EditorUtility.SaveFilePanel("新建 UILogicTemporary 类", Application.dataPath, "NewUILogicTemporary", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + UILogicTemporaryScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 UILogicTemporary 类", directory, "NewUILogicTemporary", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -470,6 +492,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + UILogicTemporaryScriptDirectory, path);
                     }
                 }
                 else
@@ -485,7 +508,8 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# DataSet Script", false, 18)]
         private static void CreateDataSet()
         {
-            string path = EditorUtility.SaveFilePanel("新建 DataSet 类", Application.dataPath, "NewDataSet", "cs");
+            string directory = EditorPrefs.GetString(Application.productName + DataSetScriptDirectory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 DataSet 类", directory, "NewDataSet", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -505,6 +529,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(Application.productName + DataSetScriptDirectory, path);
                     }
                 }
                 else
