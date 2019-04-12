@@ -134,6 +134,94 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 加载数据集（异步）
+        /// </summary>
+        public void LoadDataSet<T>(DataSetInfo info, Action<T> loadDoneAction) where T : DataSet
+        {
+            StartCoroutine(LoadDataSetCoroutine(info, loadDoneAction));
+        }
+        private System.Collections.IEnumerator LoadDataSetCoroutine<T>(DataSetInfo info, Action<T> loadDoneAction) where T : DataSet
+        {
+            T asset = null;
+
+            if (Mode == ResourceMode.Resource)
+            {
+                asset = Resources.Load<T>(info.ResourcePath);
+                yield return asset;
+                if (!asset)
+                {
+                    GlobalTools.LogError("加载数据集失败：Resources文件夹中不存在" + typeof(T) + "数据集 " + info.ResourcePath);
+                }
+            }
+            else
+            {
+#if UNITY_EDITOR
+                asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
+                yield return asset;
+                if (!asset)
+                {
+                    GlobalTools.LogError("加载数据集失败：路径中不存在数据集 " + info.AssetPath);
+                }
+#else
+                if (_assetBundles.ContainsKey(info.AssetBundleName))
+                {
+                    asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
+                    yield return asset;
+                    if (!asset)
+                    {
+                        GlobalTools.LogError("加载数据集失败：AB包 " + info.AssetBundleName + " 中不存在数据集 " + info.AssetPath);
+                    }
+                }
+                else
+                {
+                    UnityWebRequest request = UnityWebRequest.Get((_isHttpPath ? "" : "file://") + _assetBundlePath + info.AssetBundleName);
+                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
+                    request.downloadHandler = handler;
+                    yield return request.SendWebRequest();
+                    if (!request.isNetworkError && !request.isHttpError)
+                    {
+                        if (handler.assetBundle)
+                        {
+                            asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
+                            yield return asset;
+                            if (!asset)
+                            {
+                                GlobalTools.LogError("加载数据集失败：AB包 " + info.AssetBundleName + " 中不存在数据集 " + info.AssetPath);
+                            }
+
+                            if (IsCacheAssetBundle)
+                            {
+                                _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
+                            }
+                            else
+                            {
+                                handler.assetBundle.Unload(false);
+                            }
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                        }
+                    }
+                    else
+                    {
+                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                    }
+                    request.Dispose();
+                    handler.Dispose();
+                }
+#endif
+            }
+
+            if (asset)
+            {
+                loadDoneAction(asset);
+            }
+
+            asset = null;
+        }
+
+        /// <summary>
         /// 加载预制体（异步）
         /// </summary>
         public void LoadPrefab(PrefabInfo info, Transform parent, Action<GameObject> loadDoneAction, bool isUI = false)

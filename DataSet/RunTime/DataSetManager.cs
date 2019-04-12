@@ -191,49 +191,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 根据索引获取一条数据集
-        /// </summary>
-        public T GetDataSet<T>(int index) where T : DataSet
-        {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                if (index >= 0 && index < _dataSets[type].Count)
-                {
-                    return _dataSets[type][index] as T;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
-        /// <summary>
-        /// 根据索引获取一条数据集
-        /// </summary>
-        public DataSet GetDataSet(Type type, int index)
-        {
-            if (_dataSets.ContainsKey(type))
-            {
-                if (index >= 0 && index < _dataSets[type].Count)
-                {
-                    return _dataSets[type][index];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
-        /// <summary>
         /// 根据先后顺序获取一条数据集
         /// </summary>
         /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>

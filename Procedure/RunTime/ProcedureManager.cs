@@ -95,11 +95,6 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
-        {
-            _procedureInstances.Clear();
-        }
-
         /// <summary>
         /// 当前流程
         /// </summary>
