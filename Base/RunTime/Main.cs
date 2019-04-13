@@ -209,6 +209,28 @@ namespace HT.Framework
             return Instantiate(original);
         }
         /// <summary>
+        /// 克隆GameObject实例
+        /// </summary>
+        public static GameObject CloneGameObject(GameObject original, bool isUI = false)
+        {
+            GameObject obj = Instantiate(original);
+            obj.transform.SetParent(original.transform.parent);
+            if (isUI)
+            {
+                obj.rectTransform().anchoredPosition3D = original.rectTransform().anchoredPosition3D;
+                obj.rectTransform().sizeDelta = original.rectTransform().sizeDelta;
+                obj.rectTransform().anchorMin = original.rectTransform().anchorMin;
+                obj.rectTransform().anchorMax = original.rectTransform().anchorMax;
+            }
+            else
+            {
+                obj.transform.localPosition = original.transform.localPosition;
+            }
+            obj.transform.localRotation = original.transform.localRotation;
+            obj.transform.localScale = original.transform.localScale;
+            return obj;
+        }
+        /// <summary>
         /// 杀死实例
         /// </summary>
         public static void Kill(UnityEngine.Object obj)

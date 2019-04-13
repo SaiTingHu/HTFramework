@@ -258,9 +258,6 @@ namespace HT.Framework
         /// <summary>
         /// 通过子物体名称获取子物体的控件
         /// </summary>
-        /// <param name="tran"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
         public static T GetComponentByChild<T>(this Transform tran, string name) where T : Component
         {
             Transform gObject = tran.Find(name);
@@ -272,9 +269,6 @@ namespace HT.Framework
         /// <summary>
         /// 通过子物体名称获取子物体的控件
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
         public static T GetComponentByChild<T>(this GameObject obj, string name) where T : Component
         {
             Transform gObject = obj.transform.Find(name);
@@ -282,6 +276,58 @@ namespace HT.Framework
                 return null;
 
             return gObject.GetComponent<T>();
+        }
+        /// <summary>
+        /// 获取直系子物体上的所有组件
+        /// </summary>
+        public static List<T> GetComponentsInSons<T>(this Transform tran, bool includeInactive = false) where T : Component
+        {
+            List<T> components = new List<T>();
+            for (int i = 0; i < tran.childCount; i++)
+            {
+                T t = tran.GetChild(i).GetComponent<T>();
+                if (t)
+                {
+                    if (tran.GetChild(i).gameObject.activeSelf)
+                    {
+                        components.Add(t);
+                    }
+                    else
+                    {
+                        if (includeInactive)
+                        {
+                            components.Add(t);
+                        }
+                    }
+                }
+            }
+            return components;
+        }
+        /// <summary>
+        /// 获取直系子物体上的所有组件
+        /// </summary>
+        public static List<T> GetComponentsInSons<T>(this GameObject obj, bool includeInactive = false) where T : Component
+        {
+            List<T> components = new List<T>();
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                T t = obj.transform.GetChild(i).GetComponent<T>();
+                if (t)
+                {
+                    if (obj.transform.GetChild(i).gameObject.activeSelf)
+                    {
+                        components.Add(t);
+                    }
+                    else
+                    {
+                        if (includeInactive)
+                        {
+                            components.Add(t);
+                        }
+                    }
+                }
+            }
+            return components;
         }
         /// <summary>
         /// 通过组件查找场景中所有的物体，包括隐藏和激活的
