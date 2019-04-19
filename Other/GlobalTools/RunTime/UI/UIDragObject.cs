@@ -10,7 +10,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIDragObject")]
     [RequireComponent(typeof(Button))]
     [DisallowMultipleComponent]
-    public class UIDragObject : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    public sealed class UIDragObject : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         /// <summary>
         /// 被拖动目标

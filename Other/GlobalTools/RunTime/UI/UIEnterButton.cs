@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIEnterButton")]
     [RequireComponent(typeof(Button))]
     [DisallowMultipleComponent]
-    public class UIEnterButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public sealed class UIEnterButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public UnityEvent OnEnter;
         public UnityEvent OnExit;

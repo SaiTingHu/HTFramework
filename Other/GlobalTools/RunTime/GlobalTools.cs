@@ -828,6 +828,18 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 生成一个长度为length的数组，数组中每个数据均为此值
+        /// </summary>
+        public static T[] GenerateArray<T>(this T value, int length)
+        {
+            T[] array = new T[length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = value;
+            }
+            return array;
+        }
+        /// <summary>
         /// 强制转换List的类型（使用as强转）
         /// </summary>
         /// <typeparam name="TOutput">目标类型</typeparam>

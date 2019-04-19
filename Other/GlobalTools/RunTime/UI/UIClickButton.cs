@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIClickButton")]
     [RequireComponent(typeof(Button))]
     [DisallowMultipleComponent]
-    public class UIClickButton : MonoBehaviour, IPointerClickHandler
+    public sealed class UIClickButton : MonoBehaviour, IPointerClickHandler
     {
         public UnityEvent OnLeftClick;
         public UnityEvent OnMiddleClick;

@@ -133,7 +133,31 @@ namespace HT.Framework
             {
                 _mousePosition.NeedLimit = value;
                 _mouseRotation.NeedLimit = value;
-            }           
+            }
+            get
+            {
+                return _mousePosition.NeedLimit;
+            }
+        }
+        /// <summary>
+        /// 自由控制：当前摄像机注视点
+        /// </summary>
+        public Vector3 LookPoint
+        {
+            get
+            {
+                return _mousePosition.Target.transform.position;
+            }
+        }
+        /// <summary>
+        /// 自由控制：当前摄像机注视视角
+        /// </summary>
+        public Vector3 LookAngle
+        {
+            get
+            {
+                return new Vector3(_mouseRotation.X, _mouseRotation.Y, _mouseRotation.Distance);
+            }
         }
         /// <summary>
         /// 当前射线击中的目标
