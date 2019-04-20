@@ -14,23 +14,32 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class NetworkManager : ModuleManager
     {
-        private Socket _client;
-        private Thread _receiveThread;
-        private List<byte[]> _sendDataBuffer = new List<byte[]>();
-        private bool _isSending = false;
-
+        /// <summary>
+        /// 服务器IP地址
+        /// </summary>
         public string IP;
+        /// <summary>
+        /// 服务器端口号
+        /// </summary>
         public int Port;
         public event Action BeginConnectEvent;
         public event Action ConnectSuccessEvent;
         public event Action ConnectFailEvent;
         public event Action<NetworkInfo> ReceiveMessageEvent;
 
+        private Socket _client;
+        private Thread _receiveThread;
+        private List<byte[]> _sendDataBuffer = new List<byte[]>();
+        private bool _isSending = false;
+        
         public override void Termination()
         {
             DisconnectServer();
         }
 
+        /// <summary>
+        /// 当前是否已连接
+        /// </summary>
         public bool IsConnect
         {
             get
@@ -42,7 +51,10 @@ namespace HT.Framework
             }
         }
 
-        public void SetIP(string ip, int port)
+        /// <summary>
+        /// 设置服务器IP与端口号
+        /// </summary>
+        public void SetIPPort(string ip, int port)
         {
             IP = ip;
             Port = port;

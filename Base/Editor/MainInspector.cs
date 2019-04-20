@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(Main))]
-    public class MainInspector : Editor
+    public sealed class MainInspector : Editor
     {
         private Main _target;
 
@@ -19,6 +20,40 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("HTFramework Main Module!", MessageType.Info);
             GUILayout.EndHorizontal();
+
+            #region MainData
+            GUILayout.BeginVertical("Box");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("MainData");
+            if (GUILayout.Button(_target.MainDataType, "MiniPopup"))
+            {
+                GenericMenu gm = new GenericMenu();
+                Assembly assembly = Assembly.GetAssembly(typeof(MainData));
+                Type[] types = assembly.GetTypes();
+                gm.AddItem(new GUIContent("<None>"), _target.MainDataType == "<None>", () =>
+                {
+                    _target.MainDataType = "<None>";
+                    EditorUtility.SetDirty(_target);
+                });
+                for (int i = 0; i < types.Length; i++)
+                {
+                    if (types[i].BaseType == typeof(MainData))
+                    {
+                        int j = i;
+                        gm.AddItem(new GUIContent(types[j].FullName), _target.MainDataType == types[j].FullName, () =>
+                        {
+                            _target.MainDataType = types[j].FullName;
+                            EditorUtility.SetDirty(_target);
+                        });
+                    }
+                }
+                gm.ShowAsContext();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+            #endregion
 
             #region License
             GUILayout.BeginVertical("Box");
@@ -128,6 +163,9 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 纠正时间
+        /// </summary>
         private void CorrectDateTime()
         {
             if (_target.Year < DateTime.Now.Year)
