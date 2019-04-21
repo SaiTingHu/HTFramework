@@ -11,7 +11,6 @@ namespace HT.Framework
         private void OnEnable()
         {
             _target = target as StepMaster;
-
         }
 
         public override void OnInspectorGUI()
@@ -21,17 +20,12 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _target.ContentAsset = EditorGUILayout.ObjectField("Asset", _target.ContentAsset, typeof(StepContentAsset), false) as StepContentAsset;
+            this.ObjectField(_target.ContentAsset, out _target.ContentAsset, false, "Asset");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _target.MainCamera = EditorGUILayout.ObjectField("Camera", _target.MainCamera, typeof(Camera), false) as Camera;
+            this.ObjectField(_target.MainCamera, out _target.MainCamera, false, "Camera");
             GUILayout.EndHorizontal();
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_target);
-            }
         }
     }
 }

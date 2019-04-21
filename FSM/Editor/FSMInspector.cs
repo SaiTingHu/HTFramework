@@ -23,7 +23,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Name: ");
-            _target.Name = EditorGUILayout.TextField(_target.Name);
+            this.TextField(_target.Name, out _target.Name);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -35,9 +35,9 @@ namespace HT.Framework
                 Type[] types = assembly.GetTypes();
                 gm.AddItem(new GUIContent("<None>"), _target.Data == "<None>", () =>
                 {
+                    Undo.RecordObject(target, "Set FSM Data Class");
                     _target.Data = "<None>";
-                    //挂载此脚本的对象是预制体时，必须设置，否则重新编译后属性会被预制体还原
-                    EditorUtility.SetDirty(_target);
+                    this.HasChanged();
                 });
                 for (int i = 0; i < types.Length; i++)
                 {
@@ -46,9 +46,9 @@ namespace HT.Framework
                         int j = i;
                         gm.AddItem(new GUIContent(types[j].FullName), _target.Data == types[j].FullName, () =>
                         {
+                            Undo.RecordObject(target, "Set FSM Data Class");
                             _target.Data = types[j].FullName;
-                            //挂载此脚本的对象是预制体时，必须设置，否则重新编译后属性会被预制体还原
-                            EditorUtility.SetDirty(_target);
+                            this.HasChanged();
                         });
                     }
                 }
@@ -70,10 +70,10 @@ namespace HT.Framework
                     int j = i;
                     gm.AddItem(new GUIContent(_target.StateNames[j]), _target.DefaultStateName == _target.StateNames[j], () =>
                     {
+                        Undo.RecordObject(target, "Set FSM Default State");
                         _target.DefaultState = _target.States[j];
                         _target.DefaultStateName = _target.StateNames[j];
-                        //挂载此脚本的对象是预制体时，必须设置，否则重新编译后属性会被预制体还原
-                        EditorUtility.SetDirty(_target);
+                        this.HasChanged();
                     });
                 }
                 gm.ShowAsContext();
@@ -88,6 +88,7 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Delete", "MiniButton"))
                 {
+                    Undo.RecordObject(target, "Delete FSM State");
                     if (_target.DefaultStateName == _target.StateNames[i])
                     {
                         _target.DefaultState = "";
@@ -102,8 +103,7 @@ namespace HT.Framework
                         _target.DefaultState = _target.States[0];
                         _target.DefaultStateName = _target.StateNames[0];
                     }
-
-                    EditorUtility.SetDirty(_target);
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
             }
@@ -139,6 +139,7 @@ namespace HT.Framework
                         {
                             gm.AddItem(new GUIContent(stateName), false, () =>
                             {
+                                Undo.RecordObject(target, "Add FSM State");
                                 _target.States.Add(types[j].FullName);
                                 _target.StateNames.Add(stateName);
 
@@ -147,8 +148,7 @@ namespace HT.Framework
                                     _target.DefaultState = _target.States[0];
                                     _target.DefaultStateName = _target.StateNames[0];
                                 }
-
-                                EditorUtility.SetDirty(_target);
+                                this.HasChanged();
                             });
                         }
                     }

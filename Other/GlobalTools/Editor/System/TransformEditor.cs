@@ -37,6 +37,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Move " + _transform.name);
                     _transform.position = pos;
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -47,6 +48,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Rotate " + _transform.name);
                     _transform.rotation = Quaternion.Euler(rot);
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -64,6 +66,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Move " + _transform.name);
                     _transform.localPosition = localpos;
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -74,6 +77,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Rotate " + _transform.name);
                     _transform.localRotation = Quaternion.Euler(localrot);
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -84,6 +88,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Scale " + _transform.name);
                     _transform.localScale = localsca;
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 

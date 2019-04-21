@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using System.Reflection;
 using System.IO;
+using UnityEditor.SceneManagement;
+using UnityObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
@@ -536,6 +538,179 @@ namespace HT.Framework
                 {
                     GlobalTools.LogError("新建DataSet失败，已存在类型 " + className);
                 }
+            }
+        }
+        #endregion
+
+        #region Editor类的扩展GUI控件
+        /// <summary>
+        /// 设置Editor指向的target被改变
+        /// </summary>
+        public static void HasChanged(this Editor editor)
+        {
+            EditorUtility.SetDirty(editor.target);
+            Component component = editor.target as Component;
+            if (component)
+            {
+                EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
+            }
+        }
+
+        /// <summary>
+        /// 制作一个Toggle
+        /// </summary>
+        public static void Toggle(this Editor editor, bool value, out bool outValue, string name)
+        {
+            GUI.color = value ? Color.white : Color.gray;
+            bool newValue = GUILayout.Toggle(value, name);
+            if (value != newValue)
+            {
+                Undo.RecordObject(editor.target, "Set " + name);
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+            GUI.color = Color.white;
+        }
+
+        /// <summary>
+        /// 制作一个IntSlider
+        /// </summary>
+        public static void IntSlider(this Editor editor, int value, out int outValue, int leftValue, int rightValue, string name)
+        {
+            int newValue = EditorGUILayout.IntSlider(name, value, leftValue, rightValue);
+            if (value != newValue)
+            {
+                Undo.RecordObject(editor.target, "Set " + name);
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个FloatSlider
+        /// </summary>
+        public static void FloatSlider(this Editor editor, float value, out float outValue, float leftValue, float rightValue, string name)
+        {
+            float newValue = EditorGUILayout.Slider(name, value, leftValue, rightValue);
+            if (!Mathf.Approximately(value, newValue))
+            {
+                Undo.RecordObject(editor.target, "Set " + name);
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+
+        /// <summary>
+        /// 制作一个FloatField
+        /// </summary>
+        public static void FloatField(this Editor editor, float value, out float outValue, string name)
+        {
+            float newValue = EditorGUILayout.FloatField(name, value);
+            if (!Mathf.Approximately(value, newValue))
+            {
+                Undo.RecordObject(editor.target, "Set " + name);
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个FloatField
+        /// </summary>
+        public static void FloatField(this Editor editor, float value, out float outValue)
+        {
+            float newValue = EditorGUILayout.FloatField(value);
+            if (!Mathf.Approximately(value, newValue))
+            {
+                Undo.RecordObject(editor.target, "Set Float");
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个TextField
+        /// </summary>
+        public static void TextField(this Editor editor, string value, out string outValue)
+        {
+            string newValue = EditorGUILayout.TextField(value);
+            if (value != newValue)
+            {
+                Undo.RecordObject(editor.target, "Set String");
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个IntField
+        /// </summary>
+        public static void IntField(this Editor editor, int value, out int outValue)
+        {
+            int newValue = EditorGUILayout.IntField(value);
+            if (value != newValue)
+            {
+                Undo.RecordObject(editor.target, "Set Int");
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个ObjectField
+        /// </summary>
+        public static void ObjectField<T>(this Editor editor, T value, out T outValue, bool allowSceneObjects, string name) where T : UnityObject
+        {
+            T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects) as T;
+            if (value != newValue)
+            {
+                Undo.RecordObject(editor.target, "Set" + name);
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个Vector3Field
+        /// </summary>
+        public static void Vector3Field(this Editor editor, Vector3 value, out Vector3 outValue,string name)
+        {
+            Vector3 newValue = EditorGUILayout.Vector3Field(name, value);
+            if (value != newValue)
+            {
+                Undo.RecordObject(editor.target, "Set Vector3");
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
             }
         }
         #endregion

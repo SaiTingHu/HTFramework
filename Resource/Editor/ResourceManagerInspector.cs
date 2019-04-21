@@ -20,19 +20,20 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _target.Mode = (ResourceMode)EditorGUILayout.EnumPopup("Load Mode", _target.Mode);
+            ResourceMode mode = (ResourceMode)EditorGUILayout.EnumPopup("Load Mode", _target.Mode);
+            if (mode != _target.Mode)
+            {
+                Undo.RecordObject(target, "Set Load Mode");
+                _target.Mode = mode;
+                this.HasChanged();
+            }
             GUILayout.EndHorizontal();
 
             if (_target.Mode == ResourceMode.AssetBundle)
             {
                 GUILayout.BeginHorizontal();
-                _target.IsCacheAssetBundle = EditorGUILayout.Toggle("Cache AssetBundle", _target.IsCacheAssetBundle);
+                this.Toggle(_target.IsCacheAssetBundle, out _target.IsCacheAssetBundle, "Cache AssetBundle");
                 GUILayout.EndHorizontal();
-            }
-
-            if (GUI.enabled)
-            {
-                EditorUtility.SetDirty(_target);
             }
         }
     }

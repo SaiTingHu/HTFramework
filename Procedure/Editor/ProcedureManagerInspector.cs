@@ -51,9 +51,9 @@ namespace HT.Framework
                     int j = i;
                     gm.AddItem(new GUIContent(_target.ActivatedProcedures[j]), _target.DefaultProcedure == _target.ActivatedProcedures[j], () =>
                     {
+                        Undo.RecordObject(target, "Set Default Procedure");
                         _target.DefaultProcedure = _target.ActivatedProcedures[j];
-                        //挂载此脚本的对象是预制体时，必须设置，否则重新编译后属性会被预制体还原
-                        EditorUtility.SetDirty(_target);
+                        this.HasChanged();
                     });
                 }
                 gm.ShowAsContext();
@@ -83,6 +83,7 @@ namespace HT.Framework
                 }
                 if (GUILayout.Button("Delete", "MiniButton"))
                 {
+                    Undo.RecordObject(target, "Delete Procedure");
                     if (_target.DefaultProcedure == _target.ActivatedProcedures[i])
                     {
                         _target.DefaultProcedure = "";
@@ -94,8 +95,7 @@ namespace HT.Framework
                     {
                         _target.DefaultProcedure = _target.ActivatedProcedures[0];
                     }
-
-                    EditorUtility.SetDirty(_target);
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
             }
@@ -119,14 +119,14 @@ namespace HT.Framework
                         {
                             gm.AddItem(new GUIContent(types[j].FullName), false, () =>
                             {
+                                Undo.RecordObject(target, "Add Procedure");
                                 _target.ActivatedProcedures.Add(types[j].FullName);
 
                                 if (_target.DefaultProcedure == "")
                                 {
                                     _target.DefaultProcedure = _target.ActivatedProcedures[0];
                                 }
-
-                                EditorUtility.SetDirty(_target);
+                                this.HasChanged();
                             });
                         }
                     }

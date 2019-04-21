@@ -33,8 +33,9 @@ namespace HT.Framework
                 Type[] types = assembly.GetTypes();
                 gm.AddItem(new GUIContent("<None>"), _target.MainDataType == "<None>", () =>
                 {
+                    Undo.RecordObject(target, "Set Main Data");
                     _target.MainDataType = "<None>";
-                    EditorUtility.SetDirty(_target);
+                    this.HasChanged();
                 });
                 for (int i = 0; i < types.Length; i++)
                 {
@@ -43,8 +44,9 @@ namespace HT.Framework
                         int j = i;
                         gm.AddItem(new GUIContent(types[j].FullName), _target.MainDataType == types[j].FullName, () =>
                         {
+                            Undo.RecordObject(target, "Set Main Data");
                             _target.MainDataType = types[j].FullName;
-                            EditorUtility.SetDirty(_target);
+                            this.HasChanged();
                         });
                     }
                 }
@@ -59,9 +61,7 @@ namespace HT.Framework
             GUILayout.BeginVertical("Box");
             
             GUILayout.BeginHorizontal();
-            GUI.color = _target.IsPermanentLicense ? Color.white : Color.gray;
-            _target.IsPermanentLicense = GUILayout.Toggle(_target.IsPermanentLicense, "Permanent License");
-            GUI.color = Color.white;
+            this.Toggle(_target.IsPermanentLicense, out _target.IsPermanentLicense, "Permanent License");
             GUILayout.EndHorizontal();
 
             if (!_target.IsPermanentLicense)
@@ -71,7 +71,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                _target.EndingPrompt = EditorGUILayout.TextField(_target.EndingPrompt);
+                this.TextField(_target.EndingPrompt, out _target.EndingPrompt);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -83,18 +83,24 @@ namespace HT.Framework
                 int year = EditorGUILayout.IntField(_target.Year, GUILayout.Width(50));
                 if (year != _target.Year)
                 {
+                    Undo.RecordObject(target, "Set Year");
                     _target.Year = year;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
                 {
+                    Undo.RecordObject(target, "Set Year");
                     _target.Year += 1;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
                 {
+                    Undo.RecordObject(target, "Set Year");
                     _target.Year -= 1;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -103,18 +109,24 @@ namespace HT.Framework
                 int month = EditorGUILayout.IntField(_target.Month, GUILayout.Width(50));
                 if (month != _target.Month)
                 {
+                    Undo.RecordObject(target, "Set Month");
                     _target.Month = month;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
                 {
+                    Undo.RecordObject(target, "Set Month");
                     _target.Month += 1;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
                 {
+                    Undo.RecordObject(target, "Set Month");
                     _target.Month -= 1;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -123,44 +135,49 @@ namespace HT.Framework
                 int day = EditorGUILayout.IntField(_target.Day, GUILayout.Width(50));
                 if (day != _target.Day)
                 {
+                    Undo.RecordObject(target, "Set Day");
                     _target.Day = day;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
                 {
+                    Undo.RecordObject(target, "Set Day");
                     _target.Day += 1;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
                 {
+                    Undo.RecordObject(target, "Set Day");
                     _target.Day -= 1;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Now", "MiniButton"))
                 {
+                    Undo.RecordObject(target, "Set Now");
                     _target.Year = DateTime.Now.Year;
                     _target.Month = DateTime.Now.Month;
                     _target.Day = DateTime.Now.Day;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 if (GUILayout.Button("2 Months Later", "MiniButton"))
                 {
+                    Undo.RecordObject(target, "Set 2 Months Later");
                     _target.Month += 2;
                     CorrectDateTime();
+                    this.HasChanged();
                 }
                 GUILayout.EndHorizontal();
             }
 
             GUILayout.EndVertical();
             #endregion
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_target);
-            }
         }
 
         /// <summary>

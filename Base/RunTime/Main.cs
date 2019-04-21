@@ -136,6 +136,9 @@ namespace HT.Framework
                 _moduleProxysObj[i].Initialization();
             }
 
+            LicenseAwake();
+            MainDataAwake();
+
             m_AspectTrack.Preparatory();
             m_Audio.Preparatory();
             m_Controller.Preparatory();
@@ -152,9 +155,6 @@ namespace HT.Framework
             m_StepMaster.Preparatory();
             m_UI.Preparatory();
             m_WebRequest.Preparatory();
-
-            LicenseAwake();
-            MainDataAwake();
         }
         private void Update()
         {

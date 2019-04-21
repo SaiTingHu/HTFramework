@@ -21,13 +21,8 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Limit:");
-            _target.Limit = EditorGUILayout.IntField(_target.Limit);
+            this.IntField(_target.Limit, out _target.Limit);
             GUILayout.EndHorizontal();
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_target);
-            }
         }
     }
 }

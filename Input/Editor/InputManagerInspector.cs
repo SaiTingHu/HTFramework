@@ -35,9 +35,9 @@ namespace HT.Framework
                         int j = i;
                         gm.AddItem(new GUIContent(types[j].FullName), _target.InputDeviceType == types[j].FullName, () =>
                         {
+                            Undo.RecordObject(target, "Set InputDevice");
                             _target.InputDeviceType = types[j].FullName;
-                            //挂载此脚本的对象是预制体时，必须设置，否则重新编译后属性会被预制体还原
-                            EditorUtility.SetDirty(_target);
+                            this.HasChanged();
                         });
                     }
                 }

@@ -16,7 +16,7 @@ namespace HT.Framework
         public override void OnInspectorGUI()
         {
             GUILayout.BeginHorizontal();
-            _mousePosition.IsCanOnUGUI = GUILayout.Toggle(_mousePosition.IsCanOnUGUI, "Is Can Control On UGUI");
+            this.Toggle(_mousePosition.IsCanOnUGUI, out _mousePosition.IsCanOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical("HelpBox");
@@ -29,16 +29,16 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("X");
-            _mousePosition.XSpeed = EditorGUILayout.FloatField(_mousePosition.XSpeed);
+            this.FloatField(_mousePosition.XSpeed, out _mousePosition.XSpeed);
             GUILayout.Label("Y");
-            _mousePosition.YSpeed = EditorGUILayout.FloatField(_mousePosition.YSpeed);
+            this.FloatField(_mousePosition.YSpeed, out _mousePosition.YSpeed);
             GUILayout.Label("M");
-            _mousePosition.MSpeed = EditorGUILayout.FloatField(_mousePosition.MSpeed);
+            this.FloatField(_mousePosition.MSpeed, out _mousePosition.MSpeed);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Move Damping");
-            _mousePosition.MoveDamping = EditorGUILayout.FloatField(_mousePosition.MoveDamping);
+            this.FloatField(_mousePosition.MoveDamping, out _mousePosition.MoveDamping);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -55,30 +55,30 @@ namespace HT.Framework
             GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            _mousePosition.NeedLimit = GUILayout.Toggle(_mousePosition.NeedLimit, "Need Limit");
+            this.Toggle(_mousePosition.NeedLimit, out _mousePosition.NeedLimit, "Need Limit");
             GUILayout.EndHorizontal();
 
             if (_mousePosition.NeedLimit)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("X Min");
-                _mousePosition.XMinLimit = EditorGUILayout.FloatField(_mousePosition.XMinLimit);
-                GUILayout.Label("Y Max");
-                _mousePosition.XMaxLimit = EditorGUILayout.FloatField(_mousePosition.XMaxLimit);
+                this.FloatField(_mousePosition.XMinLimit, out _mousePosition.XMinLimit);
+                GUILayout.Label("X Max");
+                this.FloatField(_mousePosition.XMaxLimit, out _mousePosition.XMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Y Min");
-                _mousePosition.YMinLimit = EditorGUILayout.FloatField(_mousePosition.YMinLimit);
+                this.FloatField(_mousePosition.YMinLimit, out _mousePosition.YMinLimit);
                 GUILayout.Label("Y Max");
-                _mousePosition.YMaxLimit = EditorGUILayout.FloatField(_mousePosition.YMaxLimit);
+                this.FloatField(_mousePosition.YMaxLimit, out _mousePosition.YMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Z Min");
-                _mousePosition.ZMinLimit = EditorGUILayout.FloatField(_mousePosition.ZMinLimit);
+                this.FloatField(_mousePosition.ZMinLimit, out _mousePosition.ZMinLimit);
                 GUILayout.Label("Z Max");
-                _mousePosition.ZMaxLimit = EditorGUILayout.FloatField(_mousePosition.ZMaxLimit);
+                this.FloatField(_mousePosition.ZMaxLimit, out _mousePosition.ZMaxLimit);
                 GUILayout.EndHorizontal();
             }
 
@@ -89,7 +89,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUI.backgroundColor = Color.cyan;
-            if (GUILayout.Button("Copy Position", "MiniButton"))
+            if (GUILayout.Button("Copy Position"))
             {
                 if (_mousePosition.Target)
                 {
@@ -101,11 +101,6 @@ namespace HT.Framework
             }
             GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_mousePosition);
-            }
         }
     }
 }

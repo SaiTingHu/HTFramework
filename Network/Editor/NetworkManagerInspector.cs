@@ -21,18 +21,13 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("IP", GUILayout.Width(50));
-            _target.IP = EditorGUILayout.TextField(_target.IP);
+            this.TextField(_target.IP, out _target.IP);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Port", GUILayout.Width(50));
-            _target.Port = EditorGUILayout.IntField(_target.Port);
+            this.IntField(_target.Port, out _target.Port);
             GUILayout.EndHorizontal();
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_target);
-            }
         }
     }
 }

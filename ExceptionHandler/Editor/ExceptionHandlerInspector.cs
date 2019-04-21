@@ -20,21 +20,14 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.color = _target.IsHandler ? Color.white : Color.gray;
-            _target.IsHandler = GUILayout.Toggle(_target.IsHandler, "Is Handler");
-            GUI.color = Color.white;
+            this.Toggle(_target.IsHandler, out _target.IsHandler, "Is Handler");
             GUILayout.EndHorizontal();
 
             if (_target.IsHandler)
             {
                 GUILayout.BeginHorizontal();
-                _target.IsQuitWhenException = GUILayout.Toggle(_target.IsQuitWhenException, "Is Quit When Exception");
+                this.Toggle(_target.IsQuitWhenException, out _target.IsQuitWhenException, "Is Quit When Exception");
                 GUILayout.EndHorizontal();
-            }
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_target);
             }
         }
     }

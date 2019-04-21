@@ -17,12 +17,14 @@ namespace HT.Framework
         private Dictionary<Type, UILogic> _UIs = new Dictionary<Type, UILogic>();
 
         private Transform _uiRoot;
+        private RectTransform _uiRootRect;
         private Transform _residentPanel;
         private Transform _temporaryPanel;
 
         public override void Initialization()
         {
             _uiRoot = transform.Find("UIRoot");
+            _uiRootRect = _uiRoot.rectTransform();
             _residentPanel = _uiRoot.Find("ResidentPanel");
             _temporaryPanel = _uiRoot.Find("TemporaryPanel");
             //创建所有UI的逻辑对象
@@ -64,6 +66,17 @@ namespace HT.Framework
                 uiLogic.UIEntity = null;
             }
             _UIs.Clear();
+        }
+
+        /// <summary>
+        /// UI根节点
+        /// </summary>
+        public RectTransform UIRoot
+        {
+            get
+            {
+                return _uiRootRect;
+            }
         }
 
         /// <summary>

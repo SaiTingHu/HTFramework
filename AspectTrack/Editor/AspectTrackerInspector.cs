@@ -20,15 +20,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.color = _target.IsEnableAspectTrack ? Color.white : Color.gray;
-            _target.IsEnableAspectTrack = GUILayout.Toggle(_target.IsEnableAspectTrack, "Is Track");
-            GUI.color = Color.white;
+            this.Toggle(_target.IsEnableAspectTrack, out _target.IsEnableAspectTrack, "Is Track");
             GUILayout.EndHorizontal();
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_target);
-            }
         }
     }
 }

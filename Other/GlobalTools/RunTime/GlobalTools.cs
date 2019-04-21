@@ -1071,6 +1071,17 @@ namespace HT.Framework
                 return false;
             }
         }
+        /// <summary>
+        /// 世界坐标转换为UGUI坐标（只适用于框架UI模块下的控件）
+        /// </summary>
+        public static Vector2 ToAnchoredPosition(this Vector3 position)
+        {
+            Vector3 screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
+            screenPos.z = 0;
+            Vector2 anchoredPos = Vector2.zero;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.UIRoot, screenPos, null, out anchoredPos);
+            return anchoredPos;
+        }
         #endregion
 
         #region 日志工具

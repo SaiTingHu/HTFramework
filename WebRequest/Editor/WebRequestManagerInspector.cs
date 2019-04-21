@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -20,15 +20,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.color = _target.IsOfflineState ? Color.white : Color.gray;
-            _target.IsOfflineState = GUILayout.Toggle(_target.IsOfflineState, "Is OfflineState");
-            GUI.color = Color.white;
+            this.Toggle(_target.IsOfflineState, out _target.IsOfflineState, "Is OfflineState");
             GUILayout.EndHorizontal();
-
-            if (GUI.changed)
-            {
-                EditorUtility.SetDirty(_target);
-            }
         }
     }
 }
