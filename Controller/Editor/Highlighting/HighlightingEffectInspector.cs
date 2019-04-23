@@ -18,52 +18,73 @@ namespace HT.Framework
         public override void OnInspectorGUI()
         {
 #if UNITY_IPHONE
-		if (Handheld.use32BitDisplayBuffer == false)
-		{
-			EditorGUILayout.HelpBox("Highlighting System requires 32-bit display buffer. Set the 'Use 32-bit Display Buffer' checkbox under the 'Resolution and Presentation' section of Player Settings.", MessageType.Error);
-		}
+		    if (Handheld.use32BitDisplayBuffer == false)
+		    {
+			    EditorGUILayout.HelpBox("Highlighting System requires 32-bit display buffer. Set the 'Use 32-bit Display Buffer' checkbox under the 'Resolution and Presentation' section of Player Settings.", MessageType.Error);
+		    }
 #endif
-
             EditorGUILayout.Space();
 
-            _he.stencilZBufferEnabled = EditorGUILayout.Toggle("Use Z-Buffer", _he.stencilZBufferEnabled);
-            EditorGUILayout.HelpBox("Always enable 'Use Z-Buffer' if you wish to use highlighting occluders in your project. Otherwise - keep it unchecked (in terms of performance optimization).", MessageType.Info);
+            GUILayout.BeginHorizontal();
+            bool useZBuffer = EditorGUILayout.Toggle("Use Z-Buffer", _he.stencilZBufferEnabled);
+            if (useZBuffer != _he.stencilZBufferEnabled)
+            {
+                Undo.RecordObject(_he, "Set Use Z-Buffer");
+                _he.stencilZBufferEnabled = useZBuffer;
+                this.HasChanged();
+            }
+            GUILayout.EndHorizontal();
 
-            EditorGUILayout.LabelField("Preset:");
-            EditorGUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.HelpBox("Always enable 'Use Z-Buffer' if you wish to use highlighting occluders in your project. Otherwise - keep it unchecked (in terms of performance optimization).", MessageType.Info);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Preset:", "BoldLabel");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button("Default"))
             {
+                Undo.RecordObject(_he, "Set Default");
                 _he.downsampleFactor = 2;
                 _he.iterations = 2;
                 _he.blurMinSpread = 0.65f;
                 _he.blurSpread = 0.25f;
                 _he.blurIntensity = 0.3f;
+                this.HasChanged();
             }
             if (GUILayout.Button("Strong"))
             {
+                Undo.RecordObject(_he, "Set Strong");
                 _he.downsampleFactor = 2;
                 _he.iterations = 2;
                 _he.blurMinSpread = 0.5f;
                 _he.blurSpread = 0.15f;
                 _he.blurIntensity = 0.325f;
+                this.HasChanged();
             }
             if (GUILayout.Button("Speed"))
             {
+                Undo.RecordObject(_he, "Set Speed");
                 _he.downsampleFactor = 2;
                 _he.iterations = 1;
                 _he.blurMinSpread = 0.75f;
                 _he.blurSpread = 0.0f;
                 _he.blurIntensity = 0.35f;
+                this.HasChanged();
             }
             if (GUILayout.Button("Quality"))
             {
+                Undo.RecordObject(_he, "Set Quality");
                 _he.downsampleFactor = 1;
                 _he.iterations = 3;
                 _he.blurMinSpread = 1.0f;
                 _he.blurSpread = 0.0f;
                 _he.blurIntensity = 0.28f;
+                this.HasChanged();
             }
-            EditorGUILayout.EndHorizontal();
+            GUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
 
