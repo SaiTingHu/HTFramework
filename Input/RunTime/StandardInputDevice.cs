@@ -82,4 +82,108 @@ namespace HT.Framework
             Main.m_Input.UnRegisterVirtualAxis("Vertical");
         }
     }
+
+    /// <summary>
+    /// 输入按键类型
+    /// </summary>
+    public static class InputButtonType
+    {
+        /// <summary>
+        /// 鼠标左键
+        /// </summary>
+        public static string MouseLeft
+        {
+            get
+            {
+                return "MouseLeft";
+            }
+        }
+        /// <summary>
+        /// 鼠标右键
+        /// </summary>
+        public static string MouseRight
+        {
+            get
+            {
+                return "MouseRight";
+            }
+        }
+        /// <summary>
+        /// 鼠标中键
+        /// </summary>
+        public static string MouseMiddle
+        {
+            get
+            {
+                return "MouseMiddle";
+            }
+        }
+        /// <summary>
+        /// 鼠标左键双击
+        /// </summary>
+        public static string MouseLeftDoubleClick
+        {
+            get
+            {
+                return "MouseLeftDoubleClick";
+            }
+        }
+    }
+
+    /// <summary>
+    /// 输入轴线类型
+    /// </summary>
+    public static class InputAxisType
+    {
+        /// <summary>
+        /// 鼠标X轴移动
+        /// </summary>
+        public static string MouseX
+        {
+            get
+            {
+                return "MouseX";
+            }
+        }
+        /// <summary>
+        /// 鼠标Y轴移动
+        /// </summary>
+        public static string MouseY
+        {
+            get
+            {
+                return "MouseY";
+            }
+        }
+        /// <summary>
+        /// 鼠标滚轮滚动
+        /// </summary>
+        public static string MouseScrollWheel
+        {
+            get
+            {
+                return "MouseScrollWheel";
+            }
+        }
+        /// <summary>
+        /// 键盘水平输入
+        /// </summary>
+        public static string Horizontal
+        {
+            get
+            {
+                return "Horizontal";
+            }
+        }
+        /// <summary>
+        /// 键盘垂直输入
+        /// </summary>
+        public static string Vertical
+        {
+            get
+            {
+                return "Vertical";
+            }
+        }
+    }
 }
