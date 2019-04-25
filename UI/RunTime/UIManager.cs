@@ -111,7 +111,7 @@ namespace HT.Framework
                         GlobalTools.LogError("预加载UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
                         return;
                     }
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _residentPanel, (obj) =>
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _residentPanel, null, (obj) =>
                     {
                         ui.UIEntity = obj;
                         ui.OnInit();
@@ -141,7 +141,7 @@ namespace HT.Framework
                         GlobalTools.LogError("预加载UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
                         return;
                     }
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _temporaryPanel, (obj) =>
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _temporaryPanel, null, (obj) =>
                     {
                         ui.UIEntity = obj;
                         ui.OnInit();
@@ -176,7 +176,7 @@ namespace HT.Framework
                         GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
                         return;
                     }
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _residentPanel, (obj) =>
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _residentPanel, null, (obj) =>
                     {
                         ui.UIEntity = obj;
                         ui.UIEntity.transform.SetAsLastSibling();
@@ -230,7 +230,7 @@ namespace HT.Framework
                         GlobalTools.LogError("打开UI失败：UI对象 " + typeof(T).Name + " 并未标记UIResourceAttribute特性！");
                         return;
                     }
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _temporaryPanel, (obj) =>
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(atts[0] as UIResourceAttribute), _temporaryPanel, null, (obj) =>
                     {
                         ui.UIEntity = obj;
                         ui.UIEntity.transform.SetAsLastSibling();

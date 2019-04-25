@@ -3,33 +3,14 @@
     /// <summary>
     /// 预制体信息
     /// </summary>
-    public sealed class PrefabInfo
+    public sealed class PrefabInfo : ResourceInfoBase
     {
-        /// <summary>
-        /// AssetBundle的名称
-        /// </summary>
-        public string AssetBundleName;
-        /// <summary>
-        /// Asset的路径
-        /// </summary>
-        public string AssetPath;
-        /// <summary>
-        /// Resources文件夹中的路径
-        /// </summary>
-        public string ResourcePath;
-
-        public PrefabInfo(string assetBundleName, string assetPath, string resourcePath)
+        public PrefabInfo(string assetBundleName, string assetPath, string resourcePath) : base(assetBundleName, assetPath, resourcePath)
         {
-            AssetBundleName = assetBundleName;
-            AssetPath = assetPath;
-            ResourcePath = resourcePath;
         }
 
-        public PrefabInfo(UIResourceAttribute att)
+        public PrefabInfo(UIResourceAttribute att) : base(att.AssetBundleName, att.AssetPath, att.ResourcePath)
         {
-            AssetBundleName = att.AssetBundleName;
-            AssetPath = att.AssetPath;
-            ResourcePath = att.ResourcePath;
         }
     }
 }

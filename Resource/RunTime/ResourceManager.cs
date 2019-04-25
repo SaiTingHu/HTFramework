@@ -14,20 +14,28 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class ResourceManager : ModuleManager
     {
+        /// <summary>
+        /// 资源加载模式
+        /// </summary>
         public ResourceMode Mode = ResourceMode.Resource;
+        /// <summary>
+        /// 是否缓存AB包
+        /// </summary>
         public bool IsCacheAssetBundle = false;
 
         //AssetBundle资源根路径
         private string _assetBundlePath;
-        //AssetBundle资源根路径是否是网络路径
-        private bool _isHttpPath = false;
         //缓存的所有AssetBundle资源
         private Dictionary<string, AssetBundle> _assetBundles = new Dictionary<string, AssetBundle>();
+        //单线下载中
+        private bool _isLoading = false;
+        //单线下载等待
+        private WaitUntil _loadWait;
 
         public override void Initialization()
         {
-            _assetBundlePath = Application.streamingAssetsPath;
-            _isHttpPath = _assetBundlePath.Contains("http");
+            _assetBundlePath = Application.streamingAssetsPath + "/";
+            _loadWait = new WaitUntil(() => { return !_isLoading; });
         }
 
         public override void Termination()
@@ -37,322 +45,34 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 加载资源（异步）
+        /// </summary>
+        public void LoadAsset<T>(AssetInfo info, Action<float> loadingAction, Action<T> loadDoneAction) where T : UnityEngine.Object
+        {
+            StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction));
+        }
+        /// <summary>
+        /// 加载数据集（异步）
+        /// </summary>
+        public void LoadDataSet<T>(DataSetInfo info, Action<float> loadingAction, Action<T> loadDoneAction) where T : DataSet
+        {
+            StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction));
+        }
+        /// <summary>
+        /// 加载预制体（异步）
+        /// </summary>
+        public void LoadPrefab(PrefabInfo info, Transform parent, Action<float> loadingAction, Action<GameObject> loadDoneAction, bool isUI = false)
+        {
+            StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction, true, parent, isUI));
+        }
+
+        /// <summary>
         /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
         /// </summary>
         public void SetAssetBundlePath(string path)
         {
             _assetBundlePath = path;
-            _isHttpPath = _assetBundlePath.Contains("http");
         }
-
-        /// <summary>
-        /// 加载资源（异步）
-        /// </summary>
-        public void LoadAsset<T>(AssetInfo info, Action<T> loadDoneAction) where T: UnityEngine.Object
-        {
-            StartCoroutine(LoadAssetCoroutine(info, loadDoneAction));
-        }
-        private System.Collections.IEnumerator LoadAssetCoroutine<T>(AssetInfo info, Action<T> loadDoneAction) where T : UnityEngine.Object
-        {
-            T asset = null;
-
-            if (Mode == ResourceMode.Resource)
-            {
-                asset = Resources.Load<T>(info.ResourcePath);
-                yield return asset;
-                if (!asset)
-                {
-                    GlobalTools.LogError("加载资源失败：Resources文件夹中不存在" + typeof(T) + "资源 " + info.ResourcePath);
-                }
-            }
-            else
-            {
-#if UNITY_EDITOR
-                asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
-                yield return asset;
-                if (!asset)
-                {
-                    GlobalTools.LogError("加载资源失败：路径中不存在资源 " + info.AssetPath);
-                }
-#else
-                if (_assetBundles.ContainsKey(info.AssetBundleName))
-                {
-                    asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
-                    yield return asset;
-                    if (!asset)
-                    {
-                        GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
-                    }
-                }
-                else
-                {
-                    UnityWebRequest request = UnityWebRequest.Get((_isHttpPath ? "" : "file://") + _assetBundlePath + info.AssetBundleName);
-                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
-                    request.downloadHandler = handler;
-                    yield return request.SendWebRequest();
-                    if (!request.isNetworkError && !request.isHttpError)
-                    {
-                        if (handler.assetBundle)
-                        {
-                            asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
-                            yield return asset;
-                            if (!asset)
-                            {
-                                GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
-                            }
-
-                            if (IsCacheAssetBundle)
-                            {
-                                _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
-                            }
-                            else
-                            {
-                                handler.assetBundle.Unload(false);
-                            }
-                        }
-                        else
-                        {
-                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
-                        }
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
-                    }
-                    request.Dispose();
-                    handler.Dispose();
-                }
-#endif
-            }
-
-            if (asset)
-            {
-                loadDoneAction(asset);
-            }
-
-            asset = null;
-        }
-
-        /// <summary>
-        /// 加载数据集（异步）
-        /// </summary>
-        public void LoadDataSet<T>(DataSetInfo info, Action<T> loadDoneAction) where T : DataSet
-        {
-            StartCoroutine(LoadDataSetCoroutine(info, loadDoneAction));
-        }
-        private System.Collections.IEnumerator LoadDataSetCoroutine<T>(DataSetInfo info, Action<T> loadDoneAction) where T : DataSet
-        {
-            T asset = null;
-
-            if (Mode == ResourceMode.Resource)
-            {
-                asset = Resources.Load<T>(info.ResourcePath);
-                yield return asset;
-                if (!asset)
-                {
-                    GlobalTools.LogError("加载数据集失败：Resources文件夹中不存在" + typeof(T) + "数据集 " + info.ResourcePath);
-                }
-            }
-            else
-            {
-#if UNITY_EDITOR
-                asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
-                yield return asset;
-                if (!asset)
-                {
-                    GlobalTools.LogError("加载数据集失败：路径中不存在数据集 " + info.AssetPath);
-                }
-#else
-                if (_assetBundles.ContainsKey(info.AssetBundleName))
-                {
-                    asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
-                    yield return asset;
-                    if (!asset)
-                    {
-                        GlobalTools.LogError("加载数据集失败：AB包 " + info.AssetBundleName + " 中不存在数据集 " + info.AssetPath);
-                    }
-                }
-                else
-                {
-                    UnityWebRequest request = UnityWebRequest.Get((_isHttpPath ? "" : "file://") + _assetBundlePath + info.AssetBundleName);
-                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
-                    request.downloadHandler = handler;
-                    yield return request.SendWebRequest();
-                    if (!request.isNetworkError && !request.isHttpError)
-                    {
-                        if (handler.assetBundle)
-                        {
-                            asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
-                            yield return asset;
-                            if (!asset)
-                            {
-                                GlobalTools.LogError("加载数据集失败：AB包 " + info.AssetBundleName + " 中不存在数据集 " + info.AssetPath);
-                            }
-
-                            if (IsCacheAssetBundle)
-                            {
-                                _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
-                            }
-                            else
-                            {
-                                handler.assetBundle.Unload(false);
-                            }
-                        }
-                        else
-                        {
-                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
-                        }
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
-                    }
-                    request.Dispose();
-                    handler.Dispose();
-                }
-#endif
-            }
-
-            if (asset)
-            {
-                loadDoneAction(asset);
-            }
-
-            asset = null;
-        }
-
-        /// <summary>
-        /// 加载预制体（异步）
-        /// </summary>
-        public void LoadPrefab(PrefabInfo info, Transform parent, Action<GameObject> loadDoneAction, bool isUI = false)
-        {
-            StartCoroutine(LoadPrefabCoroutine(info, parent, loadDoneAction, isUI));
-        }
-        private System.Collections.IEnumerator LoadPrefabCoroutine(PrefabInfo info, Transform parent, Action<GameObject> loadDoneAction, bool isUI)
-        {
-            GameObject assetTem = null;
-            GameObject asset = null;
-
-            if (Mode == ResourceMode.Resource)
-            {
-                assetTem = Resources.Load<GameObject>(info.ResourcePath);
-                yield return assetTem;
-                if (assetTem)
-                {
-                    asset = Instantiate(assetTem) as GameObject;
-                    yield return asset;
-                }
-                else
-                {
-                    GlobalTools.LogError("加载预制体失败：Resources文件夹中不存在资源 " + info.ResourcePath);
-                }
-            }
-            else
-            {
-#if UNITY_EDITOR
-                assetTem = AssetDatabase.LoadAssetAtPath<GameObject>(info.AssetPath);
-                yield return assetTem;
-                if (assetTem)
-                {
-                    asset = Instantiate(assetTem) as GameObject;
-                    yield return asset;
-                }
-                else
-                {
-                    GlobalTools.LogError("加载预制体失败：路径中不存在资源 " + info.AssetPath);
-                }
-#else
-                if (_assetBundles.ContainsKey(info.AssetBundleName))
-                {
-                    assetTem = _assetBundles[info.AssetBundleName].LoadAsset(info.AssetPath) as GameObject;
-                    yield return assetTem;
-                    if (assetTem)
-                    {
-                        asset = Instantiate(assetTem) as GameObject;
-                        yield return asset;
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("加载预制体失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
-                    }
-                }
-                else
-                {
-                    UnityWebRequest request = UnityWebRequest.Get((_isHttpPath ? "" : "file://") + _assetBundlePath + info.AssetBundleName);
-                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
-                    request.downloadHandler = handler;
-                    yield return request.SendWebRequest();
-                    if (!request.isNetworkError && !request.isHttpError)
-                    {
-                        if (handler.assetBundle)
-                        {
-                            assetTem = handler.assetBundle.LoadAsset(info.AssetPath) as GameObject;
-                            yield return assetTem;
-                            if (assetTem)
-                            {
-                                asset = Instantiate(assetTem) as GameObject;
-                                yield return asset;
-                            }
-                            else
-                            {
-                                GlobalTools.LogError("加载预制体失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
-                            }
-
-                            if (IsCacheAssetBundle)
-                            {
-                                _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
-                            }
-                            else
-                            {
-                                handler.assetBundle.Unload(false);
-                            }
-                        }
-                        else
-                        {
-                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
-                        }
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
-                    }
-                    request.Dispose();
-                    handler.Dispose();
-                }
-#endif
-            }
-
-            if (asset)
-            {
-                if (parent)
-                {
-                    asset.transform.SetParent(parent);
-                }
-
-                if (isUI)
-                {
-                    asset.rectTransform().anchoredPosition3D = assetTem.rectTransform().anchoredPosition3D;
-                    asset.rectTransform().sizeDelta = assetTem.rectTransform().sizeDelta;
-                    asset.rectTransform().anchorMin = assetTem.rectTransform().anchorMin;
-                    asset.rectTransform().anchorMax = assetTem.rectTransform().anchorMax;
-                    asset.transform.localRotation = Quaternion.identity;
-                    asset.transform.localScale = Vector3.one;
-                }
-                else
-                {
-                    asset.transform.localPosition = assetTem.transform.localPosition;
-                    asset.transform.localRotation = Quaternion.identity;
-                    asset.transform.localScale = Vector3.one;
-                }
-
-                asset.SetActive(false);
-                loadDoneAction(asset);
-            }
-
-            assetTem = null;
-            asset = null;
-        }
-
         /// <summary>
         /// 卸载资源（卸载AssetBundle）
         /// </summary>
@@ -371,7 +91,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 卸载所有资源（卸载AssetBundle）
         /// </summary>
@@ -391,7 +110,6 @@ namespace HT.Framework
                 AssetBundle.UnloadAllAssetBundles(unloadAllLoadedObjects);
             }
         }
-
         /// <summary>
         /// 清理内存，释放空闲内存
         /// </summary>
@@ -399,6 +117,169 @@ namespace HT.Framework
         {
             Resources.UnloadUnusedAssets();
             GC.Collect();
+        }
+
+        private System.Collections.IEnumerator LoadCoroutine<T>(ResourceInfoBase info, Action<float> loadingAction, Action<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        {
+            yield return _loadWait;
+            _isLoading = true;
+
+            UnityEngine.Object asset = null;
+
+            if (Mode == ResourceMode.Resource)
+            {
+                ResourceRequest request = Resources.LoadAsync<T>(info.ResourcePath);
+                while (!request.isDone)
+                {
+                    if (loadingAction != null)
+                        loadingAction(request.progress);
+                    yield return null;
+                }
+                asset = request.asset;
+                if (!asset)
+                {
+                    GlobalTools.LogError("加载资源失败：Resources文件夹中不存在 " + typeof(T) + " 资源 " + info.ResourcePath);
+                }
+                else
+                {
+                    if (isPrefab)
+                    {
+                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                    }
+                }
+            }
+            else
+            {
+#if UNITY_EDITOR
+                if (loadingAction != null)
+                    loadingAction(1);
+
+                asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
+                if (!asset)
+                {
+                    GlobalTools.LogError("加载资源失败：路径中不存在资源 " + info.AssetPath);
+                }
+                else
+                {
+                    if (isPrefab)
+                    {
+                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                    }
+                }
+#else
+                if (_assetBundles.ContainsKey(info.AssetBundleName))
+                {
+                    if (loadingAction != null)
+                        loadingAction(1);
+
+                    asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
+                    if (!asset)
+                    {
+                        GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                    }
+                    else
+                    {
+                        if (isPrefab)
+                        {
+                            asset = ClonePrefab(asset as GameObject, parent, isUI);
+                        }
+                    }
+                }
+                else
+                {
+                    UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
+                    request.downloadHandler = handler;
+                    request.SendWebRequest();
+                    while (!request.isDone)
+                    {
+                        if (loadingAction != null)
+                            loadingAction(request.downloadProgress);
+                        yield return null;
+                    }
+                    if (!request.isNetworkError && !request.isHttpError)
+                    {
+                        if (handler.assetBundle)
+                        {
+                            asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
+                            if (!asset)
+                            {
+                                GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                            }
+                            else
+                            {
+                                if (isPrefab)
+                                {
+                                    asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                }
+                            }
+
+                            if (IsCacheAssetBundle)
+                            {
+                                _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
+                            }
+                            else
+                            {
+                                handler.assetBundle.Unload(false);
+                            }
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                        }
+                    }
+                    else
+                    {
+                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                    }
+                    request.Dispose();
+                    handler.Dispose();
+                }
+#endif
+            }
+
+            if (asset)
+            {
+                DataSetInfo dataSet = info as DataSetInfo;
+                if (dataSet != null && dataSet.Data != null)
+                {
+                    (asset as DataSet).Fill(dataSet.Data);
+                }
+
+                if (loadDoneAction != null)
+                    loadDoneAction(asset as T);
+            }
+            asset = null;
+
+            _isLoading = false;
+        }
+        private GameObject ClonePrefab(GameObject prefabTem, Transform parent, bool isUI)
+        {
+            GameObject prefab = Instantiate(prefabTem) as GameObject;
+
+            if (parent)
+            {
+                prefab.transform.SetParent(parent);
+            }
+
+            if (isUI)
+            {
+                prefab.rectTransform().anchoredPosition3D = prefabTem.rectTransform().anchoredPosition3D;
+                prefab.rectTransform().sizeDelta = prefabTem.rectTransform().sizeDelta;
+                prefab.rectTransform().anchorMin = prefabTem.rectTransform().anchorMin;
+                prefab.rectTransform().anchorMax = prefabTem.rectTransform().anchorMax;
+                prefab.transform.localRotation = Quaternion.identity;
+                prefab.transform.localScale = Vector3.one;
+            }
+            else
+            {
+                prefab.transform.localPosition = prefabTem.transform.localPosition;
+                prefab.transform.localRotation = Quaternion.identity;
+                prefab.transform.localScale = Vector3.one;
+            }
+
+            prefab.SetActive(false);
+            return prefab;
         }
     }
 

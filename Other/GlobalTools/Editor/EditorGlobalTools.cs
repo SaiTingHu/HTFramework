@@ -234,14 +234,14 @@ namespace HT.Framework
         #endregion
 
         #region 工程视图新建菜单
-        private static readonly string HelperScriptDirectory = ".Helper";
-        private static readonly string FiniteStateScriptDirectory = ".FiniteState";
-        private static readonly string ProcedureScriptDirectory = ".Procedure";
-        private static readonly string EventHandlerScriptDirectory = ".EventHandler";
-        private static readonly string AspectProxyScriptDirectory = ".AspectProxy";
-        private static readonly string UILogicResidentScriptDirectory = ".UILogicResident";
-        private static readonly string UILogicTemporaryScriptDirectory = ".UILogicTemporary";
-        private static readonly string DataSetScriptDirectory = ".DataSet";
+        private static readonly string HelperScriptDirectory = ".Script.Helper";
+        private static readonly string FiniteStateScriptDirectory = ".Script.FiniteState";
+        private static readonly string ProcedureScriptDirectory = ".Script.Procedure";
+        private static readonly string EventHandlerScriptDirectory = ".Script.EventHandler";
+        private static readonly string AspectProxyScriptDirectory = ".Script.AspectProxy";
+        private static readonly string UILogicResidentScriptDirectory = ".Script.UILogicResident";
+        private static readonly string UILogicTemporaryScriptDirectory = ".Script.UILogicTemporary";
+        private static readonly string DataSetScriptDirectory = ".Script.DataSet";
 
         /// <summary>
         /// 新建Helper类
