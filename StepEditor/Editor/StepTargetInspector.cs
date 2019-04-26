@@ -6,7 +6,6 @@ namespace HT.Framework
     [CustomEditor(typeof(StepTarget))]
     public sealed class StepTargetInspector : Editor
     {
-
         private StepTarget _target;
 
         private void OnEnable()

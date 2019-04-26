@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 
 namespace HT.Framework.AssetBundleEditor
@@ -15,26 +14,26 @@ namespace HT.Framework.AssetBundleEditor
         public string Name;
 
         /// <summary>
-        /// AB包中的所有资源
+        /// AB包中的所有资源路径
         /// </summary>
-        private List<FileInfo> _fileInfos;
+        private List<string> _filePaths;
 
         public BundleInfo(string name)
         {
             Name = name;
-            _fileInfos = new List<FileInfo>();
+            _filePaths = new List<string>();
         }
 
         /// <summary>
         /// AB包中的资源
         /// </summary>
-        public FileInfo this[int i]
+        public string this[int i]
         {
             get
             {
-                if (i >= 0 && i < _fileInfos.Count)
+                if (i >= 0 && i < _filePaths.Count)
                 {
-                    return _fileInfos[i];
+                    return _filePaths[i];
                 }
                 else
                 {
@@ -50,58 +49,65 @@ namespace HT.Framework.AssetBundleEditor
         {
             get
             {
-                return _fileInfos.Count;
+                return _filePaths.Count;
             }
         }
 
         /// <summary>
         /// 添加资源到AB包中
         /// </summary>
-        public void AddAsset(FileInfo asset)
+        public void AddAsset(string filePath)
         {
-            asset.Bundled = this;
-            _fileInfos.Add(asset);
-
-            for (int i = 0; i < asset.Dependencies.Count; i++)
+            FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(filePath);
+            if (file.Bundled != Name)
             {
-                FileInfo depen = asset.Dependencies[i];
-                if (!depen.IndirectBundled.ContainsKey(this))
+                file.Bundled = Name;
+                file.ReadDependenciesFile();
+                _filePaths.Add(filePath);                
+
+                for (int i = 0; i < file.Dependencies.Count; i++)
                 {
-                    depen.IndirectBundled.Add(this, 0);
+                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[i]);
+                    if (!depenFile.IndirectBundled.ContainsKey(Name))
+                    {
+                        depenFile.IndirectBundled.Add(Name, 0);
+                    }
+                    depenFile.IndirectBundled[Name] = depenFile.IndirectBundled[Name] + 1;
                 }
-                depen.IndirectBundled[this] = depen.IndirectBundled[this] + 1;
             }
 
-            AssetImporter import = AssetImporter.GetAtPath(asset.Path);
+            AssetImporter import = AssetImporter.GetAtPath(filePath);
             import.assetBundleName = Name;
         }
 
         /// <summary>
         /// 从AB包中删除资源
         /// </summary>
-        public void RemoveAsset(FileInfo asset)
+        public void RemoveAsset(string filePath)
         {
-            if (asset.Bundled == this)
+            FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(filePath);
+            if (file.Bundled == Name)
             {
-                asset.Bundled = null;
-                _fileInfos.Remove(asset);
+                file.Bundled = "";
+                file.ReadDependenciesFile();
+                _filePaths.Remove(filePath);
 
-                for (int i = 0; i < asset.Dependencies.Count; i++)
+                for (int i = 0; i < file.Dependencies.Count; i++)
                 {
-                    FileInfo depen = asset.Dependencies[i];
-                    if (!depen.IndirectBundled.ContainsKey(this))
+                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[i]);
+                    if (!depenFile.IndirectBundled.ContainsKey(Name))
                     {
                         continue;
                     }
-                    depen.IndirectBundled[this] = depen.IndirectBundled[this] - 1;
-                    if (depen.IndirectBundled[this] <= 0)
+                    depenFile.IndirectBundled[Name] = depenFile.IndirectBundled[Name] - 1;
+                    if (depenFile.IndirectBundled[Name] <= 0)
                     {
-                        depen.IndirectBundled.Remove(this);
+                        depenFile.IndirectBundled.Remove(Name);
                     }
                 }
             }
 
-            AssetImporter import = AssetImporter.GetAtPath(asset.Path);
+            AssetImporter import = AssetImporter.GetAtPath(filePath);
             import.assetBundleName = "";
         }
 
@@ -110,28 +116,30 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public void ClearAsset()
         {
-            for (int i = 0; i < _fileInfos.Count; i++)
+            for (int i = 0; i < _filePaths.Count; i++)
             {
-                _fileInfos[i].Bundled = null;
+                FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_filePaths[i]);
+                file.ReadDependenciesFile();
+                file.Bundled = "";
 
-                for (int j = 0; j < _fileInfos[i].Dependencies.Count; j++)
+                for (int j = 0; j < file.Dependencies.Count; j++)
                 {
-                    FileInfo depen = _fileInfos[i].Dependencies[j];
-                    if (!depen.IndirectBundled.ContainsKey(this))
+                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
+                    if (!depenFile.IndirectBundled.ContainsKey(Name))
                     {
                         continue;
                     }
-                    depen.IndirectBundled[this] = depen.IndirectBundled[this] - 1;
-                    if (depen.IndirectBundled[this] <= 0)
+                    depenFile.IndirectBundled[Name] = depenFile.IndirectBundled[Name] - 1;
+                    if (depenFile.IndirectBundled[Name] <= 0)
                     {
-                        depen.IndirectBundled.Remove(this);
+                        depenFile.IndirectBundled.Remove(Name);
                     }
                 }
 
-                AssetImporter import = AssetImporter.GetAtPath(_fileInfos[i].Path);
+                AssetImporter import = AssetImporter.GetAtPath(_filePaths[i]);
                 import.assetBundleName = "";
             }
-            _fileInfos.Clear();
+            _filePaths.Clear();
         }
 
         /// <summary>
@@ -139,14 +147,29 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public void RenameBundle(string name)
         {
-            AssetDatabase.RemoveAssetBundleName(Name, true);
-
-            Name = name;
-            for (int i = 0; i < _fileInfos.Count; i++)
+            for (int i = 0; i < _filePaths.Count; i++)
             {
-                AssetImporter import = AssetImporter.GetAtPath(_fileInfos[i].Path);
-                import.assetBundleName = Name;
+                FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_filePaths[i]);
+                file.ReadDependenciesFile();
+                file.Bundled = name;
+                AssetImporter import = AssetImporter.GetAtPath(_filePaths[i]);
+                import.assetBundleName = name;
+
+                for (int j = 0; j < file.Dependencies.Count; j++)
+                {
+                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
+                    if (!depenFile.IndirectBundled.ContainsKey(Name))
+                    {
+                        continue;
+                    }
+                    int number = depenFile.IndirectBundled[Name];
+                    depenFile.IndirectBundled.Remove(Name);
+                    depenFile.IndirectBundled.Add(name, number);
+                }
             }
+
+            AssetDatabase.RemoveAssetBundleName(Name, true);
+            Name = name;
         }
 
         public override string ToString()

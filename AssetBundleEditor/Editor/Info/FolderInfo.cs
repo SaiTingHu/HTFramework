@@ -5,26 +5,38 @@ namespace HT.Framework.AssetBundleEditor
     /// <summary>
     /// 资源文件夹
     /// </summary>
-    public sealed class FolderInfo : AssetInfo
+    public sealed class FolderInfo : AssetInfoBase
     {
         /// <summary>
         /// 文件夹是否展开
         /// </summary>
         public bool IsExpanding;
         /// <summary>
-        /// 文件夹是否为空
-        /// </summary>
-        public bool IsEmpty;
-        /// <summary>
         /// 文件夹内的资源
         /// </summary>
-        public List<AssetInfo> ChildAssetInfo;
+        public List<AssetInfoBase> ChildAssetInfo;
 
-        public FolderInfo(string fullPath, string name, string extension) : base(fullPath, name)
+        /// <summary>
+        /// 是否已读取子级资源
+        /// </summary>
+        private bool _isReadChildAsset = false;
+
+        public FolderInfo(string fullPath, string name) : base(fullPath, name)
         {
             IsExpanding = false;
-            IsEmpty = false;
-            ChildAssetInfo = new List<AssetInfo>();
+            ChildAssetInfo = new List<AssetInfoBase>();
+        }
+
+        /// <summary>
+        /// 读取子级资源
+        /// </summary>
+        public void ReadChildAsset()
+        {
+            if (!_isReadChildAsset)
+            {
+                _isReadChildAsset = true;
+                AssetBundleEditorUtility.ReadAssetsInChildren(this);
+            }
         }
     }
 }

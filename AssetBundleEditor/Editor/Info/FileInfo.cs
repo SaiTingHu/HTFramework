@@ -7,7 +7,7 @@ namespace HT.Framework.AssetBundleEditor
     /// <summary>
     /// 资源文件
     /// </summary>
-    public sealed class FileInfo : AssetInfo
+    public sealed class FileInfo : AssetInfoBase
     {
         /// <summary>
         /// 文件的GUID
@@ -20,19 +20,19 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 显式打入的AB包
         /// </summary>
-        public BundleInfo Bundled;
+        public string Bundled;
         /// <summary>
         /// 隐式打入的AB包
         /// </summary>
-        public Dictionary<BundleInfo, int> IndirectBundled;
+        public Dictionary<string, int> IndirectBundled;
         /// <summary>
         /// 依赖的资源文件
         /// </summary>
-        public List<FileInfo> Dependencies;
+        public List<string> Dependencies;
         /// <summary>
         /// 被依赖的资源文件
         /// </summary>
-        public List<FileInfo> BeDependencies;
+        public List<string> BeDependencies;
         /// <summary>
         /// 是否是有效资源
         /// </summary>
@@ -46,17 +46,34 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public string Extension;
 
+        /// <summary>
+        /// 是否已读取依赖资源文件
+        /// </summary>
+        private bool _isReadDependenciesFile = false;
+
         public FileInfo(string fullPath, string name, string extension) : base(fullPath, name)
         {
-            GUID = AssetDatabase.AssetPathToGUID(Path);
-            AssetType = AssetDatabase.GetMainAssetTypeAtPath(Path);
-            Bundled = null;
-            IndirectBundled = new Dictionary<BundleInfo, int>();
-            Dependencies = new List<FileInfo>();
-            BeDependencies = new List<FileInfo>();
-            IsValid = AssetBundleTool.IsValidFile(extension);
+            GUID = AssetDatabase.AssetPathToGUID(AssetPath);
+            AssetType = AssetDatabase.GetMainAssetTypeAtPath(AssetPath);
+            Bundled = "";
+            IndirectBundled = new Dictionary<string, int>();
+            Dependencies = new List<string>();
+            BeDependencies = new List<string>();
+            IsValid = AssetBundleEditorUtility.IsValidFile(extension);
             IsRedundant = false;
             Extension = extension;
+        }
+
+        /// <summary>
+        /// 读取依赖的资源文件
+        /// </summary>
+        public void ReadDependenciesFile()
+        {
+            if (!_isReadDependenciesFile)
+            {
+                _isReadDependenciesFile = true;
+                AssetBundleEditorUtility.ReadAssetDependencies(AssetPath);
+            }
         }
     }
 }

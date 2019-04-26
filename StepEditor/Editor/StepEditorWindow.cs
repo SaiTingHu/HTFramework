@@ -60,7 +60,7 @@ namespace HT.Framework
             SelectStepContent(_currentStep);
             SelectStepOperation(_currentOperation);
 
-            _background = Resources.Load<Texture>("background");
+            _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/StepEditor/Texture/background.png");
 
             _ct = FindObjectOfType<CameraTarget>();
             _mp = FindObjectOfType<MousePosition>();

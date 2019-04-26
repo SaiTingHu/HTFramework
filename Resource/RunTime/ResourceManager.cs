@@ -121,8 +121,14 @@ namespace HT.Framework
 
         private System.Collections.IEnumerator LoadCoroutine<T>(ResourceInfoBase info, Action<float> loadingAction, Action<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
         {
-            yield return _loadWait;
-            _isLoading = true;
+            if (!_isLoading)
+            {
+                _isLoading = true;
+            }
+            else
+            {
+                yield return _loadWait;
+            }
 
             UnityEngine.Object asset = null;
 
@@ -153,6 +159,7 @@ namespace HT.Framework
 #if UNITY_EDITOR
                 if (loadingAction != null)
                     loadingAction(1);
+                yield return null;
 
                 asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
                 if (!asset)
@@ -171,6 +178,7 @@ namespace HT.Framework
                 {
                     if (loadingAction != null)
                         loadingAction(1);
+                    yield return null;
 
                     asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
                     if (!asset)
@@ -188,7 +196,7 @@ namespace HT.Framework
                 else
                 {
                     UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
-                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
+                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
                     request.downloadHandler = handler;
                     request.SendWebRequest();
                     while (!request.isDone)
@@ -216,7 +224,8 @@ namespace HT.Framework
 
                             if (IsCacheAssetBundle)
                             {
-                                _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
+                                if (!_assetBundles.ContainsKey(info.AssetBundleName))
+                                    _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
                             }
                             else
                             {
