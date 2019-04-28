@@ -29,6 +29,19 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
 
+            if (_target.Mode == ResourceMode.Resource)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Resources Folder View", "Minibutton"))
+                {
+                    ResourcesFolderViewWindow window = EditorWindow.GetWindow<ResourcesFolderViewWindow>();
+                    window.titleContent.text = "Resources Folder View";
+                    window.position = new Rect(200, 200, 400, 400);
+                    window.Init();
+                    window.Show();
+                }
+                GUILayout.EndHorizontal();
+            }
             if (_target.Mode == ResourceMode.AssetBundle)
             {
                 GUILayout.BeginHorizontal();

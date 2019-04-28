@@ -331,6 +331,7 @@ namespace HT.Framework.AssetBundleEditor
 
             if (fileInfo != null)
             {
+                AssetBundleEditorUtility.IsRedundantFile(fileInfo);
                 if (_showOnlyRedundant)
                 {
                     if (!fileInfo.IsRedundant)
@@ -376,7 +377,6 @@ namespace HT.Framework.AssetBundleEditor
                     GUILayout.Label("[" + fileInfo.Bundled + "]", _prefabLabel);
                 }
 
-                AssetBundleEditorUtility.IsRedundantFile(fileInfo);
                 if (fileInfo.IsRedundant)
                 {
                     GUILayout.Label(_redundant, _brokenPrefabLabel, GUILayout.Height(20));
@@ -425,6 +425,13 @@ namespace HT.Framework.AssetBundleEditor
                     return;
                 }
                 GUI.enabled = true;
+                _assetPropertyViewHeight += 20;
+
+                GUI.Label(new Rect(5, _assetPropertyViewHeight, 330, 15), "Path: " + _currentFile.AssetPath);
+                if (GUI.Button(new Rect(340, _assetPropertyViewHeight, 50, 15), "Copy", _preButton))
+                {
+                    GUIUtility.systemCopyBuffer = _currentFile.AssetPath;
+                }
                 _assetPropertyViewHeight += 20;
 
                 if (_currentFile.Dependencies.Count > 0)
