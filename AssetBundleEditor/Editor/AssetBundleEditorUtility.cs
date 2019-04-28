@@ -12,8 +12,8 @@ namespace HT.Framework.AssetBundleEditor
             "Resources", "Editor", "Gizmos", "StreamingAssets", "Editor Default Resources",
             "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary"
         };
-        private static Dictionary<string, FileInfo> _fileInfos = new Dictionary<string, FileInfo>();
-        private static Dictionary<string, FolderInfo> _folderInfos = new Dictionary<string, FolderInfo>();
+        private static Dictionary<string, AssetFileInfo> _fileInfos = new Dictionary<string, AssetFileInfo>();
+        private static Dictionary<string, AssetFolderInfo> _folderInfos = new Dictionary<string, AssetFolderInfo>();
         private static Dictionary<string, BundleInfo> _bundleInfos = new Dictionary<string, BundleInfo>();
         /// <summary>
         /// 当前的所有AB包对象
@@ -23,7 +23,7 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 通过路径获取资源文件对象
         /// </summary>
-        public static FileInfo GetFileInfoByPath(string filePath)
+        public static AssetFileInfo GetFileInfoByPath(string filePath)
         {
             if (_fileInfos.ContainsKey(filePath))
             {
@@ -34,7 +34,7 @@ namespace HT.Framework.AssetBundleEditor
                 string fullPath = Application.dataPath + filePath.Replace("Assets", "");
                 string name = Path.GetFileName(fullPath);
                 string extension = Path.GetExtension(fullPath);
-                FileInfo file = new FileInfo(fullPath, name, extension);
+                AssetFileInfo file = new AssetFileInfo(fullPath, name, extension);
                 _fileInfos.Add(filePath, file);
                 return file;
             }
@@ -42,7 +42,7 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 通过全路径获取资源文件夹对象
         /// </summary>
-        public static FolderInfo GetFolderInfoByFullPath(string fullPath)
+        public static AssetFolderInfo GetFolderInfoByFullPath(string fullPath)
         {
             if (_folderInfos.ContainsKey(fullPath))
             {
@@ -51,7 +51,7 @@ namespace HT.Framework.AssetBundleEditor
             else
             {
                 string name = Path.GetFileName(fullPath);
-                FolderInfo folder = new FolderInfo(fullPath, name);
+                AssetFolderInfo folder = new AssetFolderInfo(fullPath, name);
                 _folderInfos.Add(fullPath, folder);
                 return folder;
             }
@@ -126,7 +126,7 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 读取资源文件夹下的子资源
         /// </summary>
-        public static void ReadAssetsInChildren(FolderInfo folder)
+        public static void ReadAssetsInChildren(AssetFolderInfo folder)
         {
             DirectoryInfo di = new DirectoryInfo(folder.FullPath);
             FileSystemInfo[] fileinfos = di.GetFileSystemInfos();
@@ -138,7 +138,7 @@ namespace HT.Framework.AssetBundleEditor
                 {
                     if (IsValidFolder(fileinfos[i].Name))
                     {
-                        FolderInfo fi = GetFolderInfoByFullPath(fileinfos[i].FullName);
+                        AssetFolderInfo fi = GetFolderInfoByFullPath(fileinfos[i].FullName);
                         folder.ChildAssetInfo.Add(fi);
                     }
                 }
@@ -146,7 +146,7 @@ namespace HT.Framework.AssetBundleEditor
                 {
                     if (fileinfos[i].Extension != ".meta")
                     {
-                        FileInfo fi = GetFileInfoByPath(GetAssetPathByFullPath(fileinfos[i].FullName));
+                        AssetFileInfo fi = GetFileInfoByPath(GetAssetPathByFullPath(fileinfos[i].FullName));
                         folder.ChildAssetInfo.Add(fi);
                     }
                 }
@@ -158,7 +158,7 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public static void ReadAssetDependencies(string filePath)
         {
-            FileInfo file = GetFileInfoByPath(filePath);
+            AssetFileInfo file = GetFileInfoByPath(filePath);
             string[] paths = AssetDatabase.GetDependencies(filePath);
             for (int i = 0; i < paths.Length; i++)
             {
@@ -167,7 +167,7 @@ namespace HT.Framework.AssetBundleEditor
                 if (filePath != paths[i])
                 {
                     file.Dependencies.Add(paths[i]);
-                    FileInfo dFile = GetFileInfoByPath(paths[i]);
+                    AssetFileInfo dFile = GetFileInfoByPath(paths[i]);
                     dFile.BeDependencies.Add(filePath);
                 }
             }
@@ -204,7 +204,7 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 判断资源文件是否是冗余资源
         /// </summary>
-        public static void IsRedundantFile(FileInfo fileInfo)
+        public static void IsRedundantFile(AssetFileInfo fileInfo)
         {
             if (fileInfo.Bundled != "")
             {
@@ -270,7 +270,26 @@ namespace HT.Framework.AssetBundleEditor
 
             BuildTarget target = (BuildTarget)EditorPrefs.GetInt(Application.productName + ".AssetBundleEditor.BuildTarget", 5);
             BuildPipeline.BuildAssetBundles(buildPath, BuildAssetBundleOptions.None, target);
-            GlobalTools.LogInfo("Build completed!");
+
+            GlobalTools.LogInfo("Build assetBundle succeeded!");
+
+            string variant = EditorPrefs.GetString(Application.productName + ".AssetBundleEditor.Variant", "");
+            if (variant != "")
+            {
+                DirectoryInfo di = new DirectoryInfo(buildPath);
+                FileSystemInfo[] fileinfos = di.GetFileSystemInfos();
+                for (int i = 0; i < fileinfos.Length; i++)
+                {
+                    FileInfo file = fileinfos[i] as FileInfo;
+                    if (file != null && file.Extension == "")
+                    {
+                        file.MoveTo(file.FullName + "." + variant);
+                    }
+                }
+            }
+
+            GlobalTools.LogInfo("Additional variant succeeded!");
+
             OpenFolder(buildPath);
         }
     }

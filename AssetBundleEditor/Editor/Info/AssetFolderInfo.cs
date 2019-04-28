@@ -5,7 +5,7 @@ namespace HT.Framework.AssetBundleEditor
     /// <summary>
     /// 资源文件夹
     /// </summary>
-    public sealed class FolderInfo : AssetInfoBase
+    public sealed class AssetFolderInfo : AssetInfoBase
     {
         /// <summary>
         /// 文件夹是否展开
@@ -21,7 +21,7 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         private bool _isReadChildAsset = false;
 
-        public FolderInfo(string fullPath, string name) : base(fullPath, name)
+        public AssetFolderInfo(string fullPath, string name) : base(fullPath, name)
         {
             IsExpanding = false;
             ChildAssetInfo = new List<AssetInfoBase>();

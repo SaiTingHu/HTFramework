@@ -7,7 +7,7 @@ namespace HT.Framework.AssetBundleEditor
     /// <summary>
     /// 资源文件
     /// </summary>
-    public sealed class FileInfo : AssetInfoBase
+    public sealed class AssetFileInfo : AssetInfoBase
     {
         /// <summary>
         /// 文件的GUID
@@ -51,7 +51,7 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         private bool _isReadDependenciesFile = false;
 
-        public FileInfo(string fullPath, string name, string extension) : base(fullPath, name)
+        public AssetFileInfo(string fullPath, string name, string extension) : base(fullPath, name)
         {
             GUID = AssetDatabase.AssetPathToGUID(AssetPath);
             AssetType = AssetDatabase.GetMainAssetTypeAtPath(AssetPath);

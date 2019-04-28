@@ -16,10 +16,10 @@ namespace HT.Framework.AssetBundleEditor
         }
 
         #region fields
-        private FolderInfo _assetRootFolder;
+        private AssetFolderInfo _assetRootFolder;
         private BundleInfo _currentAB = null;
-        private FileInfo _currentABFile = null;
-        private FileInfo _currentFile;
+        private AssetFileInfo _currentABFile = null;
+        private AssetFileInfo _currentFile;
 
         private bool _isRename = false;
         private string _renameValue = "";
@@ -49,6 +49,7 @@ namespace HT.Framework.AssetBundleEditor
 
         private bool _hideInvalidAsset = false;
         private bool _hideBundleAsset = false;
+        private bool _showOnlyRedundant = false;
 
         private string _buildPath = "";
         private BuildTarget _buildTarget = BuildTarget.StandaloneWindows;
@@ -146,6 +147,7 @@ namespace HT.Framework.AssetBundleEditor
 
             _hideInvalidAsset = GUI.Toggle(new Rect(265, 5, 100, 15), _hideInvalidAsset, "Hide Invalid");
             _hideBundleAsset = GUI.Toggle(new Rect(365, 5, 100, 15), _hideBundleAsset, "Hide Bundled");
+            _showOnlyRedundant = GUI.Toggle(new Rect(465, 5, 200, 15), _showOnlyRedundant, "Show Only Redundant");
 
             GUI.Label(new Rect(5, 25, 60, 15), "Variant:");
             _variant = EditorGUI.TextField(new Rect(70, 25, 110, 15), _variant);
@@ -270,7 +272,7 @@ namespace HT.Framework.AssetBundleEditor
             {
                 for (int i = 0; i < _currentAB.Count; i++)
                 {
-                    FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentAB[i]);
+                    AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentAB[i]);
                     if (_currentABFile == file)
                     {
                         GUI.Box(new Rect(0, _currentABViewHeight, 240, 15), "", _LRSelect);
@@ -324,14 +326,24 @@ namespace HT.Framework.AssetBundleEditor
         }
         private void AssetGUI(AssetInfoBase asset, int indentation)
         {
-            FileInfo fileInfo = asset as FileInfo;
-            FolderInfo folderInfo = asset as FolderInfo;
+            AssetFileInfo fileInfo = asset as AssetFileInfo;
+            AssetFolderInfo folderInfo = asset as AssetFolderInfo;
 
             if (fileInfo != null)
             {
-                if ((_hideInvalidAsset && !fileInfo.IsValid) || (_hideBundleAsset && fileInfo.Bundled != ""))
+                if (_showOnlyRedundant)
                 {
-                    return;
+                    if (!fileInfo.IsRedundant)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    if ((_hideInvalidAsset && !fileInfo.IsValid) || (_hideBundleAsset && fileInfo.Bundled != ""))
+                    {
+                        return;
+                    }
                 }
             }
 
@@ -423,7 +435,7 @@ namespace HT.Framework.AssetBundleEditor
                     {
                         for (int i = 0; i < _currentFile.Dependencies.Count; i++)
                         {
-                            FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentFile.Dependencies[i]);
+                            AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentFile.Dependencies[i]);
                             content = EditorGUIUtility.ObjectContent(null, file.AssetType);
                             content.text = file.Name;
                             if (GUI.Button(new Rect(45, _assetPropertyViewHeight, 350, 15), content, _prefabLabel))
@@ -445,7 +457,7 @@ namespace HT.Framework.AssetBundleEditor
                     {
                         for (int i = 0; i < _currentFile.BeDependencies.Count; i++)
                         {
-                            FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentFile.BeDependencies[i]);
+                            AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentFile.BeDependencies[i]);
                             content = EditorGUIUtility.ObjectContent(null, file.AssetType);
                             content.text = file.Name;
                             if (GUI.Button(new Rect(45, _assetPropertyViewHeight, 350, 15), content, _prefabLabel))

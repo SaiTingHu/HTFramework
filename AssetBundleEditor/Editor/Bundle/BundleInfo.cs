@@ -58,7 +58,7 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public void AddAsset(string filePath)
         {
-            FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(filePath);
+            AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(filePath);
             if (file.Bundled != Name)
             {
                 file.Bundled = Name;
@@ -67,7 +67,7 @@ namespace HT.Framework.AssetBundleEditor
 
                 for (int i = 0; i < file.Dependencies.Count; i++)
                 {
-                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[i]);
+                    AssetFileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[i]);
                     if (!depenFile.IndirectBundled.ContainsKey(Name))
                     {
                         depenFile.IndirectBundled.Add(Name, 0);
@@ -85,7 +85,7 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public void RemoveAsset(string filePath)
         {
-            FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(filePath);
+            AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(filePath);
             if (file.Bundled == Name)
             {
                 file.Bundled = "";
@@ -94,7 +94,7 @@ namespace HT.Framework.AssetBundleEditor
 
                 for (int i = 0; i < file.Dependencies.Count; i++)
                 {
-                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[i]);
+                    AssetFileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[i]);
                     if (!depenFile.IndirectBundled.ContainsKey(Name))
                     {
                         continue;
@@ -118,13 +118,13 @@ namespace HT.Framework.AssetBundleEditor
         {
             for (int i = 0; i < _filePaths.Count; i++)
             {
-                FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_filePaths[i]);
+                AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_filePaths[i]);
                 file.ReadDependenciesFile();
                 file.Bundled = "";
 
                 for (int j = 0; j < file.Dependencies.Count; j++)
                 {
-                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
+                    AssetFileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
                     if (!depenFile.IndirectBundled.ContainsKey(Name))
                     {
                         continue;
@@ -149,7 +149,7 @@ namespace HT.Framework.AssetBundleEditor
         {
             for (int i = 0; i < _filePaths.Count; i++)
             {
-                FileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_filePaths[i]);
+                AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_filePaths[i]);
                 file.ReadDependenciesFile();
                 file.Bundled = name;
                 AssetImporter import = AssetImporter.GetAtPath(_filePaths[i]);
@@ -157,7 +157,7 @@ namespace HT.Framework.AssetBundleEditor
 
                 for (int j = 0; j < file.Dependencies.Count; j++)
                 {
-                    FileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
+                    AssetFileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
                     if (!depenFile.IndirectBundled.ContainsKey(Name))
                     {
                         continue;
