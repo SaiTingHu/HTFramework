@@ -45,6 +45,8 @@ namespace HT.Framework
 
         public override void Initialization()
         {
+            base.Initialization();
+
             MainCamera = transform.GetComponentByChild<Camera>("MainCamera");
             _cameraTarget = transform.GetComponentByChild<CameraTarget>("CameraTarget");
             _mousePosition = MainCamera.GetComponent<MousePosition>();
@@ -60,11 +62,15 @@ namespace HT.Framework
 
         public override void Preparatory()
         {
+            base.Preparatory();
+
             TheControlMode = ControlMode.FreeControl;
         }
 
         public override void Refresh()
         {
+            base.Refresh();
+
             _mouseRay.Refresh();
             switch (TheControlMode)
             {

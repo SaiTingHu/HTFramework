@@ -24,7 +24,7 @@ namespace HT.Framework
             for (int i = 0; i < _resourcesFolders.Count; i++)
             {
                 GUILayout.BeginHorizontal("MeTransitionHead");
-                _resourcesFolders[i].IsExpanding = EditorGUILayout.Foldout(_resourcesFolders[i].IsExpanding, _resourcesFolders[i].AssetName, true);
+                _resourcesFolders[i].IsExpanding = EditorGUILayout.Foldout(_resourcesFolders[i].IsExpanding, string.Format("{0}  [{1}]", _resourcesFolders[i].AssetName, _resourcesFolders[i].Resources.Count), true);
                 GUILayout.EndHorizontal();
 
                 if (_resourcesFolders[i].IsExpanding)
@@ -40,6 +40,16 @@ namespace HT.Framework
                         {
                             Selection.activeObject = resource;
                             EditorGUIUtility.PingObject(resource);
+                        }
+                        if (resource.GetType() == typeof(GameObject))
+                        {
+                            GUILayout.FlexibleSpace();
+                            if (GUILayout.Button("Load to Scene", "Minibutton"))
+                            {
+                                GameObject obj = Instantiate(resource) as GameObject;
+                                Selection.activeGameObject = obj;
+                                EditorGUIUtility.PingObject(obj);
+                            }
                         }
                         GUILayout.EndHorizontal();
                     }

@@ -9,21 +9,16 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class FSMManager : ModuleManager
     {
-        private List<FSM> _fsms = new List<FSM>();
+        private Dictionary<string, FSM> _fsms = new Dictionary<string, FSM>();
 
         /// <summary>
         /// 注册状态机
         /// </summary>
         public void RegisterFSM(FSM fsm)
         {
-            if (!_fsms.Contains(fsm))
+            if (!_fsms.ContainsKey(fsm.Name))
             {
-                if (IsExistFSM(fsm.Name))
-                {
-                    GlobalTools.LogError("注册状态机失败：已存在状态机 " + fsm.Name + "！");
-                    return;
-                }
-                _fsms.Add(fsm);
+                _fsms.Add(fsm.Name, fsm);
             }
             else
             {
@@ -36,9 +31,9 @@ namespace HT.Framework
         /// </summary>
         public void UnRegisterFSM(FSM fsm)
         {
-            if (_fsms.Contains(fsm))
+            if (_fsms.ContainsKey(fsm.Name))
             {
-                _fsms.Remove(fsm);
+                _fsms.Remove(fsm.Name);
             }
             else
             {
@@ -51,7 +46,14 @@ namespace HT.Framework
         /// </summary>
         public FSM GetFSMByName(string name)
         {
-            return _fsms.Find((fsm) => { return fsm.Name == name; });
+            if (_fsms.ContainsKey(name))
+            {
+                return _fsms[name];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -59,14 +61,7 @@ namespace HT.Framework
         /// </summary>
         public bool IsExistFSM(string name)
         {
-            for (int i = 0; i < _fsms.Count; i++)
-            {
-                if (_fsms[i].Name == name)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _fsms.ContainsKey(name);
         }
     }
 }

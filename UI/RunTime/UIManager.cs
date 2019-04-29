@@ -23,6 +23,8 @@ namespace HT.Framework
 
         public override void Initialization()
         {
+            base.Initialization();
+
             _uiRoot = transform.Find("UIRoot");
             _uiRootRect = _uiRoot.rectTransform();
             _residentPanel = _uiRoot.Find("ResidentPanel");
@@ -41,6 +43,8 @@ namespace HT.Framework
 
         public override void Refresh()
         {
+            base.Refresh();
+
             foreach (KeyValuePair<Type, UILogic> ui in _UIs)
             {
                 if (ui.Value.IsOpened)
@@ -52,6 +56,8 @@ namespace HT.Framework
 
         public override void Termination()
         {
+            base.Termination();
+
             foreach (KeyValuePair<Type, UILogic> ui in _UIs)
             {
                 UILogic uiLogic = ui.Value;

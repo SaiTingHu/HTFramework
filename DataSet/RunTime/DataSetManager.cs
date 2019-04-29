@@ -15,6 +15,8 @@ namespace HT.Framework
 
         public override void Initialization()
         {
+            base.Initialization();
+
             //注册所有数据集
             Assembly assembly = Assembly.GetAssembly(typeof(DataSet));
             Type[] types = assembly.GetTypes();
@@ -26,7 +28,18 @@ namespace HT.Framework
                 }
             }
         }
-        
+
+        public override void Termination()
+        {
+            base.Termination();
+
+            foreach (KeyValuePair<Type, List<DataSet>> dataset in _dataSets)
+            {
+                dataset.Value.Clear();
+            }
+            _dataSets.Clear();
+        }
+
         /// <summary>
         /// 添加数据集至数据集仓库
         /// </summary>

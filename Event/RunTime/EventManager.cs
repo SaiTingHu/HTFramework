@@ -15,6 +15,8 @@ namespace HT.Framework
 
         public override void Initialization()
         {
+            base.Initialization();
+
             //注册所有存在的事件
             Assembly assembly = Assembly.GetAssembly(typeof(EventHandler));
             Type[] types = assembly.GetTypes();
@@ -29,6 +31,8 @@ namespace HT.Framework
 
         public override void Termination()
         {
+            base.Termination();
+
             _eventHandlerList.Clear();
         }
 

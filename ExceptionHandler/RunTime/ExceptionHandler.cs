@@ -12,7 +12,7 @@ namespace HT.Framework
     public sealed class ExceptionHandler : ModuleManager
     {
         /// <summary>
-        /// 是否作为异常处理者
+        /// 是否开启异常处理监听
         /// </summary>
         public bool IsHandler = false;
         /// <summary>
@@ -27,8 +27,10 @@ namespace HT.Framework
 
         public override void Initialization()
         {
-            LogPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + "/Log";
-            BugExePath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + "/Bug.exe";
+            base.Initialization();
+
+            LogPath = GlobalTools.GetDirectorySameLevelOfAssets("/Log");
+            BugExePath = GlobalTools.GetDirectorySameLevelOfAssets("/Bug.exe");
 
 #if !UNITY_EDITOR
             if (!Directory.Exists(LogPath))
@@ -40,6 +42,19 @@ namespace HT.Framework
             if (IsHandler)
             {
                 Application.logMessageReceived += Handler;
+            }
+#endif
+        }
+
+        public override void Termination()
+        {
+            base.Termination();
+
+#if !UNITY_EDITOR
+            //取消注册异常处理委托
+            if (IsHandler)
+            {
+                Application.logMessageReceived -= Handler;
             }
 #endif
         }

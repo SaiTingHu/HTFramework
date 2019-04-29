@@ -7,7 +7,7 @@ namespace HT.Framework.AssetBundleEditor
 {
     public static class AssetBundleEditorUtility
     {
-        private static readonly string[] _invalidFileFormats = new string[] { ".cs", ".js", ".shader", ".dll", ".db" };
+        private static readonly string[] _invalidFileFormats = new string[] { ".cs", ".js", ".shader", ".dll", ".db", ".jslib" };
         private static readonly string[] _invalidFolderName = new string[] {
             "Resources", "Editor", "Gizmos", "StreamingAssets", "Editor Default Resources",
             "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary"

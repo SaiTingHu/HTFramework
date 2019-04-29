@@ -23,6 +23,13 @@ namespace HT.Framework
         private Dictionary<string, Action<AssetBundle>> _assetBundleHandler = new Dictionary<string, Action<AssetBundle>>();
         private Dictionary<string, Action<Texture2D>> _texture2DHandler = new Dictionary<string, Action<Texture2D>>();
 
+        public override void Termination()
+        {
+            base.Termination();
+
+            ClearInterface();
+        }
+
         /// <summary>
         /// 注册接口（接口的返回值为 string）
         /// </summary>

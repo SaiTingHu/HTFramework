@@ -74,6 +74,8 @@ namespace HT.Framework
         
         public override void Refresh()
         {
+            base.Refresh();
+
             if (_ongoing)
             {
                 if (!_running)
@@ -202,6 +204,8 @@ namespace HT.Framework
 
         public override void Termination()
         {
+            base.Termination();
+
             _targets.Clear();
             _stepContents.Clear();
         }

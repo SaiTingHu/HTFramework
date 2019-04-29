@@ -16,6 +16,8 @@ namespace HT.Framework
 
         public override void Initialization()
         {
+            base.Initialization();
+
             _inputModule = new VirtualInput();
 
             //加载输入设备
@@ -39,16 +41,22 @@ namespace HT.Framework
 
         public override void Preparatory()
         {
+            base.Preparatory();
+
             _inputDevice.OnStartUp();
         }
 
         public override void Refresh()
         {
+            base.Refresh();
+
             _inputDevice.OnRun();
         }
 
         public override void Termination()
         {
+            base.Termination();
+
             _inputDevice.OnShutdown();
         }
 

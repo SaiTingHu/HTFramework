@@ -56,19 +56,18 @@ namespace HT.Framework.AssetBundleEditor
         private string _variant = "";
 
         private GUIStyle _box;
-        private GUIStyle _label;
         private GUIStyle _preButton;
         private GUIStyle _preDropDown;
         private GUIStyle _LRSelect;
         private GUIStyle _prefabLabel;
-        private GUIStyle _disabledPrefabLabel;
+        private GUIStyle _label;
         private GUIStyle _brokenPrefabLabel;
         private GUIStyle _miniButtonLeft;
         private GUIStyle _miniButtonRight;
         private GUIStyle _oLMinus;
         private GUIContent _redundant;
         #endregion
-
+        
         private void Init()
         {
             _assetRootFolder = AssetBundleEditorUtility.GetFolderInfoByFullPath(Application.dataPath);
@@ -80,12 +79,11 @@ namespace HT.Framework.AssetBundleEditor
             _variant = EditorPrefs.GetString(Application.productName + ".AssetBundleEditor.Variant", "");
 
             _box = new GUIStyle("Box");
-            _label = new GUIStyle("Label");
             _preButton = new GUIStyle("PreButton");
             _preDropDown = new GUIStyle("PreDropDown");
             _LRSelect = new GUIStyle("LODSliderRangeSelected");
             _prefabLabel = new GUIStyle("PR PrefabLabel");
-            _disabledPrefabLabel = new GUIStyle("PR DisabledPrefabLabel");
+            _label = new GUIStyle("PR Label");
             _brokenPrefabLabel = new GUIStyle("PR BrokenPrefabLabel");
             _miniButtonLeft = new GUIStyle("MiniButtonLeft");
             _miniButtonRight = new GUIStyle("MiniButtonRight");
@@ -359,19 +357,16 @@ namespace HT.Framework.AssetBundleEditor
             else
             {
                 GUI.enabled = fileInfo.IsValid;
-                GUI.color = (_currentFile == fileInfo ? Color.cyan : Color.white);
+                GUI.color = (fileInfo.IsRedundant ? Color.red : Color.white);
 
                 GUILayout.Space(10);
                 GUIContent content = EditorGUIUtility.ObjectContent(null, fileInfo.AssetType);
                 content.text = fileInfo.Name;
-                if (GUILayout.Button(content, _currentFile == fileInfo ? _prefabLabel : _disabledPrefabLabel, GUILayout.Height(20)))
+                if (GUILayout.Button(content, _currentFile == fileInfo ? _prefabLabel : _label, GUILayout.Height(20)))
                 {
                     _currentFile = fileInfo;
                 }
-
-                GUI.color = Color.white;
-                GUI.enabled = true;
-
+                
                 if (fileInfo.Bundled != "")
                 {
                     GUILayout.Label("[" + fileInfo.Bundled + "]", _prefabLabel);
@@ -381,6 +376,9 @@ namespace HT.Framework.AssetBundleEditor
                 {
                     GUILayout.Label(_redundant, _brokenPrefabLabel, GUILayout.Height(20));
                 }
+
+                GUI.color = Color.white;
+                GUI.enabled = true;
             }
             _assetViewHeight += 20;
             GUILayout.FlexibleSpace();

@@ -104,6 +104,8 @@ namespace HT.Framework
 
         public override void Termination()
         {
+            base.Termination();
+
             Clear();
         }
     }

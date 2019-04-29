@@ -34,12 +34,16 @@ namespace HT.Framework
 
         public override void Initialization()
         {
+            base.Initialization();
+
             _assetBundlePath = Application.streamingAssetsPath + "/";
             _loadWait = new WaitUntil(() => { return !_isLoading; });
         }
 
         public override void Termination()
         {
+            base.Termination();
+
             UnLoadAllAsset();
             ClearMemory();
         }

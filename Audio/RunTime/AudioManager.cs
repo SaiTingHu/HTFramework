@@ -34,12 +34,26 @@ namespace HT.Framework
 
         public override void Initialization()
         {
+            base.Initialization();
+
             _backgroundAudio = CreateAudioSource("BackgroundAudio", BackgroundPriority, BackgroundVolume);
             _singleAudio = CreateAudioSource("SingleAudio", SinglePriority, SingleVolume);
         }
 
+        public override void Termination()
+        {
+            base.Termination();
+
+            StopBackgroundMusic();
+            StopSingleSound();
+            StopAllMultipleSound();
+            StopAllWorldSound();
+        }
+
         public override void Refresh()
         {
+            base.Refresh();
+
             if (_singleSoundPlayDetector)
             {
                 if (!_singleAudio.isPlaying)
