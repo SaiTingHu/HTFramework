@@ -2,6 +2,9 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Net.Mail;
+using System.Text;
+using System.Net;
 
 namespace HT.Framework
 {
@@ -18,24 +21,42 @@ namespace HT.Framework
         /// <summary>
         /// 是否退出程序当异常发生时
         /// </summary>
-        public bool IsQuitWhenException = true;
-        
+        public bool IsQuitWhenException = false;
+        /// <summary>
+        /// 是否回发邮件当异常发生时
+        /// </summary>
+        public bool IsReportMailWhenException = false;
+        /// <summary>
+        /// 回发邮件的发送邮箱
+        /// </summary>
+        public string SendMailbox = "hutao_123456@sina.com";
+        /// <summary>
+        /// 回发邮件的发送邮箱密码
+        /// </summary>
+        public string SendMailboxPassword = "";
+        /// <summary>
+        /// 回发邮件的目标邮箱
+        /// </summary>
+        public string ReceiveMailbox = "";
+
         //异常日志保存路径（文件夹）
-        private string LogPath;
+        private string _logPath;
         //Bug反馈程序的启动路径
-        private string BugExePath;
+        private string _bugExePath;
+        //Host
+        private string _host = "smtp.sina.com";
 
         public override void Initialization()
         {
             base.Initialization();
 
-            LogPath = GlobalTools.GetDirectorySameLevelOfAssets("/Log");
-            BugExePath = GlobalTools.GetDirectorySameLevelOfAssets("/Bug.exe");
+            _logPath = GlobalTools.GetDirectorySameLevelOfAssets("/Log");
+            _bugExePath = GlobalTools.GetDirectorySameLevelOfAssets("/Bug.exe");
 
 #if !UNITY_EDITOR
-            if (!Directory.Exists(LogPath))
+            if (!Directory.Exists(_logPath))
             {
-                Directory.CreateDirectory(LogPath);
+                Directory.CreateDirectory(_logPath);
             }
 
             //注册异常处理委托
@@ -65,18 +86,16 @@ namespace HT.Framework
             {
                 OnException(logString, stackTrace, type);
 
-                string logPath = LogPath + "\\" + DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss") + ".log";
-                //打印日志
+                string logPath = _logPath + "\\" + DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss") + ".log";
                 File.AppendAllText(logPath, "[time]:" + DateTime.Now.ToString() + "\r\n");
                 File.AppendAllText(logPath, "[type]:" + type.ToString() + "\r\n");
                 File.AppendAllText(logPath, "[exception message]:" + logString + "\r\n");
                 File.AppendAllText(logPath, "[stack trace]:" + stackTrace + "\r\n");
-
-                //启动bug反馈程序
-                if (File.Exists(BugExePath))
+                
+                if (File.Exists(_bugExePath))
                 {
                     ProcessStartInfo pros = new ProcessStartInfo();
-                    pros.FileName = BugExePath;
+                    pros.FileName = _bugExePath;
                     pros.Arguments = "\"" + logPath + "\"";
                     Process pro = new Process();
                     pro.StartInfo = pros;
@@ -84,10 +103,20 @@ namespace HT.Framework
                 }
                 else
                 {
-                    File.AppendAllText(logPath, "[bug exe]:Doesn't find bug exe!path: " + BugExePath);
+                    File.AppendAllText(logPath, "[bug exe]:Doesn't find bug exe!path: " + _bugExePath + "\r\n");
                 }
 
-                //退出程序，bug反馈程序重启主程序
+                if (IsReportMailWhenException)
+                {
+                    string logContent = "";
+                    logContent += ("[time]:" + DateTime.Now.ToString() + "\r\n");
+                    logContent += ("[type]:" + type.ToString() + "\r\n");
+                    logContent += ("[exception message]:" + logString + "\r\n");
+                    logContent += ("[stack trace]:" + stackTrace + "\r\n");
+
+                    ReportMail(string.Format("{0}.Exception.{1}", Application.productName, DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss")), logContent);
+                }
+
                 if (IsQuitWhenException)
                 {
                     Application.Quit();
@@ -98,6 +127,37 @@ namespace HT.Framework
         private void OnException(string logString, string stackTrace, LogType type)
         {
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<ExceptionEvent>().Fill(logString, stackTrace, type));
+        }
+
+        /// <summary>
+        /// 回发邮件
+        /// </summary>
+        public void ReportMail(string subject, string body)
+        {
+            try
+            {
+                MailMessage mailMsg = new MailMessage();
+                mailMsg.From = new MailAddress(SendMailbox);
+                mailMsg.To.Add(new MailAddress(ReceiveMailbox));
+                mailMsg.Subject = subject;
+                mailMsg.SubjectEncoding = Encoding.UTF8;
+                mailMsg.Body = body;
+                mailMsg.BodyEncoding = Encoding.UTF8;
+                mailMsg.IsBodyHtml = true;
+
+                SmtpClient client = new SmtpClient();
+                client.Host = _host;
+                client.Port = 25;
+                client.UseDefaultCredentials = false;
+                client.Credentials = new NetworkCredential(SendMailbox, SendMailboxPassword) as ICredentialsByHost;
+                client.EnableSsl = false;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.Send(mailMsg);
+            }
+            catch (Exception e)
+            {
+                GlobalTools.LogError(e.Message);
+            }
         }
     }
 }

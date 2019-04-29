@@ -663,6 +663,23 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 制作一个PasswordField
+        /// </summary>
+        public static void PasswordField(this Editor editor, string value, out string outValue)
+        {
+            string newValue = EditorGUILayout.PasswordField(value);
+            if (value != newValue)
+            {
+                Undo.RecordObject(editor.target, "Set String");
+                outValue = newValue;
+                editor.HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
         /// 制作一个IntField
         /// </summary>
         public static void IntField(this Editor editor, int value, out int outValue)
