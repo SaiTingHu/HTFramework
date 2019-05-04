@@ -22,6 +22,7 @@ namespace HT.Framework
         private Dictionary<string, Action<string>> _stringHandler = new Dictionary<string, Action<string>>();
         private Dictionary<string, Action<AssetBundle>> _assetBundleHandler = new Dictionary<string, Action<AssetBundle>>();
         private Dictionary<string, Action<Texture2D>> _texture2DHandler = new Dictionary<string, Action<Texture2D>>();
+        private Dictionary<string, Action<AudioClip>> _audioClipHandler = new Dictionary<string, Action<AudioClip>>();
 
         public override void Termination()
         {
@@ -79,6 +80,22 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 注册接口（接口的返回值为 AudioClip）
+        /// </summary>
+        public void RegisterInterface(string name, string url, Action<AudioClip> handleAction, Action offlineHandleAction = null)
+        {
+            if (!_interfaces.ContainsKey(name))
+            {
+                _interfaces.Add(name, url);
+                _audioClipHandler.Add(name, handleAction);
+                _offlineHandler.Add(name, offlineHandleAction);
+            }
+            else
+            {
+                GlobalTools.LogError("添加接口失败：已存在名为 " + name + " 的网络接口！");
+            }
+        }
+        /// <summary>
         /// 获取接口的url
         /// </summary>
         public string GetInterface(string name)
@@ -110,6 +127,7 @@ namespace HT.Framework
             _stringHandler.Clear();
             _assetBundleHandler.Clear();
             _texture2DHandler.Clear();
+            _audioClipHandler.Clear();
         }
 
         /// <summary>
@@ -442,6 +460,121 @@ namespace HT.Framework
                 if (_texture2DHandler[interfaceName] != null)
                 {
                     _texture2DHandler[interfaceName](handler.texture);
+                }
+            }
+            else
+            {
+                GlobalTools.LogError("网络请求出错：" + request.error);
+            }
+
+            handler.Dispose();
+            request.Dispose();
+        }
+
+        /// <summary>
+        /// 发起网络请求，并处理接收到的AudioClip
+        /// </summary>
+        public void SendRequestGetAudioClip(string interfaceName, AudioType audioType, params string[] parameter)
+        {
+            if (IsExistInterface(interfaceName))
+            {
+                if (IsOfflineState)
+                {
+                    if (_offlineHandler[interfaceName] != null)
+                    {
+                        _offlineHandler[interfaceName]();
+                    }
+                }
+                else
+                {
+                    StartCoroutine(SendRequestGetAudioClipCoroutine(interfaceName, audioType, parameter));
+                }
+            }
+            else
+            {
+                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
+            }
+        }
+        private IEnumerator SendRequestGetAudioClipCoroutine(string interfaceName, AudioType audioType, params string[] parameter)
+        {
+            string url = _interfaces[interfaceName] + (parameter.Length > 0 ? ("?" + parameter[0]) : "");
+            for (int i = 1; i < parameter.Length; i++)
+            {
+                url += "&" + parameter[i];
+            }
+
+            DateTime begin = DateTime.Now;
+
+            UnityWebRequest request = UnityWebRequest.Get(url);
+            DownloadHandlerAudioClip handler = new DownloadHandlerAudioClip(url, audioType);
+            request.downloadHandler = handler;
+            yield return request.SendWebRequest();
+
+            DateTime end = DateTime.Now;
+
+            if (!request.isNetworkError && !request.isHttpError)
+            {
+                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
+                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：AudioClip 字节长度 " + handler.data.Length);
+
+                if (_audioClipHandler[interfaceName] != null)
+                {
+                    _audioClipHandler[interfaceName](handler.audioClip);
+                }
+            }
+            else
+            {
+                GlobalTools.LogError("网络请求出错：" + request.error);
+            }
+
+            handler.Dispose();
+            request.Dispose();
+        }
+        /// <summary>
+        /// 发起网络请求，并处理接收到的Texture2D
+        /// </summary>
+        public void SendRequestGetAudioClip(string interfaceName, AudioType audioType, WWWForm form)
+        {
+            if (IsExistInterface(interfaceName))
+            {
+                if (IsOfflineState)
+                {
+                    if (_offlineHandler[interfaceName] != null)
+                    {
+                        _offlineHandler[interfaceName]();
+                    }
+                }
+                else
+                {
+                    StartCoroutine(SendRequestGetAudioClipCoroutine(interfaceName, audioType, form));
+                }
+            }
+            else
+            {
+                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
+            }
+        }
+        private IEnumerator SendRequestGetAudioClipCoroutine(string interfaceName, AudioType audioType, WWWForm form)
+        {
+            string url = _interfaces[interfaceName];
+
+            DateTime begin = DateTime.Now;
+
+            UnityWebRequest request = UnityWebRequest.Post(url, form);
+            DownloadHandlerAudioClip handler = new DownloadHandlerAudioClip(url, audioType);
+            request.downloadHandler = handler;
+            yield return request.SendWebRequest();
+
+            DateTime end = DateTime.Now;
+
+            if (!request.isNetworkError && !request.isHttpError)
+            {
+                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
+                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：AudioClip 字节长度 " + handler.data.Length);
+
+                if (_audioClipHandler[interfaceName] != null)
+                {
+                    _audioClipHandler[interfaceName](handler.audioClip);
                 }
             }
             else
