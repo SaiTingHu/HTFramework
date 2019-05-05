@@ -49,6 +49,11 @@ namespace HT.Framework
                     GUILayout.Label("Receive Mail", GUILayout.Width(80));
                     this.TextField(_target.ReceiveMailbox, out _target.ReceiveMailbox);
                     GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Buffer Time", GUILayout.Width(80));
+                    this.FloatField(_target.ReportBufferTime, out _target.ReportBufferTime);
+                    GUILayout.EndHorizontal();
                 }
             }
         }

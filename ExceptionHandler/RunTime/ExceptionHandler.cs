@@ -38,6 +38,10 @@ namespace HT.Framework
         /// 回发邮件的目标邮箱
         /// </summary>
         public string ReceiveMailbox = "";
+        /// <summary>
+        /// 回发邮件缓冲时间
+        /// </summary>
+        public float ReportBufferTime = 5;
 
         //异常日志保存路径（文件夹）
         private string _logPath;
@@ -45,6 +49,8 @@ namespace HT.Framework
         private string _bugExePath;
         //Host
         private string _host = "smtp.sina.com";
+        //回发邮件缓冲计时器
+        private float _reportBufferTimer = 0;
 
         public override void Initialization()
         {
@@ -78,6 +84,16 @@ namespace HT.Framework
                 Application.logMessageReceived -= Handler;
             }
 #endif
+        }
+
+        public override void Refresh()
+        {
+            base.Refresh();
+
+            if (_reportBufferTimer > 0)
+            {
+                _reportBufferTimer -= Time.deltaTime;
+            }
         }
 
         private void Handler(string logString, string stackTrace, LogType type)
@@ -134,6 +150,12 @@ namespace HT.Framework
         /// </summary>
         public void ReportMail(string subject, string body)
         {
+            if (_reportBufferTimer > 0)
+            {
+                return;
+            }
+            _reportBufferTimer = ReportBufferTime;
+
             try
             {
                 MailMessage mailMsg = new MailMessage();

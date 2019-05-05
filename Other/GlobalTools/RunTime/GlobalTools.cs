@@ -896,6 +896,46 @@ namespace HT.Framework
                 return false;
             }
         }
+        /// <summary>
+        /// 获取枚举标记的指定的第一个特性
+        /// </summary>
+        public static T GetAttribute<T>(this Enum value) where T : Attribute
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi == null)
+            {
+                return null;
+            }
+            object[] attributes = fi.GetCustomAttributes(typeof(T), false);
+            if (attributes.Length > 0)
+            {
+                return attributes[0] as T;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 获取枚举标记的指定的第一个特性
+        /// </summary>
+        public static object GetAttribute(this Enum value, Type type)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi == null)
+            {
+                return null;
+            }
+            object[] attributes = fi.GetCustomAttributes(type, false);
+            if (attributes.Length > 0)
+            {
+                return attributes[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
         #endregion
 
         #region UGUI工具

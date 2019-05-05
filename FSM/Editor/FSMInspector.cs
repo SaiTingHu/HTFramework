@@ -84,7 +84,7 @@ namespace HT.Framework
             for (int i = 0; i < _target.StateNames.Count; i++)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label((i + 1) + "." + _target.StateNames[i]);
+                GUILayout.Label(string.Format("{0}.{1} [{2}]", i + 1, _target.StateNames[i], _target.States[i]));
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Delete", "MiniButton"))
                 {
