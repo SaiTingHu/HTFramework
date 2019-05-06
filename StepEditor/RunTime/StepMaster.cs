@@ -254,8 +254,8 @@ namespace HT.Framework
         /// <summary>
         /// 重新编译步骤内容
         /// </summary>
-        /// <param name="enabledStepIndex">启用的步骤索引列表（当为null时启用所有步骤）</param>
-        public void RecompileStepContent(List<int> enabledStepIndex = null)
+        /// <param name="prohibitStepIndex">禁用的步骤索引列表（当为null时启用所有步骤）</param>
+        public void RecompileStepContent(List<int> prohibitStepIndex = null)
         {
             if (ContentAsset)
             {
@@ -279,7 +279,7 @@ namespace HT.Framework
 
                 _stepContents.Clear();
                 //启用所有步骤
-                if (enabledStepIndex == null)
+                if (prohibitStepIndex == null)
                 {
                     for (int i = 0; i < ContentAsset.Content.Count; i++)
                     {
@@ -309,12 +309,17 @@ namespace HT.Framework
                         _stepContents.Add(content);
                     }
                 }
-                //启用 enabledStepIndex 指定的步骤
+                //禁用 prohibitStepIndex 指定的步骤
                 else
                 {
-                    for (int i = 0; i < enabledStepIndex.Count; i++)
+                    for (int i = 0; i < ContentAsset.Content.Count; i++)
                     {
-                        StepContent content = ContentAsset.Content[enabledStepIndex[i]];
+                        if (prohibitStepIndex.Contains(i + 1))
+                        {
+                            continue;
+                        }
+
+                        StepContent content = ContentAsset.Content[i];
                         if (_targets.ContainsKey(content.TargetGUID))
                         {
                             content.Target = _targets[content.TargetGUID].gameObject;

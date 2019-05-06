@@ -17,13 +17,8 @@ namespace HT.Framework
         /// </summary>
         public bool IsOfflineState = false;
 
-        private Dictionary<string, string> _interfaces = new Dictionary<string, string>();
-        private Dictionary<string, Action> _offlineHandler = new Dictionary<string, Action>();
-        private Dictionary<string, Action<string>> _stringHandler = new Dictionary<string, Action<string>>();
-        private Dictionary<string, Action<AssetBundle>> _assetBundleHandler = new Dictionary<string, Action<AssetBundle>>();
-        private Dictionary<string, Action<Texture2D>> _texture2DHandler = new Dictionary<string, Action<Texture2D>>();
-        private Dictionary<string, Action<AudioClip>> _audioClipHandler = new Dictionary<string, Action<AudioClip>>();
-
+        private Dictionary<string, WebInterface> _interfaces = new Dictionary<string, WebInterface>();
+        
         public override void Termination()
         {
             base.Termination();
@@ -32,15 +27,18 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 注册接口（接口的返回值为 string）
+        /// 注册接口（获取 string）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<string> handleAction, Action offlineHandleAction = null)
+        public void RegisterInterface(string name, string url, Action<string> handler, Action offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {
-                _interfaces.Add(name, url);
-                _stringHandler.Add(name, handleAction);
-                _offlineHandler.Add(name, offlineHandleAction);
+                WebInterfaceGetString wi = new WebInterfaceGetString();
+                wi.Name = name;
+                wi.Url = url;
+                wi.OfflineHandler = offlineHandle;
+                wi.Handler = handler;
+                _interfaces.Add(name, wi);
             }
             else
             {
@@ -48,15 +46,18 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 注册接口（接口的返回值为 AssetBundle）
+        /// 注册接口（获取 AssetBundle）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<AssetBundle> handleAction, Action offlineHandleAction = null)
+        public void RegisterInterface(string name, string url, Action<AssetBundle> handler, Action offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {
-                _interfaces.Add(name, url);
-                _assetBundleHandler.Add(name, handleAction);
-                _offlineHandler.Add(name, offlineHandleAction);
+                WebInterfaceGetAssetBundle wi = new WebInterfaceGetAssetBundle();
+                wi.Name = name;
+                wi.Url = url;
+                wi.OfflineHandler = offlineHandle;
+                wi.Handler = handler;
+                _interfaces.Add(name, wi);
             }
             else
             {
@@ -64,15 +65,18 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 注册接口（接口的返回值为 Texture2D）
+        /// 注册接口（获取 Texture2D）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<Texture2D> handleAction, Action offlineHandleAction = null)
+        public void RegisterInterface(string name, string url, Action<Texture2D> handler, Action offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {
-                _interfaces.Add(name, url);
-                _texture2DHandler.Add(name, handleAction);
-                _offlineHandler.Add(name, offlineHandleAction);
+                WebInterfaceGetTexture2D wi = new WebInterfaceGetTexture2D();
+                wi.Name = name;
+                wi.Url = url;
+                wi.OfflineHandler = offlineHandle;
+                wi.Handler = handler;
+                _interfaces.Add(name, wi);
             }
             else
             {
@@ -80,15 +84,18 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 注册接口（接口的返回值为 AudioClip）
+        /// 注册接口（获取 AudioClip）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<AudioClip> handleAction, Action offlineHandleAction = null)
+        public void RegisterInterface(string name, string url, Action<AudioClip> handler, Action offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {
-                _interfaces.Add(name, url);
-                _audioClipHandler.Add(name, handleAction);
-                _offlineHandler.Add(name, offlineHandleAction);
+                WebInterfaceGetAudioClip wi = new WebInterfaceGetAudioClip();
+                wi.Name = name;
+                wi.Url = url;
+                wi.OfflineHandler = offlineHandle;
+                wi.Handler = handler;
+                _interfaces.Add(name, wi);
             }
             else
             {
@@ -96,9 +103,9 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 获取接口的url
+        /// 通过名称获取接口
         /// </summary>
-        public string GetInterface(string name)
+        public WebInterface GetInterface(string name)
         {
             if (_interfaces.ContainsKey(name))
             {
@@ -107,7 +114,7 @@ namespace HT.Framework
             else
             {
                 GlobalTools.LogError("获取接口失败：不存在名为 " + name + " 的网络接口！");
-                return "";
+                return null;
             }
         }
         /// <summary>
@@ -118,35 +125,44 @@ namespace HT.Framework
             return _interfaces.ContainsKey(name);
         }
         /// <summary>
+        /// 取消注册接口
+        /// </summary>
+        public void UnRegisterInterface(string name)
+        {
+            if (_interfaces.ContainsKey(name))
+            {
+                _interfaces.Remove(name);
+            }
+            else
+            {
+                GlobalTools.LogError("移除接口失败：不存在名为 " + name + " 的网络接口！");
+            }
+        }
+        /// <summary>
         /// 清空所有接口
         /// </summary>
         public void ClearInterface()
         {
             _interfaces.Clear();
-            _offlineHandler.Clear();
-            _stringHandler.Clear();
-            _assetBundleHandler.Clear();
-            _texture2DHandler.Clear();
-            _audioClipHandler.Clear();
         }
-
+        
         /// <summary>
-        /// 发起网络请求，并处理接收到的string
+        /// 发起网络请求
         /// </summary>
-        public void SendRequestGetString(string interfaceName, params string[] parameter)
+        public void SendRequest(string interfaceName, params string[] parameter)
         {
             if (IsExistInterface(interfaceName))
             {
                 if (IsOfflineState)
                 {
-                    if (_offlineHandler[interfaceName] != null)
+                    if (_interfaces[interfaceName].OfflineHandler != null)
                     {
-                        _offlineHandler[interfaceName]();
+                        _interfaces[interfaceName].OfflineHandler();
                     }
                 }
                 else
                 {
-                    StartCoroutine(SendRequestGetStringCoroutine(interfaceName, parameter));
+                    StartCoroutine(SendRequestCoroutine(interfaceName, parameter));
                 }
             }
             else
@@ -154,9 +170,9 @@ namespace HT.Framework
                 GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
         }
-        private IEnumerator SendRequestGetStringCoroutine(string interfaceName, params string[] parameter)
+        private IEnumerator SendRequestCoroutine(string interfaceName, params string[] parameter)
         {
-            string url = _interfaces[interfaceName] + (parameter.Length > 0 ? ("?" + parameter[0]) : "");
+            string url = _interfaces[interfaceName].Url + (parameter.Length > 0 ? ("?" + parameter[0]) : "");
             for (int i = 1; i < parameter.Length; i++)
             {
                 url += "&" + parameter[i];
@@ -165,19 +181,17 @@ namespace HT.Framework
             DateTime begin = DateTime.Now;
 
             UnityWebRequest request = UnityWebRequest.Get(url);
+            SetDownloadHandler(request, _interfaces[interfaceName]);
             yield return request.SendWebRequest();
 
             DateTime end = DateTime.Now;
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：" + request.downloadHandler.text);
+                string info = string.Format("[{0}] 发起网络请求：{1}\r\n[{2}] 收到回复：{3}字节", begin.ToString("mm:ss:fff"), url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length);
+                GlobalTools.LogInfo(info);
 
-                if (_stringHandler[interfaceName] != null)
-                {
-                    _stringHandler[interfaceName](request.downloadHandler.text);
-                }
+                _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
             }
             else
             {
@@ -188,22 +202,22 @@ namespace HT.Framework
             request.Dispose();
         }
         /// <summary>
-        /// 发起网络请求，并处理接收到的string
+        /// 发起网络请求
         /// </summary>
-        public void SendRequestGetString(string interfaceName, WWWForm form)
+        public void SendRequest(string interfaceName, WWWForm form)
         {
             if (IsExistInterface(interfaceName))
             {
                 if (IsOfflineState)
                 {
-                    if (_offlineHandler[interfaceName] != null)
+                    if (_interfaces[interfaceName].OfflineHandler != null)
                     {
-                        _offlineHandler[interfaceName]();
+                        _interfaces[interfaceName].OfflineHandler();
                     }
                 }
                 else
                 {
-                    StartCoroutine(SendRequestGetStringCoroutine(interfaceName, form));
+                    StartCoroutine(SendRequestCoroutine(interfaceName, form));
                 }
             }
             else
@@ -211,26 +225,24 @@ namespace HT.Framework
                 GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
         }
-        private IEnumerator SendRequestGetStringCoroutine(string interfaceName, WWWForm form)
+        private IEnumerator SendRequestCoroutine(string interfaceName, WWWForm form)
         {
-            string url = _interfaces[interfaceName];
+            string url = _interfaces[interfaceName].Url;
 
             DateTime begin = DateTime.Now;
 
             UnityWebRequest request = UnityWebRequest.Post(url, form);
+            SetDownloadHandler(request, _interfaces[interfaceName]);
             yield return request.SendWebRequest();
 
             DateTime end = DateTime.Now;
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：" + request.downloadHandler.text);
+                string info = string.Format("[{0}] 发起网络请求：{1}\r\n[{2}] 收到回复：{3}字节", begin.ToString("mm:ss:fff"), url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length);
+                GlobalTools.LogInfo(info);
 
-                if (_stringHandler[interfaceName] != null)
-                {
-                    _stringHandler[interfaceName](request.downloadHandler.text);
-                }
+                _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
             }
             else
             {
@@ -241,349 +253,24 @@ namespace HT.Framework
             request.Dispose();
         }
 
-        /// <summary>
-        /// 发起网络请求，并处理接收到的AssetBundle
-        /// </summary>
-        public void SendRequestGetAssetBundle(string interfaceName, params string[] parameter)
+        private void SetDownloadHandler(UnityWebRequest request, WebInterface wi)
         {
-            if (IsExistInterface(interfaceName))
+            if (wi is WebInterfaceGetAssetBundle)
             {
-                if (IsOfflineState)
-                {
-                    if (_offlineHandler[interfaceName] != null)
-                    {
-                        _offlineHandler[interfaceName]();
-                    }
-                }
-                else
-                {
-                    StartCoroutine(SendRequestGetAssetBundleCoroutine(interfaceName, parameter));
-                }
+                request.downloadHandler = new DownloadHandlerAssetBundle(request.url, 0);
             }
-            else
+            else if (wi is WebInterfaceGetAudioClip)
             {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
+                request.downloadHandler = new DownloadHandlerAudioClip(request.url, AudioType.WAV);
             }
-        }
-        private IEnumerator SendRequestGetAssetBundleCoroutine(string interfaceName, params string[] parameter)
-        {
-            string url = _interfaces[interfaceName] + (parameter.Length > 0 ? ("?" + parameter[0]) : "");
-            for (int i = 1; i < parameter.Length; i++)
+            else if (wi is WebInterfaceGetString)
             {
-                url += "&" + parameter[i];
+                return;
             }
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Get(url);
-            DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
-            request.downloadHandler = handler;
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
+            else if (wi is WebInterfaceGetTexture2D)
             {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：AssetBundle 字节长度 " + handler.data.Length);
-
-                if (_assetBundleHandler[interfaceName] != null)
-                {
-                    _assetBundleHandler[interfaceName](handler.assetBundle);
-                }
+                request.downloadHandler = new DownloadHandlerTexture(true);
             }
-            else
-            {
-                GlobalTools.LogError("网络请求出错：" + request.error);
-            }
-
-            handler.Dispose();
-            request.Dispose();
-        }
-        /// <summary>
-        /// 发起网络请求，并处理接收到的AssetBundle
-        /// </summary>
-        public void SendRequestGetAssetBundle(string interfaceName, WWWForm form)
-        {
-            if (IsExistInterface(interfaceName))
-            {
-                if (IsOfflineState)
-                {
-                    if (_offlineHandler[interfaceName] != null)
-                    {
-                        _offlineHandler[interfaceName]();
-                    }
-                }
-                else
-                {
-                    StartCoroutine(SendRequestGetAssetBundleCoroutine(interfaceName, form));
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
-            }
-        }
-        private IEnumerator SendRequestGetAssetBundleCoroutine(string interfaceName, WWWForm form)
-        {
-            string url = _interfaces[interfaceName];
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Post(url, form);
-            DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, uint.MaxValue);
-            request.downloadHandler = handler;
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
-            {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：AssetBundle 字节长度 " + handler.data.Length);
-
-                if (_assetBundleHandler[interfaceName] != null)
-                {
-                    _assetBundleHandler[interfaceName](handler.assetBundle);
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("网络请求出错：" + request.error);
-            }
-
-            handler.Dispose();
-            request.Dispose();
-        }
-
-        /// <summary>
-        /// 发起网络请求，并处理接收到的Texture2D
-        /// </summary>
-        public void SendRequestGetTexture2D(string interfaceName, params string[] parameter)
-        {
-            if (IsExistInterface(interfaceName))
-            {
-                if (IsOfflineState)
-                {
-                    if (_offlineHandler[interfaceName] != null)
-                    {
-                        _offlineHandler[interfaceName]();
-                    }
-                }
-                else
-                {
-                    StartCoroutine(SendRequestGetTexture2DCoroutine(interfaceName, parameter));
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
-            }
-        }
-        private IEnumerator SendRequestGetTexture2DCoroutine(string interfaceName, params string[] parameter)
-        {
-            string url = _interfaces[interfaceName] + (parameter.Length > 0 ? ("?" + parameter[0]) : "");
-            for (int i = 1; i < parameter.Length; i++)
-            {
-                url += "&" + parameter[i];
-            }
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Get(url);
-            DownloadHandlerTexture handler = new DownloadHandlerTexture(true);
-            request.downloadHandler = handler;
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
-            {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：Texture2D 字节长度 " + handler.data.Length);
-
-                if (_texture2DHandler[interfaceName] != null)
-                {
-                    _texture2DHandler[interfaceName](handler.texture);
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("网络请求出错：" + request.error);
-            }
-
-            handler.Dispose();
-            request.Dispose();
-        }
-        /// <summary>
-        /// 发起网络请求，并处理接收到的Texture2D
-        /// </summary>
-        public void SendRequestGetTexture2D(string interfaceName, WWWForm form)
-        {
-            if (IsExistInterface(interfaceName))
-            {
-                if (IsOfflineState)
-                {
-                    if (_offlineHandler[interfaceName] != null)
-                    {
-                        _offlineHandler[interfaceName]();
-                    }
-                }
-                else
-                {
-                    StartCoroutine(SendRequestGetTexture2DCoroutine(interfaceName, form));
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
-            }
-        }
-        private IEnumerator SendRequestGetTexture2DCoroutine(string interfaceName, WWWForm form)
-        {
-            string url = _interfaces[interfaceName];
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Post(url, form);
-            DownloadHandlerTexture handler = new DownloadHandlerTexture(true);
-            request.downloadHandler = handler;
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
-            {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：Texture2D 字节长度 " + handler.data.Length);
-
-                if (_texture2DHandler[interfaceName] != null)
-                {
-                    _texture2DHandler[interfaceName](handler.texture);
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("网络请求出错：" + request.error);
-            }
-
-            handler.Dispose();
-            request.Dispose();
-        }
-
-        /// <summary>
-        /// 发起网络请求，并处理接收到的AudioClip
-        /// </summary>
-        public void SendRequestGetAudioClip(string interfaceName, AudioType audioType, params string[] parameter)
-        {
-            if (IsExistInterface(interfaceName))
-            {
-                if (IsOfflineState)
-                {
-                    if (_offlineHandler[interfaceName] != null)
-                    {
-                        _offlineHandler[interfaceName]();
-                    }
-                }
-                else
-                {
-                    StartCoroutine(SendRequestGetAudioClipCoroutine(interfaceName, audioType, parameter));
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
-            }
-        }
-        private IEnumerator SendRequestGetAudioClipCoroutine(string interfaceName, AudioType audioType, params string[] parameter)
-        {
-            string url = _interfaces[interfaceName] + (parameter.Length > 0 ? ("?" + parameter[0]) : "");
-            for (int i = 1; i < parameter.Length; i++)
-            {
-                url += "&" + parameter[i];
-            }
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Get(url);
-            DownloadHandlerAudioClip handler = new DownloadHandlerAudioClip(url, audioType);
-            request.downloadHandler = handler;
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
-            {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：AudioClip 字节长度 " + handler.data.Length);
-
-                if (_audioClipHandler[interfaceName] != null)
-                {
-                    _audioClipHandler[interfaceName](handler.audioClip);
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("网络请求出错：" + request.error);
-            }
-
-            handler.Dispose();
-            request.Dispose();
-        }
-        /// <summary>
-        /// 发起网络请求，并处理接收到的Texture2D
-        /// </summary>
-        public void SendRequestGetAudioClip(string interfaceName, AudioType audioType, WWWForm form)
-        {
-            if (IsExistInterface(interfaceName))
-            {
-                if (IsOfflineState)
-                {
-                    if (_offlineHandler[interfaceName] != null)
-                    {
-                        _offlineHandler[interfaceName]();
-                    }
-                }
-                else
-                {
-                    StartCoroutine(SendRequestGetAudioClipCoroutine(interfaceName, audioType, form));
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
-            }
-        }
-        private IEnumerator SendRequestGetAudioClipCoroutine(string interfaceName, AudioType audioType, WWWForm form)
-        {
-            string url = _interfaces[interfaceName];
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Post(url, form);
-            DownloadHandlerAudioClip handler = new DownloadHandlerAudioClip(url, audioType);
-            request.downloadHandler = handler;
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
-            {
-                GlobalTools.LogInfo("[" + begin.ToString("mm:ss:fff") + "] 发起网络请求：" + url + "\r\n"
-                + "[" + end.ToString("mm:ss:fff") + "] 收到回复：AudioClip 字节长度 " + handler.data.Length);
-
-                if (_audioClipHandler[interfaceName] != null)
-                {
-                    _audioClipHandler[interfaceName](handler.audioClip);
-                }
-            }
-            else
-            {
-                GlobalTools.LogError("网络请求出错：" + request.error);
-            }
-
-            handler.Dispose();
-            request.Dispose();
         }
     }
 }
