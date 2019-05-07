@@ -15,7 +15,7 @@ namespace HT.Framework.AssetBundleEditor
             abEditor.Show();
         }
 
-        #region fields
+        #region Fields
         private AssetFolderInfo _assetRootFolder;
         private BundleInfo _currentAB = null;
         private AssetFileInfo _currentABFile = null;
@@ -56,6 +56,7 @@ namespace HT.Framework.AssetBundleEditor
         private string _variant = "";
 
         private GUIStyle _box;
+        private GUIStyle _helpBox;
         private GUIStyle _preButton;
         private GUIStyle _preDropDown;
         private GUIStyle _LRSelect;
@@ -79,6 +80,7 @@ namespace HT.Framework.AssetBundleEditor
             _variant = EditorPrefs.GetString(Application.productName + ".AssetBundleEditor.Variant", "");
 
             _box = new GUIStyle("Box");
+            _helpBox = new GUIStyle("HelpBox");
             _preButton = new GUIStyle("PreButton");
             _preDropDown = new GUIStyle("PreDropDown");
             _LRSelect = new GUIStyle("LODSliderRangeSelected");
@@ -109,7 +111,7 @@ namespace HT.Framework.AssetBundleEditor
             TitleGUI();
             AssetBundlesGUI();
             CurrentAssetBundlesGUI();
-            AssetsGUI();
+            AssetFolderGUI();
             AssetPropertyGUI();
         }
         private void TitleGUI()
@@ -119,7 +121,7 @@ namespace HT.Framework.AssetBundleEditor
                 AssetBundleEditorUtility.GetBundleInfoByName("ab" + System.DateTime.Now.ToString("yyyyMMddHHmmssfff"));
             }
 
-            GUI.enabled = _currentAB != null;
+            GUI.enabled = (_currentAB != null);
 
             if (GUI.Button(new Rect(65, 5, 60, 15), "Rename", _preButton))
             {
@@ -134,7 +136,7 @@ namespace HT.Framework.AssetBundleEditor
             }
             if (GUI.Button(new Rect(185, 5, 60, 15), "Delete", _preButton))
             {
-                if (EditorUtility.DisplayDialog("Prompt", "Delete " + _currentAB + "？this will clear all assets！and this operation cannot be undone!", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Prompt", "Delete " + _currentAB + "？this will clear all assets！and this operation cannot be restore!", "Yes", "No"))
                 {
                     AssetBundleEditorUtility.DeleteBundleInfoByName(_currentAB.Name);
                     _currentAB = null;
@@ -302,7 +304,7 @@ namespace HT.Framework.AssetBundleEditor
             GUI.EndGroup();
             GUI.EndScrollView();
         }
-        private void AssetsGUI()
+        private void AssetFolderGUI()
         {
             _assetViewRect = new Rect(250, 45, (int)position.width - 255, (int)position.height - 50);
             _assetScrollRect = new Rect(250, 45, (int)position.width - 255, _assetViewHeight);
@@ -387,9 +389,9 @@ namespace HT.Framework.AssetBundleEditor
             if (folderInfo != null && folderInfo.IsExpanding)
             {
                 folderInfo.ReadChildAsset();
-                for (int i = 0; i < folderInfo.ChildAssetInfo.Count; i++)
+                for (int i = 0; i < folderInfo.ChildAsset.Count; i++)
                 {
-                    AssetGUI(folderInfo.ChildAssetInfo[i], indentation + 1);
+                    AssetGUI(folderInfo.ChildAsset[i], indentation + 1);
                 }
             }
         }
@@ -399,10 +401,12 @@ namespace HT.Framework.AssetBundleEditor
             {
                 _currentFile.ReadDependenciesFile();
 
+                GUI.color = (_currentFile.IsRedundant ? Color.red : Color.white);
+
                 _assetPropertyViewRect = new Rect((int)position.width - 420, 50, 400, 400);
                 _assetPropertyScrollRect = new Rect((int)position.width - 420, 50, 400, _assetPropertyViewHeight);
                 _assetPropertyScroll = GUI.BeginScrollView(_assetPropertyViewRect, _assetPropertyScroll, _assetPropertyScrollRect);
-                GUI.BeginGroup(_assetPropertyScrollRect, _box);
+                GUI.BeginGroup(_assetPropertyScrollRect, _helpBox);
 
                 _assetPropertyViewHeight = 5;
 
@@ -454,37 +458,23 @@ namespace HT.Framework.AssetBundleEditor
                     }
                 }
 
-                if (_currentFile.BeDependencies.Count > 0)
+                if (_currentFile.IndirectBundledRelation.Count > 0)
                 {
-                    _isShowBeDependencies = EditorGUI.Foldout(new Rect(5, _assetPropertyViewHeight, 390, 15), _isShowBeDependencies, "Be Dependencies:", true);
+                    _isShowIndirectBundled = EditorGUI.Foldout(new Rect(5, _assetPropertyViewHeight, 390, 15), _isShowIndirectBundled, "Indirect Bundled:", true);
                     _assetPropertyViewHeight += 20;
-                    if (_isShowBeDependencies)
+                    if (_isShowIndirectBundled)
                     {
-                        for (int i = 0; i < _currentFile.BeDependencies.Count; i++)
+                        foreach (KeyValuePair<string, string> bundle in _currentFile.IndirectBundledRelation)
                         {
-                            AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentFile.BeDependencies[i]);
+                            AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(bundle.Key);
                             content = EditorGUIUtility.ObjectContent(null, file.AssetType);
-                            content.text = file.Name;
+                            content.text = file.Name + "  >>  " + bundle.Value;
                             if (GUI.Button(new Rect(45, _assetPropertyViewHeight, 350, 15), content, _prefabLabel))
                             {
                                 Object obj = AssetDatabase.LoadAssetAtPath(file.AssetPath, file.AssetType);
                                 Selection.activeObject = obj;
                                 EditorGUIUtility.PingObject(obj);
                             }
-                            _assetPropertyViewHeight += 20;
-                        }
-                    }
-                }
-
-                if (_currentFile.IndirectBundled.Count > 0)
-                {
-                    _isShowIndirectBundled = EditorGUI.Foldout(new Rect(5, _assetPropertyViewHeight, 390, 15), _isShowIndirectBundled, "Indirect Bundled:", true);
-                    _assetPropertyViewHeight += 20;
-                    if (_isShowIndirectBundled)
-                    {
-                        foreach (KeyValuePair<string, int> bundle in _currentFile.IndirectBundled)
-                        {
-                            GUI.Label(new Rect(45, _assetPropertyViewHeight, 350, 15), bundle.Key + " >> " + bundle.Value, _prefabLabel);
                             _assetPropertyViewHeight += 20;
                         }
                     }
@@ -498,6 +488,8 @@ namespace HT.Framework.AssetBundleEditor
 
                 GUI.EndGroup();
                 GUI.EndScrollView();
+
+                GUI.color = Color.white;
             }
         }
     }

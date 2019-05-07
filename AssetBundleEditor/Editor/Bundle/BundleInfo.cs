@@ -73,6 +73,10 @@ namespace HT.Framework.AssetBundleEditor
                         depenFile.IndirectBundled.Add(Name, 0);
                     }
                     depenFile.IndirectBundled[Name] = depenFile.IndirectBundled[Name] + 1;
+                    if (!depenFile.IndirectBundledRelation.ContainsKey(filePath))
+                    {
+                        depenFile.IndirectBundledRelation.Add(filePath, Name);
+                    }
                 }
             }
 
@@ -81,7 +85,7 @@ namespace HT.Framework.AssetBundleEditor
         }
 
         /// <summary>
-        /// 从AB包中删除资源
+        /// 从AB包中移除资源
         /// </summary>
         public void RemoveAsset(string filePath)
         {
@@ -95,14 +99,17 @@ namespace HT.Framework.AssetBundleEditor
                 for (int i = 0; i < file.Dependencies.Count; i++)
                 {
                     AssetFileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[i]);
-                    if (!depenFile.IndirectBundled.ContainsKey(Name))
+                    if (depenFile.IndirectBundled.ContainsKey(Name))
                     {
-                        continue;
+                        depenFile.IndirectBundled[Name] = depenFile.IndirectBundled[Name] - 1;
+                        if (depenFile.IndirectBundled[Name] <= 0)
+                        {
+                            depenFile.IndirectBundled.Remove(Name);
+                        }
                     }
-                    depenFile.IndirectBundled[Name] = depenFile.IndirectBundled[Name] - 1;
-                    if (depenFile.IndirectBundled[Name] <= 0)
+                    if (depenFile.IndirectBundledRelation.ContainsKey(filePath))
                     {
-                        depenFile.IndirectBundled.Remove(Name);
+                        depenFile.IndirectBundledRelation.Remove(filePath);
                     }
                 }
             }
@@ -116,30 +123,10 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public void ClearAsset()
         {
-            for (int i = 0; i < _filePaths.Count; i++)
+            while (_filePaths.Count > 0)
             {
-                AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_filePaths[i]);
-                file.ReadDependenciesFile();
-                file.Bundled = "";
-
-                for (int j = 0; j < file.Dependencies.Count; j++)
-                {
-                    AssetFileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
-                    if (!depenFile.IndirectBundled.ContainsKey(Name))
-                    {
-                        continue;
-                    }
-                    depenFile.IndirectBundled[Name] = depenFile.IndirectBundled[Name] - 1;
-                    if (depenFile.IndirectBundled[Name] <= 0)
-                    {
-                        depenFile.IndirectBundled.Remove(Name);
-                    }
-                }
-
-                AssetImporter import = AssetImporter.GetAtPath(_filePaths[i]);
-                import.assetBundleName = "";
+                RemoveAsset(_filePaths[0]);
             }
-            _filePaths.Clear();
         }
 
         /// <summary>
@@ -158,13 +145,16 @@ namespace HT.Framework.AssetBundleEditor
                 for (int j = 0; j < file.Dependencies.Count; j++)
                 {
                     AssetFileInfo depenFile = AssetBundleEditorUtility.GetFileInfoByPath(file.Dependencies[j]);
-                    if (!depenFile.IndirectBundled.ContainsKey(Name))
+                    if (depenFile.IndirectBundled.ContainsKey(Name))
                     {
-                        continue;
+                        int number = depenFile.IndirectBundled[Name];
+                        depenFile.IndirectBundled.Remove(Name);
+                        depenFile.IndirectBundled.Add(name, number);
                     }
-                    int number = depenFile.IndirectBundled[Name];
-                    depenFile.IndirectBundled.Remove(Name);
-                    depenFile.IndirectBundled.Add(name, number);
+                    if (depenFile.IndirectBundledRelation.ContainsKey(_filePaths[i]))
+                    {
+                        depenFile.IndirectBundledRelation[_filePaths[i]] = name;
+                    }
                 }
             }
 
@@ -174,7 +164,7 @@ namespace HT.Framework.AssetBundleEditor
 
         public override string ToString()
         {
-            return Name;
+            return string.Format("{0} [Asset {1}]", Name, _filePaths.Count);
         }
     }
 }

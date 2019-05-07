@@ -14,7 +14,7 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 文件夹内的资源
         /// </summary>
-        public List<AssetInfoBase> ChildAssetInfo;
+        public List<AssetInfoBase> ChildAsset;
 
         /// <summary>
         /// 是否已读取子级资源
@@ -24,7 +24,7 @@ namespace HT.Framework.AssetBundleEditor
         public AssetFolderInfo(string fullPath, string name) : base(fullPath, name)
         {
             IsExpanding = false;
-            ChildAssetInfo = new List<AssetInfoBase>();
+            ChildAsset = new List<AssetInfoBase>();
         }
 
         /// <summary>
@@ -37,6 +37,11 @@ namespace HT.Framework.AssetBundleEditor
                 _isReadChildAsset = true;
                 AssetBundleEditorUtility.ReadAssetsInChildren(this);
             }
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

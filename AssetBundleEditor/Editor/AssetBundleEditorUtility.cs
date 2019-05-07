@@ -15,6 +15,7 @@ namespace HT.Framework.AssetBundleEditor
         private static Dictionary<string, AssetFileInfo> _fileInfos = new Dictionary<string, AssetFileInfo>();
         private static Dictionary<string, AssetFolderInfo> _folderInfos = new Dictionary<string, AssetFolderInfo>();
         private static Dictionary<string, BundleInfo> _bundleInfos = new Dictionary<string, BundleInfo>();
+
         /// <summary>
         /// 当前的所有AB包对象
         /// </summary>
@@ -91,11 +92,14 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public static void DeleteBundleInfoByName(string bundleName)
         {
-            BundleInfo bundle = GetBundleInfoByName(bundleName);
-            bundle.ClearAsset();
-            _bundleInfos.Remove(bundleName);
-            BundleInfosList.Remove(bundle);
-            AssetDatabase.RemoveAssetBundleName(bundleName, true);
+            if (_bundleInfos.ContainsKey(bundleName))
+            {
+                BundleInfo bundle = _bundleInfos[bundleName];
+                bundle.ClearAsset();
+                _bundleInfos.Remove(bundleName);
+                BundleInfosList.Remove(bundle);
+                AssetDatabase.RemoveAssetBundleName(bundleName, true);
+            }
         }
         /// <summary>
         /// 是否已存在指定的AB包对象
@@ -104,6 +108,7 @@ namespace HT.Framework.AssetBundleEditor
         {
             return _bundleInfos.ContainsKey(bundleName);
         }
+
         /// <summary>
         /// 读取AB包配置信息
         /// </summary>
@@ -139,7 +144,7 @@ namespace HT.Framework.AssetBundleEditor
                     if (IsValidFolder(fileinfos[i].Name))
                     {
                         AssetFolderInfo fi = GetFolderInfoByFullPath(fileinfos[i].FullName);
-                        folder.ChildAssetInfo.Add(fi);
+                        folder.ChildAsset.Add(fi);
                     }
                 }
                 else
@@ -147,7 +152,7 @@ namespace HT.Framework.AssetBundleEditor
                     if (fileinfos[i].Extension != ".meta")
                     {
                         AssetFileInfo fi = GetFileInfoByPath(GetAssetPathByFullPath(fileinfos[i].FullName));
-                        folder.ChildAssetInfo.Add(fi);
+                        folder.ChildAsset.Add(fi);
                     }
                 }
             }
@@ -167,14 +172,13 @@ namespace HT.Framework.AssetBundleEditor
                 if (filePath != paths[i])
                 {
                     file.Dependencies.Add(paths[i]);
-                    AssetFileInfo dFile = GetFileInfoByPath(paths[i]);
-                    dFile.BeDependencies.Add(filePath);
                 }
             }
             EditorUtility.ClearProgressBar();
         }
+
         /// <summary>
-        /// 是否是有效的文件夹
+        /// 通过文件夹名判断是否是有效的文件夹
         /// </summary>
         public static bool IsValidFolder(string folderName)
         {
@@ -216,7 +220,7 @@ namespace HT.Framework.AssetBundleEditor
                 {
                     fileInfo.IsRedundant = !fileInfo.IndirectBundled.ContainsKey(fileInfo.Bundled);
                 }
-                else
+                else if (fileInfo.IndirectBundled.Count > 1)
                 {
                     fileInfo.IsRedundant = true;
                 }
@@ -226,6 +230,7 @@ namespace HT.Framework.AssetBundleEditor
                 fileInfo.IsRedundant = fileInfo.IndirectBundled.Count > 1;
             }
         }
+
         /// <summary>
         /// 通过资源全路径获取资源路径
         /// </summary>
@@ -255,6 +260,7 @@ namespace HT.Framework.AssetBundleEditor
             _bundleInfos.Clear();
             BundleInfosList.Clear();
         }
+
         /// <summary>
         /// 打包资源
         /// </summary>

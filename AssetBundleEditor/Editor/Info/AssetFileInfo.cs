@@ -10,10 +10,6 @@ namespace HT.Framework.AssetBundleEditor
     public sealed class AssetFileInfo : AssetInfoBase
     {
         /// <summary>
-        /// 文件的GUID
-        /// </summary>
-        public string GUID;
-        /// <summary>
         /// 文件类型
         /// </summary>
         public Type AssetType;
@@ -22,17 +18,17 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public string Bundled;
         /// <summary>
-        /// 隐式打入的AB包
+        /// 隐式打入的AB包【AB包名称，打入次数】
         /// </summary>
         public Dictionary<string, int> IndirectBundled;
+        /// <summary>
+        /// 隐式打入的AB包关系【被隐式打入的依赖资源路径，AB包名称】
+        /// </summary>
+        public Dictionary<string, string> IndirectBundledRelation;
         /// <summary>
         /// 依赖的资源文件
         /// </summary>
         public List<string> Dependencies;
-        /// <summary>
-        /// 被依赖的资源文件
-        /// </summary>
-        public List<string> BeDependencies;
         /// <summary>
         /// 是否是有效资源
         /// </summary>
@@ -53,12 +49,11 @@ namespace HT.Framework.AssetBundleEditor
 
         public AssetFileInfo(string fullPath, string name, string extension) : base(fullPath, name)
         {
-            GUID = AssetDatabase.AssetPathToGUID(AssetPath);
             AssetType = AssetDatabase.GetMainAssetTypeAtPath(AssetPath);
             Bundled = "";
             IndirectBundled = new Dictionary<string, int>();
+            IndirectBundledRelation = new Dictionary<string, string>();
             Dependencies = new List<string>();
-            BeDependencies = new List<string>();
             IsValid = AssetBundleEditorUtility.IsValidFile(extension);
             IsRedundant = false;
             Extension = extension;
@@ -74,6 +69,11 @@ namespace HT.Framework.AssetBundleEditor
                 _isReadDependenciesFile = true;
                 AssetBundleEditorUtility.ReadAssetDependencies(AssetPath);
             }
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }
