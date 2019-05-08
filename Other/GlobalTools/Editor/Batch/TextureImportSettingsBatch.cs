@@ -43,7 +43,7 @@ namespace HT.Framework
             EditorGUILayout.EndHorizontal();
             
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Set"))
+            if (GUILayout.Button("Set All"))
             {
                 _number = 0;
                 Object[] textures = Selection.GetFiltered<Texture2D>(SelectionMode.DeepAssets);

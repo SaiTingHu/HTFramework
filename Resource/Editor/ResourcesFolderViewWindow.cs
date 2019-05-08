@@ -34,7 +34,7 @@ namespace HT.Framework
                         Object resource = _resourcesFolders[i].Resources[j];
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
-                        GUIContent content = EditorGUIUtility.ObjectContent(null, resource.GetType());
+                        GUIContent content = EditorGUIUtility.ObjectContent(resource, resource.GetType());
                         content.text = resource.name;
                         if (GUILayout.Button(content, "PR PrefabLabel", GUILayout.Height(20)))
                         {
@@ -66,7 +66,7 @@ namespace HT.Framework
         private void OnDestroy()
         {
             _resourcesFolders.Clear();
-            Resources.UnloadUnusedAssets();
+            EditorUtility.UnloadUnusedAssetsImmediate();
             System.GC.Collect();
         }
         private void SearchResourcesFolder(string folderPath)

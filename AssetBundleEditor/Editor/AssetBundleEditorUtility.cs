@@ -20,6 +20,16 @@ namespace HT.Framework.AssetBundleEditor
         /// 当前的所有AB包对象
         /// </summary>
         public static List<BundleInfo> BundleInfosList { get; } = new List<BundleInfo>();
+        /// <summary>
+        /// 当前的所有资源文件对象
+        /// </summary>
+        public static Dictionary<string, AssetFileInfo> FileInfos
+        {
+            get
+            {
+                return _fileInfos;
+            }
+        }
 
         /// <summary>
         /// 通过路径获取资源文件对象
@@ -204,31 +214,6 @@ namespace HT.Framework.AssetBundleEditor
                 }
             }
             return true;
-        }
-        /// <summary>
-        /// 判断资源文件是否是冗余资源
-        /// </summary>
-        public static void IsRedundantFile(AssetFileInfo fileInfo)
-        {
-            if (fileInfo.Bundled != "")
-            {
-                if (fileInfo.IndirectBundled.Count < 1)
-                {
-                    fileInfo.IsRedundant = false;
-                }
-                else if (fileInfo.IndirectBundled.Count == 1)
-                {
-                    fileInfo.IsRedundant = !fileInfo.IndirectBundled.ContainsKey(fileInfo.Bundled);
-                }
-                else if (fileInfo.IndirectBundled.Count > 1)
-                {
-                    fileInfo.IsRedundant = true;
-                }
-            }
-            else
-            {
-                fileInfo.IsRedundant = fileInfo.IndirectBundled.Count > 1;
-            }
         }
 
         /// <summary>

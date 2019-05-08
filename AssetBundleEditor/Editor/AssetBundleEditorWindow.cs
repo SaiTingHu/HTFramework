@@ -44,7 +44,6 @@ namespace HT.Framework.AssetBundleEditor
         private Vector2 _assetPropertyScroll;
         private int _assetPropertyViewHeight = 0;
         private bool _isShowDependencies = false;
-        private bool _isShowBeDependencies = false;
         private bool _isShowIndirectBundled = false;
 
         private bool _hideInvalidAsset = false;
@@ -66,6 +65,7 @@ namespace HT.Framework.AssetBundleEditor
         private GUIStyle _miniButtonLeft;
         private GUIStyle _miniButtonRight;
         private GUIStyle _oLMinus;
+        private GUIStyle _assetLabel;
         private GUIContent _redundant;
         #endregion
         
@@ -90,6 +90,7 @@ namespace HT.Framework.AssetBundleEditor
             _miniButtonLeft = new GUIStyle("MiniButtonLeft");
             _miniButtonRight = new GUIStyle("MiniButtonRight");
             _oLMinus = new GUIStyle("OL Minus");
+            _assetLabel = new GUIStyle("AssetLabel");
             _redundant = EditorGUIUtility.IconContent("lightMeter/redLight");
             _redundant.text = "Redundant";
         }
@@ -103,7 +104,7 @@ namespace HT.Framework.AssetBundleEditor
         private void OnDestroy()
         {
             AssetBundleEditorUtility.ClearData();
-            Resources.UnloadUnusedAssets();
+            EditorUtility.UnloadUnusedAssetsImmediate();
             System.GC.Collect();
         }
         private void OnGUI()
@@ -114,6 +115,7 @@ namespace HT.Framework.AssetBundleEditor
             AssetFolderGUI();
             AssetPropertyGUI();
         }
+
         private void TitleGUI()
         {
             if (GUI.Button(new Rect(5, 5, 60, 15), "Create", _preButton))
@@ -270,6 +272,13 @@ namespace HT.Framework.AssetBundleEditor
 
             if (_currentAB != null)
             {
+                GUI.Button(new Rect(0, 0, 160, 20), _currentAB.Name, _preButton);
+                if (GUI.Button(new Rect(160, 0, 80, 20), _currentAB.MemorySizeFormat, _preDropDown))
+                {
+                    _currentAB.ChangeSortMode();
+                }
+                _currentABViewHeight += 20;
+
                 for (int i = 0; i < _currentAB.Count; i++)
                 {
                     AssetFileInfo file = AssetBundleEditorUtility.GetFileInfoByPath(_currentAB[i]);
@@ -279,14 +288,14 @@ namespace HT.Framework.AssetBundleEditor
                     }
                     GUIContent content = EditorGUIUtility.ObjectContent(null, file.AssetType);
                     content.text = file.Name;
-                    if (GUI.Button(new Rect(5, _currentABViewHeight, 205, 15), content, _prefabLabel))
+                    if (GUI.Button(new Rect(5, _currentABViewHeight, 150, 15), content, _prefabLabel))
                     {
                         _currentABFile = file;
-                        Object obj = AssetDatabase.LoadAssetAtPath(_currentABFile.AssetPath, _currentABFile.AssetType);
-                        Selection.activeObject = obj;
-                        EditorGUIUtility.PingObject(obj);
+                        Selection.activeObject = _currentABFile.AssetObject;
+                        EditorGUIUtility.PingObject(_currentABFile.AssetObject);
                     }
-                    if (GUI.Button(new Rect(215, _currentABViewHeight, 20, 15), "", _oLMinus))
+                    GUI.Label(new Rect(160, _currentABViewHeight, 60, 15), file.MemorySizeFormat, _assetLabel);
+                    if (GUI.Button(new Rect(220, _currentABViewHeight, 20, 15), "", _oLMinus))
                     {
                         _currentAB.RemoveAsset(_currentAB[i]);
                         _currentABFile = null;
@@ -313,7 +322,14 @@ namespace HT.Framework.AssetBundleEditor
 
             _assetViewHeight = 5;
 
-            AssetGUI(_assetRootFolder, 0);
+            if (_showOnlyRedundant)
+            {
+                RedundantAssetGUI();
+            }
+            else
+            {
+                AssetGUI(_assetRootFolder, 0);
+            }
 
             _assetViewHeight += 20;
             if (_assetViewHeight < _assetViewRect.height)
@@ -323,77 +339,6 @@ namespace HT.Framework.AssetBundleEditor
 
             GUI.EndGroup();
             GUI.EndScrollView();
-        }
-        private void AssetGUI(AssetInfoBase asset, int indentation)
-        {
-            AssetFileInfo fileInfo = asset as AssetFileInfo;
-            AssetFolderInfo folderInfo = asset as AssetFolderInfo;
-
-            if (fileInfo != null)
-            {
-                AssetBundleEditorUtility.IsRedundantFile(fileInfo);
-                if (_showOnlyRedundant)
-                {
-                    if (!fileInfo.IsRedundant)
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    if ((_hideInvalidAsset && !fileInfo.IsValid) || (_hideBundleAsset && fileInfo.Bundled != ""))
-                    {
-                        return;
-                    }
-                }
-            }
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(indentation * 20 + 5);
-            if (folderInfo != null)
-            {
-                GUIContent content = EditorGUIUtility.IconContent("Folder Icon");
-                content.text = folderInfo.Name;
-                folderInfo.IsExpanding = EditorGUILayout.Foldout(folderInfo.IsExpanding, content, true);
-            }
-            else
-            {
-                GUI.enabled = fileInfo.IsValid;
-                GUI.color = (fileInfo.IsRedundant ? Color.red : Color.white);
-
-                GUILayout.Space(10);
-                GUIContent content = EditorGUIUtility.ObjectContent(null, fileInfo.AssetType);
-                content.text = fileInfo.Name;
-                if (GUILayout.Button(content, _currentFile == fileInfo ? _prefabLabel : _label, GUILayout.Height(20)))
-                {
-                    _currentFile = fileInfo;
-                }
-                
-                if (fileInfo.Bundled != "")
-                {
-                    GUILayout.Label("[" + fileInfo.Bundled + "]", _prefabLabel);
-                }
-
-                if (fileInfo.IsRedundant)
-                {
-                    GUILayout.Label(_redundant, _brokenPrefabLabel, GUILayout.Height(20));
-                }
-
-                GUI.color = Color.white;
-                GUI.enabled = true;
-            }
-            _assetViewHeight += 20;
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            if (folderInfo != null && folderInfo.IsExpanding)
-            {
-                folderInfo.ReadChildAsset();
-                for (int i = 0; i < folderInfo.ChildAsset.Count; i++)
-                {
-                    AssetGUI(folderInfo.ChildAsset[i], indentation + 1);
-                }
-            }
         }
         private void AssetPropertyGUI()
         {
@@ -415,9 +360,8 @@ namespace HT.Framework.AssetBundleEditor
                 GUI.Label(new Rect(5, _assetPropertyViewHeight, 40, 15), "Asset:");
                 if (GUI.Button(new Rect(50, _assetPropertyViewHeight, 280, 15), content, _prefabLabel))
                 {
-                    Object obj = AssetDatabase.LoadAssetAtPath(_currentFile.AssetPath, _currentFile.AssetType);
-                    Selection.activeObject = obj;
-                    EditorGUIUtility.PingObject(obj);
+                    Selection.activeObject = _currentFile.AssetObject;
+                    EditorGUIUtility.PingObject(_currentFile.AssetObject);
                 }
                 GUI.enabled = (_currentAB != null && _currentFile.Bundled == "");
                 if (GUI.Button(new Rect(340, _assetPropertyViewHeight, 50, 15), "Bundle", _preButton))
@@ -449,9 +393,8 @@ namespace HT.Framework.AssetBundleEditor
                             content.text = file.Name;
                             if (GUI.Button(new Rect(45, _assetPropertyViewHeight, 350, 15), content, _prefabLabel))
                             {
-                                Object obj = AssetDatabase.LoadAssetAtPath(file.AssetPath, file.AssetType);
-                                Selection.activeObject = obj;
-                                EditorGUIUtility.PingObject(obj);
+                                Selection.activeObject = file.AssetObject;
+                                EditorGUIUtility.PingObject(file.AssetObject);
                             }
                             _assetPropertyViewHeight += 20;
                         }
@@ -471,9 +414,8 @@ namespace HT.Framework.AssetBundleEditor
                             content.text = file.Name + "  >>  " + bundle.Value;
                             if (GUI.Button(new Rect(45, _assetPropertyViewHeight, 350, 15), content, _prefabLabel))
                             {
-                                Object obj = AssetDatabase.LoadAssetAtPath(file.AssetPath, file.AssetType);
-                                Selection.activeObject = obj;
-                                EditorGUIUtility.PingObject(obj);
+                                Selection.activeObject = file.AssetObject;
+                                EditorGUIUtility.PingObject(file.AssetObject);
                             }
                             _assetPropertyViewHeight += 20;
                         }
@@ -490,6 +432,101 @@ namespace HT.Framework.AssetBundleEditor
                 GUI.EndScrollView();
 
                 GUI.color = Color.white;
+            }
+        }
+
+        private void AssetGUI(AssetInfoBase asset, int indentation)
+        {
+            AssetFileInfo fileInfo = asset as AssetFileInfo;
+            AssetFolderInfo folderInfo = asset as AssetFolderInfo;
+
+            if (fileInfo != null)
+            {
+                if ((_hideInvalidAsset && !fileInfo.IsValid) || (_hideBundleAsset && fileInfo.Bundled != ""))
+                {
+                    return;
+                }
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(indentation * 20 + 5);
+            if (folderInfo != null)
+            {
+                GUIContent content = EditorGUIUtility.IconContent("Folder Icon");
+                content.text = folderInfo.Name;
+                folderInfo.IsExpanding = EditorGUILayout.Foldout(folderInfo.IsExpanding, content, true);
+            }
+            else
+            {
+                GUI.enabled = fileInfo.IsValid;
+                GUI.color = (_currentFile == fileInfo ? Color.cyan : (fileInfo.IsRedundant ? Color.red : Color.white));
+
+                GUILayout.Space(10);
+                GUIContent content = EditorGUIUtility.ObjectContent(null, fileInfo.AssetType);
+                content.text = fileInfo.Name;
+                if (GUILayout.Button(content, _prefabLabel, GUILayout.Height(20)))
+                {
+                    _currentFile = fileInfo;
+                }
+
+                if (fileInfo.Bundled != "")
+                {
+                    GUILayout.Label("[" + fileInfo.Bundled + "]", _prefabLabel);
+                }
+
+                GUI.color = Color.white;
+                GUI.enabled = true;
+
+                if (fileInfo.IsRedundant)
+                {
+                    GUILayout.Label(_redundant, _brokenPrefabLabel, GUILayout.Height(20));
+                }
+            }
+            _assetViewHeight += 20;
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            if (folderInfo != null && folderInfo.IsExpanding)
+            {
+                folderInfo.ReadChildAsset();
+                for (int i = 0; i < folderInfo.ChildAsset.Count; i++)
+                {
+                    AssetGUI(folderInfo.ChildAsset[i], indentation + 1);
+                }
+            }
+        }
+        private void RedundantAssetGUI()
+        {
+            foreach (KeyValuePair<string, AssetFileInfo> file in AssetBundleEditorUtility.FileInfos)
+            {
+                if (file.Value.IsRedundant)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(5);
+
+                    GUI.color = (_currentFile == file.Value ? Color.cyan : Color.red);
+
+                    GUILayout.Space(10);
+                    GUIContent content = EditorGUIUtility.ObjectContent(null, file.Value.AssetType);
+                    content.text = file.Value.Name;
+                    if (GUILayout.Button(content, _prefabLabel, GUILayout.Height(20)))
+                    {
+                        _currentFile = file.Value;
+                    }
+
+                    if (file.Value.Bundled != "")
+                    {
+                        GUILayout.Label("[" + file.Value.Bundled + "]", _prefabLabel);
+                    }
+                    
+                    GUI.color = Color.white;
+
+                    GUILayout.Label(_redundant, _brokenPrefabLabel, GUILayout.Height(20));
+
+                    _assetViewHeight += 20;
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                }
             }
         }
     }

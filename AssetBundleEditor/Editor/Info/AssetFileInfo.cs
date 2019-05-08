@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 
 namespace HT.Framework.AssetBundleEditor
@@ -13,6 +14,18 @@ namespace HT.Framework.AssetBundleEditor
         /// 文件类型
         /// </summary>
         public Type AssetType;
+        /// <summary>
+        /// 文件对象
+        /// </summary>
+        public UnityEngine.Object AssetObject;
+        /// <summary>
+        /// 文件占硬盘内存大小
+        /// </summary>
+        public long MemorySize;
+        /// <summary>
+        /// 文件占硬盘内存大小（显示格式）
+        /// </summary>
+        public string MemorySizeFormat;
         /// <summary>
         /// 显式打入的AB包
         /// </summary>
@@ -50,6 +63,9 @@ namespace HT.Framework.AssetBundleEditor
         public AssetFileInfo(string fullPath, string name, string extension) : base(fullPath, name)
         {
             AssetType = AssetDatabase.GetMainAssetTypeAtPath(AssetPath);
+            AssetObject = AssetDatabase.LoadAssetAtPath(AssetPath, AssetType);
+            MemorySize = new FileInfo(FullPath).Length;
+            MemorySizeFormat = EditorUtility.FormatBytes(MemorySize);
             Bundled = "";
             IndirectBundled = new Dictionary<string, int>();
             IndirectBundledRelation = new Dictionary<string, string>();
@@ -68,6 +84,32 @@ namespace HT.Framework.AssetBundleEditor
             {
                 _isReadDependenciesFile = true;
                 AssetBundleEditorUtility.ReadAssetDependencies(AssetPath);
+            }
+        }
+
+        /// <summary>
+        /// 刷新冗余状态
+        /// </summary>
+        public void UpdateRedundantState()
+        {
+            if (Bundled != "")
+            {
+                if (IndirectBundled.Count < 1)
+                {
+                    IsRedundant = false;
+                }
+                else if (IndirectBundled.Count == 1)
+                {
+                    IsRedundant = !IndirectBundled.ContainsKey(Bundled);
+                }
+                else if (IndirectBundled.Count > 1)
+                {
+                    IsRedundant = true;
+                }
+            }
+            else
+            {
+                IsRedundant = IndirectBundled.Count > 1;
             }
         }
 
