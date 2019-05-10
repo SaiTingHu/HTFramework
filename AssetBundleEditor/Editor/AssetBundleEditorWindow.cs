@@ -75,9 +75,9 @@ namespace HT.Framework.AssetBundleEditor
             
             AssetBundleEditorUtility.ReadAssetBundleConfig();
 
-            _buildPath = EditorPrefs.GetString(Application.productName + ".AssetBundleEditor.BuildPath", Application.streamingAssetsPath);
-            _buildTarget = (BuildTarget)EditorPrefs.GetInt(Application.productName + ".AssetBundleEditor.BuildTarget", 5);
-            _variant = EditorPrefs.GetString(Application.productName + ".AssetBundleEditor.Variant", "");
+            _buildPath = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_BuildPath, Application.streamingAssetsPath);
+            _buildTarget = (BuildTarget)EditorPrefs.GetInt(EditorPrefsTable.AssetBundleEditor_BuildTarget, 5);
+            _variant = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_Variant, "");
 
             _box = new GUIStyle("Box");
             _helpBox = new GUIStyle("HelpBox");
@@ -155,7 +155,7 @@ namespace HT.Framework.AssetBundleEditor
             _variant = EditorGUI.TextField(new Rect(70, 25, 110, 15), _variant);
             if (GUI.Button(new Rect(185, 25, 60, 15), "Apply", _preButton))
             {
-                EditorPrefs.SetString(Application.productName + ".AssetBundleEditor.Variant", _variant);
+                EditorPrefs.SetString(EditorPrefsTable.AssetBundleEditor_Variant, _variant);
             }
 
             if (GUI.Button(new Rect(250, 25, 60, 15), "Open", _preButton))
@@ -168,7 +168,7 @@ namespace HT.Framework.AssetBundleEditor
                 if (path.Length != 0)
                 {
                     _buildPath = path;
-                    EditorPrefs.SetString(Application.productName + ".AssetBundleEditor.BuildPath", _buildPath);
+                    EditorPrefs.SetString(EditorPrefsTable.AssetBundleEditor_BuildPath, _buildPath);
                 }
             }
 
@@ -179,7 +179,7 @@ namespace HT.Framework.AssetBundleEditor
             if (buildTarget != _buildTarget)
             {
                 _buildTarget = buildTarget;
-                EditorPrefs.SetInt(Application.productName + ".AssetBundleEditor.BuildTarget", (int)_buildTarget);
+                EditorPrefs.SetInt(EditorPrefsTable.AssetBundleEditor_BuildTarget, (int)_buildTarget);
             }
 
             if (GUI.Button(new Rect((int)position.width - 55, 5, 50, 15), "Build", _preButton))

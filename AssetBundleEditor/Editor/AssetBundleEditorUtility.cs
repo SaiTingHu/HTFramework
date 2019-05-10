@@ -252,19 +252,18 @@ namespace HT.Framework.AssetBundleEditor
         [MenuItem("HTFramework/AssetBundle/Build AssetBundles")]
         public static void BuildAssetBundles()
         {
-            string buildPath = EditorPrefs.GetString(Application.productName + ".AssetBundleEditor.BuildPath", Application.streamingAssetsPath);
+            string buildPath = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_BuildPath, Application.streamingAssetsPath);
             if (!Directory.Exists(buildPath))
             {
-                GlobalTools.LogError("Please set build path!");
-                return;
+                Directory.CreateDirectory(buildPath);
             }
 
-            BuildTarget target = (BuildTarget)EditorPrefs.GetInt(Application.productName + ".AssetBundleEditor.BuildTarget", 5);
+            BuildTarget target = (BuildTarget)EditorPrefs.GetInt(EditorPrefsTable.AssetBundleEditor_BuildTarget, 5);
             BuildPipeline.BuildAssetBundles(buildPath, BuildAssetBundleOptions.None, target);
 
             GlobalTools.LogInfo("Build assetBundle succeeded!");
 
-            string variant = EditorPrefs.GetString(Application.productName + ".AssetBundleEditor.Variant", "");
+            string variant = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_Variant, "");
             if (variant != "")
             {
                 DirectoryInfo di = new DirectoryInfo(buildPath);
