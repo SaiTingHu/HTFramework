@@ -55,6 +55,7 @@ namespace HT.Framework
         public event Action EndEvent;
 
         private Dictionary<string, StepTarget> _targets = new Dictionary<string, StepTarget>();
+        private Dictionary<int, int> _customOrder = new Dictionary<int, int>();
         private List<StepContent> _stepContents = new List<StepContent>();
         private int _currentStep = -1;
         private StepContent _currentContent;
@@ -86,7 +87,7 @@ namespace HT.Framework
                     }
 
                     _execute = false;
-                    switch (_stepContents[_currentStep].Trigger)
+                    switch (_currentContent.Trigger)
                     {
                         case StepTrigger.MouseClick:
                             if (Main.m_Input.GetButtonDown("MouseLeft"))
@@ -314,7 +315,7 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < ContentAsset.Content.Count; i++)
                     {
-                        if (prohibitStepIndex.Contains(i + 1))
+                        if (prohibitStepIndex.Contains(i))
                         {
                             continue;
                         }
@@ -351,6 +352,8 @@ namespace HT.Framework
                 _currentTarget = null;
                 _ongoing = false;
                 _running = false;
+
+                ClearCustomOrder();
             }
             else
             {
@@ -410,14 +413,14 @@ namespace HT.Framework
         /// <summary>
         /// 跳过到指定步骤
         /// </summary>
-        public bool SkipStep(int index)
+        public bool SkipStep(int stepIndex)
         {
             if (_ongoing && !_running)
             {
-                if (index <= _currentStep || index > _stepContents.Count - 1)
+                if (stepIndex <= _currentStep || stepIndex > _stepContents.Count - 1)
                     return false;
 
-                StartCoroutine(SkipStepCoroutine(index));
+                StartCoroutine(SkipStepCoroutine(stepIndex));
                 return true;
             }
             else
@@ -436,14 +439,14 @@ namespace HT.Framework
         /// <summary>
         /// 恢复到指定步骤
         /// </summary>
-        public bool RestoreStep(int index)
+        public bool RestoreStep(int stepIndex)
         {
             if (_ongoing && !_running)
             {
-                if (index < 0 || index >= _currentStep)
+                if (stepIndex < 0 || stepIndex >= _currentStep)
                     return false;
 
-                while (_currentStep >= index)
+                while (_currentStep >= stepIndex)
                 {
                     _currentContent = _stepContents[_currentStep];
                     _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
@@ -479,7 +482,7 @@ namespace HT.Framework
                     _currentStep -= 1;
                 }
 
-                _currentStep = index;
+                _currentStep = stepIndex;
                 BeginCurrentStep();
                 return true;
             }
@@ -533,6 +536,38 @@ namespace HT.Framework
             {
                 _currentTarget.State = StepTargetState.Done;
             }
+        }
+
+        /// <summary>
+        /// 新增自定义执行顺序（originalStepIndex步骤执行完毕后，进入targetStepIndex步骤）
+        /// </summary>
+        /// <param name="originalStepIndex">原始步骤索引</param>
+        /// <param name="targetStepIndex">跳跃到的步骤索引</param>
+        public void AddCustomOrder(int originalStepIndex, int targetStepIndex)
+        {
+            if (!_customOrder.ContainsKey(originalStepIndex))
+            {
+                _customOrder.Add(originalStepIndex, targetStepIndex);
+            }
+        }
+        /// <summary>
+        /// 删除自定义执行顺序
+        /// </summary>
+        /// <param name="originalStepIndex">原始步骤索引</param>
+        /// <param name="targetStepIndex">跳跃到的步骤索引</param>
+        public void RemoveCustomOrder(int originalStepIndex)
+        {
+            if (_customOrder.ContainsKey(originalStepIndex))
+            {
+                _customOrder.Remove(originalStepIndex);
+            }
+        }
+        /// <summary>
+        /// 清空所有自定义顺序
+        /// </summary>
+        public void ClearCustomOrder()
+        {
+            _customOrder.Clear();
         }
 
         private void BeginCurrentStep()
@@ -751,14 +786,22 @@ namespace HT.Framework
         }
         private void ChangeNextStep()
         {
-            if (_currentStep < _stepContents.Count - 1)
+            if (_customOrder.ContainsKey(_currentStep))
             {
-                _currentStep += 1;
+                _currentStep = _customOrder[_currentStep];
                 BeginCurrentStep();
             }
             else
             {
-                End();
+                if (_currentStep < _stepContents.Count - 1)
+                {
+                    _currentStep += 1;
+                    BeginCurrentStep();
+                }
+                else
+                {
+                    End();
+                }
             }
         }
 

@@ -51,6 +51,8 @@ namespace HT.Framework
             content.Ancillary = Ancillary;
             content.BestView = BestView;
             content.ViewOffset = ViewOffset;
+            content.BestPos = BestPos;
+            content.InitialMode = InitialMode;
             content.Helper = Helper;
             for (int i = 0; i < Operations.Count; i++)
             {
