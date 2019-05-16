@@ -54,7 +54,7 @@ namespace HT.Framework
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Set"))
             {
-                MeshRenderer[] renderers = _root.GetComponentsInChildren<MeshRenderer>();
+                MeshRenderer[] renderers = _root.GetComponentsInChildren<MeshRenderer>(true);
                 for (int i = 0; i < renderers.Length; i++)
                 {
                     if (_mat)
