@@ -88,7 +88,7 @@ namespace HT.Framework
             for (int i = 0; i < _target.Content.Count; i++)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label((i + 1) + "." + _target.Content[i].Name);
+                GUILayout.Label(i + "." + _target.Content[i].Name);
                 GUILayout.FlexibleSpace();
                 GUILayout.Label("[" + _target.Content[i].Trigger + "]");
                 GUILayout.EndHorizontal();

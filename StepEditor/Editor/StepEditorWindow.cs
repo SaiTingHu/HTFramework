@@ -205,7 +205,7 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUI.color = (_currentStep == i ? Color.cyan : Color.white);
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
-                    content.text = (i + 1) + "." + _contentAsset.Content[i].Name;
+                    content.text = i + "." + _contentAsset.Content[i].Name;
                     content.tooltip = _contentAsset.Content[i].Prompt;
                     GUILayout.Label(content,GUILayout.Height(16));
                     GUILayout.FlexibleSpace();
@@ -239,10 +239,10 @@ namespace HT.Framework
                 _moveToIndex = EditorGUILayout.IntField(_moveToIndex);
                 if (GUILayout.Button("Sure", "MiniButtonLeft"))
                 {
-                    if (_moveToIndex >= 1 && _moveToIndex <= _contentAsset.Content.Count)
+                    if (_moveToIndex >= 0 && _moveToIndex <= _contentAsset.Content.Count - 1)
                     {
                         _contentAsset.Content.RemoveAt(_currentStep);
-                        _currentStep = _moveToIndex - 1;
+                        _currentStep = _moveToIndex;
                         _contentAsset.Content.Insert(_currentStep, _currentStepObj);
                     }
                     else
