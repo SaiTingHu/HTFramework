@@ -587,6 +587,13 @@ namespace HT.Framework
             return Vector3.zero;
         }
         /// <summary>
+        /// 转换成四元素
+        /// </summary>
+        public static Quaternion ToQuaternion(this Vector3 value)
+        {
+            return Quaternion.Euler(value);
+        }
+        /// <summary>
         /// MD5算法加密
         /// </summary>
         public static string MD5Encrypt(string value)

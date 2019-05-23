@@ -555,7 +555,7 @@ namespace HT.Framework
                             string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
                             if (!_helpers.ContainsKey(className))
                             {
-                                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Other/HelperTemplate.txt", typeof(TextAsset)) as TextAsset;
+                                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/HelperTemplate.txt", typeof(TextAsset)) as TextAsset;
                                 if (asset)
                                 {
                                     string code = asset.text;
