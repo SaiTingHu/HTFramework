@@ -1,0 +1,12 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using HT.Framework;
+using DG.Tweening;
+/// <summary>
+/// 请输入注释
+/// </summary>
+public class #SCRIPTNAME# : HotfixObject
+{
+    
+}

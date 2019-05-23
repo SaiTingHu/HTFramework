@@ -1,0 +1,15 @@
+﻿using HT.Framework;
+using System.Reflection;
+
+/// <summary>
+/// 热更新环境
+/// </summary>
+public sealed class HotfixEnvironment : HotfixBasicEnvironment
+{
+    public static HotfixEnvironment Environment;
+
+    public HotfixEnvironment() : base(Assembly.GetExecutingAssembly())
+    {
+        Environment = this;
+    }
+}
