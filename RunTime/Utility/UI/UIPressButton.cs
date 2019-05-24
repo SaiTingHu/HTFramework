@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIPressButton")]
     [RequireComponent(typeof(Button))]
     [DisallowMultipleComponent]
-    public sealed class UIPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+    public sealed class UIPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         public UnityEvent OnPressed;
         public UnityEvent OnRelease;
@@ -21,15 +21,6 @@ namespace HT.Framework
         public void OnPointerDown(PointerEventData eventData)
         {
             _isPressed = true;
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (_isPressed)
-            {
-                _isPressed = false;
-                OnRelease.Invoke();
-            }
         }
 
         public void OnPointerUp(PointerEventData eventData)
