@@ -1,6 +1,6 @@
 # Unity HTFramework
 
-一个适用于Unity的简易、轻量级框架，更适用于应用软件、小型游戏项目。
+一个开源的适用于Unity的简易、轻量级框架，更适用于应用软件、小型游戏项目。
 
 ## 模块简介
 
@@ -43,8 +43,3 @@
 - Utility - 框架实用工具，包括一些批处理工具及编辑器工具。
 
 - [WebRequest](https://wanderer.blog.csdn.net/article/details/89886124) - 网络请求模块，主要用于与web服务器通信，比如请求某一网络链接或服务器接口，获得回复或下载网络上的资源。
-
-## 内置工具
-
-- ["Dotween"](http://dotween.demigiant.com/) - *DOTween is a fast, efficient, fully type-safe object-oriented animation engine for Unity, optimized for C# users, free and open-source, with tons of advanced features.*
-- ["LitJson"](https://litjson.net/) - *LitJSON is written in C#, and it’s intended to be small, fast and easy to use.*
