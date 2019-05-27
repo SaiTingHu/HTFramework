@@ -219,30 +219,6 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 配置工具
-        /// <summary>
-        /// 写入配置数据
-        /// </summary>
-        public static void WriteIniData(string section, string key, string value, string path)
-        {
-            INIParser ini = new INIParser();
-            ini.Open(path);
-            ini.WriteValue(section, key, value);
-            ini.Close();
-        }
-        /// <summary>
-        /// 读取配置数据
-        /// </summary>
-        public static string ReadIniData(string section, string key, string defaultvalue, string path)
-        {
-            INIParser ini = new INIParser();
-            ini.Open(path);
-            string value = ini.ReadValue(section, key, defaultvalue);
-            ini.Close();
-            return value;
-        }
-        #endregion
-
         #region 动画工具
         /// <summary>
         /// Text文本动画，从null值开始

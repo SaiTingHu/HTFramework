@@ -1,68 +1,68 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
-    /// ÉãÏñ»ú×¢ÊÓÄ¿±êĞı×ª¿ØÖÆ
+    /// æ‘„åƒæœºæ³¨è§†ç›®æ ‡æ—‹è½¬æ§åˆ¶
     /// </summary>
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     public sealed class MouseRotation : MonoBehaviour
     {
-        //×¢ÊÓÄ¿±ê
+        //æ³¨è§†ç›®æ ‡
         public CameraTarget Target;
-        //×¢ÊÓµãx¡¢yÖáÆ«ÒÆ£¬Èô¶¼Îª0£¬Ôò×¢ÊÓµãµÈÓÚ×¢ÊÓÄ¿±êµÄtransform.position£¬ÀàËÆÄ¿±êÊÇ½ÇÉ«Ê±£¬×¢ÊÓµã¿ÉÄÜ»áÉÏÏÂÆ«ÒÆ
+        //æ³¨è§†ç‚¹xã€yè½´åç§»ï¼Œè‹¥éƒ½ä¸º0ï¼Œåˆ™æ³¨è§†ç‚¹ç­‰äºæ³¨è§†ç›®æ ‡çš„transform.positionï¼Œç±»ä¼¼ç›®æ ‡æ˜¯è§’è‰²æ—¶ï¼Œæ³¨è§†ç‚¹å¯èƒ½ä¼šä¸Šä¸‹åç§»
         public float OffsetY = 0f;
         public float OffsetX = 0f;
-        //xÖáĞı×ªËÙ¶È£¬yÖáĞı×ªËÙ¶È£¬¹öÂÖËõ·ÅËÙ¶È
+        //xè½´æ—‹è½¬é€Ÿåº¦ï¼Œyè½´æ—‹è½¬é€Ÿåº¦ï¼Œæ»šè½®ç¼©æ”¾é€Ÿåº¦
         public float XSpeed = 150, YSpeed = 150, MSpeed = 30;
-        //yÖáÊÓ½Ç×îµÍÖµ£¬yÖáÊÓ½Ç×î¸ßÖµ£¨Ä¿±êÊÇ½ÇÉ«µÄ»°£¬ÍÆ¼ö×îĞ¡10£¬×î´ó85£¬ÉãÏñ»ú×îµÍ²»»áµ½½ÇÉ«½Åµ×£¬×î¸ß²»»áµ½½ÇÉ«Í·¶¥ÕıÉÏ·½£©
-        //ÀıÈçÊÓ½Ç×îµÍÖµÎª10£¬ÄÇÃ´ÉãÏñ»úÔÚyÖáĞı×ª×îĞ¡Ö»ÄÜµ½10£¬²»»áĞ¡ÓÚ0ÄËÖÁ³¬¹ı0£¬Èç¹ûÄ¿±êÊÇ½ÇÉ«µÄ»°£¬Ò²¾ÍÊÇÉãÏñ»úÖ»ÄÜ½Ó½üµØÃæÈ»ºó¾Í²»ÄÜÍùÏÂ¼ÌĞøÒÆ¶¯ÁË
-        //ÀıÈçÊÓ½Ç×î¸ßÖµÎª85£¬ÄÇÃ´ÉãÏñ»úÔÚyÖáĞı×ª×î´óÖ»ÄÜµ½85£¬²»»á´óÓÚ85ÄËÖÁ¸ü¶à£¬Èç¹ûÄ¿±êÊÇ½ÇÉ«µÄ»°£¬Ò²¾ÍÊÇÉãÏñ»úÖ»ÄÜ½Ó½ü½ÇÉ«Í·¶¥£¬²»ÄÜµ½Õı90¶ÈÍêÈ«´¹Ö±ÏòÏÂ¿´Ïò½ÇÉ«
+        //yè½´è§†è§’æœ€ä½å€¼ï¼Œyè½´è§†è§’æœ€é«˜å€¼ï¼ˆç›®æ ‡æ˜¯è§’è‰²çš„è¯ï¼Œæ¨èæœ€å°10ï¼Œæœ€å¤§85ï¼Œæ‘„åƒæœºæœ€ä½ä¸ä¼šåˆ°è§’è‰²è„šåº•ï¼Œæœ€é«˜ä¸ä¼šåˆ°è§’è‰²å¤´é¡¶æ­£ä¸Šæ–¹ï¼‰
+        //ä¾‹å¦‚è§†è§’æœ€ä½å€¼ä¸º10ï¼Œé‚£ä¹ˆæ‘„åƒæœºåœ¨yè½´æ—‹è½¬æœ€å°åªèƒ½åˆ°10ï¼Œä¸ä¼šå°äº0ä¹ƒè‡³è¶…è¿‡0ï¼Œå¦‚æœç›®æ ‡æ˜¯è§’è‰²çš„è¯ï¼Œä¹Ÿå°±æ˜¯æ‘„åƒæœºåªèƒ½æ¥è¿‘åœ°é¢ç„¶åå°±ä¸èƒ½å¾€ä¸‹ç»§ç»­ç§»åŠ¨äº†
+        //ä¾‹å¦‚è§†è§’æœ€é«˜å€¼ä¸º85ï¼Œé‚£ä¹ˆæ‘„åƒæœºåœ¨yè½´æ—‹è½¬æœ€å¤§åªèƒ½åˆ°85ï¼Œä¸ä¼šå¤§äº85ä¹ƒè‡³æ›´å¤šï¼Œå¦‚æœç›®æ ‡æ˜¯è§’è‰²çš„è¯ï¼Œä¹Ÿå°±æ˜¯æ‘„åƒæœºåªèƒ½æ¥è¿‘è§’è‰²å¤´é¡¶ï¼Œä¸èƒ½åˆ°æ­£90åº¦å®Œå…¨å‚ç›´å‘ä¸‹çœ‹å‘è§’è‰²
         public float YMinAngleLimit = -85, YMaxAngleLimit = 85;
-        //ÉãÏñ»úÓë×¢ÊÍÄ¿±ê¾àÀë
+        //æ‘„åƒæœºä¸æ³¨é‡Šç›®æ ‡è·ç¦»
         public float Distance = 2.0f;
-        //ÉãÏñ»úÓë×¢ÊÍÄ¿±ê×îĞ¡¾àÀë
+        //æ‘„åƒæœºä¸æ³¨é‡Šç›®æ ‡æœ€å°è·ç¦»
         public float MinDistance = 0;
-        //ÉãÏñ»úÓë×¢ÊÍÄ¿±ê×î´ó¾àÀë
+        //æ‘„åƒæœºä¸æ³¨é‡Šç›®æ ‡æœ€å¤§è·ç¦»
         public float MaxDistance = 4;
-        //ÉãÏñ»úµÄÎ§ÈÆÄ¿±êĞı×ª¶¯»­ÊÇ·ñÊÇ²åÖµ¶¯»­
+        //æ‘„åƒæœºçš„å›´ç»•ç›®æ ‡æ—‹è½¬åŠ¨ç”»æ˜¯å¦æ˜¯æ’å€¼åŠ¨ç”»
         public bool NeedDamping = true;
-        //³õÊ¼µÄÉãÏñ»úxĞı×ª£¬yĞı×ª£¬ÉãÏñ»úÔÚÎ§ÈÆÄ¿±êĞı×ªÊÇÕâÁ½¸öÖµ»á²»Í£¸Ä±ä£¬ÉèÖÃ³õÊ¼ÖµÓÃÓÚÊ¹ÉãÏñ»ú³õÊ¼¿´Ïò½ÇÉ«µÄÖ¸¶¨·½Ïò£¬ÀıÈç³õÊ¼¿´Ïò½ÇÉ«±³ºó
+        //åˆå§‹çš„æ‘„åƒæœºxæ—‹è½¬ï¼Œyæ—‹è½¬ï¼Œæ‘„åƒæœºåœ¨å›´ç»•ç›®æ ‡æ—‹è½¬æ˜¯è¿™ä¸¤ä¸ªå€¼ä¼šä¸åœæ”¹å˜ï¼Œè®¾ç½®åˆå§‹å€¼ç”¨äºä½¿æ‘„åƒæœºåˆå§‹çœ‹å‘è§’è‰²çš„æŒ‡å®šæ–¹å‘ï¼Œä¾‹å¦‚åˆå§‹çœ‹å‘è§’è‰²èƒŒå
         public float X = 90.0f;
         public float Y = 30.0f;
-        //ÉãÏñ»úÊÇ·ñÏŞ¶¨Î»ÖÃ
+        //æ‘„åƒæœºæ˜¯å¦é™å®šä½ç½®
         public bool NeedLimit = false;
-        //xÖáÎ»ÖÃ×îµÍÖµ£¬xÖáÎ»ÖÃ×î¸ßÖµ
+        //xè½´ä½ç½®æœ€ä½å€¼ï¼Œxè½´ä½ç½®æœ€é«˜å€¼
         public float XMinLimit = -5, XMaxLimit = 5;
-        //yÖáÎ»ÖÃ×îµÍÖµ£¬yÖáÎ»ÖÃ×î¸ßÖµ
+        //yè½´ä½ç½®æœ€ä½å€¼ï¼Œyè½´ä½ç½®æœ€é«˜å€¼
         public float YMinLimit = 0.1f, YMaxLimit = 5;
-        //zÖáÎ»ÖÃ×îµÍÖµ£¬zÖáÎ»ÖÃ×î¸ßÖµ
+        //zè½´ä½ç½®æœ€ä½å€¼ï¼Œzè½´ä½ç½®æœ€é«˜å€¼
         public float ZMinLimit = -5, ZMaxLimit = 5;
-        //ÔÚUGUIÄ¿±êÉÏÊÇ·ñ¿ÉÒÔ¿ØÖÆ
+        //åœ¨UGUIç›®æ ‡ä¸Šæ˜¯å¦å¯ä»¥æ§åˆ¶
         public bool IsCanOnUGUI = false;
         
-        //×¢ÊÓµã£¨×¢ÊÓÄ¿±êµÄ×¼È·Î»ÖÃ£¬¾­¹ıÆ«ÒÆºóµÄÎ»ÖÃ£©
+        //æ³¨è§†ç‚¹ï¼ˆæ³¨è§†ç›®æ ‡çš„å‡†ç¡®ä½ç½®ï¼Œç»è¿‡åç§»åçš„ä½ç½®ï¼‰
         private Vector3 _targetPoint;
-        //²åÖµÁ¿
+        //æ’å€¼é‡
         private float _damping = 5.0f;
-        //ÏµÊı
+        //ç³»æ•°
         private float _factor = 0.02f;
 
-        //Ä¿±êÎ»ÖÃ
+        //ç›®æ ‡ä½ç½®
         private Quaternion _rotation;
         private Vector3 _position;
         private Vector3 _disVector;
-        //×îÖÕµÄÎ»ÖÃ
+        //æœ€ç»ˆçš„ä½ç½®
         private Vector3 _finalPosition;
 
         /// <summary>
-        /// ÊÇ·ñ¿ÉÒÔ¿ØÖÆ
+        /// æ˜¯å¦å¯ä»¥æ§åˆ¶
         /// </summary>
         public bool CanControl { get; set; } = true;
 
         /// <summary>
-        /// ÉèÖÃĞı×ªÏŞ¶¨×îĞ¡Öµ
+        /// è®¾ç½®æ—‹è½¬é™å®šæœ€å°å€¼
         /// </summary>
         public void SetMinLimit(Vector3 value)
         {
@@ -72,7 +72,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÉèÖÃĞı×ªÏŞ¶¨×î´óÖµ
+        /// è®¾ç½®æ—‹è½¬é™å®šæœ€å¤§å€¼
         /// </summary>
         public void SetMaxLimit(Vector3 value)
         {
@@ -82,7 +82,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÉèÖÃ×¢ÊÓÊÓ½Ç
+        /// è®¾ç½®æ³¨è§†è§†è§’
         /// </summary>
         public void SetAngle(Vector3 angle, bool damping)
         {
@@ -98,7 +98,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÉèÖÃ×¢ÊÓÊÓ½Ç
+        /// è®¾ç½®æ³¨è§†è§†è§’
         /// </summary>
         public void SetAngle(Vector2 angle, float distance, bool damping)
         {
@@ -114,13 +114,13 @@ namespace HT.Framework
         }
         
         /// <summary>
-        /// Ë¢ĞÂ
+        /// åˆ·æ–°
         /// </summary>
         public void Refresh()
         {
-            //¿ØÖÆ
+            //æ§åˆ¶
             Control();
-            //Ó¦ÓÃ
+            //åº”ç”¨
             ApplyRotation();
         }
 
@@ -134,14 +134,14 @@ namespace HT.Framework
 
             if (Main.m_Input.GetButton("MouseRight"))
             {
-                //¼ÇÂ¼Êó±êºáÏòÒÆ¶¯Á¿
+                //è®°å½•é¼ æ ‡æ¨ªå‘ç§»åŠ¨é‡
                 X += Main.m_Input.GetAxis("MouseX") * XSpeed * _factor;
-                //¼ÇÂ¼Êó±ê×İÏòÒÆ¶¯Á¿
+                //è®°å½•é¼ æ ‡çºµå‘ç§»åŠ¨é‡
                 Y -= Main.m_Input.GetAxis("MouseY") * YSpeed * _factor;
             }
             if (Main.m_Input.GetAxis("MouseScrollWheel") != 0)
             {
-                //Êó±ê¹öÂÖËõ·ÅÊÓ½Ç¾àÀë
+                //é¼ æ ‡æ»šè½®ç¼©æ”¾è§†è§’è·ç¦»
                 Distance -= Main.m_Input.GetAxis("MouseScrollWheel") * MSpeed * Time.deltaTime;
 
                 if (Distance <= MinDistance)
@@ -153,50 +153,50 @@ namespace HT.Framework
 
         private void ApplyRotation()
         {
-            //ÖØĞÂ¼ÆËãÊÓ½Ç
+            //é‡æ–°è®¡ç®—è§†è§’
             CalculateAngle();
 
-            //ÇĞ»»ÊÓ½Ç
+            //åˆ‡æ¢è§†è§’
             SwitchAngle(NeedDamping);
 
-            //ÉãÏñ»úÒ»Ö±±£³Ö×¢ÊÓÄ¿±êµã
+            //æ‘„åƒæœºä¸€ç›´ä¿æŒæ³¨è§†ç›®æ ‡ç‚¹
             transform.LookAt(_targetPoint);
         }
 
         private void CalculateAngle()
         {
-            //½«×İÏòÒÆ¶¯Á¿ÏŞÖÆÔÚÊÓ½Ç×îµÍÖµºÍ×î¸ßÖµÖ®¼ä
+            //å°†çºµå‘ç§»åŠ¨é‡é™åˆ¶åœ¨è§†è§’æœ€ä½å€¼å’Œæœ€é«˜å€¼ä¹‹é—´
             Y = ClampYAngle(Y, YMinAngleLimit, YMaxAngleLimit);
-            //½«ÊÓ½Ç¾àÀëÏŞÖÆÔÚ×îĞ¡ÖµºÍ×î´óÖµÖ®¼ä
+            //å°†è§†è§’è·ç¦»é™åˆ¶åœ¨æœ€å°å€¼å’Œæœ€å¤§å€¼ä¹‹é—´
             Distance = Mathf.Clamp(Distance, MinDistance, MaxDistance);
 
-            //ÖØĞÂ»ñÈ¡ÉãÏñ»ú×¢ÊÓµã
+            //é‡æ–°è·å–æ‘„åƒæœºæ³¨è§†ç‚¹
             _targetPoint.Set(Target.transform.position.x + OffsetX, Target.transform.position.y + OffsetY, Target.transform.position.z);
 
-            //ÉãÏñ»úµÄ×îĞÂĞı×ª½Ç¶È
+            //æ‘„åƒæœºçš„æœ€æ–°æ—‹è½¬è§’åº¦
             _rotation = Quaternion.Euler(Y, X, 0.0f);
-            //ÉãÏñ»úÓë×¢ÊÓµãµÄ¾àÀëÏòÁ¿
+            //æ‘„åƒæœºä¸æ³¨è§†ç‚¹çš„è·ç¦»å‘é‡
             _disVector.Set(0.0f, 0.0f, -Distance);
-            //ÉãÏñ»úµÄ×îĞÂĞı×ª½Ç¶È*ÉãÏñ»úÓë×¢ÊÓµãµÄ¾àÀë£¬µÃ³öÉãÏñ»úÓë×¢ÊÓµãµÄÏà¶ÔÎ»ÖÃ£¬ÔÙÓÉ×¢ÊÓµãµÄÎ»ÖÃ¼ÓÉÏÏà¶ÔÎ»ÖÃ±ãµÈÓÚÉãÏñ»úµÄÎ»ÖÃ
+            //æ‘„åƒæœºçš„æœ€æ–°æ—‹è½¬è§’åº¦*æ‘„åƒæœºä¸æ³¨è§†ç‚¹çš„è·ç¦»ï¼Œå¾—å‡ºæ‘„åƒæœºä¸æ³¨è§†ç‚¹çš„ç›¸å¯¹ä½ç½®ï¼Œå†ç”±æ³¨è§†ç‚¹çš„ä½ç½®åŠ ä¸Šç›¸å¯¹ä½ç½®ä¾¿ç­‰äºæ‘„åƒæœºçš„ä½ç½®
             _position = Target.transform.position + _rotation * _disVector;
         }
 
         private void SwitchAngle(bool damping)
         {
-            //ÉãÏñ»ú²åÖµ±ä»»µ½ĞÂµÄÎ»ÖÃ
+            //æ‘„åƒæœºæ’å€¼å˜æ¢åˆ°æ–°çš„ä½ç½®
             if (damping)
             {
                 transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * _damping);
                 transform.position = Vector3.Lerp(transform.position, _position, Time.deltaTime * _damping);
             }
-            //ÉãÏñ»úÖ±½Ó±ä»»µ½ĞÂµÄÎ»ÖÃ
+            //æ‘„åƒæœºç›´æ¥å˜æ¢åˆ°æ–°çš„ä½ç½®
             else
             {
                 transform.rotation = _rotation;
                 transform.position = _position;
             }
 
-            //ÉãÏñ»úÎ»ÖÃÏŞÖÆ
+            //æ‘„åƒæœºä½ç½®é™åˆ¶
             if (NeedLimit)
             {
                 if (transform.position.x < XMinLimit)

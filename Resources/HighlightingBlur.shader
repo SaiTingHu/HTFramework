@@ -38,7 +38,6 @@ Shader "Hidden/Highlighted/Blur"
 			
 			v2f vert (appdata_img v)
 			{
-				// Shader code optimized for the Unity shader compiler
 				v2f o;
 				o.pos = UnityObjectToClipPos(v.vertex);
 				
