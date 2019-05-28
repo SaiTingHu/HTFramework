@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 namespace HT.Framework
@@ -9,7 +8,7 @@ namespace HT.Framework
     /// </summary>
     public sealed class WebInterfaceGetAssetBundle : WebInterface
     {
-        public Action<AssetBundle> Handler;
+        public HTFAction<AssetBundle> Handler;
 
         public override void GetRequestFinish(DownloadHandler handler)
         {

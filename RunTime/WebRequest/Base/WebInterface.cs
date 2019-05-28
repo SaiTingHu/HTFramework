@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace HT.Framework
 {
@@ -19,7 +18,7 @@ namespace HT.Framework
         /// <summary>
         /// 离线模式处理者
         /// </summary>
-        public Action OfflineHandler;
+        public HTFAction OfflineHandler;
         /// <summary>
         /// Get请求完成
         /// </summary>

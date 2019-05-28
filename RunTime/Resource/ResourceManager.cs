@@ -51,21 +51,21 @@ namespace HT.Framework
         /// <summary>
         /// 加载资源（异步）
         /// </summary>
-        public void LoadAsset<T>(AssetInfo info, Action<float> loadingAction, Action<T> loadDoneAction) where T : UnityEngine.Object
+        public void LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : UnityEngine.Object
         {
             StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载数据集（异步）
         /// </summary>
-        public void LoadDataSet<T>(DataSetInfo info, Action<float> loadingAction, Action<T> loadDoneAction) where T : DataSet
+        public void LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : DataSet
         {
             StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载预制体（异步）
         /// </summary>
-        public void LoadPrefab(PrefabInfo info, Transform parent, Action<float> loadingAction, Action<GameObject> loadDoneAction, bool isUI = false)
+        public void LoadPrefab(PrefabInfo info, Transform parent, HTFAction<float> loadingAction, HTFAction<GameObject> loadDoneAction, bool isUI = false)
         {
             StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction, true, parent, isUI));
         }
@@ -123,7 +123,7 @@ namespace HT.Framework
             GC.Collect();
         }
 
-        private System.Collections.IEnumerator LoadCoroutine<T>(ResourceInfoBase info, Action<float> loadingAction, Action<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        private System.Collections.IEnumerator LoadCoroutine<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
         {
             if (!_isLoading)
             {

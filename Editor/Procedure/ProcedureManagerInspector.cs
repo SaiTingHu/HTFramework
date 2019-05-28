@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ProcedureManager))]
-    public sealed class ProcedureManagerInspector : Editor
+    public sealed class ProcedureManagerInspector : ModuleEditor
     {
         private ProcedureManager _target;
         private Dictionary<string, string> _procedureTypes = new Dictionary<string, string>();
@@ -52,7 +52,7 @@ namespace HT.Framework
                     {
                         Undo.RecordObject(target, "Set Default Procedure");
                         _target.DefaultProcedure = _target.ActivatedProcedures[j];
-                        this.HasChanged();
+                        HasChanged();
                     });
                 }
                 gm.ShowAsContext();
@@ -94,7 +94,7 @@ namespace HT.Framework
                     {
                         _target.DefaultProcedure = _target.ActivatedProcedures[0];
                     }
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
             }
@@ -124,7 +124,7 @@ namespace HT.Framework
                                 {
                                     _target.DefaultProcedure = _target.ActivatedProcedures[0];
                                 }
-                                this.HasChanged();
+                                HasChanged();
                             });
                         }
                     }

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(StepContentAsset))]
-    public sealed class StepContentAssetInspector : Editor
+    public sealed class StepContentAssetInspector : ModuleEditor
     {
         private StepContentAsset _target;
         private Vector2 _scroll = Vector2.zero;

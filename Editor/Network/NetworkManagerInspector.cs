@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(NetworkManager))]
-    public sealed class NetworkManagerInspector : Editor
+    public sealed class NetworkManagerInspector : ModuleEditor
     {
         private NetworkManager _target;
 
@@ -21,12 +21,12 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("IP", GUILayout.Width(50));
-            this.TextField(_target.IP, out _target.IP);
+            TextField(_target.IP, out _target.IP);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Port", GUILayout.Width(50));
-            this.IntField(_target.Port, out _target.Port);
+            IntField(_target.Port, out _target.Port);
             GUILayout.EndHorizontal();
         }
     }

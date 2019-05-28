@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(StepTarget))]
-    public sealed class StepTargetInspector : Editor
+    public sealed class StepTargetInspector : ModuleEditor
     {
         private StepTarget _target;
 

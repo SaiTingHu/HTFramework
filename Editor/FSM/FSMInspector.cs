@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(FSM))]
-    public sealed class FSMInspector : Editor
+    public sealed class FSMInspector : ModuleEditor
     {
         private FSM _target;
 
@@ -23,7 +23,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Name: ");
-            this.TextField(_target.Name, out _target.Name);
+            TextField(_target.Name, out _target.Name);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -36,7 +36,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(target, "Set FSM Data Class");
                     _target.Data = "<None>";
-                    this.HasChanged();
+                    HasChanged();
                 });
                 for (int i = 0; i < types.Count; i++)
                 {
@@ -47,7 +47,7 @@ namespace HT.Framework
                         {
                             Undo.RecordObject(target, "Set FSM Data Class");
                             _target.Data = types[j].FullName;
-                            this.HasChanged();
+                            HasChanged();
                         });
                     }
                 }
@@ -72,7 +72,7 @@ namespace HT.Framework
                         Undo.RecordObject(target, "Set FSM Default State");
                         _target.DefaultState = _target.States[j];
                         _target.DefaultStateName = _target.StateNames[j];
-                        this.HasChanged();
+                        HasChanged();
                     });
                 }
                 gm.ShowAsContext();
@@ -102,7 +102,7 @@ namespace HT.Framework
                         _target.DefaultState = _target.States[0];
                         _target.DefaultStateName = _target.StateNames[0];
                     }
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
             }
@@ -146,7 +146,7 @@ namespace HT.Framework
                                     _target.DefaultState = _target.States[0];
                                     _target.DefaultStateName = _target.StateNames[0];
                                 }
-                                this.HasChanged();
+                                HasChanged();
                             });
                         }
                     }

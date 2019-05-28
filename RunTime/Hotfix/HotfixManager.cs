@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using UnityEngine;
 
 namespace HT.Framework
@@ -25,7 +24,7 @@ namespace HT.Framework
         /// <summary>
         /// 执行热更新逻辑事件
         /// </summary>
-        public event Action UpdateHotfixLogicEvent;
+        public event HTFAction UpdateHotfixLogicEvent;
 
         private TextAsset _hotfixDll;
         private Assembly _hotfixAssembly;

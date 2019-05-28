@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(FSMManager))]
-    public sealed class FSMManagerInspector : Editor
+    public sealed class FSMManagerInspector : ModuleEditor
     {
         public override void OnInspectorGUI()
         {

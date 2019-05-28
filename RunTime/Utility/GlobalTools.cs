@@ -1,17 +1,17 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using UnityEngine.Events;
-using System.Collections.Generic;
+﻿using DG.Tweening;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Net.NetworkInformation;
-using System.IO;
-using System.Runtime.InteropServices;
-using DG.Tweening;
-using System.Reflection;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -26,12 +26,12 @@ namespace HT.Framework
         /// </summary>
         /// <param name="action">执行的代码</param>
         /// <param name="delaySeconds">延时等待的秒数</param>
-        public static Coroutine DelayExecute(this MonoBehaviour behaviour, Action action, float delaySeconds)
+        public static Coroutine DelayExecute(this MonoBehaviour behaviour, HTFAction action, float delaySeconds)
         {
             Coroutine coroutine = behaviour.StartCoroutine(DelayExecute(action, delaySeconds));
             return coroutine;
         }
-        private static IEnumerator DelayExecute(Action action, float delaySeconds)
+        private static IEnumerator DelayExecute(HTFAction action, float delaySeconds)
         {
             yield return new WaitForSeconds(delaySeconds);
             action();

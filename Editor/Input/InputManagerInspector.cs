@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(InputManager))]
-    public sealed class InputManagerInspector : Editor
+    public sealed class InputManagerInspector : ModuleEditor
     {
         private InputManager _target;
 
@@ -36,7 +36,7 @@ namespace HT.Framework
                         {
                             Undo.RecordObject(target, "Set InputDevice");
                             _target.InputDeviceType = types[j].FullName;
-                            this.HasChanged();
+                            HasChanged();
                         });
                     }
                 }

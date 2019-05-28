@@ -4,7 +4,7 @@ using UnityEditor;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ExceptionHandler))]
-    public sealed class ExceptionHandlerInspector : Editor
+    public sealed class ExceptionHandlerInspector : ModuleEditor
     {
         private ExceptionHandler _target;
 
@@ -20,39 +20,39 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            this.Toggle(_target.IsHandler, out _target.IsHandler, "Is Handler");
+            Toggle(_target.IsHandler, out _target.IsHandler, "Is Handler");
             GUILayout.EndHorizontal();
 
             if (_target.IsHandler)
             {
                 GUILayout.BeginHorizontal();
-                this.Toggle(_target.IsQuitWhenException, out _target.IsQuitWhenException, "Is Quit When Exception");
+                Toggle(_target.IsQuitWhenException, out _target.IsQuitWhenException, "Is Quit When Exception");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                this.Toggle(_target.IsReportMailWhenException, out _target.IsReportMailWhenException, "Is Report Mail When Exception");
+                Toggle(_target.IsReportMailWhenException, out _target.IsReportMailWhenException, "Is Report Mail When Exception");
                 GUILayout.EndHorizontal();
 
                 if (_target.IsReportMailWhenException)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Send Mail", GUILayout.Width(80));
-                    this.TextField(_target.SendMailbox, out _target.SendMailbox);
+                    TextField(_target.SendMailbox, out _target.SendMailbox);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Password", GUILayout.Width(80));
-                    this.PasswordField(_target.SendMailboxPassword, out _target.SendMailboxPassword);
+                    PasswordField(_target.SendMailboxPassword, out _target.SendMailboxPassword);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Receive Mail", GUILayout.Width(80));
-                    this.TextField(_target.ReceiveMailbox, out _target.ReceiveMailbox);
+                    TextField(_target.ReceiveMailbox, out _target.ReceiveMailbox);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Buffer Time", GUILayout.Width(80));
-                    this.FloatField(_target.ReportBufferTime, out _target.ReportBufferTime);
+                    FloatField(_target.ReportBufferTime, out _target.ReportBufferTime);
                     GUILayout.EndHorizontal();
                 }
             }

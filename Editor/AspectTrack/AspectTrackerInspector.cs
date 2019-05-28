@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(AspectTracker))]
-    public sealed class AspectTrackerInspector : Editor
+    public sealed class AspectTrackerInspector : ModuleEditor
     {
         private AspectTracker _target;
 
@@ -20,7 +20,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            this.Toggle(_target.IsEnableAspectTrack, out _target.IsEnableAspectTrack, "Is Track");
+            Toggle(_target.IsEnableAspectTrack, out _target.IsEnableAspectTrack, "Is Track");
             GUILayout.EndHorizontal();
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Transform))]
-    public sealed class TransformEditor : Editor
+    public sealed class TransformEditor : ModuleEditor
     {
         private Transform _transform;
         private static bool _showProperty = true;
@@ -37,7 +37,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Move " + _transform.name);
                     _transform.position = pos;
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -48,7 +48,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Rotate " + _transform.name);
                     _transform.rotation = Quaternion.Euler(rot);
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -66,7 +66,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Move " + _transform.name);
                     _transform.localPosition = localpos;
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -77,7 +77,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Rotate " + _transform.name);
                     _transform.localRotation = Quaternion.Euler(localrot);
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -88,7 +88,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(_transform, "Scale " + _transform.name);
                     _transform.localScale = localsca;
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ResourceManager))]
-    public sealed class ResourceManagerInspector : Editor
+    public sealed class ResourceManagerInspector : ModuleEditor
     {
         private ResourceManager _target;
 
@@ -25,7 +25,7 @@ namespace HT.Framework
             {
                 Undo.RecordObject(target, "Set Load Mode");
                 _target.Mode = mode;
-                this.HasChanged();
+                HasChanged();
             }
             GUILayout.EndHorizontal();
 
@@ -45,7 +45,7 @@ namespace HT.Framework
             if (_target.Mode == ResourceMode.AssetBundle)
             {
                 GUILayout.BeginHorizontal();
-                this.Toggle(_target.IsCacheAssetBundle, out _target.IsCacheAssetBundle, "Cache AssetBundle");
+                Toggle(_target.IsCacheAssetBundle, out _target.IsCacheAssetBundle, "Cache AssetBundle");
                 GUILayout.EndHorizontal();
             }
         }

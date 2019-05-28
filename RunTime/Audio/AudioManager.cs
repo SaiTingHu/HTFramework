@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +22,7 @@ namespace HT.Framework
         /// <summary>
         /// 单通道音效播放结束事件
         /// </summary>
-        public event Action SingleSoundEndOfPlayEvent;
+        public event HTFAction SingleSoundEndOfPlayEvent;
 
         private AudioSource _backgroundAudio;
         private AudioSource _singleAudio;

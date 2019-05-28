@@ -22,10 +22,10 @@ namespace HT.Framework
         /// 服务器端口号
         /// </summary>
         public int Port;
-        public event Action BeginConnectEvent;
-        public event Action ConnectSuccessEvent;
-        public event Action ConnectFailEvent;
-        public event Action<NetworkInfo> ReceiveMessageEvent;
+        public event HTFAction BeginConnectEvent;
+        public event HTFAction ConnectSuccessEvent;
+        public event HTFAction ConnectFailEvent;
+        public event HTFAction<NetworkInfo> ReceiveMessageEvent;
 
         private Socket _client;
         private Thread _receiveThread;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -13,10 +12,10 @@ namespace HT.Framework
         private int _limit = 100;
         private Queue<GameObject> _objectQueue = new Queue<GameObject>();
         
-        private Action<GameObject> _onSpawn;
-        private Action<GameObject> _onDespawn;
+        private HTFAction<GameObject> _onSpawn;
+        private HTFAction<GameObject> _onDespawn;
 
-        public ObjectSpawnPool(GameObject spawnTem, int limit, Action<GameObject> onSpawn, Action<GameObject> onDespawn)
+        public ObjectSpawnPool(GameObject spawnTem, int limit, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
         {
             _spawnTem = spawnTem;
             _limit = limit;

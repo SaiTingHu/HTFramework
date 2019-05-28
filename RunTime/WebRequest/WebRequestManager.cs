@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using UnityEngine;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace HT.Framework
@@ -29,7 +29,7 @@ namespace HT.Framework
         /// <summary>
         /// 注册接口（获取 string）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<string> handler, Action offlineHandle = null)
+        public void RegisterInterface(string name, string url, HTFAction<string> handler, HTFAction offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {
@@ -48,7 +48,7 @@ namespace HT.Framework
         /// <summary>
         /// 注册接口（获取 AssetBundle）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<AssetBundle> handler, Action offlineHandle = null)
+        public void RegisterInterface(string name, string url, HTFAction<AssetBundle> handler, HTFAction offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {
@@ -67,7 +67,7 @@ namespace HT.Framework
         /// <summary>
         /// 注册接口（获取 Texture2D）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<Texture2D> handler, Action offlineHandle = null)
+        public void RegisterInterface(string name, string url, HTFAction<Texture2D> handler, HTFAction offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {
@@ -86,7 +86,7 @@ namespace HT.Framework
         /// <summary>
         /// 注册接口（获取 AudioClip）
         /// </summary>
-        public void RegisterInterface(string name, string url, Action<AudioClip> handler, Action offlineHandle = null)
+        public void RegisterInterface(string name, string url, HTFAction<AudioClip> handler, HTFAction offlineHandle = null)
         {
             if (!_interfaces.ContainsKey(name))
             {

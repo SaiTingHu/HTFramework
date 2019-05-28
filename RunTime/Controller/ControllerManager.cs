@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -13,27 +12,27 @@ namespace HT.Framework
         /// <summary>
         /// 切换至自由控制事件
         /// </summary>
-        public event Action SwitchToFreeControlEvent;
+        public event HTFAction SwitchToFreeControlEvent;
         /// <summary>
         /// 切换至第一人称事件
         /// </summary>
-        public event Action SwitchToFirstPersonEvent;
+        public event HTFAction SwitchToFirstPersonEvent;
         /// <summary>
         /// 切换至第三人称事件
         /// </summary>
-        public event Action SwitchToThirdPersonEvent;
+        public event HTFAction SwitchToThirdPersonEvent;
         /// <summary>
         /// 自由控制刷新事件
         /// </summary>
-        public event Action FreeControlUpdateEvent;
+        public event HTFAction FreeControlUpdateEvent;
         /// <summary>
         /// 第一人称刷新事件
         /// </summary>
-        public event Action FirstPersonUpdateEvent;
+        public event HTFAction FirstPersonUpdateEvent;
         /// <summary>
         /// 第三人称刷新事件
         /// </summary>
-        public event Action ThirdPersonUpdateEvent;
+        public event HTFAction ThirdPersonUpdateEvent;
         
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;

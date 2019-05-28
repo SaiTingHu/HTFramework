@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 
 namespace HT.Framework
@@ -9,7 +8,7 @@ namespace HT.Framework
     /// </summary>
     public sealed class WebInterfaceGetTexture2D : WebInterface
     {
-        public Action<Texture2D> Handler;
+        public HTFAction<Texture2D> Handler;
 
         public override void GetRequestFinish(DownloadHandler handler)
         {

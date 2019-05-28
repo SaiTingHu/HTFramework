@@ -4,7 +4,7 @@ using UnityEditor;
 namespace HT.Framework
 {
     [CustomEditor(typeof(MousePosition))]
-    public sealed class MousePositionInspector : Editor
+    public sealed class MousePositionInspector : ModuleEditor
     {
         private MousePosition _mousePosition;
 
@@ -16,7 +16,7 @@ namespace HT.Framework
         public override void OnInspectorGUI()
         {
             GUILayout.BeginHorizontal();
-            this.Toggle(_mousePosition.IsCanOnUGUI, out _mousePosition.IsCanOnUGUI, "Is Can Control On UGUI");
+            Toggle(_mousePosition.IsCanOnUGUI, out _mousePosition.IsCanOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical("HelpBox");
@@ -29,16 +29,16 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("X");
-            this.FloatField(_mousePosition.XSpeed, out _mousePosition.XSpeed);
+            FloatField(_mousePosition.XSpeed, out _mousePosition.XSpeed);
             GUILayout.Label("Y");
-            this.FloatField(_mousePosition.YSpeed, out _mousePosition.YSpeed);
+            FloatField(_mousePosition.YSpeed, out _mousePosition.YSpeed);
             GUILayout.Label("M");
-            this.FloatField(_mousePosition.MSpeed, out _mousePosition.MSpeed);
+            FloatField(_mousePosition.MSpeed, out _mousePosition.MSpeed);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Move Damping");
-            this.FloatField(_mousePosition.MoveDamping, out _mousePosition.MoveDamping);
+            FloatField(_mousePosition.MoveDamping, out _mousePosition.MoveDamping);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -55,30 +55,30 @@ namespace HT.Framework
             GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            this.Toggle(_mousePosition.NeedLimit, out _mousePosition.NeedLimit, "Need Limit");
+            Toggle(_mousePosition.NeedLimit, out _mousePosition.NeedLimit, "Need Limit");
             GUILayout.EndHorizontal();
 
             if (_mousePosition.NeedLimit)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("X Min");
-                this.FloatField(_mousePosition.XMinLimit, out _mousePosition.XMinLimit);
+                FloatField(_mousePosition.XMinLimit, out _mousePosition.XMinLimit);
                 GUILayout.Label("X Max");
-                this.FloatField(_mousePosition.XMaxLimit, out _mousePosition.XMaxLimit);
+                FloatField(_mousePosition.XMaxLimit, out _mousePosition.XMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Y Min");
-                this.FloatField(_mousePosition.YMinLimit, out _mousePosition.YMinLimit);
+                FloatField(_mousePosition.YMinLimit, out _mousePosition.YMinLimit);
                 GUILayout.Label("Y Max");
-                this.FloatField(_mousePosition.YMaxLimit, out _mousePosition.YMaxLimit);
+                FloatField(_mousePosition.YMaxLimit, out _mousePosition.YMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Z Min");
-                this.FloatField(_mousePosition.ZMinLimit, out _mousePosition.ZMinLimit);
+                FloatField(_mousePosition.ZMinLimit, out _mousePosition.ZMinLimit);
                 GUILayout.Label("Z Max");
-                this.FloatField(_mousePosition.ZMaxLimit, out _mousePosition.ZMaxLimit);
+                FloatField(_mousePosition.ZMaxLimit, out _mousePosition.ZMaxLimit);
                 GUILayout.EndHorizontal();
             }
 

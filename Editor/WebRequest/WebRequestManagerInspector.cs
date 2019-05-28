@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(WebRequestManager))]
-    public sealed class WebRequestManagerInspector : Editor
+    public sealed class WebRequestManagerInspector : ModuleEditor
     {
         private WebRequestManager _target;
 
@@ -20,7 +20,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            this.Toggle(_target.IsOfflineState, out _target.IsOfflineState, "Is OfflineState");
+            Toggle(_target.IsOfflineState, out _target.IsOfflineState, "Is OfflineState");
             GUILayout.EndHorizontal();
         }
     }

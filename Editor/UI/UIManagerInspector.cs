@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(UIManager))]
-    public sealed class UIManagerInspector : Editor
+    public sealed class UIManagerInspector : ModuleEditor
     {
         private UIManager _target;
 

@@ -4,7 +4,7 @@ using UnityEditor;
 namespace HT.Framework
 {
     [CustomEditor(typeof(EventManager))]
-    public sealed class EventManagerInspector : Editor
+    public sealed class EventManagerInspector : ModuleEditor
     {
         public override void OnInspectorGUI()
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(DataSetManager))]
-    public sealed class DataSetManagerInspector : Editor
+    public sealed class DataSetManagerInspector : ModuleEditor
     {
         public override void OnInspectorGUI()
         {

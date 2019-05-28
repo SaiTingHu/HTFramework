@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Main))]
-    public sealed class MainInspector : Editor
+    public sealed class MainInspector : ModuleEditor
     {
         private Main _target;
 
@@ -34,7 +34,7 @@ namespace HT.Framework
                 {
                     Undo.RecordObject(target, "Set Main Data");
                     _target.MainDataType = "<None>";
-                    this.HasChanged();
+                    HasChanged();
                 });
                 for (int i = 0; i < types.Count; i++)
                 {
@@ -45,7 +45,7 @@ namespace HT.Framework
                         {
                             Undo.RecordObject(target, "Set Main Data");
                             _target.MainDataType = types[j].FullName;
-                            this.HasChanged();
+                            HasChanged();
                         });
                     }
                 }
@@ -60,7 +60,7 @@ namespace HT.Framework
             GUILayout.BeginVertical("Box");
             
             GUILayout.BeginHorizontal();
-            this.Toggle(_target.IsPermanentLicense, out _target.IsPermanentLicense, "Permanent License");
+            Toggle(_target.IsPermanentLicense, out _target.IsPermanentLicense, "Permanent License");
             GUILayout.EndHorizontal();
 
             if (!_target.IsPermanentLicense)
@@ -70,7 +70,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                this.TextField(_target.EndingPrompt, out _target.EndingPrompt);
+                TextField(_target.EndingPrompt, out _target.EndingPrompt);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -85,21 +85,21 @@ namespace HT.Framework
                     Undo.RecordObject(target, "Set Year");
                     _target.Year = year;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
                 {
                     Undo.RecordObject(target, "Set Year");
                     _target.Year += 1;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
                 {
                     Undo.RecordObject(target, "Set Year");
                     _target.Year -= 1;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -111,21 +111,21 @@ namespace HT.Framework
                     Undo.RecordObject(target, "Set Month");
                     _target.Month = month;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
                 {
                     Undo.RecordObject(target, "Set Month");
                     _target.Month += 1;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
                 {
                     Undo.RecordObject(target, "Set Month");
                     _target.Month -= 1;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -137,21 +137,21 @@ namespace HT.Framework
                     Undo.RecordObject(target, "Set Day");
                     _target.Day = day;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
                 {
                     Undo.RecordObject(target, "Set Day");
                     _target.Day += 1;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
                 {
                     Undo.RecordObject(target, "Set Day");
                     _target.Day -= 1;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
@@ -163,14 +163,14 @@ namespace HT.Framework
                     _target.Month = DateTime.Now.Month;
                     _target.Day = DateTime.Now.Day;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 if (GUILayout.Button("2 Months Later", "MiniButton"))
                 {
                     Undo.RecordObject(target, "Set 2 Months Later");
                     _target.Month += 2;
                     CorrectDateTime();
-                    this.HasChanged();
+                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
             }

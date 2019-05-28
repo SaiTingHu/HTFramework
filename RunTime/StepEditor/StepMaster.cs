@@ -20,39 +20,39 @@ namespace HT.Framework
         /// <summary>
         /// 步骤开始事件
         /// </summary>
-        public event Action<StepContent> BeginStepEvent;
+        public event HTFAction<StepContent> BeginStepEvent;
         /// <summary>
         /// 步骤执行事件
         /// </summary>
-        public event Action<StepContent> ExecuteStepEvent;
+        public event HTFAction<StepContent> ExecuteStepEvent;
         /// <summary>
         /// 步骤跳过事件
         /// </summary>
-        public event Action<StepContent> SkipStepEvent;
+        public event HTFAction<StepContent> SkipStepEvent;
         /// <summary>
         /// 步骤恢复事件
         /// </summary>
-        public event Action<StepContent> RestoreStepEvent;
+        public event HTFAction<StepContent> RestoreStepEvent;
         /// <summary>
         /// 显示提示事件
         /// </summary>
-        public event Action<string> ShowPromptEvent;
+        public event HTFAction<string> ShowPromptEvent;
         /// <summary>
         /// 流程开始事件
         /// </summary>
-        public event Action BeginEvent;
+        public event HTFAction BeginEvent;
         /// <summary>
         /// 连续跳过步骤完成事件
         /// </summary>
-        public event Action SkipStepDoneEvent;
+        public event HTFAction SkipStepDoneEvent;
         /// <summary>
         /// 点击了错误的步骤目标事件（正确目标：步骤的当前目标、辅助目标）
         /// </summary>
-        public event Action ClickWrongTargetEvent;
+        public event HTFAction ClickWrongTargetEvent;
         /// <summary>
         /// 流程结束事件
         /// </summary>
-        public event Action EndEvent;
+        public event HTFAction EndEvent;
 
         private Dictionary<string, StepTarget> _targets = new Dictionary<string, StepTarget>();
         private Dictionary<int, int> _customOrder = new Dictionary<int, int>();

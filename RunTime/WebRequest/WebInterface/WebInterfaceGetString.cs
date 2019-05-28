@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine.Networking;
+﻿using UnityEngine.Networking;
 
 namespace HT.Framework
 {
@@ -8,7 +7,7 @@ namespace HT.Framework
     /// </summary>
     public sealed class WebInterfaceGetString : WebInterface
     {
-        public Action<string> Handler;
+        public HTFAction<string> Handler;
 
         public override void GetRequestFinish(DownloadHandler handler)
         {

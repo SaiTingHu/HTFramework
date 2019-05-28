@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(StepMaster))]
-    public sealed class StepMasterInspector : Editor
+    public sealed class StepMasterInspector : ModuleEditor
     {
         private StepMaster _target;
 
@@ -20,11 +20,11 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            this.ObjectField(_target.ContentAsset, out _target.ContentAsset, false, "Asset");
+            ObjectField(_target.ContentAsset, out _target.ContentAsset, false, "Asset");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            this.ObjectField(_target.MainCamera, out _target.MainCamera, false, "Camera");
+            ObjectField(_target.MainCamera, out _target.MainCamera, false, "Camera");
             GUILayout.EndHorizontal();
         }
     }

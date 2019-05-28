@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ControllerManager))]
-    public sealed class ControllerManagerInspector : Editor
+    public sealed class ControllerManagerInspector : ModuleEditor
     {
         public override void OnInspectorGUI()
         {

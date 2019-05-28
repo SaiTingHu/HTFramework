@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(HotfixManager))]
-    public sealed class HotfixManagerInspector : Editor
+    public sealed class HotfixManagerInspector : ModuleEditor
     {
         private static readonly string SourceDllPath = "/Library/ScriptAssemblies/Hotfix.dll";
         private static readonly string AssetsDllPath = "/Assets/Hotfix/Hotfix.dll.bytes";
@@ -43,7 +43,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            this.Toggle(_target.IsEnableHotfix, out _target.IsEnableHotfix, "Is Enable Hotfix");
+            Toggle(_target.IsEnableHotfix, out _target.IsEnableHotfix, "Is Enable Hotfix");
             GUILayout.EndHorizontal();
 
             if (_target.IsEnableHotfix)
@@ -56,7 +56,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                this.TextField(_target.HotfixDllAssetBundleName, out _target.HotfixDllAssetBundleName);
+                TextField(_target.HotfixDllAssetBundleName, out _target.HotfixDllAssetBundleName);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -64,7 +64,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                this.TextField(_target.HotfixDllAssetsPath, out _target.HotfixDllAssetsPath);
+                TextField(_target.HotfixDllAssetsPath, out _target.HotfixDllAssetsPath);
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();

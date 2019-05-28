@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -31,7 +30,7 @@ namespace HT.Framework
         /// <summary>
         /// 注册对象池
         /// </summary>
-        public void RegisterSpawnPool(string name, GameObject spawnTem, Action<GameObject> onSpawn, Action<GameObject> onDespawn)
+        public void RegisterSpawnPool(string name, GameObject spawnTem, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
         {
             if (!_spawnPools.ContainsKey(name))
             {

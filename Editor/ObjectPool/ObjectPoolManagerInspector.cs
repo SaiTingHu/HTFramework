@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ObjectPoolManager))]
-    public sealed class ObjectPoolManagerInspector : Editor
+    public sealed class ObjectPoolManagerInspector : ModuleEditor
     {
         private ObjectPoolManager _target;
 
@@ -21,7 +21,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Limit:");
-            this.IntField(_target.Limit, out _target.Limit);
+            IntField(_target.Limit, out _target.Limit);
             GUILayout.EndHorizontal();
         }
     }
