@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3280247986cd76e4d95eb0e31bc5abc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsEnableAspectTrack: 1
+  IsEnableAspectTrack: 0
 --- !u!1 &1516840720097650
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,8 +921,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f225c8f05c84b84bb22577ad1cf67ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IP: 
-  Port: 0
+  IP: 127.0.0.1
+  Port: 8080
 --- !u!1 &1832947091760460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,6 +1143,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4089525f2bbad2d44b680fd6cfd56c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsEnableHotfix: 0
+  HotfixDllAssetBundleName: hotfix
+  HotfixDllAssetsPath: Assets/Hotfix/Hotfix.dll.bytes
 --- !u!1 &3203883641810679623
 GameObject:
   m_ObjectHideFlags: 0

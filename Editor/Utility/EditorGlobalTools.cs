@@ -259,7 +259,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_Helper_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_Helper_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -297,7 +297,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_FiniteState_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_FiniteState_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -334,7 +334,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_Procedure_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_Procedure_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -371,7 +371,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_EventHandler_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_EventHandler_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -408,7 +408,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_AspectProxy_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_AspectProxy_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -445,7 +445,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_UILogicResident_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_UILogicResident_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -482,7 +482,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_UILogicTemporary_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_UILogicTemporary_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -519,7 +519,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_DataSet_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_DataSet_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -556,7 +556,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_HotfixProcedure_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_HotfixProcedure_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -593,7 +593,7 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_HotfixObject_Directory, path);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_HotfixObject_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else

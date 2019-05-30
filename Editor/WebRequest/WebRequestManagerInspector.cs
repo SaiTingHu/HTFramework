@@ -22,6 +22,16 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             Toggle(_target.IsOfflineState, out _target.IsOfflineState, "Is OfflineState");
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            AudioType type = (AudioType)EditorGUILayout.EnumPopup("Audio Type", _target.DownloadAudioType);
+            if (type != _target.DownloadAudioType)
+            {
+                Undo.RecordObject(target, "Set Audio Type");
+                _target.DownloadAudioType = type;
+                HasChanged();
+            }
+            GUILayout.EndHorizontal();
         }
     }
 }

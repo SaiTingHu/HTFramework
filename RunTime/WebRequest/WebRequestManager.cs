@@ -16,6 +16,10 @@ namespace HT.Framework
         /// 离线状态
         /// </summary>
         public bool IsOfflineState = false;
+        /// <summary>
+        /// 下载音频的格式
+        /// </summary>
+        public AudioType DownloadAudioType = AudioType.WAV;
 
         private Dictionary<string, WebInterface> _interfaces = new Dictionary<string, WebInterface>();
         
@@ -261,7 +265,7 @@ namespace HT.Framework
             }
             else if (wi is WebInterfaceGetAudioClip)
             {
-                request.downloadHandler = new DownloadHandlerAudioClip(request.url, AudioType.WAV);
+                request.downloadHandler = new DownloadHandlerAudioClip(request.url, DownloadAudioType);
             }
             else if (wi is WebInterfaceGetString)
             {
