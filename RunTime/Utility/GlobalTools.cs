@@ -76,6 +76,17 @@ namespace HT.Framework
             if (die) ho.Die();
         }
         /// <summary>
+        /// 开启闪光，使用默认颜色和频率
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        public static void OpenFlashHighLight(this GameObject target)
+        {
+            HighlightableObject ho = target.GetComponent<HighlightableObject>();
+            if (ho == null) ho = target.AddComponent<HighlightableObject>();
+
+            ho.FlashingOn(Color.red, Color.white, 2);
+        }
+        /// <summary>
         /// 开启闪光，使用默认频率
         /// </summary>
         /// <param name="target">目标物体</param>

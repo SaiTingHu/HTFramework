@@ -142,5 +142,18 @@ namespace HT.Framework
             }
         }
         #endregion
+
+        #region Main
+        /// <summary>
+        /// ScriptingDefine历史记录
+        /// </summary>
+        public static string ScriptingDefine_Record
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.ScriptingDefineRecord";
+            }
+        }
+        #endregion
     }
 }
