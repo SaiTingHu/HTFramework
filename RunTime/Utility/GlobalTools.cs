@@ -1,4 +1,6 @@
 ﻿using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -630,175 +632,125 @@ namespace HT.Framework
         /// </summary>
         public static string ToRichBoldColor(this string value, string subStr, Color color)
         {
-            if (subStr.Length <= 0 && !value.Contains(subStr))
+            if (subStr.Length <= 0 || !value.Contains(subStr))
             {
                 return value;
             }
 
             string valueRich = value;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = valueRich.IndexOf(head);
-            if (left >= 0)
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                valueRich = valueRich.Insert(left, "<b><color=" + color.ToHexSystemString() + ">");
+                valueRich = valueRich.Insert(index, "<b><color=" + color.ToHexSystemString() + ">");
             }
 
-            int right = valueRich.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                valueRich = valueRich.Insert(right + 1, "</color></b>");
+                valueRich = valueRich.Insert(index, "</color></b>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                return valueRich;
-            }
-            else
-            {
-                return value;
-            }
+            return valueRich;
         }
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
         public static string ToRichColor(this string value, string subStr, Color color)
         {
-            if (subStr.Length <= 0 && !value.Contains(subStr))
+            if (subStr.Length <= 0 || !value.Contains(subStr))
             {
                 return value;
             }
 
             string valueRich = value;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = valueRich.IndexOf(head);
-            if (left >= 0)
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                valueRich = valueRich.Insert(left, "<color=" + color.ToHexSystemString() + ">");
+                valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
             }
 
-            int right = valueRich.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                valueRich = valueRich.Insert(right + 1, "</color>");
+                valueRich = valueRich.Insert(index, "</color>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                return valueRich;
-            }
-            else
-            {
-                return value;
-            }
+            return valueRich;
         }
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
         public static string ToRichSize(this string value, string subStr, int size)
         {
-            if (subStr.Length <= 0 && !value.Contains(subStr))
+            if (subStr.Length <= 0 || !value.Contains(subStr))
             {
                 return value;
             }
 
             string valueRich = value;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = valueRich.IndexOf(head);
-            if (left >= 0)
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                valueRich = valueRich.Insert(left, "<size=" + size + ">");
+                valueRich = valueRich.Insert(index, "<size=" + size + ">");
             }
 
-            int right = valueRich.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                valueRich = valueRich.Insert(right + 1, "</size>");
+                valueRich = valueRich.Insert(index, "</size>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                return valueRich;
-            }
-            else
-            {
-                return value;
-            }
+            return valueRich;
         }
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
         public static string ToRichBold(this string value, string subStr)
         {
-            if (subStr.Length <= 0 && !value.Contains(subStr))
+            if (subStr.Length <= 0 || !value.Contains(subStr))
             {
                 return value;
             }
 
             string valueRich = value;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = valueRich.IndexOf(head);
-            if (left >= 0)
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                valueRich = valueRich.Insert(left, "<b>");
+                valueRich = valueRich.Insert(index, "<b>");
             }
 
-            int right = valueRich.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                valueRich = valueRich.Insert(right + 1, "</b>");
+                valueRich = valueRich.Insert(index, "</b>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                return valueRich;
-            }
-            else
-            {
-                return value;
-            }
+            return valueRich;
         }
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
         public static string ToRichItalic(this string value, string subStr)
         {
-            if (subStr.Length <= 0 && !value.Contains(subStr))
+            if (subStr.Length <= 0 || !value.Contains(subStr))
             {
                 return value;
             }
 
             string valueRich = value;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = valueRich.IndexOf(head);
-            if (left >= 0)
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                valueRich = valueRich.Insert(left, "<i>");
+                valueRich = valueRich.Insert(index, "<i>");
             }
 
-            int right = valueRich.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                valueRich = valueRich.Insert(right + 1, "</i>");
+                valueRich = valueRich.Insert(index, "</i>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                return valueRich;
-            }
-            else
-            {
-                return value;
-            }
+            return valueRich;
         }
         #endregion
 
@@ -933,6 +885,85 @@ namespace HT.Framework
         #endregion
 
         #region UGUI工具
+        private static Dictionary<Button, TweenerCore<Color, Color, ColorOptions>> TwinkleButtons = new Dictionary<Button, TweenerCore<Color, Color, ColorOptions>>();
+        private static Dictionary<Toggle, TweenerCore<Color, Color, ColorOptions>> TwinkleToggles = new Dictionary<Toggle, TweenerCore<Color, Color, ColorOptions>>();
+
+        /// <summary>
+        /// 开启按钮闪烁（只在Normal状态）
+        /// </summary>
+        public static void OpenTwinkle(this Button button, Color color, float time)
+        {
+            button.CloseTwinkle();
+
+            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
+                {
+                    return button.colors.normalColor;
+                },
+                (c) =>
+                {
+                    ColorBlock block = button.colors;
+                    block.normalColor = c;
+                    button.colors = block;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+            tweener.startValue = button.colors.normalColor;
+            TwinkleButtons.Add(button, tweener);
+        }
+        /// <summary>
+        /// 关闭按钮闪烁
+        /// </summary>
+        public static void CloseTwinkle(this Button button)
+        {
+            if (TwinkleButtons.ContainsKey(button))
+            {
+                ColorBlock block = button.colors;
+                block.normalColor = TwinkleButtons[button].startValue;
+
+                TwinkleButtons[button].Kill();
+                TwinkleButtons.Remove(button);
+                
+                button.colors = block;
+            }
+        }
+        /// <summary>
+        /// 开启开关闪烁（只在Normal状态）
+        /// </summary>
+        public static void OpenTwinkle(this Toggle toggle, Color color, float time)
+        {
+            toggle.CloseTwinkle();
+
+            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
+                {
+                    return toggle.colors.normalColor;
+                },
+                (c) =>
+                {
+                    ColorBlock block = toggle.colors;
+                    block.normalColor = c;
+                    toggle.colors = block;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+            tweener.startValue = toggle.colors.normalColor;
+            TwinkleToggles.Add(toggle, tweener);
+        }
+        /// <summary>
+        /// 关闭开关闪烁
+        /// </summary>
+        public static void CloseTwinkle(this Toggle toggle)
+        {
+            if (TwinkleToggles.ContainsKey(toggle))
+            {
+                ColorBlock block = toggle.colors;
+                block.normalColor = TwinkleToggles[toggle].startValue;
+
+                TwinkleToggles[toggle].Kill();
+                TwinkleToggles.Remove(toggle);
+                
+                toggle.colors = block;
+            }
+        }
         /// <summary>
         /// 限制Text内容的长度在length以内，超过的部分用replace代替
         /// </summary>
@@ -948,124 +979,100 @@ namespace HT.Framework
         /// </summary>
         public static void ToRichSize(this Text tex, string subStr, int size)
         {
-            if (subStr.Length <= 0 && !tex.text.Contains(subStr))
+            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
             {
                 return;
             }
 
-            string value = tex.text;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = value.IndexOf(head);
-            if (left >= 0)
+            string valueRich = tex.text;
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                value = value.Insert(left, "<size=" + size + ">");
+                valueRich = valueRich.Insert(index, "<size=" + size + ">");
             }
 
-            int right = value.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                value = value.Insert(right + 1, "</size>");
+                valueRich = valueRich.Insert(index, "</size>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                tex.text = value;
-            }
+            tex.text = valueRich;
         }
         /// <summary>
         /// 限制Text中指定子字串的字体颜色
         /// </summary>
         public static void ToRichColor(this Text tex, string subStr, Color color)
         {
-            if (subStr.Length <= 0 && !tex.text.Contains(subStr))
+            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
             {
                 return;
             }
 
-            string value = tex.text;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = value.IndexOf(head);
-            if (left >= 0)
+            string valueRich = tex.text;
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                value = value.Insert(left, "<color=" + color.ToHexSystemString() + ">");
+                valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
             }
 
-            int right = value.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                value = value.Insert(right + 1, "</color>");
+                valueRich = valueRich.Insert(index, "</color>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                tex.text = value;
-            }
+            tex.text = valueRich;
         }
         /// <summary>
         /// 限制Text中的指定子字串的字体加粗
         /// </summary>
         public static void ToRichBold(this Text tex, string subStr)
         {
-            if (subStr.Length <= 0 && !tex.text.Contains(subStr))
+            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
             {
                 return;
             }
 
-            string value = tex.text;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = value.IndexOf(head);
-            if (left >= 0)
+            string valueRich = tex.text;
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                value = value.Insert(left, "<b>");
+                valueRich = valueRich.Insert(index, "<b>");
             }
 
-            int right = value.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                value = value.Insert(right + 1, "</b>");
+                valueRich = valueRich.Insert(index, "</b>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                tex.text = value;
-            }
+            tex.text = valueRich;
         }
         /// <summary>
         /// 限制Text中的指定子字串的字体斜体
         /// </summary>
         public static void ToRichItalic(this Text tex, string subStr)
         {
-            if (subStr.Length <= 0 && !tex.text.Contains(subStr))
+            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
             {
                 return;
             }
 
-            string value = tex.text;
-            string head = subStr.Substring(0, 1);
-            string end = subStr.Substring(subStr.Length - 1, 1);
-
-            int left = value.IndexOf(head);
-            if (left >= 0)
+            string valueRich = tex.text;
+            int index = valueRich.IndexOf(subStr);
+            if (index >= 0)
             {
-                value = value.Insert(left, "<i>");
+                valueRich = valueRich.Insert(index, "<i>");
             }
 
-            int right = value.IndexOf(end);
-            if (right >= left)
+            index = valueRich.IndexOf(subStr) + subStr.Length;
+            if (index >= 0 && index < valueRich.Length)
             {
-                value = value.Insert(right + 1, "</i>");
+                valueRich = valueRich.Insert(index, "</i>");
             }
 
-            if (left >= 0 && right >= left)
-            {
-                tex.text = value;
-            }
+            tex.text = valueRich;
         }
         /// <summary>
         /// 清除所有富文本样式
