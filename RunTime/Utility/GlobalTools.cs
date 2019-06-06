@@ -35,7 +35,7 @@ namespace HT.Framework
         }
         private static IEnumerator DelayExecute(HTFAction action, float delaySeconds)
         {
-            yield return new WaitForSeconds(delaySeconds);
+            yield return YieldInstructioner.GetWaitForSeconds(delaySeconds);
             action();
         }
         #endregion
@@ -645,7 +645,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</color></b>");
             }
@@ -670,7 +670,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</color>");
             }
@@ -695,7 +695,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</size>");
             }
@@ -720,7 +720,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</b>");
             }
@@ -745,7 +745,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</i>");
             }
@@ -992,7 +992,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</size>");
             }
@@ -1017,7 +1017,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</color>");
             }
@@ -1042,7 +1042,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</b>");
             }
@@ -1067,7 +1067,7 @@ namespace HT.Framework
             }
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0 && index < valueRich.Length)
+            if (index >= 0)
             {
                 valueRich = valueRich.Insert(index, "</i>");
             }

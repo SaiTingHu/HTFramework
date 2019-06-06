@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -119,11 +120,12 @@ namespace HT.Framework
         /// </summary>
         public void ClearMemory()
         {
+            Main.m_Coroutiner.ClearNotRunning();
             Resources.UnloadUnusedAssets();
             GC.Collect();
         }
 
-        private System.Collections.IEnumerator LoadCoroutine<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        private IEnumerator LoadCoroutine<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
         {
             if (!_isLoading)
             {

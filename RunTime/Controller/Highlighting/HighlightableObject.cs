@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace HT.Framework
 {
@@ -240,7 +241,6 @@ namespace HT.Framework
             }
         }
 
-        // 
         private void OnEnable()
         {
             StartCoroutine(EndOfFrame());
@@ -248,7 +248,6 @@ namespace HT.Framework
             HighlightingEffect.highlightingEvent += UpdateEventHandler;
         }
 
-        // 
         private void OnDisable()
         {
             StopAllCoroutines();
@@ -785,11 +784,11 @@ namespace HT.Framework
             }
         }
 
-        IEnumerator EndOfFrame()
+        private IEnumerator EndOfFrame()
         {
             while (enabled)
             {
-                yield return new WaitForEndOfFrame();
+                yield return YieldInstructioner.GetWaitForEndOfFrame();
                 // Reset one-frame highlighting state after each HighlightingEffect in the scene has finished rendering
                 once = false;
             }
