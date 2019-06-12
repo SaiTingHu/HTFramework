@@ -13,7 +13,7 @@ namespace HT.Framework
     public sealed class Coroutiner : ModuleManager
     {
         public Dictionary<string, CoroutineEnumerator> CoroutineEnumerators { get; } = new Dictionary<string, CoroutineEnumerator>();
-        public Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse = new Dictionary<Delegate, List<CoroutineEnumerator>>();
+        public Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
 
         /// <summary>
         /// 运行协程
@@ -132,6 +132,7 @@ namespace HT.Framework
             {
                 CoroutineEnumerators.Remove(enumerator.Key);
                 RemoveWarehouse(enumerator.Value);
+                Main.m_ReferencePool.Despawn(enumerator.Value);
             }
             notRunnings = null;
         }
@@ -277,8 +278,6 @@ namespace HT.Framework
             }
             public void Reset()
             {
-                _enumerator.Reset();
-
                 TargetObject = null;
                 TargetAction = null;
                 Args = null;

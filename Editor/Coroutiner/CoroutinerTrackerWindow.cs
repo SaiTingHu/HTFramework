@@ -147,7 +147,7 @@ namespace HT.Framework
         private void MouseDownEnumerator(Coroutiner.CoroutineEnumerator enumerator)
         {
             _currentEnumerator = enumerator;
-            _currentStackTrace = _currentEnumerator.StackTraceInfo;
+            _currentStackTrace = _currentEnumerator.ID + "\r\n\r\n" + _currentEnumerator.StackTraceInfo;
             Repaint();
         }
     }

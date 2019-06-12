@@ -602,8 +602,46 @@ namespace HT.Framework
                 }
             }
         }
+
+        /// <summary>
+        /// 新建WebGL插件
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 60)]
+        private static void CreateWebGLPlugin()
+        {
+            string pluginsDirectory = Application.dataPath + "/Plugins";
+            string pluginPath = pluginsDirectory + "/WebGLPlugin.jslib";
+            string callerPath = pluginsDirectory + "/WebGLCaller.cs";
+            if (!Directory.Exists(pluginsDirectory))
+            {
+                Directory.CreateDirectory(pluginsDirectory);
+            }
+            if (!File.Exists(pluginPath))
+            {
+                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/WebGLPluginTemplate.txt", typeof(TextAsset)) as TextAsset;
+                if (asset)
+                {
+                    File.AppendAllText(pluginPath, asset.text);
+                    asset = null;
+                }
+            }
+            if (!File.Exists(callerPath))
+            {
+                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/WebGLCallerTemplate.txt", typeof(TextAsset)) as TextAsset;
+                if (asset)
+                {
+                    File.AppendAllText(callerPath, asset.text);
+                    asset = null;
+                }
+            }
+
+            AssetDatabase.Refresh();
+            TextAsset plugin = AssetDatabase.LoadAssetAtPath("Assets/Plugins/WebGLCaller.cs", typeof(TextAsset)) as TextAsset;
+            EditorGUIUtility.PingObject(plugin);
+            Selection.activeObject = plugin;
+        }
         #endregion
-        
+
         #region 反射工具
         /// <summary>
         /// 当前的热更新程序集

@@ -1,0 +1,19 @@
+﻿using System.Runtime.InteropServices;
+
+/// <summary>
+/// WebGL呼叫网页JS方法
+/// </summary>
+public static class WebGLCaller
+{
+    [DllImport("__Internal")]
+    public static extern void Hello();
+
+    [DllImport("__Internal")]
+    public static extern void HelloString(string str);
+
+    [DllImport("__Internal")]
+    public static extern void AddNumbers(int x, int y);
+
+    [DllImport("__Internal")]
+    public static extern string StringReturnValueFunction();
+}

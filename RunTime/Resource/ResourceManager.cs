@@ -120,7 +120,6 @@ namespace HT.Framework
         /// </summary>
         public void ClearMemory()
         {
-            Main.m_Coroutiner.ClearNotRunning();
             Resources.UnloadUnusedAssets();
             GC.Collect();
         }
