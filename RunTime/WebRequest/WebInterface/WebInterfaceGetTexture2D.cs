@@ -19,5 +19,11 @@ namespace HT.Framework
                 Handler(downloadHandler.texture);
             }
         }
+
+        public override void Reset()
+        {
+            OfflineHandler = null;
+            Handler = null;
+        }
     }
 }

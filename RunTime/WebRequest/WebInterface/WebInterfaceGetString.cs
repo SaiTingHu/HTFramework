@@ -16,5 +16,11 @@ namespace HT.Framework
                 Handler(handler.text);
             }
         }
+
+        public override void Reset()
+        {
+            OfflineHandler = null;
+            Handler = null;
+        }
     }
 }

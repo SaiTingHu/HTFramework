@@ -81,10 +81,10 @@ namespace HT.Framework
                 switch (TriggerHighlighting)
                 {
                     case HighlightingType.Normal:
-                        Target.gameObject.CloseHighLight(false);
+                        Target.gameObject.CloseHighLight(true);
                         break;
                     case HighlightingType.Flash:
-                        Target.gameObject.CloseFlashHighLight(false);
+                        Target.gameObject.CloseFlashHighLight(true);
                         break;
                 }
                 Target = null;

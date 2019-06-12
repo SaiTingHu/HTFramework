@@ -37,7 +37,7 @@ namespace HT.Framework
         {
             if (!_interfaces.ContainsKey(name))
             {
-                WebInterfaceGetString wi = new WebInterfaceGetString();
+                WebInterfaceGetString wi = Main.m_ReferencePool.Spawn<WebInterfaceGetString>();
                 wi.Name = name;
                 wi.Url = url;
                 wi.OfflineHandler = offlineHandle;
@@ -56,7 +56,7 @@ namespace HT.Framework
         {
             if (!_interfaces.ContainsKey(name))
             {
-                WebInterfaceGetAssetBundle wi = new WebInterfaceGetAssetBundle();
+                WebInterfaceGetAssetBundle wi = Main.m_ReferencePool.Spawn<WebInterfaceGetAssetBundle>();
                 wi.Name = name;
                 wi.Url = url;
                 wi.OfflineHandler = offlineHandle;
@@ -75,7 +75,7 @@ namespace HT.Framework
         {
             if (!_interfaces.ContainsKey(name))
             {
-                WebInterfaceGetTexture2D wi = new WebInterfaceGetTexture2D();
+                WebInterfaceGetTexture2D wi = Main.m_ReferencePool.Spawn<WebInterfaceGetTexture2D>();
                 wi.Name = name;
                 wi.Url = url;
                 wi.OfflineHandler = offlineHandle;
@@ -94,7 +94,7 @@ namespace HT.Framework
         {
             if (!_interfaces.ContainsKey(name))
             {
-                WebInterfaceGetAudioClip wi = new WebInterfaceGetAudioClip();
+                WebInterfaceGetAudioClip wi = Main.m_ReferencePool.Spawn<WebInterfaceGetAudioClip>();
                 wi.Name = name;
                 wi.Url = url;
                 wi.OfflineHandler = offlineHandle;
@@ -135,6 +135,7 @@ namespace HT.Framework
         {
             if (_interfaces.ContainsKey(name))
             {
+                Main.m_ReferencePool.Despawn(_interfaces[name]);
                 _interfaces.Remove(name);
             }
             else
@@ -147,6 +148,10 @@ namespace HT.Framework
         /// </summary>
         public void ClearInterface()
         {
+            foreach (KeyValuePair<string, WebInterface> inter in _interfaces)
+            {
+                Main.m_ReferencePool.Despawn(inter.Value);
+            }
             _interfaces.Clear();
         }
         
