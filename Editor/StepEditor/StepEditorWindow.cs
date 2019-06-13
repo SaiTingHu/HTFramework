@@ -360,6 +360,11 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
+                GUILayout.Label("GUID:", GUILayout.Width(50));
+                _currentStepObj.GUID = EditorGUILayout.TextField(_currentStepObj.GUID, GUILayout.Width(130));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
                 GUI.enabled = !_currentStepObj.Instant;
                 GUILayout.Label("Elapse Time:", GUILayout.Width(80));
                 _currentStepObj.ElapseTime = EditorGUILayout.FloatField(_currentStepObj.ElapseTime, GUILayout.Width(40));
@@ -681,7 +686,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(300));
+                        GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(320));
 
                         GUILayout.BeginHorizontal("Icon.OutlineBorder");
                         GUILayout.Label("Step Operation Properties", "BoldLabel");
@@ -696,6 +701,11 @@ namespace HT.Framework
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Name:", GUILayout.Width(50));
                         _currentOperationObj.Name = EditorGUILayout.TextField(_currentOperationObj.Name, GUILayout.Width(130));
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("GUID:", GUILayout.Width(50));
+                        _currentOperationObj.GUID = EditorGUILayout.TextField(_currentOperationObj.GUID, GUILayout.Width(130));
                         GUILayout.EndHorizontal();
 
                         GUILayout.BeginHorizontal();

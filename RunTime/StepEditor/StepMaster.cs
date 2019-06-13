@@ -54,9 +54,14 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction EndEvent;
 
+        //所有的 StepTarget
         private Dictionary<string, StepTarget> _targets = new Dictionary<string, StepTarget>();
-        private Dictionary<int, int> _customOrder = new Dictionary<int, int>();
+        //所有的 自定义执行顺序
+        private Dictionary<string, string> _customOrder = new Dictionary<string, string>();
+        //所有的 已激活步骤
         private List<StepContent> _stepContents = new List<StepContent>();
+        //所有的 已激活步骤（步骤ID，步骤索引）
+        private Dictionary<string, int> _stepContentIndexs = new Dictionary<string, int>();
         private int _currentStep = -1;
         private StepContent _currentContent;
         private StepTarget _currentTarget;
@@ -72,7 +77,7 @@ namespace HT.Framework
         private bool _execute = false;
         //UGUI按钮点击触发型步骤，当前是否被点击
         private bool _isButtonClick = false;
-        
+
         public override void Refresh()
         {
             base.Refresh();
@@ -260,6 +265,7 @@ namespace HT.Framework
         {
             if (ContentAsset)
             {
+                //搜寻所有目标
                 _targets.Clear();
                 GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
@@ -347,6 +353,20 @@ namespace HT.Framework
                     }
                 }
 
+                //判断步骤ID是否重复
+                _stepContentIndexs.Clear();
+                for (int i = 0; i < _stepContents.Count; i++)
+                {
+                    if (_stepContentIndexs.ContainsKey(_stepContents[i].GUID))
+                    {
+                        GlobalTools.LogError("发现相同GUID的步骤！GUID：" + _stepContents[i].GUID + "！\r\n步骤：" + _stepContentIndexs[_stepContents[i].GUID] + " 和 " + i);
+                    }
+                    else
+                    {
+                        _stepContentIndexs.Add(_stepContents[i].GUID, i);
+                    }
+                }
+
                 _currentStep = 0;
                 _currentContent = null;
                 _currentTarget = null;
@@ -357,7 +377,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning("步骤控制器丢失了步骤资源 Step Content Asset！");
+                GlobalTools.LogError("步骤控制器丢失了步骤资源 Step Content Asset！");
             }
         }
         /// <summary>
@@ -539,27 +559,26 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 新增自定义执行顺序（originalStepIndex步骤执行完毕后，进入targetStepIndex步骤）
+        /// 新增自定义执行顺序（originalStepID 步骤执行完毕后，进入 targetStepID 步骤）
         /// </summary>
-        /// <param name="originalStepIndex">原始步骤索引</param>
-        /// <param name="targetStepIndex">跳跃到的步骤索引</param>
-        public void AddCustomOrder(int originalStepIndex, int targetStepIndex)
+        /// <param name="originalStepID">原始步骤ID</param>
+        /// <param name="targetStepID">跳跃到的步骤ID</param>
+        public void AddCustomOrder(string originalStepID, string targetStepID)
         {
-            if (!_customOrder.ContainsKey(originalStepIndex))
+            if (!_customOrder.ContainsKey(originalStepID))
             {
-                _customOrder.Add(originalStepIndex, targetStepIndex);
+                _customOrder.Add(originalStepID, targetStepID);
             }
         }
         /// <summary>
         /// 删除自定义执行顺序
         /// </summary>
-        /// <param name="originalStepIndex">原始步骤索引</param>
-        /// <param name="targetStepIndex">跳跃到的步骤索引</param>
-        public void RemoveCustomOrder(int originalStepIndex)
+        /// <param name="originalStepID">原始步骤ID</param>
+        public void RemoveCustomOrder(string originalStepID)
         {
-            if (_customOrder.ContainsKey(originalStepIndex))
+            if (_customOrder.ContainsKey(originalStepID))
             {
-                _customOrder.Remove(originalStepIndex);
+                _customOrder.Remove(originalStepID);
             }
         }
         /// <summary>
@@ -792,9 +811,9 @@ namespace HT.Framework
         }
         private void ChangeNextStep()
         {
-            if (_customOrder.ContainsKey(_currentStep))
+            if (_customOrder.ContainsKey(_currentContent.GUID))
             {
-                _currentStep = _customOrder[_currentStep];
+                _currentStep = _stepContentIndexs[_customOrder[_currentContent.GUID]];
                 BeginCurrentStep();
             }
             else

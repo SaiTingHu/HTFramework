@@ -166,17 +166,35 @@ namespace HT.Framework
             public object TargetObject { get; private set; }
             public Delegate TargetAction { get; private set; }
             public object[] Args { get; private set; }
+            
+            private IEnumerator _enumerator;
+            private Coroutine _coroutine;
+            private CoroutineState _state;
 
+#if UNITY_EDITOR
+            public StackTrace StackTraceInfo { get; private set; }
             public DateTime CreationTime { get; private set; }
             public DateTime StoppingTime { get; private set; }
             public double ElapsedTime { get; private set; }
             public int RerunNumber { get; private set; }
 
-            private IEnumerator _enumerator;
-            private Coroutine _coroutine;
-            private StackTrace _stackTrace;
-            private CoroutineState _state;
+            public void RerunInEditor()
+            {
+                if (State == CoroutineState.Running)
+                {
+                    Main.m_Coroutiner.StopCoroutine(_coroutine);
+                    State = CoroutineState.Stoped;
+                }
 
+                _enumerator = TargetAction.Method.Invoke(TargetObject, Args) as IEnumerator;
+                if (_enumerator != null)
+                {
+                    _coroutine = Main.m_Coroutiner.StartCoroutine(this);
+                    State = CoroutineState.Running;
+                    RerunNumber += 1;
+                }
+            }
+#endif
             public CoroutineState State
             {
                 get
@@ -186,6 +204,7 @@ namespace HT.Framework
                 private set
                 {
                     _state = value;
+#if UNITY_EDITOR
                     switch (_state)
                     {
                         case CoroutineState.Running:
@@ -200,13 +219,7 @@ namespace HT.Framework
                             ElapsedTime = (StoppingTime - CreationTime).TotalSeconds;
                             break;
                     }
-                }
-            }
-            public string StackTraceInfo
-            {
-                get
-                {
-                    return _stackTrace.ToString();
+#endif
                 }
             }
             
@@ -224,9 +237,11 @@ namespace HT.Framework
                 if (_enumerator != null)
                 {
                     _coroutine = Main.m_Coroutiner.StartCoroutine(this);
-                    _stackTrace = new StackTrace();
                     State = CoroutineState.Running;
+#if UNITY_EDITOR
+                    StackTraceInfo = new StackTrace(true);
                     RerunNumber = 1;
+#endif
                 }
             }
             public void Rerun()
@@ -241,9 +256,11 @@ namespace HT.Framework
                 if (_enumerator != null)
                 {
                     _coroutine = Main.m_Coroutiner.StartCoroutine(this);
-                    _stackTrace = new StackTrace();
                     State = CoroutineState.Running;
+#if UNITY_EDITOR
+                    StackTraceInfo = new StackTrace(true);
                     RerunNumber += 1;
+#endif
                 }
             }
             public void Stop()
@@ -283,7 +300,9 @@ namespace HT.Framework
                 Args = null;
                 _enumerator = null;
                 _coroutine = null;
-                _stackTrace = null;
+#if UNITY_EDITOR
+                StackTraceInfo = null;
+#endif
             }
         }
 

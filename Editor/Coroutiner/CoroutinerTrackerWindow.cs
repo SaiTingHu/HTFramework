@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -103,7 +105,7 @@ namespace HT.Framework
                         GUILayout.FlexibleSpace();
                         if (GUILayout.Button("Rerun", "Minibuttonleft", GUILayout.Width(50)))
                         {
-                            enumerator.Rerun();
+                            enumerator.RerunInEditor();
                         }
                         GUI.enabled = enumerator.State == Coroutiner.CoroutineState.Running;
                         if (GUILayout.Button("Stop", "Minibuttonright", GUILayout.Width(50)))
@@ -147,8 +149,32 @@ namespace HT.Framework
         private void MouseDownEnumerator(Coroutiner.CoroutineEnumerator enumerator)
         {
             _currentEnumerator = enumerator;
-            _currentStackTrace = _currentEnumerator.ID + "\r\n\r\n" + _currentEnumerator.StackTraceInfo;
+            _currentStackTrace = _currentEnumerator.ID + "\r\n\r\n" + GetFullStackTraceInfo(_currentEnumerator.StackTraceInfo);
             Repaint();
+        }
+        private string GetFullStackTraceInfo(StackTrace trace)
+        {
+            string assetsPath = Application.dataPath.Replace("/", "\\");
+            StringBuilder info = new StringBuilder();
+            StackFrame[] frames = trace.GetFrames();
+            for (int i = 0; i < frames.Length; i++)
+            {
+                if (frames[i].GetMethod().Name == "Run" || frames[i].GetMethod().Name == "Rerun")
+                {
+                    continue;
+                }
+                info.Append(frames[i].GetMethod().DeclaringType.FullName);
+                info.Append(".");
+                info.Append(frames[i].GetMethod().Name);
+                info.Append(" (");
+                info.Append("at Assets");
+                info.Append(frames[i].GetFileName().Replace(assetsPath, ""));
+                info.Append(":");
+                info.Append(frames[i].GetFileLineNumber());
+                info.Append(")");
+                info.Append("\r\n");
+            }
+            return info.ToString();
         }
     }
 }
