@@ -1,10 +1,7 @@
-﻿using UnityEngine;
-using System;
-using System.IO;
+﻿using System;
 using System.Diagnostics;
-using System.Net.Mail;
-using System.Text;
-using System.Net;
+using System.IO;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -19,13 +16,17 @@ namespace HT.Framework
         /// </summary>
         public bool IsHandler = false;
         /// <summary>
-        /// 是否退出程序当异常发生时
+        /// 是否启用异常反馈程序
         /// </summary>
-        public bool IsQuitWhenException = false;
+        public bool IsEnableFeedback = false;
         /// <summary>
-        /// 是否回发邮件当异常发生时
+        /// 是否启用邮件回发机制
         /// </summary>
-        public bool IsReportMailWhenException = false;
+        public bool IsEnableMailReport = false;
+        /// <summary>
+        /// 反馈程序路径
+        /// </summary>
+        public string FeedbackProgramPath = "/Feedback.exe";
         /// <summary>
         /// 回发邮件的发送邮箱
         /// </summary>
@@ -39,16 +40,22 @@ namespace HT.Framework
         /// </summary>
         public string ReceiveMailbox = "";
         /// <summary>
+        /// 邮件服务器Host
+        /// </summary>
+        public string Host = "smtp.sina.com";
+        /// <summary>
+        /// 邮件服务器端口
+        /// </summary>
+        public int Port = 25;
+        /// <summary>
         /// 回发邮件缓冲时间
         /// </summary>
         public float ReportBufferTime = 5;
 
-        //异常日志保存路径（文件夹）
+        //异常日志保存路径
         private string _logPath;
-        //Bug反馈程序的启动路径
-        private string _bugExePath;
-        //Host
-        private string _host = "smtp.sina.com";
+        //邮件发送者
+        private EmailSender _sender;
         //回发邮件缓冲计时器
         private float _reportBufferTimer = 0;
 
@@ -56,34 +63,34 @@ namespace HT.Framework
         {
             base.Initialization();
 
-            _logPath = GlobalTools.GetDirectorySameLevelOfAssets("/Log");
-            _bugExePath = GlobalTools.GetDirectorySameLevelOfAssets("/Bug.exe");
+#if UNITY_EDITOR
+            IsHandler = false;
+#endif
 
-#if !UNITY_EDITOR
+#if UNITY_STANDALONE_WIN
+            FeedbackProgramPath = GlobalTools.GetDirectorySameLevelOfAssets(FeedbackProgramPath);
+            _logPath = GlobalTools.GetDirectorySameLevelOfAssets("/Log");
             if (!Directory.Exists(_logPath))
             {
                 Directory.CreateDirectory(_logPath);
             }
-
-            //注册异常处理委托
+#endif
             if (IsHandler)
             {
                 Application.logMessageReceived += Handler;
+                _sender = new EmailSender(SendMailbox, SendMailboxPassword, ReceiveMailbox, Host, Port);
             }
-#endif
         }
 
         public override void Termination()
         {
             base.Termination();
 
-#if !UNITY_EDITOR
-            //取消注册异常处理委托
             if (IsHandler)
             {
                 Application.logMessageReceived -= Handler;
+                _sender = null;
             }
-#endif
         }
 
         public override void Refresh()
@@ -102,40 +109,33 @@ namespace HT.Framework
             {
                 OnException(logString, stackTrace, type);
 
-                string logPath = _logPath + "\\" + DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss") + ".log";
-                File.AppendAllText(logPath, "[time]:" + DateTime.Now.ToString() + "\r\n");
-                File.AppendAllText(logPath, "[type]:" + type.ToString() + "\r\n");
-                File.AppendAllText(logPath, "[exception message]:" + logString + "\r\n");
-                File.AppendAllText(logPath, "[stack trace]:" + stackTrace + "\r\n");
-                
-                if (File.Exists(_bugExePath))
-                {
-                    ProcessStartInfo pros = new ProcessStartInfo();
-                    pros.FileName = _bugExePath;
-                    pros.Arguments = "\"" + logPath + "\"";
-                    Process pro = new Process();
-                    pro.StartInfo = pros;
-                    pro.Start();
-                }
-                else
-                {
-                    File.AppendAllText(logPath, "[bug exe]:Doesn't find bug exe!path: " + _bugExePath + "\r\n");
-                }
+                string logContent = string.Format("[time]:{0}\r\n\r\n[type]:{1}\r\n\r\n[message]:{2}\r\n\r\n[stack trace]:{3}\r\n\r\n", DateTime.Now.ToString(), type.ToString(), logString, stackTrace);
 
-                if (IsReportMailWhenException)
-                {
-                    string logContent = "";
-                    logContent += ("[time]:" + DateTime.Now.ToString() + "\r\n");
-                    logContent += ("[type]:" + type.ToString() + "\r\n");
-                    logContent += ("[exception message]:" + logString + "\r\n");
-                    logContent += ("[stack trace]:" + stackTrace + "\r\n");
+#if UNITY_STANDALONE_WIN
+                string logPath = string.Format("{0}/{1}.log", _logPath, DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff"));
+                File.AppendAllText(logPath, logContent);
 
-                    ReportMail(string.Format("{0}.Exception.{1}", Application.productName, DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss")), logContent);
-                }
-
-                if (IsQuitWhenException)
+                if (IsEnableFeedback)
                 {
+                    if (File.Exists(FeedbackProgramPath))
+                    {
+                        ProcessStartInfo process = new ProcessStartInfo();
+                        process.FileName = FeedbackProgramPath;
+                        process.Arguments = "\"" + logPath + "\"";
+                        Process pro = new Process();
+                        pro.StartInfo = process;
+                        pro.Start();
+                    }
+                    else
+                    {
+                        File.AppendAllText(logPath, string.Format("[feedback]:Doesn't find feedback program!path: {0}\r\n", FeedbackProgramPath));
+                    }
                     Application.Quit();
+                }
+#endif
+                if (IsEnableMailReport)
+                {
+                    ReportMail(string.Format("{0}.Exception.{1}", Application.productName, DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss")), logContent);
                 }
             }
         }
@@ -156,30 +156,7 @@ namespace HT.Framework
             }
             _reportBufferTimer = ReportBufferTime;
 
-            try
-            {
-                MailMessage mailMsg = new MailMessage();
-                mailMsg.From = new MailAddress(SendMailbox);
-                mailMsg.To.Add(new MailAddress(ReceiveMailbox));
-                mailMsg.Subject = subject;
-                mailMsg.SubjectEncoding = Encoding.UTF8;
-                mailMsg.Body = body;
-                mailMsg.BodyEncoding = Encoding.UTF8;
-                mailMsg.IsBodyHtml = true;
-
-                SmtpClient client = new SmtpClient();
-                client.Host = _host;
-                client.Port = 25;
-                client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential(SendMailbox, SendMailboxPassword) as ICredentialsByHost;
-                client.EnableSsl = false;
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.Send(mailMsg);
-            }
-            catch (Exception e)
-            {
-                GlobalTools.LogError(e.Message);
-            }
+            _sender.Send(subject, body);
         }
     }
 }

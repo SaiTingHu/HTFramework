@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -25,16 +25,49 @@ namespace HT.Framework
 
             if (_target.IsHandler)
             {
+                GUI.enabled = false;
+#if UNITY_STANDALONE_WIN
+                GUI.enabled = true;
+#endif
                 GUILayout.BeginHorizontal();
-                Toggle(_target.IsQuitWhenException, out _target.IsQuitWhenException, "Is Quit When Exception");
+                Toggle(_target.IsEnableFeedback, out _target.IsEnableFeedback, "Is Enable Feedback");
                 GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                Toggle(_target.IsReportMailWhenException, out _target.IsReportMailWhenException, "Is Report Mail When Exception");
-                GUILayout.EndHorizontal();
-
-                if (_target.IsReportMailWhenException)
+                if (_target.IsEnableFeedback)
                 {
+                    GUILayout.BeginVertical("Box");
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Feedback Program Path");
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    TextField(_target.FeedbackProgramPath, out _target.FeedbackProgramPath);
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.EndVertical();
+                }
+
+                GUI.enabled = true;
+
+                GUILayout.BeginHorizontal();
+                Toggle(_target.IsEnableMailReport, out _target.IsEnableMailReport, "Is Enable Mail Report");
+                GUILayout.EndHorizontal();
+
+                if (_target.IsEnableMailReport)
+                {
+                    GUILayout.BeginVertical("Box");
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Host", GUILayout.Width(80));
+                    TextField(_target.Host, out _target.Host);
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Port", GUILayout.Width(80));
+                    IntField(_target.Port, out _target.Port);
+                    GUILayout.EndHorizontal();
+
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Send Mail", GUILayout.Width(80));
                     TextField(_target.SendMailbox, out _target.SendMailbox);
@@ -54,6 +87,8 @@ namespace HT.Framework
                     GUILayout.Label("Buffer Time", GUILayout.Width(80));
                     FloatField(_target.ReportBufferTime, out _target.ReportBufferTime);
                     GUILayout.EndHorizontal();
+
+                    GUILayout.EndVertical();
                 }
             }
         }

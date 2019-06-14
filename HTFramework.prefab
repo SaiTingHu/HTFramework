@@ -264,11 +264,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsHandler: 0
-  IsQuitWhenException: 1
-  IsReportMailWhenException: 0
+  IsEnableFeedback: 0
+  IsEnableMailReport: 0
+  FeedbackProgramPath: /Feedback.exe
   SendMailbox: hutao_123456@sina.com
   SendMailboxPassword: 
   ReceiveMailbox: 
+  Host: smtp.sina.com
+  Port: 25
   ReportBufferTime: 5
 --- !u!1 &1585211515001588
 GameObject:
