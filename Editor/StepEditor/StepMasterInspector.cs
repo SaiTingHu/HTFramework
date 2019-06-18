@@ -22,10 +22,6 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             ObjectField(_target.ContentAsset, out _target.ContentAsset, false, "Asset");
             GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            ObjectField(_target.MainCamera, out _target.MainCamera, false, "Camera");
-            GUILayout.EndHorizontal();
         }
     }
 }

@@ -140,6 +140,7 @@ namespace HT.Framework
     public delegate void HTFAction();
     public delegate void HTFAction<in T>(T arg);
     public delegate void HTFAction<in T1, in T2>(T1 arg1, T2 arg2);
+    public delegate void HTFAction<in T1, in T2, in T3>(T1 arg1, T2 arg2, T3 arg3);
     public delegate IEnumerator CoroutineAction();
     public delegate IEnumerator CoroutineAction<in T>(T arg);
     public delegate IEnumerator CoroutineAction<in T1, in T2>(T1 arg1, T2 arg2);

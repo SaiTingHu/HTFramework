@@ -100,7 +100,7 @@ namespace HT.Framework
                     ActiveComponentExecute();
                     break;
                 default:
-                    GlobalTools.LogWarning("[" + OperationType + "] 没有可以执行的 Execute 定义！");
+                    GlobalTools.LogWarning(string.Format("[{0}] 没有可以执行的 Execute 定义！", OperationType));
                     break;
             }
         }
@@ -150,7 +150,7 @@ namespace HT.Framework
             {
                 if (!Target.GetComponent<Renderer>())
                 {
-                    GlobalTools.LogError("目标 " + Target + " 丢失组件Renderer！无法播放颜色改变动画！");
+                    GlobalTools.LogError(string.Format("目标 {0} 丢失组件Renderer！无法播放颜色改变动画！", Target));
                     return;
                 }
                 Target.GetComponent<Renderer>().material.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
@@ -159,7 +159,7 @@ namespace HT.Framework
             {
                 if (!Target.GetComponent<Graphic>())
                 {
-                    GlobalTools.LogError("目标 " + Target + " 丢失组件Graphic！无法播放颜色改变动画！");
+                    GlobalTools.LogError(string.Format("目标 {0} 丢失组件Graphic！无法播放颜色改变动画！", Target));
                     return;
                 }
                 Target.GetComponent<Graphic>().DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
@@ -192,7 +192,7 @@ namespace HT.Framework
         {
             if (!Target.GetComponent<TextMesh>())
             {
-                GlobalTools.LogError("目标 " + Target + " 丢失组件TextMesh！无法设置TextMesh文本！");
+                GlobalTools.LogError(string.Format("目标 {0} 丢失组件TextMesh！无法设置TextMesh文本！", Target));
                 return;
             }
             Target.GetComponent<TextMesh>().text = StringValue;
@@ -226,7 +226,8 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("未获取到类型 " + StringValue + "！");
+                
+                GlobalTools.LogError(string.Format("未获取到类型 {0} ！", StringValue));
             }
         }
 
@@ -274,7 +275,7 @@ namespace HT.Framework
                     ActiveComponentSkip();
                     break;
                 default:
-                    GlobalTools.LogWarning("[" + OperationType + "] 没有可以执行的 Skip 定义！");
+                    GlobalTools.LogWarning(string.Format("[{0}] 没有可以执行的 Skip 定义！", OperationType));
                     break;
             }
         }
@@ -324,7 +325,7 @@ namespace HT.Framework
             {
                 if (!Target.GetComponent<Renderer>())
                 {
-                    GlobalTools.LogError("目标 " + Target + " 丢失组件Renderer！无法播放颜色改变动画！");
+                    GlobalTools.LogError(string.Format("目标 {0} 丢失组件Renderer！无法播放颜色改变动画！", Target));
                     return;
                 }
                 Target.GetComponent<Renderer>().material.DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
@@ -333,7 +334,7 @@ namespace HT.Framework
             {
                 if (!Target.GetComponent<Graphic>())
                 {
-                    GlobalTools.LogError("目标 " + Target + " 丢失组件Graphic！无法播放颜色改变动画！");
+                    GlobalTools.LogError(string.Format("目标 {0} 丢失组件Graphic！无法播放颜色改变动画！", Target));
                     return;
                 }
                 Target.GetComponent<Graphic>().DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
@@ -366,7 +367,7 @@ namespace HT.Framework
         {
             if (!Target.GetComponent<TextMesh>())
             {
-                GlobalTools.LogError("目标 " + Target + " 丢失组件TextMesh！无法设置TextMesh文本！");
+                GlobalTools.LogError(string.Format("目标 {0} 丢失组件TextMesh！无法设置TextMesh文本！", Target));
                 return;
             }
             Target.GetComponent<TextMesh>().text = StringValue;
@@ -400,7 +401,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("未获取到类型 " + StringValue + "！");
+                GlobalTools.LogError(string.Format("未获取到类型 {0} ！", StringValue));
             }
         }
 
@@ -449,7 +450,7 @@ namespace HT.Framework
                     ActiveComponentGUI();
                     break;
                 default:
-                    GlobalTools.LogWarning("[" + OperationType + "] 没有可以执行的 OnEditorGUI 定义！");
+                    GlobalTools.LogWarning(string.Format("[{0}] 没有可以执行的 OnEditorGUI 定义！", OperationType));
                     break;
             }
         }
