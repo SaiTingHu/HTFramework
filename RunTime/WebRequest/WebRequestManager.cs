@@ -107,6 +107,23 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 注册接口（提交 表单）
+        /// </summary>
+        public void RegisterInterface(string name, string url)
+        {
+            if (!_interfaces.ContainsKey(name))
+            {
+                WebInterfacePost wi = Main.m_ReferencePool.Spawn<WebInterfacePost>();
+                wi.Name = name;
+                wi.Url = url;
+                _interfaces.Add(name, wi);
+            }
+            else
+            {
+                GlobalTools.LogError("添加接口失败：已存在名为 " + name + " 的网络接口！");
+            }
+        }
+        /// <summary>
         /// 通过名称获取接口
         /// </summary>
         public WebInterface GetInterface(string name)
@@ -190,21 +207,22 @@ namespace HT.Framework
             DateTime begin = DateTime.Now;
 
             UnityWebRequest request = UnityWebRequest.Get(url);
-            SetDownloadHandler(request, _interfaces[interfaceName]);
+            _interfaces[interfaceName].SetDownloadHandler(request);
             yield return request.SendWebRequest();
 
             DateTime end = DateTime.Now;
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                string info = string.Format("[{0}] 发起网络请求：{1}\r\n[{2}] 收到回复：{3}字节", begin.ToString("mm:ss:fff"), url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length);
+                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, request.downloadHandler.text);
                 GlobalTools.LogInfo(info);
 
                 _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
             }
             else
             {
-                GlobalTools.LogError("网络请求出错：" + request.error);
+                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error);
+                GlobalTools.LogError(info);
             }
 
             request.downloadHandler.Dispose();
@@ -241,45 +259,26 @@ namespace HT.Framework
             DateTime begin = DateTime.Now;
 
             UnityWebRequest request = UnityWebRequest.Post(url, form);
-            SetDownloadHandler(request, _interfaces[interfaceName]);
+            _interfaces[interfaceName].SetDownloadHandler(request);
             yield return request.SendWebRequest();
 
             DateTime end = DateTime.Now;
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                string info = string.Format("[{0}] 发起网络请求：{1}\r\n[{2}] 收到回复：{3}字节", begin.ToString("mm:ss:fff"), url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length);
+                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, request.downloadHandler.text);
                 GlobalTools.LogInfo(info);
 
                 _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
             }
             else
             {
-                GlobalTools.LogError("网络请求出错：" + request.error);
+                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error);
+                GlobalTools.LogError(info);
             }
 
             request.downloadHandler.Dispose();
             request.Dispose();
-        }
-
-        private void SetDownloadHandler(UnityWebRequest request, WebInterface wi)
-        {
-            if (wi is WebInterfaceGetAssetBundle)
-            {
-                request.downloadHandler = new DownloadHandlerAssetBundle(request.url, 0);
-            }
-            else if (wi is WebInterfaceGetAudioClip)
-            {
-                request.downloadHandler = new DownloadHandlerAudioClip(request.url, DownloadAudioType);
-            }
-            else if (wi is WebInterfaceGetString)
-            {
-                return;
-            }
-            else if (wi is WebInterfaceGetTexture2D)
-            {
-                request.downloadHandler = new DownloadHandlerTexture(true);
-            }
         }
     }
 }

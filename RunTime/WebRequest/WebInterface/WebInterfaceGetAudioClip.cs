@@ -20,6 +20,11 @@ namespace HT.Framework
             }
         }
 
+        public override void SetDownloadHandler(UnityWebRequest request)
+        {
+            request.downloadHandler = new DownloadHandlerAudioClip(request.url, Main.m_WebRequest.DownloadAudioType);
+        }
+
         public override void Reset()
         {
             OfflineHandler = null;

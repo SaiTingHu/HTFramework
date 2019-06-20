@@ -54,7 +54,7 @@ namespace HT.Framework
                         {
                             File.AppendAllText(path, "【" + _target.Content[i].Ancillary + "】\r\n");
                         }
-                        File.AppendAllText(path, (i + 1) + "、" + _target.Content[i].Name + "\r\n");
+                        File.AppendAllText(path, _target.Content[i].Name + "\r\n");
                     }
                     EditorUtility.ClearProgressBar();
                 }
@@ -70,7 +70,23 @@ namespace HT.Framework
                     for (int i = 0; i < _target.Content.Count; i++)
                     {
                         EditorUtility.DisplayProgressBar("Export......", i + "/" + _target.Content.Count, (float)i / _target.Content.Count);
-                        File.AppendAllText(path, (i + 1) + "、" + _target.Content[i].Prompt + "\r\n");
+                        File.AppendAllText(path, _target.Content[i].Prompt + "\r\n");
+                    }
+                    EditorUtility.ClearProgressBar();
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Export Step GUID To .txt"))
+            {
+                string path = EditorUtility.SaveFilePanel("保存数据文件", Application.dataPath, _target.name, "txt");
+                if (path != "")
+                {
+                    for (int i = 0; i < _target.Content.Count; i++)
+                    {
+                        EditorUtility.DisplayProgressBar("Export......", i + "/" + _target.Content.Count, (float)i / _target.Content.Count);
+                        File.AppendAllText(path, _target.Content[i].GUID + "\r\n");
                     }
                     EditorUtility.ClearProgressBar();
                 }

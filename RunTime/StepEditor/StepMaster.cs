@@ -22,19 +22,19 @@ namespace HT.Framework
         /// </summary>
         public StepContentAsset ContentAsset;
         /// <summary>
-        /// 步骤开始事件
+        /// 步骤开始事件【任何一个步骤开始后触发】
         /// </summary>
         public event HTFAction<StepContent, bool> BeginStepEvent;
         /// <summary>
-        /// 步骤执行事件
+        /// 步骤执行事件【任何一个步骤执行后触发】
         /// </summary>
         public event HTFAction<StepContent, bool> ExecuteStepEvent;
         /// <summary>
-        /// 步骤跳过事件
+        /// 步骤跳过事件【任何一个步骤跳过后触发】
         /// </summary>
         public event HTFAction<StepContent, bool> SkipStepEvent;
         /// <summary>
-        /// 步骤恢复事件
+        /// 步骤恢复事件【任何一个步骤恢复后触发】
         /// </summary>
         public event HTFAction<StepContent, bool> RestoreStepEvent;
         /// <summary>
@@ -42,19 +42,19 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<string> ShowPromptEvent;
         /// <summary>
-        /// 流程开始事件
+        /// 流程开始事件【调用 Begin 开始整个流程后触发】
         /// </summary>
         public event HTFAction BeginEvent;
         /// <summary>
-        /// 连续跳过步骤完成事件
+        /// 连续跳过步骤完成事件【执行连续跳过步骤完成后触发】
         /// </summary>
         public event HTFAction SkipStepDoneEvent;
         /// <summary>
-        /// 点击了错误的步骤目标事件（正确目标：步骤的当前目标、辅助目标）
+        /// 步骤等待执行时，点击了错误的步骤目标事件【正确目标：步骤的当前目标、辅助目标】
         /// </summary>
-        public event HTFAction ClickWrongTargetEvent;
+        public event HTFAction<StepContent> ClickWrongTargetEvent;
         /// <summary>
-        /// 流程结束事件
+        /// 流程结束事件【调用 End 结束整个流程或步骤执行完毕后触发】
         /// </summary>
         public event HTFAction EndEvent;
 
@@ -119,12 +119,12 @@ namespace HT.Framework
                                             {
                                                 if (!_currentHelper.AuxiliaryTarget.Contains(Main.m_Controller.RayTargetObj))
                                                 {
-                                                    ClickWrongTargetEvent?.Invoke();
+                                                    ClickWrongTargetEvent?.Invoke(_currentContent);
                                                 }
                                             }
                                             else
                                             {
-                                                ClickWrongTargetEvent?.Invoke();
+                                                ClickWrongTargetEvent?.Invoke(_currentContent);
                                             }
                                         }
                                     }
@@ -140,12 +140,12 @@ namespace HT.Framework
                                     {
                                         if (!_currentHelper.AuxiliaryTarget.Contains(Main.m_Controller.RayTargetObj))
                                         {
-                                            ClickWrongTargetEvent?.Invoke();
+                                            ClickWrongTargetEvent?.Invoke(_currentContent);
                                         }
                                     }
                                     else
                                     {
-                                        ClickWrongTargetEvent?.Invoke();
+                                        ClickWrongTargetEvent?.Invoke(_currentContent);
                                     }
                                 }
                             }
@@ -163,12 +163,12 @@ namespace HT.Framework
                                     {
                                         if (!_currentHelper.AuxiliaryTarget.Contains(Main.m_Controller.RayTargetObj))
                                         {
-                                            ClickWrongTargetEvent?.Invoke();
+                                            ClickWrongTargetEvent?.Invoke(_currentContent);
                                         }
                                     }
                                     else
                                     {
-                                        ClickWrongTargetEvent?.Invoke();
+                                        ClickWrongTargetEvent?.Invoke(_currentContent);
                                     }
                                 }
                             }
@@ -293,7 +293,7 @@ namespace HT.Framework
         /// 重新编译步骤内容
         /// </summary>
         /// <param name="prohibitStepID">禁用的步骤ID列表（当为null时启用所有步骤，禁用的步骤会自动跳过）</param>
-        public void RecompileStepContent(List<string> prohibitStepID = null)
+        public void RecompileStepContent(HashSet<string> prohibitStepID = null)
         {
             if (ContentAsset)
             {
@@ -562,7 +562,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 展示提示（“提示”节点调用）
+        /// 展示提示【“提示”节点呼叫】
         /// </summary>
         public void ShowPrompt(string content)
         {

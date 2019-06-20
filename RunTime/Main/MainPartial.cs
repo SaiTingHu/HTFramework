@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -37,14 +38,29 @@ namespace HT.Framework
             }
             obj.transform.localRotation = original.transform.localRotation;
             obj.transform.localScale = original.transform.localScale;
+            obj.SetActive(true);
             return obj;
         }
         /// <summary>
         /// 杀死实例
         /// </summary>
+        /// <param name="obj">实例对象</param>
         public static void Kill(UnityEngine.Object obj)
         {
             Destroy(obj);
+        }
+        /// <summary>
+        /// 杀死一群实例
+        /// </summary>
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="objs">实例集合</param>
+        public static void Kills<T>(List<T> objs) where T : UnityEngine.Object
+        {
+            for (int i = 0; i < objs.Count; i++)
+            {
+                Destroy(objs[i]);
+            }
+            objs.Clear();
         }
         #endregion
 

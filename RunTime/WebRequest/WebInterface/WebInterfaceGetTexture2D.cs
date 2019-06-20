@@ -20,6 +20,11 @@ namespace HT.Framework
             }
         }
 
+        public override void SetDownloadHandler(UnityWebRequest request)
+        {
+            request.downloadHandler = new DownloadHandlerTexture(true);
+        }
+
         public override void Reset()
         {
             OfflineHandler = null;

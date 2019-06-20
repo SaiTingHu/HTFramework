@@ -774,6 +774,24 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 打乱集合
+        /// </summary>
+        public static void Disrupt<T>(this List<T> array)
+        {
+            int index = 0;
+            T tmp;
+            for (int i = 0; i < array.Count; i++)
+            {
+                index = UnityEngine.Random.Range(0, array.Count);
+                if (index != i)
+                {
+                    tmp = array[i];
+                    array[i] = array[index];
+                    array[index] = tmp;
+                }
+            }
+        }
+        /// <summary>
         /// 生成一个长度为length的数组，数组中每个数据均为此值
         /// </summary>
         public static T[] GenerateArray<T>(this T value, int length)

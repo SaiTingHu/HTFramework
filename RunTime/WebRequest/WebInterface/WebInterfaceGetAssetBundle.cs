@@ -20,6 +20,11 @@ namespace HT.Framework
             }
         }
 
+        public override void SetDownloadHandler(UnityWebRequest request)
+        {
+            request.downloadHandler = new DownloadHandlerAssetBundle(request.url, 0);
+        }
+
         public override void Reset()
         {
             OfflineHandler = null;

@@ -20,9 +20,15 @@ namespace HT.Framework
         /// </summary>
         public HTFAction OfflineHandler;
         /// <summary>
-        /// Get请求完成
+        /// 请求完成
         /// </summary>
+        /// <param name="handler">下载助手</param>
         public abstract void GetRequestFinish(DownloadHandler handler);
+        /// <summary>
+        /// 设置下载助手
+        /// </summary>
+        /// <param name="request">网络请求的实例</param>
+        public abstract void SetDownloadHandler(UnityWebRequest request);
         /// <summary>
         /// 重置
         /// </summary>
