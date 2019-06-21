@@ -646,27 +646,12 @@ namespace HT.Framework
         /// <summary>
         /// 当前的热更新程序集
         /// </summary>
-        private static readonly string[] HotfixAssemblies = new string[] { "Hotfix" };
+        private static readonly HashSet<string> HotfixAssemblies = new HashSet<string>() { "Hotfix" };
         /// <summary>
         /// 当前的编辑器程序集
         /// </summary>
-        private static readonly string[] EditorAssemblies = new string[] { "Assembly-CSharp-Editor", "UnityEditor" };
-
-        /// <summary>
-        /// 是否是当前的热更新程序集
-        /// </summary>
-        public static bool IsHotfixAssemblies(Assembly assembly)
-        {
-            string name = assembly.GetName().Name;
-            for (int i = 0; i < HotfixAssemblies.Length; i++)
-            {
-                if (name == HotfixAssemblies[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        private static readonly HashSet<string> EditorAssemblies = new HashSet<string>() { "Assembly-CSharp-Editor", "UnityEditor" };
+        
         /// <summary>
         /// 从当前程序域的热更新程序集中获取所有类型
         /// </summary>
@@ -676,7 +661,7 @@ namespace HT.Framework
             Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblys.Length; i++)
             {
-                if (IsHotfixAssemblies(assemblys[i]))
+                if (HotfixAssemblies.Contains(assemblys[i].GetName().Name))
                 {
                     types.AddRange(assemblys[i].GetTypes());
                 }
@@ -689,9 +674,9 @@ namespace HT.Framework
         public static Type GetTypeInHotfixAssemblies(string typeName)
         {
             Type type = null;
-            for (int i = 0; i < HotfixAssemblies.Length; i++)
+            foreach (string assembly in HotfixAssemblies)
             {
-                type = Type.GetType(string.Format("{0},{1}", typeName, HotfixAssemblies[i]));
+                type = Type.GetType(string.Format("{0},{1}", typeName, assembly));
                 if (type != null)
                 {
                     return type;
@@ -700,22 +685,7 @@ namespace HT.Framework
             GlobalTools.LogError("获取类型 " + typeName + " 失败！当前热更新程序集中不存在此类型！");
             return null;
         }
-
-        /// <summary>
-        /// 是否是当前的编辑器程序集
-        /// </summary>
-        public static bool IsEditorAssemblies(Assembly assembly)
-        {
-            string name = assembly.GetName().Name;
-            for (int i = 0; i < EditorAssemblies.Length; i++)
-            {
-                if (name == EditorAssemblies[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        
         /// <summary>
         /// 从当前程序域的编辑器程序集中获取所有类型
         /// </summary>
@@ -725,7 +695,7 @@ namespace HT.Framework
             Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblys.Length; i++)
             {
-                if (IsEditorAssemblies(assemblys[i]))
+                if (EditorAssemblies.Contains(assemblys[i].GetName().Name))
                 {
                     types.AddRange(assemblys[i].GetTypes());
                 }
@@ -738,9 +708,9 @@ namespace HT.Framework
         public static Type GetTypeInEditorAssemblies(string typeName)
         {
             Type type = null;
-            for (int i = 0; i < EditorAssemblies.Length; i++)
+            foreach (string assembly in EditorAssemblies)
             {
-                type = Type.GetType(string.Format("{0},{1}", typeName, EditorAssemblies[i]));
+                type = Type.GetType(string.Format("{0},{1}", typeName, assembly));
                 if (type != null)
                 {
                     return type;

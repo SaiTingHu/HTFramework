@@ -983,6 +983,29 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 关闭所有控件的闪烁
+        /// </summary>
+        public static void CloseAllTwinkle()
+        {
+            foreach (KeyValuePair<Button, TweenerCore<Color, Color, ColorOptions>> button in TwinkleButtons)
+            {
+                ColorBlock block = button.Key.colors;
+                block.normalColor = button.Value.startValue;
+                button.Value.Kill();
+                button.Key.colors = block;
+            }
+            foreach (KeyValuePair<Toggle, TweenerCore<Color, Color, ColorOptions>> toggle in TwinkleToggles)
+            {
+                ColorBlock block = toggle.Key.colors;
+                block.normalColor = toggle.Value.startValue;
+                toggle.Value.Kill();
+                toggle.Key.colors = block;
+            }
+            TwinkleButtons.Clear();
+            TwinkleToggles.Clear();
+        }
+
+        /// <summary>
         /// 限制Text内容的长度在length以内，超过的部分用replace代替
         /// </summary>
         public static void RestrictLength(this Text tex, int length, string replace)
@@ -1171,23 +1194,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前的运行时程序集
         /// </summary>
-        private static readonly string[] RunTimeAssemblies = new string[] { "Assembly-CSharp", "HTFramework.RunTime", "UnityEngine" };
-        
-        /// <summary>
-        /// 是否是当前的运行时程序集
-        /// </summary>
-        public static bool IsRunTimeAssembly(Assembly assembly)
-        {
-            string name = assembly.GetName().Name;
-            for (int i = 0; i < RunTimeAssemblies.Length; i++)
-            {
-                if (name == RunTimeAssemblies[i])
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        private static readonly HashSet<string> RunTimeAssemblies = new HashSet<string>() { "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.Auxiliary.RunTime", "UnityEngine" };
         /// <summary>
         /// 从当前程序域的运行时程序集中获取所有类型
         /// </summary>
@@ -1197,7 +1204,7 @@ namespace HT.Framework
             Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblys.Length; i++)
             {
-                if(IsRunTimeAssembly(assemblys[i]))
+                if (RunTimeAssemblies.Contains(assemblys[i].GetName().Name))
                 {
                     types.AddRange(assemblys[i].GetTypes());
                 }
@@ -1210,9 +1217,9 @@ namespace HT.Framework
         public static Type GetTypeInRunTimeAssemblies(string typeName)
         {
             Type type = null;
-            for (int i = 0; i < RunTimeAssemblies.Length; i++)
+            foreach (string assembly in RunTimeAssemblies)
             {
-                type = Type.GetType(string.Format("{0},{1}", typeName, RunTimeAssemblies[i]));
+                type = Type.GetType(string.Format("{0},{1}", typeName, assembly));
                 if (type != null)
                 {
                     return type;

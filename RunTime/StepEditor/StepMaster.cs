@@ -346,7 +346,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i + 1, content.Name, content.TargetPath));
+                            GlobalTools.LogError(string.Format("【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
                         }
 
                         for (int j = 0; j < content.Operations.Count; j++)
@@ -358,7 +358,7 @@ namespace HT.Framework
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i + 1, operation.Name, operation.TargetPath));
+                                GlobalTools.LogError(string.Format("【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
                             }
                         }
 
@@ -382,7 +382,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i + 1, content.Name, content.TargetPath));
+                            GlobalTools.LogError(string.Format("【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
                         }
 
                         for (int j = 0; j < content.Operations.Count; j++)
@@ -394,7 +394,7 @@ namespace HT.Framework
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i + 1, operation.Name, operation.TargetPath));
+                                GlobalTools.LogError(string.Format("【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
                             }
                         }
 

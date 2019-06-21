@@ -197,6 +197,23 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 制作一个Vector2Field
+        /// </summary>
+        protected void Vector2Field(Vector2 value, out Vector2 outValue, string name, params GUILayoutOption[] options)
+        {
+            Vector2 newValue = EditorGUILayout.Vector2Field(name, value, options);
+            if (value != newValue)
+            {
+                Undo.RecordObject(target, "Set vector2 value");
+                outValue = newValue;
+                HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
+        /// <summary>
         /// 制作一个Vector3Field
         /// </summary>
         protected void Vector3Field(Vector3 value, out Vector3 outValue, string name, params GUILayoutOption[] options)
