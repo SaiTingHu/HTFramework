@@ -249,7 +249,7 @@ namespace HT.Framework
         /// <summary>
         /// 步骤数量
         /// </summary>
-        public int StepCout
+        public int StepCount
         {
             get
             {

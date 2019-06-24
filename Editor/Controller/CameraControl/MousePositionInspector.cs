@@ -8,7 +8,7 @@ namespace HT.Framework
     {
         private MousePosition _mousePosition;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _mousePosition = target as MousePosition;
         }

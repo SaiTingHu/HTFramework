@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomEditor(typeof(CameraTarget))]
-    public sealed class CameraTargetInspector : Editor
+    public sealed class CameraTargetInspector : ModuleEditor
     {
         public override void OnInspectorGUI()
         {

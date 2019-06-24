@@ -8,12 +8,41 @@ namespace HT.Framework
     {
         protected void HasChanged()
         {
-            EditorUtility.SetDirty(target);
-            Component component = target as Component;
-            if (component != null && component.gameObject.scene != null)
+            if (!EditorApplication.isPlaying)
             {
-                EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
+                EditorUtility.SetDirty(target);
+                Component component = target as Component;
+                if (component != null && component.gameObject.scene != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
+                }
             }
+        }
+
+        protected virtual void OnEnable()
+        {
+            if (EditorApplication.isPlaying)
+            {
+                OnPlayingEnable();
+            }
+        }
+
+        protected virtual void OnPlayingEnable()
+        {
+
+        }
+
+        public override void OnInspectorGUI()
+        {
+            if (EditorApplication.isPlaying)
+            {
+                OnPlayingInspectorGUI();
+            }
+        }
+        
+        protected virtual void OnPlayingInspectorGUI()
+        {
+
         }
 
         //可撤销操作、根据改变SetDirty的控件

@@ -12,8 +12,8 @@ namespace HT.Framework
         private static bool _showScriptingDefine = false;
         private static bool _showMainData = false;
         private static bool _showLicense = false;
-        
-        private void OnEnable()
+
+        protected override void OnEnable()
         {
             _target = target as Main;
 

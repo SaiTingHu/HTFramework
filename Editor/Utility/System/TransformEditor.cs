@@ -13,7 +13,7 @@ namespace HT.Framework
         private static bool _showSetting = false;
         private static bool _copyQuaternion = false;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _transform = target as Transform;
         }

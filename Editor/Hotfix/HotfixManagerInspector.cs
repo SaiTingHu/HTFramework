@@ -17,7 +17,7 @@ namespace HT.Framework
         private string _hotfixEnvironmentPath = "/Hotfix/Environment/HotfixEnvironment.cs";
         private string _hotfixAssemblyDefinitionPath = "/Hotfix/Hotfix.asmdef";
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _target = target as HotfixManager;
             _hotfixIsCreated = false;

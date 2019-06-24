@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
@@ -52,6 +53,8 @@ namespace HT.Framework
         /// </summary>
         public float ReportBufferTime = 5;
 
+        //异常信息
+        private List<ExceptionInfo> _exceptionInfos = new List<ExceptionInfo>();
         //异常日志保存路径
         private string _logPath;
         //邮件发送者
@@ -103,10 +106,45 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 当前捕获的所有异常信息
+        /// </summary>
+        public List<ExceptionInfo> ExceptionInfos
+        {
+            get
+            {
+                return _exceptionInfos;
+            }
+        }
+
+        /// <summary>
+        /// 回发邮件
+        /// </summary>
+        public void ReportMail(string subject, string body)
+        {
+            if (_reportBufferTimer > 0)
+            {
+                return;
+            }
+            _reportBufferTimer = ReportBufferTime;
+
+            _sender.Send(subject, body);
+        }
+
+        /// <summary>
+        /// 清理所有异常信息
+        /// </summary>
+        public void ClearExceptionInfos()
+        {
+            Main.m_ReferencePool.Despawns(_exceptionInfos);
+        }
+
         private void Handler(string logString, string stackTrace, LogType type)
         {
             if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
             {
+                _exceptionInfos.Add(Main.m_ReferencePool.Spawn<ExceptionInfo>().Fill(logString, stackTrace, type));
+
                 OnException(logString, stackTrace, type);
 
                 string logContent = string.Format("[time]:{0}\r\n\r\n[type]:{1}\r\n\r\n[message]:{2}\r\n\r\n[stack trace]:{3}\r\n\r\n", DateTime.Now.ToString(), type.ToString(), logString, stackTrace);
@@ -143,20 +181,6 @@ namespace HT.Framework
         private void OnException(string logString, string stackTrace, LogType type)
         {
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<ExceptionEvent>().Fill(logString, stackTrace, type));
-        }
-
-        /// <summary>
-        /// 回发邮件
-        /// </summary>
-        public void ReportMail(string subject, string body)
-        {
-            if (_reportBufferTimer > 0)
-            {
-                return;
-            }
-            _reportBufferTimer = ReportBufferTime;
-
-            _sender.Send(subject, body);
         }
     }
 }

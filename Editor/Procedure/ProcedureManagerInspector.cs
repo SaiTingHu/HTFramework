@@ -11,7 +11,7 @@ namespace HT.Framework
         private ProcedureManager _target;
         private Dictionary<string, string> _procedureTypes = new Dictionary<string, string>();
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _target = target as ProcedureManager;
 

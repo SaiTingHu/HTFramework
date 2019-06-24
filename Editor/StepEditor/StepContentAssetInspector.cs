@@ -10,7 +10,7 @@ namespace HT.Framework
         private StepContentAsset _target;
         private Vector2 _scroll = Vector2.zero;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _target = target as StepContentAsset;
         }

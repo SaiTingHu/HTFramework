@@ -8,7 +8,7 @@ namespace HT.Framework
     {
         private MouseRotation _mouseRotation;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _mouseRotation = target as MouseRotation;
         }

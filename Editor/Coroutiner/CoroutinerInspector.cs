@@ -8,7 +8,7 @@ namespace HT.Framework
     {
         private Coroutiner _target;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _target = target as Coroutiner;
         }

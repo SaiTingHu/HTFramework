@@ -10,7 +10,7 @@ namespace HT.Framework
 
         private HighlightingEffect _he;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
             _he = target as HighlightingEffect;
         }
