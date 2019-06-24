@@ -14,9 +14,7 @@ namespace HT.Framework
     {
         public string Name = "New Finite State Machine";
         public string Data = "<None>";
-        [SerializeField]
         public List<string> States = new List<string>();
-        [SerializeField]
         public List<string> StateNames = new List<string>();
         public string DefaultState = "";
         public string DefaultStateName = "";

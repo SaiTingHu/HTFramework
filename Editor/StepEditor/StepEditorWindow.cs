@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -554,7 +555,8 @@ namespace HT.Framework
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("<Create>"), false, () =>
                     {
-                        string path = EditorUtility.SaveFilePanel("新建 Helper 类", Application.dataPath, "NewHelper", "cs");
+                        string directory = EditorPrefs.GetString(EditorPrefsTable.Script_Helper_Directory, Application.dataPath);
+                        string path = EditorUtility.SaveFilePanel("新建 Helper 类", directory, "NewHelper", "cs");
                         if (path != "")
                         {
                             string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -570,6 +572,7 @@ namespace HT.Framework
                                     _currentStepObj.Helper = className;
                                     asset = null;
                                     AssetDatabase.Refresh();
+                                    EditorPrefs.SetString(EditorPrefsTable.Script_Helper_Directory, path.Substring(0, path.LastIndexOf("/")));
                                 }
                             }
                             else
@@ -586,18 +589,13 @@ namespace HT.Framework
                     {
                         if (type.BaseType == _baseType)
                         {
-                            object[] atts = type.GetCustomAttributes(false);
-                            foreach (object att in atts)
+                            CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
+                            if (helper != null)
                             {
-                                CustomHelperAttribute helper = att as CustomHelperAttribute;
-                                if (helper != null)
+                                gm.AddItem(new GUIContent(helper.Name), _currentStepObj.Helper == type.FullName, () =>
                                 {
-                                    gm.AddItem(new GUIContent(helper.Name), _currentStepObj.Helper == type.FullName, () =>
-                                    {
-                                        _currentStepObj.Helper = type.FullName;
-                                    });
-                                    break;
-                                }
+                                    _currentStepObj.Helper = type.FullName;
+                                });
                             }
                         }
                     }
