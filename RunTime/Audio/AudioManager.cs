@@ -10,13 +10,37 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class AudioManager : ModuleManager
     {
+        /// <summary>
+        /// 背景音乐优先级
+        /// </summary>
         public int BackgroundPriority = 0;
+        /// <summary>
+        /// 单通道音效优先级
+        /// </summary>
         public int SinglePriority = 10;
+        /// <summary>
+        /// 多通道音效优先级
+        /// </summary>
         public int MultiplePriority = 20;
+        /// <summary>
+        /// 世界音效优先级
+        /// </summary>
         public int WorldPriority = 30;
+        /// <summary>
+        /// 背景音乐音量
+        /// </summary>
         public float BackgroundVolume = 0.6f;
+        /// <summary>
+        /// 单通道音效音量
+        /// </summary>
         public float SingleVolume = 1;
+        /// <summary>
+        /// 多通道音效音量
+        /// </summary>
         public float MultipleVolume = 1;
+        /// <summary>
+        /// 世界音效音量
+        /// </summary>
         public float WorldVolume = 1;
 
         /// <summary>
@@ -58,8 +82,7 @@ namespace HT.Framework
                 if (!_singleAudio.isPlaying)
                 {
                     _singleSoundPlayDetector = false;
-                    if (SingleSoundEndOfPlayEvent != null)
-                        SingleSoundEndOfPlayEvent();
+                    SingleSoundEndOfPlayEvent?.Invoke();
                 }
             }
         }
@@ -71,10 +94,11 @@ namespace HT.Framework
         {
             get
             {
-                return _backgroundAudio.mute;
+                return _isMute;
             }
             set
             {
+                _isMute = value;
                 _backgroundAudio.mute = value;
                 _singleAudio.mute = value;
                 for (int i = 0; i < _multipleAudio.Count; i++)
@@ -358,12 +382,18 @@ namespace HT.Framework
         /// </summary>
         public void ClearIdleWorldAudioSource()
         {
+            HashSet<GameObject> removeSet = new HashSet<GameObject>();
             foreach (KeyValuePair<GameObject, AudioSource> audio in _worldAudio)
             {
                 if (!audio.Value.isPlaying)
                 {
+                    removeSet.Add(audio.Key);
                     Main.Kill(audio.Value);
                 }
+            }
+            foreach (GameObject item in removeSet)
+            {
+                _worldAudio.Remove(item);
             }
         }
 
