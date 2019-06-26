@@ -22,6 +22,11 @@ namespace HT.Framework
 
         }
 
+        public override string GetDownloadString(DownloadHandler handler)
+        {
+            return handler.text;
+        }
+
         public override void Reset()
         {
             OfflineHandler = null;

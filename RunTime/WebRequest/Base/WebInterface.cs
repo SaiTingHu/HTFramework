@@ -30,6 +30,12 @@ namespace HT.Framework
         /// <param name="request">网络请求的实例</param>
         public abstract void SetDownloadHandler(UnityWebRequest request);
         /// <summary>
+        /// 获取下载的字符串
+        /// </summary>
+        /// <param name="handler">下载助手</param>
+        /// <returns>下载的字符串</returns>
+        public abstract string GetDownloadString(DownloadHandler handler);
+        /// <summary>
         /// 重置
         /// </summary>
         public abstract void Reset();

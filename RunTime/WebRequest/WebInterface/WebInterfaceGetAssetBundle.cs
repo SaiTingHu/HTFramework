@@ -25,6 +25,11 @@ namespace HT.Framework
             request.downloadHandler = new DownloadHandlerAssetBundle(request.url, 0);
         }
 
+        public override string GetDownloadString(DownloadHandler handler)
+        {
+            return "";
+        }
+
         public override void Reset()
         {
             OfflineHandler = null;

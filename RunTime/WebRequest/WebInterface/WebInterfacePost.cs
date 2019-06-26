@@ -17,6 +17,11 @@ namespace HT.Framework
 
         }
 
+        public override string GetDownloadString(DownloadHandler handler)
+        {
+            return "";
+        }
+
         public override void Reset()
         {
             

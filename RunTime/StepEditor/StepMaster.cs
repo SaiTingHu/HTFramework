@@ -324,6 +324,7 @@ namespace HT.Framework
                     if (_stepContentIDs.ContainsKey(content.GUID))
                     {
                         GlobalTools.LogError(string.Format("发现相同GUID的步骤！GUID：{0}\r\n步骤：{1} 和 {2}", content.GUID, _stepContentIDs[content.GUID].Name, content.Name));
+                        return;
                     }
                     else
                     {

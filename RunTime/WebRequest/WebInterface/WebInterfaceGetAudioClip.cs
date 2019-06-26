@@ -25,6 +25,11 @@ namespace HT.Framework
             request.downloadHandler = new DownloadHandlerAudioClip(request.url, Main.m_WebRequest.DownloadAudioType);
         }
 
+        public override string GetDownloadString(DownloadHandler handler)
+        {
+            return "";
+        }
+
         public override void Reset()
         {
             OfflineHandler = null;

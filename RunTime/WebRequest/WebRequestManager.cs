@@ -214,7 +214,8 @@ namespace HT.Framework
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, request.downloadHandler.text);
+                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].GetDownloadString(request.downloadHandler));
                 GlobalTools.LogInfo(info);
 
                 _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
@@ -266,7 +267,8 @@ namespace HT.Framework
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, request.downloadHandler.text);
+                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].GetDownloadString(request.downloadHandler));
                 GlobalTools.LogInfo(info);
 
                 _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
