@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -22,6 +24,11 @@ namespace HT.Framework
 
         private Ray _ray;
         private RaycastHit _hit;
+        private GameObject _rayTarget;
+        private TargetType _rayTargetType;
+
+        private PointerEventData _eventData;
+        private List<RaycastResult> _results = new List<RaycastResult>();
 
         /// <summary>
         /// 射线发射摄像机
@@ -31,7 +38,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前被射线捕获的目标
         /// </summary>
-        public MouseRayTarget Target { get; private set; }
+        public MouseRayTargetBase Target { get; private set; }
 
         /// <summary>
         /// 当前被射线击中的点
@@ -47,19 +54,20 @@ namespace HT.Framework
             {
                 if (GlobalTools.IsPointerOverUGUI())
                 {
-                    RaycastHiting(null);
-                    return;
-                }
-
-                _ray = RayCamera.ScreenPointToRay(Main.m_Input.MousePosition);
-                if (Physics.Raycast(_ray, out _hit, 100, ActivatedLayer))
-                {
-                    HitPoint = _hit.point;
-                    RaycastHiting(_hit.transform.GetComponent<MouseRayTarget>());
+                    RaycastHiting(GetCurrentUGUI());
                 }
                 else
                 {
-                    RaycastHiting(null);
+                    _ray = RayCamera.ScreenPointToRay(Main.m_Input.MousePosition);
+                    if (Physics.Raycast(_ray, out _hit, 100, ActivatedLayer))
+                    {
+                        HitPoint = _hit.point;
+                        RaycastHiting(_hit.transform.gameObject);
+                    }
+                    else
+                    {
+                        RaycastHiting(null);
+                    }
                 }
 
                 RaycastHitImageFlow();
@@ -69,38 +77,48 @@ namespace HT.Framework
         /// <summary>
         /// 射线击中目标
         /// </summary>
-        private void RaycastHiting(MouseRayTarget target)
+        private void RaycastHiting(GameObject target)
         {
-            if (Target == target)
+            if (_rayTarget == target)
             {
                 return;
             }
 
-            if (Target)
+            if (_rayTarget)
             {
-                switch (TriggerHighlighting)
+                if (_rayTargetType == TargetType.GameObject)
                 {
-                    case HighlightingType.Normal:
-                        Target.gameObject.CloseHighLight(true);
-                        break;
-                    case HighlightingType.Flash:
-                        Target.gameObject.CloseFlashHighLight(true);
-                        break;
+                    switch (TriggerHighlighting)
+                    {
+                        case HighlightingType.Normal:
+                            _rayTarget.CloseHighLight(true);
+                            break;
+                        case HighlightingType.Flash:
+                            _rayTarget.CloseFlashHighLight(true);
+                            break;
+                    }
                 }
                 Target = null;
+                _rayTarget = null;
             }
 
-            Target = target;
-            if (Target)
+            if (target && target.GetComponent<MouseRayTargetBase>())
             {
-                switch (TriggerHighlighting)
+                Target = target.GetComponent<MouseRayTargetBase>();
+                _rayTarget = target;
+                _rayTargetType = _rayTarget.GetComponent<RectTransform>() ? TargetType.UI : TargetType.GameObject;
+
+                if (_rayTargetType == TargetType.GameObject)
                 {
-                    case HighlightingType.Normal:
-                        Target.gameObject.OpenHighLight(NormalColor);
-                        break;
-                    case HighlightingType.Flash:
-                        Target.gameObject.OpenFlashHighLight(FlashColor1, FlashColor2);
-                        break;
+                    switch (TriggerHighlighting)
+                    {
+                        case HighlightingType.Normal:
+                            Target.gameObject.OpenHighLight(NormalColor);
+                            break;
+                        case HighlightingType.Flash:
+                            Target.gameObject.OpenFlashHighLight(FlashColor1, FlashColor2);
+                            break;
+                    }
                 }
 
                 if (IsOpenPrompt)
@@ -132,15 +150,56 @@ namespace HT.Framework
         {
             if (IsOpenPrompt && Target && RayHitImage && RayHitImage.gameObject.activeSelf)
             {
-                RayHitImage.transform.position = Main.m_Input.MousePosition + new Vector3(0, 20, 0);
+                RayHitImage.transform.position = Main.m_Input.MousePosition + new Vector3(0, 40, 0);
                 RayHitImage.rectTransform.sizeDelta = new Vector2(RayHitText.rectTransform.sizeDelta.x + 40, RayHitImage.rectTransform.sizeDelta.y);
             }
         }
+
+        /// <summary>
+        /// 获取当前鼠标位置的UGUI控件
+        /// </summary>
+        private GameObject GetCurrentUGUI()
+        {
+            if (_eventData == null) _eventData = new PointerEventData(EventSystem.current);
+
+            _eventData.position = Main.m_Input.MousePosition;
+            EventSystem.current.RaycastAll(_eventData, _results);
+
+            if (_results.Count > 0)
+            {
+                return _results[0].gameObject;
+            }
+            return null;
+        }
         
+        /// <summary>
+        /// 高光类型
+        /// </summary>
         public enum HighlightingType
         {
+            /// <summary>
+            /// 默认
+            /// </summary>
             Normal,
+            /// <summary>
+            /// 闪光
+            /// </summary>
             Flash,
+        }
+
+        /// <summary>
+        /// 射线捕获的目标类型
+        /// </summary>
+        public enum TargetType
+        {
+            /// <summary>
+            /// 物体
+            /// </summary>
+            GameObject,
+            /// <summary>
+            /// UI对象
+            /// </summary>
+            UI,
         }
     }
 }

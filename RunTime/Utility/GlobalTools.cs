@@ -1164,6 +1164,24 @@ namespace HT.Framework
             RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.UIRoot, screenPos, null, out anchoredPos);
             return anchoredPos;
         }
+        /// <summary>
+        /// 获取输入框的int类型值，若不是该类型值，则返回-1
+        /// </summary>
+        public static int IntText(this InputField input)
+        {
+            int value = -1;
+            int.TryParse(input.text, out value);
+            return value;
+        }
+        /// <summary>
+        /// 获取输入框的float类型值，若不是该类型值，则返回-1f
+        /// </summary>
+        public static float FloatText(this InputField input)
+        {
+            float value = -1f;
+            float.TryParse(input.text, out value);
+            return value;
+        }
         #endregion
 
         #region 日志工具
@@ -1227,6 +1245,41 @@ namespace HT.Framework
             }
             LogError("获取类型 " + typeName + " 失败！当前运行时程序集中不存在此类型！");
             return null;
+        }
+        #endregion
+
+        #region 数学工具
+        /// <summary>
+        /// 限制value的值在最小值与最大值之间
+        /// </summary>
+        public static Vector3 Clamp(Vector3 value, Vector3 min, Vector3 max)
+        {
+            if (value.x < min.x) value.x = min.x;
+            else if (value.x > max.x) value.x = max.x;
+
+            if (value.y < min.y) value.y = min.y;
+            else if (value.y > max.y) value.y = max.y;
+
+            if (value.z < min.z) value.z = min.z;
+            else if (value.z > max.z) value.z = max.z;
+
+            return value;
+        }
+        /// <summary>
+        /// 限制value的值在最小值与最大值之间
+        /// </summary>
+        public static Vector3 Clamp(Vector3 value, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+        {
+            if (value.x < minX) value.x = minX;
+            else if (value.x > maxX) value.x = maxX;
+
+            if (value.y < minY) value.y = minY;
+            else if (value.y > maxY) value.y = maxY;
+
+            if (value.z < minZ) value.z = minZ;
+            else if (value.z > maxZ) value.z = maxZ;
+
+            return value;
         }
         #endregion
 

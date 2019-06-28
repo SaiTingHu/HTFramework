@@ -74,19 +74,16 @@ namespace HT.Framework
             switch (TheControlMode)
             {
                 case ControlMode.FreeControl:
-                    if (FreeControlUpdateEvent != null)
-                        FreeControlUpdateEvent();
+                    FreeControlUpdateEvent?.Invoke();
 
                     _mousePosition.Refresh();
                     _mouseRotation.Refresh();
                     break;
                 case ControlMode.FirstPerson:
-                    if (FirstPersonUpdateEvent != null)
-                        FirstPersonUpdateEvent();
+                    FirstPersonUpdateEvent?.Invoke();
                     break;
                 case ControlMode.ThirdPerson:
-                    if (ThirdPersonUpdateEvent != null)
-                        ThirdPersonUpdateEvent();
+                    ThirdPersonUpdateEvent?.Invoke();
                     break;
             }
         }
@@ -109,16 +106,13 @@ namespace HT.Framework
                     switch (_controlMode)
                     {
                         case ControlMode.FreeControl:
-                            if (SwitchToFreeControlEvent != null)
-                                SwitchToFreeControlEvent();
+                            SwitchToFreeControlEvent?.Invoke();
                             break;
                         case ControlMode.FirstPerson:
-                            if (SwitchToFirstPersonEvent != null)
-                                SwitchToFirstPersonEvent();
+                            SwitchToFirstPersonEvent?.Invoke();
                             break;
                         case ControlMode.ThirdPerson:
-                            if (SwitchToThirdPersonEvent != null)
-                                SwitchToThirdPersonEvent();
+                            SwitchToThirdPersonEvent?.Invoke();
                             break;
                     }
                 }
@@ -151,7 +145,7 @@ namespace HT.Framework
         {
             get
             {
-                return _mousePosition.Target.transform.position;
+                return _cameraTarget.transform.position;
             }
         }
         /// <summary>
@@ -167,7 +161,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前射线击中的目标
         /// </summary>
-        public MouseRayTarget RayTarget
+        public MouseRayTargetBase RayTarget
         {
             get
             {
@@ -226,10 +220,11 @@ namespace HT.Framework
                 _mouseRotation.CanControl = value;
             }
         }
-        
+
         /// <summary>
         /// 自由控制：设置控制外围限定最小值
         /// </summary>
+        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最小值</param>
         public void SetMinLimit(Vector3 value)
         {
             _mousePosition.SetMinLimit(value);
@@ -238,6 +233,7 @@ namespace HT.Framework
         /// <summary>
         /// 自由控制：设置控制外围限定最大值
         /// </summary>
+        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最大值</param>
         public void SetMaxLimit(Vector3 value)
         {
             _mousePosition.SetMaxLimit(value);
@@ -247,21 +243,28 @@ namespace HT.Framework
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>
-        public void SetLookPoint(Vector3 point, bool damping)
+        /// <param name="point">目标位置</param>
+        /// <param name="damping">阻尼缓动模式</param>
+        public void SetLookPoint(Vector3 point, bool damping = true)
         {
             _mousePosition.SetPosition(point, damping);
         }
         /// <summary>
         /// 自由控制：设置摄像机注视角度
         /// </summary>
-        public void SetLookAngle(Vector3 angle, bool damping)
+        /// <param name="angle">目标角度</param>
+        /// <param name="damping">阻尼缓动模式</param>
+        public void SetLookAngle(Vector3 angle, bool damping = true)
         {
             _mouseRotation.SetAngle(angle, damping);
         }
         /// <summary>
         /// 自由控制：设置摄像机注视角度
         /// </summary>
-        public void SetLookAngle(Vector2 angle, float distance, bool damping)
+        /// <param name="angle">目标角度</param>
+        /// <param name="distance">注视距离</param>
+        /// <param name="damping">阻尼缓动模式</param>
+        public void SetLookAngle(Vector2 angle, float distance, bool damping = true)
         {
             _mouseRotation.SetAngle(angle, distance, damping);
         }
@@ -269,6 +272,8 @@ namespace HT.Framework
         /// <summary>
         /// 设置射线发射器的焦点提示框
         /// </summary>
+        /// <param name="background">提示框背景</param>
+        /// <param name="content">提示文字框</param>
         public void SetMouseRayFocusImage(Image background, Text content)
         {
             _mouseRay.RayHitImage = background;

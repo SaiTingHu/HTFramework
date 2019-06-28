@@ -3,19 +3,11 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 可捕获的射线目标
+    /// 鼠标射线可捕获的物体目标
     /// </summary>
     [AddComponentMenu("HTFramework/Camera Control/Mouse Ray Target")]
     [DisallowMultipleComponent]
-    public sealed class MouseRayTarget : MonoBehaviour
+    public sealed class MouseRayTarget : MouseRayTargetBase
     {
-        /// <summary>
-        /// 目标显示的名称
-        /// </summary>
-        public string Name;
-        /// <summary>
-        /// 目标是否为步骤目标
-        /// </summary>
-        public bool IsStepTarget = true;
     }
 }

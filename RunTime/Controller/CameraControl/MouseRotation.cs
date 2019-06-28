@@ -5,20 +5,19 @@ namespace HT.Framework
     /// <summary>
     /// 摄像机注视目标旋转控制
     /// </summary>
-    [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     public sealed class MouseRotation : MonoBehaviour
     {
         //注视目标
         public CameraTarget Target;
-        //注视点x、y轴偏移，若都为0，则注视点等于注视目标的transform.position，类似目标是角色时，注视点可能会上下偏移
-        public float OffsetY = 0f;
+        //注视点x、y轴偏移，若都为0，则注视点等于注视目标的transform.position
         public float OffsetX = 0f;
+        public float OffsetY = 0f;
         //x轴旋转速度，y轴旋转速度，滚轮缩放速度
         public float XSpeed = 150, YSpeed = 150, MSpeed = 30;
         //y轴视角最低值，y轴视角最高值（目标是角色的话，推荐最小10，最大85，摄像机最低不会到角色脚底，最高不会到角色头顶正上方）
-        //例如视角最低值为10，那么摄像机在y轴旋转最小只能到10，不会小于0乃至超过0，如果目标是角色的话，也就是摄像机只能接近地面然后就不能往下继续移动了
-        //例如视角最高值为85，那么摄像机在y轴旋转最大只能到85，不会大于85乃至更多，如果目标是角色的话，也就是摄像机只能接近角色头顶，不能到正90度完全垂直向下看向角色
+        //例如视角最低值为10，那么摄像机在y轴旋转最小只能到10
+        //例如视角最高值为85，那么摄像机在y轴旋转最大只能到85
         public float YMinAngleLimit = -85, YMaxAngleLimit = 85;
         //摄像机与注释目标距离
         public float Distance = 2.0f;
@@ -26,18 +25,18 @@ namespace HT.Framework
         public float MinDistance = 0;
         //摄像机与注释目标最大距离
         public float MaxDistance = 4;
-        //摄像机的围绕目标旋转动画是否是插值动画
+        //摄像机围绕目标旋转时是否使用阻尼缓动模式
         public bool NeedDamping = true;
-        //初始的摄像机x旋转，y旋转，摄像机在围绕目标旋转是这两个值会不停改变，设置初始值用于使摄像机初始看向角色的指定方向，例如初始看向角色背后
+        //初始的摄像机x轴旋转值，y轴旋转值
         public float X = 90.0f;
         public float Y = 30.0f;
-        //摄像机是否限定位置
+        //是否限定旋转位置
         public bool NeedLimit = false;
-        //x轴位置最低值，x轴位置最高值
+        //x轴旋转最低值，x轴旋转最高值
         public float XMinLimit = -5, XMaxLimit = 5;
-        //y轴位置最低值，y轴位置最高值
+        //y轴旋转最低值，y轴旋转最高值
         public float YMinLimit = 0.1f, YMaxLimit = 5;
-        //z轴位置最低值，z轴位置最高值
+        //z轴旋转最低值，z轴旋转最高值
         public float ZMinLimit = -5, ZMaxLimit = 5;
         //在UGUI目标上是否可以控制
         public bool IsCanOnUGUI = false;
@@ -64,6 +63,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置旋转限定最小值
         /// </summary>
+        /// <param name="value">视野旋转时，视角在x,y,z三个轴的最小值</param>
         public void SetMinLimit(Vector3 value)
         {
             XMinLimit = value.x;
@@ -74,6 +74,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置旋转限定最大值
         /// </summary>
+        /// <param name="value">视野旋转时，视角在x,y,z三个轴的最大值</param>
         public void SetMaxLimit(Vector3 value)
         {
             XMaxLimit = value.x;
@@ -82,9 +83,11 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 设置注视视角
+        /// 旋转注视视野
         /// </summary>
-        public void SetAngle(Vector3 angle, bool damping)
+        /// <param name="angle">目标角度</param>
+        /// <param name="damping">阻尼缓动模式</param>
+        public void SetAngle(Vector3 angle, bool damping = true)
         {
             X = angle.x;
             Y = angle.y;
@@ -98,9 +101,12 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 设置注视视角
+        /// 旋转注视视野
         /// </summary>
-        public void SetAngle(Vector2 angle, float distance, bool damping)
+        /// <param name="angle">目标角度</param>
+        /// <param name="distance">距离</param>
+        /// <param name="damping">阻尼缓动模式</param>
+        public void SetAngle(Vector2 angle, float distance, bool damping = true)
         {
             X = angle.x;
             Y = angle.y;
@@ -132,21 +138,18 @@ namespace HT.Framework
             if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
                 return;
 
-            if (Main.m_Input.GetButton("MouseRight"))
+            if (Main.m_Input.GetButton(InputButtonType.MouseRight))
             {
-                //记录鼠标横向移动量
-                X += Main.m_Input.GetAxis("MouseX") * XSpeed * _factor;
-                //记录鼠标纵向移动量
-                Y -= Main.m_Input.GetAxis("MouseY") * YSpeed * _factor;
+                X += Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * _factor;
+                Y -= Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * _factor;
             }
-            if (Main.m_Input.GetAxis("MouseScrollWheel") != 0)
+            if (Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) != 0)
             {
-                //鼠标滚轮缩放视角距离
-                Distance -= Main.m_Input.GetAxis("MouseScrollWheel") * MSpeed * Time.deltaTime;
+                Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * Time.deltaTime;
 
                 if (Distance <= MinDistance)
                 {
-                    Target.transform.Translate(transform.forward * Main.m_Input.GetAxis("MouseScrollWheel"));
+                    Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel));
                 }
             }
         }
@@ -165,7 +168,7 @@ namespace HT.Framework
 
         private void CalculateAngle()
         {
-            //将纵向移动量限制在视角最低值和最高值之间
+            //将纵向旋转限制在视角最低值和最高值之间
             Y = ClampYAngle(Y, YMinAngleLimit, YMaxAngleLimit);
             //将视角距离限制在最小值和最大值之间
             Distance = Mathf.Clamp(Distance, MinDistance, MaxDistance);
@@ -174,9 +177,9 @@ namespace HT.Framework
             _targetPoint.Set(Target.transform.position.x + OffsetX, Target.transform.position.y + OffsetY, Target.transform.position.z);
 
             //摄像机的最新旋转角度
-            _rotation = Quaternion.Euler(Y, X, 0.0f);
+            _rotation = Quaternion.Euler(Y, X, 0f);
             //摄像机与注视点的距离向量
-            _disVector.Set(0.0f, 0.0f, -Distance);
+            _disVector.Set(0f, 0f, -Distance);
             //摄像机的最新旋转角度*摄像机与注视点的距离，得出摄像机与注视点的相对位置，再由注视点的位置加上相对位置便等于摄像机的位置
             _position = Target.transform.position + _rotation * _disVector;
         }
@@ -199,38 +202,7 @@ namespace HT.Framework
             //摄像机位置限制
             if (NeedLimit)
             {
-                if (transform.position.x < XMinLimit)
-                {
-                    _finalPosition.Set(XMinLimit, transform.position.y, transform.position.z);
-                    transform.position = _finalPosition;
-                }
-                else if (transform.position.x > XMaxLimit)
-                {
-                    _finalPosition.Set(XMaxLimit, transform.position.y, transform.position.z);
-                    transform.position = _finalPosition;
-                }
-
-                if (transform.position.y < YMinLimit)
-                {
-                    _finalPosition.Set(transform.position.x, YMinLimit, transform.position.z);
-                    transform.position = _finalPosition;
-                }
-                else if (transform.position.y > YMaxLimit)
-                {
-                    _finalPosition.Set(transform.position.x, YMaxLimit, transform.position.z);
-                    transform.position = _finalPosition;
-                }
-
-                if (transform.position.z < ZMinLimit)
-                {
-                    _finalPosition.Set(transform.position.x, transform.position.y, ZMinLimit);
-                    transform.position = _finalPosition;
-                }
-                else if (transform.position.z > ZMaxLimit)
-                {
-                    _finalPosition.Set(transform.position.x, transform.position.y, ZMaxLimit);
-                    transform.position = _finalPosition;
-                }
+                transform.position = GlobalTools.Clamp(transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
             }
         }
 

@@ -14,7 +14,7 @@ namespace HT.Framework
     {
         #region 批处理工具
         /// <summary>
-        /// 设置鼠标射线可捕获目标
+        /// 设置鼠标射线可捕获物体目标
         /// </summary>
         [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 0)]
         private static void SetMouseRayTarget()
@@ -41,9 +41,32 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 设置鼠标射线可捕获UI目标
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 1)]
+        private static void SetMouseRayUITarget()
+        {
+            if (Selection.gameObjects.Length <= 0)
+            {
+                GlobalTools.LogWarning("请先选中场景中的UI对象！");
+                return;
+            }
+
+            GameObject[] objs = Selection.gameObjects;
+            for (int i = 0; i < objs.Length; i++)
+            {
+                if (!objs[i].GetComponent<MouseRayUITarget>())
+                {
+                    objs[i].AddComponent<MouseRayUITarget>();
+                }
+                objs[i].GetComponent<MouseRayUITarget>().Name = objs[i].name;
+            }
+        }
+
+        /// <summary>
         /// 打开ReplaceFontBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Batch", false, 11)]
+        [@MenuItem("HTFramework/Batch/Replace Font Batch", false, 20)]
         private static void OpenReplaceFontBatch()
         {
             ReplaceFontBatch rfb = EditorWindow.GetWindow<ReplaceFontBatch>();
@@ -55,7 +78,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ReplaceFontColorBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Color Batch", false, 12)]
+        [@MenuItem("HTFramework/Batch/Replace Font Color Batch", false, 21)]
         private static void OpenReplaceFontColorBatch()
         {
             ReplaceFontColorBatch rfb = EditorWindow.GetWindow<ReplaceFontColorBatch>();
@@ -67,7 +90,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开SetRaycastTargetBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Raycast Target Batch", false, 13)]
+        [@MenuItem("HTFramework/Batch/Set Raycast Target Batch", false, 22)]
         private static void OpenSetRaycastTargetBatch()
         {
             SetRaycastTargetBatch srtb = EditorWindow.GetWindow<SetRaycastTargetBatch>();
@@ -79,7 +102,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置网格渲染器组件
         /// </summary>
-        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 30)]
+        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 23)]
         private static void SetMeshRendererBatch()
         {
             MeshRendererBatch mrb = EditorWindow.GetWindow<MeshRendererBatch>();

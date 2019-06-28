@@ -60,10 +60,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal("Box");
-            GUILayout.Label("X");
-            FloatField(_mouseRotation.XMinLimit, out _mouseRotation.XMinLimit);
-            GUILayout.Label("Y");
-            FloatField(_mouseRotation.XMaxLimit, out _mouseRotation.XMaxLimit);
+            GUILayout.Label("Y min");
+            FloatField(_mouseRotation.YMinAngleLimit, out _mouseRotation.YMinAngleLimit);
+            GUILayout.Label("Y max");
+            FloatField(_mouseRotation.YMaxAngleLimit, out _mouseRotation.YMaxAngleLimit);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -119,7 +119,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("X Min");
                 FloatField(_mouseRotation.XMinLimit, out _mouseRotation.XMinLimit);
-                GUILayout.Label("Y Max");
+                GUILayout.Label("X Max");
                 FloatField(_mouseRotation.XMaxLimit, out _mouseRotation.XMaxLimit);
                 GUILayout.EndHorizontal();
 

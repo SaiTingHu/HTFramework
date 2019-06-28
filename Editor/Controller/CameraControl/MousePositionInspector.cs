@@ -37,8 +37,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Move Damping");
-            FloatField(_mousePosition.MoveDamping, out _mousePosition.MoveDamping);
+            GUILayout.Label("Damping Time");
+            FloatField(_mousePosition.DampingTime, out _mousePosition.DampingTime);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();

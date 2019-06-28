@@ -6,7 +6,6 @@ namespace HT.Framework
     /// <summary>
     /// 摄像机注视目标移动控制
     /// </summary>
-    [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     public sealed class MousePosition : MonoBehaviour
     {
@@ -14,8 +13,8 @@ namespace HT.Framework
         public CameraTarget Target;
         //旋转控制器
         public MouseRotation MR;
-        //移动缓冲值
-        public float MoveDamping = 1;
+        //阻尼缓冲时长
+        public float DampingTime = 1;
         //x轴移动速度，y轴移动速度，滚轮移动速度
         public float XSpeed = 0.1f, YSpeed = 0.1f, MSpeed = 1;
         //是否限定平移位置
@@ -31,7 +30,7 @@ namespace HT.Framework
         
         //最终的位置
         private Vector3 _finalPosition;
-        //目标缓动平移时的动画
+        //阻尼缓动模式时的动画
         private Tweener _moveTweener;
 
         /// <summary>
@@ -42,6 +41,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置平移限定最小值
         /// </summary>
+        /// <param name="value">视野平移时，视角在x,y,z三个轴的最小值</param>
         public void SetMinLimit(Vector3 value)
         {
             XMinLimit = value.x;
@@ -52,6 +52,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置平移限定最大值
         /// </summary>
+        /// <param name="value">视野平移时，视角在x,y,z三个轴的最大值</param>
         public void SetMaxLimit(Vector3 value)
         {
             XMaxLimit = value.x;
@@ -60,15 +61,15 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 平移注释目标，从而平移摄像机
+        /// 平移注视视野
         /// </summary>
-        public void SetPosition(Vector3 position, bool damping)
+        /// <param name="position">目标位置</param>
+        /// <param name="damping">阻尼缓动模式</param>
+        public void SetPosition(Vector3 position, bool damping = true)
         {
             if (NeedLimit)
             {
-                position.x = Mathf.Clamp(position.x, XMinLimit, XMaxLimit);
-                position.y = Mathf.Clamp(position.y, YMinLimit, YMaxLimit);
-                position.z = Mathf.Clamp(position.z, ZMinLimit, ZMaxLimit);
+                position = GlobalTools.Clamp(position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
             }
 
             if (_moveTweener != null)
@@ -79,7 +80,7 @@ namespace HT.Framework
 
             if (damping)
             {
-                _moveTweener = Target.transform.DOMove(position, MoveDamping);
+                _moveTweener = Target.transform.DOMove(position, DampingTime);
             }
             else
             {
@@ -98,26 +99,26 @@ namespace HT.Framework
             if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
                 return;
 
-            if (Main.m_Input.GetButton("MouseMiddle"))
+            if (Main.m_Input.GetButton(InputButtonType.MouseMiddle))
             {
                 if (_moveTweener != null)
                 {
                     _moveTweener.Kill();
                     _moveTweener = null;
                 }
-                Target.transform.Translate(transform.right * Main.m_Input.GetAxis("MouseX") * XSpeed * MR.Distance * -1);
-                Target.transform.Translate(transform.up * Main.m_Input.GetAxis("MouseY") * YSpeed * MR.Distance * -1);
+                Target.transform.Translate(transform.right * Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * MR.Distance * -1);
+                Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * MR.Distance * -1);
                 MR.NeedDamping = false;
             }
-            else if (Main.m_Input.GetAxisRaw("Horizontal") != 0 || Main.m_Input.GetAxisRaw("Vertical") != 0)
+            else if (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0)
             {
                 if (_moveTweener != null)
                 {
                     _moveTweener.Kill();
                     _moveTweener = null;
                 }
-                Target.transform.Translate(transform.right * Main.m_Input.GetAxis("Horizontal") * XSpeed);
-                Target.transform.Translate(transform.forward * Main.m_Input.GetAxis("Vertical") * YSpeed);
+                Target.transform.Translate(transform.right * Main.m_Input.GetAxis(InputAxisType.Horizontal) * XSpeed);
+                Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.Vertical) * YSpeed);
                 MR.NeedDamping = false;
             }
             else
@@ -127,38 +128,7 @@ namespace HT.Framework
 
             if (NeedLimit)
             {
-                if (Target.transform.position.x < XMinLimit)
-                {
-                    _finalPosition.Set(XMinLimit, Target.transform.position.y, Target.transform.position.z);
-                    Target.transform.position = _finalPosition;
-                }
-                else if (Target.transform.position.x > XMaxLimit)
-                {
-                    _finalPosition.Set(XMaxLimit, Target.transform.position.y, Target.transform.position.z);
-                    Target.transform.position = _finalPosition;
-                }
-
-                if (Target.transform.position.y < YMinLimit)
-                {
-                    _finalPosition.Set(Target.transform.position.x, YMinLimit, Target.transform.position.z);
-                    Target.transform.position = _finalPosition;
-                }
-                else if (Target.transform.position.y > YMaxLimit)
-                {
-                    _finalPosition.Set(Target.transform.position.x, YMaxLimit, Target.transform.position.z);
-                    Target.transform.position = _finalPosition;
-                }
-
-                if (Target.transform.position.z < ZMinLimit)
-                {
-                    _finalPosition.Set(Target.transform.position.x, Target.transform.position.y, ZMinLimit);
-                    Target.transform.position = _finalPosition;
-                }
-                else if (Target.transform.position.z > ZMaxLimit)
-                {
-                    _finalPosition.Set(Target.transform.position.x, Target.transform.position.y, ZMaxLimit);
-                    Target.transform.position = _finalPosition;
-                }
+                Target.transform.position = GlobalTools.Clamp(Target.transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
             }
         }
     }
