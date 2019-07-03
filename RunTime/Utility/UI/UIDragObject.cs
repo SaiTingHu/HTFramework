@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -8,10 +7,13 @@ namespace HT.Framework
     /// UGUI可拖动对象
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIDragObject")]
-    [RequireComponent(typeof(Button))]
     [DisallowMultipleComponent]
     public sealed class UIDragObject : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
+        /// <summary>
+        /// 拖动模式
+        /// </summary>
+        public UIDragMode Mode = UIDragMode.Overlay;
         /// <summary>
         /// 被拖动目标
         /// </summary>
@@ -49,13 +51,19 @@ namespace HT.Framework
         /// </summary>
         public float Down = 0;
 
-        private RectTransform _transform;
+        private Transform _transform;
+        private RectTransform _rectTransform;
         private bool _isDrag = false;
         private Vector3 _lastPos;
+        private HTFAction Draging;
 
         private void Awake()
         {
-            _transform = DragTarget.rectTransform();
+            _transform = DragTarget.transform;
+            _rectTransform = DragTarget.rectTransform();
+
+            if (Mode == UIDragMode.Overlay) Draging = OverlayDraging;
+            else if (Mode == UIDragMode.World) Draging = WorldDraging;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -73,18 +81,33 @@ namespace HT.Framework
         {
             if (_isDrag)
             {
-                Vector2 direction = Main.m_Input.MousePosition - _lastPos;
-                if (!Horizontal) direction.x = 0;
-                if (!Vertical) direction.y = 0;
-                _transform.anchoredPosition += direction;
-                LimitPos();
-                _lastPos = Main.m_Input.MousePosition;
+                Draging();
             }
         }
 
-        private void LimitPos()
+        private void WorldDraging()
         {
-            Vector2 pos = _transform.anchoredPosition;
+            Vector2 direction = Main.m_Input.MousePosition - _lastPos;
+            if (!Horizontal) direction.x = 0;
+            if (!Vertical) direction.y = 0;
+            _rectTransform.anchoredPosition += direction;
+            OverlayLimitPos();
+            _lastPos = Main.m_Input.MousePosition;
+        }
+
+        private void OverlayDraging()
+        {
+            Vector3 direction = Main.m_Input.MousePosition - _lastPos;
+            if (!Horizontal) direction.x = 0;
+            if (!Vertical) direction.y = 0;
+            _transform.position += direction;
+            WorldLimitPos();
+            _lastPos = Main.m_Input.MousePosition;
+        }
+
+        private void WorldLimitPos()
+        {
+            Vector2 pos = _rectTransform.anchoredPosition;
             if (HorizontalLimit)
             {
                 if (pos.x < Left) pos.x = Left;
@@ -95,7 +118,38 @@ namespace HT.Framework
                 if (pos.y < Down) pos.y = Down;
                 else if (pos.y > Up) pos.y = Up;
             }
-            _transform.anchoredPosition = pos;
+            _rectTransform.anchoredPosition = pos;
+        }
+
+        private void OverlayLimitPos()
+        {
+            Vector2 pos = _transform.position;
+            if (HorizontalLimit)
+            {
+                if (pos.x < Left) pos.x = Left;
+                else if (pos.x > Right) pos.x = Right;
+            }
+            if (VerticalLimit)
+            {
+                if (pos.y < Down) pos.y = Down;
+                else if (pos.y > Up) pos.y = Up;
+            }
+            _transform.position = pos;
+        }
+
+        /// <summary>
+        /// UI拖动模式
+        /// </summary>
+        public enum UIDragMode
+        {
+            /// <summary>
+            /// 屏幕UI
+            /// </summary>
+            Overlay,
+            /// <summary>
+            /// 世界UI
+            /// </summary>
+            World
         }
     }
 }

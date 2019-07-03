@@ -12,11 +12,31 @@ namespace HT.Framework
     /// </summary>
     public static class EditorGlobalTools
     {
+        #region 关于
+        /// <summary>
+        /// CSDN专栏
+        /// </summary>
+        [@MenuItem("HTFramework/About/CSDN Blog", false, 0)]
+        private static void AboutCSDN()
+        {
+            Application.OpenURL(@"https://blog.csdn.net/qq992817263/column/info/32162");
+        }
+
+        /// <summary>
+        /// Github
+        /// </summary>
+        [@MenuItem("HTFramework/About/Github", false, 1)]
+        private static void AboutGithub()
+        {
+            Application.OpenURL(@"https://github.com/SaiTingHu/HTFramework");
+        }
+        #endregion
+
         #region 批处理工具
         /// <summary>
         /// 设置鼠标射线可捕获物体目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 0)]
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 20)]
         private static void SetMouseRayTarget()
         {
             if (Selection.gameObjects.Length <= 0)
@@ -43,7 +63,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置鼠标射线可捕获UI目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 1)]
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 21)]
         private static void SetMouseRayUITarget()
         {
             if (Selection.gameObjects.Length <= 0)
@@ -66,7 +86,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ReplaceFontBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Batch", false, 20)]
+        [@MenuItem("HTFramework/Batch/Replace Font Batch", false, 40)]
         private static void OpenReplaceFontBatch()
         {
             ReplaceFontBatch rfb = EditorWindow.GetWindow<ReplaceFontBatch>();
@@ -78,7 +98,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ReplaceFontColorBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Color Batch", false, 21)]
+        [@MenuItem("HTFramework/Batch/Replace Font Color Batch", false, 41)]
         private static void OpenReplaceFontColorBatch()
         {
             ReplaceFontColorBatch rfb = EditorWindow.GetWindow<ReplaceFontColorBatch>();
@@ -90,7 +110,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开SetRaycastTargetBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Raycast Target Batch", false, 22)]
+        [@MenuItem("HTFramework/Batch/Set Raycast Target Batch", false, 42)]
         private static void OpenSetRaycastTargetBatch()
         {
             SetRaycastTargetBatch srtb = EditorWindow.GetWindow<SetRaycastTargetBatch>();
@@ -102,7 +122,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置网格渲染器组件
         /// </summary>
-        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 23)]
+        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 43)]
         private static void SetMeshRendererBatch()
         {
             MeshRendererBatch mrb = EditorWindow.GetWindow<MeshRendererBatch>();
@@ -114,7 +134,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置Texture导入参数
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Texture ImportSettings Batch", false, 50)]
+        [@MenuItem("HTFramework/Batch/Texture ImportSettings Batch", false, 80)]
         private static void SetTextureImportSettingsBatch()
         {
             TextureImportSettingsBatch tisb = EditorWindow.GetWindow<TextureImportSettingsBatch>();

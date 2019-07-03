@@ -217,6 +217,16 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 当前是否运行中
+        /// </summary>
+        public bool IsRunning
+        {
+            get
+            {
+                return _running;
+            }
+        }
+        /// <summary>
         /// 当前步骤索引
         /// </summary>
         public int CurrentStepIndex
