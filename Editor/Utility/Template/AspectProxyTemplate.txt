@@ -11,12 +11,12 @@ public class #SCRIPTNAME#<T> : AspectProxy<T> where T : I#SCRIPTNAME#
 {
     public #SCRIPTNAME#(T realObject) : base(realObject) { }
 
-    public override object[] BeforeInvoke(MethodBase method, object[] args)
+    protected override object[] BeforeInvoke(MethodBase method, object[] args)
     {
 		return args;
     }
 
-    public override void AfterInvoke(MethodBase method, object returnValue)
+    protected override void AfterInvoke(MethodBase method, object returnValue)
     {
     }
 }

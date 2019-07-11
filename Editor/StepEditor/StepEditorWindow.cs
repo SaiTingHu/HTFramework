@@ -29,6 +29,7 @@ namespace HT.Framework
         private Vector2 _mouseDownPos;
         private Texture _background;
 
+        private StepListShowType _stepListShowType = StepListShowType.Name;
         private Vector2 _stepListScroll = Vector3.zero;
         private Vector2 _stepContentScroll = Vector3.zero;
         private Vector2 _stepOperationScroll = Vector3.zero;
@@ -133,23 +134,23 @@ namespace HT.Framework
             }
             if (GUILayout.Button("Clear Unused GUID", "Toolbarbutton"))
             {
-                if (EditorUtility.DisplayDialog("Prompt", "Are you sure clear unused GUID in the current opened scene？", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure clear unused GUID [StepTarget] in the current opened scene？", "Yes", "No"))
                 {
-                    Dictionary<string, bool> usedTargets = new Dictionary<string, bool>();
+                    HashSet<string> usedTargets = new HashSet<string>();
                     for (int i = 0; i < _contentAsset.Content.Count; i++)
                     {
                         StepContent content = _contentAsset.Content[i];
-                        if (!usedTargets.ContainsKey(content.TargetGUID) && content.TargetGUID != "<None>")
+                        if (!usedTargets.Contains(content.TargetGUID) && content.TargetGUID != "<None>")
                         {
-                            usedTargets.Add(content.TargetGUID, false);
+                            usedTargets.Add(content.TargetGUID);
                         }
 
                         for (int j = 0; j < content.Operations.Count; j++)
                         {
                             StepOperation operation = content.Operations[j];
-                            if (!usedTargets.ContainsKey(operation.TargetGUID) && operation.TargetGUID != "<None>")
+                            if (!usedTargets.Contains(operation.TargetGUID) && operation.TargetGUID != "<None>")
                             {
-                                usedTargets.Add(operation.TargetGUID, false);
+                                usedTargets.Add(operation.TargetGUID);
                             }
                         }
                     }
@@ -160,7 +161,7 @@ namespace HT.Framework
                         StepTarget[] targets = rootObj.transform.GetComponentsInChildren<StepTarget>(true);
                         foreach (StepTarget target in targets)
                         {
-                            if (!usedTargets.ContainsKey(target.GUID))
+                            if (!usedTargets.Contains(target.GUID))
                             {
                                 DestroyImmediate(target);
                             }
@@ -181,9 +182,15 @@ namespace HT.Framework
         {
             GUILayout.BeginVertical("PreBackground", GUILayout.Width(_stepListGUIWidth));
 
-            #region 根据步骤标题筛选
+            #region 筛选步骤
             GUILayout.BeginHorizontal("Icon.OutlineBorder");
             GUILayout.Label("Step Content List", "BoldLabel");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Show Type:");
+            _stepListShowType = (StepListShowType)EditorGUILayout.EnumPopup(_stepListShowType, GUILayout.Width(100));
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -200,14 +207,14 @@ namespace HT.Framework
             _stepListScroll = GUILayout.BeginScrollView(_stepListScroll);
             for (int i = 0; i < _contentAsset.Content.Count; i++)
             {
-                if (_contentAsset.Content[i].Name.Contains(_stepListFilter))
+                if (StepFilter(_contentAsset.Content[i]))
                 {
                     GUILayout.BeginHorizontal();
                     GUI.color = (_currentStep == i ? Color.cyan : Color.white);
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
-                    content.text = i + "." + _contentAsset.Content[i].Name;
+                    content.text = i + "." + StepShowName(_contentAsset.Content[i]);
                     content.tooltip = _contentAsset.Content[i].Prompt;
-                    GUILayout.Label(content,GUILayout.Height(16));
+                    GUILayout.Label(content, GUILayout.Height(16));
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("-->", "Minibutton"))
                     {
@@ -1163,6 +1170,57 @@ namespace HT.Framework
         {
             _currentOperation = currentOperation;
             _currentOperationObj = ((_currentOperation != -1 && _currentStep != -1) ? _currentStepObj.Operations[_currentOperation] : null);
+        }
+        /// <summary>
+        /// 步骤筛选
+        /// </summary>
+        private bool StepFilter(StepContent content)
+        {
+            switch (_stepListShowType)
+            {
+                case StepListShowType.ID:
+                    return content.GUID.Contains(_stepListFilter);
+                case StepListShowType.Name:
+                    return content.Name.Contains(_stepListFilter);
+                case StepListShowType.IDAndName:
+                    return content.GUID.Contains(_stepListFilter) || content.Name.Contains(_stepListFilter);
+            }
+            return false;
+        }
+        /// <summary>
+        /// 步骤在列表的显示名
+        /// </summary>
+        private string StepShowName(StepContent content)
+        {
+            switch (_stepListShowType)
+            {
+                case StepListShowType.ID:
+                    return content.GUID;
+                case StepListShowType.Name:
+                    return content.Name;
+                case StepListShowType.IDAndName:
+                    return content.GUID + " " + content.Name;
+            }
+            return "<None>";
+        }
+
+        /// <summary>
+        /// 步骤列表显示方式
+        /// </summary>
+        private enum StepListShowType
+        {
+            /// <summary>
+            /// 显示步骤ID
+            /// </summary>
+            ID,
+            /// <summary>
+            /// 显示步骤名称
+            /// </summary>
+            Name,
+            /// <summary>
+            /// 显示步骤ID+名称
+            /// </summary>
+            IDAndName
         }
     }
 }
