@@ -13,15 +13,15 @@ namespace HT.Framework
     public sealed class ExceptionHandler : ModuleManager
     {
         /// <summary>
-        /// 是否开启异常处理监听
+        /// 是否开启异常处理监听【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public bool IsHandler = false;
         /// <summary>
-        /// 是否启用异常反馈程序
+        /// 是否启用异常反馈程序【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public bool IsEnableFeedback = false;
         /// <summary>
-        /// 是否启用邮件回发机制
+        /// 是否启用邮件回发机制【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public bool IsEnableMailReport = false;
         /// <summary>

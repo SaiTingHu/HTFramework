@@ -68,5 +68,19 @@ namespace HT.Framework
         public virtual void OnUpdate()
         {
         }
+
+        /// <summary>
+        /// 打开自己
+        /// </summary>
+        protected virtual void Open()
+        {
+        }
+
+        /// <summary>
+        /// 关闭自己
+        /// </summary>
+        protected virtual void Close()
+        {
+        }
     }
 }

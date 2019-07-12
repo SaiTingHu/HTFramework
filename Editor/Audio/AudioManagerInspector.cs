@@ -12,8 +12,8 @@ namespace HT.Framework
 
         private AudioSource _backgroundAudio;
         private AudioSource _singleAudio;
-        private List<AudioSource> _multipleAudio = new List<AudioSource>();
-        private Dictionary<GameObject, AudioSource> _worldAudio = new Dictionary<GameObject, AudioSource>();
+        private List<AudioSource> _multipleAudio;
+        private Dictionary<GameObject, AudioSource> _worldAudio;
 
         protected override void OnEnable()
         {

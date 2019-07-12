@@ -1154,14 +1154,14 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 世界坐标转换为UGUI坐标（只适用于框架UI模块下的控件）
+        /// 世界坐标转换为UGUI坐标（针对框架UI模块下Overlay类型的UI控件）
         /// </summary>
         public static Vector2 ToAnchoredPosition(this Vector3 position)
         {
             Vector3 screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
             screenPos.z = 0;
             Vector2 anchoredPos = Vector2.zero;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.UIRoot, screenPos, null, out anchoredPos);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
             return anchoredPos;
         }
         /// <summary>
