@@ -30,6 +30,8 @@
 
 - [Hotfix](https://wanderer.blog.csdn.net/article/details/90479971) - 以C#反射实现的轻量级热更新框架，开发非常方便，新项目只需要拉取框架源码后，一键即可创建热更新环境，之后便可以正常开发。
 
+- [ILHotfix](https://github.com/SaiTingHu/HTFrameworkILHotfix)【可选模块】 - 基于ILRuntime实现的跨平台热更新框架，开发非常方便，新项目只需要拉取框架源码及本模块，一键即可创建热更新环境，之后便可以正常开发。
+
 - [Input](https://wanderer.blog.csdn.net/article/details/89001848) - 将任意输入都定义为虚拟输入，再由Input模块统一调用，将是跨平台输入的最优解决方案。
 
 - Main - 框架主模块，提供访问其他模块的快捷接口。
