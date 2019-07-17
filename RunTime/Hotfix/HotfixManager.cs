@@ -51,9 +51,9 @@ namespace HT.Framework
         {
             base.Refresh();
 
-            if (UpdateHotfixLogicEvent != null)
+            if (IsEnableHotfix)
             {
-                UpdateHotfixLogicEvent();
+                UpdateHotfixLogicEvent?.Invoke();
             }
         }
 
