@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace HT.Framework
 {
@@ -39,6 +39,19 @@ namespace HT.Framework
             }
 
             return _spawnPools[typeof(T)].Spawn<T>();
+        }
+
+        /// <summary>
+        /// 生成引用
+        /// </summary>
+        public IReference Spawn(Type type)
+        {
+            if (!_spawnPools.ContainsKey(type))
+            {
+                _spawnPools.Add(type, new ReferenceSpawnPool(Limit));
+            }
+
+            return _spawnPools[type].Spawn(type);
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 对象池
     /// </summary>
-    public sealed class ObjectSpawnPool : UnityEngine.Object
+    public sealed class ObjectSpawnPool : Object
     {
         private GameObject _spawnTem;
         private int _limit = 100;

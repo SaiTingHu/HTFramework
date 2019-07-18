@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 引用池
     /// </summary>
-    public sealed class ReferenceSpawnPool : Object
+    public sealed class ReferenceSpawnPool : UnityEngine.Object
     {
         private int _limit = 100;
         private Queue<IReference> _referenceQueue = new Queue<IReference>();
@@ -40,6 +40,24 @@ namespace HT.Framework
             else
             {
                 refe = new T();
+            }
+
+            return refe;
+        }
+
+        /// <summary>
+        /// 生成引用
+        /// </summary>
+        public IReference Spawn(Type type)
+        {
+            IReference refe;
+            if (_referenceQueue.Count > 0)
+            {
+                refe = _referenceQueue.Dequeue();
+            }
+            else
+            {
+                refe = Activator.CreateInstance(type) as IReference;
             }
 
             return refe;

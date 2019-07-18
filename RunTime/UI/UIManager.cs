@@ -60,10 +60,11 @@ namespace HT.Framework
             _cameraResidentPanel = _cameraUIRoot.Find("ResidentPanel");
             _cameraTemporaryPanel = _cameraUIRoot.Find("TemporaryPanel");
             _worldUIRoot = _UIEntity.transform.Find("WorldUIRoot");
+            UICamera = _UIEntity.GetComponentByChild<Camera>("UICamera");
 
             _overlayUIRoot.gameObject.SetActive(IsEnableOverlayUI);
             _cameraUIRoot.gameObject.SetActive(IsEnableCameraUI);
-            _UIEntity.FindChildren("UICamera").SetActive(IsEnableCameraUI);
+            UICamera.gameObject.SetActive(IsEnableCameraUI);
             _worldUIRoot.gameObject.SetActive(IsEnableWorldUI);
 
             //创建所有UI的逻辑对象
@@ -184,6 +185,11 @@ namespace HT.Framework
             }
             _worldUIs.Clear();
         }
+
+        /// <summary>
+        /// Camera类型UI的摄像机
+        /// </summary>
+        public Camera UICamera { get; private set; }
 
         /// <summary>
         /// Overlay类型的UI根节点
