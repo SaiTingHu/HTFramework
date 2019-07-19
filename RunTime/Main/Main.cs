@@ -36,6 +36,10 @@ namespace HT.Framework
         /// </summary>
         public static DataSetManager m_DataSet { get; private set; }
         /// <summary>
+        /// 实体模块
+        /// </summary>
+        public static EntityManager m_Entity { get; private set; }
+        /// <summary>
         /// 事件模块
         /// </summary>
         public static EventManager m_Event { get; private set; }
@@ -107,6 +111,7 @@ namespace HT.Framework
             m_Controller = transform.GetComponentByChild<ControllerManager>("Controller");
             m_Coroutiner = transform.GetComponentByChild<Coroutiner>("Coroutiner");
             m_DataSet = transform.GetComponentByChild<DataSetManager>("DataSet");
+            m_Entity = transform.GetComponentByChild<EntityManager>("Entity");
             m_Event = transform.GetComponentByChild<EventManager>("Event");
             m_ExceptionHandler = transform.GetComponentByChild<ExceptionHandler>("ExceptionHandler");
             m_FSM = transform.GetComponentByChild<FSMManager>("FSM");
@@ -126,6 +131,7 @@ namespace HT.Framework
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Controller));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Coroutiner));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_DataSet));
+            _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Entity));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_Event));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_ExceptionHandler));
             _moduleProxys.Add(new AspectProxyModule<IAspectProxyModule>(m_FSM));
@@ -156,6 +162,7 @@ namespace HT.Framework
             m_Controller.Preparatory();
             m_Coroutiner.Preparatory();
             m_DataSet.Preparatory();
+            m_Entity.Preparatory();
             m_Event.Preparatory();
             m_ExceptionHandler.Preparatory();
             m_FSM.Preparatory();
@@ -177,6 +184,7 @@ namespace HT.Framework
             m_Controller.Refresh();
             m_Coroutiner.Refresh();
             m_DataSet.Refresh();
+            m_Entity.Refresh();
             m_Event.Refresh();
             m_ExceptionHandler.Refresh();
             m_FSM.Refresh();
@@ -200,6 +208,7 @@ namespace HT.Framework
             m_Controller.Termination();
             m_Coroutiner.Termination();
             m_DataSet.Termination();
+            m_Entity.Termination();
             m_Event.Termination();
             m_ExceptionHandler.Termination();
             m_FSM.Termination();

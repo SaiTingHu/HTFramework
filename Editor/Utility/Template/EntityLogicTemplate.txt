@@ -1,0 +1,59 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using HT.Framework;
+using DG.Tweening;
+/// <summary>
+/// 新建实体逻辑类
+/// </summary>
+[EntityResource("AssetBundleName", "AssetPath", "ResourcePath")]
+public class #SCRIPTNAME# : EntityLogic
+{
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    public override void OnInit()
+    {
+
+    }
+
+    /// <summary>
+    /// 显示实体
+    /// </summary>
+    public override void OnShow()
+    {
+
+    }
+
+    /// <summary>
+    /// 隐藏实体
+    /// </summary>
+    public override void OnHide()
+    {
+
+    }
+
+    /// <summary>
+    /// 销毁实体
+    /// </summary>
+    public override void OnDestroy()
+    {
+
+    }
+
+    /// <summary>
+    /// 实体逻辑刷新
+    /// </summary>
+    public override void OnUpdate()
+    {
+
+    }
+
+    /// <summary>
+    /// 重置实体
+    /// </summary>
+    public override void Reset()
+    {
+
+    }
+}

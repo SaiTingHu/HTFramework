@@ -89,6 +89,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 新建EntityLogic脚本的文件夹
+        /// </summary>
+        public static string Script_EntityLogic_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.EntityLogic";
+            }
+        }
+        /// <summary>
         /// 新建HotfixProcedure脚本的文件夹
         /// </summary>
         public static string Script_HotfixProcedure_Directory

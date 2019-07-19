@@ -126,14 +126,12 @@ namespace HT.Framework
 
         private IEnumerator LoadCoroutine<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
         {
-            if (!_isLoading)
-            {
-                _isLoading = true;
-            }
-            else
+            if (_isLoading)
             {
                 yield return _loadWait;
             }
+
+            _isLoading = true;
 
             UnityEngine.Object asset = null;
 
@@ -142,8 +140,7 @@ namespace HT.Framework
                 ResourceRequest request = Resources.LoadAsync<T>(info.ResourcePath);
                 while (!request.isDone)
                 {
-                    if (loadingAction != null)
-                        loadingAction(request.progress);
+                    loadingAction?.Invoke(request.progress);
                     yield return null;
                 }
                 asset = request.asset;
@@ -162,8 +159,7 @@ namespace HT.Framework
             else
             {
 #if UNITY_EDITOR
-                if (loadingAction != null)
-                    loadingAction(1);
+                loadingAction?.Invoke(1);
                 yield return null;
 
                 asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
@@ -181,8 +177,7 @@ namespace HT.Framework
 #else
                 if (_assetBundles.ContainsKey(info.AssetBundleName))
                 {
-                    if (loadingAction != null)
-                        loadingAction(1);
+                    loadingAction?.Invoke(1);
                     yield return null;
 
                     asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
@@ -206,8 +201,7 @@ namespace HT.Framework
                     request.SendWebRequest();
                     while (!request.isDone)
                     {
-                        if (loadingAction != null)
-                            loadingAction(request.downloadProgress);
+                        loadingAction?.Invoke(request.downloadProgress);
                         yield return null;
                     }
                     if (!request.isNetworkError && !request.isHttpError)
@@ -260,8 +254,7 @@ namespace HT.Framework
                     (asset as DataSet).Fill(dataSet.Data);
                 }
 
-                if (loadDoneAction != null)
-                    loadDoneAction(asset as T);
+                loadDoneAction?.Invoke(asset as T);
             }
             asset = null;
 
