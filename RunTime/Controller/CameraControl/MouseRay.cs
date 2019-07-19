@@ -21,11 +21,13 @@ namespace HT.Framework
         public Color FlashColor2 = Color.white;
         public Image RayHitImage;
         public Text RayHitText;
+        public UIType RayHitImageType = UIType.Overlay;
 
         private Ray _ray;
         private RaycastHit _hit;
         private GameObject _rayTarget;
         private TargetType _rayTargetType;
+        private Vector2 _rayHitImageSize;
 
         private PointerEventData _eventData;
         private List<RaycastResult> _results = new List<RaycastResult>();
@@ -106,7 +108,7 @@ namespace HT.Framework
             {
                 Target = target.GetComponent<MouseRayTargetBase>();
                 _rayTarget = target;
-                _rayTargetType = _rayTarget.GetComponent<RectTransform>() ? TargetType.UI : TargetType.GameObject;
+                _rayTargetType = _rayTarget.rectTransform() ? TargetType.UI : TargetType.GameObject;
 
                 if (_rayTargetType == TargetType.GameObject)
                 {
@@ -150,8 +152,9 @@ namespace HT.Framework
         {
             if (IsOpenPrompt && Target && RayHitImage && RayHitImage.gameObject.activeSelf)
             {
-                RayHitImage.transform.position = Main.m_Input.MousePosition + new Vector3(0, 40, 0);
-                RayHitImage.rectTransform.sizeDelta = new Vector2(RayHitText.rectTransform.sizeDelta.x + 40, RayHitImage.rectTransform.sizeDelta.y);
+                RayHitImage.rectTransform.anchoredPosition = GlobalTools.ScreenToUGUIPosition(Main.m_Input.MousePosition, RayHitImageType);
+                _rayHitImageSize.Set(RayHitText.rectTransform.sizeDelta.x + 40, RayHitImage.rectTransform.sizeDelta.y);
+                RayHitImage.rectTransform.sizeDelta = _rayHitImageSize;
             }
         }
 

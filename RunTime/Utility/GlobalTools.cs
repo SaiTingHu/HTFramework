@@ -905,6 +905,8 @@ namespace HT.Framework
         #region UGUI工具
         private static Dictionary<Button, TweenerCore<Color, Color, ColorOptions>> TwinkleButtons = new Dictionary<Button, TweenerCore<Color, Color, ColorOptions>>();
         private static Dictionary<Toggle, TweenerCore<Color, Color, ColorOptions>> TwinkleToggles = new Dictionary<Toggle, TweenerCore<Color, Color, ColorOptions>>();
+        private static Dictionary<Image, TweenerCore<Color, Color, ColorOptions>> TwinkleImages = new Dictionary<Image, TweenerCore<Color, Color, ColorOptions>>();
+        private static Dictionary<Text, TweenerCore<Color, Color, ColorOptions>> TwinkleTexts = new Dictionary<Text, TweenerCore<Color, Color, ColorOptions>>();
 
         /// <summary>
         /// 开启按钮闪烁（只在Normal状态）
@@ -983,6 +985,76 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 开启图片闪烁
+        /// </summary>
+        public static void OpenTwinkle(this Image image, Color color, float time)
+        {
+            image.CloseTwinkle();
+
+            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
+                {
+                    return image.color;
+                },
+                (c) =>
+                {
+                    image.color = c;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+            tweener.startValue = image.color;
+            TwinkleImages.Add(image, tweener);
+        }
+        /// <summary>
+        /// 关闭图片闪烁
+        /// </summary>
+        public static void CloseTwinkle(this Image image)
+        {
+            if (TwinkleImages.ContainsKey(image))
+            {
+                Color normalColor = TwinkleImages[image].startValue;
+
+                TwinkleImages[image].Kill();
+                TwinkleImages.Remove(image);
+
+                image.color = normalColor;
+            }
+        }
+        /// <summary>
+        /// 开启文本框闪烁
+        /// </summary>
+        public static void OpenTwinkle(this Text text, Color color, float time)
+        {
+            text.CloseTwinkle();
+
+            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
+                {
+                    return text.color;
+                },
+                (c) =>
+                {
+                    text.color = c;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+            tweener.startValue = text.color;
+            TwinkleTexts.Add(text, tweener);
+        }
+        /// <summary>
+        /// 关闭文本框闪烁
+        /// </summary>
+        public static void CloseTwinkle(this Text text)
+        {
+            if (TwinkleTexts.ContainsKey(text))
+            {
+                Color normalColor = TwinkleTexts[text].startValue;
+
+                TwinkleTexts[text].Kill();
+                TwinkleTexts.Remove(text);
+
+                text.color = normalColor;
+            }
+        }
+        /// <summary>
         /// 关闭所有控件的闪烁
         /// </summary>
         public static void CloseAllTwinkle()
@@ -1001,8 +1073,22 @@ namespace HT.Framework
                 toggle.Value.Kill();
                 toggle.Key.colors = block;
             }
+            foreach (KeyValuePair<Image, TweenerCore<Color, Color, ColorOptions>> image in TwinkleImages)
+            {
+                Color normalColor = image.Value.startValue;
+                image.Value.Kill();
+                image.Key.color = normalColor;
+            }
+            foreach (KeyValuePair<Text, TweenerCore<Color, Color, ColorOptions>> text in TwinkleTexts)
+            {
+                Color normalColor = text.Value.startValue;
+                text.Value.Kill();
+                text.Key.color = normalColor;
+            }
             TwinkleButtons.Clear();
             TwinkleToggles.Clear();
+            TwinkleImages.Clear();
+            TwinkleTexts.Clear();
         }
 
         /// <summary>
@@ -1154,14 +1240,54 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 世界坐标转换为UGUI坐标（针对框架UI模块下Overlay类型的UI控件）
+        /// 世界坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
         /// </summary>
-        public static Vector2 ToAnchoredPosition(this Vector3 position)
+        /// <param name="position">世界坐标</param>
+        /// <param name="uIType">UI类型</param>
+        /// <returns>UGUI坐标</returns>
+        public static Vector2 WorldToUGUIPosition(this Vector3 position, UIType uIType)
         {
-            Vector3 screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
-            screenPos.z = 0;
+            Vector3 screenPos;
             Vector2 anchoredPos = Vector2.zero;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
+            switch (uIType)
+            {
+                case UIType.Overlay:
+                    screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
+                    screenPos.z = 0;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
+                    break;
+                case UIType.Camera:
+                    screenPos = Main.m_UI.UICamera.WorldToScreenPoint(position);
+                    screenPos.z = 0;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.CameraUIRoot, screenPos, Main.m_UI.UICamera, out anchoredPos);
+                    break;
+                case UIType.World:
+                    break;
+            }
+            return anchoredPos;
+        }
+        /// <summary>
+        /// 屏幕坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
+        /// </summary>
+        /// <param name="position">屏幕坐标</param>
+        /// <param name="uIType">UI类型</param>
+        /// <returns>UGUI坐标</returns>
+        public static Vector2 ScreenToUGUIPosition(this Vector3 position, UIType uIType)
+        {
+            Vector2 anchoredPos = Vector2.zero;
+            switch (uIType)
+            {
+                case UIType.Overlay:
+                    position.z = 0;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
+                    break;
+                case UIType.Camera:
+                    position.z = 0;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
+                    break;
+                case UIType.World:
+                    break;
+            }
             return anchoredPos;
         }
         /// <summary>

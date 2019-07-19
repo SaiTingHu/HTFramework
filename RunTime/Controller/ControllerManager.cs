@@ -274,10 +274,12 @@ namespace HT.Framework
         /// </summary>
         /// <param name="background">提示框背景</param>
         /// <param name="content">提示文字框</param>
-        public void SetMouseRayFocusImage(Image background, Text content)
+        /// <param name="uIType">提示框UI类型</param>
+        public void SetMouseRayFocusImage(Image background, Text content, UIType uIType = UIType.Overlay)
         {
             _mouseRay.RayHitImage = background;
             _mouseRay.RayHitText = content;
+            _mouseRay.RayHitImageType = uIType;
         }
     }
 

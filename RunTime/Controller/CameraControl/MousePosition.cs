@@ -15,8 +15,8 @@ namespace HT.Framework
         public MouseRotation MR;
         //阻尼缓冲时长
         public float DampingTime = 1;
-        //x轴移动速度，y轴移动速度，滚轮移动速度
-        public float XSpeed = 0.1f, YSpeed = 0.1f, MSpeed = 1;
+        //x轴移动速度，y轴移动速度，z轴移动速度
+        public float XSpeed = 0.1f, YSpeed = 0.1f, ZSpeed = 0.1f;
         //是否限定平移位置
         public bool NeedLimit = true;
         //x轴平移最低值，x轴平移最高值
@@ -110,7 +110,9 @@ namespace HT.Framework
                 Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * MR.Distance * -1);
                 MR.NeedDamping = false;
             }
-            else if (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0)
+            else if (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0
+                || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0
+                || Main.m_Input.GetAxisRaw(InputAxisType.UpperLower) != 0)
             {
                 if (_moveTweener != null)
                 {
@@ -118,7 +120,8 @@ namespace HT.Framework
                     _moveTweener = null;
                 }
                 Target.transform.Translate(transform.right * Main.m_Input.GetAxis(InputAxisType.Horizontal) * XSpeed);
-                Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.Vertical) * YSpeed);
+                Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.Vertical) * ZSpeed);
+                Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.UpperLower) * YSpeed);
                 MR.NeedDamping = false;
             }
             else

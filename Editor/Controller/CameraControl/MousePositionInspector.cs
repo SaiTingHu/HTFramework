@@ -32,8 +32,8 @@ namespace HT.Framework
             FloatField(_mousePosition.XSpeed, out _mousePosition.XSpeed);
             GUILayout.Label("Y");
             FloatField(_mousePosition.YSpeed, out _mousePosition.YSpeed);
-            GUILayout.Label("M");
-            FloatField(_mousePosition.MSpeed, out _mousePosition.MSpeed);
+            GUILayout.Label("Z");
+            FloatField(_mousePosition.ZSpeed, out _mousePosition.ZSpeed);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

@@ -799,7 +799,7 @@ MonoBehaviour:
   DampingTime: 1
   XSpeed: 0.1
   YSpeed: 0.1
-  MSpeed: 1
+  ZSpeed: 0.1
   NeedLimit: 0
   XMinLimit: -7
   XMaxLimit: 7
@@ -849,6 +849,7 @@ MonoBehaviour:
   FlashColor2: {r: 1, g: 1, b: 1, a: 1}
   RayHitImage: {fileID: 0}
   RayHitText: {fileID: 0}
+  RayHitImageType: 0
 --- !u!1 &1797080342905102
 GameObject:
   m_ObjectHideFlags: 0

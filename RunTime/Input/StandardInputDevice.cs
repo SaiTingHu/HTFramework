@@ -8,13 +8,17 @@ namespace HT.Framework
     public sealed class StandardInputDevice : InputDeviceBase
     {
         /// <summary>
+        /// 鼠标左键双击时间间隔
+        /// </summary>
+        private readonly float _mouseLeftDoubleClickInterval = 0.3f;
+        /// <summary>
         /// 鼠标左键单击计时器
         /// </summary>
         private float _mouseLeftClickTimer = 0;
         /// <summary>
-        /// 鼠标左键双击时间间隔
+        /// UpperLower轴线值
         /// </summary>
-        private readonly float _mouseLeftDoubleClickInterval = 0.3f;
+        private float _upperLowerValue = 0;
 
         public override void OnStartUp()
         {
@@ -28,6 +32,7 @@ namespace HT.Framework
             Main.m_Input.RegisterVirtualAxis("MouseScrollWheel");
             Main.m_Input.RegisterVirtualAxis("Horizontal");
             Main.m_Input.RegisterVirtualAxis("Vertical");
+            Main.m_Input.RegisterVirtualAxis("UpperLower");
         }
 
         public override void OnRun()
@@ -65,6 +70,11 @@ namespace HT.Framework
             Main.m_Input.SetAxis("Horizontal", Input.GetAxis("Horizontal"));
             Main.m_Input.SetAxis("Vertical", Input.GetAxis("Vertical"));
 
+            if (Input.GetKey(KeyCode.Q)) _upperLowerValue -= Time.deltaTime;
+            else if (Input.GetKey(KeyCode.E)) _upperLowerValue += Time.deltaTime;
+            else _upperLowerValue = 0;
+            Main.m_Input.SetAxis("UpperLower", Mathf.Clamp(_upperLowerValue, -1, 1));
+
             Main.m_Input.SetVirtualMousePosition(Input.mousePosition);
         }
 
@@ -80,6 +90,7 @@ namespace HT.Framework
             Main.m_Input.UnRegisterVirtualAxis("MouseScrollWheel");
             Main.m_Input.UnRegisterVirtualAxis("Horizontal");
             Main.m_Input.UnRegisterVirtualAxis("Vertical");
+            Main.m_Input.UnRegisterVirtualAxis("UpperLower");
         }
     }
 
@@ -183,6 +194,16 @@ namespace HT.Framework
             get
             {
                 return "Vertical";
+            }
+        }
+        /// <summary>
+        /// 键盘上下输入
+        /// </summary>
+        public static string UpperLower
+        {
+            get
+            {
+                return "UpperLower";
             }
         }
     }

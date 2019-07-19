@@ -13,7 +13,7 @@ namespace HT.Framework
         /// <summary>
         /// 拖动模式
         /// </summary>
-        public UIDragMode Mode = UIDragMode.Overlay;
+        public UIType Mode = UIType.Overlay;
         /// <summary>
         /// 被拖动目标
         /// </summary>
@@ -62,8 +62,16 @@ namespace HT.Framework
             _transform = DragTarget.transform;
             _rectTransform = DragTarget.rectTransform();
 
-            if (Mode == UIDragMode.Overlay) Draging = OverlayDraging;
-            else if (Mode == UIDragMode.World) Draging = WorldDraging;
+            switch (Mode)
+            {
+                case UIType.Overlay:
+                    Draging = OverlayDraging;
+                    break;
+                case UIType.Camera:
+                case UIType.World:
+                    Draging = WorldDraging;
+                    break;
+            }
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -91,7 +99,7 @@ namespace HT.Framework
             if (!Horizontal) direction.x = 0;
             if (!Vertical) direction.y = 0;
             _rectTransform.anchoredPosition += direction;
-            OverlayLimitPos();
+            WorldLimitPos();
             _lastPos = Main.m_Input.MousePosition;
         }
 
@@ -101,7 +109,7 @@ namespace HT.Framework
             if (!Horizontal) direction.x = 0;
             if (!Vertical) direction.y = 0;
             _transform.position += direction;
-            WorldLimitPos();
+            OverlayLimitPos();
             _lastPos = Main.m_Input.MousePosition;
         }
 
@@ -135,21 +143,6 @@ namespace HT.Framework
                 else if (pos.y > Up) pos.y = Up;
             }
             _transform.position = pos;
-        }
-
-        /// <summary>
-        /// UI拖动模式
-        /// </summary>
-        public enum UIDragMode
-        {
-            /// <summary>
-            /// 屏幕UI
-            /// </summary>
-            Overlay,
-            /// <summary>
-            /// 世界UI
-            /// </summary>
-            World
         }
     }
 }
