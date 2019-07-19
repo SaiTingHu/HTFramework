@@ -307,8 +307,21 @@ namespace HT.Framework
         {
             if (ContentAsset)
             {
-                //搜寻所有目标
+                //搜寻框架下所有目标
                 _targets.Clear();
+                StepTarget[] mainTargets = Main.Current.transform.GetComponentsInChildren<StepTarget>(true);
+                foreach (StepTarget target in mainTargets)
+                {
+                    if (!_targets.ContainsKey(target.GUID))
+                    {
+                        _targets.Add(target.GUID, target);
+                    }
+                    else
+                    {
+                        GlobalTools.LogWarning(string.Format("发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", target.GUID, _targets[target.GUID].transform.FullName(), target.transform.FullName()));
+                    }
+                }
+                //搜寻场景所有目标
                 GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
