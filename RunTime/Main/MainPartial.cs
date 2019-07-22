@@ -119,7 +119,7 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(MainDataType);
                 if (type != null)
                 {
-                    if (type.BaseType == typeof(MainData))
+                    if (type.IsSubclassOf(typeof(MainData)))
                     {
                         _data = Activator.CreateInstance(type) as MainData;
                         _data.OnInit();

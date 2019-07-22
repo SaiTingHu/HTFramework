@@ -20,7 +20,7 @@ namespace HT.Framework
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].BaseType == typeof(EventHandler))
+                if (types[i].IsSubclassOf(typeof(EventHandler)))
                 {
                     _eventHandlerList.Add(types[i], null);
                 }

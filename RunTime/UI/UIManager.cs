@@ -71,7 +71,7 @@ namespace HT.Framework
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].BaseType == typeof(UILogicResident) || types[i].BaseType == typeof(UILogicTemporary))
+                if (types[i].IsSubclassOf(typeof(UILogicResident)) || types[i].IsSubclassOf(typeof(UILogicTemporary)))
                 {
                     UIResourceAttribute attribute = types[i].GetCustomAttribute<UIResourceAttribute>();
                     if (attribute != null)

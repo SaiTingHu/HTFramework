@@ -28,7 +28,7 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(ActivatedProcedures[i]);
                 if (type != null)
                 {
-                    if (type.BaseType == typeof(Procedure))
+                    if (type.IsSubclassOf(typeof(Procedure)))
                     {
                         if (!_procedureInstances.ContainsKey(type))
                         {

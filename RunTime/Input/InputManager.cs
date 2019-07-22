@@ -29,7 +29,7 @@ namespace HT.Framework
             Type type = GlobalTools.GetTypeInRunTimeAssemblies(InputDeviceType);
             if (type != null)
             {
-                if (type.BaseType == typeof(InputDeviceBase))
+                if (type.IsSubclassOf(typeof(InputDeviceBase)))
                 {
                     _inputDevice = Activator.CreateInstance(type) as InputDeviceBase;
                 }

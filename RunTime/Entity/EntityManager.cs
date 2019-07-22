@@ -25,7 +25,7 @@ namespace HT.Framework
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].BaseType == typeof(EntityLogic))
+                if (types[i].IsSubclassOf(typeof(EntityLogic)))
                 {
                     EntityResourceAttribute attribute = types[i].GetCustomAttribute<EntityResourceAttribute>();
                     if (attribute != null)

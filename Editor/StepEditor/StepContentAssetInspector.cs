@@ -100,7 +100,7 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginScrollView(_scroll);
+            _scroll = GUILayout.BeginScrollView(_scroll);
             for (int i = 0; i < _target.Content.Count; i++)
             {
                 if (_target.Content[i].Ancillary != "")

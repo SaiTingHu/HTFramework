@@ -32,7 +32,7 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(Data);
                 if (type != null)
                 {
-                    if (type.BaseType == typeof(FSMData))
+                    if (type.IsSubclassOf(typeof(FSMData)))
                     {
                         _data = Activator.CreateInstance(type) as FSMData;
                         _data.StateMachine = this;
@@ -54,7 +54,7 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(States[i]);
                 if (type != null)
                 {
-                    if (type.BaseType == typeof(FiniteState))
+                    if (type.IsSubclassOf(typeof(FiniteState)))
                     {
                         if (!_stateInstances.ContainsKey(type))
                         {

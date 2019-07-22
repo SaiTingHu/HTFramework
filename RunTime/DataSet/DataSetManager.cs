@@ -20,7 +20,7 @@ namespace HT.Framework
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].BaseType == typeof(DataSet))
+                if (types[i].IsSubclassOf(typeof(DataSet)))
                 {
                     _dataSets.Add(types[i], new List<DataSet>());
                 }
