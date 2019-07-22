@@ -41,16 +41,15 @@ namespace HT.Framework
         #endregion
 
         #region 高光工具
+        private static List<HighlightableObject> HOS = new List<HighlightableObject>();
+
         /// <summary>
         /// 开启高光，使用默认发光颜色
         /// </summary>
         /// <param name="target">目标物体</param>
         public static void OpenHighLight(this GameObject target)
         {
-            HighlightableObject ho = target.GetComponent<HighlightableObject>();
-            if (ho == null) ho = target.AddComponent<HighlightableObject>();
-
-            ho.ConstantOnImmediate(Color.cyan);
+            target.OpenHighLight(Color.cyan);
         }
         /// <summary>
         /// 开启高光，使用指定发光颜色
@@ -59,6 +58,14 @@ namespace HT.Framework
         /// <param name="color">发光颜色</param>
         public static void OpenHighLight(this GameObject target, Color color)
         {
+            HOS.Clear();
+            target.transform.GetComponentsInChildren(true, HOS);
+            for (int i = 0; i < HOS.Count; i++)
+            {
+                HOS[i].ConstantOff();
+                HOS[i].Die();
+            }
+
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
 
@@ -83,10 +90,7 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenFlashHighLight(this GameObject target)
         {
-            HighlightableObject ho = target.GetComponent<HighlightableObject>();
-            if (ho == null) ho = target.AddComponent<HighlightableObject>();
-
-            ho.FlashingOn(Color.red, Color.white, 2);
+            target.OpenFlashHighLight(Color.red, Color.white, 2);
         }
         /// <summary>
         /// 开启闪光，使用默认频率
@@ -96,10 +100,7 @@ namespace HT.Framework
         /// <param name="color2">颜色2</param>
         public static void OpenFlashHighLight(this GameObject target, Color color1, Color color2)
         {
-            HighlightableObject ho = target.GetComponent<HighlightableObject>();
-            if (ho == null) ho = target.AddComponent<HighlightableObject>();
-
-            ho.FlashingOn(color1, color2, 2);
+            target.OpenFlashHighLight(color1, color2, 2);
         }
         /// <summary>
         /// 开启闪光，使用指定频率
@@ -110,6 +111,14 @@ namespace HT.Framework
         /// <param name="freq">频率</param>
         public static void OpenFlashHighLight(this GameObject target, Color color1, Color color2, float freq)
         {
+            HOS.Clear();
+            target.transform.GetComponentsInChildren(true, HOS);
+            for (int i = 0; i < HOS.Count; i++)
+            {
+                HOS[i].FlashingOff();
+                HOS[i].Die();
+            }
+
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
 
@@ -324,14 +333,12 @@ namespace HT.Framework
         public static List<T> FindObjectsOfType<T>() where T : Component
         {
             List<T> objs = new List<T>();
+            List<T> subObjs = new List<T>();
             GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject rootObj in rootObjs)
             {
-                T[] targets = rootObj.transform.GetComponentsInChildren<T>(true);
-                foreach (T target in targets)
-                {
-                    objs.Add(target);
-                }
+                rootObj.transform.GetComponentsInChildren(true, subObjs);
+                objs.AddRange(subObjs);
             }
             return objs;
         }

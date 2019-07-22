@@ -309,32 +309,34 @@ namespace HT.Framework
             {
                 //搜寻框架下所有目标
                 _targets.Clear();
-                StepTarget[] targets = Main.Current.transform.GetComponentsInChildren<StepTarget>(true);
-                foreach (StepTarget target in targets)
+                List<StepTarget> targets = new List<StepTarget>();
+                Main.Current.transform.GetComponentsInChildren(true, targets);
+                for (int i = 0; i < targets.Count; i++)
                 {
-                    if (!_targets.ContainsKey(target.GUID))
+                    if (!_targets.ContainsKey(targets[i].GUID))
                     {
-                        _targets.Add(target.GUID, target);
+                        _targets.Add(targets[i].GUID, targets[i]);
                     }
                     else
                     {
-                        GlobalTools.LogWarning(string.Format("发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", target.GUID, _targets[target.GUID].transform.FullName(), target.transform.FullName()));
+                        GlobalTools.LogWarning(string.Format("发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targets[i].GUID, _targets[targets[i].GUID].transform.FullName(), targets[i].transform.FullName()));
                     }
                 }
                 //搜寻场景所有目标
                 GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
-                    targets = rootObj.transform.GetComponentsInChildren<StepTarget>(true);
-                    foreach (StepTarget target in targets)
+                    targets.Clear();
+                    rootObj.transform.GetComponentsInChildren(true, targets);
+                    for (int i = 0; i < targets.Count; i++)
                     {
-                        if (!_targets.ContainsKey(target.GUID))
+                        if (!_targets.ContainsKey(targets[i].GUID))
                         {
-                            _targets.Add(target.GUID, target);
+                            _targets.Add(targets[i].GUID, targets[i]);
                         }
                         else
                         {
-                            GlobalTools.LogWarning(string.Format("发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", target.GUID, _targets[target.GUID].transform.FullName(), target.transform.FullName()));
+                            GlobalTools.LogWarning(string.Format("发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targets[i].GUID, _targets[targets[i].GUID].transform.FullName(), targets[i].transform.FullName()));
                         }
                     }
                 }
