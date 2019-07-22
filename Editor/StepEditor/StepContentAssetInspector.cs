@@ -103,6 +103,13 @@ namespace HT.Framework
             GUILayout.BeginScrollView(_scroll);
             for (int i = 0; i < _target.Content.Count; i++)
             {
+                if (_target.Content[i].Ancillary != "")
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("【" + _target.Content[i].Ancillary + "】");
+                    GUILayout.EndHorizontal();
+                }
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(i + "." + _target.Content[i].Name);
                 GUILayout.FlexibleSpace();

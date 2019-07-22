@@ -19,7 +19,7 @@ namespace HT.Framework
         {
             get
             {
-                return Entity.activeSelf;
+                return Entity ? Entity.activeSelf : false;
             }
         }
 

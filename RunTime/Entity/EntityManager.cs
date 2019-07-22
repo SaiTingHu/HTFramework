@@ -114,23 +114,23 @@ namespace HT.Framework
         /// 创建实体
         /// </summary>
         /// <typeparam name="T">实体逻辑类</typeparam>
-        public void CreateEntity<T>() where T : EntityLogic
+        public void CreateEntity<T>(HTFAction<float> loadingAction = null) where T : EntityLogic
         {
-            CreateEntity(typeof(T));
+            CreateEntity(typeof(T), loadingAction);
         }
 
         /// <summary>
         /// 创建实体
         /// </summary>
         /// <param name="type">实体逻辑类</param>
-        public void CreateEntity(Type type)
+        public void CreateEntity(Type type, HTFAction<float> loadingAction = null)
         {
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
             {
                 if (_entities.ContainsKey(type))
                 {
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, null, (obj) =>
+                    Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
                     {
                         EntityLogic entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogic;
                         entityLogic.Entity = obj;
@@ -199,6 +199,39 @@ namespace HT.Framework
 
             entityLogic.Entity.SetActive(false);
             entityLogic.OnHide();
+        }
+
+        /// <summary>
+        /// 销毁指定类型的所有实体
+        /// </summary>
+        /// <typeparam name="T">实体逻辑类</typeparam>
+        public void DestroyEntities<T>()
+        {
+            DestroyEntities(typeof(T));
+        }
+
+        /// <summary>
+        /// 销毁指定类型的所有实体
+        /// </summary>
+        /// <param name="type">实体逻辑类</param>
+        public void DestroyEntities(Type type)
+        {
+            if (_entities.ContainsKey(type))
+            {
+                for (int i = 0; i < _entities[type].Count; i++)
+                {
+                    EntityLogic entityLogic = _entities[type][i];
+                    Main.m_ReferencePool.Despawn(entityLogic);
+                    entityLogic.OnDestroy();
+                    Destroy(entityLogic.Entity);
+                    entityLogic.Entity = null;
+                }
+                _entities[type].Clear();
+            }
+            else
+            {
+                GlobalTools.LogError(string.Format("销毁实体失败：实体对象 {0} 并未存在！", type.Name));
+            }
         }
 
         /// <summary>

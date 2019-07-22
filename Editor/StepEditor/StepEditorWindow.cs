@@ -169,6 +169,10 @@ namespace HT.Framework
                     }
                 }
             }
+            if (GUILayout.Button("Regen Step ID", "Toolbarbutton"))
+            {
+                StepRegenIDWindow.ShowWindow(this, _contentAsset);
+            }
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Browse Ease Type", "Toolbarbutton"))
             {
@@ -594,7 +598,7 @@ namespace HT.Framework
                     });
                     foreach (Type type in types)
                     {
-                        if (type.BaseType == _baseType)
+                        if (type.IsSubclassOf(_baseType))
                         {
                             CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
                             if (helper != null)
@@ -1197,7 +1201,7 @@ namespace HT.Framework
                 case StepListShowType.ID:
                     return content.GUID;
                 case StepListShowType.Name:
-                    return content.Name;
+                    return content.Ancillary != "" ? string.Format("【{0}】{1}", content.Ancillary, content.Name) : content.Name;
                 case StepListShowType.IDAndName:
                     return content.GUID + " " + content.Name;
             }

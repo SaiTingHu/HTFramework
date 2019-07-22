@@ -25,7 +25,7 @@ public class #SCRIPTNAME# : StepHelper
 	/// </summary>
     public override void OnSkip()
     {
-        
+        base.OnSkip();
     }
 
 	/// <summary>
@@ -33,7 +33,7 @@ public class #SCRIPTNAME# : StepHelper
 	/// </summary>
     public override void OnRestore()
     {
-        
+        base.OnRestore();
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class #SCRIPTNAME# : StepHelper
     /// </summary>
     public override void OnGuide()
     {
-
+	    base.OnGuide();
     }
 
 	/// <summary>
@@ -49,7 +49,7 @@ public class #SCRIPTNAME# : StepHelper
 	/// </summary>
     public override void OnInit()
     {
-        
+        base.OnInit();
     }
 
 	/// <summary>
@@ -57,7 +57,7 @@ public class #SCRIPTNAME# : StepHelper
 	/// </summary>
     public override void OnUpdate()
     {
-        
+        base.OnUpdate();
     }
 
 	/// <summary>
@@ -65,6 +65,6 @@ public class #SCRIPTNAME# : StepHelper
 	/// </summary>
     public override void OnTermination()
     {
-        
+        base.OnTermination();
     }
 }

@@ -309,8 +309,8 @@ namespace HT.Framework
             {
                 //搜寻框架下所有目标
                 _targets.Clear();
-                StepTarget[] mainTargets = Main.Current.transform.GetComponentsInChildren<StepTarget>(true);
-                foreach (StepTarget target in mainTargets)
+                StepTarget[] targets = Main.Current.transform.GetComponentsInChildren<StepTarget>(true);
+                foreach (StepTarget target in targets)
                 {
                     if (!_targets.ContainsKey(target.GUID))
                     {
@@ -325,7 +325,7 @@ namespace HT.Framework
                 GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
-                    StepTarget[] targets = rootObj.transform.GetComponentsInChildren<StepTarget>(true);
+                    targets = rootObj.transform.GetComponentsInChildren<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
                         if (!_targets.ContainsKey(target.GUID))
