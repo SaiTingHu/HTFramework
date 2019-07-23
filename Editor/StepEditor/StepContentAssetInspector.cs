@@ -94,10 +94,12 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.cyan;
             if (GUILayout.Button("Edit Step Content"))
             {
                 StepEditorWindow.ShowWindow(_target);
             }
+            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
             _scroll = GUILayout.BeginScrollView(_scroll);

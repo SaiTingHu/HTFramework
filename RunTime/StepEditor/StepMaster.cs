@@ -204,11 +204,11 @@ namespace HT.Framework
 
                         if (_currentContent.Instant)
                         {
-                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
+                            StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
                         }
                         else
                         {
-                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
+                            StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
                         }
                     }
                 }
@@ -480,6 +480,7 @@ namespace HT.Framework
                 _currentContent = null;
                 _currentTarget = null;
                 _running = false;
+                _pause = false;
                 _executing = false;
 
                 ClearCustomOrder();

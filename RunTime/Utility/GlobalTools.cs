@@ -1431,7 +1431,7 @@ namespace HT.Framework
             return value;
         }
         #endregion
-
+        
         #region 系统工具
         /// <summary>
         /// 获取本机Mac地址

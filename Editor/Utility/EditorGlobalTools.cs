@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
 
@@ -798,6 +799,48 @@ namespace HT.Framework
             }
             GlobalTools.LogError("获取类型 " + typeName + " 失败！当前编辑器程序集中不存在此类型！");
             return null;
+        }
+        #endregion
+
+        #region 序列化工具
+        /// <summary>
+        /// 将对象序列化为字节数组
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns>序列化后的字节数组</returns>
+        public static byte[] Serialize(this object obj)
+        {
+            if (obj == null)
+            {
+                return null;
+            }
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
+        }
+        /// <summary>
+        /// 将字节数组反序列化为对象
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <param name="byteArray">字节数组</param>
+        /// <returns>反序列化后的对象</returns>
+        public static T Deserialize<T>(this byte[] byteArray) where T : class
+        {
+            if (byteArray == null)
+            {
+                return null;
+            }
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                ms.Write(byteArray, 0, byteArray.Length);
+                ms.Seek(0, SeekOrigin.Begin);
+                T obj = bf.Deserialize(ms) as T;
+                return obj;
+            }
         }
         #endregion
     }

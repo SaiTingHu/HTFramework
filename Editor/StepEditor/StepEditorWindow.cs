@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,6 +31,7 @@ namespace HT.Framework
         private Texture _background;
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
+        private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private Vector2 _stepContentScroll = Vector3.zero;
         private Vector2 _stepOperationScroll = Vector3.zero;
@@ -327,6 +329,7 @@ namespace HT.Framework
             #endregion
 
             GUILayout.EndVertical();
+            _stepListRect = GUILayoutUtility.GetLastRect();
         }
         /// <summary>
         /// 分割线GUI
@@ -1020,6 +1023,16 @@ namespace HT.Framework
                                 _stepContentDragging = true;
                             }
                         }
+                        else if (_stepListRect.Contains(Event.current.mousePosition))
+                        {
+                            GUI.FocusControl(null);
+                            _mouseDownPos = Event.current.mousePosition;
+
+                            if (Event.current.button == 1)
+                            {
+                                CopyOrPasteStep();
+                            }
+                        }
                         #endregion
                         break;
                     case EventType.MouseDrag:
@@ -1206,6 +1219,59 @@ namespace HT.Framework
                     return content.GUID + " " + content.Name;
             }
             return "<None>";
+        }
+        /// <summary>
+        /// 复制、粘贴步骤
+        /// </summary>
+        private void CopyOrPasteStep()
+        {
+            GenericMenu gm = new GenericMenu();
+
+            if (_currentStep == -1)
+            {
+                gm.AddDisabledItem(new GUIContent("Copy"));
+            }
+            else
+            {
+                gm.AddItem(new GUIContent("Copy " + _currentStepObj.Name), false, () =>
+                {
+                    GUIUtility.systemCopyBuffer = string.Format("{0}|{1}", AssetDatabase.GetAssetPath(_contentAsset), _currentStepObj.GUID);
+                });
+            }
+
+            StepContent stepContent = null;
+            string[] buffers = GUIUtility.systemCopyBuffer.Split('|');
+            if (buffers.Length == 2)
+            {
+                if (buffers[0] == AssetDatabase.GetAssetPath(_contentAsset))
+                {
+                    stepContent = _contentAsset.Content.Find((s) => { return s.GUID == buffers[1]; });
+                }
+                else
+                {
+                    StepContentAsset stepContentAsset = AssetDatabase.LoadAssetAtPath<StepContentAsset>(buffers[0]);
+                    if (stepContentAsset)
+                    {
+                        stepContent = stepContentAsset.Content.Find((s) => { return s.GUID == buffers[1]; });
+                    }
+                }
+            }
+
+            if (stepContent == null)
+            {
+                gm.AddDisabledItem(new GUIContent("Paste"));
+            }
+            else
+            {
+                gm.AddItem(new GUIContent("Paste " + stepContent.Name), false, () =>
+                {
+                    _contentAsset.Content.Add(stepContent.Clone());
+                    SelectStepContent(_contentAsset.Content.Count - 1);
+                    SelectStepOperation(-1);
+                });
+            }
+
+            gm.ShowAsContext();
         }
 
         /// <summary>
