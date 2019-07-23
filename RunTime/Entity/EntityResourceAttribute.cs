@@ -11,12 +11,14 @@ namespace HT.Framework
         public string AssetBundleName { get; private set; }
         public string AssetPath { get; private set; }
         public string ResourcePath { get; private set; }
+        public bool IsUseObjectPool { get; private set; }
 
-        public EntityResourceAttribute(string assetBundleName, string assetPath, string resourcePath)
+        public EntityResourceAttribute(string assetBundleName, string assetPath, string resourcePath, bool useObjectPool = false)
         {
             AssetBundleName = assetBundleName;
             AssetPath = assetPath;
             ResourcePath = resourcePath;
+            IsUseObjectPool = useObjectPool;
         }
     }
 }

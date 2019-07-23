@@ -13,6 +13,13 @@ namespace HT.Framework
     /// </summary>
     public static class EditorGlobalTools
     {
+        #region 框架相关目录
+        /// <summary>
+        /// 框架相关目录
+        /// </summary>
+        public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary", "HTFrameworkILHotfix" };
+        #endregion
+
         #region 关于
         /// <summary>
         /// CSDN专栏
@@ -727,7 +734,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前的热更新程序集
         /// </summary>
-        private static readonly HashSet<string> HotfixAssemblies = new HashSet<string>() { "Hotfix" };
+        private static readonly HashSet<string> HotfixAssemblies = new HashSet<string>() { "Hotfix", "HTFramework.ILHotfix.RunTime " };
         /// <summary>
         /// 当前的编辑器程序集
         /// </summary>

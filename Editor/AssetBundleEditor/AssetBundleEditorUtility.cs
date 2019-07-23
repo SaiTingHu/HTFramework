@@ -7,11 +7,8 @@ namespace HT.Framework.AssetBundleEditor
 {
     public static class AssetBundleEditorUtility
     {
-        private static readonly string[] _invalidFileFormats = new string[] { ".cs", ".js", ".shader", ".dll", ".db", ".jslib", ".asmdef" };
-        private static readonly string[] _invalidFolderName = new string[] {
-            "Resources", "Editor", "Gizmos", "StreamingAssets", "Editor Default Resources",
-            "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary"
-        };
+        private static readonly HashSet<string> _invalidFileFormats = new HashSet<string>() { ".cs", ".js", ".shader", ".dll", ".db", ".jslib", ".asmdef" };
+        private static readonly HashSet<string> _invalidFolderName = new HashSet<string>() { "Resources", "Editor", "Gizmos", "StreamingAssets", "Editor Default Resources" };
         private static Dictionary<string, AssetFileInfo> _fileInfos = new Dictionary<string, AssetFileInfo>();
         private static Dictionary<string, AssetFolderInfo> _folderInfos = new Dictionary<string, AssetFolderInfo>();
         private static Dictionary<string, BundleInfo> _bundleInfos = new Dictionary<string, BundleInfo>();
@@ -192,12 +189,13 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public static bool IsValidFolder(string folderName)
         {
-            foreach (string name in _invalidFolderName)
+            if (_invalidFolderName.Contains(folderName))
             {
-                if (name == folderName)
-                {
-                    return false;
-                }
+                return false;
+            }
+            if (EditorGlobalTools.HTFrameworkFolder.Contains(folderName))
+            {
+                return false;
             }
             return true;
         }
@@ -206,12 +204,9 @@ namespace HT.Framework.AssetBundleEditor
         /// </summary>
         public static bool IsValidFile(string extension)
         {
-            foreach (string name in _invalidFileFormats)
+            if (_invalidFileFormats.Contains(extension))
             {
-                if (name == extension)
-                {
-                    return false;
-                }
+                return false;
             }
             return true;
         }

@@ -13,6 +13,7 @@ namespace HT.Framework
     {
         private Dictionary<Type, List<EntityLogic>> _entities = new Dictionary<Type, List<EntityLogic>>();
         private Dictionary<Type, GameObject> _entitiesGroup = new Dictionary<Type, GameObject>();
+        private Dictionary<Type, Queue<GameObject>> _objectPool = new Dictionary<Type, Queue<GameObject>>();
         private GameObject _entityRoot;
 
         public override void OnInitialization()
@@ -39,6 +40,8 @@ namespace HT.Framework
                         group.transform.localScale = Vector3.one;
                         group.SetActive(true);
                         _entitiesGroup.Add(types[i], group);
+
+                        _objectPool.Add(types[i], new Queue<GameObject>());
                     }
                     else
                     {
@@ -72,8 +75,16 @@ namespace HT.Framework
             {
                 Destroy(group.Value);
             }
+            foreach (KeyValuePair<Type, Queue<GameObject>> objectPool in _objectPool)
+            {
+                while (objectPool.Value.Count > 0)
+                {
+                    Destroy(objectPool.Value.Dequeue());
+                }
+            }
             _entities.Clear();
             _entitiesGroup.Clear();
+            _objectPool.Clear();
         }
 
         /// <summary>
@@ -116,7 +127,7 @@ namespace HT.Framework
         /// <typeparam name="T">实体逻辑类</typeparam>
         public void CreateEntity<T>(HTFAction<float> loadingAction = null) where T : EntityLogic
         {
-            CreateEntity(typeof(T), loadingAction);
+            ExtractEntity(typeof(T), loadingAction);
         }
 
         /// <summary>
@@ -125,28 +136,7 @@ namespace HT.Framework
         /// <param name="type">实体逻辑类</param>
         public void CreateEntity(Type type, HTFAction<float> loadingAction = null)
         {
-            EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
-            if (attribute != null)
-            {
-                if (_entities.ContainsKey(type))
-                {
-                    Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
-                    {
-                        EntityLogic entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogic;
-                        entityLogic.Entity = obj;
-                        entityLogic.Entity.SetActive(true);
-                        entityLogic.OnInit();
-                        entityLogic.OnShow();
-                        _entities[type].Add(entityLogic);
-
-                        Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
-                    });
-                }
-                else
-                {
-                    GlobalTools.LogError(string.Format("创建实体失败：实体对象 {0} 并未存在！", type.Name));
-                }
-            }
+            ExtractEntity(type, loadingAction);
         }
 
         /// <summary>
@@ -155,20 +145,7 @@ namespace HT.Framework
         /// <param name="entityLogic">实体逻辑对象</param>
         public void DestroyEntity(EntityLogic entityLogic)
         {
-            Type type = entityLogic.GetType();
-            if (_entities.ContainsKey(type))
-            {
-                _entities[type].Remove(entityLogic);
-                Main.m_ReferencePool.Despawn(entityLogic);
-                entityLogic.OnDestroy();
-                Destroy(entityLogic.Entity);
-                entityLogic.Entity = null;
-                entityLogic = null;
-            }
-            else
-            {
-                GlobalTools.LogError(string.Format("销毁实体失败：实体对象 {0} 并未存在！", type.Name));
-            }
+            RecoveryEntity(entityLogic);
         }
 
         /// <summary>
@@ -207,7 +184,7 @@ namespace HT.Framework
         /// <typeparam name="T">实体逻辑类</typeparam>
         public void DestroyEntities<T>()
         {
-            DestroyEntities(typeof(T));
+            RecoveryEntities(typeof(T));
         }
 
         /// <summary>
@@ -216,22 +193,7 @@ namespace HT.Framework
         /// <param name="type">实体逻辑类</param>
         public void DestroyEntities(Type type)
         {
-            if (_entities.ContainsKey(type))
-            {
-                for (int i = 0; i < _entities[type].Count; i++)
-                {
-                    EntityLogic entityLogic = _entities[type][i];
-                    Main.m_ReferencePool.Despawn(entityLogic);
-                    entityLogic.OnDestroy();
-                    Destroy(entityLogic.Entity);
-                    entityLogic.Entity = null;
-                }
-                _entities[type].Clear();
-            }
-            else
-            {
-                GlobalTools.LogError(string.Format("销毁实体失败：实体对象 {0} 并未存在！", type.Name));
-            }
+            RecoveryEntities(type);
         }
 
         /// <summary>
@@ -299,6 +261,119 @@ namespace HT.Framework
             else
             {
                 GlobalTools.LogError(string.Format("隐藏实体失败：实体对象 {0} 并未存在！", type.Name));
+            }
+        }
+
+        private void ExtractEntity(Type type, HTFAction<float> loadingAction = null)
+        {
+            EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
+            if (attribute != null)
+            {
+                if (_entities.ContainsKey(type))
+                {
+                    if (attribute.IsUseObjectPool && _objectPool[type].Count > 0)
+                    {
+                        EntityLogic entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogic;
+                        entityLogic.Entity = _objectPool[type].Dequeue();
+                        entityLogic.Entity.SetActive(true);
+                        entityLogic.OnInit();
+                        entityLogic.OnShow();
+                        _entities[type].Add(entityLogic);
+
+                        Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
+                    }
+                    else
+                    {
+                        Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
+                        {
+                            EntityLogic entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogic;
+                            entityLogic.Entity = obj;
+                            entityLogic.Entity.SetActive(true);
+                            entityLogic.OnInit();
+                            entityLogic.OnShow();
+                            _entities[type].Add(entityLogic);
+
+                            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
+                        });
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError(string.Format("创建实体失败：实体对象 {0} 并未存在！", type.Name));
+                }
+            }
+        }
+        private void RecoveryEntity(EntityLogic entityLogic)
+        {
+            Type type = entityLogic.GetType();
+            EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
+            if (attribute != null)
+            {
+                if (_entities.ContainsKey(type))
+                {
+                    if (attribute.IsUseObjectPool)
+                    {
+                        _entities[type].Remove(entityLogic);
+                        entityLogic.OnDestroy();
+                        Main.m_ReferencePool.Despawn(entityLogic);
+                        _objectPool[type].Enqueue(entityLogic.Entity);
+                        entityLogic.Entity.SetActive(false);
+                        entityLogic.Entity = null;
+                        entityLogic = null;
+                    }
+                    else
+                    {
+                        _entities[type].Remove(entityLogic);
+                        entityLogic.OnDestroy();
+                        Main.m_ReferencePool.Despawn(entityLogic);
+                        Destroy(entityLogic.Entity);
+                        entityLogic.Entity = null;
+                        entityLogic = null;
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError(string.Format("销毁实体失败：实体对象 {0} 并未存在！", type.Name));
+                }
+            }
+        }
+        private void RecoveryEntities(Type type)
+        {
+            EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
+            if (attribute != null)
+            {
+                if (_entities.ContainsKey(type))
+                {
+                    if (attribute.IsUseObjectPool)
+                    {
+                        for (int i = 0; i < _entities[type].Count; i++)
+                        {
+                            EntityLogic entityLogic = _entities[type][i];
+                            entityLogic.OnDestroy();
+                            Main.m_ReferencePool.Despawn(entityLogic);
+                            _objectPool[type].Enqueue(entityLogic.Entity);
+                            entityLogic.Entity.SetActive(false);
+                            entityLogic.Entity = null;
+                        }
+                        _entities[type].Clear();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < _entities[type].Count; i++)
+                        {
+                            EntityLogic entityLogic = _entities[type][i];
+                            entityLogic.OnDestroy();
+                            Main.m_ReferencePool.Despawn(entityLogic);
+                            Destroy(entityLogic.Entity);
+                            entityLogic.Entity = null;
+                        }
+                        _entities[type].Clear();
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError(string.Format("销毁实体失败：实体对象 {0} 并未存在！", type.Name));
+                }
             }
         }
     }

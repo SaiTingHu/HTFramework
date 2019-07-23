@@ -7,10 +7,6 @@ namespace HT.Framework
 {
     public sealed class ResourcesFolderViewWindow : EditorWindow
     {
-        private static readonly string[] _ignoreFolderName = new string[] {
-            "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary"
-        };
-
         private List<ResourceFolder> _resourcesFolders;
 
         public void Init()
@@ -94,12 +90,9 @@ namespace HT.Framework
         }
         private bool IsIgnoreFolder(string folderName)
         {
-            for (int i = 0; i < _ignoreFolderName.Length; i++)
+            if (EditorGlobalTools.HTFrameworkFolder.Contains(folderName))
             {
-                if (_ignoreFolderName[i] == folderName)
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
