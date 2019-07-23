@@ -27,7 +27,7 @@ namespace HT.Framework
         /// 延时执行
         /// </summary>
         /// <param name="action">执行的代码</param>
-        /// <param name="delaySeconds">延时等待的秒数</param>
+        /// <param name="delaySeconds">延时的秒数</param>
         public static Coroutine DelayExecute(this MonoBehaviour behaviour, HTFAction action, float delaySeconds)
         {
             Coroutine coroutine = behaviour.StartCoroutine(DelayExecute(action, delaySeconds));
@@ -36,6 +36,22 @@ namespace HT.Framework
         private static IEnumerator DelayExecute(HTFAction action, float delaySeconds)
         {
             yield return YieldInstructioner.GetWaitForSeconds(delaySeconds);
+            action();
+        }
+
+        /// <summary>
+        /// 等待执行
+        /// </summary>
+        /// <param name="action">执行的代码</param>
+        /// <param name="waitUntil">等待的WaitUntil</param>
+        public static Coroutine WaitExecute(this MonoBehaviour behaviour, HTFAction action, WaitUntil waitUntil)
+        {
+            Coroutine coroutine = behaviour.StartCoroutine(WaitExecute(action, waitUntil));
+            return coroutine;
+        }
+        private static IEnumerator WaitExecute(HTFAction action, WaitUntil waitUntil)
+        {
+            yield return waitUntil;
             action();
         }
         #endregion

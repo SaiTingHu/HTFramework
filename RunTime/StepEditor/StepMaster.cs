@@ -77,14 +77,25 @@ namespace HT.Framework
         private Button _currentButton;
         //跳过的目标步骤
         private int _skipIndex = 0;
-        //步骤控制者工作中
+        //步骤控制者运行中
         private bool _running = false;
+        //步骤控制者暂停中
+        private bool _pause = false;
         //步骤执行中
         private bool _executing = false;
         //本帧中是否触发步骤的执行操作
         private bool _execute = false;
         //UGUI按钮点击触发型步骤，当前是否被点击
         private bool _isButtonClick = false;
+        //暂停时等待
+        private WaitUntil _pauseWait;
+
+        public override void OnInitialization()
+        {
+            base.OnInitialization();
+
+            _pauseWait = new WaitUntil(() => { return !_pause; });
+        }
 
         public override void OnRefresh()
         {
@@ -92,6 +103,9 @@ namespace HT.Framework
 
             if (_running)
             {
+                if (_pause)
+                    return;
+
                 if (!_executing)
                 {
                     if (_currentHelper != null)
@@ -190,14 +204,11 @@ namespace HT.Framework
 
                         if (_currentContent.Instant)
                         {
-                            ChangeNextStep();
+                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
                         }
                         else
                         {
-                            Main.Current.DelayExecute(() =>
-                            {
-                                ChangeNextStep();
-                            }, _currentContent.ElapseTime);
+                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
                         }
                     }
                 }
@@ -216,6 +227,20 @@ namespace HT.Framework
             ClearCustomOrder();
         }
 
+        public override void OnPause()
+        {
+            base.OnPause();
+
+            Pause = true;
+        }
+
+        public override void OnUnPause()
+        {
+            base.OnUnPause();
+
+            Pause = false;
+        }
+
         /// <summary>
         /// 当前是否运行中
         /// </summary>
@@ -224,6 +249,24 @@ namespace HT.Framework
             get
             {
                 return _running;
+            }
+        }
+        /// <summary>
+        /// 暂停步骤控制者
+        /// </summary>
+        public bool Pause
+        {
+            get
+            {
+                return _pause;
+            }
+            set
+            {
+                _pause = value;
+                if (_pause)
+                {
+                    StopSkip();
+                }
             }
         }
         /// <summary>
@@ -460,6 +503,7 @@ namespace HT.Framework
             _currentContent = null;
             _currentTarget = null;
             _running = true;
+            _pause = false;
             _executing = false;
 
             BeginEvent?.Invoke();
@@ -474,6 +518,7 @@ namespace HT.Framework
             _currentContent = null;
             _currentTarget = null;
             _running = false;
+            _pause = false;
             _executing = false;
 
             EndEvent?.Invoke();
@@ -487,6 +532,9 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
+                if (_pause)
+                    return false;
+
                 StartCoroutine(SkipCurrentStepCoroutine());
                 return true;
             }
@@ -504,6 +552,9 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
+                if (_pause)
+                    return false;
+
                 if (!_stepContentIndexs.ContainsKey(stepID))
                     return false;
 
@@ -535,6 +586,9 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
+                if (_pause)
+                    return false;
+
                 if (!_stepContentIndexs.ContainsKey(stepID))
                     return false;
 
@@ -588,7 +642,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 展示提示【“提示”节点呼叫】
+        /// 展示提示【步骤编辑器面板的“提示”节点呼叫】
         /// </summary>
         public void ShowPrompt(string content)
         {
@@ -622,13 +676,19 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 完成当前步骤（只用于“状态改变”型步骤）
+        /// 完成当前步骤（只用于 StateChange 型步骤）
         /// </summary>
         public void CompleteCurrentStep()
         {
-            if (CurrentStepContent.Trigger == StepTrigger.StateChange)
+            if (_running && !_executing)
             {
-                _currentTarget.State = StepTargetState.Done;
+                if (_pause)
+                    return;
+
+                if (CurrentStepContent.Trigger == StepTrigger.StateChange)
+                {
+                    _currentTarget.State = StepTargetState.Done;
+                }
             }
         }
 
@@ -808,7 +868,7 @@ namespace HT.Framework
             
             yield return YieldInstructioner.GetWaitForSeconds(_currentContent.ElapseTime / SkipMultiple);
 
-            ChangeNextStep();
+            yield return WaitCoroutine(ChangeNextStep, 0);
         }
         private IEnumerator SkipStepCoroutine(int index)
         {
@@ -885,7 +945,7 @@ namespace HT.Framework
 
             SkipStepDoneEvent?.Invoke();
 
-            BeginCurrentStep();
+            yield return WaitCoroutine(BeginCurrentStep, 0);
         }
         private void ChangeNextStep()
         {
@@ -914,6 +974,16 @@ namespace HT.Framework
         private void ButtonClickCallback()
         {
             _isButtonClick = true;
+        }
+        /// <summary>
+        /// 等待协程
+        /// </summary>
+        private IEnumerator WaitCoroutine(HTFAction action, float time)
+        {
+            yield return YieldInstructioner.GetWaitForSeconds(time);
+            yield return _pauseWait;
+
+            action();
         }
     }
 }
