@@ -46,9 +46,9 @@ namespace HT.Framework
         private Transform _cameraTemporaryPanel;
         private Transform _worldUIRoot;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             _UIEntity = transform.FindChildren("UIEntity");
             _overlayUIRoot = _UIEntity.transform.Find("OverlayUIRoot");
@@ -110,9 +110,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             if (IsEnableOverlayUI)
             {
@@ -145,9 +145,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             foreach (KeyValuePair<Type, UILogic> ui in _overlayUIs)
             {

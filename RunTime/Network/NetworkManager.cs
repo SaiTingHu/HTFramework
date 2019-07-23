@@ -32,9 +32,9 @@ namespace HT.Framework
         private List<byte[]> _sendDataBuffer = new List<byte[]>();
         private bool _isSending = false;
         
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             DisconnectServer();
         }

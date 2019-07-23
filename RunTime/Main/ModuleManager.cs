@@ -5,32 +5,37 @@ namespace HT.Framework
     /// <summary>
     /// 模块管理者基类
     /// </summary>
-    public abstract class ModuleManager : MonoBehaviour, IAspectProxyModule
+    public abstract class ModuleManager : MonoBehaviour
     {
         /// <summary>
-        /// 初始化
+        /// 初始化模块
         /// </summary>
-        public virtual void Initialization()
+        public virtual void OnInitialization()
         { }
         /// <summary>
-        /// 准备工作
+        /// 模块准备工作
         /// </summary>
-        public virtual void Preparatory()
+        public virtual void OnPreparatory()
         { }
         /// <summary>
         /// 刷新模块
         /// </summary>
-        public virtual void Refresh()
+        public virtual void OnRefresh()
         { }
         /// <summary>
         /// 终结模块
         /// </summary>
-        public virtual void Termination()
+        public virtual void OnTermination()
         { }
         /// <summary>
-        /// 追踪
+        /// 暂停模块
         /// </summary>
-        public virtual void Track()
+        public virtual void OnPause()
+        { }
+        /// <summary>
+        /// 恢复模块
+        /// </summary>
+        public virtual void OnUnPause()
         { }
     }
 }

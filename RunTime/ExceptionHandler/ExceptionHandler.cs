@@ -62,9 +62,9 @@ namespace HT.Framework
         //回发邮件缓冲计时器
         private float _reportBufferTimer = 0;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
 #if UNITY_EDITOR
             IsHandler = false;
@@ -85,9 +85,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             if (IsHandler)
             {
@@ -96,9 +96,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             if (_reportBufferTimer > 0)
             {

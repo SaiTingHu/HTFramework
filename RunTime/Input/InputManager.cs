@@ -19,9 +19,9 @@ namespace HT.Framework
         /// </summary>
         public bool IsEnableInputDevice { get; set; } = true;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             _inputModule = new VirtualInput();
 
@@ -44,16 +44,16 @@ namespace HT.Framework
             }
         }
 
-        public override void Preparatory()
+        public override void OnPreparatory()
         {
-            base.Preparatory();
+            base.OnPreparatory();
 
             _inputDevice.OnStartUp();
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             if (IsEnableInputDevice)
             {
@@ -61,9 +61,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             _inputDevice.OnShutdown();
         }

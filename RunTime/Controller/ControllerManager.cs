@@ -42,9 +42,9 @@ namespace HT.Framework
 
         private ControlMode _controlMode;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             MainCamera = transform.GetComponentByChild<Camera>("MainCamera");
             _cameraTarget = transform.GetComponentByChild<CameraTarget>("CameraTarget");
@@ -59,25 +59,25 @@ namespace HT.Framework
             _mouseRay.RayCamera = MainCamera;
         }
 
-        public override void Preparatory()
+        public override void OnPreparatory()
         {
-            base.Preparatory();
+            base.OnPreparatory();
 
             TheControlMode = ControlMode.FreeControl;
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
-            _mouseRay.Refresh();
+            _mouseRay.OnRefresh();
             switch (TheControlMode)
             {
                 case ControlMode.FreeControl:
                     FreeControlUpdateEvent?.Invoke();
 
-                    _mousePosition.Refresh();
-                    _mouseRotation.Refresh();
+                    _mousePosition.OnRefresh();
+                    _mouseRotation.OnRefresh();
                     break;
                 case ControlMode.FirstPerson:
                     FirstPersonUpdateEvent?.Invoke();

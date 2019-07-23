@@ -63,17 +63,17 @@ namespace HT.Framework
         private bool _isMute = false;
         private bool _singleSoundPlayDetector = false;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             _backgroundAudio = CreateAudioSource("BackgroundAudio", BackgroundPriority, BackgroundVolume);
             _singleAudio = CreateAudioSource("SingleAudio", SinglePriority, SingleVolume);
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             StopBackgroundMusic();
             StopSingleSound();
@@ -81,9 +81,9 @@ namespace HT.Framework
             StopAllWorldSound();
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             if (_singleSoundPlayDetector)
             {
@@ -148,7 +148,7 @@ namespace HT.Framework
                 }
             }
         }
-
+        
         /// <summary>
         /// 静音
         /// </summary>
@@ -195,16 +195,18 @@ namespace HT.Framework
         /// </summary>
         public void PauseBackgroundMusic(bool isGradual = true)
         {
-            if (_backgroundAudio.isPlaying)
+            if (isGradual)
             {
-                if (isGradual)
+                _backgroundAudio.volume = BackgroundVolume;
+                _backgroundAudio.DOFade(0, 2).OnComplete(() => 
                 {
-                    _backgroundAudio.DOFade(0, 2);
-                }
-                else
-                {
-                    _backgroundAudio.volume = 0;
-                }
+                    _backgroundAudio.Pause();
+                    _backgroundAudio.volume = BackgroundVolume;
+                });
+            }
+            else
+            {
+                _backgroundAudio.Pause();
             }
         }
         /// <summary>
@@ -212,16 +214,15 @@ namespace HT.Framework
         /// </summary>
         public void UnPauseBackgroundMusic(bool isGradual = true)
         {
-            if (_backgroundAudio.isPlaying)
+            if (isGradual)
             {
-                if (isGradual)
-                {
-                    _backgroundAudio.DOFade(BackgroundVolume, 2);
-                }
-                else
-                {
-                    _backgroundAudio.volume = BackgroundVolume;
-                }
+                _backgroundAudio.UnPause();
+                _backgroundAudio.volume = 0;
+                _backgroundAudio.DOFade(BackgroundVolume, 2);
+            }
+            else
+            {
+                _backgroundAudio.UnPause();
             }
         }
         /// <summary>
@@ -257,16 +258,18 @@ namespace HT.Framework
         /// </summary>
         public void PauseSingleSound(bool isGradual = true)
         {
-            if (_singleAudio.isPlaying)
+            if (isGradual)
             {
-                if (isGradual)
+                _singleAudio.volume = SingleVolume;
+                _singleAudio.DOFade(0, 2).OnComplete(() =>
                 {
-                    _singleAudio.DOFade(0, 2);
-                }
-                else
-                {
-                    _singleAudio.volume = 0;
-                }
+                    _singleAudio.Pause();
+                    _singleAudio.volume = SingleVolume;
+                });
+            }
+            else
+            {
+                _singleAudio.Pause();
             }
         }
         /// <summary>
@@ -274,16 +277,15 @@ namespace HT.Framework
         /// </summary>
         public void UnPauseSingleSound(bool isGradual = true)
         {
-            if (_singleAudio.isPlaying)
+            if (isGradual)
             {
-                if (isGradual)
-                {
-                    _singleAudio.DOFade(SingleVolume, 2);
-                }
-                else
-                {
-                    _singleAudio.volume = SingleVolume;
-                }
+                _singleAudio.UnPause();
+                _singleAudio.volume = 0;
+                _singleAudio.DOFade(SingleVolume, 2);
+            }
+            else
+            {
+                _singleAudio.UnPause();
             }
         }
         /// <summary>
@@ -392,16 +394,18 @@ namespace HT.Framework
             if (_worldAudio.ContainsKey(attachTarget))
             {
                 AudioSource audio = _worldAudio[attachTarget];
-                if (audio.isPlaying)
+                if (isGradual)
                 {
-                    if (isGradual)
+                    audio.volume = WorldVolume;
+                    audio.DOFade(0, 2).OnComplete(() =>
                     {
-                        audio.DOFade(0, 2);
-                    }
-                    else
-                    {
-                        audio.volume = 0;
-                    }
+                        audio.Pause();
+                        audio.volume = WorldVolume;
+                    });
+                }
+                else
+                {
+                    audio.Pause();
                 }
             }
         }
@@ -413,16 +417,15 @@ namespace HT.Framework
             if (_worldAudio.ContainsKey(attachTarget))
             {
                 AudioSource audio = _worldAudio[attachTarget];
-                if (audio.isPlaying)
+                if (isGradual)
                 {
-                    if (isGradual)
-                    {
-                        audio.DOFade(WorldVolume, 2);
-                    }
-                    else
-                    {
-                        audio.volume = WorldVolume;
-                    }
+                    audio.UnPause();
+                    audio.volume = 0;
+                    audio.DOFade(WorldVolume, 2);
+                }
+                else
+                {
+                    audio.UnPause();
                 }
             }
         }

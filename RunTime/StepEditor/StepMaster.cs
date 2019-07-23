@@ -86,9 +86,9 @@ namespace HT.Framework
         //UGUI按钮点击触发型步骤，当前是否被点击
         private bool _isButtonClick = false;
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             if (_running)
             {
@@ -204,9 +204,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             _targets.Clear();
             _stepContents.Clear();

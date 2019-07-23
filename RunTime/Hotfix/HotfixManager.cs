@@ -30,9 +30,9 @@ namespace HT.Framework
         private Assembly _hotfixAssembly;
         private object _hotfixEnvironment;
 
-        public override void Preparatory()
+        public override void OnPreparatory()
         {
-            base.Preparatory();
+            base.OnPreparatory();
 
             if (IsEnableHotfix)
             {
@@ -47,9 +47,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             if (IsEnableHotfix)
             {

@@ -15,9 +15,9 @@ namespace HT.Framework
         private Dictionary<Type, GameObject> _entitiesGroup = new Dictionary<Type, GameObject>();
         private GameObject _entityRoot;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             _entityRoot = transform.FindChildren("EntityRoot");
 
@@ -48,9 +48,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             foreach (KeyValuePair<Type, List<EntityLogic>> entities in _entities)
             {
@@ -64,9 +64,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             foreach (KeyValuePair<Type, GameObject> group in _entitiesGroup)
             {

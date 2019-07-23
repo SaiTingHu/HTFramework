@@ -138,9 +138,9 @@ namespace HT.Framework
             _spawnPools.Clear();
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
         }
     }
 }

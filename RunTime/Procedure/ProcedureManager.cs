@@ -18,9 +18,9 @@ namespace HT.Framework
         private Procedure _currentProcedure;
         private float _timer = 0;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             //创建所有已激活的流程对象
             for (int i = 0; i < ActivatedProcedures.Count; i++)
@@ -47,9 +47,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Preparatory()
+        public override void OnPreparatory()
         {
-            base.Preparatory();
+            base.OnPreparatory();
 
             //流程初始化
             foreach (KeyValuePair<Type, Procedure> procedureInstance in _procedureInstances)
@@ -80,9 +80,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Refresh()
+        public override void OnRefresh()
         {
-            base.Refresh();
+            base.OnRefresh();
 
             //流程帧刷新
             if (_currentProcedure != null)
@@ -101,9 +101,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             _procedureInstances.Clear();
         }

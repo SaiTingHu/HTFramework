@@ -50,7 +50,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新
         /// </summary>
-        public void Refresh()
+        public void OnRefresh()
         {
             if (IsOpenRay)
             {

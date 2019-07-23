@@ -12,9 +12,9 @@ namespace HT.Framework
     {
         private Dictionary<Type, List<DataSet>> _dataSets = new Dictionary<Type, List<DataSet>>();
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             //注册所有数据集
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -27,9 +27,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             foreach (KeyValuePair<Type, List<DataSet>> dataset in _dataSets)
             {

@@ -23,9 +23,9 @@ namespace HT.Framework
 
         private Dictionary<string, WebInterface> _interfaces = new Dictionary<string, WebInterface>();
         
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             ClearInterface();
         }

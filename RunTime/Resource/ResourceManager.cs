@@ -33,17 +33,17 @@ namespace HT.Framework
         //单线下载等待
         private WaitUntil _loadWait;
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             _assetBundlePath = Application.streamingAssetsPath + "/";
             _loadWait = new WaitUntil(() => { return !_isLoading; });
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             UnLoadAllAsset();
             ClearMemory();

@@ -12,9 +12,9 @@ namespace HT.Framework
     {
         private Dictionary<Type, HTFAction<object, EventHandler>> _eventHandlerList = new Dictionary<Type, HTFAction<object, EventHandler>>();
 
-        public override void Initialization()
+        public override void OnInitialization()
         {
-            base.Initialization();
+            base.OnInitialization();
 
             //注册所有存在的事件
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -27,9 +27,9 @@ namespace HT.Framework
             }
         }
 
-        public override void Termination()
+        public override void OnTermination()
         {
-            base.Termination();
+            base.OnTermination();
 
             _eventHandlerList.Clear();
         }

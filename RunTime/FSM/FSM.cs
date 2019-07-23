@@ -101,6 +101,11 @@ namespace HT.Framework
 
         private void Update()
         {
+            if (Main.Current.Pause)
+            {
+                return;
+            }
+
             if (_currentState != null)
             {
                 _currentState.OnUpdate();
