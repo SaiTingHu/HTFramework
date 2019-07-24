@@ -65,7 +65,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label((i + 1) + "." + _target.ActivatedProcedures[i]);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Edit", "MiniButton"))
+                if (GUILayout.Button("Edit", "minibuttonleft"))
                 {
                     if (_procedureTypes.ContainsKey(_target.ActivatedProcedures[i]))
                     {
@@ -80,7 +80,7 @@ namespace HT.Framework
                         GlobalTools.LogError("没有找到 " + _target.ActivatedProcedures[i] + " 脚本文件！");
                     }
                 }
-                if (GUILayout.Button("Delete", "MiniButton"))
+                if (GUILayout.Button("Delete", "minibuttonright"))
                 {
                     Undo.RecordObject(target, "Delete Procedure");
                     if (_target.DefaultProcedure == _target.ActivatedProcedures[i])

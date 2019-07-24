@@ -78,8 +78,11 @@ namespace HT.Framework
             target.transform.GetComponentsInChildren(true, HOS);
             for (int i = 0; i < HOS.Count; i++)
             {
-                HOS[i].ConstantOff();
-                HOS[i].Die();
+                if (HOS[i].gameObject != target)
+                {
+                    HOS[i].ConstantOff();
+                    HOS[i].Die();
+                }
             }
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
@@ -131,8 +134,11 @@ namespace HT.Framework
             target.transform.GetComponentsInChildren(true, HOS);
             for (int i = 0; i < HOS.Count; i++)
             {
-                HOS[i].FlashingOff();
-                HOS[i].Die();
+                if (HOS[i].gameObject != target)
+                {
+                    HOS[i].FlashingOff();
+                    HOS[i].Die();
+                }
             }
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
