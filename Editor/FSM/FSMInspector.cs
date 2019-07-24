@@ -62,6 +62,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            Toggle(_target.IsAutoRegister, out _target.IsAutoRegister, "Auto Register: ");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Name: ");
             TextField(_target.Name, out _target.Name);
             GUILayout.EndHorizontal();
