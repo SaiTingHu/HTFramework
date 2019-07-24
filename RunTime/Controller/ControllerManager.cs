@@ -33,7 +33,11 @@ namespace HT.Framework
         /// 第三人称刷新事件
         /// </summary>
         public event HTFAction ThirdPersonUpdateEvent;
-        
+        /// <summary>
+        /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
+        /// </summary>
+        public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
+
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
@@ -57,6 +61,7 @@ namespace HT.Framework
             _mousePosition.MR = _mouseRotation;
             _mouseRotation.Target = _cameraTarget;
             _mouseRay.RayCamera = MainCamera;
+            _mouseRay.RayEvent += OnRay;
         }
 
         public override void OnPreparatory()
@@ -277,9 +282,23 @@ namespace HT.Framework
         /// <param name="uIType">提示框UI类型</param>
         public void SetMouseRayFocusImage(Image background, Text content, UIType uIType = UIType.Overlay)
         {
-            _mouseRay.RayHitImage = background;
+            content.transform.SetParent(background.transform);
+            content.raycastTarget = false;
+            background.raycastTarget = false;
+
+            ContentSizeFitter contentSizeFitter = content.gameObject.GetComponent<ContentSizeFitter>();
+            if (contentSizeFitter == null) contentSizeFitter = content.gameObject.AddComponent<ContentSizeFitter>();
+            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+
+            _mouseRay.RayHitBG = background;
             _mouseRay.RayHitText = content;
             _mouseRay.RayHitImageType = uIType;
+        }
+        
+        private void OnRay(MouseRayTargetBase mouseRayTargetBase, Vector3 point, Vector2 pos)
+        {
+            RayEvent?.Invoke(mouseRayTargetBase, point, pos);
         }
     }
 

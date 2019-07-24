@@ -12,16 +12,58 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class MouseRay : MonoBehaviour
     {
+        /// <summary>
+        /// 是否开启射线投射
+        /// </summary>
         public bool IsOpenRay = true;
+        /// <summary>
+        /// 是否开启射中提示
+        /// </summary>
         public bool IsOpenPrompt = true;
+        /// <summary>
+        /// 射线投射的有效层
+        /// </summary>
         public LayerMask ActivatedLayer;
+        /// <summary>
+        /// 射中目标的高亮方式
+        /// </summary>
         public HighlightingType TriggerHighlighting = HighlightingType.Flash;
+        /// <summary>
+        /// 默认高亮颜色
+        /// </summary>
         public Color NormalColor = Color.cyan;
+        /// <summary>
+        /// 闪光高亮颜色1
+        /// </summary>
         public Color FlashColor1 = Color.red;
+        /// <summary>
+        /// 闪光高亮颜色2
+        /// </summary>
         public Color FlashColor2 = Color.white;
-        public Image RayHitImage;
+        /// <summary>
+        /// 提示框背景
+        /// </summary>
+        public Image RayHitBG;
+        /// <summary>
+        /// 提示框文本
+        /// </summary>
         public Text RayHitText;
+        /// <summary>
+        /// 提示框UI类型
+        /// </summary>
         public UIType RayHitImageType = UIType.Overlay;
+        /// <summary>
+        /// 提示框背景位置偏移
+        /// </summary>
+        public Vector2 BGPosOffset = Vector2.zero;
+        /// <summary>
+        /// 提示框背景宽度偏移
+        /// </summary>
+        public float BGWidthOffset = 40;
+        /// <summary>
+        /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI位置)
+        /// </summary>
+        public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
 
         private Ray _ray;
         private RaycastHit _hit;
@@ -72,7 +114,9 @@ namespace HT.Framework
                     }
                 }
 
-                RaycastHitImageFlow();
+                Vector2 pos = GlobalTools.ScreenToUGUIPosition(Main.m_Input.MousePosition, RayHitImageType);
+                RaycastHitBGFlow(pos);
+                RayEvent(Target, HitPoint, pos);
             }
         }
 
@@ -125,9 +169,9 @@ namespace HT.Framework
 
                 if (IsOpenPrompt)
                 {
-                    if (RayHitImage && RayHitText)
+                    if (RayHitBG && RayHitText)
                     {
-                        RayHitImage.gameObject.SetActive(true);
+                        RayHitBG.gameObject.SetActive(true);
                         RayHitText.text = Target.Name;
                     }
                 }
@@ -136,9 +180,9 @@ namespace HT.Framework
             {
                 if (IsOpenPrompt)
                 {
-                    if (RayHitImage && RayHitText)
+                    if (RayHitBG && RayHitText)
                     {
-                        RayHitImage.gameObject.SetActive(false);
+                        RayHitBG.gameObject.SetActive(false);
                         RayHitText.text = "";
                     }
                 }
@@ -148,13 +192,13 @@ namespace HT.Framework
         /// <summary>
         /// 射线击中目标的名字显示框跟随
         /// </summary>
-        private void RaycastHitImageFlow()
+        private void RaycastHitBGFlow(Vector2 pos)
         {
-            if (IsOpenPrompt && Target && RayHitImage && RayHitImage.gameObject.activeSelf)
+            if (IsOpenPrompt && Target && RayHitBG && RayHitBG.gameObject.activeSelf)
             {
-                RayHitImage.rectTransform.anchoredPosition = GlobalTools.ScreenToUGUIPosition(Main.m_Input.MousePosition, RayHitImageType);
-                _rayHitImageSize.Set(RayHitText.rectTransform.sizeDelta.x + 40, RayHitImage.rectTransform.sizeDelta.y);
-                RayHitImage.rectTransform.sizeDelta = _rayHitImageSize;
+                RayHitBG.rectTransform.anchoredPosition = pos + BGPosOffset;
+                _rayHitImageSize.Set(RayHitText.rectTransform.sizeDelta.x + BGWidthOffset, RayHitBG.rectTransform.sizeDelta.y);
+                RayHitBG.rectTransform.sizeDelta = _rayHitImageSize;
             }
         }
 
