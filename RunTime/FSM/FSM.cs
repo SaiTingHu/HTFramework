@@ -12,7 +12,17 @@ namespace HT.Framework
     [DefaultExecutionOrder(-900)]
     public sealed class FSM : MonoBehaviour
     {
+        /// <summary>
+        /// 是否自动注册【只在Inspector面板设置有效，代码中设置无效】
+        /// </summary>
+        public bool IsAutoRegister = true;
+        /// <summary>
+        /// 有限状态机名称
+        /// </summary>
         public string Name = "New Finite State Machine";
+        /// <summary>
+        /// 有限状态机数据类型【只在Inspector面板设置有效，代码中设置无效】
+        /// </summary>
         public string Data = "<None>";
         public List<string> States = new List<string>();
         public List<string> StateNames = new List<string>();
@@ -25,7 +35,13 @@ namespace HT.Framework
 
         private void Awake()
         {
-            Main.m_FSM.RegisterFSM(this);
+            if (IsAutoRegister)
+            {
+                if (!Main.m_FSM.IsExistFSM(Name))
+                {
+                    Main.m_FSM.RegisterFSM(this);
+                }
+            }
             //加载数据类
             if (Data != "<None>")
             {
@@ -40,12 +56,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError("创建数据类失败：数据类 " + Data + " 必须继承至有限状态机数据基类：FSMData！");
+                        GlobalTools.LogError(string.Format("创建数据类失败：数据类 {0} 必须继承至有限状态机数据基类：FSMData！", Data));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError("创建数据类失败：丢失数据类 " + Data + "！");
+                    GlobalTools.LogError(string.Format("创建数据类失败：丢失数据类 {0}！", Data));
                 }
             }
             //加载所有状态
@@ -66,18 +82,18 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError("加载有限状态失败：有限状态 " + States[i] + " 必须继承至有限状态基类：FiniteState！");
+                        GlobalTools.LogError(string.Format("加载有限状态失败：有限状态 {0} 必须继承至有限状态基类：FiniteState！", States[i]));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError("加载有限状态失败：丢失有限状态 " + States[i] + "！");
+                    GlobalTools.LogError(string.Format("加载有限状态失败：丢失有限状态 {0}！", States[i]));
                 }
             }
             //进入默认状态
             if (DefaultState == "" || _stateInstances.Count <= 0)
             {
-                GlobalTools.LogError("有限状态机 " + Name + " 的状态为空！或未指定默认状态！");
+                GlobalTools.LogError(string.Format("有限状态机 {0} 的状态为空！或未指定默认状态！", Name));
                 return;
             }
             Type dtype = GlobalTools.GetTypeInRunTimeAssemblies(DefaultState);
@@ -90,12 +106,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("切换状态失败：有限状态机 " + Name + " 不存在状态 " + dtype.Name + "！");
+                    GlobalTools.LogError(string.Format("切换状态失败：有限状态机 {0} 不存在状态 {1}！", Name, dtype.Name));
                 }
             }
             else
             {
-                GlobalTools.LogError("切换状态失败：丢失有限状态 " + DefaultState + "！");
+                GlobalTools.LogError(string.Format("切换状态失败：丢失有限状态 {0}！", DefaultState));
             }
         }
 
@@ -120,7 +136,10 @@ namespace HT.Framework
                 state.Value.OnTermination();
             }
 
-            Main.m_FSM.UnRegisterFSM(this);
+            if (Main.m_FSM.IsExistFSM(Name))
+            {
+                Main.m_FSM.UnRegisterFSM(this);
+            }
         }
 
         /// <summary>
@@ -156,7 +175,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("获取状态失败：有限状态机 " + Name + " 不存在状态 " + typeof(T).Name + "！");
+                GlobalTools.LogError(string.Format("获取状态失败：有限状态机 {0} 不存在状态 {1}！", Name, typeof(T).Name));
                 return null;
             }
         }
@@ -166,25 +185,7 @@ namespace HT.Framework
         /// </summary>
         public void SwitchState<T>() where T : FiniteState
         {
-            if (_stateInstances.ContainsKey(typeof(T)))
-            {
-                if (_currentState == _stateInstances[typeof(T)])
-                {
-                    return;
-                }
-
-                if (_currentState != null)
-                {
-                    _currentState.OnLeave();
-                }
-
-                _currentState = _stateInstances[typeof(T)];
-                _currentState.OnEnter();
-            }
-            else
-            {
-                GlobalTools.LogError("切换状态失败：有限状态机 " + Name + " 不存在状态 " + typeof(T).Name + "！");
-            }
+            SwitchState(typeof(T));
         }
 
         /// <summary>
@@ -209,7 +210,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("切换状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
+                GlobalTools.LogError(string.Format("切换状态失败：有限状态机 {0} 不存在状态 {1}！", Name, type.Name));
             }
         }
 
@@ -222,7 +223,7 @@ namespace HT.Framework
             {
                 if (_currentState == _stateInstances[typeof(T)])
                 {
-                    GlobalTools.LogError("终止状态失败：有限状态机 " + Name + " 无法终止状态 " + typeof(T).Name + "！因为当前正处于该状态！");
+                    GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 无法终止状态 {1}！因为当前正处于该状态！", Name, typeof(T).Name));
                     return;
                 }
 
@@ -231,7 +232,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("终止状态失败：有限状态机 " + Name + " 不存在状态 " + typeof(T).Name + "！");
+                GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 不存在状态 {1}！", Name, typeof(T).Name));
             }
         }
 
@@ -249,7 +250,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("附加状态失败：有限状态机 " + Name + " 已存在状态 " + typeof(T).Name + "！");
+                GlobalTools.LogError(string.Format("附加状态失败：有限状态机 {0} 已存在状态 {1}！", Name, typeof(T).Name));
             }
         }
     }

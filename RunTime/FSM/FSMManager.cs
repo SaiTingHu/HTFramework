@@ -22,7 +22,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("注册状态机失败：已存在状态机 " + fsm.Name + "！");
+                GlobalTools.LogWarning(string.Format("注册状态机失败：已存在状态机 {0}！", fsm.Name));
             }
         }
 
@@ -37,7 +37,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("移除已注册的状态机失败：不存在状态机 " + fsm.Name + "！");
+                GlobalTools.LogWarning(string.Format("移除已注册的状态机失败：不存在状态机 {0}！", fsm.Name));
             }
         }
 
