@@ -8,6 +8,10 @@ namespace HT.Framework
     public abstract class EntityLogic : IReference
     {
         /// <summary>
+        /// 实体名称
+        /// </summary>
+        public string Name;
+        /// <summary>
         /// 实体
         /// </summary>
         public GameObject Entity;

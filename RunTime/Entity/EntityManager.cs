@@ -88,6 +88,42 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 根据名称获取实体
+        /// </summary>
+        /// <typeparam name="T">实体逻辑类</typeparam>
+        /// <param name="entityName">实体名称</param>
+        /// <returns>实体</returns>
+        public T GetEntity<T>(string entityName) where T : EntityLogic
+        {
+            return GetEntity(typeof(T), entityName) as T;
+        }
+
+        /// <summary>
+        /// 根据名称获取实体
+        /// </summary>
+        /// <param name="type">实体逻辑类</param>
+        /// <param name="entityName">实体名称</param>
+        /// <returns>实体</returns>
+        public EntityLogic GetEntity(Type type, string entityName)
+        {
+            if (_entities.ContainsKey(type))
+            {
+                EntityLogic entityLogic = _entities[type].Find((entity) => { return entity.Name == entityName; });
+                if (entityLogic == null)
+                {
+                    GlobalTools.LogError(string.Format("获取实体失败：实体名称 {0} 并未存在！", entityName));
+                    return null;
+                }
+                return entityLogic;
+            }
+            else
+            {
+                GlobalTools.LogError(string.Format("获取实体失败：实体对象 {0} 并未存在！", type.Name));
+                return null;
+            }
+        }
+
+        /// <summary>
         /// 获取实体组
         /// </summary>
         /// <typeparam name="T">实体逻辑类</typeparam>
@@ -125,18 +161,22 @@ namespace HT.Framework
         /// 创建实体
         /// </summary>
         /// <typeparam name="T">实体逻辑类</typeparam>
-        public void CreateEntity<T>(HTFAction<float> loadingAction = null) where T : EntityLogic
+        /// <param name="entityName">实体指定名称（为 <None> 时默认使用实体逻辑类名称）</param>
+        /// <param name="loadingAction">创建实体过程进度回调</param>
+        public void CreateEntity<T>(string entityName = "<None>", HTFAction<float> loadingAction = null) where T : EntityLogic
         {
-            ExtractEntity(typeof(T), loadingAction);
+            ExtractEntity(typeof(T), entityName, loadingAction);
         }
 
         /// <summary>
         /// 创建实体
         /// </summary>
         /// <param name="type">实体逻辑类</param>
-        public void CreateEntity(Type type, HTFAction<float> loadingAction = null)
+        /// <param name="entityName">实体指定名称（为 <None> 时默认使用实体逻辑类名称）</param>
+        /// <param name="loadingAction">创建实体过程进度回调</param>
+        public void CreateEntity(Type type, string entityName = "<None>", HTFAction<float> loadingAction = null)
         {
-            ExtractEntity(type, loadingAction);
+            ExtractEntity(type, entityName, loadingAction);
         }
 
         /// <summary>
@@ -264,7 +304,7 @@ namespace HT.Framework
             }
         }
 
-        private void ExtractEntity(Type type, HTFAction<float> loadingAction = null)
+        private void ExtractEntity(Type type, string entityName = "<None>", HTFAction<float> loadingAction = null)
         {
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
@@ -274,11 +314,12 @@ namespace HT.Framework
                     if (attribute.IsUseObjectPool && _objectPool[type].Count > 0)
                     {
                         EntityLogic entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogic;
+                        _entities[type].Add(entityLogic);
                         entityLogic.Entity = _objectPool[type].Dequeue();
+                        entityLogic.Entity.name = entityLogic.Name = entityName == "<None>" ? type.Name : entityName;
                         entityLogic.Entity.SetActive(true);
                         entityLogic.OnInit();
                         entityLogic.OnShow();
-                        _entities[type].Add(entityLogic);
 
                         Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
                     }
@@ -287,11 +328,12 @@ namespace HT.Framework
                         Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
                         {
                             EntityLogic entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogic;
+                            _entities[type].Add(entityLogic);
                             entityLogic.Entity = obj;
+                            entityLogic.Entity.name = entityLogic.Name = entityName == "<None>" ? type.Name : entityName;
                             entityLogic.Entity.SetActive(true);
                             entityLogic.OnInit();
                             entityLogic.OnShow();
-                            _entities[type].Add(entityLogic);
 
                             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
                         });

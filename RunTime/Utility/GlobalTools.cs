@@ -668,16 +668,12 @@ namespace HT.Framework
 
             string valueRich = value;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<b><color=" + color.ToHexSystemString() + ">");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<b><color=" + color.ToHexSystemString() + ">");
+            else return value;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</color></b>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</color></b>");
+            else return value;
 
             return valueRich;
         }
@@ -693,16 +689,12 @@ namespace HT.Framework
 
             string valueRich = value;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
+            else return value;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</color>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</color>");
+            else return value;
 
             return valueRich;
         }
@@ -718,16 +710,12 @@ namespace HT.Framework
 
             string valueRich = value;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<size=" + size + ">");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<size=" + size + ">");
+            else return value;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</size>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</size>");
+            else return value;
 
             return valueRich;
         }
@@ -743,16 +731,12 @@ namespace HT.Framework
 
             string valueRich = value;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<b>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<b>");
+            else return value;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</b>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</b>");
+            else return value;
 
             return valueRich;
         }
@@ -768,16 +752,12 @@ namespace HT.Framework
 
             string valueRich = value;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<i>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<i>");
+            else return value;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</i>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</i>");
+            else return value;
 
             return valueRich;
         }
@@ -1142,16 +1122,12 @@ namespace HT.Framework
 
             string valueRich = tex.text;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<size=" + size + ">");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<size=" + size + ">");
+            else return;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</size>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</size>");
+            else return;
 
             tex.text = valueRich;
         }
@@ -1167,16 +1143,12 @@ namespace HT.Framework
 
             string valueRich = tex.text;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
+            else return;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</color>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</color>");
+            else return;
 
             tex.text = valueRich;
         }
@@ -1192,16 +1164,12 @@ namespace HT.Framework
 
             string valueRich = tex.text;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<b>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<b>");
+            else return;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</b>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</b>");
+            else return;
 
             tex.text = valueRich;
         }
@@ -1217,16 +1185,12 @@ namespace HT.Framework
 
             string valueRich = tex.text;
             int index = valueRich.IndexOf(subStr);
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "<i>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "<i>");
+            else return;
 
             index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0)
-            {
-                valueRich = valueRich.Insert(index, "</i>");
-            }
+            if (index >= 0) valueRich = valueRich.Insert(index, "</i>");
+            else return;
 
             tex.text = valueRich;
         }
