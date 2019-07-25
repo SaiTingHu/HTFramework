@@ -848,9 +848,11 @@ MonoBehaviour:
   NormalColor: {r: 0, g: 1, b: 1, a: 1}
   FlashColor1: {r: 1, g: 0, b: 0, a: 1}
   FlashColor2: {r: 1, g: 1, b: 1, a: 1}
-  RayHitImage: {fileID: 0}
+  RayHitBG: {fileID: 0}
   RayHitText: {fileID: 0}
   RayHitImageType: 0
+  BGPosOffset: {x: 0, y: 0}
+  BGWidthOffset: 40
 --- !u!1 &1797080342905102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1351,7 +1353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8411987863906872909}
   - component: {fileID: 4570786186818177625}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ResidentPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1785,7 +1787,7 @@ GameObject:
   - component: {fileID: 8934558497623743200}
   - component: {fileID: 3841642775889357211}
   - component: {fileID: 2761053302576037353}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: CanvasTem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1927,7 +1929,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8120711310803783204}
   - component: {fileID: 6923129794254711503}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: TemporaryPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -37,10 +37,7 @@ namespace HT.Framework
         {
             if (IsAutoRegister)
             {
-                if (!Main.m_FSM.IsExistFSM(Name))
-                {
-                    Main.m_FSM.RegisterFSM(this);
-                }
+                Main.m_FSM.RegisterFSM(this);
             }
             //加载数据类
             if (Data != "<None>")
@@ -167,15 +164,27 @@ namespace HT.Framework
         /// <summary>
         /// 获取状态
         /// </summary>
+        /// <typeparam name="T">状态类型</typeparam>
+        /// <returns>状态实例</returns>
         public T GetState<T>() where T : FiniteState
         {
-            if (_stateInstances.ContainsKey(typeof(T)))
+            return GetState(typeof(T)) as T;
+        }
+
+        /// <summary>
+        /// 获取状态
+        /// </summary>
+        /// <param name="type">状态类型</param>
+        /// <returns>状态实例</returns>
+        public FiniteState GetState(Type type)
+        {
+            if (_stateInstances.ContainsKey(type))
             {
-                return _stateInstances[typeof(T)] as T;
+                return _stateInstances[type];
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取状态失败：有限状态机 {0} 不存在状态 {1}！", Name, typeof(T).Name));
+                GlobalTools.LogError(string.Format("获取状态失败：有限状态机 {0} 不存在状态 {1}！", Name, type.Name));
                 return null;
             }
         }
@@ -183,6 +192,7 @@ namespace HT.Framework
         /// <summary>
         /// 切换状态
         /// </summary>
+        /// <typeparam name="T">状态类型</typeparam>
         public void SwitchState<T>() where T : FiniteState
         {
             SwitchState(typeof(T));
@@ -191,6 +201,7 @@ namespace HT.Framework
         /// <summary>
         /// 切换状态
         /// </summary>
+        /// <param name="type">状态类型</param>
         public void SwitchState(Type type)
         {
             if (_stateInstances.ContainsKey(type))
@@ -217,40 +228,60 @@ namespace HT.Framework
         /// <summary>
         /// 终止状态
         /// </summary>
+        /// <typeparam name="T">状态类型</typeparam>
         public void TerminationState<T>() where T : FiniteState
         {
-            if (_stateInstances.ContainsKey(typeof(T)))
+            TerminationState(typeof(T));
+        }
+
+        /// <summary>
+        /// 终止状态
+        /// </summary>
+        /// <param name="type">状态类型</param>
+        public void TerminationState(Type type)
+        {
+            if (_stateInstances.ContainsKey(type))
             {
-                if (_currentState == _stateInstances[typeof(T)])
+                if (_currentState == _stateInstances[type])
                 {
-                    GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 无法终止状态 {1}！因为当前正处于该状态！", Name, typeof(T).Name));
+                    GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 无法终止状态 {1}！因为当前正处于该状态！", Name, type.Name));
                     return;
                 }
 
-                _stateInstances[typeof(T)].OnTermination();
-                _stateInstances.Remove(typeof(T));
+                _stateInstances[type].OnTermination();
+                _stateInstances.Remove(type);
             }
             else
             {
-                GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 不存在状态 {1}！", Name, typeof(T).Name));
+                GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 不存在状态 {1}！", Name, type.Name));
             }
         }
 
         /// <summary>
         /// 附加状态
         /// </summary>
+        /// <typeparam name="T">状态类型</typeparam>
         public void AppendState<T>() where T : FiniteState
         {
-            if (!_stateInstances.ContainsKey(typeof(T)))
+            AppendState(typeof(T));
+        }
+
+        /// <summary>
+        /// 附加状态
+        /// </summary>
+        /// <param name="type">状态类型</param>
+        public void AppendState(Type type)
+        {
+            if (!_stateInstances.ContainsKey(type))
             {
-                FiniteState state = Activator.CreateInstance(typeof(T)) as FiniteState;
+                FiniteState state = Activator.CreateInstance(type) as FiniteState;
                 state.StateMachine = this;
                 state.OnInit();
-                _stateInstances.Add(typeof(T), state);
+                _stateInstances.Add(type, state);
             }
             else
             {
-                GlobalTools.LogError(string.Format("附加状态失败：有限状态机 {0} 已存在状态 {1}！", Name, typeof(T).Name));
+                GlobalTools.LogError(string.Format("附加状态失败：有限状态机 {0} 已存在状态 {1}！", Name, type.Name));
             }
         }
     }

@@ -25,31 +25,31 @@ namespace HT.Framework
         /// </summary>
         public bool IsEnableMailReport = false;
         /// <summary>
-        /// 反馈程序路径
+        /// 反馈程序路径【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public string FeedbackProgramPath = "/Feedback.exe";
         /// <summary>
-        /// 回发邮件的发送邮箱
+        /// 回发邮件的发送邮箱【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public string SendMailbox = "hutao_123456@sina.com";
         /// <summary>
-        /// 回发邮件的发送邮箱密码
+        /// 回发邮件的发送邮箱密码【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public string SendMailboxPassword = "";
         /// <summary>
-        /// 回发邮件的目标邮箱
+        /// 回发邮件的目标邮箱【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public string ReceiveMailbox = "";
         /// <summary>
-        /// 邮件服务器Host
+        /// 邮件服务器Host【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public string Host = "smtp.sina.com";
         /// <summary>
-        /// 邮件服务器端口
+        /// 邮件服务器端口【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public int Port = 25;
         /// <summary>
-        /// 回发邮件缓冲时间
+        /// 回发邮件缓冲时间【只在Inspector面板设置有效，代码中设置无效】
         /// </summary>
         public float ReportBufferTime = 5;
 
@@ -120,6 +120,8 @@ namespace HT.Framework
         /// <summary>
         /// 回发邮件
         /// </summary>
+        /// <param name="subject">邮件标题</param>
+        /// <param name="body">邮件内容</param>
         public void ReportMail(string subject, string body)
         {
             if (_reportBufferTimer > 0)

@@ -37,21 +37,18 @@ namespace HT.Framework
         /// <summary>
         /// 订阅事件
         /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        /// <param name="handler">事件处理者</param>
         public void Subscribe<T>(HTFAction<object, EventHandler> handler) where T : EventHandler
         {
-            if (_eventHandlerList.ContainsKey(typeof(T)))
-            {
-                _eventHandlerList[typeof(T)] += handler;
-            }
-            else
-            {
-                GlobalTools.LogError(string.Format("订阅事件失败：不存在可以订阅的事件类型 {0} ！", typeof(T).Name));
-            }
+            Subscribe(typeof(T), handler);
         }
 
         /// <summary>
         /// 订阅事件
         /// </summary>
+        /// <param name="type">事件处理类</param>
+        /// <param name="handler">事件处理者</param>
         public void Subscribe(Type type, HTFAction<object, EventHandler> handler)
         {
             if (_eventHandlerList.ContainsKey(type))
@@ -67,21 +64,18 @@ namespace HT.Framework
         /// <summary>
         /// 取消订阅事件
         /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        /// <param name="handler">事件处理者</param>
         public void Unsubscribe<T>(HTFAction<object, EventHandler> handler) where T : EventHandler
         {
-            if (_eventHandlerList.ContainsKey(typeof(T)))
-            {
-                _eventHandlerList[typeof(T)] -= handler;
-            }
-            else
-            {
-                GlobalTools.LogError(string.Format("取消订阅事件失败：不存在可以取消订阅的事件类型 {0} ！", typeof(T).Name));
-            }
+            Unsubscribe(typeof(T), handler);
         }
 
         /// <summary>
         /// 取消订阅事件
         /// </summary>
+        /// <param name="type">事件处理类</param>
+        /// <param name="handler">事件处理者</param>
         public void Unsubscribe(Type type, HTFAction<object, EventHandler> handler)
         {
             if (_eventHandlerList.ContainsKey(type))
@@ -97,6 +91,8 @@ namespace HT.Framework
         /// <summary>
         /// 抛出事件
         /// </summary>
+        /// <param name="sender">事件发送者</param>
+        /// <param name="handler">事件处理类实例</param>
         public void Throw(object sender, EventHandler handler)
         {
             Type type = handler.GetType();

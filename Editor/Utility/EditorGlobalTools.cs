@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -83,6 +84,12 @@ namespace HT.Framework
             GameObject[] objs = Selection.gameObjects;
             for (int i = 0; i < objs.Length; i++)
             {
+                if (!objs[i].GetComponent<Graphic>())
+                {
+                    GlobalTools.LogWarning("对象 " + objs[i].name + " 没有Graphic组件，无法做为可捕获UI目标！");
+                    continue;
+                }
+                objs[i].GetComponent<Graphic>().raycastTarget = true;
                 if (!objs[i].GetComponent<MouseRayUITarget>())
                 {
                     objs[i].AddComponent<MouseRayUITarget>();

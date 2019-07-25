@@ -1443,6 +1443,21 @@ namespace HT.Framework
                 ((int)(color.a * 255)).ToString("x2");
         }
         #endregion
+
+        #region 其他工具
+        /// <summary>
+        /// 设置自身及所有子物体的层
+        /// </summary>
+        /// <param name="gameObject">自身</param>
+        /// <param name="layer">层</param>
+        public static void SetLayerIncludeChildren(this GameObject gameObject, int layer)
+        {
+            foreach (Transform tran in gameObject.GetComponentsInChildren<Transform>(true))
+            {
+                tran.gameObject.layer = layer;
+            }
+        }
+        #endregion
     }
 }
 
