@@ -20,11 +20,13 @@ namespace HT.Framework
 
             Current = this;
 
-            LicenseAwake();
+            LicenseInitialization();
 
-            MainDataAwake();
+            MainDataInitialization();
 
             ModuleInitialization();
+
+            MainDataPreparatory();
 
             ModulePreparatory();
         }
@@ -33,7 +35,7 @@ namespace HT.Framework
         {
             ModuleRefresh();
 
-            LicenseUpdate();
+            LicenseRefresh();
         }
 
         private void OnDestroy()

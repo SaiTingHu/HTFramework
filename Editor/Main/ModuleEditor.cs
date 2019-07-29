@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
@@ -211,7 +212,7 @@ namespace HT.Framework
         /// <summary>
         /// 制作一个ObjectField
         /// </summary>
-        protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : Object
+        protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UnityEngine.Object
         {
             T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects, options) as T;
             if (value != newValue)
@@ -257,6 +258,23 @@ namespace HT.Framework
             else
             {
                 outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个枚举下拉按钮
+        /// </summary>
+        protected void EnumPopup<T>(Enum value, out T outValue, string name, params GUILayoutOption[] options) where T : Enum
+        {
+            Enum newValue = EditorGUILayout.EnumPopup(name, value, options);
+            if (!Equals(value, newValue))
+            {
+                Undo.RecordObject(target, "Set enum value");
+                outValue = (T)newValue;
+                HasChanged();
+            }
+            else
+            {
+                outValue = (T)value;
             }
         }
     }

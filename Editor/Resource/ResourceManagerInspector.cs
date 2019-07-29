@@ -20,13 +20,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            ResourceMode mode = (ResourceMode)EditorGUILayout.EnumPopup("Load Mode", _target.Mode);
-            if (mode != _target.Mode)
-            {
-                Undo.RecordObject(target, "Set Load Mode");
-                _target.Mode = mode;
-                HasChanged();
-            }
+            EnumPopup(_target.Mode, out _target.Mode, "Load Mode");
             GUILayout.EndHorizontal();
 
             if (_target.Mode == ResourceMode.Resource)

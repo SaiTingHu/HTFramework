@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +16,7 @@ namespace HT.Framework
             window._contentAsset = contentAsset;
             window.minSize = new Vector2(800, 600);
             window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            window.position = new Rect(200, 200, 1200, 800);
             window._currentStep = -1;
             window._currentOperation = -1;
             window.Show();

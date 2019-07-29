@@ -24,13 +24,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            AudioType type = (AudioType)EditorGUILayout.EnumPopup("Audio Type", _target.DownloadAudioType);
-            if (type != _target.DownloadAudioType)
-            {
-                Undo.RecordObject(target, "Set Audio Type");
-                _target.DownloadAudioType = type;
-                HasChanged();
-            }
+            EnumPopup(_target.DownloadAudioType, out _target.DownloadAudioType, "Audio Type");
             GUILayout.EndHorizontal();
         }
     }

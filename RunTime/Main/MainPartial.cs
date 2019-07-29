@@ -343,7 +343,7 @@ namespace HT.Framework
         private DateTime _endingTime;
         private GUIStyle _promptStyle;
 
-        private void LicenseAwake()
+        private void LicenseInitialization()
         {
             _endingTime = new DateTime(Year, Month, Day);
             _promptStyle = new GUIStyle();
@@ -351,7 +351,7 @@ namespace HT.Framework
             _promptStyle.normal.textColor = Color.red;
             _promptStyle.fontSize = 30;
         }
-        private void LicenseUpdate()
+        private void LicenseRefresh()
         {
             if (!IsPermanentLicense)
             {
@@ -379,7 +379,7 @@ namespace HT.Framework
 
         private MainData _data;
 
-        private void MainDataAwake()
+        private void MainDataInitialization()
         {
             if (MainDataType != "<None>")
             {
@@ -389,7 +389,7 @@ namespace HT.Framework
                     if (type.IsSubclassOf(typeof(MainData)))
                     {
                         _data = Activator.CreateInstance(type) as MainData;
-                        _data.OnInit();
+                        _data.OnInitialization();
                     }
                     else
                     {
@@ -400,6 +400,13 @@ namespace HT.Framework
                 {
                     GlobalTools.LogError("创建全局数据类失败：丢失数据类 " + MainDataType + "！");
                 }
+            }
+        }
+        private void MainDataPreparatory()
+        {
+            if (_data != null)
+            {
+                _data.OnPreparatory();
             }
         }
 

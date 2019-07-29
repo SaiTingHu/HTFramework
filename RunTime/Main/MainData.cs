@@ -8,6 +8,11 @@
         /// <summary>
         /// 数据初始化
         /// </summary>
-        public abstract void OnInit();
+        public abstract void OnInitialization();
+
+        /// <summary>
+        /// 数据准备
+        /// </summary>
+        public abstract void OnPreparatory();
     }
 }

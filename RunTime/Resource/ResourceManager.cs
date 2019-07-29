@@ -22,7 +22,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否缓存AB包
         /// </summary>
-        public bool IsCacheAssetBundle = false;
+        public bool IsCacheAssetBundle = true;
 
         //AssetBundle资源根路径
         private string _assetBundlePath;

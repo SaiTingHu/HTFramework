@@ -6,7 +6,7 @@ namespace HT.Framework
     [CustomEditor(typeof(HighlightingEffect))]
     public sealed class HighlightingEffectInspector : ModuleEditor
     {
-        private string[] downsampleOptions = new string[] { "None", "Half", "Quarter" };
+        private static string[] _downsampleOptions = new string[] { "None", "Half", "Quarter" };
 
         private HighlightingEffect _he;
 
@@ -45,14 +45,14 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             Button(Default, "Default");
-            Button(Default, "Strong");
-            Button(Default, "Speed");
-            Button(Default, "Quality");
+            Button(Strong, "Strong");
+            Button(Speed, "Speed");
+            Button(Quality, "Quality");
             GUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
-
-            _he.downsampleFactor = EditorGUILayout.Popup("Downsampling:", _he.downsampleFactor, downsampleOptions);
+            
+            _he.downsampleFactor = EditorGUILayout.Popup("Downsampling:", _he.downsampleFactor, _downsampleOptions);
             _he.iterations = Mathf.Clamp(EditorGUILayout.IntField("Iterations:", _he.iterations), 0, 50);
             _he.blurMinSpread = EditorGUILayout.Slider("Min Spread:", _he.blurMinSpread, 0f, 3f);
             _he.blurSpread = EditorGUILayout.Slider("Spread:", _he.blurSpread, 0f, 3f);
