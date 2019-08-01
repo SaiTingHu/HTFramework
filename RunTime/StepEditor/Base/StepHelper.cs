@@ -9,14 +9,24 @@ namespace HT.Framework
     public abstract class StepHelper
     {
         /// <summary>
+        /// 步骤内容
+        /// </summary>
+        public StepContent Content;
+
+        /// <summary>
         /// 步骤目标
         /// </summary>
         public StepTarget Target;
 
         /// <summary>
-        /// 助手当前执行的任务
+        /// 助手当前执行的任务类型
         /// </summary>
         public StepHelperTask Task;
+
+        /// <summary>
+        /// 步骤的参数
+        /// </summary>
+        public List<StepParameter> Parameters = null;
 
         /// <summary>
         /// 步骤辅助目标
@@ -80,6 +90,23 @@ namespace HT.Framework
         public virtual void OnTermination()
         {
 
+        }
+
+        /// <summary>
+        /// 通过参数名称获取参数
+        /// </summary>
+        /// <param name="name">参数名称</param>
+        /// <returns>参数</returns>
+        protected StepParameter GetParameterByName(string name)
+        {
+            if (Parameters == null)
+            {
+                return null;
+            }
+            else
+            {
+                return Parameters.Find((p) => { return p.Name == name; });
+            }
         }
 
         /// <summary>

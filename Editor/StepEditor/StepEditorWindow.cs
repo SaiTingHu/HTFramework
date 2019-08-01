@@ -357,7 +357,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
 
                 #region 步骤的属性
-                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(400));
+                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(420));
 
                 GUILayout.BeginHorizontal("Icon.OutlineBorder");
                 GUILayout.Label("Step Content Properties", "BoldLabel");
@@ -632,6 +632,14 @@ namespace HT.Framework
                     }
                 }
                 GUI.enabled = true;
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Parameter:", GUILayout.Width(80));
+                if (GUILayout.Button("Edit Parameter", "MiniButton"))
+                {
+                    StepParameterWindow.ShowWindow(this, _contentAsset, _currentStepObj);
+                }
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();

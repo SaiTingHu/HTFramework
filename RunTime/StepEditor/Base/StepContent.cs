@@ -18,7 +18,7 @@ namespace HT.Framework
         public string TargetGUID = "<None>";
         public string TargetPath = "<None>";
         public string Name = "Step Name";
-        public StepTrigger Trigger = StepTrigger.MouseClick;
+        public StepTrigger Trigger = StepTrigger.StateChange;
         public string Prompt = "Step Prompt";
         public string Ancillary = "";
         public Vector3 BestView = new Vector3(90, 30, 2);
@@ -27,6 +27,8 @@ namespace HT.Framework
         public ControlMode InitialMode = ControlMode.FreeControl;
         public string Helper = "<None>";
 
+        [SerializeField]
+        public List<StepParameter> Parameters = new List<StepParameter>();
         [SerializeField]
         public List<StepOperation> Operations = new List<StepOperation>();
         [SerializeField]
@@ -54,6 +56,10 @@ namespace HT.Framework
             content.BestPos = BestPos;
             content.InitialMode = InitialMode;
             content.Helper = Helper;
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                content.Parameters.Add(Parameters[i].Clone());
+            }
             for (int i = 0; i < Operations.Count; i++)
             {
                 content.Operations.Add(Operations[i].Clone());

@@ -611,6 +611,18 @@ namespace HT.Framework
                         if (type != null)
                         {
                             _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                            _currentHelper.Parameters = _currentContent.Parameters;
+                            for (int i = 0; i < _currentHelper.Parameters.Count; i++)
+                            {
+                                if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                                {
+                                    if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
+                                    {
+                                        _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
+                                    }
+                                }
+                            }
+                            _currentHelper.Content = _currentContent;
                             _currentHelper.Target = _currentTarget;
                             _currentHelper.Task = StepHelperTask.Restore;
                             _currentHelper.OnInit();
@@ -730,6 +742,10 @@ namespace HT.Framework
             _currentContent = _stepContents[_currentStep];
             _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
+            Main.m_Controller.TheControlMode = _currentContent.InitialMode;
+            Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, true);
+            Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
+
             //UGUI按钮点击型步骤，注册监听
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
@@ -757,6 +773,18 @@ namespace HT.Framework
                 if (type != null)
                 {
                     _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                    _currentHelper.Parameters = _currentContent.Parameters;
+                    for (int i = 0; i < _currentHelper.Parameters.Count; i++)
+                    {
+                        if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                        {
+                            if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
+                            {
+                                _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
+                            }
+                        }
+                    }
+                    _currentHelper.Content = _currentContent;
                     _currentHelper.Target = _currentTarget;
                     _currentHelper.Task = StepHelperTask.Execute;
                     _currentHelper.OnInit();
@@ -766,11 +794,7 @@ namespace HT.Framework
                     GlobalTools.LogError(string.Format("【步骤：{0}】的助手 {1} 丢失！", _currentStep + 1, _currentContent.Helper));
                 }
             }
-
-            Main.m_Controller.TheControlMode = _currentContent.InitialMode;
-            Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, true);
-            Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
-
+            
             if (_stepContentEnables.ContainsKey(_currentContent.GUID))
             {
                 BeginStepEvent?.Invoke(_currentContent, _stepContentEnables[_currentContent.GUID]);
@@ -845,6 +869,18 @@ namespace HT.Framework
                 if (type != null)
                 {
                     _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                    _currentHelper.Parameters = _currentContent.Parameters;
+                    for (int i = 0; i < _currentHelper.Parameters.Count; i++)
+                    {
+                        if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                        {
+                            if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
+                            {
+                                _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
+                            }
+                        }
+                    }
+                    _currentHelper.Content = _currentContent;
                     _currentHelper.Target = _currentTarget;
                     _currentHelper.Task = StepHelperTask.Skip;
                     _currentHelper.OnInit();
@@ -917,6 +953,18 @@ namespace HT.Framework
                     if (type != null)
                     {
                         _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                        _currentHelper.Parameters = _currentContent.Parameters;
+                        for (int i = 0; i < _currentHelper.Parameters.Count; i++)
+                        {
+                            if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                            {
+                                if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
+                                {
+                                    _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
+                                }
+                            }
+                        }
+                        _currentHelper.Content = _currentContent;
                         _currentHelper.Target = _currentTarget;
                         _currentHelper.Task = StepHelperTask.Skip;
                         _currentHelper.OnInit();

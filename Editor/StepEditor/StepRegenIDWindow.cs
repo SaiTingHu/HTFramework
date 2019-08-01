@@ -63,6 +63,7 @@ namespace HT.Framework
                         _contentAsset.Content[i].GUID = _name + index.ToString().PadLeft(_indexDigit, '0');
                         index += _indexIncrement;
                     }
+                    EditorUtility.SetDirty(_contentAsset);
                     Close();
                 }
             }
