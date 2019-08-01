@@ -69,10 +69,29 @@ namespace HT.Framework
                 GUILayout.Label("Type:", GUILayout.Width(40));
                 stepParameter.Type = (StepParameter.ParameterType)EditorGUILayout.EnumPopup(stepParameter.Type, GUILayout.Width(100));
                 GUILayout.FlexibleSpace();
+                if (GUILayout.Button("▲", "MiniButtonleft", GUILayout.Width(20)))
+                {
+                    if (i > 0)
+                    {
+                        _content.Parameters.Remove(stepParameter);
+                        _content.Parameters.Insert(i - 1, stepParameter);
+                        continue;
+                    }
+                }
+                if (GUILayout.Button("▼", "MiniButtonmid", GUILayout.Width(20)))
+                {
+                    if (i < _content.Parameters.Count - 1)
+                    {
+                        _content.Parameters.Remove(stepParameter);
+                        _content.Parameters.Insert(i + 1, stepParameter);
+                        continue;
+                    }
+                }
                 GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Delete", "Minibutton"))
+                if (GUILayout.Button("Delete", "Minibuttonright"))
                 {
                     _content.Parameters.RemoveAt(i);
+                    continue;
                 }
                 GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
