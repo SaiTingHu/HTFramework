@@ -282,6 +282,12 @@ namespace HT.Framework
         /// <param name="uIType">提示框UI类型</param>
         public void SetMouseRayFocusImage(Image background, Text content, UIType uIType = UIType.Overlay)
         {
+            if (background == null || content == null)
+            {
+                GlobalTools.LogError("焦点提示框的背景和文字框均不能为空！");
+                return;
+            }
+
             content.transform.SetParent(background.transform);
             content.raycastTarget = false;
             background.raycastTarget = false;

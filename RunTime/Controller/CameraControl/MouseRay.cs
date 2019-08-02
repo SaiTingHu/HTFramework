@@ -169,9 +169,9 @@ namespace HT.Framework
 
                 if (IsOpenPrompt)
                 {
-                    if (RayHitBG && RayHitText)
+                    if (RayHitBG)
                     {
-                        RayHitBG.gameObject.SetActive(true);
+                        RayHitBG.gameObject.SetActive(Target.IsOpenPrompt);
                         RayHitText.text = Target.Name;
                     }
                 }
@@ -180,7 +180,7 @@ namespace HT.Framework
             {
                 if (IsOpenPrompt)
                 {
-                    if (RayHitBG && RayHitText)
+                    if (RayHitBG && RayHitBG.gameObject.activeSelf)
                     {
                         RayHitBG.gameObject.SetActive(false);
                         RayHitText.text = "";

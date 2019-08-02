@@ -1400,6 +1400,16 @@ namespace HT.Framework
 
             return value;
         }
+        /// <summary>
+        /// 是否约等于另一个浮点数
+        /// </summary>
+        /// <param name="sourceValue">源浮点数</param>
+        /// <param name="targetValue">目标浮点数</param>
+        /// <returns>是否约等于</returns>
+        public static bool Approximately(this float sourceValue, float targetValue)
+        {
+            return Mathf.Approximately(sourceValue, targetValue);
+        }
         #endregion
         
         #region 系统工具

@@ -31,6 +31,7 @@ namespace HT.Framework
         private Texture _background;
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
+        private bool _showAncillary = false;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private Vector2 _stepContentScroll = Vector3.zero;
@@ -196,6 +197,10 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Show Type:");
             _stepListShowType = (StepListShowType)EditorGUILayout.EnumPopup(_stepListShowType, GUILayout.Width(100));
+            if (_stepListShowType == StepListShowType.Name)
+            {
+                _showAncillary = GUILayout.Toggle(_showAncillary, "Ancillary");
+            }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -1222,7 +1227,14 @@ namespace HT.Framework
                 case StepListShowType.ID:
                     return content.GUID;
                 case StepListShowType.Name:
-                    return content.Ancillary != "" ? string.Format("【{0}】{1}", content.Ancillary, content.Name) : content.Name;
+                    if (_showAncillary)
+                    {
+                        return content.Ancillary != "" ? string.Format("【{0}】{1}", content.Ancillary, content.Name) : content.Name;
+                    }
+                    else
+                    {
+                        return content.Name;
+                    }
                 case StepListShowType.IDAndName:
                     return content.GUID + " " + content.Name;
             }
