@@ -101,11 +101,21 @@ namespace HT.Framework
         {
             if (Parameters == null)
             {
+                GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, name));
                 return null;
             }
             else
             {
-                return Parameters.Find((p) => { return p.Name == name; });
+                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == name; });
+                if (stepParameter != null)
+                {
+                    return stepParameter;
+                }
+                else
+                {
+                    GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, name));
+                    return null;
+                }
             }
         }
 

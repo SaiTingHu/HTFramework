@@ -27,26 +27,13 @@ namespace HT.Framework
         private void OnGUI()
         {
             GUILayout.BeginHorizontal("Toolbar");
-            if (GUILayout.Button(_content.GUID, "Toolbarpopup", GUILayout.Width(80)))
-            {
-                GenericMenu gm = new GenericMenu();
-                for (int i = 0; i < _contentAsset.Content.Count; i++)
-                {
-                    StepContent stepContent = _contentAsset.Content[i];
-                    gm.AddItem(new GUIContent(stepContent.GUID), stepContent == _content, () =>
-                    {
-                        _content = stepContent;
-                    });
-                }
-                gm.ShowAsContext();
-            }
             if (GUILayout.Button(_content.Name, "Toolbarpopup"))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < _contentAsset.Content.Count; i++)
                 {
                     StepContent stepContent = _contentAsset.Content[i];
-                    gm.AddItem(new GUIContent(stepContent.Name), stepContent == _content, () =>
+                    gm.AddItem(new GUIContent(i + "." + stepContent.Name), stepContent == _content, () =>
                     {
                         _content = stepContent;
                     });
@@ -99,11 +86,6 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Name:", GUILayout.Width(40));
                 stepParameter.Name = EditorGUILayout.TextField(stepParameter.Name);
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Copy", "Minibutton"))
-                {
-                    GUIUtility.systemCopyBuffer = stepParameter.Name;
-                }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -227,10 +209,9 @@ namespace HT.Framework
                 }
             }
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Sure"))
+            if (GUILayout.Button("Apply"))
             {
                 EditorUtility.SetDirty(_contentAsset);
-                Close();
             }
             GUILayout.EndHorizontal();
         }
