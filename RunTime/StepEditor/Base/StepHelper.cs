@@ -93,30 +93,118 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 通过参数名称获取参数
+        /// 通过名称获取参数
         /// </summary>
-        /// <param name="name">参数名称</param>
+        /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        protected StepParameter GetParameterByName(string name)
+        protected StepParameter GetParameter(string parameterName)
         {
             if (Parameters == null)
             {
-                GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, name));
+                GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
                 return null;
             }
             else
             {
-                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == name; });
+                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
                 if (stepParameter != null)
                 {
                     return stepParameter;
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, name));
+                    GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
                     return null;
                 }
             }
+        }
+
+        /// <summary>
+        /// 通过名称获取String参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected string GetStringParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.StringValue : "";
+        }
+
+        /// <summary>
+        /// 通过名称获取Integer参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected int GetIntegerParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.IntegerValue : 0;
+        }
+
+        /// <summary>
+        /// 通过名称获取Float参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected float GetFloatParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.FloatValue : 0f;
+        }
+
+        /// <summary>
+        /// 通过名称获取Boolean参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected bool GetBooleanParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.BooleanValue : false;
+        }
+
+        /// <summary>
+        /// 通过名称获取Vector2参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected Vector2 GetVector2Parameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.Vector2Value : Vector2.zero;
+        }
+
+        /// <summary>
+        /// 通过名称获取Vector3参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected Vector3 GetVector3Parameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.Vector3Value : Vector3.zero;
+        }
+
+        /// <summary>
+        /// 通过名称获取Color参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected Color GetColorParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.ColorValue : Color.white;
+        }
+
+        /// <summary>
+        /// 通过名称获取GameObject参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected GameObject GetGameObjectParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.GameObjectValue : null;
         }
 
         /// <summary>

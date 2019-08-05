@@ -290,6 +290,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 当前步骤助手
+        /// </summary>
+        public StepHelper CurrentStepHelper
+        {
+            get
+            {
+                return _currentHelper;
+            }
+        }
+        /// <summary>
         /// 所有步骤
         /// </summary>
         public List<StepContent> AllStep

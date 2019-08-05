@@ -1301,6 +1301,19 @@ namespace HT.Framework
             float.TryParse(input.text, out value);
             return value;
         }
+        /// <summary>
+        /// 设置下拉框值
+        /// </summary>
+        public static void SetValue(this Dropdown dropdown, string value)
+        {
+            for (int i = 0; i < dropdown.options.Count; i++)
+            {
+                if (dropdown.options[i].text == value)
+                {
+                    dropdown.value = i;
+                }
+            }
+        }
         #endregion
 
         #region 日志工具
