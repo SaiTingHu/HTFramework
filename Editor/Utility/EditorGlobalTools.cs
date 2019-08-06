@@ -43,17 +43,19 @@ namespace HT.Framework
 
         #region 批处理工具
         /// <summary>
+        /// 【验证函数】设置鼠标射线可捕获物体目标
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", true)]
+        private static bool SetMouseRayTargetValidate()
+        {
+            return Selection.gameObjects.Length > 0;
+        }
+        /// <summary>
         /// 设置鼠标射线可捕获物体目标
         /// </summary>
         [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 20)]
         private static void SetMouseRayTarget()
         {
-            if (Selection.gameObjects.Length <= 0)
-            {
-                GlobalTools.LogWarning("请先选中场景中的物体！");
-                return;
-            }
-
             GameObject[] objs = Selection.gameObjects;
             for (int i = 0; i < objs.Length; i++)
             {
@@ -70,17 +72,19 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 【验证函数】设置鼠标射线可捕获UI目标
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", true)]
+        private static bool SetMouseRayUITargetValidate()
+        {
+            return Selection.gameObjects.Length > 0;
+        }
+        /// <summary>
         /// 设置鼠标射线可捕获UI目标
         /// </summary>
         [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 21)]
         private static void SetMouseRayUITarget()
         {
-            if (Selection.gameObjects.Length <= 0)
-            {
-                GlobalTools.LogWarning("请先选中场景中的UI对象！");
-                return;
-            }
-
             GameObject[] objs = Selection.gameObjects;
             for (int i = 0; i < objs.Length; i++)
             {
@@ -276,6 +280,24 @@ namespace HT.Framework
         {
             EditorApplication.isPlaying = !EditorApplication.isPlaying;
         }
+
+        /// <summary>
+        /// 【验证函数】看向指定目标
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Look At", true)]
+        private static bool LookAtValidate()
+        {
+            return EditorApplication.isPlaying && Selection.activeGameObject != null;
+        }
+        /// <summary>
+        /// 看向指定目标
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Look At")]
+        private static void LookAt()
+        {
+            Main.m_Controller.SetLookPoint(Selection.activeGameObject.transform.position);
+        }
+
         /// <summary>
         /// 打开编辑器安装路径
         /// </summary>

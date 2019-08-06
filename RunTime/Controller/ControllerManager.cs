@@ -275,6 +275,22 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 自由控制：进入保持追踪模式
+        /// </summary>
+        /// <param name="target">追踪目标</param>
+        public void EnterKeepTrack(Transform target)
+        {
+            _mousePosition.EnterKeepTrack(target);
+        }
+        /// <summary>
+        /// 退出保持追踪模式
+        /// </summary>
+        public void LeaveKeepTrack()
+        {
+            _mousePosition.LeaveKeepTrack();
+        }
+
+        /// <summary>
         /// 设置射线发射器的焦点提示框
         /// </summary>
         /// <param name="background">提示框背景</param>

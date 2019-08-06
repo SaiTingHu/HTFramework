@@ -752,10 +752,6 @@ namespace HT.Framework
             _currentContent = _stepContents[_currentStep];
             _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
-            Main.m_Controller.TheControlMode = _currentContent.InitialMode;
-            Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, true);
-            Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
-
             //UGUI按钮点击型步骤，注册监听
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
@@ -844,10 +840,6 @@ namespace HT.Framework
             _executing = true;
             _currentContent.Skip(this);
 
-            Main.m_Controller.TheControlMode = _currentContent.InitialMode;
-            Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, false);
-            Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
-
             SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
             //UGUI按钮点击型步骤，自动执行按钮事件
@@ -927,10 +919,6 @@ namespace HT.Framework
                 _currentContent = _stepContents[_currentStep];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
                 _currentContent.Skip(this);
-
-                Main.m_Controller.TheControlMode = _currentContent.InitialMode;
-                Main.m_Controller.SetLookPoint(_currentTarget.transform.position + _currentContent.ViewOffset, false);
-                Main.m_Controller.SetLookAngle(_currentContent.BestView, true);
 
                 SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 

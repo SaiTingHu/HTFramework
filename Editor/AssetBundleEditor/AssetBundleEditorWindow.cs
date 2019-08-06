@@ -96,7 +96,7 @@ namespace HT.Framework.AssetBundleEditor
         }
         private void Update()
         {
-            if (EditorApplication.isCompiling)
+            if (EditorApplication.isCompiling || EditorApplication.isPlaying)
             {
                 Close();
             }
@@ -182,10 +182,12 @@ namespace HT.Framework.AssetBundleEditor
                 EditorPrefs.SetInt(EditorPrefsTable.AssetBundleEditor_BuildTarget, (int)_buildTarget);
             }
 
+            GUI.enabled = !EditorApplication.isPlaying;
             if (GUI.Button(new Rect((int)position.width - 55, 5, 50, 15), "Build", _preButton))
             {
                 AssetBundleEditorUtility.BuildAssetBundles();
             }
+            GUI.enabled = true;
         }
         private void AssetBundlesGUI()
         {

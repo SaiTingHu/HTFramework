@@ -242,40 +242,51 @@ namespace HT.Framework.AssetBundleEditor
         }
 
         /// <summary>
+        /// 【验证方法】打包资源
+        /// </summary>
+        [@MenuItem("HTFramework/AssetBundle/Build AssetBundles", true)]
+        private static bool BuildAssetBundlesValidate()
+        {
+            return !EditorApplication.isPlaying;
+        }
+        /// <summary>
         /// 打包资源
         /// </summary>
-        [MenuItem("HTFramework/AssetBundle/Build AssetBundles")]
+        [@MenuItem("HTFramework/AssetBundle/Build AssetBundles")]
         public static void BuildAssetBundles()
         {
-            string buildPath = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_BuildPath, Application.streamingAssetsPath);
-            if (!Directory.Exists(buildPath))
+            if (EditorUtility.DisplayDialog("Prompt", "Are you sure build assetBundles？This could be a time consuming job.", "Yes", "No"))
             {
-                Directory.CreateDirectory(buildPath);
-            }
-
-            BuildTarget target = (BuildTarget)EditorPrefs.GetInt(EditorPrefsTable.AssetBundleEditor_BuildTarget, 5);
-            BuildPipeline.BuildAssetBundles(buildPath, BuildAssetBundleOptions.None, target);
-
-            GlobalTools.LogInfo("Build assetBundle succeeded!");
-
-            string variant = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_Variant, "");
-            if (variant != "")
-            {
-                DirectoryInfo di = new DirectoryInfo(buildPath);
-                FileSystemInfo[] fileinfos = di.GetFileSystemInfos();
-                for (int i = 0; i < fileinfos.Length; i++)
+                string buildPath = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_BuildPath, Application.streamingAssetsPath);
+                if (!Directory.Exists(buildPath))
                 {
-                    FileInfo file = fileinfos[i] as FileInfo;
-                    if (file != null && file.Extension == "")
+                    Directory.CreateDirectory(buildPath);
+                }
+
+                BuildTarget target = (BuildTarget)EditorPrefs.GetInt(EditorPrefsTable.AssetBundleEditor_BuildTarget, 5);
+                BuildPipeline.BuildAssetBundles(buildPath, BuildAssetBundleOptions.None, target);
+
+                GlobalTools.LogInfo("Build assetBundle succeeded!");
+
+                string variant = EditorPrefs.GetString(EditorPrefsTable.AssetBundleEditor_Variant, "");
+                if (variant != "")
+                {
+                    DirectoryInfo di = new DirectoryInfo(buildPath);
+                    FileSystemInfo[] fileinfos = di.GetFileSystemInfos();
+                    for (int i = 0; i < fileinfos.Length; i++)
                     {
-                        file.MoveTo(file.FullName + "." + variant);
+                        FileInfo file = fileinfos[i] as FileInfo;
+                        if (file != null && file.Extension == "")
+                        {
+                            file.MoveTo(file.FullName + "." + variant);
+                        }
                     }
                 }
+
+                GlobalTools.LogInfo("Additional variant succeeded!");
+
+                OpenFolder(buildPath);
             }
-
-            GlobalTools.LogInfo("Additional variant succeeded!");
-
-            OpenFolder(buildPath);
         }
     }
 }

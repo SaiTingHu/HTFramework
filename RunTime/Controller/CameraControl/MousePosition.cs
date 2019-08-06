@@ -32,6 +32,10 @@ namespace HT.Framework
         private Vector3 _finalPosition;
         //阻尼缓动模式时的动画
         private Tweener _moveTweener;
+        //保持追踪模式
+        private bool _isKeepTrack = false;
+        //追踪目标
+        private Transform _trackTarget;
 
         /// <summary>
         /// 是否可以控制
@@ -67,6 +71,11 @@ namespace HT.Framework
         /// <param name="damping">阻尼缓动模式</param>
         public void SetPosition(Vector3 position, bool damping = true)
         {
+            if (_isKeepTrack)
+            {
+                return;
+            }
+
             if (NeedLimit)
             {
                 position = GlobalTools.Clamp(position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
@@ -87,12 +96,51 @@ namespace HT.Framework
                 Target.transform.position = position;
             }
         }
-        
+
+        /// <summary>
+        /// 进入保持追踪模式
+        /// </summary>
+        /// <param name="target">追踪目标</param>
+        public void EnterKeepTrack(Transform target)
+        {
+            _isKeepTrack = true;
+            _trackTarget = target;
+        }
+
+        /// <summary>
+        /// 退出保持追踪模式
+        /// </summary>
+        public void LeaveKeepTrack()
+        {
+            _isKeepTrack = false;
+        }
+
         /// <summary>
         /// 刷新
         /// </summary>
         public void OnRefresh()
         {
+            //控制
+            Control();
+            //应用
+            ApplyPosition();
+        }
+
+        private void Control()
+        {
+            if (_isKeepTrack)
+            {
+                if (_trackTarget)
+                {
+                    Target.transform.position = _trackTarget.position;
+                }
+                else
+                {
+                    _isKeepTrack = false;
+                }
+                return;
+            }
+
             if (!CanControl)
                 return;
 
@@ -128,7 +176,10 @@ namespace HT.Framework
             {
                 MR.NeedDamping = true;
             }
+        }
 
+        private void ApplyPosition()
+        {
             if (NeedLimit)
             {
                 Target.transform.position = GlobalTools.Clamp(Target.transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
