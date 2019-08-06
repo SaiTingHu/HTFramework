@@ -1236,9 +1236,10 @@ namespace HT.Framework
         /// 世界坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
         /// </summary>
         /// <param name="position">世界坐标</param>
+        /// <param name="reference">参照物（要赋值的UGUI控件的根物体）</param>
         /// <param name="uIType">UI类型</param>
-        /// <returns>UGUI坐标</returns>
-        public static Vector2 WorldToUGUIPosition(this Vector3 position, UIType uIType)
+        /// <returns>基于参照物的局部UGUI坐标</returns>
+        public static Vector2 WorldToUGUIPosition(this Vector3 position, RectTransform reference = null, UIType uIType = UIType.Overlay)
         {
             Vector3 screenPos;
             Vector2 anchoredPos = Vector2.zero;
@@ -1247,12 +1248,12 @@ namespace HT.Framework
                 case UIType.Overlay:
                     screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
                     screenPos.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
                     break;
                 case UIType.Camera:
                     screenPos = Main.m_UI.UICamera.WorldToScreenPoint(position);
                     screenPos.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.CameraUIRoot, screenPos, Main.m_UI.UICamera, out anchoredPos);
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, screenPos, Main.m_UI.UICamera, out anchoredPos);
                     break;
                 case UIType.World:
                     break;
@@ -1263,20 +1264,21 @@ namespace HT.Framework
         /// 屏幕坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
         /// </summary>
         /// <param name="position">屏幕坐标</param>
+        /// <param name="reference">参照物（要赋值的UGUI控件的根物体）</param>
         /// <param name="uIType">UI类型</param>
-        /// <returns>UGUI坐标</returns>
-        public static Vector2 ScreenToUGUIPosition(this Vector3 position, UIType uIType)
+        /// <returns>基于参照物的局部UGUI坐标</returns>
+        public static Vector2 ScreenToUGUIPosition(this Vector3 position, RectTransform reference = null, UIType uIType = UIType.Overlay)
         {
             Vector2 anchoredPos = Vector2.zero;
             switch (uIType)
             {
                 case UIType.Overlay:
                     position.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
                     break;
                 case UIType.Camera:
                     position.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
                     break;
                 case UIType.World:
                     break;

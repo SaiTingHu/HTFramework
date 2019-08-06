@@ -69,7 +69,7 @@ namespace HT.Framework
         private RaycastHit _hit;
         private GameObject _rayTarget;
         private TargetType _rayTargetType;
-        private Vector2 _rayHitImageSize;
+        private Vector2 _rayHitBGSize;
 
         private PointerEventData _eventData;
         private List<RaycastResult> _results = new List<RaycastResult>();
@@ -114,7 +114,7 @@ namespace HT.Framework
                     }
                 }
 
-                Vector2 pos = GlobalTools.ScreenToUGUIPosition(Main.m_Input.MousePosition, RayHitImageType);
+                Vector2 pos = Main.m_Input.MousePosition.ScreenToUGUIPosition(null, RayHitImageType);
                 RaycastHitBGFlow(pos);
                 RayEvent(Target, HitPoint, pos);
             }
@@ -197,8 +197,8 @@ namespace HT.Framework
             if (IsOpenPrompt && Target && RayHitBG && RayHitBG.gameObject.activeSelf)
             {
                 RayHitBG.rectTransform.anchoredPosition = pos + BGPosOffset;
-                _rayHitImageSize.Set(RayHitText.rectTransform.sizeDelta.x + BGWidthOffset, RayHitBG.rectTransform.sizeDelta.y);
-                RayHitBG.rectTransform.sizeDelta = _rayHitImageSize;
+                _rayHitBGSize.Set(RayHitText.rectTransform.sizeDelta.x + BGWidthOffset, RayHitBG.rectTransform.sizeDelta.y);
+                RayHitBG.rectTransform.sizeDelta = _rayHitBGSize;
             }
         }
 
