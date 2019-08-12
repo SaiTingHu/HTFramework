@@ -163,7 +163,7 @@ namespace HT.Framework
 
         #region 事件工具
         /// <summary>
-        /// EventTrigger添加事件监听
+        /// UGUI 控件添加事件监听
         /// </summary>
         /// <param name="target">事件监听目标</param>
         /// <param name="type">事件类型</param>
@@ -188,7 +188,7 @@ namespace HT.Framework
             trigger.triggers.Add(entry);
         }
         /// <summary>
-        /// Button添加事件监听 (onClick)
+        /// UGUI Button添加点击事件监听
         /// </summary>
         /// <param name="target">事件监听目标</param>
         /// <param name="callback">回调函数</param>
@@ -205,24 +205,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// Toggle添加事件监听 (onValueChanged)
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        /// <param name="callback">回调函数</param>
-        public static void AddEventListener(this RectTransform target, UnityAction<bool> callback)
-        {
-            Toggle toggle = target.GetComponent<Toggle>();
-            if (toggle)
-            {
-                toggle.onValueChanged.AddListener(callback);
-            }
-            else
-            {
-                LogInfo(target.name + " 丢失了组件 Toggle！");
-            }
-        }
-        /// <summary>
-        /// Button移除所有事件监听 (onClick)
+        /// UGUI Button移除所有事件监听
         /// </summary>
         /// <param name="target">事件监听目标</param>
         public static void RemoveAllEventListener(this RectTransform target)
@@ -236,6 +219,23 @@ namespace HT.Framework
             {
                 LogInfo(target.name + " 丢失了组件 Button！");
             }
+        }
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="callback">点击事件回调</param>
+        public static void AddClickListener(this GameObject target, HTFAction callback)
+        {
+            Main.m_Controller.AddClickListener(target, callback);
+        }
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        public static void RemoveClickListener(this GameObject target)
+        {
+            Main.m_Controller.RemoveClickListener(target);
         }
         #endregion
 
@@ -271,6 +271,28 @@ namespace HT.Framework
         {
             target.text = "";
             return target.DOText(endValue, duration);
+        }
+        /// <summary>
+        /// 追加一个回调 callback 到动画序列的末尾，并附加延时 interval 秒
+        /// </summary>
+        /// <param name="s">动画序列</param>
+        /// <param name="callback">回调</param>
+        /// <param name="interval">延时</param>
+        /// <returns>动画序列</returns>
+        public static Sequence AppendAction(this Sequence s, TweenCallback callback, float interval)
+        {
+            return s.AppendCallback(callback).AppendInterval(interval);
+        }
+        /// <summary>
+        /// 追加一个延时 interval 到动画序列的末尾，并在延时结束后执行回调 callback
+        /// </summary>
+        /// <param name="s">动画序列</param>
+        /// <param name="interval">延时</param>
+        /// <param name="callback">回调</param>
+        /// <returns>动画序列</returns>
+        public static Sequence AppendAction(this Sequence s, float interval, TweenCallback callback)
+        {
+            return s.AppendInterval(interval).AppendCallback(callback);
         }
         #endregion
 
@@ -1426,7 +1448,7 @@ namespace HT.Framework
             return Mathf.Approximately(sourceValue, targetValue);
         }
         #endregion
-        
+
         #region 系统工具
         /// <summary>
         /// 获取本机Mac地址

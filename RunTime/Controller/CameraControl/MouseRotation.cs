@@ -40,7 +40,9 @@ namespace HT.Framework
         public float ZMinLimit = -5, ZMaxLimit = 5;
         //在UGUI目标上是否可以控制
         public bool IsCanOnUGUI = false;
-        
+        //允许在输入滚轮超越距离限制时，启用摄像机移动
+        public bool AllowOverstepDistance = true;
+
         //注视点（注视目标的准确位置，经过偏移后的位置）
         private Vector3 _targetPoint;
         //插值量
@@ -147,9 +149,16 @@ namespace HT.Framework
             {
                 Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * Time.deltaTime;
 
-                if (Distance <= MinDistance)
+                if (AllowOverstepDistance)
                 {
-                    Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel));
+                    if (Distance <= MinDistance)
+                    {
+                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel));
+                    }
+                    else if (Distance >= MaxDistance)
+                    {
+                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * -1);
+                    }
                 }
             }
         }

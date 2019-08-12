@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -43,6 +44,7 @@ namespace HT.Framework
         private MouseRotation _mouseRotation;
         private MouseRay _mouseRay;
         private HighlightingEffect _highlightingEffect;
+        private Dictionary<MouseRayTargetBase, HTFAction> _mouseClickTargets = new Dictionary<MouseRayTargetBase, HTFAction>();
 
         private ControlMode _controlMode;
 
@@ -91,13 +93,23 @@ namespace HT.Framework
                     ThirdPersonUpdateEvent?.Invoke();
                     break;
             }
+
+            if (Main.m_Input.GetButtonDown("MouseLeft"))
+            {
+                if (RayTarget != null)
+                {
+                    if (_mouseClickTargets.ContainsKey(RayTarget))
+                    {
+                        _mouseClickTargets[RayTarget]?.Invoke();
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// 主摄像机
         /// </summary>
         public Camera MainCamera { get; private set; }
-
         /// <summary>
         /// 控制模式
         /// </summary>
@@ -127,7 +139,6 @@ namespace HT.Framework
                 return _controlMode;
             }
         }
-
         /// <summary>
         /// 自由控制：是否限制控制外围
         /// </summary>
@@ -196,7 +207,20 @@ namespace HT.Framework
                 return _mouseRay.HitPoint;
             }
         }
-
+        /// <summary>
+        /// 是否启用高光特效
+        /// </summary>
+        public bool EnableHighlightingEffect
+        {
+            get
+            {
+                return _highlightingEffect.enabled;
+            }
+            set
+            {
+                _highlightingEffect.enabled = value;
+            }
+        }
         /// <summary>
         /// 自由控制：是否启用摄像机移动控制
         /// </summary>
@@ -223,6 +247,20 @@ namespace HT.Framework
             set
             {
                 _mouseRotation.CanControl = value;
+            }
+        }
+        /// <summary>
+        /// 自由控制：允许在输入滚轮超越距离限制时，启用摄像机移动
+        /// </summary>
+        public bool AllowOverstepDistance
+        {
+            get
+            {
+                return _mouseRotation.AllowOverstepDistance;
+            }
+            set
+            {
+                _mouseRotation.AllowOverstepDistance = value;
             }
         }
 
@@ -283,11 +321,50 @@ namespace HT.Framework
             _mousePosition.EnterKeepTrack(target);
         }
         /// <summary>
-        /// 退出保持追踪模式
+        /// 自由控制：退出保持追踪模式
         /// </summary>
         public void LeaveKeepTrack()
         {
             _mousePosition.LeaveKeepTrack();
+        }
+
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="callback">点击事件回调</param>
+        public void AddClickListener(GameObject target, HTFAction callback)
+        {
+            MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
+            if (mouseRayTargetBase)
+            {
+                if (!_mouseClickTargets.ContainsKey(mouseRayTargetBase))
+                {
+                    _mouseClickTargets.Add(mouseRayTargetBase, callback);
+                }
+            }
+        }
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        public void RemoveClickListener(GameObject target)
+        {
+            MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
+            if (mouseRayTargetBase)
+            {
+                if (_mouseClickTargets.ContainsKey(mouseRayTargetBase))
+                {
+                    _mouseClickTargets.Remove(mouseRayTargetBase);
+                }
+            }
+        }
+        /// <summary>
+        /// 清空所有点击事件
+        /// </summary>
+        public void ClearClickListener()
+        {
+            _mouseClickTargets.Clear();
         }
 
         /// <summary>
