@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DG.Tweening;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,18 +40,34 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
 
+        /// <summary>
+        /// Dotween动画的默认缓动类型【只在Inspector面板设置有效，代码中设置无效】
+        /// </summary>
+        public Ease DefaultEase = Ease.Linear;
+        /// <summary>
+        /// Dotween动画是否自动销毁【只在Inspector面板设置有效，代码中设置无效】
+        /// </summary>
+        public bool IsAutoKill = true;
+        /// <summary>
+        /// Dotween动画的默认自动启动方式【只在Inspector面板设置有效，代码中设置无效】
+        /// </summary>
+        public AutoPlay DefaultAutoPlay = AutoPlay.All;
+
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
         private MouseRay _mouseRay;
         private HighlightingEffect _highlightingEffect;
         private Dictionary<MouseRayTargetBase, HTFAction> _mouseClickTargets = new Dictionary<MouseRayTargetBase, HTFAction>();
-
         private ControlMode _controlMode;
 
         public override void OnInitialization()
         {
             base.OnInitialization();
+
+            DOTween.defaultEaseType = DefaultEase;
+            DOTween.defaultAutoKill = IsAutoKill;
+            DOTween.defaultAutoPlay = DefaultAutoPlay;
 
             MainCamera = transform.GetComponentByChild<Camera>("MainCamera");
             _cameraTarget = transform.GetComponentByChild<CameraTarget>("CameraTarget");

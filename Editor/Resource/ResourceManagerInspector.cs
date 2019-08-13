@@ -23,7 +23,7 @@ namespace HT.Framework
             EnumPopup(_target.Mode, out _target.Mode, "Load Mode");
             GUILayout.EndHorizontal();
 
-            if (_target.Mode == ResourceMode.Resource)
+            if (_target.Mode == ResourceLoadMode.Resource)
             {
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Resources Folder View", "LargeButton"))
@@ -36,8 +36,12 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
             }
-            if (_target.Mode == ResourceMode.AssetBundle)
+            else if (_target.Mode == ResourceLoadMode.AssetBundle)
             {
+                GUILayout.BeginHorizontal();
+                Toggle(_target.IsEditorMode, out _target.IsEditorMode, "Editor Mode");
+                GUILayout.EndHorizontal();
+
                 GUILayout.BeginHorizontal();
                 Toggle(_target.IsCacheAssetBundle, out _target.IsCacheAssetBundle, "Cache AssetBundle");
                 GUILayout.EndHorizontal();

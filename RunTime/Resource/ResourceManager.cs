@@ -18,7 +18,11 @@ namespace HT.Framework
         /// <summary>
         /// 资源加载模式
         /// </summary>
-        public ResourceMode Mode = ResourceMode.Resource;
+        public ResourceLoadMode Mode = ResourceLoadMode.Resource;
+        /// <summary>
+        /// 是否是编辑器模式
+        /// </summary>
+        public bool IsEditorMode = true;
         /// <summary>
         /// 是否缓存AB包
         /// </summary>
@@ -83,7 +87,7 @@ namespace HT.Framework
         /// </summary>
         public void UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
         {
-            if (Mode == ResourceMode.Resource)
+            if (Mode == ResourceLoadMode.Resource)
             {
                 Resources.UnloadUnusedAssets();
             }
@@ -101,7 +105,7 @@ namespace HT.Framework
         /// </summary>
         public void UnLoadAllAsset(bool unloadAllLoadedObjects = false)
         {
-            if (Mode == ResourceMode.Resource)
+            if (Mode == ResourceLoadMode.Resource)
             {
                 Resources.UnloadUnusedAssets();
             }
@@ -135,7 +139,7 @@ namespace HT.Framework
 
             UnityEngine.Object asset = null;
 
-            if (Mode == ResourceMode.Resource)
+            if (Mode == ResourceLoadMode.Resource)
             {
                 ResourceRequest request = Resources.LoadAsync<T>(info.ResourcePath);
                 while (!request.isDone)
@@ -159,19 +163,93 @@ namespace HT.Framework
             else
             {
 #if UNITY_EDITOR
-                loadingAction?.Invoke(1);
-                yield return null;
-
-                asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
-                if (!asset)
+                if (IsEditorMode)
                 {
-                    GlobalTools.LogError("加载资源失败：路径中不存在资源 " + info.AssetPath);
+                    loadingAction?.Invoke(1);
+                    yield return null;
+
+                    asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
+                    if (!asset)
+                    {
+                        GlobalTools.LogError("加载资源失败：路径中不存在资源 " + info.AssetPath);
+                    }
+                    else
+                    {
+                        if (isPrefab)
+                        {
+                            asset = ClonePrefab(asset as GameObject, parent, isUI);
+                        }
+                    }
                 }
                 else
                 {
-                    if (isPrefab)
+                    if (_assetBundles.ContainsKey(info.AssetBundleName))
                     {
-                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                        loadingAction?.Invoke(1);
+                        yield return null;
+
+                        asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
+                        if (!asset)
+                        {
+                            GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                        }
+                        else
+                        {
+                            if (isPrefab)
+                            {
+                                asset = ClonePrefab(asset as GameObject, parent, isUI);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                        DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
+                        request.downloadHandler = handler;
+                        request.SendWebRequest();
+                        while (!request.isDone)
+                        {
+                            loadingAction?.Invoke(request.downloadProgress);
+                            yield return null;
+                        }
+                        if (!request.isNetworkError && !request.isHttpError)
+                        {
+                            if (handler.assetBundle)
+                            {
+                                asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
+                                if (!asset)
+                                {
+                                    GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                                }
+                                else
+                                {
+                                    if (isPrefab)
+                                    {
+                                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                    }
+                                }
+
+                                if (IsCacheAssetBundle)
+                                {
+                                    if (!_assetBundles.ContainsKey(info.AssetBundleName))
+                                        _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
+                                }
+                                else
+                                {
+                                    handler.assetBundle.Unload(false);
+                                }
+                            }
+                            else
+                            {
+                                GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                            }
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                        }
+                        request.Dispose();
+                        handler.Dispose();
                     }
                 }
 #else
@@ -251,7 +329,7 @@ namespace HT.Framework
                 DataSetInfo dataSet = info as DataSetInfo;
                 if (dataSet != null && dataSet.Data != null)
                 {
-                    (asset as DataSet).Fill(dataSet.Data);
+                    asset.Cast<DataSet>().Fill(dataSet.Data);
                 }
 
                 loadDoneAction?.Invoke(asset as T);
@@ -291,9 +369,9 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 资源模式
+    /// 资源加载模式
     /// </summary>
-    public enum ResourceMode
+    public enum ResourceLoadMode
     {
         /// <summary>
         /// 使用Resource加载

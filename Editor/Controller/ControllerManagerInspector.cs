@@ -41,6 +41,18 @@ namespace HT.Framework
             EditorGUILayout.HelpBox("Controller Manager, It includes free control, first person control, third person control, etc!", MessageType.Info);
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            EnumPopup(_target.DefaultEase, out _target.DefaultEase, "Default Ease");
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            EnumPopup(_target.DefaultAutoPlay, out _target.DefaultAutoPlay, "Default Auto Play");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Toggle(_target.IsAutoKill, out _target.IsAutoKill, "Tweener Auto Kill");
+            GUILayout.EndHorizontal();
+
             base.OnInspectorGUI();
         }
 

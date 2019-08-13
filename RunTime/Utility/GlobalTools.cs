@@ -1504,6 +1504,15 @@ namespace HT.Framework
                 tran.gameObject.layer = layer;
             }
         }
+        /// <summary>
+        /// 使用 as 强转目标
+        /// </summary>
+        /// <typeparam name="T">强转的类型</typeparam>
+        /// <returns>结果</returns>
+        public static T Cast<T>(this object target) where T : class
+        {
+            return target as T;
+        }
         #endregion
     }
 }
