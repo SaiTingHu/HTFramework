@@ -15,7 +15,6 @@ namespace HT.Framework
             window._content = content;
             window.minSize = new Vector2(300, 300);
             window.maxSize = new Vector2(300, 900);
-            window.position = new Rect(stepEditorWindow.position.x + stepEditorWindow.position.width / 2, stepEditorWindow.position.y + 40, 300, 600);
             window.Show();
         }
 

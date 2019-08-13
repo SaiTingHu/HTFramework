@@ -14,11 +14,9 @@ namespace HT.Framework
             StepEditorWindow window = GetWindow<StepEditorWindow>();
             window.titleContent.text = "Step Editor";
             window._contentAsset = contentAsset;
-            window.minSize = new Vector2(800, 600);
-            window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
-            window.position = new Rect(200, 200, 1200, 800);
             window._currentStep = -1;
             window._currentOperation = -1;
+            window.MaximizeWindow();
             window.Show();
         }
 
@@ -29,6 +27,7 @@ namespace HT.Framework
         private StepOperation _currentOperationObj;
         private Vector2 _mouseDownPos;
         private Texture _background;
+        private bool _isMinimize = false;
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
         private bool _showAncillary = false;
@@ -102,22 +101,28 @@ namespace HT.Framework
                 return;
             }
 
-            //绘制背景网格
-            GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
-            
-            StepContentRemovableGUI();
+            if (_isMinimize)
+            {
+                MinimizeGUI();
+            }
+            else
+            {
+                GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
 
-            GUILayout.BeginHorizontal("Toolbar");
-            TitleGUI();
-            GUILayout.EndHorizontal();
+                StepContentRemovableGUI();
 
-            GUILayout.BeginHorizontal();
-            StepListGUI();
-            SplitterGUI();
-            StepContentFixedGUI();
-            GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal("Toolbar");
+                TitleGUI();
+                GUILayout.EndHorizontal();
 
-            MouseControl();
+                GUILayout.BeginHorizontal();
+                StepListGUI();
+                SplitterGUI();
+                StepContentFixedGUI();
+                GUILayout.EndHorizontal();
+
+                MouseControl();
+            }
 
             if (GUI.changed)
             {
@@ -125,6 +130,33 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 最小化后的GUI
+        /// </summary>
+        private void MinimizeGUI()
+        {
+            GUILayout.BeginHorizontal("Toolbar");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Maximize", "Toolbarbutton"))
+            {
+                MaximizeWindow();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical();
+            GUILayout.FlexibleSpace();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            GUILayout.Label("Step Count:" + _contentAsset.Content.Count);
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
+        }
         /// <summary>
         /// 标题GUI
         /// </summary>
@@ -180,6 +212,10 @@ namespace HT.Framework
             if (GUILayout.Button("Browse Ease Type", "Toolbarbutton"))
             {
                 Application.OpenURL(@"http://robertpenner.com/easing/easing_demo.html");
+            }
+            if (GUILayout.Button("Minimize", "Toolbarbutton"))
+            {
+                MinimizeWindow();
             }
         }
         /// <summary>
@@ -1292,6 +1328,24 @@ namespace HT.Framework
             }
 
             gm.ShowAsContext();
+        }
+        /// <summary>
+        /// 最小化窗口
+        /// </summary>
+        private void MinimizeWindow()
+        {
+            minSize = new Vector2(200, 100);
+            maxSize = new Vector2(200, 100);
+            _isMinimize = true;
+        }
+        /// <summary>
+        /// 最大化窗口
+        /// </summary>
+        private void MaximizeWindow()
+        {
+            minSize = new Vector2(800, 600);
+            maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            _isMinimize = false;
         }
 
         /// <summary>
