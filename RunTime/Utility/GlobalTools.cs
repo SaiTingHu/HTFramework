@@ -942,7 +942,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启按钮闪烁（只在Normal状态）
         /// </summary>
-        public static void OpenTwinkle(this Button button, Color color, float time)
+        public static void OpenTwinkle(this Button button, Color color, float time = 0.5f)
         {
             button.CloseTwinkle();
 
@@ -980,7 +980,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启开关闪烁（只在Normal状态）
         /// </summary>
-        public static void OpenTwinkle(this Toggle toggle, Color color, float time)
+        public static void OpenTwinkle(this Toggle toggle, Color color, float time = 0.5f)
         {
             toggle.CloseTwinkle();
 
@@ -1018,7 +1018,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启图片闪烁
         /// </summary>
-        public static void OpenTwinkle(this Image image, Color color, float time)
+        public static void OpenTwinkle(this Image image, Color color, float time = 0.5f)
         {
             image.CloseTwinkle();
 
@@ -1053,7 +1053,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启文本框闪烁
         /// </summary>
-        public static void OpenTwinkle(this Text text, Color color, float time)
+        public static void OpenTwinkle(this Text text, Color color, float time = 0.5f)
         {
             text.CloseTwinkle();
 

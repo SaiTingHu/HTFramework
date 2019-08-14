@@ -16,7 +16,9 @@ namespace HT.Framework
             window._contentAsset = contentAsset;
             window._currentStep = -1;
             window._currentOperation = -1;
-            window.MaximizeWindow();
+            window.minSize = new Vector2(800, 600);
+            window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            window._isMinimize = false;
             window.Show();
         }
 
@@ -28,6 +30,7 @@ namespace HT.Framework
         private Vector2 _mouseDownPos;
         private Texture _background;
         private bool _isMinimize = false;
+        private Rect _recordedPosition;
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
         private bool _showAncillary = false;
@@ -1334,6 +1337,7 @@ namespace HT.Framework
         /// </summary>
         private void MinimizeWindow()
         {
+            _recordedPosition = position;
             minSize = new Vector2(200, 100);
             maxSize = new Vector2(200, 100);
             _isMinimize = true;
@@ -1345,6 +1349,7 @@ namespace HT.Framework
         {
             minSize = new Vector2(800, 600);
             maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            position = _recordedPosition;
             _isMinimize = false;
         }
 

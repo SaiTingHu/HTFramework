@@ -347,9 +347,7 @@ namespace HT.Framework.AssetBundleEditor
             if (_currentFile != null)
             {
                 _currentFile.ReadDependenciesFile();
-
-                GUI.color = (_currentFile.IsRedundant ? Color.red : Color.white);
-
+                
                 _assetPropertyViewRect = new Rect((int)position.width - 420, 50, 400, 400);
                 _assetPropertyScrollRect = new Rect((int)position.width - 420, 50, 400, _assetPropertyViewHeight);
                 _assetPropertyScroll = GUI.BeginScrollView(_assetPropertyViewRect, _assetPropertyScroll, _assetPropertyScrollRect);
@@ -432,8 +430,6 @@ namespace HT.Framework.AssetBundleEditor
 
                 GUI.EndGroup();
                 GUI.EndScrollView();
-
-                GUI.color = Color.white;
             }
         }
 
