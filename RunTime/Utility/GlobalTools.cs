@@ -938,28 +938,30 @@ namespace HT.Framework
         private static Dictionary<Toggle, TweenerCore<Color, Color, ColorOptions>> TwinkleToggles = new Dictionary<Toggle, TweenerCore<Color, Color, ColorOptions>>();
         private static Dictionary<Image, TweenerCore<Color, Color, ColorOptions>> TwinkleImages = new Dictionary<Image, TweenerCore<Color, Color, ColorOptions>>();
         private static Dictionary<Text, TweenerCore<Color, Color, ColorOptions>> TwinkleTexts = new Dictionary<Text, TweenerCore<Color, Color, ColorOptions>>();
+        private static Dictionary<Dropdown, TweenerCore<Color, Color, ColorOptions>> TwinkleDropdowns = new Dictionary<Dropdown, TweenerCore<Color, Color, ColorOptions>>();
 
         /// <summary>
         /// 开启按钮闪烁（只在Normal状态）
         /// </summary>
         public static void OpenTwinkle(this Button button, Color color, float time = 0.5f)
         {
-            button.CloseTwinkle();
+            if (!TwinkleButtons.ContainsKey(button))
+            {
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                    () =>
+                    {
+                        return button.colors.normalColor;
+                    },
+                    (c) =>
+                    {
+                        ColorBlock block = button.colors;
+                        block.normalColor = c;
+                        button.colors = block;
+                    }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
-            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
-                () =>
-                {
-                    return button.colors.normalColor;
-                },
-                (c) =>
-                {
-                    ColorBlock block = button.colors;
-                    block.normalColor = c;
-                    button.colors = block;
-                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-
-            tweener.startValue = button.colors.normalColor;
-            TwinkleButtons.Add(button, tweener);
+                tweener.startValue = button.colors.normalColor;
+                TwinkleButtons.Add(button, tweener);
+            }
         }
         /// <summary>
         /// 关闭按钮闪烁
@@ -982,9 +984,9 @@ namespace HT.Framework
         /// </summary>
         public static void OpenTwinkle(this Toggle toggle, Color color, float time = 0.5f)
         {
-            toggle.CloseTwinkle();
-
-            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+            if (!TwinkleToggles.ContainsKey(toggle))
+            {
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
                 () =>
                 {
                     return toggle.colors.normalColor;
@@ -996,8 +998,9 @@ namespace HT.Framework
                     toggle.colors = block;
                 }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
-            tweener.startValue = toggle.colors.normalColor;
-            TwinkleToggles.Add(toggle, tweener);
+                tweener.startValue = toggle.colors.normalColor;
+                TwinkleToggles.Add(toggle, tweener);
+            }
         }
         /// <summary>
         /// 关闭开关闪烁
@@ -1020,9 +1023,9 @@ namespace HT.Framework
         /// </summary>
         public static void OpenTwinkle(this Image image, Color color, float time = 0.5f)
         {
-            image.CloseTwinkle();
-
-            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+            if (!TwinkleImages.ContainsKey(image))
+            {
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
                 () =>
                 {
                     return image.color;
@@ -1032,8 +1035,9 @@ namespace HT.Framework
                     image.color = c;
                 }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
-            tweener.startValue = image.color;
-            TwinkleImages.Add(image, tweener);
+                tweener.startValue = image.color;
+                TwinkleImages.Add(image, tweener);
+            }
         }
         /// <summary>
         /// 关闭图片闪烁
@@ -1055,9 +1059,9 @@ namespace HT.Framework
         /// </summary>
         public static void OpenTwinkle(this Text text, Color color, float time = 0.5f)
         {
-            text.CloseTwinkle();
-
-            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+            if (!TwinkleTexts.ContainsKey(text))
+            {
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
                 () =>
                 {
                     return text.color;
@@ -1067,8 +1071,9 @@ namespace HT.Framework
                     text.color = c;
                 }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
-            tweener.startValue = text.color;
-            TwinkleTexts.Add(text, tweener);
+                tweener.startValue = text.color;
+                TwinkleTexts.Add(text, tweener);
+            }
         }
         /// <summary>
         /// 关闭文本框闪烁
@@ -1083,6 +1088,45 @@ namespace HT.Framework
                 TwinkleTexts.Remove(text);
 
                 text.color = normalColor;
+            }
+        }
+        /// <summary>
+        /// 开启下拉框闪烁（只在Normal状态）
+        /// </summary>
+        public static void OpenTwinkle(this Dropdown dropdown, Color color, float time = 0.5f)
+        {
+            if (!TwinkleDropdowns.ContainsKey(dropdown))
+            {
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
+                {
+                    return dropdown.colors.normalColor;
+                },
+                (c) =>
+                {
+                    ColorBlock block = dropdown.colors;
+                    block.normalColor = c;
+                    dropdown.colors = block;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+                tweener.startValue = dropdown.colors.normalColor;
+                TwinkleDropdowns.Add(dropdown, tweener);
+            }
+        }
+        /// <summary>
+        /// 关闭下拉框闪烁
+        /// </summary>
+        public static void CloseTwinkle(this Dropdown dropdown)
+        {
+            if (TwinkleDropdowns.ContainsKey(dropdown))
+            {
+                ColorBlock block = dropdown.colors;
+                block.normalColor = TwinkleDropdowns[dropdown].startValue;
+
+                TwinkleDropdowns[dropdown].Kill();
+                TwinkleDropdowns.Remove(dropdown);
+
+                dropdown.colors = block;
             }
         }
         /// <summary>
@@ -1116,10 +1160,18 @@ namespace HT.Framework
                 text.Value.Kill();
                 text.Key.color = normalColor;
             }
+            foreach (KeyValuePair<Dropdown, TweenerCore<Color, Color, ColorOptions>> dropdown in TwinkleDropdowns)
+            {
+                ColorBlock block = dropdown.Key.colors;
+                block.normalColor = dropdown.Value.startValue;
+                dropdown.Value.Kill();
+                dropdown.Key.colors = block;
+            }
             TwinkleButtons.Clear();
             TwinkleToggles.Clear();
             TwinkleImages.Clear();
             TwinkleTexts.Clear();
+            TwinkleDropdowns.Clear();
         }
 
         /// <summary>

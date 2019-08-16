@@ -33,7 +33,7 @@ namespace HT.Framework
         private Rect _recordedPosition;
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
-        private bool _showAncillary = false;
+        private bool _showAncillary = true;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private Vector2 _stepContentScroll = Vector3.zero;
@@ -257,6 +257,15 @@ namespace HT.Framework
             _stepListScroll = GUILayout.BeginScrollView(_stepListScroll);
             for (int i = 0; i < _contentAsset.Content.Count; i++)
             {
+                if (_showAncillary && _contentAsset.Content[i].Ancillary != "")
+                {
+                    GUILayout.BeginHorizontal();
+                    GUI.color = Color.yellow;
+                    GUILayout.Label("【" + _contentAsset.Content[i].Ancillary + "】", GUILayout.Height(16));
+                    GUI.color = Color.white;
+                    GUILayout.EndHorizontal();
+                }
+
                 if (StepFilter(_contentAsset.Content[i]))
                 {
                     GUILayout.BeginHorizontal();
@@ -1266,14 +1275,7 @@ namespace HT.Framework
                 case StepListShowType.ID:
                     return content.GUID;
                 case StepListShowType.Name:
-                    if (_showAncillary)
-                    {
-                        return content.Ancillary != "" ? string.Format("【{0}】{1}", content.Ancillary, content.Name) : content.Name;
-                    }
-                    else
-                    {
-                        return content.Name;
-                    }
+                    return content.Name;
                 case StepListShowType.IDAndName:
                     return content.GUID + " " + content.Name;
             }

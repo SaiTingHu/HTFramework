@@ -12,22 +12,18 @@ namespace HT.Framework
         /// 步骤内容
         /// </summary>
         public StepContent Content;
-
         /// <summary>
         /// 步骤目标
         /// </summary>
         public StepTarget Target;
-
         /// <summary>
         /// 助手当前执行的任务类型
         /// </summary>
         public StepHelperTask Task;
-
         /// <summary>
         /// 步骤的参数
         /// </summary>
         public List<StepParameter> Parameters = null;
-
         /// <summary>
         /// 步骤辅助目标
         /// </summary>
@@ -93,6 +89,86 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 步骤执行
+        /// </summary>
+        protected virtual void Execute()
+        {
+            Target.State = StepTargetState.Done;
+        }
+
+        /// <summary>
+        /// 是否存在指定名称、类型的参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="parameterType">参数类型</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistParameter(string parameterName, StepParameter.ParameterType parameterType)
+        {
+            if (Parameters == null)
+            {
+                return false;
+            }
+            else
+            {
+                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
+                return stepParameter != null;
+            }
+        }
+        /// <summary>
+        /// 是否存在指定名称的参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistParameter(string parameterName)
+        {
+            if (Parameters == null)
+            {
+                return false;
+            }
+            else
+            {
+                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
+                return stepParameter != null;
+            }
+        }
+        /// <summary>
+        /// 通过名称、类型获取所有参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="parameterType">参数类型</param>
+        /// <param name="stepParameters">输出的参数列表</param>
+        public void GetParameters(string parameterName, StepParameter.ParameterType parameterType, List<StepParameter> stepParameters)
+        {
+            if (Parameters != null)
+            {
+                for (int i = 0; i < Parameters.Count; i++)
+                {
+                    if (Parameters[i].Name == parameterName && Parameters[i].Type == parameterType)
+                    {
+                        stepParameters.Add(Parameters[i]);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 通过名称获取所有参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="stepParameters">输出的参数列表</param>
+        public void GetParameters(string parameterName, List<StepParameter> stepParameters)
+        {
+            if (Parameters != null)
+            {
+                for (int i = 0; i < Parameters.Count; i++)
+                {
+                    if (Parameters[i].Name == parameterName)
+                    {
+                        stepParameters.Add(Parameters[i]);
+                    }
+                }
+            }
+        }
+        /// <summary>
         /// 通过名称获取参数
         /// </summary>
         /// <param name="parameterName">参数名称</param>
@@ -118,7 +194,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 通过名称获取String参数
         /// </summary>
@@ -129,7 +204,6 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.StringValue : "";
         }
-
         /// <summary>
         /// 通过名称获取Integer参数
         /// </summary>
@@ -140,7 +214,6 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.IntegerValue : 0;
         }
-
         /// <summary>
         /// 通过名称获取Float参数
         /// </summary>
@@ -151,7 +224,6 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.FloatValue : 0f;
         }
-
         /// <summary>
         /// 通过名称获取Boolean参数
         /// </summary>
@@ -162,7 +234,6 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.BooleanValue : false;
         }
-
         /// <summary>
         /// 通过名称获取Vector2参数
         /// </summary>
@@ -173,7 +244,6 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.Vector2Value : Vector2.zero;
         }
-
         /// <summary>
         /// 通过名称获取Vector3参数
         /// </summary>
@@ -184,7 +254,6 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.Vector3Value : Vector3.zero;
         }
-
         /// <summary>
         /// 通过名称获取Color参数
         /// </summary>
@@ -195,7 +264,6 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.ColorValue : Color.white;
         }
-
         /// <summary>
         /// 通过名称获取GameObject参数
         /// </summary>
@@ -205,14 +273,6 @@ namespace HT.Framework
         {
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.GameObjectValue : null;
-        }
-
-        /// <summary>
-        /// 步骤执行
-        /// </summary>
-        protected void Execute()
-        {
-            Target.State = StepTargetState.Done;
         }
     }
 

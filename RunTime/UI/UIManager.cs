@@ -947,6 +947,7 @@ namespace HT.Framework
                 Name = name;
 
                 _worldUIRoot = Main.CloneGameObject(canvasTem, true).transform;
+                _worldUIRoot.name = Name;
                 _worldUIRootRect = _worldUIRoot.rectTransform();
                 _worldResidentPanel = _worldUIRoot.Find("ResidentPanel");
                 _worldTemporaryPanel = _worldUIRoot.Find("TemporaryPanel");

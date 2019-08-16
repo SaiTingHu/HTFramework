@@ -210,6 +210,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Apply"))
             {
+                GUI.FocusControl(null);
                 EditorUtility.SetDirty(_contentAsset);
             }
             GUILayout.EndHorizontal();

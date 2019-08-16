@@ -513,6 +513,7 @@ namespace HT.Framework
             _currentStep = 0;
             _currentContent = null;
             _currentTarget = null;
+            _currentHelper = null;
             _running = true;
             _pause = false;
             _executing = false;
@@ -528,6 +529,7 @@ namespace HT.Framework
         {
             _currentContent = null;
             _currentTarget = null;
+            _currentHelper = null;
             _running = false;
             _pause = false;
             _executing = false;

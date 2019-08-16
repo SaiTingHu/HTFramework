@@ -112,6 +112,7 @@ namespace HT.Framework
                 if (Wireds[i].Left == -1)
                 {
                     Execute(master, i);
+                    break;
                 }
             }
         }
