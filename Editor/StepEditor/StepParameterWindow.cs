@@ -39,6 +39,13 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
+            if (GUILayout.Button(_content.Helper, "Toolbarbutton"))
+            {
+                if (_content.Helper != "<None>")
+                {
+                    _stepEditorWindow.OpenHelperScript(_content.Helper);
+                }
+            }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 

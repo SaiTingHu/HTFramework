@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -16,8 +17,27 @@ namespace HT.Framework
         public override void OnInspectorGUI()
         {
             GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Generate GUID"))
+            {
+                if (_target.GUID == "<None>")
+                {
+                    _target.GUID = Guid.NewGuid().ToString();
+                }
+                else
+                {
+                    if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to regenerate the GUID？", "Yes", "No"))
+                    {
+                        _target.GUID = Guid.NewGuid().ToString();
+                    }
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("GUID: ", GUILayout.Width(50));
-            GUILayout.Label(_target.GUID);
+            GUI.color = _target.GUID == "<None>" ? Color.red : Color.white;
+            EditorGUILayout.TextField(_target.GUID);
+            GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
