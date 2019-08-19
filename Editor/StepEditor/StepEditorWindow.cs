@@ -257,17 +257,17 @@ namespace HT.Framework
             _stepListScroll = GUILayout.BeginScrollView(_stepListScroll);
             for (int i = 0; i < _contentAsset.Content.Count; i++)
             {
-                if (_showAncillary && _contentAsset.Content[i].Ancillary != "")
-                {
-                    GUILayout.BeginHorizontal();
-                    GUI.color = Color.yellow;
-                    GUILayout.Label("【" + _contentAsset.Content[i].Ancillary + "】", GUILayout.Height(16));
-                    GUI.color = Color.white;
-                    GUILayout.EndHorizontal();
-                }
-
                 if (StepFilter(_contentAsset.Content[i]))
                 {
+                    if (_showAncillary && _contentAsset.Content[i].Ancillary != "")
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUI.color = Color.yellow;
+                        GUILayout.Label("【" + _contentAsset.Content[i].Ancillary + "】", GUILayout.Height(16));
+                        GUI.color = Color.white;
+                        GUILayout.EndHorizontal();
+                    }
+
                     GUILayout.BeginHorizontal();
                     GUI.color = (_currentStep == i ? Color.cyan : Color.white);
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
