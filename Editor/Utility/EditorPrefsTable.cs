@@ -165,5 +165,18 @@ namespace HT.Framework
             }
         }
         #endregion
+
+        #region StepEditor
+        /// <summary>
+        /// 步骤编辑器窗口样式-步骤列表背景
+        /// </summary>
+        public static string Style_StepEditor_StepListBG
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Style.StepEditor.StepListBG";
+            }
+        }
+        #endregion
     }
 }

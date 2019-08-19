@@ -19,6 +19,7 @@ namespace HT.Framework
             window.minSize = new Vector2(800, 600);
             window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
             window._isMinimize = false;
+            window.GetEditorStyle();
             window.Show();
         }
 
@@ -60,6 +61,8 @@ namespace HT.Framework
 
         private Type _baseType = typeof(StepHelper);
         private Dictionary<string, string> _helpers = new Dictionary<string, string>();
+
+        private string _stepListBGStyle;
 
         private void OnEnable()
         {
@@ -132,7 +135,7 @@ namespace HT.Framework
                 EditorUtility.SetDirty(_contentAsset);
             }
         }
-
+        
         /// <summary>
         /// 最小化后的GUI
         /// </summary>
@@ -212,9 +215,29 @@ namespace HT.Framework
                 StepRegenIDWindow.ShowWindow(this, _contentAsset);
             }
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Browse Ease Type", "Toolbarbutton"))
+            if (GUILayout.Button("Setting", "ToolbarPopup"))
             {
-                Application.OpenURL(@"http://robertpenner.com/easing/easing_demo.html");
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("Style/StepList Background/Dark"), _stepListBGStyle == "PreBackground", () =>
+                {
+                    _stepListBGStyle = "PreBackground";
+                    ApplyEditorStyle();
+                });
+                gm.AddItem(new GUIContent("Style/StepList Background/Gray Transparent"), _stepListBGStyle == "HelpBox", () =>
+                {
+                    _stepListBGStyle = "HelpBox";
+                    ApplyEditorStyle();
+                });
+                gm.ShowAsContext();
+            }
+            if (GUILayout.Button("About", "ToolbarPopup"))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("Browse Ease Type"), false, () =>
+                {
+                    Application.OpenURL(@"http://robertpenner.com/easing/easing_demo.html");
+                });
+                gm.ShowAsContext();
             }
             if (GUILayout.Button("Minimize", "Toolbarbutton"))
             {
@@ -226,7 +249,7 @@ namespace HT.Framework
         /// </summary>
         private void StepListGUI()
         {
-            GUILayout.BeginVertical("PreBackground", GUILayout.Width(_stepListGUIWidth));
+            GUILayout.BeginVertical(_stepListBGStyle, GUILayout.Width(_stepListGUIWidth));
 
             #region 筛选步骤
             GUILayout.BeginHorizontal("Icon.OutlineBorder");
@@ -671,18 +694,7 @@ namespace HT.Framework
                 GUI.enabled = _currentStepObj.Helper != "<None>";
                 if (GUILayout.Button("Edit", "MiniButton", GUILayout.Width(30)))
                 {
-                    if (_helpers.ContainsKey(_currentStepObj.Helper))
-                    {
-                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_helpers[_currentStepObj.Helper], typeof(TextAsset));
-                        if (classFile)
-                            AssetDatabase.OpenAsset(classFile);
-                        else
-                            GlobalTools.LogError("没有找到 " + _currentStepObj.Helper + " 脚本文件！");
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("没有找到 " + _currentStepObj.Helper + " 脚本文件！");
-                    }
+                    OpenHelperScript(_currentStepObj.Helper);
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
@@ -1353,6 +1365,40 @@ namespace HT.Framework
             maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
             position = _recordedPosition;
             _isMinimize = false;
+        }
+
+        /// <summary>
+        /// 获取并设置编辑器样式
+        /// </summary>
+        private void GetEditorStyle()
+        {
+            _stepListBGStyle = EditorPrefs.GetString(EditorPrefsTable.Style_StepEditor_StepListBG, "PreBackground");
+        }
+        /// <summary>
+        /// 应用并存储编辑器样式
+        /// </summary>
+        private void ApplyEditorStyle()
+        {
+            EditorPrefs.SetString(EditorPrefsTable.Style_StepEditor_StepListBG, _stepListBGStyle);
+        }
+
+        /// <summary>
+        /// 打开帮助脚本
+        /// </summary>
+        public void OpenHelperScript(string helper)
+        {
+            if (_helpers.ContainsKey(helper))
+            {
+                UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_helpers[helper], typeof(TextAsset));
+                if (classFile)
+                    AssetDatabase.OpenAsset(classFile);
+                else
+                    GlobalTools.LogError("没有找到 " + helper + " 脚本文件！");
+            }
+            else
+            {
+                GlobalTools.LogError("没有找到 " + helper + " 脚本文件！");
+            }
         }
 
         /// <summary>
