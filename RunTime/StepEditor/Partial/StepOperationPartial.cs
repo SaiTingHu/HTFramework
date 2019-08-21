@@ -653,9 +653,18 @@ namespace HT.Framework
         private void CameraFollowGUI()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Look target:");
+            GUILayout.Label("Look point:");
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Paste", "Minibutton", GUILayout.Width(60)))
+            GUI.enabled = EditorApplication.isPlaying;
+            if (GUILayout.Button("Get", "Minibuttonleft", GUILayout.Width(40)))
+            {
+                if (Main.m_Controller)
+                {
+                    Vector3Value = Main.m_Controller.LookPoint;
+                }
+            }
+            GUI.enabled = true;
+            if (GUILayout.Button("Paste", "Minibuttonright", GUILayout.Width(60)))
             {
                 string[] vector3 = GUIUtility.systemCopyBuffer.Split(',');
                 if (vector3.Length == 3)
@@ -679,7 +688,17 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Look angle:");
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Paste", "Minibutton", GUILayout.Width(60)))
+            GUI.enabled = EditorApplication.isPlaying;
+            if (GUILayout.Button("Get", "Minibuttonleft", GUILayout.Width(40)))
+            {
+                if (Main.m_Controller)
+                {
+                    Vector2Value = new Vector3(Main.m_Controller.LookAngle.x, Main.m_Controller.LookAngle.y);
+                    FloatValue = Main.m_Controller.LookAngle.z;
+                }
+            }
+            GUI.enabled = true;
+            if (GUILayout.Button("Paste", "Minibuttonright", GUILayout.Width(60)))
             {
                 string[] vector3 = GUIUtility.systemCopyBuffer.Split(',');
                 if (vector3.Length == 3)

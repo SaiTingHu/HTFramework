@@ -84,7 +84,7 @@ namespace HT.Framework
                 });
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].BaseType == typeof(FSMData))
+                    if (types[i].IsSubclassOf(typeof(FSMData)))
                     {
                         int j = i;
                         gm.AddItem(new GUIContent(types[j].FullName), _target.Data == types[j].FullName, () =>
@@ -173,7 +173,7 @@ namespace HT.Framework
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].BaseType == typeof(FiniteState))
+                    if (types[i].IsSubclassOf(typeof(FiniteState)))
                     {
                         int j = i;
                         string stateName = types[j].FullName;

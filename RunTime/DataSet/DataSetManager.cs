@@ -76,7 +76,7 @@ namespace HT.Framework
         /// <param name="data">数据集初始化数据</param>
         public DataSet AddDataSet(Type type, JsonData data = null)
         {
-            if (type.BaseType == typeof(DataSet))
+            if (type.IsSubclassOf(typeof(DataSet)))
             {
                 if (!_dataSets.ContainsKey(type))
                 {

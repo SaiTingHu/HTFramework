@@ -235,7 +235,7 @@ namespace HT.Framework
                     });
                     for (int i = 0; i < types.Count; i++)
                     {
-                        if (types[i].BaseType == typeof(MainData))
+                        if (types[i].IsSubclassOf(typeof(MainData)))
                         {
                             int j = i;
                             gm.AddItem(new GUIContent(types[j].FullName), _target.MainDataType == types[j].FullName, () =>

@@ -86,11 +86,11 @@ namespace HT.Framework
                     {
                         if (GUILayout.Button("Open", "Minibutton"))
                         {
-                            if (ui.Key.BaseType == typeof(UILogicResident))
+                            if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
                                 Main.m_UI.OpenResidentUI(ui.Key);
                             }
-                            else if (ui.Key.BaseType == typeof(UILogicTemporary))
+                            else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
                             {
                                 Main.m_UI.OpenTemporaryUI(ui.Key);
                             }
@@ -122,11 +122,11 @@ namespace HT.Framework
                     {
                         if (GUILayout.Button("Open", "Minibutton"))
                         {
-                            if (ui.Key.BaseType == typeof(UILogicResident))
+                            if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
                                 Main.m_UI.OpenResidentUI(ui.Key);
                             }
-                            else if (ui.Key.BaseType == typeof(UILogicTemporary))
+                            else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
                             {
                                 Main.m_UI.OpenTemporaryUI(ui.Key);
                             }

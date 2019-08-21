@@ -15,6 +15,7 @@ namespace HT.Framework
         public string DefaultProcedure = "";
 
         private Dictionary<Type, Procedure> _procedureInstances = new Dictionary<Type, Procedure>();
+        private List<Type> _procedureTypes = new List<Type>();
         private Procedure _currentProcedure;
         private float _timer = 0;
 
@@ -33,6 +34,7 @@ namespace HT.Framework
                         if (!_procedureInstances.ContainsKey(type))
                         {
                             _procedureInstances.Add(type, Activator.CreateInstance(type) as Procedure);
+                            _procedureTypes.Add(type);
                         }
                     }
                     else
@@ -138,11 +140,21 @@ namespace HT.Framework
         /// <summary>
         /// 切换流程
         /// </summary>
+        /// <typeparam name="T">目标流程</typeparam>
         public void SwitchProcedure<T>() where T : Procedure
         {
-            if (_procedureInstances.ContainsKey(typeof(T)))
+            SwitchProcedure(typeof(T));
+        }
+
+        /// <summary>
+        /// 切换流程
+        /// </summary>
+        /// <param name="type">目标流程</param>
+        public void SwitchProcedure(Type type)
+        {
+            if (_procedureInstances.ContainsKey(type))
             {
-                if (_currentProcedure == _procedureInstances[typeof(T)])
+                if (_currentProcedure == _procedureInstances[type])
                 {
                     return;
                 }
@@ -152,12 +164,60 @@ namespace HT.Framework
                     _currentProcedure.OnLeave();
                 }
 
-                _currentProcedure = _procedureInstances[typeof(T)];
+                _currentProcedure = _procedureInstances[type];
                 _currentProcedure.OnEnter();
             }
             else
             {
-                GlobalTools.LogError("切换流程失败：不存在流程 " + typeof(T).Name + " 或者流程未激活！");
+                GlobalTools.LogError("切换流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
+            }
+        }
+
+        /// <summary>
+        /// 切换至下一流程
+        /// </summary>
+        public void SwitchNextProcedure()
+        {
+            int index = _procedureTypes.IndexOf(_currentProcedure.GetType());
+            if (index >= _procedureTypes.Count - 1)
+            {
+                SwitchProcedure(_procedureTypes[0]);
+            }
+            else
+            {
+                SwitchProcedure(_procedureTypes[index + 1]);
+            }
+        }
+
+        /// <summary>
+        /// 切换至上一流程
+        /// </summary>
+        public void SwitchLastProcedure()
+        {
+            int index = _procedureTypes.IndexOf(_currentProcedure.GetType());
+            if (index <= 0)
+            {
+                SwitchProcedure(_procedureTypes[_procedureTypes.Count - 1]);
+            }
+            else
+            {
+                SwitchProcedure(_procedureTypes[index - 1]);
+            }
+        }
+
+        /// <summary>
+        /// 切换至指定序号的流程（依据编辑器面板的序号）
+        /// </summary>
+        /// <param name="index">流程序号</param>
+        public void SwitchTargetProcedure(int index)
+        {
+            if (index - 1 >= 0 && index - 1 < _procedureTypes.Count)
+            {
+                SwitchProcedure(_procedureTypes[index - 1]);
+            }
+            else
+            {
+                GlobalTools.LogError("切换流程失败：不存在序号为 " + index + " 的流程或者流程未激活！");
             }
         }
     }

@@ -95,7 +95,7 @@ namespace HT.Framework
         /// <returns>加载完成的资源</returns>
         public T LoadAssetSynch<T>(AssetInfo info) where T : UnityEngine.Object
         {
-            return LoadCoroutineSynch<T>(info);
+            return LoadSynch<T>(info);
         }
         /// <summary>
         /// 加载数据集（同步）
@@ -105,7 +105,7 @@ namespace HT.Framework
         /// <returns>加载完成的数据集</returns>
         public T LoadDataSetSynch<T>(DataSetInfo info) where T : DataSet
         {
-            return LoadCoroutineSynch<T>(info);
+            return LoadSynch<T>(info);
         }
         /// <summary>
         /// 加载预制体（同步）
@@ -116,7 +116,7 @@ namespace HT.Framework
         /// <returns>加载完成的预制体</returns>
         public GameObject LoadPrefabSynch(PrefabInfo info, Transform parent, bool isUI = false)
         {
-            return LoadCoroutineSynch<GameObject>(info, true, parent, isUI);
+            return LoadSynch<GameObject>(info, true, parent, isUI);
         }
 
         /// <summary>
@@ -382,7 +382,7 @@ namespace HT.Framework
 
             _isLoading = false;
         }
-        private T LoadCoroutineSynch<T>(ResourceInfoBase info, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        private T LoadSynch<T>(ResourceInfoBase info, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
         {
             UnityEngine.Object asset = null;
 

@@ -65,7 +65,31 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label((i + 1) + "." + _target.ActivatedProcedures[i]);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Edit", "minibuttonleft"))
+                if (GUILayout.Button("▲", "MiniButtonleft"))
+                {
+                    if (i > 0)
+                    {
+                        Undo.RecordObject(target, "Set Procedure Order");
+                        string procedure = _target.ActivatedProcedures[i];
+                        _target.ActivatedProcedures.RemoveAt(i);
+                        _target.ActivatedProcedures.Insert(i - 1, procedure);
+                        HasChanged();
+                        continue;
+                    }
+                }
+                if (GUILayout.Button("▼", "MiniButtonmid"))
+                {
+                    if (i < _target.ActivatedProcedures.Count - 1)
+                    {
+                        Undo.RecordObject(target, "Set Procedure Order");
+                        string procedure = _target.ActivatedProcedures[i];
+                        _target.ActivatedProcedures.RemoveAt(i);
+                        _target.ActivatedProcedures.Insert(i + 1, procedure);
+                        HasChanged();
+                        continue;
+                    }
+                }
+                if (GUILayout.Button("Edit", "MiniButtonmid"))
                 {
                     if (_procedureTypes.ContainsKey(_target.ActivatedProcedures[i]))
                     {
@@ -106,7 +130,7 @@ namespace HT.Framework
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].BaseType == typeof(Procedure))
+                    if (types[i].IsSubclassOf(typeof(Procedure)))
                     {
                         int j = i;
                         if (_target.ActivatedProcedures.Contains(types[j].FullName))

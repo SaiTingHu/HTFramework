@@ -29,7 +29,7 @@ namespace HT.Framework
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].BaseType == typeof(InputDeviceBase))
+                    if (types[i].IsSubclassOf(typeof(InputDeviceBase)))
                     {
                         int j = i;
                         gm.AddItem(new GUIContent(types[j].FullName), _target.InputDeviceType == types[j].FullName, () =>

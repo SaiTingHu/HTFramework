@@ -33,5 +33,21 @@
         {
             Main.m_Procedure.SwitchProcedure<T>();
         }
+
+        /// <summary>
+        /// 切换至下一流程
+        /// </summary>
+        protected void SwitchNextProcedure()
+        {
+            Main.m_Procedure.SwitchNextProcedure();
+        }
+
+        /// <summary>
+        /// 切换至上一流程
+        /// </summary>
+        protected void SwitchLastProcedure()
+        {
+            Main.m_Procedure.SwitchLastProcedure();
+        }
     }
 }
