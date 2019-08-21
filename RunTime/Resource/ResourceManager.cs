@@ -56,23 +56,67 @@ namespace HT.Framework
         /// <summary>
         /// 加载资源（异步）
         /// </summary>
-        public void LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : UnityEngine.Object
+        /// <typeparam name="T">资源类型</typeparam>
+        /// <param name="info">资源配置信息</param>
+        /// <param name="loadingAction">资源加载中回调</param>
+        /// <param name="loadDoneAction">资源加载完成回调</param>
+        public void LoadAssetAsync<T>(AssetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : UnityEngine.Object
         {
-            StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction));
+            StartCoroutine(LoadCoroutineAsync(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载数据集（异步）
         /// </summary>
-        public void LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : DataSet
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <param name="info">数据集配置信息</param>
+        /// <param name="loadingAction">数据集加载中回调</param>
+        /// <param name="loadDoneAction">数据集加载完成回调</param>
+        public void LoadDataSetAsync<T>(DataSetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : DataSet
         {
-            StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction));
+            StartCoroutine(LoadCoroutineAsync(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载预制体（异步）
         /// </summary>
-        public void LoadPrefab(PrefabInfo info, Transform parent, HTFAction<float> loadingAction, HTFAction<GameObject> loadDoneAction, bool isUI = false)
+        /// <param name="info">预制体配置信息</param>
+        /// <param name="parent">预制体的预设父物体</param>
+        /// <param name="loadingAction">预制体加载中回调</param>
+        /// <param name="loadDoneAction">预制体加载完成回调</param>
+        /// <param name="isUI">预制体是否是UI</param>
+        public void LoadPrefabAsync(PrefabInfo info, Transform parent, HTFAction<float> loadingAction, HTFAction<GameObject> loadDoneAction, bool isUI = false)
         {
-            StartCoroutine(LoadCoroutine(info, loadingAction, loadDoneAction, true, parent, isUI));
+            StartCoroutine(LoadCoroutineAsync(info, loadingAction, loadDoneAction, true, parent, isUI));
+        }
+        /// <summary>
+        /// 加载资源（同步）
+        /// </summary>
+        /// <typeparam name="T">资源类型</typeparam>
+        /// <param name="info">资源配置信息</param>
+        /// <returns>加载完成的资源</returns>
+        public T LoadAssetSynch<T>(AssetInfo info) where T : UnityEngine.Object
+        {
+            return LoadCoroutineSynch<T>(info);
+        }
+        /// <summary>
+        /// 加载数据集（同步）
+        /// </summary>
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <param name="info">数据集配置信息</param>
+        /// <returns>加载完成的数据集</returns>
+        public T LoadDataSetSynch<T>(DataSetInfo info) where T : DataSet
+        {
+            return LoadCoroutineSynch<T>(info);
+        }
+        /// <summary>
+        /// 加载预制体（同步）
+        /// </summary>
+        /// <param name="info">预制体配置信息</param>
+        /// <param name="parent">预制体的预设父物体</param>
+        /// <param name="isUI">预制体是否是UI</param>
+        /// <returns>加载完成的预制体</returns>
+        public GameObject LoadPrefabSynch(PrefabInfo info, Transform parent, bool isUI = false)
+        {
+            return LoadCoroutineSynch<GameObject>(info, true, parent, isUI);
         }
 
         /// <summary>
@@ -128,7 +172,7 @@ namespace HT.Framework
             GC.Collect();
         }
 
-        private IEnumerator LoadCoroutine<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        private IEnumerator LoadCoroutineAsync<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
         {
             if (_isLoading)
             {
@@ -337,6 +381,185 @@ namespace HT.Framework
             asset = null;
 
             _isLoading = false;
+        }
+        private T LoadCoroutineSynch<T>(ResourceInfoBase info, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        {
+            UnityEngine.Object asset = null;
+
+            if (Mode == ResourceLoadMode.Resource)
+            {
+                asset = Resources.Load<T>(info.ResourcePath);
+                if (!asset)
+                {
+                    GlobalTools.LogError("加载资源失败：Resources文件夹中不存在 " + typeof(T) + " 资源 " + info.ResourcePath);
+                }
+                else
+                {
+                    if (isPrefab)
+                    {
+                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                    }
+                }
+            }
+            else
+            {
+#if UNITY_EDITOR
+                if (IsEditorMode)
+                {
+                    asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
+                    if (!asset)
+                    {
+                        GlobalTools.LogError("加载资源失败：路径中不存在资源 " + info.AssetPath);
+                    }
+                    else
+                    {
+                        if (isPrefab)
+                        {
+                            asset = ClonePrefab(asset as GameObject, parent, isUI);
+                        }
+                    }
+                }
+                else
+                {
+                    if (_assetBundles.ContainsKey(info.AssetBundleName))
+                    {
+                        asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
+                        if (!asset)
+                        {
+                            GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                        }
+                        else
+                        {
+                            if (isPrefab)
+                            {
+                                asset = ClonePrefab(asset as GameObject, parent, isUI);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                        DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
+                        request.downloadHandler = handler;
+                        request.SendWebRequest();
+                        if (!request.isNetworkError && !request.isHttpError)
+                        {
+                            if (handler.assetBundle)
+                            {
+                                asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
+                                if (!asset)
+                                {
+                                    GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                                }
+                                else
+                                {
+                                    if (isPrefab)
+                                    {
+                                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                    }
+                                }
+
+                                if (IsCacheAssetBundle)
+                                {
+                                    if (!_assetBundles.ContainsKey(info.AssetBundleName))
+                                        _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
+                                }
+                                else
+                                {
+                                    handler.assetBundle.Unload(false);
+                                }
+                            }
+                            else
+                            {
+                                GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                            }
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                        }
+                        request.Dispose();
+                        handler.Dispose();
+                    }
+                }
+#else
+                if (_assetBundles.ContainsKey(info.AssetBundleName))
+                {
+                    asset = _assetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
+                    if (!asset)
+                    {
+                        GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                    }
+                    else
+                    {
+                        if (isPrefab)
+                        {
+                            asset = ClonePrefab(asset as GameObject, parent, isUI);
+                        }
+                    }
+                }
+                else
+                {
+                    UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
+                    request.downloadHandler = handler;
+                    request.SendWebRequest();
+                    if (!request.isNetworkError && !request.isHttpError)
+                    {
+                        if (handler.assetBundle)
+                        {
+                            asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
+                            if (!asset)
+                            {
+                                GlobalTools.LogError("加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath);
+                            }
+                            else
+                            {
+                                if (isPrefab)
+                                {
+                                    asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                }
+                            }
+
+                            if (IsCacheAssetBundle)
+                            {
+                                if (!_assetBundles.ContainsKey(info.AssetBundleName))
+                                    _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
+                            }
+                            else
+                            {
+                                handler.assetBundle.Unload(false);
+                            }
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                        }
+                    }
+                    else
+                    {
+                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                    }
+                    request.Dispose();
+                    handler.Dispose();
+                }
+#endif
+            }
+
+            if (asset)
+            {
+                DataSetInfo dataSet = info as DataSetInfo;
+                if (dataSet != null && dataSet.Data != null)
+                {
+                    asset.Cast<DataSet>().Fill(dataSet.Data);
+                }
+
+                return asset as T;
+            }
+            else
+            {
+                return null;
+            }
         }
         private GameObject ClonePrefab(GameObject prefabTem, Transform parent, bool isUI)
         {

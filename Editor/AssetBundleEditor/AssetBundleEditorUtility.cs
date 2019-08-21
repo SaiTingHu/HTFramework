@@ -7,7 +7,7 @@ namespace HT.Framework.AssetBundleEditor
 {
     public static class AssetBundleEditorUtility
     {
-        private static readonly HashSet<string> _invalidFileFormats = new HashSet<string>() { ".cs", ".js", ".shader", ".dll", ".db", ".jslib", ".asmdef" };
+        private static readonly HashSet<string> _invalidFileFormats = new HashSet<string>() { ".cs", ".js", ".shader", ".dll", ".db", ".jslib", ".asmdef", ".git", ".gitignore", ".gitmodules" };
         private static readonly HashSet<string> _invalidFolderName = new HashSet<string>() { "Resources", "Editor", "Gizmos", "StreamingAssets", "Editor Default Resources" };
         private static Dictionary<string, AssetFileInfo> _fileInfos = new Dictionary<string, AssetFileInfo>();
         private static Dictionary<string, AssetFolderInfo> _folderInfos = new Dictionary<string, AssetFolderInfo>();
