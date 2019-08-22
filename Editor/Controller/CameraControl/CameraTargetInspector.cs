@@ -3,10 +3,12 @@
 namespace HT.Framework
 {
     [CustomEditor(typeof(CameraTarget))]
-    public sealed class CameraTargetInspector : ModuleEditor
+    public sealed class CameraTargetInspector : HTFEditor<CameraTarget>
     {
-        public override void OnInspectorGUI()
+        protected override void OnInspectorDefaultGUI()
         {
+            base.OnInspectorDefaultGUI();
+
             EditorGUILayout.HelpBox("Camera Control Target!", MessageType.Info);
         }
     }

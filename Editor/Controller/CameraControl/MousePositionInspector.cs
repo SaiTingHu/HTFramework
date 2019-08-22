@@ -4,19 +4,14 @@ using UnityEditor;
 namespace HT.Framework
 {
     [CustomEditor(typeof(MousePosition))]
-    public sealed class MousePositionInspector : ModuleEditor
+    public sealed class MousePositionInspector : HTFEditor<MousePosition>
     {
-        private MousePosition _mousePosition;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _mousePosition = target as MousePosition;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
-            Toggle(_mousePosition.IsCanOnUGUI, out _mousePosition.IsCanOnUGUI, "Is Can Control On UGUI");
+            Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical("HelpBox");
@@ -29,16 +24,16 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("X");
-            FloatField(_mousePosition.XSpeed, out _mousePosition.XSpeed);
+            FloatField(Target.XSpeed, out Target.XSpeed);
             GUILayout.Label("Y");
-            FloatField(_mousePosition.YSpeed, out _mousePosition.YSpeed);
+            FloatField(Target.YSpeed, out Target.YSpeed);
             GUILayout.Label("Z");
-            FloatField(_mousePosition.ZSpeed, out _mousePosition.ZSpeed);
+            FloatField(Target.ZSpeed, out Target.ZSpeed);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Damping Time");
-            FloatField(_mousePosition.DampingTime, out _mousePosition.DampingTime);
+            FloatField(Target.DampingTime, out Target.DampingTime);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -55,30 +50,30 @@ namespace HT.Framework
             GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            Toggle(_mousePosition.NeedLimit, out _mousePosition.NeedLimit, "Need Limit");
+            Toggle(Target.NeedLimit, out Target.NeedLimit, "Need Limit");
             GUILayout.EndHorizontal();
 
-            if (_mousePosition.NeedLimit)
+            if (Target.NeedLimit)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("X Min");
-                FloatField(_mousePosition.XMinLimit, out _mousePosition.XMinLimit);
+                FloatField(Target.XMinLimit, out Target.XMinLimit);
                 GUILayout.Label("X Max");
-                FloatField(_mousePosition.XMaxLimit, out _mousePosition.XMaxLimit);
+                FloatField(Target.XMaxLimit, out Target.XMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Y Min");
-                FloatField(_mousePosition.YMinLimit, out _mousePosition.YMinLimit);
+                FloatField(Target.YMinLimit, out Target.YMinLimit);
                 GUILayout.Label("Y Max");
-                FloatField(_mousePosition.YMaxLimit, out _mousePosition.YMaxLimit);
+                FloatField(Target.YMaxLimit, out Target.YMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Z Min");
-                FloatField(_mousePosition.ZMinLimit, out _mousePosition.ZMinLimit);
+                FloatField(Target.ZMinLimit, out Target.ZMinLimit);
                 GUILayout.Label("Z Max");
-                FloatField(_mousePosition.ZMaxLimit, out _mousePosition.ZMaxLimit);
+                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit);
                 GUILayout.EndHorizontal();
             }
 
@@ -91,12 +86,12 @@ namespace HT.Framework
             GUI.backgroundColor = Color.cyan;
             if (GUILayout.Button("Copy Position"))
             {
-                if (_mousePosition.Target)
+                if (Target.Target)
                 {
                     GUIUtility.systemCopyBuffer =
-                            _mousePosition.Target.transform.localPosition.x.ToString("F2") + "f," +
-                            _mousePosition.Target.transform.localPosition.y.ToString("F2") + "f," +
-                            _mousePosition.Target.transform.localPosition.z.ToString("F2") + "f";
+                            Target.Target.transform.localPosition.x.ToString("F2") + "f," +
+                            Target.Target.transform.localPosition.y.ToString("F2") + "f," +
+                            Target.Target.transform.localPosition.z.ToString("F2") + "f";
                 }
             }
             GUI.backgroundColor = Color.white;

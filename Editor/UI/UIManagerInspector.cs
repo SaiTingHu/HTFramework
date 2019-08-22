@@ -7,65 +7,50 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(UIManager))]
-    public sealed class UIManagerInspector : ModuleEditor
+    public sealed class UIManagerInspector : HTFEditor<UIManager>
     {
-        private UIManager _target;
-
         private UILogicTemporary _currentOverlayTemporaryUI;
         private Dictionary<Type, UILogic> _overlayUIs;
         private UILogicTemporary _currentCameraTemporaryUI;
         private Dictionary<Type, UILogic> _cameraUIs;
-
-        protected override void OnEnable()
+        
+        protected override void OnRuntimeEnable()
         {
-            _target = target as UIManager;
+            base.OnRuntimeEnable();
 
-            base.OnEnable();
+            _currentOverlayTemporaryUI = Target.GetType().GetField("_currentOverlayTemporaryUI", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as UILogicTemporary;
+            _overlayUIs = Target.GetType().GetField("_overlayUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogic>;
+            _currentCameraTemporaryUI = Target.GetType().GetField("_currentCameraTemporaryUI", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as UILogicTemporary;
+            _cameraUIs = Target.GetType().GetField("_cameraUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogic>;
         }
 
-        protected override void OnPlayingEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            base.OnPlayingEnable();
+            base.OnInspectorDefaultGUI();
 
-            _currentOverlayTemporaryUI = _target.GetType().GetField("_currentOverlayTemporaryUI", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as UILogicTemporary;
-            _overlayUIs = _target.GetType().GetField("_overlayUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<Type, UILogic>;
-            _currentCameraTemporaryUI = _target.GetType().GetField("_currentCameraTemporaryUI", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as UILogicTemporary;
-            _cameraUIs = _target.GetType().GetField("_cameraUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<Type, UILogic>;
-        }
-
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("UI Manager, Control all UILogic Entity!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsEnableOverlayUI, out _target.IsEnableOverlayUI, "Is Enable Overlay UI");
+            Toggle(Target.IsEnableOverlayUI, out Target.IsEnableOverlayUI, "Is Enable Overlay UI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsEnableCameraUI, out _target.IsEnableCameraUI, "Is Enable Camera UI");
+            Toggle(Target.IsEnableCameraUI, out Target.IsEnableCameraUI, "Is Enable Camera UI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsEnableWorldUI, out _target.IsEnableWorldUI, "Is Enable World UI");
+            Toggle(Target.IsEnableWorldUI, out Target.IsEnableWorldUI, "Is Enable World UI");
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
-
-            GUILayout.BeginVertical("Helpbox");
+            base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Overlay UIs: " + (_target.IsEnableOverlayUI ? "[Enable]" : "[Prohibit]"));
+            GUILayout.Label("Overlay UIs: " + (Target.IsEnableOverlayUI ? "[Enable]" : "[Prohibit]"));
             GUILayout.EndHorizontal();
 
             foreach (KeyValuePair<Type, UILogic> ui in _overlayUIs)
@@ -101,7 +86,7 @@ namespace HT.Framework
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Camera UIs: " + (_target.IsEnableCameraUI ? "[Enable]" : "[Prohibit]"));
+            GUILayout.Label("Camera UIs: " + (Target.IsEnableCameraUI ? "[Enable]" : "[Prohibit]"));
             GUILayout.EndHorizontal();
 
             foreach (KeyValuePair<Type, UILogic> ui in _cameraUIs)
@@ -135,8 +120,6 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
             }
-
-            GUILayout.EndVertical();
         }
     }
 }

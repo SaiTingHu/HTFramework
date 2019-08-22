@@ -7,44 +7,29 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(EntityManager))]
-    public sealed class EntityManagerInspector : ModuleEditor
+    public sealed class EntityManagerInspector : HTFEditor<EntityManager>
     {
-        private EntityManager _target;
-
         private Dictionary<Type, List<EntityLogic>> _entities;
-
-        protected override void OnEnable()
+        
+        protected override void OnRuntimeEnable()
         {
-            _target = target as EntityManager;
+            base.OnRuntimeEnable();
 
-            base.OnEnable();
+            _entities = Target.GetType().GetField("_entities", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, List<EntityLogic>>;
         }
 
-        protected override void OnPlayingEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            base.OnPlayingEnable();
+            base.OnInspectorDefaultGUI();
 
-            _entities = _target.GetType().GetField("_entities", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<Type, List<EntityLogic>>;
-        }
-
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Entity Manager, Control all EntityLogic!", MessageType.Info);
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
-
-            GUILayout.BeginVertical("Helpbox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
+            base.OnInspectorRuntimeGUI();
 
             foreach (KeyValuePair<Type, List<EntityLogic>> entity in _entities)
             {
@@ -72,8 +57,6 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
                 }
             }
-            
-            GUILayout.EndVertical();
         }
     }
 }

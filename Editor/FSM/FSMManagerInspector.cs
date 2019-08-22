@@ -6,44 +6,29 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(FSMManager))]
-    public sealed class FSMManagerInspector : ModuleEditor
+    public sealed class FSMManagerInspector : HTFEditor<FSMManager>
     {
-        private FSMManager _target;
-
         private Dictionary<string, FSM> _fsms;
-
-        protected override void OnEnable()
+        
+        protected override void OnRuntimeEnable()
         {
-            _target = target as FSMManager;
+            base.OnRuntimeEnable();
 
-            base.OnEnable();
+            _fsms = Target.GetType().GetField("_fsms", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, FSM>;
         }
 
-        protected override void OnPlayingEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            base.OnPlayingEnable();
+            base.OnInspectorDefaultGUI();
 
-            _fsms = _target.GetType().GetField("_fsms", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<string, FSM>;
-        }
-
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("FSM manager, it manages all state machines!", MessageType.Info);
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
-
-            GUILayout.BeginVertical("Helpbox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
+            base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("FSMs: " + _fsms.Count);
@@ -62,8 +47,6 @@ namespace HT.Framework
                 EditorGUILayout.ObjectField(fsm.Value, typeof(FSM), true);
                 GUILayout.EndHorizontal();
             }
-
-            GUILayout.EndVertical();
         }
     }
 }

@@ -7,44 +7,29 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(EventManager))]
-    public sealed class EventManagerInspector : ModuleEditor
+    public sealed class EventManagerInspector : HTFEditor<EventManager>
     {
-        private EventManager _target;
-
         private Dictionary<Type, HTFAction<object, EventHandler>> _eventHandlerList;
-
-        protected override void OnEnable()
+        
+        protected override void OnRuntimeEnable()
         {
-            _target = target as EventManager;
+            base.OnRuntimeEnable();
 
-            base.OnEnable();
+            _eventHandlerList = Target.GetType().GetField("_eventHandlerList", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, HTFAction<object, EventHandler>>;
         }
 
-        protected override void OnPlayingEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            base.OnPlayingEnable();
+            base.OnInspectorDefaultGUI();
 
-            _eventHandlerList = _target.GetType().GetField("_eventHandlerList", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<Type, HTFAction<object, EventHandler>>;
-        }
-
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Event Manager, you can subscribe any events, also custom events!", MessageType.Info);
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
-
-            GUILayout.BeginVertical("Helpbox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
+            base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Event List: " + _eventHandlerList.Count);
@@ -64,8 +49,6 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
                 GUI.enabled = true;
             }
-
-            GUILayout.EndVertical();
         }
     }
 }

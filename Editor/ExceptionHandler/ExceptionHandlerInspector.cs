@@ -4,36 +4,31 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ExceptionHandler))]
-    public sealed class ExceptionHandlerInspector : ModuleEditor
+    public sealed class ExceptionHandlerInspector : HTFEditor<ExceptionHandler>
     {
-        private ExceptionHandler _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as ExceptionHandler;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Exception handler, When an exception occurs, he catches it!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsHandler, out _target.IsHandler, "Is Handler");
+            Toggle(Target.IsHandler, out Target.IsHandler, "Is Handler");
             GUILayout.EndHorizontal();
 
-            if (_target.IsHandler)
+            if (Target.IsHandler)
             {
                 GUI.enabled = false;
 #if UNITY_STANDALONE_WIN
                 GUI.enabled = true;
 #endif
                 GUILayout.BeginHorizontal();
-                Toggle(_target.IsEnableFeedback, out _target.IsEnableFeedback, "Is Enable Feedback");
+                Toggle(Target.IsEnableFeedback, out Target.IsEnableFeedback, "Is Enable Feedback");
                 GUILayout.EndHorizontal();
 
-                if (_target.IsEnableFeedback)
+                if (Target.IsEnableFeedback)
                 {
                     GUILayout.BeginVertical("Box");
 
@@ -42,7 +37,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    TextField(_target.FeedbackProgramPath, out _target.FeedbackProgramPath);
+                    TextField(Target.FeedbackProgramPath, out Target.FeedbackProgramPath);
                     GUILayout.EndHorizontal();
 
                     GUILayout.EndVertical();
@@ -51,41 +46,41 @@ namespace HT.Framework
                 GUI.enabled = true;
 
                 GUILayout.BeginHorizontal();
-                Toggle(_target.IsEnableMailReport, out _target.IsEnableMailReport, "Is Enable Mail Report");
+                Toggle(Target.IsEnableMailReport, out Target.IsEnableMailReport, "Is Enable Mail Report");
                 GUILayout.EndHorizontal();
 
-                if (_target.IsEnableMailReport)
+                if (Target.IsEnableMailReport)
                 {
                     GUILayout.BeginVertical("Box");
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Host", GUILayout.Width(80));
-                    TextField(_target.Host, out _target.Host);
+                    TextField(Target.Host, out Target.Host);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Port", GUILayout.Width(80));
-                    IntField(_target.Port, out _target.Port);
+                    IntField(Target.Port, out Target.Port);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Send Mail", GUILayout.Width(80));
-                    TextField(_target.SendMailbox, out _target.SendMailbox);
+                    TextField(Target.SendMailbox, out Target.SendMailbox);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Password", GUILayout.Width(80));
-                    PasswordField(_target.SendMailboxPassword, out _target.SendMailboxPassword);
+                    PasswordField(Target.SendMailboxPassword, out Target.SendMailboxPassword);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Receive Mail", GUILayout.Width(80));
-                    TextField(_target.ReceiveMailbox, out _target.ReceiveMailbox);
+                    TextField(Target.ReceiveMailbox, out Target.ReceiveMailbox);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Buffer Time", GUILayout.Width(80));
-                    FloatField(_target.ReportBufferTime, out _target.ReportBufferTime);
+                    FloatField(Target.ReportBufferTime, out Target.ReportBufferTime);
                     GUILayout.EndHorizontal();
 
                     GUILayout.EndVertical();

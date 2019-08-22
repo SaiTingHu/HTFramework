@@ -30,7 +30,7 @@ namespace HT.Framework
 
         //AssetBundle资源根路径
         private string _assetBundlePath;
-        //缓存的所有AssetBundle资源
+        //缓存的所有AssetBundle包
         private Dictionary<string, AssetBundle> _assetBundles = new Dictionary<string, AssetBundle>();
         //单线下载中
         private bool _isLoading = false;

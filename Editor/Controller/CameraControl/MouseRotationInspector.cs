@@ -4,19 +4,14 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(MouseRotation))]
-    public sealed class MouseRotationInspector : ModuleEditor
+    public sealed class MouseRotationInspector : HTFEditor<MouseRotation>
     {
-        private MouseRotation _mouseRotation;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _mouseRotation = target as MouseRotation;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
-            Toggle(_mouseRotation.IsCanOnUGUI, out _mouseRotation.IsCanOnUGUI, "Is Can Control On UGUI");
+            Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical("HelpBox");
@@ -27,9 +22,9 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal("Box");
             GUILayout.Label("X");
-            FloatField(_mouseRotation.OffsetX, out _mouseRotation.OffsetX);
+            FloatField(Target.OffsetX, out Target.OffsetX);
             GUILayout.Label("Y");
-            FloatField(_mouseRotation.OffsetY, out _mouseRotation.OffsetY);
+            FloatField(Target.OffsetY, out Target.OffsetY);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -43,11 +38,11 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal("Box");
             GUILayout.Label("X");
-            FloatField(_mouseRotation.XSpeed, out _mouseRotation.XSpeed);
+            FloatField(Target.XSpeed, out Target.XSpeed);
             GUILayout.Label("Y");
-            FloatField(_mouseRotation.YSpeed, out _mouseRotation.YSpeed);
+            FloatField(Target.YSpeed, out Target.YSpeed);
             GUILayout.Label("M");
-            FloatField(_mouseRotation.MSpeed, out _mouseRotation.MSpeed);
+            FloatField(Target.MSpeed, out Target.MSpeed);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -61,9 +56,9 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal("Box");
             GUILayout.Label("Y min");
-            FloatField(_mouseRotation.YMinAngleLimit, out _mouseRotation.YMinAngleLimit);
+            FloatField(Target.YMinAngleLimit, out Target.YMinAngleLimit);
             GUILayout.Label("Y max");
-            FloatField(_mouseRotation.YMaxAngleLimit, out _mouseRotation.YMaxAngleLimit);
+            FloatField(Target.YMaxAngleLimit, out Target.YMaxAngleLimit);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -77,13 +72,13 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal("Box");
             GUILayout.Label("D");
-            FloatField(_mouseRotation.Distance, out _mouseRotation.Distance);
+            FloatField(Target.Distance, out Target.Distance);
             Button(DistanceAdd, "", "OL Plus", GUILayout.Width(15));
             Button(DistanceSubtract, "", "OL Minus", GUILayout.Width(15));
             GUILayout.Label("Min");
-            FloatField(_mouseRotation.MinDistance, out _mouseRotation.MinDistance);
+            FloatField(Target.MinDistance, out Target.MinDistance);
             GUILayout.Label("Max");
-            FloatField(_mouseRotation.MaxDistance, out _mouseRotation.MaxDistance);
+            FloatField(Target.MaxDistance, out Target.MaxDistance);
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -96,7 +91,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal("Box");
-            Toggle(_mouseRotation.NeedDamping, out _mouseRotation.NeedDamping, "Need Damping");
+            Toggle(Target.NeedDamping, out Target.NeedDamping, "Need Damping");
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
@@ -111,30 +106,30 @@ namespace HT.Framework
             GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            Toggle(_mouseRotation.NeedLimit, out _mouseRotation.NeedLimit, "Need Limit");
+            Toggle(Target.NeedLimit, out Target.NeedLimit, "Need Limit");
             GUILayout.EndHorizontal();
 
-            if (_mouseRotation.NeedLimit)
+            if (Target.NeedLimit)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("X Min");
-                FloatField(_mouseRotation.XMinLimit, out _mouseRotation.XMinLimit);
+                FloatField(Target.XMinLimit, out Target.XMinLimit);
                 GUILayout.Label("X Max");
-                FloatField(_mouseRotation.XMaxLimit, out _mouseRotation.XMaxLimit);
+                FloatField(Target.XMaxLimit, out Target.XMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Y Min");
-                FloatField(_mouseRotation.YMinLimit, out _mouseRotation.YMinLimit);
+                FloatField(Target.YMinLimit, out Target.YMinLimit);
                 GUILayout.Label("Y Max");
-                FloatField(_mouseRotation.YMaxLimit, out _mouseRotation.YMaxLimit);
+                FloatField(Target.YMaxLimit, out Target.YMaxLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Z Min");
-                FloatField(_mouseRotation.ZMinLimit, out _mouseRotation.ZMinLimit);
+                FloatField(Target.ZMinLimit, out Target.ZMinLimit);
                 GUILayout.Label("Z Max");
-                FloatField(_mouseRotation.ZMaxLimit, out _mouseRotation.ZMaxLimit);
+                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit);
                 GUILayout.EndHorizontal();
             }
 
@@ -151,11 +146,11 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal("Box");
             GUILayout.Label("X");
-            FloatField(_mouseRotation.X, out _mouseRotation.X);
+            FloatField(Target.X, out Target.X);
             Button(XAdd, "", "OL Plus", GUILayout.Width(15));
             Button(XSubtract, "", "OL Minus", GUILayout.Width(15));
             GUILayout.Label("Y");
-            FloatField(_mouseRotation.Y, out _mouseRotation.Y);
+            FloatField(Target.Y, out Target.Y);
             Button(YAdd, "", "OL Plus", GUILayout.Width(15));
             Button(YSubtract, "", "OL Minus", GUILayout.Width(15));
             GUILayout.EndHorizontal();
@@ -168,9 +163,9 @@ namespace HT.Framework
             if (GUILayout.Button("Copy Angle"))
             {
                 GUIUtility.systemCopyBuffer =
-                        _mouseRotation.X.ToString("F2") + "f," +
-                        _mouseRotation.Y.ToString("F2") + "f," +
-                        _mouseRotation.Distance.ToString("F2") + "f";
+                        Target.X.ToString("F2") + "f," +
+                        Target.Y.ToString("F2") + "f," +
+                        Target.Distance.ToString("F2") + "f";
             }
             GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
@@ -178,27 +173,27 @@ namespace HT.Framework
 
         private void DistanceAdd()
         {
-            _mouseRotation.Distance += 0.1f;
+            Target.Distance += 0.1f;
         }
         private void DistanceSubtract()
         {
-            _mouseRotation.Distance -= 0.1f;
+            Target.Distance -= 0.1f;
         }
         private void XAdd()
         {
-            _mouseRotation.X += 2;
+            Target.X += 2;
         }
         private void XSubtract()
         {
-            _mouseRotation.X -= 2;
+            Target.X -= 2;
         }
         private void YAdd()
         {
-            _mouseRotation.Y += 2;
+            Target.Y += 2;
         }
         private void YSubtract()
         {
-            _mouseRotation.Y -= 2;
+            Target.Y -= 2;
         }
     }
 }

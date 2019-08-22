@@ -4,24 +4,19 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ObjectPoolManager))]
-    public sealed class ObjectPoolManagerInspector : ModuleEditor
+    public sealed class ObjectPoolManagerInspector : HTFEditor<ObjectPoolManager>
     {
-        private ObjectPoolManager _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as ObjectPoolManager;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Object pool manager, it manages all object pools and can register new object pools!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Limit:");
-            IntField(_target.Limit, out _target.Limit);
+            IntField(Target.Limit, out Target.Limit);
             GUILayout.EndHorizontal();
         }
     }

@@ -7,18 +7,16 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(FSM))]
-    public sealed class FSMInspector : ModuleEditor
+    public sealed class FSMInspector : HTFEditor<FSM>
     {
-        private FSM _target;
         private Dictionary<string, string> _stateTypes;
-
         private Dictionary<string, Type> _stateInstances;
         private FiniteState _currentState;
         private string _currentStateName;
 
-        protected override void OnEnable()
+        protected override void OnDefaultEnable()
         {
-            _target = target as FSM;
+            base.OnDefaultEnable();
 
             _stateTypes = new Dictionary<string, string>();
             string[] states = AssetDatabase.GetAllAssetPaths();
@@ -33,15 +31,13 @@ namespace HT.Framework
                     }
                 }
             }
-
-            base.OnEnable();
         }
 
-        protected override void OnPlayingEnable()
+        protected override void OnRuntimeEnable()
         {
-            base.OnPlayingEnable();
+            base.OnRuntimeEnable();
             
-            Dictionary<Type, FiniteState> states = _target.GetType().GetField("_stateInstances", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<Type, FiniteState>;
+            Dictionary<Type, FiniteState> states = Target.GetType().GetField("_stateInstances", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, FiniteState>;
             _stateInstances = new Dictionary<string, Type>();
             foreach (KeyValuePair<Type, FiniteState> state in states)
             {
@@ -49,37 +45,39 @@ namespace HT.Framework
                 _stateInstances.Add(attribute != null ? attribute.Name : state.Key.Name, state.Key);
             }
 
-            _currentState = _target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as FiniteState;
+            _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteState;
 
             FiniteStateNameAttribute nameAttribute = _currentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
             _currentStateName = nameAttribute != null ? nameAttribute.Name : _currentState.GetType().Name;
         }
 
-        public override void OnInspectorGUI()
+        protected override void OnInspectorDefaultGUI()
         {
+            base.OnInspectorDefaultGUI();
+
             GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("State Count:" + _target.StateNames.Count, MessageType.Info);
+            EditorGUILayout.HelpBox("State Count:" + Target.StateNames.Count, MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsAutoRegister, out _target.IsAutoRegister, "Auto Register");
+            Toggle(Target.IsAutoRegister, out Target.IsAutoRegister, "Auto Register");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Name: ");
-            TextField(_target.Name, out _target.Name);
+            TextField(Target.Name, out Target.Name);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Data: ");
-            if (GUILayout.Button(_target.Data, "MiniPopup"))
+            if (GUILayout.Button(Target.Data, "MiniPopup"))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
-                gm.AddItem(new GUIContent("<None>"), _target.Data == "<None>", () =>
+                gm.AddItem(new GUIContent("<None>"), Target.Data == "<None>", () =>
                 {
                     Undo.RecordObject(target, "Set FSM Data Class");
-                    _target.Data = "<None>";
+                    Target.Data = "<None>";
                     HasChanged();
                 });
                 for (int i = 0; i < types.Count; i++)
@@ -87,10 +85,10 @@ namespace HT.Framework
                     if (types[i].IsSubclassOf(typeof(FSMData)))
                     {
                         int j = i;
-                        gm.AddItem(new GUIContent(types[j].FullName), _target.Data == types[j].FullName, () =>
+                        gm.AddItem(new GUIContent(types[j].FullName), Target.Data == types[j].FullName, () =>
                         {
                             Undo.RecordObject(target, "Set FSM Data Class");
-                            _target.Data = types[j].FullName;
+                            Target.Data = types[j].FullName;
                             HasChanged();
                         });
                     }
@@ -100,22 +98,22 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = _target.DefaultStateName != "";
-            GUILayout.Label("Default: " + _target.DefaultStateName);
+            GUI.enabled = Target.DefaultStateName != "";
+            GUILayout.Label("Default: " + Target.DefaultStateName);
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
-            GUI.enabled = _target.StateNames.Count > 0;
+            GUI.enabled = Target.StateNames.Count > 0;
             if (GUILayout.Button("Set Default", "MiniPopup"))
             {
                 GenericMenu gm = new GenericMenu();
-                for (int i = 0; i < _target.StateNames.Count; i++)
+                for (int i = 0; i < Target.StateNames.Count; i++)
                 {
                     int j = i;
-                    gm.AddItem(new GUIContent(_target.StateNames[j]), _target.DefaultStateName == _target.StateNames[j], () =>
+                    gm.AddItem(new GUIContent(Target.StateNames[j]), Target.DefaultStateName == Target.StateNames[j], () =>
                     {
                         Undo.RecordObject(target, "Set FSM Default State");
-                        _target.DefaultState = _target.States[j];
-                        _target.DefaultStateName = _target.StateNames[j];
+                        Target.DefaultState = Target.States[j];
+                        Target.DefaultStateName = Target.StateNames[j];
                         HasChanged();
                     });
                 }
@@ -124,42 +122,42 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
 
-            for (int i = 0; i < _target.StateNames.Count; i++)
+            for (int i = 0; i < Target.StateNames.Count; i++)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(string.Format("{0}.{1}", i + 1, _target.StateNames[i]));
+                GUILayout.Label(string.Format("{0}.{1}", i + 1, Target.StateNames[i]));
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Edit", "minibuttonleft"))
                 {
-                    if (_stateTypes.ContainsKey(_target.States[i]))
+                    if (_stateTypes.ContainsKey(Target.States[i]))
                     {
-                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_stateTypes[_target.States[i]], typeof(TextAsset));
+                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_stateTypes[Target.States[i]], typeof(TextAsset));
                         if (classFile)
                             AssetDatabase.OpenAsset(classFile);
                         else
-                            GlobalTools.LogError("没有找到 " + _target.States[i] + " 脚本文件！");
+                            GlobalTools.LogError("没有找到 " + Target.States[i] + " 脚本文件！");
                     }
                     else
                     {
-                        GlobalTools.LogError("没有找到 " + _target.States[i] + " 脚本文件！");
+                        GlobalTools.LogError("没有找到 " + Target.States[i] + " 脚本文件！");
                     }
                 }
                 if (GUILayout.Button("Delete", "minibuttonright"))
                 {
                     Undo.RecordObject(target, "Delete FSM State");
-                    if (_target.DefaultStateName == _target.StateNames[i])
+                    if (Target.DefaultStateName == Target.StateNames[i])
                     {
-                        _target.DefaultState = "";
-                        _target.DefaultStateName = "";
+                        Target.DefaultState = "";
+                        Target.DefaultStateName = "";
                     }
 
-                    _target.States.RemoveAt(i);
-                    _target.StateNames.RemoveAt(i);
+                    Target.States.RemoveAt(i);
+                    Target.StateNames.RemoveAt(i);
 
-                    if (_target.DefaultStateName == "" && _target.StateNames.Count > 0)
+                    if (Target.DefaultStateName == "" && Target.StateNames.Count > 0)
                     {
-                        _target.DefaultState = _target.States[0];
-                        _target.DefaultStateName = _target.StateNames[0];
+                        Target.DefaultState = Target.States[0];
+                        Target.DefaultStateName = Target.StateNames[0];
                     }
                     HasChanged();
                 }
@@ -183,7 +181,7 @@ namespace HT.Framework
                             stateName = fsmAtt.Name;
                         }
 
-                        if (_target.States.Contains(types[j].FullName))
+                        if (Target.States.Contains(types[j].FullName))
                         {
                             gm.AddDisabledItem(new GUIContent(stateName));
                         }
@@ -192,13 +190,13 @@ namespace HT.Framework
                             gm.AddItem(new GUIContent(stateName), false, () =>
                             {
                                 Undo.RecordObject(target, "Add FSM State");
-                                _target.States.Add(types[j].FullName);
-                                _target.StateNames.Add(stateName);
+                                Target.States.Add(types[j].FullName);
+                                Target.StateNames.Add(stateName);
 
-                                if (_target.DefaultStateName == "")
+                                if (Target.DefaultStateName == "")
                                 {
-                                    _target.DefaultState = _target.States[0];
-                                    _target.DefaultStateName = _target.StateNames[0];
+                                    Target.DefaultState = Target.States[0];
+                                    Target.DefaultStateName = Target.StateNames[0];
                                 }
                                 HasChanged();
                             });
@@ -208,19 +206,11 @@ namespace HT.Framework
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
-
-            GUILayout.BeginVertical("Helpbox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
+            base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Current State: " + _currentStateName);
@@ -239,9 +229,9 @@ namespace HT.Framework
                 GUI.enabled = _currentStateName != state.Key;
                 if (GUILayout.Button("Switch", "Minibutton"))
                 {
-                    _target.SwitchState(state.Value);
+                    Target.SwitchState(state.Value);
 
-                    _currentState = _target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as FiniteState;
+                    _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteState;
 
                     FiniteStateNameAttribute nameAttribute = _currentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
                     _currentStateName = nameAttribute != null ? nameAttribute.Name : _currentState.GetType().Name;
@@ -249,8 +239,6 @@ namespace HT.Framework
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
             }
-
-            GUILayout.EndVertical();
         }
     }
 }

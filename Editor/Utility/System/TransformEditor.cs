@@ -5,21 +5,17 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Transform))]
-    public sealed class TransformEditor : ModuleEditor
+    public sealed class TransformEditor : HTFEditor<Transform>
     {
-        private Transform _transform;
         private static bool _showProperty = true;
         private static bool _showCopy = false;
         private static bool _showSetting = false;
         private static bool _copyQuaternion = false;
-
-        protected override void OnEnable()
+        
+        protected override void OnInspectorDefaultGUI()
         {
-            _transform = target as Transform;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             #region Property
             GUILayout.BeginHorizontal("MeTransitionHead");
             GUILayout.Space(12);
@@ -32,22 +28,22 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Position", GUILayout.Width(80));
-                Vector3 pos = EditorGUILayout.Vector3Field("", _transform.position);
-                if (pos != _transform.position)
+                Vector3 pos = EditorGUILayout.Vector3Field("", Target.position);
+                if (pos != Target.position)
                 {
-                    Undo.RecordObject(_transform, "Move " + _transform.name);
-                    _transform.position = pos;
+                    Undo.RecordObject(Target, "Move " + Target.name);
+                    Target.position = pos;
                     HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Rotation", GUILayout.Width(80));
-                Vector3 rot = EditorGUILayout.Vector3Field("", _transform.rotation.eulerAngles);
-                if (rot != _transform.rotation.eulerAngles)
+                Vector3 rot = EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
+                if (rot != Target.rotation.eulerAngles)
                 {
-                    Undo.RecordObject(_transform, "Rotate " + _transform.name);
-                    _transform.rotation = Quaternion.Euler(rot);
+                    Undo.RecordObject(Target, "Rotate " + Target.name);
+                    Target.rotation = Quaternion.Euler(rot);
                     HasChanged();
                 }
                 GUILayout.EndHorizontal();
@@ -55,39 +51,39 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Scale", GUILayout.Width(80));
                 GUI.enabled = false;
-                EditorGUILayout.Vector3Field("", _transform.lossyScale);
+                EditorGUILayout.Vector3Field("", Target.lossyScale);
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LocalPosition", GUILayout.Width(80));
-                Vector3 localpos = EditorGUILayout.Vector3Field("", _transform.localPosition);
-                if (localpos != _transform.localPosition)
+                Vector3 localpos = EditorGUILayout.Vector3Field("", Target.localPosition);
+                if (localpos != Target.localPosition)
                 {
-                    Undo.RecordObject(_transform, "Move " + _transform.name);
-                    _transform.localPosition = localpos;
+                    Undo.RecordObject(Target, "Move " + Target.name);
+                    Target.localPosition = localpos;
                     HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LocalRotation", GUILayout.Width(80));
-                Vector3 localrot = EditorGUILayout.Vector3Field("", _transform.localRotation.eulerAngles);
-                if (localrot != _transform.localRotation.eulerAngles)
+                Vector3 localrot = EditorGUILayout.Vector3Field("", Target.localRotation.eulerAngles);
+                if (localrot != Target.localRotation.eulerAngles)
                 {
-                    Undo.RecordObject(_transform, "Rotate " + _transform.name);
-                    _transform.localRotation = Quaternion.Euler(localrot);
+                    Undo.RecordObject(Target, "Rotate " + Target.name);
+                    Target.localRotation = Quaternion.Euler(localrot);
                     HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LocalScale", GUILayout.Width(80));
-                Vector3 localsca = EditorGUILayout.Vector3Field("", _transform.localScale);
-                if (localsca != _transform.localScale)
+                Vector3 localsca = EditorGUILayout.Vector3Field("", Target.localScale);
+                if (localsca != Target.localScale)
                 {
-                    Undo.RecordObject(_transform, "Scale " + _transform.name);
-                    _transform.localScale = localsca;
+                    Undo.RecordObject(Target, "Scale " + Target.name);
+                    Target.localScale = localsca;
                     HasChanged();
                 }
                 GUILayout.EndHorizontal();
@@ -110,17 +106,17 @@ namespace HT.Framework
                 if (GUILayout.Button("Copy Position", "MiniButtonLeft"))
                 {
                     GUIUtility.systemCopyBuffer =
-                        _transform.position.x.ToString("F4") + "f," +
-                        _transform.position.y.ToString("F4") + "f," +
-                        _transform.position.z.ToString("F4") + "f";
+                        Target.position.x.ToString("F4") + "f," +
+                        Target.position.y.ToString("F4") + "f," +
+                        Target.position.z.ToString("F4") + "f";
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 if (GUILayout.Button("Copy LocalPosition", "MiniButtonRight"))
                 {
                     GUIUtility.systemCopyBuffer =
-                        _transform.localPosition.x.ToString("F4") + "f," +
-                        _transform.localPosition.y.ToString("F4") + "f," +
-                        _transform.localPosition.z.ToString("F4") + "f";
+                        Target.localPosition.x.ToString("F4") + "f," +
+                        Target.localPosition.y.ToString("F4") + "f," +
+                        Target.localPosition.z.ToString("F4") + "f";
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 GUILayout.EndHorizontal();
@@ -131,17 +127,17 @@ namespace HT.Framework
                     if (_copyQuaternion)
                     {
                         GUIUtility.systemCopyBuffer =
-                        _transform.rotation.x.ToString("F4") + "f," +
-                        _transform.rotation.y.ToString("F4") + "f," +
-                        _transform.rotation.z.ToString("F4") + "f," +
-                        _transform.rotation.w.ToString("F4") + "f";
+                        Target.rotation.x.ToString("F4") + "f," +
+                        Target.rotation.y.ToString("F4") + "f," +
+                        Target.rotation.z.ToString("F4") + "f," +
+                        Target.rotation.w.ToString("F4") + "f";
                         GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                     }
                     else
                     {
-                        string x = _transform.rotation.eulerAngles.x > 180 ? ((int)_transform.rotation.eulerAngles.x - 360).ToString() : ((int)_transform.rotation.eulerAngles.x).ToString();
-                        string y = _transform.rotation.eulerAngles.y > 180 ? ((int)_transform.rotation.eulerAngles.y - 360).ToString() : ((int)_transform.rotation.eulerAngles.y).ToString();
-                        string z = _transform.rotation.eulerAngles.z > 180 ? ((int)_transform.rotation.eulerAngles.z - 360).ToString() : ((int)_transform.rotation.eulerAngles.z).ToString();
+                        string x = Target.rotation.eulerAngles.x > 180 ? ((int)Target.rotation.eulerAngles.x - 360).ToString() : ((int)Target.rotation.eulerAngles.x).ToString();
+                        string y = Target.rotation.eulerAngles.y > 180 ? ((int)Target.rotation.eulerAngles.y - 360).ToString() : ((int)Target.rotation.eulerAngles.y).ToString();
+                        string z = Target.rotation.eulerAngles.z > 180 ? ((int)Target.rotation.eulerAngles.z - 360).ToString() : ((int)Target.rotation.eulerAngles.z).ToString();
 
                         GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
                         GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
@@ -152,17 +148,17 @@ namespace HT.Framework
                     if (_copyQuaternion)
                     {
                         GUIUtility.systemCopyBuffer =
-                        _transform.localRotation.x.ToString("F4") + "f," +
-                        _transform.localRotation.y.ToString("F4") + "f," +
-                        _transform.localRotation.z.ToString("F4") + "f," +
-                        _transform.localRotation.w.ToString("F4") + "f";
+                        Target.localRotation.x.ToString("F4") + "f," +
+                        Target.localRotation.y.ToString("F4") + "f," +
+                        Target.localRotation.z.ToString("F4") + "f," +
+                        Target.localRotation.w.ToString("F4") + "f";
                         GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                     }
                     else
                     {
-                        string x = _transform.localRotation.eulerAngles.x > 180 ? ((int)_transform.localRotation.eulerAngles.x - 360).ToString() : ((int)_transform.localRotation.eulerAngles.x).ToString();
-                        string y = _transform.localRotation.eulerAngles.y > 180 ? ((int)_transform.localRotation.eulerAngles.y - 360).ToString() : ((int)_transform.localRotation.eulerAngles.y).ToString();
-                        string z = _transform.localRotation.eulerAngles.z > 180 ? ((int)_transform.localRotation.eulerAngles.z - 360).ToString() : ((int)_transform.localRotation.eulerAngles.z).ToString();
+                        string x = Target.localRotation.eulerAngles.x > 180 ? ((int)Target.localRotation.eulerAngles.x - 360).ToString() : ((int)Target.localRotation.eulerAngles.x).ToString();
+                        string y = Target.localRotation.eulerAngles.y > 180 ? ((int)Target.localRotation.eulerAngles.y - 360).ToString() : ((int)Target.localRotation.eulerAngles.y).ToString();
+                        string z = Target.localRotation.eulerAngles.z > 180 ? ((int)Target.localRotation.eulerAngles.z - 360).ToString() : ((int)Target.localRotation.eulerAngles.z).ToString();
 
                         GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
                         GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
@@ -174,9 +170,9 @@ namespace HT.Framework
                 if (GUILayout.Button("Copy Scale", "MiniButton"))
                 {
                     GUIUtility.systemCopyBuffer =
-                        _transform.localScale.x.ToString("F4") + "f," +
-                        _transform.localScale.y.ToString("F4") + "f," +
-                        _transform.localScale.z.ToString("F4") + "f";
+                        Target.localScale.x.ToString("F4") + "f," +
+                        Target.localScale.y.ToString("F4") + "f," +
+                        Target.localScale.z.ToString("F4") + "f";
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 GUILayout.EndHorizontal();
@@ -186,13 +182,13 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Copy Name", "MiniButtonLeft"))
                 {
-                    GUIUtility.systemCopyBuffer = _transform.name;
+                    GUIUtility.systemCopyBuffer = Target.name;
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 if (GUILayout.Button("Copy FullName", "MiniButtonRight"))
                 {
                     List<Transform> transforms = new List<Transform>();
-                    Transform transform = _transform;
+                    Transform transform = Target;
                     transforms.Add(transform);
                     while (transform.parent)
                     {

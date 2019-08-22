@@ -6,24 +6,19 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(InputManager))]
-    public sealed class InputManagerInspector : ModuleEditor
+    public sealed class InputManagerInspector : HTFEditor<InputManager>
     {
-        private InputManager _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as InputManager;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Input manager, managing cross platform input!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("InputDevice ");
-            if (GUILayout.Button(_target.InputDeviceType, "MiniPopup"))
+            if (GUILayout.Button(Target.InputDeviceType, "MiniPopup"))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -32,10 +27,10 @@ namespace HT.Framework
                     if (types[i].IsSubclassOf(typeof(InputDeviceBase)))
                     {
                         int j = i;
-                        gm.AddItem(new GUIContent(types[j].FullName), _target.InputDeviceType == types[j].FullName, () =>
+                        gm.AddItem(new GUIContent(types[j].FullName), Target.InputDeviceType == types[j].FullName, () =>
                         {
                             Undo.RecordObject(target, "Set InputDevice");
-                            _target.InputDeviceType = types[j].FullName;
+                            Target.InputDeviceType = types[j].FullName;
                             HasChanged();
                         });
                     }

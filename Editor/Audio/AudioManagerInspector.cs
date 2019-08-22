@@ -6,89 +6,74 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(AudioManager))]
-    public sealed class AudioManagerInspector : ModuleEditor
+    public sealed class AudioManagerInspector : HTFEditor<AudioManager>
     {
-        private AudioManager _target;
-
         private AudioSource _backgroundAudio;
         private AudioSource _singleAudio;
         private List<AudioSource> _multipleAudio;
         private Dictionary<GameObject, AudioSource> _worldAudio;
-
-        protected override void OnEnable()
+        
+        protected override void OnRuntimeEnable()
         {
-            _target = target as AudioManager;
+            base.OnRuntimeEnable();
 
-            base.OnEnable();
+            _backgroundAudio = Target.GetType().GetField("_backgroundAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as AudioSource;
+            _singleAudio = Target.GetType().GetField("_singleAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as AudioSource;
+            _multipleAudio = Target.GetType().GetField("_multipleAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as List<AudioSource>;
+            _worldAudio = Target.GetType().GetField("_worldAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<GameObject, AudioSource>;
         }
 
-        protected override void OnPlayingEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            base.OnPlayingEnable();
+            base.OnInspectorDefaultGUI();
 
-            _backgroundAudio = _target.GetType().GetField("_backgroundAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as AudioSource;
-            _singleAudio = _target.GetType().GetField("_singleAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as AudioSource;
-            _multipleAudio = _target.GetType().GetField("_multipleAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as List<AudioSource>;
-            _worldAudio = _target.GetType().GetField("_worldAudio", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<GameObject, AudioSource>;
-        }
-
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Audio Manager, manage all audio playback, pause, stop, etc.", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(_target.BackgroundPriority, out _target.BackgroundPriority, 0, 256, "Background Priority");
+            IntSlider(Target.BackgroundPriority, out Target.BackgroundPriority, 0, 256, "Background Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(_target.BackgroundVolume, out _target.BackgroundVolume, 0f, 1f, "Background Volume");
+            FloatSlider(Target.BackgroundVolume, out Target.BackgroundVolume, 0f, 1f, "Background Volume");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(_target.SinglePriority, out _target.SinglePriority, 0, 256, "Single Priority");
+            IntSlider(Target.SinglePriority, out Target.SinglePriority, 0, 256, "Single Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(_target.SingleVolume, out _target.SingleVolume, 0f, 1f, "Single Volume");
+            FloatSlider(Target.SingleVolume, out Target.SingleVolume, 0f, 1f, "Single Volume");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(_target.MultiplePriority, out _target.MultiplePriority, 0, 256, "Multiple Priority");
+            IntSlider(Target.MultiplePriority, out Target.MultiplePriority, 0, 256, "Multiple Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(_target.MultipleVolume, out _target.MultipleVolume, 0f, 1f, "Multiple Volume");
+            FloatSlider(Target.MultipleVolume, out Target.MultipleVolume, 0f, 1f, "Multiple Volume");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(_target.WorldPriority, out _target.WorldPriority, 0, 256, "WorldSound Priority");
+            IntSlider(Target.WorldPriority, out Target.WorldPriority, 0, 256, "WorldSound Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(_target.WorldVolume, out _target.WorldVolume, 0f, 1f, "WorldSound Volume");
+            FloatSlider(Target.WorldVolume, out Target.WorldVolume, 0f, 1f, "WorldSound Volume");
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
-
-            GUILayout.BeginVertical("Helpbox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
+            base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Mute: ");
-            bool mute = EditorGUILayout.Toggle(_target.Mute);
-            if (_target.Mute != mute)
+            bool mute = EditorGUILayout.Toggle(Target.Mute);
+            if (Target.Mute != mute)
             {
-                _target.Mute = mute;
+                Target.Mute = mute;
             }
             GUILayout.EndHorizontal();
 
@@ -98,15 +83,15 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Pause", "minibuttonleft"))
             {
-                _target.PauseBackgroundMusic();
+                Target.PauseBackgroundMusic();
             }
             if (GUILayout.Button("UnPause", "minibuttonmid"))
             {
-                _target.UnPauseBackgroundMusic();
+                Target.UnPauseBackgroundMusic();
             }
             if (GUILayout.Button("Stop", "minibuttonright"))
             {
-                _target.StopBackgroundMusic();
+                Target.StopBackgroundMusic();
             }
             GUILayout.EndHorizontal();
 
@@ -137,15 +122,15 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Pause", "minibuttonleft"))
             {
-                _target.PauseSingleSound();
+                Target.PauseSingleSound();
             }
             if (GUILayout.Button("UnPause", "minibuttonmid"))
             {
-                _target.UnPauseSingleSound();
+                Target.UnPauseSingleSound();
             }
             if (GUILayout.Button("Stop", "minibuttonright"))
             {
-                _target.StopSingleSound();
+                Target.StopSingleSound();
             }
             GUILayout.EndHorizontal();
 
@@ -176,11 +161,11 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Clear", "minibuttonleft"))
             {
-                _target.ClearIdleMultipleAudioSource();
+                Target.ClearIdleMultipleAudioSource();
             }
             if (GUILayout.Button("Stop All", "minibuttonright"))
             {
-                _target.StopAllMultipleSound();
+                Target.StopAllMultipleSound();
             }
             GUILayout.EndHorizontal();
 
@@ -220,11 +205,11 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Clear", "minibuttonleft"))
             {
-                _target.ClearIdleWorldAudioSource();
+                Target.ClearIdleWorldAudioSource();
             }
             if (GUILayout.Button("Stop All", "minibuttonright"))
             {
-                _target.StopAllWorldSound();
+                Target.StopAllWorldSound();
             }
             GUILayout.EndHorizontal();
 
@@ -257,8 +242,6 @@ namespace HT.Framework
             GUILayout.Label("Stoped: " + stopedCount);
             GUILayout.EndHorizontal();
             #endregion
-            
-            GUILayout.EndVertical();
         }
     }
 }

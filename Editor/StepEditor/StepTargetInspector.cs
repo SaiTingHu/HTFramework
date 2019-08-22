@@ -5,29 +5,24 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(StepTarget))]
-    public sealed class StepTargetInspector : ModuleEditor
+    public sealed class StepTargetInspector : HTFEditor<StepTarget>
     {
-        private StepTarget _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as StepTarget;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Generate GUID"))
             {
-                if (_target.GUID == "<None>")
+                if (Target.GUID == "<None>")
                 {
-                    _target.GUID = Guid.NewGuid().ToString();
+                    Target.GUID = Guid.NewGuid().ToString();
                 }
                 else
                 {
                     if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to regenerate the GUID？", "Yes", "No"))
                     {
-                        _target.GUID = Guid.NewGuid().ToString();
+                        Target.GUID = Guid.NewGuid().ToString();
                     }
                 }
             }
@@ -35,14 +30,14 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("GUID: ", GUILayout.Width(50));
-            GUI.color = _target.GUID == "<None>" ? Color.red : Color.white;
-            EditorGUILayout.TextField(_target.GUID);
+            GUI.color = Target.GUID == "<None>" ? Color.red : Color.white;
+            EditorGUILayout.TextField(Target.GUID);
             GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("State: ", GUILayout.Width(50));
-            _target.State = (StepTargetState)EditorGUILayout.EnumPopup(_target.State);
+            Target.State = (StepTargetState)EditorGUILayout.EnumPopup(Target.State);
             GUILayout.EndHorizontal();
         }
     }

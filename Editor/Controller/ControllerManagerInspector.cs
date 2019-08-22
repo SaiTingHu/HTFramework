@@ -5,28 +5,19 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ControllerManager))]
-    public sealed class ControllerManagerInspector : ModuleEditor
+    public sealed class ControllerManagerInspector : HTFEditor<ControllerManager>
     {
-        private ControllerManager _target;
-
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
         private Vector3 _positionLimitCenter;
         private Vector3 _positionLimitSize;
-
-        protected override void OnEnable()
+        
+        protected override void OnRuntimeEnable()
         {
-            _target = target as ControllerManager;
+            base.OnRuntimeEnable();
 
-            base.OnEnable();
-        }
-
-        protected override void OnPlayingEnable()
-        {
-            base.OnPlayingEnable();
-
-            _mousePosition = _target.GetType().GetField("_mousePosition", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as MousePosition;
-            _mouseRotation = _target.GetType().GetField("_mouseRotation", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as MouseRotation;
+            _mousePosition = Target.GetType().GetField("_mousePosition", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as MousePosition;
+            _mouseRotation = Target.GetType().GetField("_mouseRotation", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as MouseRotation;
             _positionLimitCenter = new Vector3((_mousePosition.XMaxLimit - _mousePosition.XMinLimit) / 2 + _mousePosition.XMinLimit
                 , (_mousePosition.YMaxLimit - _mousePosition.YMinLimit) / 2 + _mousePosition.YMinLimit
                 , (_mousePosition.ZMaxLimit - _mousePosition.ZMinLimit) / 2 + _mousePosition.ZMinLimit);
@@ -35,32 +26,32 @@ namespace HT.Framework
                 , _mousePosition.ZMaxLimit - _mousePosition.ZMinLimit);
         }
 
-        public override void OnInspectorGUI()
+        protected override void OnInspectorDefaultGUI()
         {
+            base.OnInspectorDefaultGUI();
+
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Controller Manager, It includes free control, first person control, third person control, etc!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            EnumPopup(_target.DefaultEase, out _target.DefaultEase, "Default Ease");
+            EnumPopup(Target.DefaultEase, out Target.DefaultEase, "Default Ease");
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            EnumPopup(_target.DefaultAutoPlay, out _target.DefaultAutoPlay, "Default Auto Play");
+            EnumPopup(Target.DefaultAutoPlay, out Target.DefaultAutoPlay, "Default Auto Play");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsAutoKill, out _target.IsAutoKill, "Tweener Auto Kill");
+            Toggle(Target.IsAutoKill, out Target.IsAutoKill, "Tweener Auto Kill");
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
         public void OnSceneGUI()
         {
             if (EditorApplication.isPlaying)
             {
-                if (_target.NeedLimit)
+                if (Target.NeedLimit)
                 {
                     Handles.color = Color.red;
                     Handles.DrawWireCube(_positionLimitCenter, _positionLimitSize);
@@ -68,46 +59,40 @@ namespace HT.Framework
             }
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
-
-            GUILayout.BeginVertical("Helpbox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
+            base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Main Camera: ", GUILayout.Width(120));
-            EditorGUILayout.ObjectField(_target.MainCamera, typeof(Camera), true);
+            EditorGUILayout.ObjectField(Target.MainCamera, typeof(Camera), true);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Ray Target: ", GUILayout.Width(120));
-            EditorGUILayout.ObjectField(_target.RayTargetObj, typeof(GameObject), true);
+            EditorGUILayout.ObjectField(Target.RayTargetObj, typeof(GameObject), true);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Control Mode: ", GUILayout.Width(120));
-            _target.TheControlMode = (ControlMode)EditorGUILayout.EnumPopup(_target.TheControlMode);
+            Target.TheControlMode = (ControlMode)EditorGUILayout.EnumPopup(Target.TheControlMode);
             GUILayout.EndHorizontal();
 
-            if (_target.TheControlMode == ControlMode.FreeControl)
+            if (Target.TheControlMode == ControlMode.FreeControl)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Need Limit: ", GUILayout.Width(120));
-                _target.NeedLimit = EditorGUILayout.Toggle(_target.NeedLimit);
+                Target.NeedLimit = EditorGUILayout.Toggle(Target.NeedLimit);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Position Control: ", GUILayout.Width(120));
-                _target.EnablePositionControl = EditorGUILayout.Toggle(_target.EnablePositionControl);
+                Target.EnablePositionControl = EditorGUILayout.Toggle(Target.EnablePositionControl);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Rotation Control: ", GUILayout.Width(120));
-                _target.EnableRotationControl = EditorGUILayout.Toggle(_target.EnableRotationControl);
+                Target.EnableRotationControl = EditorGUILayout.Toggle(Target.EnableRotationControl);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -116,7 +101,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label(_target.LookPoint.ToString());
+                GUILayout.Label(Target.LookPoint.ToString());
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Copy", "Minibutton"))
                 {
@@ -133,7 +118,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label(_target.LookAngle.ToString());
+                GUILayout.Label(Target.LookAngle.ToString());
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Copy", "Minibutton"))
                 {
@@ -144,8 +129,6 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
             }
-
-            GUILayout.EndVertical();
         }
     }
 }

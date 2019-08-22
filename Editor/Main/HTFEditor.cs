@@ -5,8 +5,55 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public abstract class ModuleEditor : Editor
+    public abstract class HTFEditor<T> : Editor where T : UnityEngine.Object
     {
+        protected T Target;
+
+        private void OnEnable()
+        {
+            Target = target as T;
+
+            OnDefaultEnable();
+
+            if (EditorApplication.isPlaying)
+            {
+                OnRuntimeEnable();
+            }
+        }
+
+        public override void OnInspectorGUI()
+        {
+            OnInspectorDefaultGUI();
+
+            if (EditorApplication.isPlaying)
+            {
+                GUI.backgroundColor = Color.cyan;
+                GUI.color = Color.white;
+
+                GUILayout.BeginVertical("Helpbox");
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Runtime Data", "BoldLabel");
+                GUILayout.EndHorizontal();
+
+                OnInspectorRuntimeGUI();
+
+                GUILayout.EndVertical();
+            }
+        }
+
+        protected virtual void OnDefaultEnable()
+        { }
+
+        protected virtual void OnRuntimeEnable()
+        { }
+
+        protected virtual void OnInspectorDefaultGUI()
+        { }
+
+        protected virtual void OnInspectorRuntimeGUI()
+        { }
+
         protected void HasChanged()
         {
             if (!EditorApplication.isPlaying)
@@ -20,33 +67,7 @@ namespace HT.Framework
             }
         }
 
-        protected virtual void OnEnable()
-        {
-            if (EditorApplication.isPlaying)
-            {
-                OnPlayingEnable();
-            }
-        }
-
-        protected virtual void OnPlayingEnable()
-        {
-
-        }
-
-        public override void OnInspectorGUI()
-        {
-            if (EditorApplication.isPlaying)
-            {
-                OnPlayingInspectorGUI();
-            }
-        }
-        
-        protected virtual void OnPlayingInspectorGUI()
-        {
-
-        }
-
-        //可撤销操作、根据改变SetDirty的控件
+        //可撤销操作、根据改变 SetDirty 的控件
         /// <summary>
         /// 制作一个Button
         /// </summary>

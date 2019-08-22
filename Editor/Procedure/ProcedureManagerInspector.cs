@@ -6,14 +6,13 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ProcedureManager))]
-    public sealed class ProcedureManagerInspector : ModuleEditor
+    public sealed class ProcedureManagerInspector : HTFEditor<ProcedureManager>
     {
-        private ProcedureManager _target;
         private Dictionary<string, string> _procedureTypes = new Dictionary<string, string>();
 
-        protected override void OnEnable()
+        protected override void OnDefaultEnable()
         {
-            _target = target as ProcedureManager;
+            base.OnDefaultEnable();
 
             _procedureTypes.Clear();
             string[] typePaths = AssetDatabase.GetAllAssetPaths();
@@ -30,28 +29,30 @@ namespace HT.Framework
             }
         }
 
-        public override void OnInspectorGUI()
+        protected override void OnInspectorDefaultGUI()
         {
+            base.OnInspectorDefaultGUI();
+
             GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Activated Procedure Count:" + _target.ActivatedProcedures.Count, MessageType.Info);
+            EditorGUILayout.HelpBox("Activated Procedure Count:" + Target.ActivatedProcedures.Count, MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = _target.DefaultProcedure != "";
-            GUILayout.Label("Default: " + _target.DefaultProcedure);
+            GUI.enabled = Target.DefaultProcedure != "";
+            GUILayout.Label("Default: " + Target.DefaultProcedure);
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
-            GUI.enabled = _target.ActivatedProcedures.Count > 0;
+            GUI.enabled = Target.ActivatedProcedures.Count > 0;
             if (GUILayout.Button("Set Default", "MiniPopup"))
             {
                 GenericMenu gm = new GenericMenu();
-                for (int i = 0; i < _target.ActivatedProcedures.Count; i++)
+                for (int i = 0; i < Target.ActivatedProcedures.Count; i++)
                 {
                     int j = i;
-                    gm.AddItem(new GUIContent(_target.ActivatedProcedures[j]), _target.DefaultProcedure == _target.ActivatedProcedures[j], () =>
+                    gm.AddItem(new GUIContent(Target.ActivatedProcedures[j]), Target.DefaultProcedure == Target.ActivatedProcedures[j], () =>
                     {
                         Undo.RecordObject(target, "Set Default Procedure");
-                        _target.DefaultProcedure = _target.ActivatedProcedures[j];
+                        Target.DefaultProcedure = Target.ActivatedProcedures[j];
                         HasChanged();
                     });
                 }
@@ -60,63 +61,63 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
 
-            for (int i = 0; i < _target.ActivatedProcedures.Count; i++)
+            for (int i = 0; i < Target.ActivatedProcedures.Count; i++)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label((i + 1) + "." + _target.ActivatedProcedures[i]);
+                GUILayout.Label((i + 1) + "." + Target.ActivatedProcedures[i]);
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("▲", "MiniButtonleft"))
                 {
                     if (i > 0)
                     {
                         Undo.RecordObject(target, "Set Procedure Order");
-                        string procedure = _target.ActivatedProcedures[i];
-                        _target.ActivatedProcedures.RemoveAt(i);
-                        _target.ActivatedProcedures.Insert(i - 1, procedure);
+                        string procedure = Target.ActivatedProcedures[i];
+                        Target.ActivatedProcedures.RemoveAt(i);
+                        Target.ActivatedProcedures.Insert(i - 1, procedure);
                         HasChanged();
                         continue;
                     }
                 }
                 if (GUILayout.Button("▼", "MiniButtonmid"))
                 {
-                    if (i < _target.ActivatedProcedures.Count - 1)
+                    if (i < Target.ActivatedProcedures.Count - 1)
                     {
                         Undo.RecordObject(target, "Set Procedure Order");
-                        string procedure = _target.ActivatedProcedures[i];
-                        _target.ActivatedProcedures.RemoveAt(i);
-                        _target.ActivatedProcedures.Insert(i + 1, procedure);
+                        string procedure = Target.ActivatedProcedures[i];
+                        Target.ActivatedProcedures.RemoveAt(i);
+                        Target.ActivatedProcedures.Insert(i + 1, procedure);
                         HasChanged();
                         continue;
                     }
                 }
                 if (GUILayout.Button("Edit", "MiniButtonmid"))
                 {
-                    if (_procedureTypes.ContainsKey(_target.ActivatedProcedures[i]))
+                    if (_procedureTypes.ContainsKey(Target.ActivatedProcedures[i]))
                     {
-                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_procedureTypes[_target.ActivatedProcedures[i]], typeof(TextAsset));
+                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_procedureTypes[Target.ActivatedProcedures[i]], typeof(TextAsset));
                         if (classFile)
                             AssetDatabase.OpenAsset(classFile);
                         else
-                            GlobalTools.LogError("没有找到 " + _target.ActivatedProcedures[i] + " 脚本文件！");
+                            GlobalTools.LogError("没有找到 " + Target.ActivatedProcedures[i] + " 脚本文件！");
                     }
                     else
                     {
-                        GlobalTools.LogError("没有找到 " + _target.ActivatedProcedures[i] + " 脚本文件！");
+                        GlobalTools.LogError("没有找到 " + Target.ActivatedProcedures[i] + " 脚本文件！");
                     }
                 }
                 if (GUILayout.Button("Delete", "minibuttonright"))
                 {
                     Undo.RecordObject(target, "Delete Procedure");
-                    if (_target.DefaultProcedure == _target.ActivatedProcedures[i])
+                    if (Target.DefaultProcedure == Target.ActivatedProcedures[i])
                     {
-                        _target.DefaultProcedure = "";
+                        Target.DefaultProcedure = "";
                     }
 
-                    _target.ActivatedProcedures.RemoveAt(i);
+                    Target.ActivatedProcedures.RemoveAt(i);
 
-                    if (_target.DefaultProcedure == "" && _target.ActivatedProcedures.Count > 0)
+                    if (Target.DefaultProcedure == "" && Target.ActivatedProcedures.Count > 0)
                     {
-                        _target.DefaultProcedure = _target.ActivatedProcedures[0];
+                        Target.DefaultProcedure = Target.ActivatedProcedures[0];
                     }
                     HasChanged();
                 }
@@ -133,7 +134,7 @@ namespace HT.Framework
                     if (types[i].IsSubclassOf(typeof(Procedure)))
                     {
                         int j = i;
-                        if (_target.ActivatedProcedures.Contains(types[j].FullName))
+                        if (Target.ActivatedProcedures.Contains(types[j].FullName))
                         {
                             gm.AddDisabledItem(new GUIContent(types[j].FullName));
                         }
@@ -142,11 +143,11 @@ namespace HT.Framework
                             gm.AddItem(new GUIContent(types[j].FullName), false, () =>
                             {
                                 Undo.RecordObject(target, "Add Procedure");
-                                _target.ActivatedProcedures.Add(types[j].FullName);
+                                Target.ActivatedProcedures.Add(types[j].FullName);
 
-                                if (_target.DefaultProcedure == "")
+                                if (Target.DefaultProcedure == "")
                                 {
-                                    _target.DefaultProcedure = _target.ActivatedProcedures[0];
+                                    Target.DefaultProcedure = Target.ActivatedProcedures[0];
                                 }
                                 HasChanged();
                             });

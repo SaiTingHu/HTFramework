@@ -4,29 +4,24 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(NetworkManager))]
-    public sealed class NetworkManagerInspector : ModuleEditor
+    public sealed class NetworkManagerInspector : HTFEditor<NetworkManager>
     {
-        private NetworkManager _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as NetworkManager;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Network Manager, implementing basic network client with socket!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("IP", GUILayout.Width(50));
-            TextField(_target.IP, out _target.IP);
+            TextField(Target.IP, out Target.IP);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Port", GUILayout.Width(50));
-            IntField(_target.Port, out _target.Port);
+            IntField(Target.Port, out Target.Port);
             GUILayout.EndHorizontal();
         }
     }

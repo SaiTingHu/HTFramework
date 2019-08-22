@@ -4,26 +4,21 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ResourceManager))]
-    public sealed class ResourceManagerInspector : ModuleEditor
+    public sealed class ResourceManagerInspector : HTFEditor<ResourceManager>
     {
-        private ResourceManager _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as ResourceManager;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Resource Manager, Manage all resource loading and unloading!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            EnumPopup(_target.Mode, out _target.Mode, "Load Mode");
+            EnumPopup(Target.Mode, out Target.Mode, "Load Mode");
             GUILayout.EndHorizontal();
 
-            if (_target.Mode == ResourceLoadMode.Resource)
+            if (Target.Mode == ResourceLoadMode.Resource)
             {
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Resources Folder View", "LargeButton"))
@@ -36,14 +31,14 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
             }
-            else if (_target.Mode == ResourceLoadMode.AssetBundle)
+            else if (Target.Mode == ResourceLoadMode.AssetBundle)
             {
                 GUILayout.BeginHorizontal();
-                Toggle(_target.IsEditorMode, out _target.IsEditorMode, "Editor Mode");
+                Toggle(Target.IsEditorMode, out Target.IsEditorMode, "Editor Mode");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                Toggle(_target.IsCacheAssetBundle, out _target.IsCacheAssetBundle, "Cache AssetBundle");
+                Toggle(Target.IsCacheAssetBundle, out Target.IsCacheAssetBundle, "Cache AssetBundle");
                 GUILayout.EndHorizontal();
             }
         }

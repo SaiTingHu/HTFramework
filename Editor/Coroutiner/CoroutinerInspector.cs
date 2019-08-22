@@ -4,17 +4,12 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Coroutiner))]
-    public sealed class CoroutinerInspector : ModuleEditor
+    public sealed class CoroutinerInspector : HTFEditor<Coroutiner>
     {
-        private Coroutiner _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as Coroutiner;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Coroutiner, Execution and destruction of unified scheduling Coroutine!", MessageType.Info);
             GUILayout.EndHorizontal();
@@ -24,7 +19,7 @@ namespace HT.Framework
             {
                 CoroutinerTrackerWindow tracker = EditorWindow.GetWindow<CoroutinerTrackerWindow>();
                 tracker.titleContent.text = "Coroutiner Tracker";
-                tracker.Init(_target);
+                tracker.Init(Target);
                 tracker.position = new Rect(200, 200, 1020, 800);
                 tracker.Show();
             }

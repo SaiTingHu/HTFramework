@@ -4,23 +4,18 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(AspectTracker))]
-    public sealed class AspectTrackerInspector : ModuleEditor
+    public sealed class AspectTrackerInspector : HTFEditor<AspectTracker>
     {
-        private AspectTracker _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as AspectTracker;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Aspect Tracker, you can track code calls anywhere in the program!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsEnableAspectTrack, out _target.IsEnableAspectTrack, "Is Track");
+            Toggle(Target.IsEnableAspectTrack, out Target.IsEnableAspectTrack, "Is Track");
             GUILayout.EndHorizontal();
         }
     }

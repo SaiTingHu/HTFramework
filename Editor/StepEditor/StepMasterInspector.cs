@@ -6,70 +6,55 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(StepMaster))]
-    public sealed class StepMasterInspector : ModuleEditor
+    public sealed class StepMasterInspector : HTFEditor<StepMaster>
     {
-        private StepMaster _target;
-
         private Dictionary<string, StepContent> _stepContentIDs;
         private Dictionary<string, bool> _stepContentEnables;
         private Dictionary<string, string> _customOrder;
-
-        protected override void OnEnable()
+        
+        protected override void OnRuntimeEnable()
         {
-            _target = target as StepMaster;
-            
-            base.OnEnable();
+            base.OnRuntimeEnable();
+
+            _stepContentIDs = Target.GetType().GetField("_stepContentIDs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, StepContent>;
+            _stepContentEnables = Target.GetType().GetField("_stepContentEnables", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, bool>;
+            _customOrder = Target.GetType().GetField("_customOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, string>;
         }
 
-        protected override void OnPlayingEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            base.OnPlayingEnable();
+            base.OnInspectorDefaultGUI();
 
-            _stepContentIDs = _target.GetType().GetField("_stepContentIDs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<string, StepContent>;
-            _stepContentEnables = _target.GetType().GetField("_stepContentEnables", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<string, bool>;
-            _customOrder = _target.GetType().GetField("_customOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_target) as Dictionary<string, string>;
-        }
-
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Step Master, the stepflow controller!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            ObjectField(_target.ContentAsset, out _target.ContentAsset, false, "Asset");
+            ObjectField(Target.ContentAsset, out Target.ContentAsset, false, "Asset");
             GUILayout.EndHorizontal();
-
-            base.OnInspectorGUI();
         }
 
-        protected override void OnPlayingInspectorGUI()
+        protected override void OnInspectorRuntimeGUI()
         {
-            base.OnPlayingInspectorGUI();
+            base.OnInspectorRuntimeGUI();
 
-            GUILayout.BeginVertical("Helpbox");
-            
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Runtime Data", "BoldLabel");
-            GUILayout.EndHorizontal();
-
-            if (_target.ContentAsset != null)
+            if (Target.ContentAsset != null)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Step Count: " + _target.StepCount);
+                GUILayout.Label("Step Count: " + Target.StepCount);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Current Step: " + _target.CurrentStepIndex);
+                GUILayout.Label("Current Step: " + Target.CurrentStepIndex);
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Skip", "Minibutton"))
                 {
-                    _target.SkipCurrentStep();
+                    Target.SkipCurrentStep();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Current Step Name: " + (_target.CurrentStepContent != null ? _target.CurrentStepContent.Name : "<None>"));
+                GUILayout.Label("Current Step Name: " + (Target.CurrentStepContent != null ? Target.CurrentStepContent.Name : "<None>"));
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -105,8 +90,6 @@ namespace HT.Framework
                 GUILayout.Label("StepMaster Asset is null!");
                 GUILayout.EndHorizontal();
             }
-
-            GUILayout.EndVertical();
         }
     }
 }

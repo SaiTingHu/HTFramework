@@ -4,24 +4,19 @@ using UnityEditor;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ReferencePoolManager))]
-    public sealed class ReferencePoolManagerInspector : ModuleEditor
+    public sealed class ReferencePoolManagerInspector : HTFEditor<ReferencePoolManager>
     {
-        private ReferencePoolManager _target;
-
-        protected override void OnEnable()
+        protected override void OnInspectorDefaultGUI()
         {
-            _target = target as ReferencePoolManager;
-        }
+            base.OnInspectorDefaultGUI();
 
-        public override void OnInspectorGUI()
-        {
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Reference pool manager, it manages all reference pools and can register new reference pools!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Limit:");
-            IntField(_target.Limit, out _target.Limit);
+            IntField(Target.Limit, out Target.Limit);
             GUILayout.EndHorizontal();
         }
     }

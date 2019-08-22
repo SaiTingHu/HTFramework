@@ -6,20 +6,20 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(HotfixManager))]
-    public sealed class HotfixManagerInspector : ModuleEditor
+    public sealed class HotfixManagerInspector : HTFEditor<HotfixManager>
     {
         private static readonly string SourceDllPath = "/Library/ScriptAssemblies/Hotfix.dll";
         private static readonly string AssetsDllPath = "/Assets/Hotfix/Hotfix.dll.bytes";
 
-        private HotfixManager _target;
         private bool _hotfixIsCreated = false;
         private string _hotfixDirectory = "/Hotfix/";
         private string _hotfixEnvironmentPath = "/Hotfix/Environment/HotfixEnvironment.cs";
         private string _hotfixAssemblyDefinitionPath = "/Hotfix/Hotfix.asmdef";
 
-        protected override void OnEnable()
+        protected override void OnDefaultEnable()
         {
-            _target = target as HotfixManager;
+            base.OnDefaultEnable();
+
             _hotfixIsCreated = false;
             string hotfixDirectory = Application.dataPath + _hotfixDirectory;
             string hotfixEnvironmentPath = Application.dataPath + _hotfixEnvironmentPath;
@@ -36,17 +36,19 @@ namespace HT.Framework
             }
         }
 
-        public override void OnInspectorGUI()
+        protected override void OnInspectorDefaultGUI()
         {
+            base.OnInspectorDefaultGUI();
+
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Hotfix manager, the hot update in this game!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(_target.IsEnableHotfix, out _target.IsEnableHotfix, "Is Enable Hotfix");
+            Toggle(Target.IsEnableHotfix, out Target.IsEnableHotfix, "Is Enable Hotfix");
             GUILayout.EndHorizontal();
 
-            if (_target.IsEnableHotfix)
+            if (Target.IsEnableHotfix)
             {
                 #region HotfixDll
                 GUILayout.BeginVertical("box");
@@ -56,7 +58,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                TextField(_target.HotfixDllAssetBundleName, out _target.HotfixDllAssetBundleName);
+                TextField(Target.HotfixDllAssetBundleName, out Target.HotfixDllAssetBundleName);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -64,7 +66,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                TextField(_target.HotfixDllAssetsPath, out _target.HotfixDllAssetsPath);
+                TextField(Target.HotfixDllAssetsPath, out Target.HotfixDllAssetsPath);
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
