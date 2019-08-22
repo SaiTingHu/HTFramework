@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -6,6 +8,19 @@ namespace HT.Framework
     [CustomEditor(typeof(ResourceManager))]
     public sealed class ResourceManagerInspector : HTFEditor<ResourceManager>
     {
+        private string _assetBundleRootPath;
+        private Dictionary<string, AssetBundle> _assetBundles;
+        private AssetBundleManifest _assetBundleManifest;
+
+        protected override void OnRuntimeEnable()
+        {
+            base.OnRuntimeEnable();
+
+            _assetBundleRootPath = (string)Target.GetType().GetField("_assetBundleRootPath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target);
+            _assetBundles = Target.GetType().GetField("_assetBundles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, AssetBundle>;
+            _assetBundleManifest = Target.GetType().GetField("_assetBundleManifest", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as AssetBundleManifest;
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -40,6 +55,46 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 Toggle(Target.IsCacheAssetBundle, out Target.IsCacheAssetBundle, "Cache AssetBundle");
                 GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Manifest Name");
+                TextField(Target.AssetBundleManifestName, out Target.AssetBundleManifestName);
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            if (Target.Mode == ResourceLoadMode.AssetBundle)
+            {
+                if (!Target.IsEditorMode)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Root Path: ", GUILayout.Width(120));
+                    GUILayout.TextField(_assetBundleRootPath);
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Manifest: ", GUILayout.Width(120));
+                    EditorGUILayout.ObjectField(_assetBundleManifest, typeof(AssetBundleManifest), false);
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("AssetBundles: ", GUILayout.Width(120));
+                    GUILayout.Label(_assetBundles.Count.ToString());
+                    GUILayout.EndHorizontal();
+
+                    foreach (KeyValuePair<string, AssetBundle> item in _assetBundles)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(20);
+                        GUILayout.Label(item.Key);
+                        EditorGUILayout.ObjectField(item.Value, typeof(AssetBundle), false);
+                        GUILayout.EndHorizontal();
+                    }
+                }
             }
         }
     }

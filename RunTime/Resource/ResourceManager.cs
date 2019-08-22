@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -16,22 +17,28 @@ namespace HT.Framework
     public sealed class ResourceManager : ModuleManager
     {
         /// <summary>
-        /// 资源加载模式
+        /// 资源加载模式【请勿在代码中修改】
         /// </summary>
         public ResourceLoadMode Mode = ResourceLoadMode.Resource;
         /// <summary>
-        /// 是否是编辑器模式
+        /// 是否是编辑器模式【请勿在代码中修改】
         /// </summary>
         public bool IsEditorMode = true;
         /// <summary>
-        /// 是否缓存AB包
+        /// 是否缓存AB包【请勿在代码中修改】
         /// </summary>
         public bool IsCacheAssetBundle = true;
+        /// <summary>
+        /// 所有AssetBundle资源包清单的名称【请勿在代码中修改】
+        /// </summary>
+        public string AssetBundleManifestName;
 
-        //AssetBundle资源根路径
-        private string _assetBundlePath;
+        //AssetBundle资源加载根路径
+        private string _assetBundleRootPath;
         //缓存的所有AssetBundle包
         private Dictionary<string, AssetBundle> _assetBundles = new Dictionary<string, AssetBundle>();
+        //所有AssetBundle资源包清单
+        private AssetBundleManifest _assetBundleManifest;
         //单线下载中
         private bool _isLoading = false;
         //单线下载等待
@@ -41,8 +48,10 @@ namespace HT.Framework
         {
             base.OnInitialization();
 
-            _assetBundlePath = Application.streamingAssetsPath + "/";
+            _assetBundleRootPath = Application.streamingAssetsPath + "/";
             _loadWait = new WaitUntil(() => { return !_isLoading; });
+
+            LoadAssetBundleManifest();
         }
 
         public override void OnTermination()
@@ -62,7 +71,7 @@ namespace HT.Framework
         /// <param name="loadDoneAction">资源加载完成回调</param>
         public void LoadAssetAsync<T>(AssetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : UnityEngine.Object
         {
-            StartCoroutine(LoadCoroutineAsync(info, loadingAction, loadDoneAction));
+            StartCoroutine(LoadAssetCoroutine(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载数据集（异步）
@@ -73,7 +82,7 @@ namespace HT.Framework
         /// <param name="loadDoneAction">数据集加载完成回调</param>
         public void LoadDataSetAsync<T>(DataSetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : DataSet
         {
-            StartCoroutine(LoadCoroutineAsync(info, loadingAction, loadDoneAction));
+            StartCoroutine(LoadAssetCoroutine(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载预制体（异步）
@@ -85,7 +94,7 @@ namespace HT.Framework
         /// <param name="isUI">预制体是否是UI</param>
         public void LoadPrefabAsync(PrefabInfo info, Transform parent, HTFAction<float> loadingAction, HTFAction<GameObject> loadDoneAction, bool isUI = false)
         {
-            StartCoroutine(LoadCoroutineAsync(info, loadingAction, loadDoneAction, true, parent, isUI));
+            StartCoroutine(LoadAssetCoroutine(info, loadingAction, loadDoneAction, true, parent, isUI));
         }
         /// <summary>
         /// 加载资源（同步）
@@ -95,7 +104,7 @@ namespace HT.Framework
         /// <returns>加载完成的资源</returns>
         public T LoadAssetSynch<T>(AssetInfo info) where T : UnityEngine.Object
         {
-            return LoadSynch<T>(info);
+            return LoadAsset<T>(info);
         }
         /// <summary>
         /// 加载数据集（同步）
@@ -105,7 +114,7 @@ namespace HT.Framework
         /// <returns>加载完成的数据集</returns>
         public T LoadDataSetSynch<T>(DataSetInfo info) where T : DataSet
         {
-            return LoadSynch<T>(info);
+            return LoadAsset<T>(info);
         }
         /// <summary>
         /// 加载预制体（同步）
@@ -116,7 +125,26 @@ namespace HT.Framework
         /// <returns>加载完成的预制体</returns>
         public GameObject LoadPrefabSynch(PrefabInfo info, Transform parent, bool isUI = false)
         {
-            return LoadSynch<GameObject>(info, true, parent, isUI);
+            return LoadAsset<GameObject>(info, true, parent, isUI);
+        }
+
+        /// <summary>
+        /// 加载指定名称的AssetBundle包（异步）
+        /// </summary>
+        /// <param name="assetBundleName">AssetBundle包名称</param>
+        /// <param name="loadingAction">加载中回调</param>
+        /// <param name="loadDoneAction">加载完成回调</param>
+        private void LoadAssetBundleAsync(string assetBundleName, HTFAction<float> loadingAction, HTFAction<AssetBundle> loadDoneAction)
+        {
+            StartCoroutine(LoadAssetBundleCoroutine(assetBundleName, loadingAction, loadDoneAction));
+        }
+        /// <summary>
+        /// 加载指定名称的AssetBundle包（同步）
+        /// </summary>
+        /// <param name="assetBundleName">AssetBundle包名称</param>
+        private AssetBundle LoadAssetBundleSynch(string assetBundleName)
+        {
+            return LoadAssetBundle(assetBundleName);
         }
 
         /// <summary>
@@ -124,7 +152,7 @@ namespace HT.Framework
         /// </summary>
         public void SetAssetBundlePath(string path)
         {
-            _assetBundlePath = path;
+            _assetBundleRootPath = path;
         }
         /// <summary>
         /// 卸载资源（卸载AssetBundle）
@@ -172,12 +200,25 @@ namespace HT.Framework
             GC.Collect();
         }
 
-        private IEnumerator LoadCoroutineAsync<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        //异步加载资源
+        private IEnumerator LoadAssetCoroutine<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
         {
+            if (Mode == ResourceLoadMode.AssetBundle)
+            {
+                if (!IsEditorMode)
+                {
+                    LoadDependenciesAssetBundle(info.AssetBundleName);
+                }
+            }
+
+            DateTime beginTime = DateTime.Now;
+
             if (_isLoading)
             {
                 yield return _loadWait;
             }
+
+            DateTime waitTime = DateTime.Now;
 
             _isLoading = true;
 
@@ -247,7 +288,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                        UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + info.AssetBundleName);
                         DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
                         request.downloadHandler = handler;
                         request.SendWebRequest();
@@ -317,7 +358,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                    UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + info.AssetBundleName);
                     DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
                     request.downloadHandler = handler;
                     request.SendWebRequest();
@@ -368,6 +409,12 @@ namespace HT.Framework
 #endif
             }
 
+            DateTime endTime = DateTime.Now;
+
+            string log = string.Format("异步加载资源[{0}模式]：\r\n{1}\r\n[{2}]  等待耗时：{3}秒  加载耗时：{4}秒", Mode, Mode == ResourceLoadMode.Resource ? info.GetResourceFullPath() : info.GetAssetBundleFullPath(_assetBundleRootPath)
+                , asset ? "成功" : "失败", (waitTime - beginTime).TotalSeconds, (endTime - waitTime).TotalSeconds);
+            GlobalTools.LogInfo(log);
+
             if (asset)
             {
                 DataSetInfo dataSet = info as DataSetInfo;
@@ -382,8 +429,117 @@ namespace HT.Framework
 
             _isLoading = false;
         }
-        private T LoadSynch<T>(ResourceInfoBase info, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        //异步加载AB包
+        private IEnumerator LoadAssetBundleCoroutine(string assetBundleName, HTFAction<float> loadingAction, HTFAction<AssetBundle> loadDoneAction)
         {
+            if (_isLoading)
+            {
+                yield return _loadWait;
+            }
+
+            _isLoading = true;
+
+            AssetBundle assetBundle = null;
+
+            if (Mode == ResourceLoadMode.AssetBundle)
+            {
+#if UNITY_EDITOR
+                if (!IsEditorMode)
+                {
+                    if (_assetBundles.ContainsKey(assetBundleName))
+                    {
+                        assetBundle = _assetBundles[assetBundleName];
+                    }
+                    else
+                    {
+                        UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + assetBundleName);
+                        DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
+                        request.downloadHandler = handler;
+                        request.SendWebRequest();
+                        while (!request.isDone)
+                        {
+                            loadingAction?.Invoke(request.downloadProgress);
+                            yield return null;
+                        }
+                        if (!request.isNetworkError && !request.isHttpError)
+                        {
+                            if (handler.assetBundle)
+                            {
+                                _assetBundles.Add(assetBundleName, handler.assetBundle);
+                                assetBundle = handler.assetBundle;
+                            }
+                            else
+                            {
+                                GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                            }
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                        }
+                        request.Dispose();
+                        handler.Dispose();
+                    }
+                }
+#else
+                if (_assetBundles.ContainsKey(assetBundleName))
+                {
+                    assetBundle = _assetBundles[assetBundleName];
+                }
+                else
+                {
+                    UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + assetBundleName);
+                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
+                    request.downloadHandler = handler;
+                    request.SendWebRequest();
+                    while (!request.isDone)
+                    {
+                        loadingAction?.Invoke(request.downloadProgress);
+                        yield return null;
+                    }
+                    if (!request.isNetworkError && !request.isHttpError)
+                    {
+                        if (handler.assetBundle)
+                        {
+                            _assetBundles.Add(assetBundleName, handler.assetBundle);
+                            assetBundle = handler.assetBundle;
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                        }
+                    }
+                    else
+                    {
+                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                    }
+                    request.Dispose();
+                    handler.Dispose();
+                }
+#endif
+            }
+
+            if (assetBundle)
+            {
+                loadDoneAction?.Invoke(assetBundle);
+            }
+            assetBundle = null;
+
+            _isLoading = false;
+        }
+        //同步加载资源
+        private T LoadAsset<T>(ResourceInfoBase info, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        {
+            if (Mode == ResourceLoadMode.AssetBundle)
+            {
+                if (!IsEditorMode)
+                {
+                    LoadDependenciesAssetBundle(info.AssetBundleName);
+                }
+            }
+
+            DateTime beginTime = DateTime.Now;
+
             UnityEngine.Object asset = null;
 
             if (Mode == ResourceLoadMode.Resource)
@@ -438,10 +594,13 @@ namespace HT.Framework
                     }
                     else
                     {
-                        UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                        UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + info.AssetBundleName);
                         DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
                         request.downloadHandler = handler;
                         request.SendWebRequest();
+                        while (!request.isDone)
+                        {
+                        }
                         if (!request.isNetworkError && !request.isHttpError)
                         {
                             if (handler.assetBundle)
@@ -500,10 +659,13 @@ namespace HT.Framework
                 }
                 else
                 {
-                    UnityWebRequest request = UnityWebRequest.Get(_assetBundlePath + info.AssetBundleName);
+                    UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + info.AssetBundleName);
                     DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
                     request.downloadHandler = handler;
                     request.SendWebRequest();
+                    while (!request.isDone)
+                    {
+                    }
                     if (!request.isNetworkError && !request.isHttpError)
                     {
                         if (handler.assetBundle)
@@ -546,6 +708,12 @@ namespace HT.Framework
 #endif
             }
 
+            DateTime endTime = DateTime.Now;
+
+            string log = string.Format("同步加载资源[{0}模式]：\r\n{1}\r\n[{2}]  加载耗时：{3}秒", Mode, Mode == ResourceLoadMode.Resource ? info.GetResourceFullPath() : info.GetAssetBundleFullPath(_assetBundleRootPath)
+                , asset ? "成功" : "失败", (endTime - beginTime).TotalSeconds);
+            GlobalTools.LogInfo(log);
+
             if (asset)
             {
                 DataSetInfo dataSet = info as DataSetInfo;
@@ -561,6 +729,88 @@ namespace HT.Framework
                 return null;
             }
         }
+        //同步加载AB包
+        private AssetBundle LoadAssetBundle(string assetBundleName)
+        {
+            AssetBundle assetBundle = null;
+
+            if (Mode == ResourceLoadMode.AssetBundle)
+            {
+#if UNITY_EDITOR
+                if (!IsEditorMode)
+                {
+                    if (_assetBundles.ContainsKey(assetBundleName))
+                    {
+                        assetBundle = _assetBundles[assetBundleName];
+                    }
+                    else
+                    {
+                        UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + assetBundleName);
+                        DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
+                        request.downloadHandler = handler;
+                        request.SendWebRequest();
+                        while (!request.isDone)
+                        {
+                        }
+                        if (!request.isNetworkError && !request.isHttpError)
+                        {
+                            if (handler.assetBundle)
+                            {
+                                _assetBundles.Add(assetBundleName, handler.assetBundle);
+                                assetBundle = handler.assetBundle;
+                            }
+                            else
+                            {
+                                GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                            }
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                        }
+                        request.Dispose();
+                        handler.Dispose();
+                    }
+                }
+#else
+                if (_assetBundles.ContainsKey(assetBundleName))
+                {
+                    assetBundle = _assetBundles[assetBundleName];
+                }
+                else
+                {
+                    UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + assetBundleName);
+                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
+                    request.downloadHandler = handler;
+                    request.SendWebRequest();
+                    while (!request.isDone)
+                    {
+                    }
+                    if (!request.isNetworkError && !request.isHttpError)
+                    {
+                        if (handler.assetBundle)
+                        {
+                            _assetBundles.Add(assetBundleName, handler.assetBundle);
+                            assetBundle = handler.assetBundle;
+                        }
+                        else
+                        {
+                            GlobalTools.LogError("请求：" + request.url + " 未下载到AB包！");
+                        }
+                    }
+                    else
+                    {
+                        GlobalTools.LogError("请求：" + request.url + " 遇到网络错误：" + request.error);
+                    }
+                    request.Dispose();
+                    handler.Dispose();
+                }
+#endif
+            }
+
+            return assetBundle;
+        }
+        //克隆预制体
         private GameObject ClonePrefab(GameObject prefabTem, Transform parent, bool isUI)
         {
             GameObject prefab = Instantiate(prefabTem) as GameObject;
@@ -588,6 +838,45 @@ namespace HT.Framework
 
             prefab.SetActive(false);
             return prefab;
+        }
+        //加载AB包清单
+        private void LoadAssetBundleManifest()
+        {
+            if (Mode == ResourceLoadMode.AssetBundle)
+            {
+                if (AssetBundleManifestName == "")
+                {
+                    GlobalTools.LogError("请设置资源管理模块的 Manifest Name 属性，为所有AB包提供依赖清单！");
+                    return;
+                }
+
+#if UNITY_EDITOR
+                if (!IsEditorMode)
+                {
+                    AssetBundle assetBundle = LoadAssetBundleSynch(AssetBundleManifestName);
+                    _assetBundleManifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                    UnLoadAsset(AssetBundleManifestName);
+                }
+#else
+                AssetBundle assetBundle = LoadAssetBundleSynch(AssetBundleManifestName);
+                _assetBundleManifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                UnLoadAsset(AssetBundleManifestName);
+#endif
+            }
+        }
+        //加载依赖AB包
+        private void LoadDependenciesAssetBundle(string assetBundleName)
+        {
+            string[] dependencies = _assetBundleManifest.GetAllDependencies(assetBundleName);
+            foreach (string item in dependencies)
+            {
+                if (_assetBundles.ContainsKey(item))
+                {
+                    continue;
+                }
+
+                LoadAssetBundleSynch(item);
+            }
         }
     }
 

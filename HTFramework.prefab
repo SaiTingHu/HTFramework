@@ -783,6 +783,7 @@ MonoBehaviour:
   ZMinLimit: -5
   ZMaxLimit: 5
   IsCanOnUGUI: 0
+  AllowOverstepDistance: 1
 --- !u!114 &114272383585731926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1030,7 +1031,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Mode: 0
+  IsEditorMode: 1
   IsCacheAssetBundle: 1
+  AssetBundleManifestName: 
 --- !u!1 &25185425244144824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,6 +1435,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91317bfab64dc1349877b3ff2df91e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DefaultEase: 1
+  IsAutoKill: 1
+  DefaultAutoPlay: 3
 --- !u!1 &3561192959184875086
 GameObject:
   m_ObjectHideFlags: 0
