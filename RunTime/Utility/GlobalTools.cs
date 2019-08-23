@@ -95,7 +95,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="target">目标物体</param>
         /// <param name="die">是否销毁高光实例</param>
-        public static void CloseHighLight(this GameObject target, bool die)
+        public static void CloseHighLight(this GameObject target, bool die = false)
         {
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
@@ -151,7 +151,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="target">目标物体</param>
         /// <param name="die">是否销毁高光实例</param>
-        public static void CloseFlashHighLight(this GameObject target, bool die)
+        public static void CloseFlashHighLight(this GameObject target, bool die = false)
         {
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;

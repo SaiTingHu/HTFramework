@@ -3,7 +3,7 @@
     /// <summary>
     /// 常驻UI
     /// </summary>
-    public abstract class UILogicResident : UILogic
+    public abstract class UILogicResident : UILogicBase
     {
         /// <summary>
         /// 置顶UI

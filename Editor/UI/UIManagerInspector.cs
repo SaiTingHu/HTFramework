@@ -9,19 +9,15 @@ namespace HT.Framework
     [CustomEditor(typeof(UIManager))]
     public sealed class UIManagerInspector : HTFEditor<UIManager>
     {
-        private UILogicTemporary _currentOverlayTemporaryUI;
-        private Dictionary<Type, UILogic> _overlayUIs;
-        private UILogicTemporary _currentCameraTemporaryUI;
-        private Dictionary<Type, UILogic> _cameraUIs;
+        private Dictionary<Type, UILogicBase> _overlayUIs;
+        private Dictionary<Type, UILogicBase> _cameraUIs;
         
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _currentOverlayTemporaryUI = Target.GetType().GetField("_currentOverlayTemporaryUI", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as UILogicTemporary;
-            _overlayUIs = Target.GetType().GetField("_overlayUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogic>;
-            _currentCameraTemporaryUI = Target.GetType().GetField("_currentCameraTemporaryUI", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as UILogicTemporary;
-            _cameraUIs = Target.GetType().GetField("_cameraUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogic>;
+            _overlayUIs = Target.GetType().GetField("_overlayUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogicBase>;
+            _cameraUIs = Target.GetType().GetField("_cameraUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogicBase>;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -50,26 +46,26 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Overlay UIs: " + (Target.IsEnableOverlayUI ? "[Enable]" : "[Prohibit]"));
+            GUILayout.Label("Overlay UIs: " + (Target.IsEnableOverlayUI ? "[Enable]" : "[Disable]"));
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<Type, UILogic> ui in _overlayUIs)
+            foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label(ui.Key.Name + ": " + (ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
+                GUILayout.Label(ui.Key.Name);
                 if (ui.Value.IsCreated)
                 {
                     if (ui.Value.IsOpened)
                     {
-                        if (GUILayout.Button("Close", "Minibutton"))
+                        if (GUILayout.Button("Close", "Minibutton", GUILayout.Width(60)))
                         {
                             Main.m_UI.CloseUI(ui.Key);
                         }
                     }
                     else
                     {
-                        if (GUILayout.Button("Open", "Minibutton"))
+                        if (GUILayout.Button("Open", "Minibutton", GUILayout.Width(60)))
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
@@ -83,29 +79,34 @@ namespace HT.Framework
                     }
                 }
                 GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(40);
+                GUILayout.Label((ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
+                GUILayout.EndHorizontal();
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Camera UIs: " + (Target.IsEnableCameraUI ? "[Enable]" : "[Prohibit]"));
+            GUILayout.Label("Camera UIs: " + (Target.IsEnableCameraUI ? "[Enable]" : "[Disable]"));
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<Type, UILogic> ui in _cameraUIs)
+            foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label(ui.Key.Name + ": " + (ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
+                GUILayout.Label(ui.Key.Name);
                 if (ui.Value.IsCreated)
                 {
                     if (ui.Value.IsOpened)
                     {
-                        if (GUILayout.Button("Close", "Minibutton"))
+                        if (GUILayout.Button("Close", "Minibutton", GUILayout.Width(60)))
                         {
                             Main.m_UI.CloseUI(ui.Key);
                         }
                     }
                     else
                     {
-                        if (GUILayout.Button("Open", "Minibutton"))
+                        if (GUILayout.Button("Open", "Minibutton", GUILayout.Width(60)))
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
@@ -118,6 +119,11 @@ namespace HT.Framework
                         }
                     }
                 }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(40);
+                GUILayout.Label((ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
                 GUILayout.EndHorizontal();
             }
         }

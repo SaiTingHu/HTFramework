@@ -12,38 +12,41 @@ namespace HT.Framework
     public sealed class UIManager : ModuleManager
     {
         /// <summary>
-        /// 是否启用Overlay类型的UI【只在Inspector面板设置有效，代码中设置无效】
+        /// 是否启用Overlay类型的UI【请勿在代码中修改】
         /// </summary>
         public bool IsEnableOverlayUI = true;
         /// <summary>
-        /// 是否启用Camera类型的UI【只在Inspector面板设置有效，代码中设置无效】
+        /// 是否启用Camera类型的UI【请勿在代码中修改】
         /// </summary>
         public bool IsEnableCameraUI = false;
         /// <summary>
-        /// 是否启用World类型的UI【只在Inspector面板设置有效，代码中设置无效】
+        /// 是否启用World类型的UI【请勿在代码中修改】
         /// </summary>
         public bool IsEnableWorldUI = false;
 
         //当前打开的Overlay类型的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentOverlayTemporaryUI;
         //所有Overlay类型的UI
-        private Dictionary<Type, UILogic> _overlayUIs = new Dictionary<Type, UILogic>();
+        private Dictionary<Type, UILogicBase> _overlayUIs = new Dictionary<Type, UILogicBase>();
         //当前打开的Camera类型的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentCameraTemporaryUI;
         //所有Camera类型的UI
-        private Dictionary<Type, UILogic> _cameraUIs = new Dictionary<Type, UILogic>();
+        private Dictionary<Type, UILogicBase> _cameraUIs = new Dictionary<Type, UILogicBase>();
         //所有World类型的UI
         private Dictionary<string, WorldUIDomain> _worldUIs = new Dictionary<string, WorldUIDomain>();
 
         private GameObject _UIEntity;
+        //Overlay类型的UI根节点
         private Transform _overlayUIRoot;
         private RectTransform _overlayUIRootRect;
         private Transform _overlayResidentPanel;
         private Transform _overlayTemporaryPanel;
+        //Camera类型的UI根节点
         private Transform _cameraUIRoot;
         private RectTransform _cameraUIRootRect;
         private Transform _cameraResidentPanel;
         private Transform _cameraTemporaryPanel;
+        //World类型的UI根节点
         private Transform _worldUIRoot;
 
         public override void OnInitialization()
@@ -81,13 +84,13 @@ namespace HT.Framework
                             case UIType.Overlay:
                                 if (IsEnableOverlayUI)
                                 {
-                                    _overlayUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogic);
+                                    _overlayUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
                                 }
                                 break;
                             case UIType.Camera:
                                 if (IsEnableCameraUI)
                                 {
-                                    _cameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogic);
+                                    _cameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
                                 }
                                 break;
                             case UIType.World:
@@ -116,7 +119,7 @@ namespace HT.Framework
 
             if (IsEnableOverlayUI)
             {
-                foreach (KeyValuePair<Type, UILogic> ui in _overlayUIs)
+                foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
                 {
                     if (ui.Value.IsOpened)
                     {
@@ -127,7 +130,7 @@ namespace HT.Framework
 
             if (IsEnableCameraUI)
             {
-                foreach (KeyValuePair<Type, UILogic> ui in _cameraUIs)
+                foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
                 {
                     if (ui.Value.IsOpened)
                     {
@@ -149,13 +152,13 @@ namespace HT.Framework
         {
             base.OnTermination();
 
-            foreach (KeyValuePair<Type, UILogic> ui in _overlayUIs)
+            foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
             {
-                UILogic uiLogic = ui.Value;
+                UILogicBase uiLogic = ui.Value;
 
                 if (!uiLogic.IsCreated)
                 {
-                    return;
+                    continue;
                 }
 
                 uiLogic.OnDestroy();
@@ -164,13 +167,13 @@ namespace HT.Framework
             }
             _overlayUIs.Clear();
 
-            foreach (KeyValuePair<Type, UILogic> ui in _cameraUIs)
+            foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
             {
-                UILogic uiLogic = ui.Value;
+                UILogicBase uiLogic = ui.Value;
 
                 if (!uiLogic.IsCreated)
                 {
-                    return;
+                    continue;
                 }
 
                 uiLogic.OnDestroy();
@@ -190,7 +193,6 @@ namespace HT.Framework
         /// Camera类型UI的摄像机
         /// </summary>
         public Camera UICamera { get; private set; }
-
         /// <summary>
         /// Overlay类型的UI根节点
         /// </summary>
@@ -201,7 +203,6 @@ namespace HT.Framework
                 return _overlayUIRootRect;
             }
         }
-
         /// <summary>
         /// Camera类型的UI根节点
         /// </summary>
@@ -212,7 +213,6 @@ namespace HT.Framework
                 return _cameraUIRootRect;
             }
         }
-
         /// <summary>
         /// World类型的UI域根节点
         /// </summary>
@@ -230,7 +230,6 @@ namespace HT.Framework
                 return null;
             }
         }
-
         /// <summary>
         /// 是否隐藏所有UI实体
         /// </summary>
@@ -254,7 +253,6 @@ namespace HT.Framework
         {
             PreloadingResidentUI(typeof(T));
         }
-
         /// <summary>
         /// 预加载常驻UI
         /// </summary>
@@ -269,7 +267,7 @@ namespace HT.Framework
                     case UIType.Overlay:
                         if (_overlayUIs.ContainsKey(type))
                         {
-                            UILogic ui = _overlayUIs[type];
+                            UILogicBase ui = _overlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -288,7 +286,7 @@ namespace HT.Framework
                     case UIType.Camera:
                         if (_cameraUIs.ContainsKey(type))
                         {
-                            UILogic ui = _cameraUIs[type];
+                            UILogicBase ui = _cameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -317,7 +315,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 预加载非常驻UI
         /// </summary>
@@ -326,7 +323,6 @@ namespace HT.Framework
         {
             PreloadingTemporaryUI(typeof(T));
         }
-
         /// <summary>
         /// 预加载非常驻UI
         /// </summary>
@@ -341,7 +337,7 @@ namespace HT.Framework
                     case UIType.Overlay:
                         if (_overlayUIs.ContainsKey(type))
                         {
-                            UILogic ui = _overlayUIs[type];
+                            UILogicBase ui = _overlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -360,7 +356,7 @@ namespace HT.Framework
                     case UIType.Camera:
                         if (_cameraUIs.ContainsKey(type))
                         {
-                            UILogic ui = _cameraUIs[type];
+                            UILogicBase ui = _cameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -389,7 +385,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 打开常驻UI
         /// </summary>
@@ -399,7 +394,6 @@ namespace HT.Framework
         {
             OpenResidentUI(typeof(T), args);
         }
-
         /// <summary>
         /// 打开常驻UI
         /// </summary>
@@ -495,7 +489,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 打开非常驻UI
         /// </summary>
@@ -505,7 +498,6 @@ namespace HT.Framework
         {
             OpenTemporaryUI(typeof(T), args);
         }
-
         /// <summary>
         /// 打开非常驻UI
         /// </summary>
@@ -615,23 +607,21 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 获取已经打开的UI
         /// </summary>
         /// <typeparam name="T">UI逻辑类</typeparam>
         /// <returns>UI逻辑对象</returns>
-        public T GetOpenedUI<T>() where T : UILogic
+        public T GetOpenedUI<T>() where T : UILogicBase
         {
             return GetOpenedUI(typeof(T)) as T;
         }
-
         /// <summary>
         /// 获取已经打开的UI
         /// </summary>
         /// <param name="type">UI逻辑类</param>
         /// <returns>UI逻辑对象</returns>
-        public UILogic GetOpenedUI(Type type)
+        public UILogicBase GetOpenedUI(Type type)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
             if (attribute != null)
@@ -641,7 +631,7 @@ namespace HT.Framework
                     case UIType.Overlay:
                         if (_overlayUIs.ContainsKey(type))
                         {
-                            UILogic ui = _overlayUIs[type];
+                            UILogicBase ui = _overlayUIs[type];
 
                             if (ui.IsOpened)
                             {
@@ -660,7 +650,7 @@ namespace HT.Framework
                     case UIType.Camera:
                         if (_cameraUIs.ContainsKey(type))
                         {
-                            UILogic ui = _cameraUIs[type];
+                            UILogicBase ui = _cameraUIs[type];
 
                             if (ui.IsOpened)
                             {
@@ -691,7 +681,6 @@ namespace HT.Framework
             }
             return null;
         }
-
         /// <summary>
         /// 置顶常驻UI
         /// </summary>
@@ -700,7 +689,6 @@ namespace HT.Framework
         {
             PlaceTop(typeof(T));
         }
-
         /// <summary>
         /// 置顶常驻UI
         /// </summary>
@@ -761,16 +749,14 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 关闭UI
         /// </summary>
         /// <typeparam name="T">UI逻辑类</typeparam>
-        public void CloseUI<T>() where T : UILogic
+        public void CloseUI<T>() where T : UILogicBase
         {
             CloseUI(typeof(T));
         }
-
         /// <summary>
         /// 关闭UI
         /// </summary>
@@ -785,7 +771,7 @@ namespace HT.Framework
                     case UIType.Overlay:
                         if (_overlayUIs.ContainsKey(type))
                         {
-                            UILogic ui = _overlayUIs[type];
+                            UILogicBase ui = _overlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -808,7 +794,7 @@ namespace HT.Framework
                     case UIType.Camera:
                         if (_cameraUIs.ContainsKey(type))
                         {
-                            UILogic ui = _cameraUIs[type];
+                            UILogicBase ui = _cameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -841,16 +827,14 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 销毁UI
         /// </summary>
         /// <typeparam name="T">UI逻辑类</typeparam>
-        public void DestroyUI<T>() where T : UILogic
+        public void DestroyUI<T>() where T : UILogicBase
         {
             DestroyUI(typeof(T));
         }
-
         /// <summary>
         /// 销毁UI
         /// </summary>
@@ -865,7 +849,7 @@ namespace HT.Framework
                     case UIType.Overlay:
                         if (_overlayUIs.ContainsKey(type))
                         {
-                            UILogic ui = _overlayUIs[type];
+                            UILogicBase ui = _overlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -889,7 +873,7 @@ namespace HT.Framework
                     case UIType.Camera:
                         if (_cameraUIs.ContainsKey(type))
                         {
-                            UILogic ui = _cameraUIs[type];
+                            UILogicBase ui = _cameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -930,12 +914,11 @@ namespace HT.Framework
         private sealed class WorldUIDomain
         {
             //域的名称
-            public string Name { get; private set; }
-
+            private string _name;
             //当前打开的World类型的非常驻UI（非常驻UI同时只能打开一个）
             private UILogicTemporary _currentWorldTemporaryUI;
             //所有World类型的UI
-            private Dictionary<Type, UILogic> _worldUIs = new Dictionary<Type, UILogic>();
+            private Dictionary<Type, UILogicBase> _worldUIs = new Dictionary<Type, UILogicBase>();
 
             private Transform _worldUIRoot;
             private RectTransform _worldUIRootRect;
@@ -944,10 +927,9 @@ namespace HT.Framework
 
             public WorldUIDomain(string name, GameObject canvasTem)
             {
-                Name = name;
-
+                _name = name;
                 _worldUIRoot = Main.CloneGameObject(canvasTem, true).transform;
-                _worldUIRoot.name = Name;
+                _worldUIRoot.name = _name;
                 _worldUIRootRect = _worldUIRoot.rectTransform();
                 _worldResidentPanel = _worldUIRoot.Find("ResidentPanel");
                 _worldTemporaryPanel = _worldUIRoot.Find("TemporaryPanel");
@@ -959,7 +941,7 @@ namespace HT.Framework
             /// </summary>
             public void Refresh()
             {
-                foreach (KeyValuePair<Type, UILogic> ui in _worldUIs)
+                foreach (KeyValuePair<Type, UILogicBase> ui in _worldUIs)
                 {
                     if (ui.Value.IsOpened)
                     {
@@ -967,19 +949,18 @@ namespace HT.Framework
                     }
                 }
             }
-
             /// <summary>
             /// 销毁域
             /// </summary>
             public void Termination()
             {
-                foreach (KeyValuePair<Type, UILogic> ui in _worldUIs)
+                foreach (KeyValuePair<Type, UILogicBase> ui in _worldUIs)
                 {
-                    UILogic uiLogic = ui.Value;
+                    UILogicBase uiLogic = ui.Value;
 
                     if (!uiLogic.IsCreated)
                     {
-                        return;
+                        continue;
                     }
 
                     uiLogic.OnDestroy();
@@ -1010,10 +991,9 @@ namespace HT.Framework
             {
                 if (!_worldUIs.ContainsKey(uiLogicType))
                 {
-                    _worldUIs.Add(uiLogicType, Activator.CreateInstance(uiLogicType) as UILogic);
+                    _worldUIs.Add(uiLogicType, Activator.CreateInstance(uiLogicType) as UILogicBase);
                 }
             }
-
             /// <summary>
             /// 预加载常驻UI
             /// </summary>
@@ -1022,7 +1002,7 @@ namespace HT.Framework
             {
                 if (_worldUIs.ContainsKey(type))
                 {
-                    UILogic ui = _worldUIs[type];
+                    UILogicBase ui = _worldUIs[type];
 
                     if (!ui.IsCreated)
                     {
@@ -1039,7 +1019,6 @@ namespace HT.Framework
                     GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
             }
-
             /// <summary>
             /// 预加载非常驻UI
             /// </summary>
@@ -1048,7 +1027,7 @@ namespace HT.Framework
             {
                 if (_worldUIs.ContainsKey(type))
                 {
-                    UILogic ui = _worldUIs[type];
+                    UILogicBase ui = _worldUIs[type];
 
                     if (!ui.IsCreated)
                     {
@@ -1065,7 +1044,6 @@ namespace HT.Framework
                     GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
             }
-
             /// <summary>
             /// 打开常驻UI
             /// </summary>
@@ -1108,7 +1086,6 @@ namespace HT.Framework
                     GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
             }
-
             /// <summary>
             /// 打开非常驻UI
             /// </summary>
@@ -1158,17 +1135,16 @@ namespace HT.Framework
                     GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
             }
-
             /// <summary>
             /// 获取已经打开的UI
             /// </summary>
             /// <param name="type">UI逻辑类</param>
             /// <returns>UI逻辑对象</returns>
-            public UILogic GetOpenedUI(Type type)
+            public UILogicBase GetOpenedUI(Type type)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
-                    UILogic ui = _worldUIs[type];
+                    UILogicBase ui = _worldUIs[type];
 
                     if (ui.IsOpened)
                     {
@@ -1185,7 +1161,6 @@ namespace HT.Framework
                     return null;
                 }
             }
-
             /// <summary>
             /// 置顶常驻UI
             /// </summary>
@@ -1209,7 +1184,6 @@ namespace HT.Framework
                     GlobalTools.LogError(string.Format("置顶UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
             }
-
             /// <summary>
             /// 关闭UI
             /// </summary>
@@ -1218,7 +1192,7 @@ namespace HT.Framework
             {
                 if (_worldUIs.ContainsKey(type))
                 {
-                    UILogic ui = _worldUIs[type];
+                    UILogicBase ui = _worldUIs[type];
 
                     if (!ui.IsCreated)
                     {
@@ -1238,7 +1212,6 @@ namespace HT.Framework
                     GlobalTools.LogError(string.Format("关闭UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
             }
-
             /// <summary>
             /// 销毁UI
             /// </summary>
@@ -1247,7 +1220,7 @@ namespace HT.Framework
             {
                 if (_worldUIs.ContainsKey(type))
                 {
-                    UILogic ui = _worldUIs[type];
+                    UILogicBase ui = _worldUIs[type];
 
                     if (!ui.IsCreated)
                     {

@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public abstract class HTFEditor<T> : Editor where T : UnityEngine.Object
+    public abstract class HTFEditor<E> : Editor where E : UnityEngine.Object
     {
-        protected T Target;
+        protected E Target;
 
         private void OnEnable()
         {
-            Target = target as T;
+            Target = target as E;
 
             OnDefaultEnable();
 

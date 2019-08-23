@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// UI逻辑基类
     /// </summary>
-    public abstract class UILogic
+    public abstract class UILogicBase
     {
         /// <summary>
         /// UI实体

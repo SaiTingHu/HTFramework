@@ -66,9 +66,10 @@ namespace HT.Framework
         /// <param name="info">资源配置信息</param>
         /// <param name="loadingAction">资源加载中回调</param>
         /// <param name="loadDoneAction">资源加载完成回调</param>
-        public void LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : UnityEngine.Object
+        /// <returns>加载协程</returns>
+        public Coroutine LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : UnityEngine.Object
         {
-            StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction));
+            return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载数据集（异步）
@@ -77,9 +78,10 @@ namespace HT.Framework
         /// <param name="info">数据集配置信息</param>
         /// <param name="loadingAction">数据集加载中回调</param>
         /// <param name="loadDoneAction">数据集加载完成回调</param>
-        public void LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction) where T : DataSet
+        /// <returns>加载协程</returns>
+        public Coroutine LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : DataSet
         {
-            StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction));
+            return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction));
         }
         /// <summary>
         /// 加载预制体（异步）
@@ -89,9 +91,10 @@ namespace HT.Framework
         /// <param name="loadingAction">预制体加载中回调</param>
         /// <param name="loadDoneAction">预制体加载完成回调</param>
         /// <param name="isUI">预制体是否是UI</param>
-        public void LoadPrefab(PrefabInfo info, Transform parent, HTFAction<float> loadingAction, HTFAction<GameObject> loadDoneAction, bool isUI = false)
+        /// <returns>加载协程</returns>
+        public Coroutine LoadPrefab(PrefabInfo info, Transform parent, HTFAction<float> loadingAction = null, HTFAction<GameObject> loadDoneAction = null, bool isUI = false)
         {
-            StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction, true, parent, isUI));
+            return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction, true, parent, isUI));
         }
         
         /// <summary>
@@ -159,7 +162,7 @@ namespace HT.Framework
 
             _isLoading = true;
 
-            yield return LoadDependenciesAssetBundleAsync(info.AssetBundleName);
+            yield return Main.Current.StartCoroutine(LoadDependenciesAssetBundleAsync(info.AssetBundleName));
             
             DateTime waitTime = DateTime.Now;
             
@@ -407,7 +410,7 @@ namespace HT.Framework
 #if UNITY_EDITOR
                 if (!IsEditorMode)
                 {
-                    yield return LoadAssetBundleManifestAsync();
+                    yield return Main.Current.StartCoroutine(LoadAssetBundleManifestAsync());
 
                     if (_assetBundleManifest)
                     {
@@ -419,12 +422,12 @@ namespace HT.Framework
                                 continue;
                             }
 
-                            yield return LoadAssetBundleAsync(item);
+                            yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(item));
                         }
                     }
                 }
 #else
-                yield return LoadAssetBundleManifestAsync();
+                yield return Main.Current.StartCoroutine(LoadAssetBundleManifestAsync());
 
                 if (_assetBundleManifest)
                 {
@@ -436,7 +439,7 @@ namespace HT.Framework
                             continue;
                         }
 
-                        yield return LoadAssetBundleAsync(item);
+                        yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(item));
                     }
                 }
 #endif
@@ -454,7 +457,7 @@ namespace HT.Framework
             {
                 if (_assetBundleManifest == null)
                 {
-                    yield return LoadAssetBundleAsync(AssetBundleManifestName);
+                    yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(AssetBundleManifestName));
 
                     if (_assetBundles.ContainsKey(AssetBundleManifestName))
                     {

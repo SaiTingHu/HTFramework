@@ -3,7 +3,7 @@
     /// <summary>
     /// 非常驻UI
     /// </summary>
-    public abstract class UILogicTemporary : UILogic
+    public abstract class UILogicTemporary : UILogicBase
     {
         /// <summary>
         /// 打开自己

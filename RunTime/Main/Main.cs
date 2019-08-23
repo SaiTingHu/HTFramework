@@ -21,20 +21,19 @@ namespace HT.Framework
             Current = this;
 
             LicenseInitialization();
-
             MainDataInitialization();
-
             ModuleInitialization();
+        }
 
+        private void Start()
+        {
             MainDataPreparatory();
-
             ModulePreparatory();
         }
 
         private void Update()
         {
             ModuleRefresh();
-
             LicenseRefresh();
         }
 
