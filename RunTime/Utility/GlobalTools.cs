@@ -1398,21 +1398,21 @@ namespace HT.Framework
         /// </summary>
         public static void LogInfo(string value)
         {
-            Debug.Log(string.Format("<b><color=cyan>[HTFramework.Info {0}]</color></b> {1}", DateTime.Now.ToString("mm:ss:fff"), value));
+            Debug.Log(string.Format("<b><color=cyan>[HTFramework.Info]</color></b> {0}", value));
         }
         /// <summary>
         /// 打印警告日志
         /// </summary>
         public static void LogWarning(string value)
         {
-            Debug.LogWarning(string.Format("<b><color=yellow>[HTFramework.Warning {0}]</color></b> {1}", DateTime.Now.ToString("mm:ss:fff"), value));
+            Debug.LogWarning(string.Format("<b><color=yellow>[HTFramework.Warning]</color></b> {0}", value));
         }
         /// <summary>
         /// 打印错误日志
         /// </summary>
         public static void LogError(string value)
         {
-            Debug.LogError(string.Format("<b><color=red>[HTFramework.Error {0}]</color></b> {1}", DateTime.Now.ToString("mm:ss:fff"), value));
+            Debug.LogError(string.Format("<b><color=red>[HTFramework.Error]</color></b> {0}", value));
         }
         #endregion
 
