@@ -325,7 +325,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
+                        Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
                         {
                             EntityLogic entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogic;
                             _entities[type].Add(entityLogic);

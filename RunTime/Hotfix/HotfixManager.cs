@@ -43,7 +43,7 @@ namespace HT.Framework
                 }
 
                 AssetInfo info = new AssetInfo(HotfixDllAssetBundleName, HotfixDllAssetsPath, "");
-                Main.m_Resource.LoadAssetAsync<TextAsset>(info, null, HotfixDllLoadDone);
+                Main.m_Resource.LoadAsset<TextAsset>(info, null, HotfixDllLoadDone);
             }
         }
 

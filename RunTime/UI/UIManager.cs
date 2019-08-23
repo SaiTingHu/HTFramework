@@ -273,7 +273,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -292,7 +292,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -345,7 +345,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -364,7 +364,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -424,7 +424,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -459,7 +459,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -537,7 +537,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -579,7 +579,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefabAsync(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -1026,7 +1026,7 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefabAsync(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
@@ -1052,7 +1052,7 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefabAsync(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
@@ -1084,7 +1084,7 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefabAsync(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
@@ -1134,7 +1134,7 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefabAsync(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
