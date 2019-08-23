@@ -9,7 +9,8 @@
         /// 置顶UI
         /// </summary>
         public virtual void OnPlaceTop()
-        { }
+        {
+        }
 
         /// <summary>
         /// 打开自己

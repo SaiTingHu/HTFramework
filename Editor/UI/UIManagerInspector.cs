@@ -11,7 +11,7 @@ namespace HT.Framework
     {
         private Dictionary<Type, UILogicBase> _overlayUIs;
         private Dictionary<Type, UILogicBase> _cameraUIs;
-        
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();

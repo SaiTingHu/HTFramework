@@ -358,7 +358,7 @@ namespace HT.Framework
                 if (DateTime.Now > _endingTime)
                 {
                     m_Controller.MainCamera.enabled = false;
-                    m_UI.HideAll = true;
+                    m_UI.IsHideAll = true;
                 }
             }
         }

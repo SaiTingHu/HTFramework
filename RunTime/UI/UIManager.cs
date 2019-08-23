@@ -233,7 +233,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否隐藏所有UI实体
         /// </summary>
-        public bool HideAll
+        public bool IsHideAll
         {
             set
             {
@@ -249,15 +249,15 @@ namespace HT.Framework
         /// 预加载常驻UI
         /// </summary>
         /// <typeparam name="T">常驻UI逻辑类</typeparam>
-        public void PreloadingResidentUI<T>() where T : UILogicResident
+        public Coroutine PreloadingResidentUI<T>() where T : UILogicResident
         {
-            PreloadingResidentUI(typeof(T));
+            return PreloadingResidentUI(typeof(T));
         }
         /// <summary>
         /// 预加载常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
-        public void PreloadingResidentUI(Type type)
+        public Coroutine PreloadingResidentUI(Type type)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
             if (attribute != null)
@@ -271,7 +271,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -290,7 +290,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -305,7 +305,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            _worldUIs[attribute.WorldUIDomainName].PreloadingResidentUI(type);
+                            return _worldUIs[attribute.WorldUIDomainName].PreloadingResidentUI(type);
                         }
                         else
                         {
@@ -314,20 +314,21 @@ namespace HT.Framework
                         break;
                 }
             }
+            return null;
         }
         /// <summary>
         /// 预加载非常驻UI
         /// </summary>
         /// <typeparam name="T">非常驻UI逻辑类</typeparam>
-        public void PreloadingTemporaryUI<T>() where T : UILogicTemporary
+        public Coroutine PreloadingTemporaryUI<T>() where T : UILogicTemporary
         {
-            PreloadingTemporaryUI(typeof(T));
+            return PreloadingTemporaryUI(typeof(T));
         }
         /// <summary>
         /// 预加载非常驻UI
         /// </summary>
         /// <param name="type">非常驻UI逻辑类</param>
-        public void PreloadingTemporaryUI(Type type)
+        public Coroutine PreloadingTemporaryUI(Type type)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
             if (attribute != null)
@@ -341,7 +342,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -360,7 +361,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.OnInit();
@@ -375,7 +376,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            _worldUIs[attribute.WorldUIDomainName].PreloadingTemporaryUI(type);
+                            return _worldUIs[attribute.WorldUIDomainName].PreloadingTemporaryUI(type);
                         }
                         else
                         {
@@ -384,22 +385,23 @@ namespace HT.Framework
                         break;
                 }
             }
+            return null;
         }
         /// <summary>
         /// 打开常驻UI
         /// </summary>
         /// <typeparam name="T">常驻UI逻辑类</typeparam>
         /// <param name="args">可选参数</param>
-        public void OpenResidentUI<T>(params object[] args) where T : UILogicResident
+        public Coroutine OpenResidentUI<T>(params object[] args) where T : UILogicResident
         {
-            OpenResidentUI(typeof(T), args);
+            return OpenResidentUI(typeof(T), args);
         }
         /// <summary>
         /// 打开常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
         /// <param name="args">可选参数</param>
-        public void OpenResidentUI(Type type, params object[] args)
+        public Coroutine OpenResidentUI(Type type, params object[] args)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
             if (attribute != null)
@@ -413,12 +415,12 @@ namespace HT.Framework
 
                             if (ui.IsOpened)
                             {
-                                return;
+                                return null;
                             }
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -448,12 +450,12 @@ namespace HT.Framework
 
                             if (ui.IsOpened)
                             {
-                                return;
+                                return null;
                             }
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -479,7 +481,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            _worldUIs[attribute.WorldUIDomainName].OpenResidentUI(type, args);
+                            return _worldUIs[attribute.WorldUIDomainName].OpenResidentUI(type, args);
                         }
                         else
                         {
@@ -488,22 +490,23 @@ namespace HT.Framework
                         break;
                 }
             }
+            return null;
         }
         /// <summary>
         /// 打开非常驻UI
         /// </summary>
         /// <typeparam name="T">非常驻UI逻辑类</typeparam>
         /// <param name="args">可选参数</param>
-        public void OpenTemporaryUI<T>(params object[] args) where T : UILogicTemporary
+        public Coroutine OpenTemporaryUI<T>(params object[] args) where T : UILogicTemporary
         {
-            OpenTemporaryUI(typeof(T), args);
+            return OpenTemporaryUI(typeof(T), args);
         }
         /// <summary>
         /// 打开非常驻UI
         /// </summary>
         /// <param name="type">非常驻UI逻辑类</param>
         /// <param name="args">可选参数</param>
-        public void OpenTemporaryUI(Type type, params object[] args)
+        public Coroutine OpenTemporaryUI(Type type, params object[] args)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
             if (attribute != null)
@@ -517,7 +520,7 @@ namespace HT.Framework
 
                             if (ui.IsOpened)
                             {
-                                return;
+                                return null;
                             }
 
                             if (_currentOverlayTemporaryUI != null && _currentOverlayTemporaryUI.IsOpened)
@@ -529,7 +532,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -559,7 +562,7 @@ namespace HT.Framework
 
                             if (ui.IsOpened)
                             {
-                                return;
+                                return null;
                             }
 
                             if (_currentCameraTemporaryUI != null && _currentCameraTemporaryUI.IsOpened)
@@ -571,7 +574,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
                                 {
                                     ui.UIEntity = obj;
                                     ui.UIEntity.transform.SetAsLastSibling();
@@ -597,7 +600,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            _worldUIs[attribute.WorldUIDomainName].OpenTemporaryUI(type, args);
+                            return _worldUIs[attribute.WorldUIDomainName].OpenTemporaryUI(type, args);
                         }
                         else
                         {
@@ -606,6 +609,7 @@ namespace HT.Framework
                         break;
                 }
             }
+            return null;
         }
         /// <summary>
         /// 获取已经打开的UI
@@ -677,7 +681,6 @@ namespace HT.Framework
                             return null;
                         }
                 }
-                return null;
             }
             return null;
         }
@@ -685,15 +688,15 @@ namespace HT.Framework
         /// 置顶常驻UI
         /// </summary>
         /// <typeparam name="T">常驻UI逻辑类</typeparam>
-        public void PlaceTop<T>() where T : UILogicResident
+        public void PlaceTopUI<T>() where T : UILogicResident
         {
-            PlaceTop(typeof(T));
+            PlaceTopUI(typeof(T));
         }
         /// <summary>
         /// 置顶常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
-        public void PlaceTop(Type type)
+        public void PlaceTopUI(Type type)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
             if (attribute != null)
@@ -906,7 +909,7 @@ namespace HT.Framework
                         break;
                 }
             }
-        }  
+        }
 
         /// <summary>
         /// 世界UI的域
@@ -998,7 +1001,7 @@ namespace HT.Framework
             /// 预加载常驻UI
             /// </summary>
             /// <param name="type">常驻UI逻辑类</param>
-            public void PreloadingResidentUI(Type type)
+            public Coroutine PreloadingResidentUI(Type type)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1006,7 +1009,7 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
@@ -1018,12 +1021,13 @@ namespace HT.Framework
                 {
                     GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
+                return null;
             }
             /// <summary>
             /// 预加载非常驻UI
             /// </summary>
             /// <param name="type">非常驻UI逻辑类</param>
-            public void PreloadingTemporaryUI(Type type)
+            public Coroutine PreloadingTemporaryUI(Type type)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1031,7 +1035,7 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
@@ -1043,13 +1047,14 @@ namespace HT.Framework
                 {
                     GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
+                return null;
             }
             /// <summary>
             /// 打开常驻UI
             /// </summary>
             /// <param name="type">常驻UI逻辑类</param>
             /// <param name="args">可选参数</param>
-            public void OpenResidentUI(Type type, params object[] args)
+            public Coroutine OpenResidentUI(Type type, params object[] args)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1057,12 +1062,12 @@ namespace HT.Framework
 
                     if (ui.IsOpened)
                     {
-                        return;
+                        return null;
                     }
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
@@ -1085,13 +1090,14 @@ namespace HT.Framework
                 {
                     GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
+                return null;
             }
             /// <summary>
             /// 打开非常驻UI
             /// </summary>
             /// <param name="type">非常驻UI逻辑类</param>
             /// <param name="args">可选参数</param>
-            public void OpenTemporaryUI(Type type, params object[] args)
+            public Coroutine OpenTemporaryUI(Type type, params object[] args)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1099,7 +1105,7 @@ namespace HT.Framework
 
                     if (ui.IsOpened)
                     {
-                        return;
+                        return null;
                     }
 
                     if (_currentWorldTemporaryUI != null && _currentWorldTemporaryUI.IsOpened)
@@ -1111,7 +1117,7 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
@@ -1134,6 +1140,7 @@ namespace HT.Framework
                 {
                     GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                 }
+                return null;
             }
             /// <summary>
             /// 获取已经打开的UI

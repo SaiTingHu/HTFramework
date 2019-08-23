@@ -44,6 +44,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开UI
         /// </summary>
+        /// <param name="args">可选参数</param>
         public virtual void OnOpen(params object[] args)
         {
         }

@@ -14,7 +14,7 @@ public class #SCRIPTNAME# : UILogicTemporary
 	/// </summary>
     public override void OnInit()
     {
-
+        base.OnInit();
     }
 
 	/// <summary>
@@ -22,7 +22,7 @@ public class #SCRIPTNAME# : UILogicTemporary
 	/// </summary>
     public override void OnOpen(params object[] args)
     {
-        
+        base.OnOpen(args);
     }
     
 	/// <summary>
@@ -30,7 +30,7 @@ public class #SCRIPTNAME# : UILogicTemporary
 	/// </summary>
     public override void OnClose()
     {
-        
+        base.OnClose();
     }
 
 	/// <summary>
@@ -38,7 +38,7 @@ public class #SCRIPTNAME# : UILogicTemporary
 	/// </summary>
     public override void OnDestroy()
     {
-       
+        base.OnDestroy();
     }
 
 	/// <summary>
@@ -46,6 +46,6 @@ public class #SCRIPTNAME# : UILogicTemporary
 	/// </summary>
     public override void OnUpdate()
     {
-
+        base.OnUpdate();
     }
 }
