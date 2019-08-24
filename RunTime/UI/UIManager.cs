@@ -249,6 +249,7 @@ namespace HT.Framework
         /// 预加载常驻UI
         /// </summary>
         /// <typeparam name="T">常驻UI逻辑类</typeparam>
+        /// <returns>加载协程</returns>
         public Coroutine PreloadingResidentUI<T>() where T : UILogicResident
         {
             return PreloadingResidentUI(typeof(T));
@@ -257,6 +258,7 @@ namespace HT.Framework
         /// 预加载常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
+        /// <returns>加载协程</returns>
         public Coroutine PreloadingResidentUI(Type type)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
@@ -320,6 +322,7 @@ namespace HT.Framework
         /// 预加载非常驻UI
         /// </summary>
         /// <typeparam name="T">非常驻UI逻辑类</typeparam>
+        /// <returns>加载协程</returns>
         public Coroutine PreloadingTemporaryUI<T>() where T : UILogicTemporary
         {
             return PreloadingTemporaryUI(typeof(T));
@@ -328,6 +331,7 @@ namespace HT.Framework
         /// 预加载非常驻UI
         /// </summary>
         /// <param name="type">非常驻UI逻辑类</param>
+        /// <returns>加载协程</returns>
         public Coroutine PreloadingTemporaryUI(Type type)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
@@ -392,6 +396,7 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">常驻UI逻辑类</typeparam>
         /// <param name="args">可选参数</param>
+        /// <returns>加载协程</returns>
         public Coroutine OpenResidentUI<T>(params object[] args) where T : UILogicResident
         {
             return OpenResidentUI(typeof(T), args);
@@ -401,6 +406,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
         /// <param name="args">可选参数</param>
+        /// <returns>加载协程</returns>
         public Coroutine OpenResidentUI(Type type, params object[] args)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
@@ -497,6 +503,7 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">非常驻UI逻辑类</typeparam>
         /// <param name="args">可选参数</param>
+        /// <returns>加载协程</returns>
         public Coroutine OpenTemporaryUI<T>(params object[] args) where T : UILogicTemporary
         {
             return OpenTemporaryUI(typeof(T), args);
@@ -506,6 +513,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">非常驻UI逻辑类</param>
         /// <param name="args">可选参数</param>
+        /// <returns>加载协程</returns>
         public Coroutine OpenTemporaryUI(Type type, params object[] args)
         {
             UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
@@ -1001,6 +1009,7 @@ namespace HT.Framework
             /// 预加载常驻UI
             /// </summary>
             /// <param name="type">常驻UI逻辑类</param>
+            /// <returns>加载协程</returns>
             public Coroutine PreloadingResidentUI(Type type)
             {
                 if (_worldUIs.ContainsKey(type))
@@ -1027,6 +1036,7 @@ namespace HT.Framework
             /// 预加载非常驻UI
             /// </summary>
             /// <param name="type">非常驻UI逻辑类</param>
+            /// <returns>加载协程</returns>
             public Coroutine PreloadingTemporaryUI(Type type)
             {
                 if (_worldUIs.ContainsKey(type))
@@ -1054,6 +1064,7 @@ namespace HT.Framework
             /// </summary>
             /// <param name="type">常驻UI逻辑类</param>
             /// <param name="args">可选参数</param>
+            /// <returns>加载协程</returns>
             public Coroutine OpenResidentUI(Type type, params object[] args)
             {
                 if (_worldUIs.ContainsKey(type))
@@ -1097,6 +1108,7 @@ namespace HT.Framework
             /// </summary>
             /// <param name="type">非常驻UI逻辑类</param>
             /// <param name="args">可选参数</param>
+            /// <returns>加载协程</returns>
             public Coroutine OpenTemporaryUI(Type type, params object[] args)
             {
                 if (_worldUIs.ContainsKey(type))

@@ -7,14 +7,14 @@ using DG.Tweening;
 /// 新建实体逻辑类
 /// </summary>
 [EntityResource("AssetBundleName", "AssetPath", "ResourcePath")]
-public class #SCRIPTNAME# : EntityLogic
+public class #SCRIPTNAME# : EntityLogicBase
 {
     /// <summary>
     /// 初始化
     /// </summary>
     public override void OnInit()
     {
-
+        base.OnInit();
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public class #SCRIPTNAME# : EntityLogic
     /// </summary>
     public override void OnShow()
     {
-
+        base.OnShow();
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class #SCRIPTNAME# : EntityLogic
     /// </summary>
     public override void OnHide()
     {
-
+        base.OnHide();
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class #SCRIPTNAME# : EntityLogic
     /// </summary>
     public override void OnDestroy()
     {
-
+        base.OnDestroy();
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class #SCRIPTNAME# : EntityLogic
     /// </summary>
     public override void OnUpdate()
     {
-
+        base.OnUpdate();
     }
 
     /// <summary>
@@ -54,6 +54,6 @@ public class #SCRIPTNAME# : EntityLogic
     /// </summary>
     public override void Reset()
     {
-
+        base.Reset();
     }
 }

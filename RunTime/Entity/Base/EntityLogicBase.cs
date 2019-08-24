@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 实体逻辑基类
     /// </summary>
-    public abstract class EntityLogic : IReference
+    public abstract class EntityLogicBase : IReference
     {
         /// <summary>
         /// 实体名称

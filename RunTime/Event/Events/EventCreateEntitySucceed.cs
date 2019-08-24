@@ -5,14 +5,14 @@ namespace HT.Framework
     /// </summary>
     public sealed class EventCreateEntitySucceed : EventHandler
     {
-        public EntityLogic Entity;
+        public EntityLogicBase EntityLogic;
 
         /// <summary>
         /// 填充数据，所有属性、字段的初始化工作可以在这里完成
         /// </summary>
-        public EventCreateEntitySucceed Fill(EntityLogic entityLogic)
+        public EventCreateEntitySucceed Fill(EntityLogicBase entityLogic)
         {
-            Entity = entityLogic;
+            EntityLogic = entityLogic;
             return this;
         }
 
