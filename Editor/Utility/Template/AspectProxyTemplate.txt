@@ -5,18 +5,18 @@ using HT.Framework;
 using DG.Tweening;
 using System.Reflection;
 /// <summary>
-/// 新建切面代理
+/// 新建切面代理者
 /// </summary>
-public class #SCRIPTNAME#<T> : AspectProxy<T> where T : I#SCRIPTNAME#
+public class #SCRIPTNAME#<T> : AspectProxyBase<T> where T : I#SCRIPTNAME#
 {
     public #SCRIPTNAME#(T realObject) : base(realObject) { }
 
-    protected override object[] BeforeInvoke(MethodBase method, object[] args)
+    protected override object[] OnBeforeInvoke(MethodBase method, object[] args)
     {
 		return args;
     }
 
-    protected override void AfterInvoke(MethodBase method, object returnValue)
+    protected override void OnAfterInvoke(MethodBase method, object returnValue)
     {
     }
 }

@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -15,8 +17,32 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableAspectTrack, out Target.IsEnableAspectTrack, "Is Track");
+            Toggle(Target.IsEnableAspectTrack, out Target.IsEnableAspectTrack, "Is Enable Track");
             GUILayout.EndHorizontal();
+
+            if (Target.IsEnableAspectTrack)
+            {
+                GUILayout.BeginHorizontal();
+                Toggle(Target.IsEnableIntercept, out Target.IsEnableIntercept, "Is Enable Intercept");
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Intercept Conditions: ");
+            GUILayout.EndHorizontal();
+
+            foreach (KeyValuePair<string, HTFFunc<MethodBase, object[], bool>> condition in Target.InterceptConditions)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20);
+                GUILayout.Label(condition.Key);
+                GUILayout.EndHorizontal();
+            }
         }
     }
 }
