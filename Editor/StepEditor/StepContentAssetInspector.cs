@@ -9,6 +9,14 @@ namespace HT.Framework
     {
         private Vector2 _scroll = Vector2.zero;
 
+        protected override bool IsEnableRuntimeData
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

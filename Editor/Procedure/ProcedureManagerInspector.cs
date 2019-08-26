@@ -92,9 +92,10 @@ namespace HT.Framework
                 }
                 if (GUILayout.Button("Edit", "MiniButtonmid"))
                 {
-                    if (_procedureTypes.ContainsKey(Target.ActivatedProcedures[i]))
+                    string[] names = Target.ActivatedProcedures[i].Split('.');
+                    if (_procedureTypes.ContainsKey(names[names.Length - 1]))
                     {
-                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_procedureTypes[Target.ActivatedProcedures[i]], typeof(TextAsset));
+                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_procedureTypes[names[names.Length - 1]], typeof(TextAsset));
                         if (classFile)
                             AssetDatabase.OpenAsset(classFile);
                         else

@@ -7,7 +7,21 @@ namespace HT.Framework
 {
     public abstract class HTFEditor<E> : Editor where E : UnityEngine.Object
     {
+        /// <summary>
+        /// 当前目标
+        /// </summary>
         protected E Target;
+
+        /// <summary>
+        /// 是否启用运行时调试数据
+        /// </summary>
+        protected virtual bool IsEnableRuntimeData
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         private void OnEnable()
         {
@@ -15,7 +29,7 @@ namespace HT.Framework
 
             OnDefaultEnable();
 
-            if (EditorApplication.isPlaying)
+            if (IsEnableRuntimeData && EditorApplication.isPlaying)
             {
                 OnRuntimeEnable();
             }
@@ -25,7 +39,7 @@ namespace HT.Framework
         {
             OnInspectorDefaultGUI();
 
-            if (EditorApplication.isPlaying)
+            if (IsEnableRuntimeData && EditorApplication.isPlaying)
             {
                 GUI.backgroundColor = Color.cyan;
                 GUI.color = Color.white;
