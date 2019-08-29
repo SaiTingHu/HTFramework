@@ -6,26 +6,23 @@ namespace HT.Framework
     /// <summary>
     /// 网络接口：获取AssetBundle
     /// </summary>
-    public sealed class WebInterfaceGetAssetBundle : WebInterface
+    public sealed class WebInterfaceGetAssetBundle : WebInterfaceBase
     {
         public HTFAction<AssetBundle> Handler;
 
-        public override void GetRequestFinish(DownloadHandler handler)
+        public override void OnRequestFinished(DownloadHandler handler)
         {
             DownloadHandlerAssetBundle downloadHandler = handler as DownloadHandlerAssetBundle;
 
-            if (Handler != null)
-            {
-                Handler(downloadHandler.assetBundle);
-            }
+            Handler?.Invoke(downloadHandler.assetBundle);
         }
 
-        public override void SetDownloadHandler(UnityWebRequest request)
+        public override void OnSetDownloadHandler(UnityWebRequest request)
         {
             request.downloadHandler = new DownloadHandlerAssetBundle(request.url, 0);
         }
 
-        public override string GetDownloadString(DownloadHandler handler)
+        public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }

@@ -6,26 +6,23 @@ namespace HT.Framework
     /// <summary>
     /// 网络接口：获取Texture2D
     /// </summary>
-    public sealed class WebInterfaceGetTexture2D : WebInterface
+    public sealed class WebInterfaceGetTexture2D : WebInterfaceBase
     {
         public HTFAction<Texture2D> Handler;
 
-        public override void GetRequestFinish(DownloadHandler handler)
+        public override void OnRequestFinished(DownloadHandler handler)
         {
             DownloadHandlerTexture downloadHandler = handler as DownloadHandlerTexture;
 
-            if (Handler != null)
-            {
-                Handler(downloadHandler.texture);
-            }
+            Handler?.Invoke(downloadHandler.texture);
         }
 
-        public override void SetDownloadHandler(UnityWebRequest request)
+        public override void OnSetDownloadHandler(UnityWebRequest request)
         {
             request.downloadHandler = new DownloadHandlerTexture(true);
         }
 
-        public override string GetDownloadString(DownloadHandler handler)
+        public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }

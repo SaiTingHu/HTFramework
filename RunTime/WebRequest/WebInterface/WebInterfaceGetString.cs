@@ -5,24 +5,21 @@ namespace HT.Framework
     /// <summary>
     /// 网络接口：获取字符串
     /// </summary>
-    public sealed class WebInterfaceGetString : WebInterface
+    public sealed class WebInterfaceGetString : WebInterfaceBase
     {
         public HTFAction<string> Handler;
 
-        public override void GetRequestFinish(DownloadHandler handler)
+        public override void OnRequestFinished(DownloadHandler handler)
         {
-            if (Handler != null)
-            {
-                Handler(handler.text);
-            }
+            Handler?.Invoke(handler.text);
         }
 
-        public override void SetDownloadHandler(UnityWebRequest request)
+        public override void OnSetDownloadHandler(UnityWebRequest request)
         {
 
         }
 
-        public override string GetDownloadString(DownloadHandler handler)
+        public override string OnGetDownloadString(DownloadHandler handler)
         {
             return handler.text;
         }

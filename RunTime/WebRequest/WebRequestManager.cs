@@ -13,7 +13,7 @@ namespace HT.Framework
     public sealed class WebRequestManager : ModuleManager
     {
         /// <summary>
-        /// 离线状态
+        /// 当前是否是离线状态
         /// </summary>
         public bool IsOfflineState = false;
         /// <summary>
@@ -21,7 +21,7 @@ namespace HT.Framework
         /// </summary>
         public AudioType DownloadAudioType = AudioType.WAV;
 
-        private Dictionary<string, WebInterface> _interfaces = new Dictionary<string, WebInterface>();
+        private Dictionary<string, WebInterfaceBase> _interfaces = new Dictionary<string, WebInterfaceBase>();
         
         public override void OnTermination()
         {
@@ -33,131 +33,154 @@ namespace HT.Framework
         /// <summary>
         /// 注册接口（获取 string）
         /// </summary>
-        public void RegisterInterface(string name, string url, HTFAction<string> handler, HTFAction offlineHandle = null)
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        /// <param name="handler">获取 string 之后的处理者</param>
+        /// <param name="offlineHandle">离线模式处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<string> handler, HTFAction offlineHandle = null)
         {
-            if (!_interfaces.ContainsKey(name))
+            if (!_interfaces.ContainsKey(interfaceName))
             {
                 WebInterfaceGetString wi = Main.m_ReferencePool.Spawn<WebInterfaceGetString>();
-                wi.Name = name;
-                wi.Url = url;
+                wi.Name = interfaceName;
+                wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
                 wi.Handler = handler;
-                _interfaces.Add(name, wi);
+                _interfaces.Add(interfaceName, wi);
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + name + " 的网络接口！");
+                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
         /// 注册接口（获取 AssetBundle）
         /// </summary>
-        public void RegisterInterface(string name, string url, HTFAction<AssetBundle> handler, HTFAction offlineHandle = null)
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        /// <param name="handler">获取 AssetBundle 之后的处理者</param>
+        /// <param name="offlineHandle">离线模式处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AssetBundle> handler, HTFAction offlineHandle = null)
         {
-            if (!_interfaces.ContainsKey(name))
+            if (!_interfaces.ContainsKey(interfaceName))
             {
                 WebInterfaceGetAssetBundle wi = Main.m_ReferencePool.Spawn<WebInterfaceGetAssetBundle>();
-                wi.Name = name;
-                wi.Url = url;
+                wi.Name = interfaceName;
+                wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
                 wi.Handler = handler;
-                _interfaces.Add(name, wi);
+                _interfaces.Add(interfaceName, wi);
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + name + " 的网络接口！");
+                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
         /// 注册接口（获取 Texture2D）
         /// </summary>
-        public void RegisterInterface(string name, string url, HTFAction<Texture2D> handler, HTFAction offlineHandle = null)
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        /// <param name="handler">获取 Texture2D 之后的处理者</param>
+        /// <param name="offlineHandle">离线模式处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<Texture2D> handler, HTFAction offlineHandle = null)
         {
-            if (!_interfaces.ContainsKey(name))
+            if (!_interfaces.ContainsKey(interfaceName))
             {
                 WebInterfaceGetTexture2D wi = Main.m_ReferencePool.Spawn<WebInterfaceGetTexture2D>();
-                wi.Name = name;
-                wi.Url = url;
+                wi.Name = interfaceName;
+                wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
                 wi.Handler = handler;
-                _interfaces.Add(name, wi);
+                _interfaces.Add(interfaceName, wi);
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + name + " 的网络接口！");
+                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
         /// 注册接口（获取 AudioClip）
         /// </summary>
-        public void RegisterInterface(string name, string url, HTFAction<AudioClip> handler, HTFAction offlineHandle = null)
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        /// <param name="handler">获取 AudioClip 之后的处理者</param>
+        /// <param name="offlineHandle">离线模式处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle = null)
         {
-            if (!_interfaces.ContainsKey(name))
+            if (!_interfaces.ContainsKey(interfaceName))
             {
                 WebInterfaceGetAudioClip wi = Main.m_ReferencePool.Spawn<WebInterfaceGetAudioClip>();
-                wi.Name = name;
-                wi.Url = url;
+                wi.Name = interfaceName;
+                wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
                 wi.Handler = handler;
-                _interfaces.Add(name, wi);
+                _interfaces.Add(interfaceName, wi);
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + name + " 的网络接口！");
+                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
         /// 注册接口（提交 表单）
         /// </summary>
-        public void RegisterInterface(string name, string url)
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl)
         {
-            if (!_interfaces.ContainsKey(name))
+            if (!_interfaces.ContainsKey(interfaceName))
             {
                 WebInterfacePost wi = Main.m_ReferencePool.Spawn<WebInterfacePost>();
-                wi.Name = name;
-                wi.Url = url;
-                _interfaces.Add(name, wi);
+                wi.Name = interfaceName;
+                wi.Url = interfaceUrl;
+                _interfaces.Add(interfaceName, wi);
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + name + " 的网络接口！");
+                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
         /// 通过名称获取接口
         /// </summary>
-        public WebInterface GetInterface(string name)
+        /// <param name="interfaceName">接口名称</param>
+        /// <returns>网络接口</returns>
+        public WebInterfaceBase GetInterface(string interfaceName)
         {
-            if (_interfaces.ContainsKey(name))
+            if (_interfaces.ContainsKey(interfaceName))
             {
-                return _interfaces[name];
+                return _interfaces[interfaceName];
             }
             else
             {
-                GlobalTools.LogError("获取接口失败：不存在名为 " + name + " 的网络接口！");
+                GlobalTools.LogError("获取接口失败：不存在名为 " + interfaceName + " 的网络接口！");
                 return null;
             }
         }
         /// <summary>
         /// 是否存在指定名称的接口
         /// </summary>
-        public bool IsExistInterface(string name)
+        /// <param name="interfaceName">接口名称</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistInterface(string interfaceName)
         {
-            return _interfaces.ContainsKey(name);
+            return _interfaces.ContainsKey(interfaceName);
         }
         /// <summary>
         /// 取消注册接口
         /// </summary>
-        public void UnRegisterInterface(string name)
+        /// <param name="interfaceName">接口名称</param>
+        public void UnRegisterInterface(string interfaceName)
         {
-            if (_interfaces.ContainsKey(name))
+            if (_interfaces.ContainsKey(interfaceName))
             {
-                Main.m_ReferencePool.Despawn(_interfaces[name]);
-                _interfaces.Remove(name);
+                Main.m_ReferencePool.Despawn(_interfaces[interfaceName]);
+                _interfaces.Remove(interfaceName);
             }
             else
             {
-                GlobalTools.LogError("移除接口失败：不存在名为 " + name + " 的网络接口！");
+                GlobalTools.LogError("移除接口失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
@@ -165,36 +188,37 @@ namespace HT.Framework
         /// </summary>
         public void ClearInterface()
         {
-            foreach (KeyValuePair<string, WebInterface> inter in _interfaces)
+            foreach (KeyValuePair<string, WebInterfaceBase> inter in _interfaces)
             {
                 Main.m_ReferencePool.Despawn(inter.Value);
             }
             _interfaces.Clear();
         }
-        
+
         /// <summary>
         /// 发起网络请求
         /// </summary>
-        public void SendRequest(string interfaceName, params string[] parameter)
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="parameter">可选参数（要同时传入参数名和参数值，例：name='张三'）</param>
+        /// <returns>请求的协程</returns>
+        public Coroutine SendRequest(string interfaceName, params string[] parameter)
         {
-            if (IsExistInterface(interfaceName))
+            if (_interfaces.ContainsKey(interfaceName))
             {
-                if (IsOfflineState)
+                if (IsOfflineState || _interfaces[interfaceName].IsOffline)
                 {
-                    if (_interfaces[interfaceName].OfflineHandler != null)
-                    {
-                        _interfaces[interfaceName].OfflineHandler();
-                    }
+                    _interfaces[interfaceName].OfflineHandler?.Invoke();
                 }
                 else
                 {
-                    StartCoroutine(SendRequestCoroutine(interfaceName, parameter));
+                    return Main.Current.StartCoroutine(SendRequestCoroutine(interfaceName, parameter));
                 }
             }
             else
             {
                 GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
+            return null;
         }
         private IEnumerator SendRequestCoroutine(string interfaceName, params string[] parameter)
         {
@@ -207,23 +231,21 @@ namespace HT.Framework
             DateTime begin = DateTime.Now;
 
             UnityWebRequest request = UnityWebRequest.Get(url);
-            _interfaces[interfaceName].SetDownloadHandler(request);
+            _interfaces[interfaceName].OnSetDownloadHandler(request);
             yield return request.SendWebRequest();
 
             DateTime end = DateTime.Now;
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
-                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].GetDownloadString(request.downloadHandler));
-                GlobalTools.LogInfo(info);
+                GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
 
-                _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
+                _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
             }
             else
             {
-                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error);
-                GlobalTools.LogError(info);
+                GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
             }
 
             request.downloadHandler.Dispose();
@@ -232,26 +254,27 @@ namespace HT.Framework
         /// <summary>
         /// 发起网络请求
         /// </summary>
-        public void SendRequest(string interfaceName, WWWForm form)
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="form">参数表单</param>
+        /// <returns>请求的协程</returns>
+        public Coroutine SendRequest(string interfaceName, WWWForm form)
         {
-            if (IsExistInterface(interfaceName))
+            if (_interfaces.ContainsKey(interfaceName))
             {
-                if (IsOfflineState)
+                if (IsOfflineState || _interfaces[interfaceName].IsOffline)
                 {
-                    if (_interfaces[interfaceName].OfflineHandler != null)
-                    {
-                        _interfaces[interfaceName].OfflineHandler();
-                    }
+                    _interfaces[interfaceName].OfflineHandler?.Invoke();
                 }
                 else
                 {
-                    StartCoroutine(SendRequestCoroutine(interfaceName, form));
+                    return Main.Current.StartCoroutine(SendRequestCoroutine(interfaceName, form));
                 }
             }
             else
             {
                 GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
+            return null;
         }
         private IEnumerator SendRequestCoroutine(string interfaceName, WWWForm form)
         {
@@ -260,23 +283,21 @@ namespace HT.Framework
             DateTime begin = DateTime.Now;
 
             UnityWebRequest request = UnityWebRequest.Post(url, form);
-            _interfaces[interfaceName].SetDownloadHandler(request);
+            _interfaces[interfaceName].OnSetDownloadHandler(request);
             yield return request.SendWebRequest();
 
             DateTime end = DateTime.Now;
 
             if (!request.isNetworkError && !request.isHttpError)
             {
-                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
-                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].GetDownloadString(request.downloadHandler));
-                GlobalTools.LogInfo(info);
+                GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
 
-                _interfaces[interfaceName].GetRequestFinish(request.downloadHandler);
+                _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
             }
             else
             {
-                string info = string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error);
-                GlobalTools.LogError(info);
+                GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
             }
 
             request.downloadHandler.Dispose();

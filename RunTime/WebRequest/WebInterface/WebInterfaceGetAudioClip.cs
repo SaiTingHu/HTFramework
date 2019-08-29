@@ -6,26 +6,23 @@ namespace HT.Framework
     /// <summary>
     /// 网络接口：获取AudioClip
     /// </summary>
-    public sealed class WebInterfaceGetAudioClip : WebInterface
+    public sealed class WebInterfaceGetAudioClip : WebInterfaceBase
     {
         public HTFAction<AudioClip> Handler;
 
-        public override void GetRequestFinish(DownloadHandler handler)
+        public override void OnRequestFinished(DownloadHandler handler)
         {
             DownloadHandlerAudioClip downloadHandler = handler as DownloadHandlerAudioClip;
 
-            if (Handler != null)
-            {
-                Handler(downloadHandler.audioClip);
-            }
+            Handler?.Invoke(downloadHandler.audioClip);
         }
 
-        public override void SetDownloadHandler(UnityWebRequest request)
+        public override void OnSetDownloadHandler(UnityWebRequest request)
         {
             request.downloadHandler = new DownloadHandlerAudioClip(request.url, Main.m_WebRequest.DownloadAudioType);
         }
 
-        public override string GetDownloadString(DownloadHandler handler)
+        public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }

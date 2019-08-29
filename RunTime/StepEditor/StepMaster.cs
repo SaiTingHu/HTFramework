@@ -414,7 +414,7 @@ namespace HT.Framework
                 _stepContentEnables.Clear();
                 _stepContentIndexs.Clear();
                 //启用所有步骤
-                if (prohibitStepID == null)
+                if (prohibitStepID == null || prohibitStepID.Count == 0)
                 {
                     for (int i = 0; i < ContentAsset.Content.Count; i++)
                     {
@@ -505,7 +505,7 @@ namespace HT.Framework
         /// </summary>
         public void Begin()
         {
-            if (!ContentAsset)
+            if (!ContentAsset || ContentAsset.Content.Count <= 0)
             {
                 return;
             }
@@ -686,7 +686,7 @@ namespace HT.Framework
                     target.OpenFlashHighLight();
                 }
 
-                Main.m_Controller.TheControlMode = _currentContent.InitialMode;
+                Main.m_Controller.TheControlMode = CurrentStepContent.InitialMode;
                 Main.m_Controller.SetLookPoint(target.transform.position + CurrentStepContent.ViewOffset, true);
                 Main.m_Controller.SetLookAngle(CurrentStepContent.BestView, true);
 

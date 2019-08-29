@@ -57,7 +57,9 @@ namespace HT.Framework
         #endregion
 
         #region 高光工具
-        private static List<HighlightableObject> HOS = new List<HighlightableObject>();
+        private static List<HighlightableObject> HOCache = new List<HighlightableObject>();
+        private static HashSet<HighlightableObject> HighLightObjects = new HashSet<HighlightableObject>();
+        private static HashSet<HighlightableObject> FlashHighLightObjects = new HashSet<HighlightableObject>();
 
         /// <summary>
         /// 开启高光，使用默认发光颜色
@@ -74,20 +76,24 @@ namespace HT.Framework
         /// <param name="color">发光颜色</param>
         public static void OpenHighLight(this GameObject target, Color color)
         {
-            HOS.Clear();
-            target.transform.GetComponentsInChildren(true, HOS);
-            for (int i = 0; i < HOS.Count; i++)
+            HOCache.Clear();
+            target.transform.GetComponentsInChildren(true, HOCache);
+            for (int i = 0; i < HOCache.Count; i++)
             {
-                if (HOS[i].gameObject != target)
+                if (HOCache[i].gameObject != target)
                 {
-                    HOS[i].ConstantOff();
-                    HOS[i].Die();
+                    HOCache[i].ConstantOff();
+                    HOCache[i].Die();
                 }
             }
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
 
+            if (!HighLightObjects.Contains(ho))
+            {
+                HighLightObjects.Add(ho);
+            }
             ho.ConstantOnImmediate(color);
         }
         /// <summary>
@@ -100,9 +106,29 @@ namespace HT.Framework
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
+            if (HighLightObjects.Contains(ho))
+            {
+                HighLightObjects.Remove(ho);
+            }
             ho.ConstantOff();
             if (die) ho.Die();
         }
+        /// <summary>
+        /// 关闭所有的高光
+        /// </summary>
+        public static void CloseAllHighLight(bool die = false)
+        {
+            foreach (HighlightableObject ho in HighLightObjects)
+            {
+                if (ho)
+                {
+                    ho.ConstantOff();
+                    if (die) ho.Die();
+                }
+            }
+            HighLightObjects.Clear();
+        }
+
         /// <summary>
         /// 开启闪光，使用默认颜色和频率
         /// </summary>
@@ -130,20 +156,24 @@ namespace HT.Framework
         /// <param name="freq">频率</param>
         public static void OpenFlashHighLight(this GameObject target, Color color1, Color color2, float freq)
         {
-            HOS.Clear();
-            target.transform.GetComponentsInChildren(true, HOS);
-            for (int i = 0; i < HOS.Count; i++)
+            HOCache.Clear();
+            target.transform.GetComponentsInChildren(true, HOCache);
+            for (int i = 0; i < HOCache.Count; i++)
             {
-                if (HOS[i].gameObject != target)
+                if (HOCache[i].gameObject != target)
                 {
-                    HOS[i].FlashingOff();
-                    HOS[i].Die();
+                    HOCache[i].FlashingOff();
+                    HOCache[i].Die();
                 }
             }
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
 
+            if (!FlashHighLightObjects.Contains(ho))
+            {
+                FlashHighLightObjects.Add(ho);
+            }
             ho.FlashingOn(color1, color2, freq);
         }
         /// <summary>
@@ -156,8 +186,27 @@ namespace HT.Framework
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
+            if (FlashHighLightObjects.Contains(ho))
+            {
+                FlashHighLightObjects.Remove(ho);
+            }
             ho.FlashingOff();
             if (die) ho.Die();
+        }
+        /// <summary>
+        /// 关闭所有的闪光
+        /// </summary>
+        public static void CloseAllFlashHighLight(bool die = false)
+        {
+            foreach (HighlightableObject ho in FlashHighLightObjects)
+            {
+                if (ho)
+                {
+                    ho.FlashingOff();
+                    if (die) ho.Die();
+                }
+            }
+            FlashHighLightObjects.Clear();
         }
         #endregion
 

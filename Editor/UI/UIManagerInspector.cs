@@ -11,6 +11,8 @@ namespace HT.Framework
     {
         private Dictionary<Type, UILogicBase> _overlayUIs;
         private Dictionary<Type, UILogicBase> _cameraUIs;
+        private bool _overlayUIFoldout = true;
+        private bool _cameraUIFoldout = true;
 
         protected override void OnRuntimeEnable()
         {
@@ -46,26 +48,29 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Overlay UIs: " + (Target.IsEnableOverlayUI ? "[Enable]" : "[Disable]"));
+            GUILayout.Space(10);
+            _overlayUIFoldout = EditorGUILayout.Foldout(_overlayUIFoldout, "Overlay UIs", true);
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
+            if (_overlayUIFoldout)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label(ui.Key.Name);
-                if (ui.Value.IsCreated)
+                foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
                 {
-                    if (ui.Value.IsOpened)
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20);
+                    GUILayout.Label(ui.Key.Name);
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label((ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(40);
+                    EditorGUILayout.ObjectField(ui.Value.UIEntity, typeof(GameObject), true);
+                    if (ui.Value.IsCreated)
                     {
-                        if (GUILayout.Button("Close", "Minibutton", GUILayout.Width(60)))
-                        {
-                            Main.m_UI.CloseUI(ui.Key);
-                        }
-                    }
-                    else
-                    {
-                        if (GUILayout.Button("Open", "Minibutton", GUILayout.Width(60)))
+                        GUILayout.FlexibleSpace();
+                        GUI.enabled = !ui.Value.IsOpened;
+                        if (GUILayout.Button("Open", "minibuttonleft", GUILayout.Width(45)))
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
@@ -76,37 +81,41 @@ namespace HT.Framework
                                 Main.m_UI.OpenTemporaryUI(ui.Key);
                             }
                         }
+                        GUI.enabled = ui.Value.IsOpened;
+                        if (GUILayout.Button("Close", "minibuttonright", GUILayout.Width(45)))
+                        {
+                            Main.m_UI.CloseUI(ui.Key);
+                        }
+                        GUI.enabled = true;
                     }
+                    GUILayout.EndHorizontal();
                 }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(40);
-                GUILayout.Label((ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
-                GUILayout.EndHorizontal();
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Camera UIs: " + (Target.IsEnableCameraUI ? "[Enable]" : "[Disable]"));
+            GUILayout.Space(10);
+            _cameraUIFoldout = EditorGUILayout.Foldout(_cameraUIFoldout, "Camera UIs", true);
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
+            if (_cameraUIFoldout)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label(ui.Key.Name);
-                if (ui.Value.IsCreated)
+                foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
                 {
-                    if (ui.Value.IsOpened)
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20);
+                    GUILayout.Label(ui.Key.Name);
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label((ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(40);
+                    EditorGUILayout.ObjectField(ui.Value.UIEntity, typeof(GameObject), true);
+                    if (ui.Value.IsCreated)
                     {
-                        if (GUILayout.Button("Close", "Minibutton", GUILayout.Width(60)))
-                        {
-                            Main.m_UI.CloseUI(ui.Key);
-                        }
-                    }
-                    else
-                    {
-                        if (GUILayout.Button("Open", "Minibutton", GUILayout.Width(60)))
+                        GUILayout.FlexibleSpace();
+                        GUI.enabled = !ui.Value.IsOpened;
+                        if (GUILayout.Button("Open", "minibuttonleft", GUILayout.Width(45)))
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
@@ -117,14 +126,15 @@ namespace HT.Framework
                                 Main.m_UI.OpenTemporaryUI(ui.Key);
                             }
                         }
+                        GUI.enabled = ui.Value.IsOpened;
+                        if (GUILayout.Button("Close", "minibuttonright", GUILayout.Width(45)))
+                        {
+                            Main.m_UI.CloseUI(ui.Key);
+                        }
+                        GUI.enabled = true;
                     }
+                    GUILayout.EndHorizontal();
                 }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(40);
-                GUILayout.Label((ui.Value.IsCreated ? "[Created]" : "[Uncreated]") + " " + (ui.Value.IsOpened ? "[Opened]" : "[Unopened]"));
-                GUILayout.EndHorizontal();
             }
         }
     }

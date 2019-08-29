@@ -5,19 +5,19 @@ namespace HT.Framework
     /// <summary>
     /// 网络接口：提交表单
     /// </summary>
-    public sealed class WebInterfacePost : WebInterface
+    public sealed class WebInterfacePost : WebInterfaceBase
     {
-        public override void GetRequestFinish(DownloadHandler handler)
+        public override void OnRequestFinished(DownloadHandler handler)
         {
             
         }
 
-        public override void SetDownloadHandler(UnityWebRequest request)
+        public override void OnSetDownloadHandler(UnityWebRequest request)
         {
 
         }
 
-        public override string GetDownloadString(DownloadHandler handler)
+        public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }
