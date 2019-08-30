@@ -12,9 +12,15 @@ namespace HT.Framework
 
         public override void OnRequestFinished(DownloadHandler handler)
         {
-            DownloadHandlerTexture downloadHandler = handler as DownloadHandlerTexture;
-
-            Handler?.Invoke(downloadHandler.texture);
+            if (handler == null)
+            {
+                Handler?.Invoke(null);
+            }
+            else
+            {
+                DownloadHandlerTexture downloadHandler = handler as DownloadHandlerTexture;
+                Handler?.Invoke(downloadHandler.texture);
+            }
         }
 
         public override void OnSetDownloadHandler(UnityWebRequest request)

@@ -11,7 +11,14 @@ namespace HT.Framework
 
         public override void OnRequestFinished(DownloadHandler handler)
         {
-            Handler?.Invoke(handler.text);
+            if (handler == null)
+            {
+                Handler?.Invoke("");
+            }
+            else
+            {
+                Handler?.Invoke(handler.text);
+            }
         }
 
         public override void OnSetDownloadHandler(UnityWebRequest request)

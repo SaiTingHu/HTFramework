@@ -12,9 +12,15 @@ namespace HT.Framework
 
         public override void OnRequestFinished(DownloadHandler handler)
         {
-            DownloadHandlerAssetBundle downloadHandler = handler as DownloadHandlerAssetBundle;
-
-            Handler?.Invoke(downloadHandler.assetBundle);
+            if (handler == null)
+            {
+                Handler?.Invoke(null);
+            }
+            else
+            {
+                DownloadHandlerAssetBundle downloadHandler = handler as DownloadHandlerAssetBundle;
+                Handler?.Invoke(downloadHandler.assetBundle);
+            }
         }
 
         public override void OnSetDownloadHandler(UnityWebRequest request)

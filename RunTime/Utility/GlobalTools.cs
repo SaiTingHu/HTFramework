@@ -308,7 +308,14 @@ namespace HT.Framework
         /// <returns></returns>
         public static JsonData StringToJson(string value)
         {
-            return JsonMapper.ToObject(value);
+            if (string.IsNullOrEmpty(value) || value == "")
+            {
+                return null;
+            }
+            else
+            {
+                return JsonMapper.ToObject(value);
+            }
         }
         #endregion
 

@@ -246,6 +246,8 @@ namespace HT.Framework
             else
             {
                 GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
+
+                _interfaces[interfaceName].OnRequestFinished(null);
             }
 
             request.downloadHandler.Dispose();
@@ -298,6 +300,8 @@ namespace HT.Framework
             else
             {
                 GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
+
+                _interfaces[interfaceName].OnRequestFinished(null);
             }
 
             request.downloadHandler.Dispose();

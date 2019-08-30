@@ -12,9 +12,15 @@ namespace HT.Framework
 
         public override void OnRequestFinished(DownloadHandler handler)
         {
-            DownloadHandlerAudioClip downloadHandler = handler as DownloadHandlerAudioClip;
-
-            Handler?.Invoke(downloadHandler.audioClip);
+            if (handler == null)
+            {
+                Handler?.Invoke(null);
+            }
+            else
+            {
+                DownloadHandlerAudioClip downloadHandler = handler as DownloadHandlerAudioClip;
+                Handler?.Invoke(downloadHandler.audioClip);
+            }
         }
 
         public override void OnSetDownloadHandler(UnityWebRequest request)

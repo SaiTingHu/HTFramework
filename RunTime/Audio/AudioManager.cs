@@ -11,64 +11,78 @@ namespace HT.Framework
     public sealed class AudioManager : ModuleManager
     {
         /// <summary>
-        /// 背景音乐优先级
+        /// 是否静音初始值【请勿在代码中修改】
         /// </summary>
-        public int BackgroundPriority = 0;
+        public bool MuteDefault = false;
         /// <summary>
-        /// 单通道音效优先级
+        /// 背景音乐优先级初始值【请勿在代码中修改】
         /// </summary>
-        public int SinglePriority = 10;
+        public int BackgroundPriorityDefault = 0;
         /// <summary>
-        /// 多通道音效优先级
+        /// 单通道音效优先级初始值【请勿在代码中修改】
         /// </summary>
-        public int MultiplePriority = 20;
+        public int SinglePriorityDefault = 10;
         /// <summary>
-        /// 世界音效优先级
+        /// 多通道音效优先级初始值【请勿在代码中修改】
         /// </summary>
-        public int WorldPriority = 30;
+        public int MultiplePriorityDefault = 20;
         /// <summary>
-        /// 背景音乐音量
+        /// 世界音效优先级初始值【请勿在代码中修改】
         /// </summary>
-        public float BackgroundVolume = 0.6f;
+        public int WorldPriorityDefault = 30;
         /// <summary>
-        /// 单通道音效音量
+        /// 背景音乐音量初始值【请勿在代码中修改】
         /// </summary>
-        public float SingleVolume = 1;
+        public float BackgroundVolumeDefault = 0.6f;
         /// <summary>
-        /// 多通道音效音量
+        /// 单通道音效音量初始值【请勿在代码中修改】
         /// </summary>
-        public float MultipleVolume = 1;
+        public float SingleVolumeDefault = 1;
         /// <summary>
-        /// 世界音效音量
+        /// 多通道音效音量初始值【请勿在代码中修改】
         /// </summary>
-        public float WorldVolume = 1;
+        public float MultipleVolumeDefault = 1;
+        /// <summary>
+        /// 世界音效音量初始值【请勿在代码中修改】
+        /// </summary>
+        public float WorldVolumeDefault = 1;
 
         /// <summary>
         /// 单通道音效播放结束事件
         /// </summary>
         public event HTFAction SingleSoundEndOfPlayEvent;
-
-        private int _backgroundPriorityCache;
-        private int _singlePriorityCache;
-        private int _multiplePriorityCache;
-        private int _worldPriorityCache;
-        private float _backgroundVolumeCache;
-        private float _singleVolumeCache;
-        private float _multipleVolumeCache;
-        private float _worldVolumeCache;
+        
         private AudioSource _backgroundAudio;
         private AudioSource _singleAudio;
-        private List<AudioSource> _multipleAudio = new List<AudioSource>();
-        private Dictionary<GameObject, AudioSource> _worldAudio = new Dictionary<GameObject, AudioSource>();
-        private bool _isMute = false;
+        private List<AudioSource> _multipleAudios = new List<AudioSource>();
+        private Dictionary<GameObject, AudioSource> _worldAudios = new Dictionary<GameObject, AudioSource>();
         private bool _singleSoundPlayDetector = false;
+        private bool _isMute = false;
+        private int _backgroundPriority = 0;
+        private int _singlePriority = 10;
+        private int _multiplePriority = 20;
+        private int _worldPriority = 30;
+        private float _backgroundVolume = 0.6f;
+        private float _singleVolume = 1;
+        private float _multipleVolume = 1;
+        private float _worldVolume = 1;
 
         public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _backgroundAudio = CreateAudioSource("BackgroundAudio", BackgroundPriority, BackgroundVolume);
-            _singleAudio = CreateAudioSource("SingleAudio", SinglePriority, SingleVolume);
+            _backgroundAudio = CreateAudioSource("BackgroundAudio", BackgroundPriorityDefault, BackgroundVolumeDefault, 1, 0);
+            _singleAudio = CreateAudioSource("SingleAudio", SinglePriorityDefault, SingleVolumeDefault, 1, 0);
+
+            Mute = MuteDefault;
+            BackgroundPriority = BackgroundPriorityDefault;
+            SinglePriority = SinglePriorityDefault;
+            MultiplePriority = MultiplePriorityDefault;
+            WorldPriority = WorldPriorityDefault;
+            BackgroundVolume = BackgroundVolumeDefault;
+            SingleVolume = SingleVolumeDefault;
+            MultipleVolume = MultipleVolumeDefault;
+            WorldVolume = WorldVolumeDefault;
         }
 
         public override void OnTermination()
@@ -93,60 +107,6 @@ namespace HT.Framework
                     SingleSoundEndOfPlayEvent?.Invoke();
                 }
             }
-
-            if (_backgroundPriorityCache != BackgroundPriority)
-            {
-                _backgroundPriorityCache = BackgroundPriority;
-                _backgroundAudio.priority = _backgroundPriorityCache;
-            }
-            if (_singlePriorityCache != SinglePriority)
-            {
-                _singlePriorityCache = SinglePriority;
-                _singleAudio.priority = _singlePriorityCache;
-            }
-            if (_multiplePriorityCache != MultiplePriority)
-            {
-                _multiplePriorityCache = MultiplePriority;
-                for (int i = 0; i < _multipleAudio.Count; i++)
-                {
-                    _multipleAudio[i].priority = _multiplePriorityCache;
-                }
-            }
-            if (_worldPriorityCache != WorldPriority)
-            {
-                _worldPriorityCache = WorldPriority;
-                foreach (KeyValuePair<GameObject, AudioSource> audio in _worldAudio)
-                {
-                    audio.Value.priority = _worldPriorityCache;
-                }
-            }
-
-            if (!Mathf.Approximately(_backgroundVolumeCache, BackgroundVolume))
-            {
-                _backgroundVolumeCache = BackgroundVolume;
-                _backgroundAudio.volume = _backgroundVolumeCache;
-            }
-            if (!Mathf.Approximately(_singleVolumeCache, SingleVolume))
-            {
-                _singleVolumeCache = SingleVolume;
-                _singleAudio.volume = _singleVolumeCache;
-            }
-            if (!Mathf.Approximately(_multipleVolumeCache, MultipleVolume))
-            {
-                _multipleVolumeCache = MultipleVolume;
-                for (int i = 0; i < _multipleAudio.Count; i++)
-                {
-                    _multipleAudio[i].volume = _multipleVolumeCache;
-                }
-            }
-            if (!Mathf.Approximately(_worldVolumeCache, WorldVolume))
-            {
-                _worldVolumeCache = WorldVolume;
-                foreach (KeyValuePair<GameObject, AudioSource> audio in _worldAudio)
-                {
-                    audio.Value.volume = _worldVolumeCache;
-                }
-            }
         }
         
         /// <summary>
@@ -160,16 +120,175 @@ namespace HT.Framework
             }
             set
             {
-                _isMute = value;
-                _backgroundAudio.mute = value;
-                _singleAudio.mute = value;
-                for (int i = 0; i < _multipleAudio.Count; i++)
+                if (_isMute != value)
                 {
-                    _multipleAudio[i].mute = value;
+                    _isMute = value;
+                    _backgroundAudio.mute = _isMute;
+                    _singleAudio.mute = _isMute;
+                    for (int i = 0; i < _multipleAudios.Count; i++)
+                    {
+                        _multipleAudios[i].mute = _isMute;
+                    }
+                    foreach (var audio in _worldAudios)
+                    {
+                        audio.Value.mute = _isMute;
+                    }
                 }
-                foreach (KeyValuePair<GameObject, AudioSource> audio in _worldAudio)
+            }
+        }
+        /// <summary>
+        /// 背景音乐优先级
+        /// </summary>
+        public int BackgroundPriority
+        {
+            get
+            {
+                return _backgroundPriority;
+            }
+            set
+            {
+                if (_backgroundPriority != value)
                 {
-                    audio.Value.mute = value;
+                    _backgroundPriority = value;
+                    _backgroundAudio.priority = _backgroundPriority;
+                }
+            }
+        }
+        /// <summary>
+        /// 单通道音效优先级
+        /// </summary>
+        public int SinglePriority
+        {
+            get
+            {
+                return _singlePriority;
+            }
+            set
+            {
+                if (_singlePriority != value)
+                {
+                    _singlePriority = value;
+                    _singleAudio.priority = _singlePriority;
+                }
+            }
+        }
+        /// <summary>
+        /// 多通道音效优先级
+        /// </summary>
+        public int MultiplePriority
+        {
+            get
+            {
+                return _multiplePriority;
+            }
+            set
+            {
+                if (_multiplePriority != value)
+                {
+                    _multiplePriority = value;
+                    for (int i = 0; i < _multipleAudios.Count; i++)
+                    {
+                        _multipleAudios[i].priority = _multiplePriority;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 世界音效优先级
+        /// </summary>
+        public int WorldPriority
+        {
+            get
+            {
+                return _worldPriority;
+            }
+            set
+            {
+                if (_worldPriority != value)
+                {
+                    _worldPriority = value;
+                    foreach (var audio in _worldAudios)
+                    {
+                        audio.Value.priority = _worldPriority;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 背景音乐音量
+        /// </summary>
+        public float BackgroundVolume
+        {
+            get
+            {
+                return _backgroundVolume;
+            }
+            set
+            {
+                if (!_backgroundVolume.Approximately(value))
+                {
+                    _backgroundVolume = value;
+                    _backgroundAudio.volume = _backgroundVolume;
+                }
+            }
+        }
+        /// <summary>
+        /// 单通道音效音量
+        /// </summary>
+        public float SingleVolume
+        {
+            get
+            {
+                return _singleVolume;
+            }
+            set
+            {
+                if (!_singleVolume.Approximately(value))
+                {
+                    _singleVolume = value;
+                    _singleAudio.volume = _singleVolume;
+                }
+            }
+        }
+        /// <summary>
+        /// 多通道音效音量
+        /// </summary>
+        public float MultipleVolume
+        {
+            get
+            {
+                return _multipleVolume;
+            }
+            set
+            {
+                if (!_multipleVolume.Approximately(value))
+                {
+                    _multipleVolume = value;
+                    for (int i = 0; i < _multipleAudios.Count; i++)
+                    {
+                        _multipleAudios[i].volume = _multipleVolume;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 世界音效音量
+        /// </summary>
+        public float WorldVolume
+        {
+            get
+            {
+                return _worldVolume;
+            }
+            set
+            {
+                if (!_worldVolume.Approximately(value))
+                {
+                    _worldVolume = value;
+                    foreach (var audio in _worldAudios)
+                    {
+                        audio.Value.volume = _worldVolume;
+                    }
                 }
             }
         }
@@ -177,6 +296,9 @@ namespace HT.Framework
         /// <summary>
         /// 播放背景音乐
         /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        /// <param name="isLoop">是否循环</param>
+        /// <param name="speed">播放速度</param>
         public void PlayBackgroundMusic(AudioClip clip, bool isLoop = true, float speed = 1)
         {
             if (_backgroundAudio.isPlaying)
@@ -187,21 +309,20 @@ namespace HT.Framework
             _backgroundAudio.clip = clip;
             _backgroundAudio.loop = isLoop;
             _backgroundAudio.pitch = speed;
-            _backgroundAudio.spatialBlend = 0;
             _backgroundAudio.Play();
         }
         /// <summary>
         /// 暂停播放背景音乐
         /// </summary>
+        /// <param name="isGradual">是否渐进式</param>
         public void PauseBackgroundMusic(bool isGradual = true)
         {
             if (isGradual)
             {
-                _backgroundAudio.volume = BackgroundVolume;
-                _backgroundAudio.DOFade(0, 2).OnComplete(() => 
+                _backgroundAudio.DOFade(0, 2).OnComplete(() =>
                 {
-                    _backgroundAudio.Pause();
                     _backgroundAudio.volume = BackgroundVolume;
+                    _backgroundAudio.Pause();
                 });
             }
             else
@@ -212,6 +333,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复播放背景音乐
         /// </summary>
+        /// <param name="isGradual">是否渐进式</param>
         public void UnPauseBackgroundMusic(bool isGradual = true)
         {
             if (isGradual)
@@ -239,6 +361,9 @@ namespace HT.Framework
         /// <summary>
         /// 播放单通道音效
         /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        /// <param name="isLoop">是否循环</param>
+        /// <param name="speed">播放速度</param>
         public void PlaySingleSound(AudioClip clip, bool isLoop = false, float speed = 1)
         {
             if (_singleAudio.isPlaying)
@@ -249,22 +374,21 @@ namespace HT.Framework
             _singleAudio.clip = clip;
             _singleAudio.loop = isLoop;
             _singleAudio.pitch = speed;
-            _singleAudio.spatialBlend = 0;
             _singleAudio.Play();
             _singleSoundPlayDetector = true;
         }
         /// <summary>
         /// 暂停播放单通道音效
         /// </summary>
+        /// <param name="isGradual">是否渐进式</param>
         public void PauseSingleSound(bool isGradual = true)
         {
             if (isGradual)
             {
-                _singleAudio.volume = SingleVolume;
                 _singleAudio.DOFade(0, 2).OnComplete(() =>
                 {
-                    _singleAudio.Pause();
                     _singleAudio.volume = SingleVolume;
+                    _singleAudio.Pause();
                 });
             }
             else
@@ -275,6 +399,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复播放单通道音效
         /// </summary>
+        /// <param name="isGradual">是否渐进式</param>
         public void UnPauseSingleSound(bool isGradual = true)
         {
             if (isGradual)
@@ -302,27 +427,30 @@ namespace HT.Framework
         /// <summary>
         /// 播放多通道音效
         /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        /// <param name="isLoop">是否循环</param>
+        /// <param name="speed">播放速度</param>
         public void PlayMultipleSound(AudioClip clip, bool isLoop = false, float speed = 1)
         {
             AudioSource audio = ExtractIdleMultipleAudioSource();
             audio.clip = clip;
             audio.loop = isLoop;
             audio.pitch = speed;
-            audio.spatialBlend = 0;
             audio.Play();
         }
         /// <summary>
         /// 停止播放指定的多通道音效
         /// </summary>
+        /// <param name="clip">音乐剪辑</param>
         public void StopMultipleSound(AudioClip clip)
         {
-            for (int i = 0; i < _multipleAudio.Count; i++)
+            for (int i = 0; i < _multipleAudios.Count; i++)
             {
-                if (_multipleAudio[i].isPlaying)
+                if (_multipleAudios[i].isPlaying)
                 {
-                    if (_multipleAudio[i].clip == clip)
+                    if (_multipleAudios[i].clip == clip)
                     {
-                        _multipleAudio[i].Stop();
+                        _multipleAudios[i].Stop();
                     }
                 }
             }
@@ -332,11 +460,11 @@ namespace HT.Framework
         /// </summary>
         public void StopAllMultipleSound()
         {
-            for (int i = 0; i < _multipleAudio.Count; i++)
+            for (int i = 0; i < _multipleAudios.Count; i++)
             {
-                if (_multipleAudio[i].isPlaying)
+                if (_multipleAudios[i].isPlaying)
                 {
-                    _multipleAudio[i].Stop();
+                    _multipleAudios[i].Stop();
                 }
             }
         }
@@ -345,12 +473,12 @@ namespace HT.Framework
         /// </summary>
         public void ClearIdleMultipleAudioSource()
         {
-            for (int i = 0; i < _multipleAudio.Count; i++)
+            for (int i = 0; i < _multipleAudios.Count; i++)
             {
-                if (!_multipleAudio[i].isPlaying)
+                if (!_multipleAudios[i].isPlaying)
                 {
-                    AudioSource audio = _multipleAudio[i];
-                    _multipleAudio.RemoveAt(i);
+                    AudioSource audio = _multipleAudios[i];
+                    _multipleAudios.RemoveAt(i);
                     i -= 1;
                     Main.Kill(audio.gameObject);
                 }
@@ -360,11 +488,15 @@ namespace HT.Framework
         /// <summary>
         /// 播放世界音效
         /// </summary>
+        /// <param name="attachTarget">附加目标</param>
+        /// <param name="clip">音乐剪辑</param>
+        /// <param name="isLoop">是否循环</param>
+        /// <param name="speed">播放速度</param>
         public void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool isLoop = false, float speed = 1)
         {
-            if (_worldAudio.ContainsKey(attachTarget))
+            if (_worldAudios.ContainsKey(attachTarget))
             {
-                AudioSource audio = _worldAudio[attachTarget];
+                AudioSource audio = _worldAudios[attachTarget];
                 if (audio.isPlaying)
                 {
                     audio.Stop();
@@ -372,35 +504,34 @@ namespace HT.Framework
                 audio.clip = clip;
                 audio.loop = isLoop;
                 audio.pitch = speed;
-                audio.spatialBlend = 1;
                 audio.Play();
             }
             else
             {
-                AudioSource audio = AttachAudioSource(attachTarget, WorldPriority, WorldVolume);
-                _worldAudio.Add(attachTarget, audio);
+                AudioSource audio = AttachAudioSource(attachTarget, WorldPriority, WorldVolume, 1, 1);
+                _worldAudios.Add(attachTarget, audio);
                 audio.clip = clip;
                 audio.loop = isLoop;
                 audio.pitch = speed;
-                audio.spatialBlend = 1;
                 audio.Play();
             }
         }
         /// <summary>
         /// 暂停播放指定的世界音效
         /// </summary>
+        /// <param name="attachTarget">附加目标</param>
+        /// <param name="isGradual">是否渐进式</param>
         public void PauseWorldSound(GameObject attachTarget, bool isGradual = true)
         {
-            if (_worldAudio.ContainsKey(attachTarget))
+            if (_worldAudios.ContainsKey(attachTarget))
             {
-                AudioSource audio = _worldAudio[attachTarget];
+                AudioSource audio = _worldAudios[attachTarget];
                 if (isGradual)
                 {
-                    audio.volume = WorldVolume;
                     audio.DOFade(0, 2).OnComplete(() =>
                     {
-                        audio.Pause();
                         audio.volume = WorldVolume;
+                        audio.Pause();
                     });
                 }
                 else
@@ -412,11 +543,13 @@ namespace HT.Framework
         /// <summary>
         /// 恢复播放指定的世界音效
         /// </summary>
+        /// <param name="attachTarget">附加目标</param>
+        /// <param name="isGradual">是否渐进式</param>
         public void UnPauseWorldSound(GameObject attachTarget, bool isGradual = true)
         {
-            if (_worldAudio.ContainsKey(attachTarget))
+            if (_worldAudios.ContainsKey(attachTarget))
             {
-                AudioSource audio = _worldAudio[attachTarget];
+                AudioSource audio = _worldAudios[attachTarget];
                 if (isGradual)
                 {
                     audio.UnPause();
@@ -434,7 +567,7 @@ namespace HT.Framework
         /// </summary>
         public void StopAllWorldSound()
         {
-            foreach (KeyValuePair<GameObject, AudioSource> audio in _worldAudio)
+            foreach (var audio in _worldAudios)
             {
                 if (audio.Value.isPlaying)
                 {
@@ -448,7 +581,7 @@ namespace HT.Framework
         public void ClearIdleWorldAudioSource()
         {
             HashSet<GameObject> removeSet = new HashSet<GameObject>();
-            foreach (KeyValuePair<GameObject, AudioSource> audio in _worldAudio)
+            foreach (var audio in _worldAudios)
             {
                 if (!audio.Value.isPlaying)
                 {
@@ -456,16 +589,14 @@ namespace HT.Framework
                     Main.Kill(audio.Value);
                 }
             }
-            foreach (GameObject item in removeSet)
+            foreach (var item in removeSet)
             {
-                _worldAudio.Remove(item);
+                _worldAudios.Remove(item);
             }
         }
 
-        /// <summary>
-        /// 创建一个音源
-        /// </summary>
-        private AudioSource CreateAudioSource(string name, int priority, float volume)
+        //创建一个音源
+        private AudioSource CreateAudioSource(string name, int priority, float volume, float speed, float spatialBlend)
         {
             GameObject audioObj = new GameObject(name);
             audioObj.transform.SetParent(transform);
@@ -476,36 +607,36 @@ namespace HT.Framework
             audio.playOnAwake = false;
             audio.priority = priority;
             audio.volume = volume;
+            audio.pitch = speed;
+            audio.spatialBlend = spatialBlend;
             audio.mute = _isMute;
             return audio;
         }
-        /// <summary>
-        /// 附加一个音源
-        /// </summary>
-        private AudioSource AttachAudioSource(GameObject target, int priority, float volume)
+        //附加一个音源
+        private AudioSource AttachAudioSource(GameObject target, int priority, float volume, float speed, float spatialBlend)
         {
             AudioSource audio = target.AddComponent<AudioSource>();
             audio.playOnAwake = false;
             audio.priority = priority;
             audio.volume = volume;
+            audio.pitch = speed;
+            audio.spatialBlend = spatialBlend;
             audio.mute = _isMute;
             return audio;
         }
-        /// <summary>
-        /// 提取闲置中的多通道音源
-        /// </summary>
+        //提取闲置中的多通道音源
         private AudioSource ExtractIdleMultipleAudioSource()
         {
-            for (int i = 0; i < _multipleAudio.Count; i++)
+            for (int i = 0; i < _multipleAudios.Count; i++)
             {
-                if (!_multipleAudio[i].isPlaying)
+                if (!_multipleAudios[i].isPlaying)
                 {
-                    return _multipleAudio[i];
+                    return _multipleAudios[i];
                 }
             }
 
-            AudioSource audio = CreateAudioSource("MultipleAudio", MultiplePriority, MultipleVolume);
-            _multipleAudio.Add(audio);
+            AudioSource audio = CreateAudioSource("MultipleAudio", MultiplePriority, MultipleVolume, 1, 0);
+            _multipleAudios.Add(audio);
             return audio;
         }
     }
