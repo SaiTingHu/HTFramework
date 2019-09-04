@@ -34,10 +34,12 @@ namespace HT.Framework
 
         //AssetBundle资源加载根路径
         private string _assetBundleRootPath;
-        //缓存的所有AssetBundle包
+        //缓存的所有AssetBundle包 <AB包名称、AB包>
         private Dictionary<string, AssetBundle> _assetBundles = new Dictionary<string, AssetBundle>();
         //所有AssetBundle资源包清单
         private AssetBundleManifest _assetBundleManifest;
+        //所有AssetBundle的Hash128值 <AB包名称、Hash128值>
+        private Dictionary<string, Hash128> _assetBundleHashs = new Dictionary<string, Hash128>();
         //单线下载中
         private bool _isLoading = false;
         //单线下载等待
@@ -133,9 +135,9 @@ namespace HT.Framework
             }
             else
             {
-                foreach (KeyValuePair<string, AssetBundle> asset in _assetBundles)
+                foreach (var assetBundle in _assetBundles)
                 {
-                    asset.Value.Unload(unloadAllLoadedObjects);
+                    assetBundle.Value.Unload(unloadAllLoadedObjects);
                 }
                 _assetBundles.Clear();
                 AssetBundle.UnloadAllAssetBundles(unloadAllLoadedObjects);
@@ -232,53 +234,52 @@ namespace HT.Framework
                     }
                     else
                     {
-                        UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + info.AssetBundleName);
-                        DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
-                        request.downloadHandler = handler;
-                        request.SendWebRequest();
-                        while (!request.isDone)
+                        using (UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(_assetBundleRootPath + info.AssetBundleName, GetAssetBundleHash(info.AssetBundleName)))
                         {
-                            loadingAction?.Invoke(request.downloadProgress);
-                            yield return null;
-                        }
-                        if (!request.isNetworkError && !request.isHttpError)
-                        {
-                            if (handler.assetBundle)
+                            request.SendWebRequest();
+                            while (!request.isDone)
                             {
-                                asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
-                                if (asset)
+                                loadingAction?.Invoke(request.downloadProgress);
+                                yield return null;
+                            }
+                            if (!request.isNetworkError && !request.isHttpError)
+                            {
+                                AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
+                                if (bundle)
                                 {
-                                    if (isPrefab)
+                                    asset = bundle.LoadAsset<T>(info.AssetPath);
+                                    if (asset)
                                     {
-                                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                        if (isPrefab)
+                                        {
+                                            asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                                    }
+
+                                    if (IsCacheAssetBundle)
+                                    {
+                                        if (!_assetBundles.ContainsKey(info.AssetBundleName))
+                                            _assetBundles.Add(info.AssetBundleName, bundle);
+                                    }
+                                    else
+                                    {
+                                        bundle.Unload(false);
                                     }
                                 }
                                 else
                                 {
-                                    GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
-                                }
-
-                                if (IsCacheAssetBundle)
-                                {
-                                    if (!_assetBundles.ContainsKey(info.AssetBundleName))
-                                        _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
-                                }
-                                else
-                                {
-                                    handler.assetBundle.Unload(false);
+                                    GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
                                 }
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
+                                GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
                             }
                         }
-                        else
-                        {
-                            GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
-                        }
-                        request.Dispose();
-                        handler.Dispose();
                     }
                 }
 #else
@@ -302,53 +303,52 @@ namespace HT.Framework
                 }
                 else
                 {
-                    UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + info.AssetBundleName);
-                    DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
-                    request.downloadHandler = handler;
-                    request.SendWebRequest();
-                    while (!request.isDone)
+                    using (UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(_assetBundleRootPath + info.AssetBundleName, GetAssetBundleHash(info.AssetBundleName)))
                     {
-                        loadingAction?.Invoke(request.downloadProgress);
-                        yield return null;
-                    }
-                    if (!request.isNetworkError && !request.isHttpError)
-                    {
-                        if (handler.assetBundle)
+                        request.SendWebRequest();
+                        while (!request.isDone)
                         {
-                            asset = handler.assetBundle.LoadAsset<T>(info.AssetPath);
-                            if (asset)
+                            loadingAction?.Invoke(request.downloadProgress);
+                            yield return null;
+                        }
+                        if (!request.isNetworkError && !request.isHttpError)
+                        {
+                            AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
+                            if (bundle)
                             {
-                                if (isPrefab)
+                                asset = bundle.LoadAsset<T>(info.AssetPath);
+                                if (asset)
                                 {
-                                    asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                    if (isPrefab)
+                                    {
+                                        asset = ClonePrefab(asset as GameObject, parent, isUI);
+                                    }
+                                }
+                                else
+                                {
+                                    GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                                }
+
+                                if (IsCacheAssetBundle)
+                                {
+                                    if (!_assetBundles.ContainsKey(info.AssetBundleName))
+                                        _assetBundles.Add(info.AssetBundleName, bundle);
+                                }
+                                else
+                                {
+                                    bundle.Unload(false);
                                 }
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
-                            }
-
-                            if (IsCacheAssetBundle)
-                            {
-                                if (!_assetBundles.ContainsKey(info.AssetBundleName))
-                                    _assetBundles.Add(info.AssetBundleName, handler.assetBundle);
-                            }
-                            else
-                            {
-                                handler.assetBundle.Unload(false);
+                                GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
                             }
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
+                            GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
                         }
                     }
-                    else
-                    {
-                        GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
-                    }
-                    request.Dispose();
-                    handler.Dispose();
                 }
 #endif
             }
@@ -449,7 +449,7 @@ namespace HT.Framework
         //异步加载AB包清单
         private IEnumerator LoadAssetBundleManifestAsync()
         {
-            if (AssetBundleManifestName == "")
+            if (string.IsNullOrEmpty(AssetBundleManifestName) || AssetBundleManifestName == "")
             {
                 GlobalTools.LogError("请设置资源管理模块的 Manifest Name 属性，为所有AB包提供依赖清单！");
             }
@@ -457,7 +457,7 @@ namespace HT.Framework
             {
                 if (_assetBundleManifest == null)
                 {
-                    yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(AssetBundleManifestName));
+                    yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(AssetBundleManifestName, true));
 
                     if (_assetBundles.ContainsKey(AssetBundleManifestName))
                     {
@@ -469,33 +469,48 @@ namespace HT.Framework
             yield return null;
         }
         //异步加载AB包
-        private IEnumerator LoadAssetBundleAsync(string assetBundleName)
+        private IEnumerator LoadAssetBundleAsync(string assetBundleName, bool isManifest = false)
         {
             if (!_assetBundles.ContainsKey(assetBundleName))
             {
-                UnityWebRequest request = UnityWebRequest.Get(_assetBundleRootPath + assetBundleName);
-                DownloadHandlerAssetBundle handler = new DownloadHandlerAssetBundle(request.url, 0);
-                request.downloadHandler = handler;
-                yield return request.SendWebRequest();
-                if (!request.isNetworkError && !request.isHttpError)
+                using (UnityWebRequest request = isManifest
+                    ? UnityWebRequestAssetBundle.GetAssetBundle(_assetBundleRootPath + assetBundleName)
+                    : UnityWebRequestAssetBundle.GetAssetBundle(_assetBundleRootPath + assetBundleName, GetAssetBundleHash(assetBundleName)))
                 {
-                    if (handler.assetBundle)
+                    yield return request.SendWebRequest();
+                    if (!request.isNetworkError && !request.isHttpError)
                     {
-                        _assetBundles.Add(assetBundleName, handler.assetBundle);
+                        AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
+                        if (bundle)
+                        {
+                            _assetBundles.Add(assetBundleName, bundle);
+                        }
+                        else
+                        {
+                            GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
+                        }
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
+                        GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
                     }
                 }
-                else
-                {
-                    GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
-                }
-                request.Dispose();
-                handler.Dispose();
             }
             yield return null;
+        }
+        //获取AB包的hash值
+        private Hash128 GetAssetBundleHash(string assetBundleName)
+        {
+            if (_assetBundleHashs.ContainsKey(assetBundleName))
+            {
+                return _assetBundleHashs[assetBundleName];
+            }
+            else
+            {
+                Hash128 hash = _assetBundleManifest.GetAssetBundleHash(assetBundleName);
+                _assetBundleHashs.Add(assetBundleName, hash);
+                return hash;
+            }
         }
     }
 
