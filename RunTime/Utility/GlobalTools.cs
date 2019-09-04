@@ -1518,15 +1518,9 @@ namespace HT.Framework
         /// </summary>
         public static Vector3 Clamp(Vector3 value, Vector3 min, Vector3 max)
         {
-            if (value.x < min.x) value.x = min.x;
-            else if (value.x > max.x) value.x = max.x;
-
-            if (value.y < min.y) value.y = min.y;
-            else if (value.y > max.y) value.y = max.y;
-
-            if (value.z < min.z) value.z = min.z;
-            else if (value.z > max.z) value.z = max.z;
-
+            value.x = Mathf.Clamp(value.x, min.x, max.x);
+            value.y = Mathf.Clamp(value.y, min.y, max.y);
+            value.z = Mathf.Clamp(value.z, min.z, max.z);
             return value;
         }
         /// <summary>
@@ -1534,15 +1528,9 @@ namespace HT.Framework
         /// </summary>
         public static Vector3 Clamp(Vector3 value, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
         {
-            if (value.x < minX) value.x = minX;
-            else if (value.x > maxX) value.x = maxX;
-
-            if (value.y < minY) value.y = minY;
-            else if (value.y > maxY) value.y = maxY;
-
-            if (value.z < minZ) value.z = minZ;
-            else if (value.z > maxZ) value.z = maxZ;
-
+            value.x = Mathf.Clamp(value.x, minX, maxX);
+            value.y = Mathf.Clamp(value.y, minY, maxY);
+            value.z = Mathf.Clamp(value.z, minZ, maxZ);
             return value;
         }
         /// <summary>

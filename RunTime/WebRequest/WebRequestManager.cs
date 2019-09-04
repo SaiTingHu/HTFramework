@@ -54,29 +54,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 注册接口（获取 AssetBundle）
-        /// </summary>
-        /// <param name="interfaceName">接口名称</param>
-        /// <param name="interfaceUrl">接口url</param>
-        /// <param name="handler">获取 AssetBundle 之后的处理者</param>
-        /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AssetBundle> handler, HTFAction offlineHandle = null)
-        {
-            if (!_interfaces.ContainsKey(interfaceName))
-            {
-                WebInterfaceGetAssetBundle wi = Main.m_ReferencePool.Spawn<WebInterfaceGetAssetBundle>();
-                wi.Name = interfaceName;
-                wi.Url = interfaceUrl;
-                wi.OfflineHandler = offlineHandle;
-                wi.Handler = handler;
-                _interfaces.Add(interfaceName, wi);
-            }
-            else
-            {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
-            }
-        }
-        /// <summary>
         /// 注册接口（获取 Texture2D）
         /// </summary>
         /// <param name="interfaceName">接口名称</param>
@@ -227,31 +204,30 @@ namespace HT.Framework
             {
                 url += "&" + parameter[i];
             }
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Get(url);
-            _interfaces[interfaceName].OnSetDownloadHandler(request);
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
+            
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
-                GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
-                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
+                DateTime begin = DateTime.Now;
 
-                _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
+                _interfaces[interfaceName].OnSetDownloadHandler(request);
+                yield return request.SendWebRequest();
+
+                DateTime end = DateTime.Now;
+
+                if (!request.isNetworkError && !request.isHttpError)
+                {
+                    GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                        , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
+
+                    _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
+                }
+                else
+                {
+                    GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
+
+                    _interfaces[interfaceName].OnRequestFinished(null);
+                }
             }
-            else
-            {
-                GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
-
-                _interfaces[interfaceName].OnRequestFinished(null);
-            }
-
-            request.downloadHandler.Dispose();
-            request.Dispose();
         }
         /// <summary>
         /// 发起网络请求
@@ -281,31 +257,30 @@ namespace HT.Framework
         private IEnumerator SendRequestCoroutine(string interfaceName, WWWForm form)
         {
             string url = _interfaces[interfaceName].Url;
-
-            DateTime begin = DateTime.Now;
-
-            UnityWebRequest request = UnityWebRequest.Post(url, form);
-            _interfaces[interfaceName].OnSetDownloadHandler(request);
-            yield return request.SendWebRequest();
-
-            DateTime end = DateTime.Now;
-
-            if (!request.isNetworkError && !request.isHttpError)
+            
+            using (UnityWebRequest request = UnityWebRequest.Post(url, form))
             {
-                GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
-                    , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
+                DateTime begin = DateTime.Now;
 
-                _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
+                _interfaces[interfaceName].OnSetDownloadHandler(request);
+                yield return request.SendWebRequest();
+
+                DateTime end = DateTime.Now;
+
+                if (!request.isNetworkError && !request.isHttpError)
+                {
+                    GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                        , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
+
+                    _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
+                }
+                else
+                {
+                    GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
+
+                    _interfaces[interfaceName].OnRequestFinished(null);
+                }
             }
-            else
-            {
-                GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
-
-                _interfaces[interfaceName].OnRequestFinished(null);
-            }
-
-            request.downloadHandler.Dispose();
-            request.Dispose();
         }
     }
 }

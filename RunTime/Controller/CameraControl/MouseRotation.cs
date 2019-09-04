@@ -145,19 +145,15 @@ namespace HT.Framework
                 X += Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * _factor;
                 Y -= Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * _factor;
             }
-            if (Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) != 0)
+            if (Main.m_Input.GetAxisRaw(InputAxisType.MouseScrollWheel) != 0)
             {
-                Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * Time.deltaTime;
+                Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * _factor;
 
                 if (AllowOverstepDistance)
                 {
-                    if (Distance <= MinDistance)
+                    if (Distance <= MinDistance || Distance >= MaxDistance)
                     {
                         Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel));
-                    }
-                    else if (Distance >= MaxDistance)
-                    {
-                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * -1);
                     }
                 }
             }

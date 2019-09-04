@@ -223,6 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsEnableAspectTrack: 0
+  IsEnableIntercept: 0
 --- !u!1 &1516840720097650
 GameObject:
   m_ObjectHideFlags: 0
@@ -1435,9 +1436,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91317bfab64dc1349877b3ff2df91e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DefaultControlMode: 0
   DefaultEase: 1
-  IsAutoKill: 1
   DefaultAutoPlay: 3
+  IsAutoKill: 1
 --- !u!1 &3561192959184875086
 GameObject:
   m_ObjectHideFlags: 0
@@ -1646,14 +1648,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63d6dd408eee7bf46a88b88c4e0c4dfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BackgroundPriority: 0
-  SinglePriority: 10
-  MultiplePriority: 20
-  WorldPriority: 30
-  BackgroundVolume: 0.6
-  SingleVolume: 1
-  MultipleVolume: 1
-  WorldVolume: 1
+  MuteDefault: 0
+  BackgroundPriorityDefault: 0
+  SinglePriorityDefault: 10
+  MultiplePriorityDefault: 20
+  WorldPriorityDefault: 30
+  BackgroundVolumeDefault: 0.6
+  SingleVolumeDefault: 1
+  MultipleVolumeDefault: 1
+  WorldVolumeDefault: 1
 --- !u!1 &5584504025188897790
 GameObject:
   m_ObjectHideFlags: 0

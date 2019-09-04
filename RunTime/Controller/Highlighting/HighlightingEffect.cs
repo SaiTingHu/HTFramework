@@ -2,13 +2,11 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public delegate void HighlightingEventHandler(bool state, bool zWrite);
-
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     public sealed class HighlightingEffect : MonoBehaviour
     {
-        public static event HighlightingEventHandler highlightingEvent;
+        public static event HTFAction<bool, bool> highlightingEvent;
 
         #region Inspector Fields
         // Stencil (highlighting) buffer depth
@@ -179,13 +177,13 @@ namespace HT.Framework
         }
         #endregion
         
-        void Awake()
+        private void Awake()
         {
             go = gameObject;
             refCam = GetComponent<Camera>();
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             if (shaderCameraGO != null)
             {
@@ -219,69 +217,69 @@ namespace HT.Framework
             }
         }
 
-        void Start()
+        private void Start()
         {
             // Disable if Image Effects is not supported
             if (!SystemInfo.supportsImageEffects)
             {
-                Debug.LogWarning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
             // Disable if required Render Texture Format is not supported
             if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
             {
-                Debug.LogWarning("HighlightingSystem : RenderTextureFormat.ARGB32 is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : RenderTextureFormat.ARGB32 is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
             // Disable if HighlightingStencilOpaque shader is not supported
             if (!Shader.Find("Hidden/Highlighted/StencilOpaque").isSupported)
             {
-                Debug.LogWarning("HighlightingSystem : HighlightingStencilOpaque shader is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaque shader is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
             // Disable if HighlightingStencilTransparent shader is not supported
             if (!Shader.Find("Hidden/Highlighted/StencilTransparent").isSupported)
             {
-                Debug.LogWarning("HighlightingSystem : HighlightingStencilTransparent shader is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparent shader is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
             // Disable if HighlightingStencilOpaqueZ shader is not supported
             if (!Shader.Find("Hidden/Highlighted/StencilOpaqueZ").isSupported)
             {
-                Debug.LogWarning("HighlightingSystem : HighlightingStencilOpaqueZ shader is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaqueZ shader is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
             // Disable if HighlightingStencilTransparentZ shader is not supported
             if (!Shader.Find("Hidden/Highlighted/StencilTransparentZ").isSupported)
             {
-                Debug.LogWarning("HighlightingSystem : HighlightingStencilTransparentZ shader is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparentZ shader is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
             // Disable if HighlightingBlur shader is not supported
             if (!blurShader.isSupported)
             {
-                Debug.LogWarning("HighlightingSystem : HighlightingBlur shader is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : HighlightingBlur shader is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
             // Disable if HighlightingComposite shader is not supported
             if (!compShader.isSupported)
             {
-                Debug.LogWarning("HighlightingSystem : HighlightingComposite shader is not supported on this platform! Disabling.");
-                this.enabled = false;
+                GlobalTools.LogWarning("HighlightingSystem : HighlightingComposite shader is not supported on this platform! Disabling.");
+                enabled = false;
                 return;
             }
 
@@ -303,12 +301,12 @@ namespace HT.Framework
             Graphics.Blit(source, dest, blurMaterial);
         }
 
-        void OnPreRender()
+        private void OnPreRender()
         {
 #if UNITY_4_0
-		if (this.enabled == false || go.activeInHierarchy == false)
+            if (enabled == false || go.activeInHierarchy == false)
 #else
-            if (this.enabled == false || go.activeSelf == false)
+            if (enabled == false || go.activeSelf == false)
 #endif
                 return;
 
@@ -321,7 +319,7 @@ namespace HT.Framework
             // Turn on highlighted shaders
             if (highlightingEvent != null)
             {
-                highlightingEvent(true, (stencilZBufferDepth > 0));
+                highlightingEvent(true, stencilZBufferDepth > 0);
             }
             // We don't need to render the scene if there's no HighlightableObjects
             else
@@ -329,7 +327,7 @@ namespace HT.Framework
                 return;
             }
 
-            stencilBuffer = RenderTexture.GetTemporary((int)GetComponent<Camera>().pixelWidth, (int)GetComponent<Camera>().pixelHeight, stencilZBufferDepth, RenderTextureFormat.ARGB32);
+            stencilBuffer = RenderTexture.GetTemporary(GetComponent<Camera>().pixelWidth, GetComponent<Camera>().pixelHeight, stencilZBufferDepth, RenderTextureFormat.ARGB32);
 
             if (!shaderCameraGO)
             {
@@ -356,13 +354,10 @@ namespace HT.Framework
             shaderCamera.Render();
 
             // Turn off highlighted shaders
-            if (highlightingEvent != null)
-            {
-                highlightingEvent(false, false);
-            }
+            highlightingEvent?.Invoke(false, false);
         }
 
-        void OnRenderImage(RenderTexture source, RenderTexture destination)
+        private void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
             // If stencilBuffer is not created by some reason
             if (stencilBuffer == null)

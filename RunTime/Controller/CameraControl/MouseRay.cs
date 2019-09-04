@@ -78,12 +78,10 @@ namespace HT.Framework
         /// 射线发射摄像机
         /// </summary>
         public Camera RayCamera { get; set; }
-
         /// <summary>
         /// 当前被射线捕获的目标
         /// </summary>
         public MouseRayTargetBase Target { get; private set; }
-
         /// <summary>
         /// 当前被射线击中的点
         /// </summary>
@@ -159,10 +157,10 @@ namespace HT.Framework
                     switch (TriggerHighlighting)
                     {
                         case HighlightingType.Normal:
-                            Target.gameObject.OpenHighLight(NormalColor);
+                            _rayTarget.OpenHighLight(NormalColor);
                             break;
                         case HighlightingType.Flash:
-                            Target.gameObject.OpenFlashHighLight(FlashColor1, FlashColor2);
+                            _rayTarget.OpenFlashHighLight(FlashColor1, FlashColor2);
                             break;
                     }
                 }

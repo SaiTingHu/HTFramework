@@ -24,35 +24,27 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction SwitchToThirdPersonEvent;
         /// <summary>
-        /// 自由控制刷新事件
-        /// </summary>
-        public event HTFAction FreeControlUpdateEvent;
-        /// <summary>
-        /// 第一人称刷新事件
-        /// </summary>
-        public event HTFAction FirstPersonUpdateEvent;
-        /// <summary>
-        /// 第三人称刷新事件
-        /// </summary>
-        public event HTFAction ThirdPersonUpdateEvent;
-        /// <summary>
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
 
         /// <summary>
-        /// Dotween动画的默认缓动类型【只在Inspector面板设置有效，代码中设置无效】
+        /// 默认的控制模式【请勿在代码中修改】
+        /// </summary>
+        public ControlMode DefaultControlMode = ControlMode.FreeControl;
+        /// <summary>
+        /// Dotween动画的默认缓动类型【请勿在代码中修改】
         /// </summary>
         public Ease DefaultEase = Ease.Linear;
         /// <summary>
-        /// Dotween动画是否自动销毁【只在Inspector面板设置有效，代码中设置无效】
-        /// </summary>
-        public bool IsAutoKill = true;
-        /// <summary>
-        /// Dotween动画的默认自动启动方式【只在Inspector面板设置有效，代码中设置无效】
+        /// Dotween动画的默认自动启动方式【请勿在代码中修改】
         /// </summary>
         public AutoPlay DefaultAutoPlay = AutoPlay.All;
-
+        /// <summary>
+        /// Dotween动画是否自动销毁【请勿在代码中修改】
+        /// </summary>
+        public bool IsAutoKill = true;
+        
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
@@ -66,8 +58,8 @@ namespace HT.Framework
             base.OnInitialization();
 
             DOTween.defaultEaseType = DefaultEase;
-            DOTween.defaultAutoKill = IsAutoKill;
             DOTween.defaultAutoPlay = DefaultAutoPlay;
+            DOTween.defaultAutoKill = IsAutoKill;
 
             MainCamera = transform.GetComponentByChild<Camera>("MainCamera");
             _cameraTarget = transform.GetComponentByChild<CameraTarget>("CameraTarget");
@@ -87,7 +79,7 @@ namespace HT.Framework
         {
             base.OnPreparatory();
 
-            TheControlMode = ControlMode.FreeControl;
+            TheControlMode = DefaultControlMode;
         }
 
         public override void OnRefresh()
@@ -98,20 +90,12 @@ namespace HT.Framework
             switch (TheControlMode)
             {
                 case ControlMode.FreeControl:
-                    FreeControlUpdateEvent?.Invoke();
-
                     _mousePosition.OnRefresh();
                     _mouseRotation.OnRefresh();
                     break;
-                case ControlMode.FirstPerson:
-                    FirstPersonUpdateEvent?.Invoke();
-                    break;
-                case ControlMode.ThirdPerson:
-                    ThirdPersonUpdateEvent?.Invoke();
-                    break;
             }
 
-            if (Main.m_Input.GetButtonDown("MouseLeft"))
+            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
             {
                 if (RayTarget != null)
                 {
@@ -192,6 +176,48 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 自由控制：是否启用摄像机移动控制
+        /// </summary>
+        public bool EnablePositionControl
+        {
+            get
+            {
+                return _mousePosition.CanControl;
+            }
+            set
+            {
+                _mousePosition.CanControl = value;
+            }
+        }
+        /// <summary>
+        /// 自由控制：是否启用摄像机旋转控制
+        /// </summary>
+        public bool EnableRotationControl
+        {
+            get
+            {
+                return _mouseRotation.CanControl;
+            }
+            set
+            {
+                _mouseRotation.CanControl = value;
+            }
+        }
+        /// <summary>
+        /// 自由控制：允许在输入滚轮超越距离限制时，启用摄像机移动
+        /// </summary>
+        public bool AllowOverstepDistance
+        {
+            get
+            {
+                return _mouseRotation.AllowOverstepDistance;
+            }
+            set
+            {
+                _mouseRotation.AllowOverstepDistance = value;
+            }
+        }
+        /// <summary>
         /// 当前射线击中的目标
         /// </summary>
         public MouseRayTargetBase RayTarget
@@ -239,45 +265,31 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 自由控制：是否启用摄像机移动控制
+        /// 是否启用鼠标射线
         /// </summary>
-        public bool EnablePositionControl
+        public bool EnableMouseRay
         {
             get
             {
-                return _mousePosition.CanControl;
+                return _mouseRay.IsOpenRay;
             }
             set
             {
-                _mousePosition.CanControl = value;
+                _mouseRay.IsOpenRay = value;
             }
         }
         /// <summary>
-        /// 自由控制：是否启用摄像机旋转控制
+        /// 是否启用鼠标射线击中提示框
         /// </summary>
-        public bool EnableRotationControl
+        public bool EnableMouseRayHitPrompt
         {
             get
             {
-                return _mouseRotation.CanControl;
+                return _mouseRay.IsOpenPrompt;
             }
             set
             {
-                _mouseRotation.CanControl = value;
-            }
-        }
-        /// <summary>
-        /// 自由控制：允许在输入滚轮超越距离限制时，启用摄像机移动
-        /// </summary>
-        public bool AllowOverstepDistance
-        {
-            get
-            {
-                return _mouseRotation.AllowOverstepDistance;
-            }
-            set
-            {
-                _mouseRotation.AllowOverstepDistance = value;
+                _mouseRay.IsOpenPrompt = value;
             }
         }
 

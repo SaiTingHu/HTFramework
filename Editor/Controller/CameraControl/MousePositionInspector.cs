@@ -80,22 +80,6 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.EndVertical();
-
-
-            GUILayout.BeginHorizontal();
-            GUI.backgroundColor = Color.cyan;
-            if (GUILayout.Button("Copy Position"))
-            {
-                if (Target.Target)
-                {
-                    GUIUtility.systemCopyBuffer =
-                            Target.Target.transform.localPosition.x.ToString("F2") + "f," +
-                            Target.Target.transform.localPosition.y.ToString("F2") + "f," +
-                            Target.Target.transform.localPosition.z.ToString("F2") + "f";
-                }
-            }
-            GUI.backgroundColor = Color.white;
-            GUILayout.EndHorizontal();
         }
     }
 }

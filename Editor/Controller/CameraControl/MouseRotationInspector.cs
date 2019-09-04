@@ -14,6 +14,10 @@ namespace HT.Framework
             Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            Toggle(Target.AllowOverstepDistance, out Target.AllowOverstepDistance, "Allow Overstep Distance");
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginVertical("HelpBox");
 
             GUILayout.BeginHorizontal();
@@ -156,19 +160,6 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
-
-
-            GUILayout.BeginHorizontal();
-            GUI.backgroundColor = Color.cyan;
-            if (GUILayout.Button("Copy Angle"))
-            {
-                GUIUtility.systemCopyBuffer =
-                        Target.X.ToString("F2") + "f," +
-                        Target.Y.ToString("F2") + "f," +
-                        Target.Distance.ToString("F2") + "f";
-            }
-            GUI.backgroundColor = Color.white;
-            GUILayout.EndHorizontal();
         }
 
         private void DistanceAdd()
