@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 异常事件
     /// </summary>
-    public sealed class EventException : EventHandler
+    public sealed class EventException : EventHandlerBase
     {
         public string LogString;
         public string StackTrace;

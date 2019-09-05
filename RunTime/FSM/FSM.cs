@@ -13,25 +13,47 @@ namespace HT.Framework
     public sealed class FSM : MonoBehaviour
     {
         /// <summary>
-        /// 是否自动注册【只在Inspector面板设置有效，代码中设置无效】
+        /// 是否自动注册到管理器【请勿在代码中修改】
         /// </summary>
         public bool IsAutoRegister = true;
+        /// <summary>
+        /// 有限状态机数据类型【请勿在代码中修改】
+        /// </summary>
+        public string Data = "<None>";
+        /// <summary>
+        /// 当前激活的所有状态类名【请勿在代码中修改】
+        /// </summary>
+        public List<string> States = new List<string>();
+        /// <summary>
+        /// 当前激活的所有状态名称【请勿在代码中修改】
+        /// </summary>
+        public List<string> StateNames = new List<string>();
+        /// <summary>
+        /// 当前初始状态类名【请勿在代码中修改】
+        /// </summary>
+        public string DefaultState = "";
+        /// <summary>
+        /// 当前初始状态名称【请勿在代码中修改】
+        /// </summary>
+        public string DefaultStateName = "";
+        /// <summary>
+        /// 当前最终状态类名【请勿在代码中修改】
+        /// </summary>
+        public string FinalState = "";
+        /// <summary>
+        /// 当前最终状态名称【请勿在代码中修改】
+        /// </summary>
+        public string FinalStateName = "";
         /// <summary>
         /// 有限状态机名称
         /// </summary>
         public string Name = "New Finite State Machine";
-        /// <summary>
-        /// 有限状态机数据类型【只在Inspector面板设置有效，代码中设置无效】
-        /// </summary>
-        public string Data = "<None>";
-        public List<string> States = new List<string>();
-        public List<string> StateNames = new List<string>();
-        public string DefaultState = "";
-        public string DefaultStateName = "";
 
-        private FSMData _data;
-        private Dictionary<Type, FiniteState> _stateInstances = new Dictionary<Type, FiniteState>();
-        private FiniteState _currentState;
+        private FSMDataBase _data;
+        private Dictionary<Type, FiniteStateBase> _stateInstances = new Dictionary<Type, FiniteStateBase>();
+        private FiniteStateBase _currentState;
+        private Type _defaultState;
+        private Type _finalState;
 
         private void Awake()
         {
@@ -45,20 +67,20 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(Data);
                 if (type != null)
                 {
-                    if (type.IsSubclassOf(typeof(FSMData)))
+                    if (type.IsSubclassOf(typeof(FSMDataBase)))
                     {
-                        _data = Activator.CreateInstance(type) as FSMData;
+                        _data = Activator.CreateInstance(type) as FSMDataBase;
                         _data.StateMachine = this;
                         _data.OnInit();
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("创建数据类失败：数据类 {0} 必须继承至有限状态机数据基类：FSMData！", Data));
+                        GlobalTools.LogError(string.Format("创建有限状态机数据类失败：数据类 {0} 必须继承至有限状态机数据基类：FSMDataBase！", Data));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("创建数据类失败：丢失数据类 {0}！", Data));
+                    GlobalTools.LogError(string.Format("创建有限状态机数据类失败：丢失数据类 {0}！", Data));
                 }
             }
             //加载所有状态
@@ -67,11 +89,11 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(States[i]);
                 if (type != null)
                 {
-                    if (type.IsSubclassOf(typeof(FiniteState)))
+                    if (type.IsSubclassOf(typeof(FiniteStateBase)))
                     {
                         if (!_stateInstances.ContainsKey(type))
                         {
-                            FiniteState state = Activator.CreateInstance(type) as FiniteState;
+                            FiniteStateBase state = Activator.CreateInstance(type) as FiniteStateBase;
                             state.StateMachine = this;
                             state.OnInit();
                             _stateInstances.Add(type, state);
@@ -79,36 +101,48 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("加载有限状态失败：有限状态 {0} 必须继承至有限状态基类：FiniteState！", States[i]));
+                        GlobalTools.LogError(string.Format("加载有限状态失败：有限状态类 {0} 必须继承至有限状态基类：FiniteStateBase！", States[i]));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("加载有限状态失败：丢失有限状态 {0}！", States[i]));
+                    GlobalTools.LogError(string.Format("加载有限状态失败：丢失有限状态类 {0}！", States[i]));
                 }
             }
-            //进入默认状态
-            if (DefaultState == "" || _stateInstances.Count <= 0)
+            //设置默认状态、最终状态
+            if (DefaultState == "" || FinalState == "" || _stateInstances.Count <= 0)
             {
-                GlobalTools.LogError(string.Format("有限状态机 {0} 的状态为空！或未指定默认状态！", Name));
+                GlobalTools.LogError(string.Format("有限状态机 {0} 的状态为空！或未指定默认状态、最终状态！", Name));
                 return;
             }
-            Type dtype = GlobalTools.GetTypeInRunTimeAssemblies(DefaultState);
-            if (dtype != null)
+            _defaultState = GlobalTools.GetTypeInRunTimeAssemblies(DefaultState);
+            if (_defaultState == null)
             {
-                if (_stateInstances.ContainsKey(dtype))
+                GlobalTools.LogError(string.Format("有限状态机 {0} 丢失了默认状态 {1}！", Name, DefaultState));
+                return;
+            }
+            _finalState = GlobalTools.GetTypeInRunTimeAssemblies(FinalState);
+            if (_finalState == null)
+            {
+                GlobalTools.LogError(string.Format("有限状态机 {0} 丢失了最终状态 {1}！", Name, DefaultState));
+                return;
+            }
+        }
+
+        private void Start()
+        {
+            //进入默认状态
+            if (_defaultState != null)
+            {
+                if (_stateInstances.ContainsKey(_defaultState))
                 {
-                    _currentState = _stateInstances[dtype];
+                    _currentState = _stateInstances[_defaultState];
                     _currentState.OnEnter();
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("切换状态失败：有限状态机 {0} 不存在状态 {1}！", Name, dtype.Name));
+                    GlobalTools.LogError(string.Format("切换状态失败：有限状态机 {0} 不存在状态 {1}！", Name, _defaultState.Name));
                 }
-            }
-            else
-            {
-                GlobalTools.LogError(string.Format("切换状态失败：丢失有限状态 {0}！", DefaultState));
             }
         }
 
@@ -128,7 +162,7 @@ namespace HT.Framework
 
         private void OnDestroy()
         {
-            foreach (KeyValuePair<Type, FiniteState> state in _stateInstances)
+            foreach (var state in _stateInstances)
             {
                 state.Value.OnTermination();
             }
@@ -142,7 +176,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前状态
         /// </summary>
-        public FiniteState CurrentState
+        public FiniteStateBase CurrentState
         {
             get
             {
@@ -153,7 +187,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前数据
         /// </summary>
-        public FSMData CurrentData
+        public FSMDataBase CurrentData
         {
             get
             {
@@ -166,7 +200,7 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">状态类型</typeparam>
         /// <returns>状态实例</returns>
-        public T GetState<T>() where T : FiniteState
+        public T GetState<T>() where T : FiniteStateBase
         {
             return GetState(typeof(T)) as T;
         }
@@ -176,7 +210,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">状态类型</param>
         /// <returns>状态实例</returns>
-        public FiniteState GetState(Type type)
+        public FiniteStateBase GetState(Type type)
         {
             if (_stateInstances.ContainsKey(type))
             {
@@ -193,7 +227,7 @@ namespace HT.Framework
         /// 切换状态
         /// </summary>
         /// <typeparam name="T">状态类型</typeparam>
-        public void SwitchState<T>() where T : FiniteState
+        public void SwitchState<T>() where T : FiniteStateBase
         {
             SwitchState(typeof(T));
         }
@@ -229,7 +263,7 @@ namespace HT.Framework
         /// 终止状态
         /// </summary>
         /// <typeparam name="T">状态类型</typeparam>
-        public void TerminationState<T>() where T : FiniteState
+        public void TerminationState<T>() where T : FiniteStateBase
         {
             TerminationState(typeof(T));
         }
@@ -261,7 +295,7 @@ namespace HT.Framework
         /// 附加状态
         /// </summary>
         /// <typeparam name="T">状态类型</typeparam>
-        public void AppendState<T>() where T : FiniteState
+        public void AppendState<T>() where T : FiniteStateBase
         {
             AppendState(typeof(T));
         }
@@ -274,7 +308,7 @@ namespace HT.Framework
         {
             if (!_stateInstances.ContainsKey(type))
             {
-                FiniteState state = Activator.CreateInstance(type) as FiniteState;
+                FiniteStateBase state = Activator.CreateInstance(type) as FiniteStateBase;
                 state.StateMachine = this;
                 state.OnInit();
                 _stateInstances.Add(type, state);

@@ -897,6 +897,11 @@ namespace HT.Framework
         /// <typeparam name="TInput">原类型</typeparam>
         public static List<TOutput> ConvertAllAS<TOutput, TInput>(this List<TInput> array) where TOutput : class where TInput : class
         {
+            if (array == null || array.Count == 0)
+            {
+                return null;
+            }
+
             List<TOutput> convertArray = new List<TOutput>();
             for (int i = 0; i < array.Count; i++)
             {

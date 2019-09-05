@@ -9,7 +9,7 @@ using System;
 /// </summary>
 [Serializable]
 [CreateAssetMenu(menuName = "HTFramework DataSet/#SCRIPTNAME#")]
-public class #SCRIPTNAME# : DataSet
+public class #SCRIPTNAME# : DataSetBase
 {
 	/// <summary>
     /// 通过Json数据填充数据集

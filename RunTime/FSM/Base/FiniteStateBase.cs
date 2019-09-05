@@ -3,7 +3,7 @@
     /// <summary>
     /// 有限状态基类
     /// </summary>
-    public abstract class FiniteState
+    public abstract class FiniteStateBase
     {
         /// <summary>
         /// 所属状态机

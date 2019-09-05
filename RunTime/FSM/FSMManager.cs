@@ -14,6 +14,7 @@ namespace HT.Framework
         /// <summary>
         /// 注册状态机
         /// </summary>
+        /// <param name="fsm">状态机</param>
         public void RegisterFSM(FSM fsm)
         {
             if (!_fsms.ContainsKey(fsm.Name))
@@ -29,6 +30,7 @@ namespace HT.Framework
         /// <summary>
         /// 移除已注册的状态机
         /// </summary>
+        /// <param name="fsm">状态机</param>
         public void UnRegisterFSM(FSM fsm)
         {
             if (_fsms.ContainsKey(fsm.Name))
@@ -44,6 +46,8 @@ namespace HT.Framework
         /// <summary>
         /// 通过名称获取状态机
         /// </summary>
+        /// <param name="name">状态机名称</param>
+        /// <returns>状态机</returns>
         public FSM GetFSMByName(string name)
         {
             if (_fsms.ContainsKey(name))
@@ -52,6 +56,7 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("获取状态机失败：不存在状态机 {0}！", name));
                 return null;
             }
         }
@@ -59,6 +64,8 @@ namespace HT.Framework
         /// <summary>
         /// 是否存在指定的状态机
         /// </summary>
+        /// <param name="name">状态机名称</param>
+        /// <returns>是否存在</returns>
         public bool IsExistFSM(string name)
         {
             return _fsms.ContainsKey(name);

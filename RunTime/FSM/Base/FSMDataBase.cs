@@ -3,7 +3,7 @@
     /// <summary>
     /// 有限状态机数据基类
     /// </summary>
-    public abstract class FSMData
+    public abstract class FSMDataBase
     {
         /// <summary>
         /// 所属状态机

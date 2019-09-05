@@ -3,7 +3,7 @@ namespace HT.Framework
     /// <summary>
     /// 创建实体成功事件
     /// </summary>
-    public sealed class EventCreateEntitySucceed : EventHandler
+    public sealed class EventCreateEntitySucceed : EventHandlerBase
     {
         public EntityLogicBase EntityLogic;
 

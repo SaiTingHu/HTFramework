@@ -81,7 +81,7 @@ namespace HT.Framework
         /// <param name="loadingAction">数据集加载中回调</param>
         /// <param name="loadDoneAction">数据集加载完成回调</param>
         /// <returns>加载协程</returns>
-        public Coroutine LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : DataSet
+        public Coroutine LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : DataSetBase
         {
             return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction));
         }
@@ -98,10 +98,11 @@ namespace HT.Framework
         {
             return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction, true, parent, isUI));
         }
-        
+
         /// <summary>
         /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
         /// </summary>
+        /// <param name="path">AssetBundle资源根路径</param>
         public void SetAssetBundlePath(string path)
         {
             _assetBundleRootPath = path;
@@ -109,6 +110,8 @@ namespace HT.Framework
         /// <summary>
         /// 卸载资源（卸载AssetBundle）
         /// </summary>
+        /// <param name="assetBundleName">AB包名称</param>
+        /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         public void UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
         {
             if (Mode == ResourceLoadMode.Resource)
@@ -122,11 +125,16 @@ namespace HT.Framework
                     _assetBundles[assetBundleName].Unload(unloadAllLoadedObjects);
                     _assetBundles.Remove(assetBundleName);
                 }
+                if (_assetBundleHashs.ContainsKey(assetBundleName))
+                {
+                    _assetBundleHashs.Remove(assetBundleName);
+                }
             }
         }
         /// <summary>
         /// 卸载所有资源（卸载AssetBundle）
         /// </summary>
+        /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         public void UnLoadAllAsset(bool unloadAllLoadedObjects = false)
         {
             if (Mode == ResourceLoadMode.Resource)
@@ -140,6 +148,7 @@ namespace HT.Framework
                     assetBundle.Value.Unload(unloadAllLoadedObjects);
                 }
                 _assetBundles.Clear();
+                _assetBundleHashs.Clear();
                 AssetBundle.UnloadAllAssetBundles(unloadAllLoadedObjects);
             }
         }
@@ -364,7 +373,7 @@ namespace HT.Framework
                 DataSetInfo dataSet = info as DataSetInfo;
                 if (dataSet != null && dataSet.Data != null)
                 {
-                    asset.Cast<DataSet>().Fill(dataSet.Data);
+                    asset.Cast<DataSetBase>().Fill(dataSet.Data);
                 }
 
                 loadDoneAction?.Invoke(asset as T);

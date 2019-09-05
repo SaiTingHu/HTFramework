@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 数据集基类
     /// </summary>
-    public abstract class DataSet : ScriptableObject
+    public abstract class DataSetBase : ScriptableObject
     {
         /// <summary>
         /// 通过Json数据填充数据集

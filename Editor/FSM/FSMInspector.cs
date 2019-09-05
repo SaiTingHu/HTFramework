@@ -11,7 +11,7 @@ namespace HT.Framework
     {
         private Dictionary<string, string> _stateTypes;
         private Dictionary<string, Type> _stateInstances;
-        private FiniteState _currentState;
+        private FiniteStateBase _currentState;
         private string _currentStateName;
 
         protected override void OnDefaultEnable()
@@ -37,15 +37,15 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
             
-            Dictionary<Type, FiniteState> states = Target.GetType().GetField("_stateInstances", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, FiniteState>;
+            Dictionary<Type, FiniteStateBase> states = Target.GetType().GetField("_stateInstances", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, FiniteStateBase>;
             _stateInstances = new Dictionary<string, Type>();
-            foreach (KeyValuePair<Type, FiniteState> state in states)
+            foreach (KeyValuePair<Type, FiniteStateBase> state in states)
             {
                 FiniteStateNameAttribute attribute = state.Key.GetCustomAttribute<FiniteStateNameAttribute>();
                 _stateInstances.Add(attribute != null ? attribute.Name : state.Key.Name, state.Key);
             }
 
-            _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteState;
+            _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteStateBase;
 
             FiniteStateNameAttribute nameAttribute = _currentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
             _currentStateName = nameAttribute != null ? nameAttribute.Name : _currentState.GetType().Name;
@@ -82,7 +82,7 @@ namespace HT.Framework
                 });
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(FSMData)))
+                    if (types[i].IsSubclassOf(typeof(FSMDataBase)))
                     {
                         int j = i;
                         gm.AddItem(new GUIContent(types[j].FullName), Target.Data == types[j].FullName, () =>
@@ -171,7 +171,7 @@ namespace HT.Framework
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(FiniteState)))
+                    if (types[i].IsSubclassOf(typeof(FiniteStateBase)))
                     {
                         int j = i;
                         string stateName = types[j].FullName;
@@ -231,7 +231,7 @@ namespace HT.Framework
                 {
                     Target.SwitchState(state.Value);
 
-                    _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteState;
+                    _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteStateBase;
 
                     FiniteStateNameAttribute nameAttribute = _currentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
                     _currentStateName = nameAttribute != null ? nameAttribute.Name : _currentState.GetType().Name;

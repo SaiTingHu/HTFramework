@@ -10,7 +10,7 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class DataSetManager : ModuleManager
     {
-        private Dictionary<Type, List<DataSet>> _dataSets = new Dictionary<Type, List<DataSet>>();
+        private Dictionary<Type, List<DataSetBase>> _dataSets = new Dictionary<Type, List<DataSetBase>>();
 
         public override void OnInitialization()
         {
@@ -20,9 +20,9 @@ namespace HT.Framework
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].IsSubclassOf(typeof(DataSet)))
+                if (types[i].IsSubclassOf(typeof(DataSetBase)))
                 {
-                    _dataSets.Add(types[i], new List<DataSet>());
+                    _dataSets.Add(types[i], new List<DataSetBase>());
                 }
             }
         }
@@ -31,7 +31,7 @@ namespace HT.Framework
         {
             base.OnTermination();
 
-            foreach (KeyValuePair<Type, List<DataSet>> dataset in _dataSets)
+            foreach (var dataset in _dataSets)
             {
                 dataset.Value.Clear();
             }
@@ -41,48 +41,58 @@ namespace HT.Framework
         /// <summary>
         /// 添加数据集至数据集仓库
         /// </summary>
-        public DataSet AddDataSet(DataSet dataSet)
+        /// <param name="dataSet">数据集</param>
+        public void AddDataSet(DataSetBase dataSet)
         {
             Type type = dataSet.GetType();
             if (!_dataSets.ContainsKey(type))
             {
-                _dataSets.Add(type, new List<DataSet>());
+                _dataSets.Add(type, new List<DataSetBase>());
             }
             _dataSets[type].Add(dataSet);
-            return dataSet;
         }
         /// <summary>
-        /// 添加数据集至数据集仓库
+        /// 从数据集仓库中移除数据集
         /// </summary>
-        /// <param name="data">数据集初始化数据</param>
-        public T AddDataSet<T>(JsonData data = null) where T : DataSet
+        /// <param name="dataSet">数据集</param>
+        public void RemoveDataSet(DataSetBase dataSet)
         {
-            Type type = typeof(T);
+            Type type = dataSet.GetType();
             if (!_dataSets.ContainsKey(type))
             {
-                _dataSets.Add(type, new List<DataSet>());
+                _dataSets.Add(type, new List<DataSetBase>());
             }
-            DataSet dataSet = ScriptableObject.CreateInstance<T>();
-            if (data != null)
+            if (_dataSets[type].Contains(dataSet))
             {
-                dataSet.Fill(data);
+                _dataSets[type].Remove(dataSet);
             }
-            _dataSets[type].Add(dataSet);
-            return dataSet as T;
+        }
+
+        /// <summary>
+        /// 新建数据集并添加至数据集仓库
+        /// </summary>
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <param name="data">填充数据</param>
+        /// <returns>新建的数据集</returns>
+        public T CreateDataSet<T>(JsonData data = null) where T : DataSetBase
+        {
+            return CreateDataSet(typeof(T), data) as T;
         }
         /// <summary>
-        /// 添加数据集至数据集仓库
+        /// 新建数据集并添加至数据集仓库
         /// </summary>
-        /// <param name="data">数据集初始化数据</param>
-        public DataSet AddDataSet(Type type, JsonData data = null)
+        /// <param name="type">数据集类型</param>
+        /// <param name="data">填充数据</param>
+        /// <returns>新建的数据集</returns>
+        public DataSetBase CreateDataSet(Type type, JsonData data = null)
         {
-            if (type.IsSubclassOf(typeof(DataSet)))
+            if (type.IsSubclassOf(typeof(DataSetBase)))
             {
                 if (!_dataSets.ContainsKey(type))
                 {
-                    _dataSets.Add(type, new List<DataSet>());
+                    _dataSets.Add(type, new List<DataSetBase>());
                 }
-                DataSet dataSet = ScriptableObject.CreateInstance(type) as DataSet;
+                DataSetBase dataSet = ScriptableObject.CreateInstance(type) as DataSetBase;
                 if (data != null)
                 {
                     dataSet.Fill(data);
@@ -92,45 +102,26 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("新建数据集失败：{0} 并不是有效的数据集类型！", type.Name));
                 return null;
-            }
-        }
-        /// <summary>
-        /// 从数据集仓库中移除数据集
-        /// </summary>
-        public void RemoveDataSet(DataSet dataSet)
-        {
-            Type type = dataSet.GetType();
-            if (!_dataSets.ContainsKey(type))
-            {
-                _dataSets.Add(type, new List<DataSet>());
-            }
-            if (_dataSets[type].Contains(dataSet))
-            {
-                _dataSets[type].Remove(dataSet);
             }
         }
         
         /// <summary>
-        /// 获取所有数据集
+        /// 获取某一类型的所有数据集
         /// </summary>
-        public List<T> GetAllDataSets<T>() where T : DataSet
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <returns>数据集列表</returns>
+        public List<T> GetAllDataSets<T>() where T : DataSetBase
         {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                List<T> dataSets = _dataSets[type].ConvertAllAS<T, DataSet>();
-                return dataSets;
-            }
-            else
-            {
-                return null;
-            }
+            return GetAllDataSets(typeof(T)).ConvertAllAS<T, DataSetBase>();
         }
         /// <summary>
-        /// 获取所有数据集
+        /// 获取某一类型的所有数据集
         /// </summary>
-        public List<DataSet> GetAllDataSets(Type type)
+        /// <param name="type">数据集类型</param>
+        /// <returns>数据集列表</returns>
+        public List<DataSetBase> GetAllDataSets(Type type)
         {
             if (_dataSets.ContainsKey(type))
             {
@@ -138,29 +129,27 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("获取所有数据集失败：{0} 并不是有效的数据集类型！", type.Name));
                 return null;
             }
         }
         /// <summary>
-        /// 获取满足匹配条件的所有数据集
+        /// 获取某一类型的满足匹配条件的所有数据集
         /// </summary>
-        public List<T> GetAllDataSets<T>(Predicate<T> match) where T : DataSet
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <param name="match">匹配条件</param>
+        /// <returns>数据集列表</returns>
+        public List<T> GetAllDataSets<T>(Predicate<T> match) where T : DataSetBase
         {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                List<T> dataSets = _dataSets[type].ConvertAllAS<T, DataSet>();
-                return dataSets.FindAll(match);
-            }
-            else
-            {
-                return null;
-            }
+            return GetAllDataSets(typeof(T), match as Predicate<DataSetBase>).ConvertAllAS<T, DataSetBase>();
         }
         /// <summary>
-        /// 获取满足匹配条件的所有数据集
+        /// 获取某一类型的满足匹配条件的所有数据集
         /// </summary>
-        public List<DataSet> GetAllDataSets(Type type, Predicate<DataSet> match)
+        /// <param name="type">数据集类型</param>
+        /// <param name="match">匹配条件</param>
+        /// <returns>数据集列表</returns>
+        public List<DataSetBase> GetAllDataSets(Type type, Predicate<DataSetBase> match)
         {
             if (_dataSets.ContainsKey(type))
             {
@@ -168,29 +157,28 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("获取所有数据集失败：{0} 并不是有效的数据集类型！", type.Name));
                 return null;
             }
         }
+        
         /// <summary>
-        /// 获取满足匹配条件的第一条数据集
+        /// 获取某一类型的满足匹配条件的第一条数据集
         /// </summary>
-        public T GetDataSet<T>(Predicate<T> match) where T : DataSet
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <param name="match">匹配条件</param>
+        /// <returns>数据集</returns>
+        public T GetDataSet<T>(Predicate<T> match) where T : DataSetBase
         {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                List<T> dataSets = _dataSets[type].ConvertAllAS<T, DataSet>();
-                return dataSets.Find(match);
-            }
-            else
-            {
-                return null;
-            }
+            return GetDataSet(typeof(T), match as Predicate<DataSetBase>) as T;
         }
         /// <summary>
-        /// 获取满足匹配条件的第一条数据集
+        /// 获取某一类型的满足匹配条件的第一条数据集
         /// </summary>
-        public DataSet GetDataSet(Type type, Predicate<DataSet> match)
+        /// <param name="type">数据集类型</param>
+        /// <param name="match">匹配条件</param>
+        /// <returns>数据集</returns>
+        public DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match)
         {
             if (_dataSets.ContainsKey(type))
             {
@@ -198,48 +186,33 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("获取数据集失败：{0} 并不是有效的数据集类型！", type.Name));
                 return null;
             }
         }
         /// <summary>
-        /// 根据先后顺序获取一条数据集
+        /// 根据先后顺序获取某一类型的第一条数据集
         /// </summary>
+        /// <typeparam name="T">数据集类型</typeparam>
         /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
-        public T GetDataSet<T>(bool isCut = false) where T : DataSet
+        /// <returns>数据集</returns>
+        public T GetDataSet<T>(bool isCut = false) where T : DataSetBase
         {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                if (_dataSets[type].Count > 0)
-                {
-                    DataSet dataset = _dataSets[type][0];
-                    if (isCut)
-                    {
-                        _dataSets[type].RemoveAt(0);
-                    }
-                    return dataset as T;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
+            return GetDataSet(typeof(T), isCut) as T;
         }
         /// <summary>
-        /// 根据先后顺序获取一条数据集
+        /// 根据先后顺序获取某一类型的第一条数据集
         /// </summary>
+        /// <param name="type">数据集类型</param>
         /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
-        public DataSet GetDataSet(Type type, bool isCut = false)
+        /// <returns>数据集</returns>
+        public DataSetBase GetDataSet(Type type, bool isCut = false)
         {
             if (_dataSets.ContainsKey(type))
             {
                 if (_dataSets[type].Count > 0)
                 {
-                    DataSet dataset = _dataSets[type][0];
+                    DataSetBase dataset = _dataSets[type][0];
                     if (isCut)
                     {
                         _dataSets[type].RemoveAt(0);
@@ -253,48 +226,35 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("获取数据集失败：{0} 并不是有效的数据集类型！", type.Name));
                 return null;
             }
         }
         /// <summary>
-        /// 根据索引获取一条数据集
+        /// 根据索引获取某一类型的一条数据集
         /// </summary>
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <param name="index">索引</param>
         /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
-        public T GetDataSet<T>(int index, bool isCut = false) where T : DataSet
+        /// <returns>数据集</returns>
+        public T GetDataSet<T>(int index, bool isCut = false) where T : DataSetBase
         {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                if (index >= 0 && index < _dataSets[type].Count)
-                {
-                    DataSet dataset = _dataSets[type][index];
-                    if (isCut)
-                    {
-                        _dataSets[type].RemoveAt(index);
-                    }
-                    return dataset as T;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
+            return GetDataSet(typeof(T), index, isCut) as T;
         }
         /// <summary>
-        /// 根据索引获取一条数据集
+        /// 根据索引获取某一类型的一条数据集
         /// </summary>
+        /// <param name="type">数据集类型</param>
+        /// <param name="index">索引</param>
         /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
-        public DataSet GetDataSet(Type type, int index, bool isCut = false)
+        /// <returns>数据集</returns>
+        public DataSetBase GetDataSet(Type type, int index, bool isCut = false)
         {
             if (_dataSets.ContainsKey(type))
             {
                 if (index >= 0 && index < _dataSets[type].Count)
                 {
-                    DataSet dataset = _dataSets[type][index];
+                    DataSetBase dataset = _dataSets[type][index];
                     if (isCut)
                     {
                         _dataSets[type].RemoveAt(index);
@@ -308,27 +268,25 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("获取数据集失败：{0} 并不是有效的数据集类型！", type.Name));
                 return null;
             }
         }
+
         /// <summary>
-        /// 获取数据集仓库中的数据集数量
+        /// 获取数据集仓库中某一类型的数据集数量
         /// </summary>
-        public int GetCount<T>() where T : DataSet
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <returns>数据集数量</returns>
+        public int GetCount<T>() where T : DataSetBase
         {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                return _dataSets[type].Count;
-            }
-            else
-            {
-                return 0;
-            }
+            return GetCount(typeof(T));
         }
         /// <summary>
-        /// 获取数据集仓库中的数据集数量
+        /// 获取数据集仓库中某一类型的数据集数量
         /// </summary>
+        /// <param name="type">数据集类型</param>
+        /// <returns>数据集数量</returns>
         public int GetCount(Type type)
         {
             if (_dataSets.ContainsKey(type))
@@ -337,29 +295,32 @@ namespace HT.Framework
             }
             else
             {
+                GlobalTools.LogError(string.Format("获取数据集数量失败：{0} 并不是有效的数据集类型！", type.Name));
                 return 0;
             }
         }
 
         /// <summary>
-        /// 清空指定的数据集仓库
+        /// 清空某一类型的数据集仓库
         /// </summary>
-        public void ClearDataSet<T>() where T : DataSet
+        /// <typeparam name="T">数据集类型</typeparam>
+        public void ClearDataSet<T>() where T : DataSetBase
         {
-            Type type = typeof(T);
-            if (_dataSets.ContainsKey(type))
-            {
-                _dataSets[type].Clear();
-            }
+            ClearDataSet(typeof(T));
         }
         /// <summary>
-        /// 清空指定的数据集仓库
+        /// 清空某一类型的数据集仓库
         /// </summary>
+        /// <param name="type">数据集类型</param>
         public void ClearDataSet(Type type)
         {
             if (_dataSets.ContainsKey(type))
             {
                 _dataSets[type].Clear();
+            }
+            else
+            {
+                GlobalTools.LogError(string.Format("清空数据集失败：{0} 并不是有效的数据集类型！", type.Name));
             }
         }
     }

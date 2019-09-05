@@ -10,7 +10,7 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class EventManager : ModuleManager
     {
-        private Dictionary<Type, HTFAction<object, EventHandler>> _eventHandlerList = new Dictionary<Type, HTFAction<object, EventHandler>>();
+        private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
 
         public override void OnInitialization()
         {
@@ -20,7 +20,7 @@ namespace HT.Framework
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].IsSubclassOf(typeof(EventHandler)))
+                if (types[i].IsSubclassOf(typeof(EventHandlerBase)))
                 {
                     _eventHandlerList.Add(types[i], null);
                 }
@@ -39,17 +39,16 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
-        public void Subscribe<T>(HTFAction<object, EventHandler> handler) where T : EventHandler
+        public void Subscribe<T>(HTFAction<object, EventHandlerBase> handler) where T : EventHandlerBase
         {
             Subscribe(typeof(T), handler);
         }
-
         /// <summary>
         /// 订阅事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
-        public void Subscribe(Type type, HTFAction<object, EventHandler> handler)
+        public void Subscribe(Type type, HTFAction<object, EventHandlerBase> handler)
         {
             if (_eventHandlerList.ContainsKey(type))
             {
@@ -60,23 +59,21 @@ namespace HT.Framework
                 GlobalTools.LogError(string.Format("订阅事件失败：不存在可以订阅的事件类型 {0} ！", type.Name));
             }
         }
-
         /// <summary>
         /// 取消订阅事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
-        public void Unsubscribe<T>(HTFAction<object, EventHandler> handler) where T : EventHandler
+        public void Unsubscribe<T>(HTFAction<object, EventHandlerBase> handler) where T : EventHandlerBase
         {
             Unsubscribe(typeof(T), handler);
         }
-
         /// <summary>
         /// 取消订阅事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
-        public void Unsubscribe(Type type, HTFAction<object, EventHandler> handler)
+        public void Unsubscribe(Type type, HTFAction<object, EventHandlerBase> handler)
         {
             if (_eventHandlerList.ContainsKey(type))
             {
@@ -87,13 +84,36 @@ namespace HT.Framework
                 GlobalTools.LogError(string.Format("取消订阅事件失败：不存在可以取消订阅的事件类型 {0} ！", type.Name));
             }
         }
+        /// <summary>
+        /// 清空已订阅的事件
+        /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        public void ClearSubscribe<T>() where T : EventHandlerBase
+        {
+            ClearSubscribe(typeof(T));
+        }
+        /// <summary>
+        /// 清空已订阅的事件
+        /// </summary>
+        /// <param name="type">事件处理类</param>
+        public void ClearSubscribe(Type type)
+        {
+            if (_eventHandlerList.ContainsKey(type))
+            {
+                _eventHandlerList[type] = null;
+            }
+            else
+            {
+                GlobalTools.LogError(string.Format("清空订阅事件失败：不存在可以清空订阅的事件类型 {0} ！", type.Name));
+            }
+        }
 
         /// <summary>
-        /// 抛出事件
+        /// 抛出事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="sender">事件发送者</param>
         /// <param name="handler">事件处理类实例</param>
-        public void Throw(object sender, EventHandler handler)
+        public void Throw(object sender, EventHandlerBase handler)
         {
             Type type = handler.GetType();
             if (_eventHandlerList.ContainsKey(type))

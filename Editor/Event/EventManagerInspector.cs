@@ -9,13 +9,13 @@ namespace HT.Framework
     [CustomEditor(typeof(EventManager))]
     public sealed class EventManagerInspector : HTFEditor<EventManager>
     {
-        private Dictionary<Type, HTFAction<object, EventHandler>> _eventHandlerList;
+        private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList;
         
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _eventHandlerList = Target.GetType().GetField("_eventHandlerList", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, HTFAction<object, EventHandler>>;
+            _eventHandlerList = Target.GetType().GetField("_eventHandlerList", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, HTFAction<object, EventHandlerBase>>;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -35,7 +35,7 @@ namespace HT.Framework
             GUILayout.Label("Event List: " + _eventHandlerList.Count);
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<Type, HTFAction<object, EventHandler>> item in _eventHandlerList)
+            foreach (var item in _eventHandlerList)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
@@ -44,10 +44,10 @@ namespace HT.Framework
                 GUI.enabled = item.Value != null;
                 if (GUILayout.Button("Throw", "Minibutton", GUILayout.Width(50)))
                 {
-                    Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn(item.Key) as EventHandler);
+                    Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn(item.Key) as EventHandlerBase);
                 }
-                GUILayout.EndHorizontal();
                 GUI.enabled = true;
+                GUILayout.EndHorizontal();
             }
         }
     }
