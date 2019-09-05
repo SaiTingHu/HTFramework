@@ -6,7 +6,7 @@ using DG.Tweening;
 /// <summary>
 /// 新建流程
 /// </summary>
-public class #SCRIPTNAME# : Procedure
+public class #SCRIPTNAME# : ProcedureBase
 {
     /// <summary>
     /// 流程初始化
@@ -19,15 +19,17 @@ public class #SCRIPTNAME# : Procedure
     /// <summary>
     /// 进入流程
     /// </summary>
-    public override void OnEnter()
+    /// <param name="lastProcedure">上一个离开的流程</param>
+    public override void OnEnter(ProcedureBase lastProcedure)
     {
         
     }
-    
+
     /// <summary>
     /// 离开流程
     /// </summary>
-    public override void OnLeave()
+    /// <param name="nextProcedure">下一个进入的流程</param>
+    public override void OnLeave(ProcedureBase nextProcedure)
     {
         
     }

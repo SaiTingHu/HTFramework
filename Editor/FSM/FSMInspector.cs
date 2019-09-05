@@ -10,8 +10,8 @@ namespace HT.Framework
     public sealed class FSMInspector : HTFEditor<FSM>
     {
         private Dictionary<string, string> _stateTypes;
+
         private Dictionary<string, Type> _stateInstances;
-        private FiniteStateBase _currentState;
         private string _currentStateName;
 
         protected override void OnDefaultEnable()
@@ -19,15 +19,15 @@ namespace HT.Framework
             base.OnDefaultEnable();
 
             _stateTypes = new Dictionary<string, string>();
-            string[] states = AssetDatabase.GetAllAssetPaths();
-            for (int i = 0; i < states.Length; i++)
+            string[] statePaths = AssetDatabase.GetAllAssetPaths();
+            for (int i = 0; i < statePaths.Length; i++)
             {
-                if (states[i].EndsWith(".cs"))
+                if (statePaths[i].EndsWith(".cs"))
                 {
-                    string className = states[i].Substring(states[i].LastIndexOf("/") + 1).Replace(".cs", "");
+                    string className = statePaths[i].Substring(statePaths[i].LastIndexOf("/") + 1).Replace(".cs", "");
                     if (!_stateTypes.ContainsKey(className))
                     {
-                        _stateTypes.Add(className, states[i]);
+                        _stateTypes.Add(className, statePaths[i]);
                     }
                 }
             }
@@ -39,16 +39,14 @@ namespace HT.Framework
             
             Dictionary<Type, FiniteStateBase> states = Target.GetType().GetField("_stateInstances", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, FiniteStateBase>;
             _stateInstances = new Dictionary<string, Type>();
-            foreach (KeyValuePair<Type, FiniteStateBase> state in states)
+            foreach (var state in states)
             {
                 FiniteStateNameAttribute attribute = state.Key.GetCustomAttribute<FiniteStateNameAttribute>();
                 _stateInstances.Add(attribute != null ? attribute.Name : state.Key.Name, state.Key);
             }
-
-            _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteStateBase;
-
-            FiniteStateNameAttribute nameAttribute = _currentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
-            _currentStateName = nameAttribute != null ? nameAttribute.Name : _currentState.GetType().Name;
+            
+            FiniteStateNameAttribute nameAttribute = Target.CurrentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
+            _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -64,22 +62,23 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Name: ");
+            GUILayout.Label("Name: ", GUILayout.Width(60));
             TextField(Target.Name, out Target.Name);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Data: ");
+            GUI.color = Target.Data == "<None>" ? Color.gray : Color.white;
+            GUILayout.Label("Data: ", GUILayout.Width(60));
             if (GUILayout.Button(Target.Data, "MiniPopup"))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 gm.AddItem(new GUIContent("<None>"), Target.Data == "<None>", () =>
                 {
                     Undo.RecordObject(target, "Set FSM Data Class");
                     Target.Data = "<None>";
                     HasChanged();
                 });
+                List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
                     if (types[i].IsSubclassOf(typeof(FSMDataBase)))
@@ -95,6 +94,7 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
+            GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -122,6 +122,31 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            GUI.enabled = Target.FinalStateName != "";
+            GUILayout.Label("Final: " + Target.FinalStateName);
+            GUI.enabled = true;
+            GUILayout.FlexibleSpace();
+            GUI.enabled = Target.StateNames.Count > 0;
+            if (GUILayout.Button("Set Final", "MiniPopup"))
+            {
+                GenericMenu gm = new GenericMenu();
+                for (int i = 0; i < Target.StateNames.Count; i++)
+                {
+                    int j = i;
+                    gm.AddItem(new GUIContent(Target.StateNames[j]), Target.FinalStateName == Target.StateNames[j], () =>
+                    {
+                        Undo.RecordObject(target, "Set FSM Final State");
+                        Target.FinalState = Target.States[j];
+                        Target.FinalStateName = Target.StateNames[j];
+                        HasChanged();
+                    });
+                }
+                gm.ShowAsContext();
+            }
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+
             for (int i = 0; i < Target.StateNames.Count; i++)
             {
                 GUILayout.BeginHorizontal();
@@ -129,9 +154,10 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Edit", "minibuttonleft"))
                 {
-                    if (_stateTypes.ContainsKey(Target.States[i]))
+                    string[] names = Target.States[i].Split('.');
+                    if (_stateTypes.ContainsKey(names[names.Length - 1]))
                     {
-                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_stateTypes[Target.States[i]], typeof(TextAsset));
+                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_stateTypes[names[names.Length - 1]], typeof(TextAsset));
                         if (classFile)
                             AssetDatabase.OpenAsset(classFile);
                         else
@@ -145,10 +171,16 @@ namespace HT.Framework
                 if (GUILayout.Button("Delete", "minibuttonright"))
                 {
                     Undo.RecordObject(target, "Delete FSM State");
+
                     if (Target.DefaultStateName == Target.StateNames[i])
                     {
                         Target.DefaultState = "";
                         Target.DefaultStateName = "";
+                    }
+                    if (Target.FinalStateName == Target.StateNames[i])
+                    {
+                        Target.FinalState = "";
+                        Target.FinalStateName = "";
                     }
 
                     Target.States.RemoveAt(i);
@@ -159,6 +191,12 @@ namespace HT.Framework
                         Target.DefaultState = Target.States[0];
                         Target.DefaultStateName = Target.StateNames[0];
                     }
+                    if (Target.FinalStateName == "" && Target.StateNames.Count > 0)
+                    {
+                        Target.FinalState = Target.States[0];
+                        Target.FinalStateName = Target.StateNames[0];
+                    }
+
                     HasChanged();
                 }
                 GUILayout.EndHorizontal();
@@ -198,6 +236,11 @@ namespace HT.Framework
                                     Target.DefaultState = Target.States[0];
                                     Target.DefaultStateName = Target.StateNames[0];
                                 }
+                                if (Target.FinalStateName == "")
+                                {
+                                    Target.FinalState = Target.States[0];
+                                    Target.FinalStateName = Target.StateNames[0];
+                                }
                                 HasChanged();
                             });
                         }
@@ -217,10 +260,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("States: ");
+            GUILayout.Label("States: " + _stateInstances.Count);
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<string, Type> state in _stateInstances)
+            foreach (var state in _stateInstances)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
@@ -231,14 +274,29 @@ namespace HT.Framework
                 {
                     Target.SwitchState(state.Value);
 
-                    _currentState = Target.GetType().GetField("_currentState", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as FiniteStateBase;
-
-                    FiniteStateNameAttribute nameAttribute = _currentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
-                    _currentStateName = nameAttribute != null ? nameAttribute.Name : _currentState.GetType().Name;
+                    FiniteStateNameAttribute nameAttribute = Target.CurrentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
+                    _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
             }
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Renewal", "minibuttonleft"))
+            {
+                Target.Renewal();
+
+                FiniteStateNameAttribute nameAttribute = Target.CurrentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
+                _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
+            }
+            if (GUILayout.Button("Final", "minibuttonright"))
+            {
+                Target.Final();
+
+                FiniteStateNameAttribute nameAttribute = Target.CurrentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
+                _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
+            }
+            GUILayout.EndHorizontal();
         }
     }
 }

@@ -135,7 +135,7 @@ namespace HT.Framework
 
                 if (!_isSending)
                 {
-                    StartCoroutine(SendInfoCoroutine(sendBytes));
+                    Main.Current.StartCoroutine(SendInfoCoroutine(sendBytes));
                 }
             }
             else

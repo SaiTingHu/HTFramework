@@ -20,9 +20,19 @@ namespace HT.Framework
                 CoroutinerTrackerWindow tracker = EditorWindow.GetWindow<CoroutinerTrackerWindow>();
                 tracker.titleContent.text = "Coroutiner Tracker";
                 tracker.Init(Target);
-                tracker.position = new Rect(200, 200, 1020, 800);
+                tracker.minSize = new Vector2(400, 400);
+                tracker.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
                 tracker.Show();
             }
+            GUILayout.EndHorizontal();
+        }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("No Runtime Data!");
             GUILayout.EndHorizontal();
         }
     }

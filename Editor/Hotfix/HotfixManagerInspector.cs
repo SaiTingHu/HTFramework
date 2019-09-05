@@ -112,6 +112,15 @@ namespace HT.Framework
             }
         }
 
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("No Runtime Data!");
+            GUILayout.EndHorizontal();
+        }
+
         private void CreateHotfixEnvironment()
         {
             string hotfixDirectory = Application.dataPath + _hotfixDirectory;

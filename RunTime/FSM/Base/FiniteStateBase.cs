@@ -17,11 +17,13 @@
         /// <summary>
         /// 进入状态
         /// </summary>
-        public abstract void OnEnter();
+        /// <param name="lastState">上一个离开的状态</param>
+        public abstract void OnEnter(FiniteStateBase lastState);
         /// <summary>
         /// 离开状态
         /// </summary>
-        public abstract void OnLeave();
+        /// <param name="nextState">下一个进入的状态</param>
+        public abstract void OnLeave(FiniteStateBase nextState);
         /// <summary>
         /// 切换状态的动机
         /// </summary>

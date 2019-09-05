@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace HT.Framework
     public sealed class ProcedureManagerInspector : HTFEditor<ProcedureManager>
     {
         private Dictionary<string, string> _procedureTypes = new Dictionary<string, string>();
+
+        private Dictionary<Type, ProcedureBase> _procedureInstances;
 
         protected override void OnDefaultEnable()
         {
@@ -27,6 +30,13 @@ namespace HT.Framework
                     }
                 }
             }
+        }
+
+        protected override void OnRuntimeEnable()
+        {
+            base.OnRuntimeEnable();
+
+            _procedureInstances = Target.GetType().GetField("_procedureInstances", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, ProcedureBase>;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -109,6 +119,7 @@ namespace HT.Framework
                 if (GUILayout.Button("Delete", "minibuttonright"))
                 {
                     Undo.RecordObject(target, "Delete Procedure");
+
                     if (Target.DefaultProcedure == Target.ActivatedProcedures[i])
                     {
                         Target.DefaultProcedure = "";
@@ -120,6 +131,7 @@ namespace HT.Framework
                     {
                         Target.DefaultProcedure = Target.ActivatedProcedures[0];
                     }
+
                     HasChanged();
                 }
                 GUILayout.EndHorizontal();
@@ -132,7 +144,7 @@ namespace HT.Framework
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(Procedure)))
+                    if (types[i].IsSubclassOf(typeof(ProcedureBase)))
                     {
                         int j = i;
                         if (Target.ActivatedProcedures.Contains(types[j].FullName))
@@ -144,12 +156,13 @@ namespace HT.Framework
                             gm.AddItem(new GUIContent(types[j].FullName), false, () =>
                             {
                                 Undo.RecordObject(target, "Add Procedure");
-                                Target.ActivatedProcedures.Add(types[j].FullName);
 
+                                Target.ActivatedProcedures.Add(types[j].FullName);
                                 if (Target.DefaultProcedure == "")
                                 {
                                     Target.DefaultProcedure = Target.ActivatedProcedures[0];
                                 }
+
                                 HasChanged();
                             });
                         }
@@ -158,6 +171,34 @@ namespace HT.Framework
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
+        }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Current Procedure: " + Target.CurrentProcedure);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Procedures: " + _procedureInstances.Count);
+            GUILayout.EndHorizontal();
+
+            foreach (var procedure in _procedureInstances)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20);
+                GUILayout.Label(procedure.Key.Name);
+                GUILayout.FlexibleSpace();
+                GUI.enabled = Target.CurrentProcedure != procedure.Value;
+                if (GUILayout.Button("Switch", "Minibutton"))
+                {
+                    Target.SwitchProcedure(procedure.Key);
+                }
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
+            }
         }
     }
 }

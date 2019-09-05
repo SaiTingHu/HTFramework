@@ -22,30 +22,30 @@ namespace HT.Framework
 
         public override void OnStartUp()
         {
-            Main.m_Input.RegisterVirtualButton("MouseLeft");
-            Main.m_Input.RegisterVirtualButton("MouseRight");
-            Main.m_Input.RegisterVirtualButton("MouseMiddle");
-            Main.m_Input.RegisterVirtualButton("MouseLeftDoubleClick");
+            Main.m_Input.RegisterVirtualButton(InputButtonType.MouseLeft);
+            Main.m_Input.RegisterVirtualButton(InputButtonType.MouseRight);
+            Main.m_Input.RegisterVirtualButton(InputButtonType.MouseMiddle);
+            Main.m_Input.RegisterVirtualButton(InputButtonType.MouseLeftDoubleClick);
 
-            Main.m_Input.RegisterVirtualAxis("MouseX");
-            Main.m_Input.RegisterVirtualAxis("MouseY");
-            Main.m_Input.RegisterVirtualAxis("MouseScrollWheel");
-            Main.m_Input.RegisterVirtualAxis("Horizontal");
-            Main.m_Input.RegisterVirtualAxis("Vertical");
-            Main.m_Input.RegisterVirtualAxis("UpperLower");
+            Main.m_Input.RegisterVirtualAxis(InputAxisType.MouseX);
+            Main.m_Input.RegisterVirtualAxis(InputAxisType.MouseY);
+            Main.m_Input.RegisterVirtualAxis(InputAxisType.MouseScrollWheel);
+            Main.m_Input.RegisterVirtualAxis(InputAxisType.Horizontal);
+            Main.m_Input.RegisterVirtualAxis(InputAxisType.Vertical);
+            Main.m_Input.RegisterVirtualAxis(InputAxisType.UpperLower);
         }
 
         public override void OnRun()
         {
             //标准PC平台：鼠标和键盘做为输入设备
-            if (Input.GetMouseButtonDown(0)) Main.m_Input.SetButtonDown("MouseLeft");
-            else if (Input.GetMouseButtonUp(0)) Main.m_Input.SetButtonUp("MouseLeft");
+            if (Input.GetMouseButtonDown(0)) Main.m_Input.SetButtonDown(InputButtonType.MouseLeft);
+            else if (Input.GetMouseButtonUp(0)) Main.m_Input.SetButtonUp(InputButtonType.MouseLeft);
 
-            if (Input.GetMouseButtonDown(1)) Main.m_Input.SetButtonDown("MouseRight");
-            else if (Input.GetMouseButtonUp(1)) Main.m_Input.SetButtonUp("MouseRight");
+            if (Input.GetMouseButtonDown(1)) Main.m_Input.SetButtonDown(InputButtonType.MouseRight);
+            else if (Input.GetMouseButtonUp(1)) Main.m_Input.SetButtonUp(InputButtonType.MouseRight);
 
-            if (Input.GetMouseButtonDown(2)) Main.m_Input.SetButtonDown("MouseMiddle");
-            else if (Input.GetMouseButtonUp(2)) Main.m_Input.SetButtonUp("MouseMiddle");
+            if (Input.GetMouseButtonDown(2)) Main.m_Input.SetButtonDown(InputButtonType.MouseMiddle);
+            else if (Input.GetMouseButtonUp(2)) Main.m_Input.SetButtonUp(InputButtonType.MouseMiddle);
             
             if (Input.GetMouseButtonDown(0))
             {
@@ -55,8 +55,8 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Main.m_Input.SetButtonDown("MouseLeftDoubleClick");
-                    Main.m_Input.SetButtonUp("MouseLeftDoubleClick");
+                    Main.m_Input.SetButtonDown(InputButtonType.MouseLeftDoubleClick);
+                    Main.m_Input.SetButtonUp(InputButtonType.MouseLeftDoubleClick);
                 }
             }
             if (_mouseLeftClickTimer > 0)
@@ -64,33 +64,33 @@ namespace HT.Framework
                 _mouseLeftClickTimer -= Time.deltaTime;
             }
 
-            Main.m_Input.SetAxis("MouseX", Input.GetAxis("Mouse X"));
-            Main.m_Input.SetAxis("MouseY", Input.GetAxis("Mouse Y"));
-            Main.m_Input.SetAxis("MouseScrollWheel", Input.GetAxis("Mouse ScrollWheel"));
-            Main.m_Input.SetAxis("Horizontal", Input.GetAxis("Horizontal"));
-            Main.m_Input.SetAxis("Vertical", Input.GetAxis("Vertical"));
+            Main.m_Input.SetAxis(InputAxisType.MouseX, Input.GetAxis("Mouse X"));
+            Main.m_Input.SetAxis(InputAxisType.MouseY, Input.GetAxis("Mouse Y"));
+            Main.m_Input.SetAxis(InputAxisType.MouseScrollWheel, Input.GetAxis("Mouse ScrollWheel"));
+            Main.m_Input.SetAxis(InputAxisType.Horizontal, Input.GetAxis("Horizontal"));
+            Main.m_Input.SetAxis(InputAxisType.Vertical, Input.GetAxis("Vertical"));
 
             if (Input.GetKey(KeyCode.Q)) _upperLowerValue -= Time.deltaTime;
             else if (Input.GetKey(KeyCode.E)) _upperLowerValue += Time.deltaTime;
             else _upperLowerValue = 0;
-            Main.m_Input.SetAxis("UpperLower", Mathf.Clamp(_upperLowerValue, -1, 1));
+            Main.m_Input.SetAxis(InputAxisType.UpperLower, Mathf.Clamp(_upperLowerValue, -1, 1));
 
             Main.m_Input.SetVirtualMousePosition(Input.mousePosition);
         }
 
         public override void OnShutdown()
         {
-            Main.m_Input.UnRegisterVirtualButton("MouseLeft");
-            Main.m_Input.UnRegisterVirtualButton("MouseRight");
-            Main.m_Input.UnRegisterVirtualButton("MouseMiddle");
-            Main.m_Input.UnRegisterVirtualButton("MouseLeftDoubleClick");
+            Main.m_Input.UnRegisterVirtualButton(InputButtonType.MouseLeft);
+            Main.m_Input.UnRegisterVirtualButton(InputButtonType.MouseRight);
+            Main.m_Input.UnRegisterVirtualButton(InputButtonType.MouseMiddle);
+            Main.m_Input.UnRegisterVirtualButton(InputButtonType.MouseLeftDoubleClick);
 
-            Main.m_Input.UnRegisterVirtualAxis("MouseX");
-            Main.m_Input.UnRegisterVirtualAxis("MouseY");
-            Main.m_Input.UnRegisterVirtualAxis("MouseScrollWheel");
-            Main.m_Input.UnRegisterVirtualAxis("Horizontal");
-            Main.m_Input.UnRegisterVirtualAxis("Vertical");
-            Main.m_Input.UnRegisterVirtualAxis("UpperLower");
+            Main.m_Input.UnRegisterVirtualAxis(InputAxisType.MouseX);
+            Main.m_Input.UnRegisterVirtualAxis(InputAxisType.MouseY);
+            Main.m_Input.UnRegisterVirtualAxis(InputAxisType.MouseScrollWheel);
+            Main.m_Input.UnRegisterVirtualAxis(InputAxisType.Horizontal);
+            Main.m_Input.UnRegisterVirtualAxis(InputAxisType.Vertical);
+            Main.m_Input.UnRegisterVirtualAxis(InputAxisType.UpperLower);
         }
     }
 

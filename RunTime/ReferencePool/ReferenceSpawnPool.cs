@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 引用池
     /// </summary>
-    public sealed class ReferenceSpawnPool : UnityEngine.Object
+    public sealed class ReferenceSpawnPool
     {
         private int _limit = 100;
         private Queue<IReference> _referenceQueue = new Queue<IReference>();
@@ -30,24 +30,8 @@ namespace HT.Framework
         /// <summary>
         /// 生成引用
         /// </summary>
-        public T Spawn<T>() where T : class, IReference, new()
-        {
-            T refe;
-            if (_referenceQueue.Count > 0)
-            {
-                refe = _referenceQueue.Dequeue() as T;
-            }
-            else
-            {
-                refe = new T();
-            }
-
-            return refe;
-        }
-
-        /// <summary>
-        /// 生成引用
-        /// </summary>
+        /// <param name="type">引用类型</param>
+        /// <returns>对象</returns>
         public IReference Spawn(Type type)
         {
             IReference refe;
@@ -66,6 +50,7 @@ namespace HT.Framework
         /// <summary>
         /// 回收引用
         /// </summary>
+        /// <param name="refe">对象</param>
         public void Despawn(IReference refe)
         {
             if (_referenceQueue.Count >= _limit)
@@ -80,16 +65,11 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 销毁所有引用
+        /// 清空所有引用
         /// </summary>
-        public void Clear(bool destruct)
+        public void Clear()
         {
             _referenceQueue.Clear();
-
-            if (destruct)
-            {
-                Destroy(this);
-            }
         }
     }
 }

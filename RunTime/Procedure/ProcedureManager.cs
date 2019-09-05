@@ -10,13 +10,18 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class ProcedureManager : ModuleManager
     {
-        [SerializeField]
+        /// <summary>
+        /// 当前激活的流程类名【请勿在代码中修改】
+        /// </summary>
         public List<string> ActivatedProcedures = new List<string>();
+        /// <summary>
+        /// 当前的默认流程类名【请勿在代码中修改】
+        /// </summary>
         public string DefaultProcedure = "";
 
-        private Dictionary<Type, Procedure> _procedureInstances = new Dictionary<Type, Procedure>();
+        private Dictionary<Type, ProcedureBase> _procedureInstances = new Dictionary<Type, ProcedureBase>();
         private List<Type> _procedureTypes = new List<Type>();
-        private Procedure _currentProcedure;
+        private ProcedureBase _currentProcedure;
         private float _timer = 0;
 
         public override void OnInitialization()
@@ -29,22 +34,22 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(ActivatedProcedures[i]);
                 if (type != null)
                 {
-                    if (type.IsSubclassOf(typeof(Procedure)))
+                    if (type.IsSubclassOf(typeof(ProcedureBase)))
                     {
                         if (!_procedureInstances.ContainsKey(type))
                         {
-                            _procedureInstances.Add(type, Activator.CreateInstance(type) as Procedure);
+                            _procedureInstances.Add(type, Activator.CreateInstance(type) as ProcedureBase);
                             _procedureTypes.Add(type);
                         }
                     }
                     else
                     {
-                        GlobalTools.LogError("创建流程失败：流程 " + ActivatedProcedures[i] + " 必须继承至流程基类：Procedure！");
+                        GlobalTools.LogError(string.Format("创建流程失败：流程 {0} 必须继承至流程基类：ProcedureBase！", ActivatedProcedures[i]));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError("创建流程失败：丢失流程 " + ActivatedProcedures[i] + "！");
+                    GlobalTools.LogError(string.Format("创建流程失败：丢失流程 {0}！", ActivatedProcedures[i]));
                 }
             }
         }
@@ -54,7 +59,7 @@ namespace HT.Framework
             base.OnPreparatory();
 
             //流程初始化
-            foreach (KeyValuePair<Type, Procedure> procedureInstance in _procedureInstances)
+            foreach (var procedureInstance in _procedureInstances)
             {
                 procedureInstance.Value.OnInit();
             }
@@ -68,16 +73,16 @@ namespace HT.Framework
                     if (_procedureInstances.ContainsKey(type))
                     {
                         _currentProcedure = _procedureInstances[type];
-                        _currentProcedure.OnEnter();
+                        _currentProcedure.OnEnter(null);
                     }
                     else
                     {
-                        GlobalTools.LogError("进入流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
+                        GlobalTools.LogError(string.Format("进入流程失败：不存在流程 {0} 或者流程未激活！", type.Name));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError("进入流程失败：丢失流程 " + DefaultProcedure + "！");
+                    GlobalTools.LogError(string.Format("进入流程失败：丢失流程 {0}！", DefaultProcedure));
                 }
             }
         }
@@ -86,7 +91,6 @@ namespace HT.Framework
         {
             base.OnRefresh();
 
-            //流程帧刷新
             if (_currentProcedure != null)
             {
                 _currentProcedure.OnUpdate();
@@ -108,12 +112,13 @@ namespace HT.Framework
             base.OnTermination();
 
             _procedureInstances.Clear();
+            _procedureTypes.Clear();
         }
 
         /// <summary>
         /// 当前流程
         /// </summary>
-        public Procedure CurrentProcedure
+        public ProcedureBase CurrentProcedure
         {
             get
             {
@@ -124,15 +129,26 @@ namespace HT.Framework
         /// <summary>
         /// 获取流程
         /// </summary>
-        public T GetProcedure<T>() where T : Procedure
+        /// <typeparam name="T">流程类</typeparam>
+        /// <returns>流程对象</returns>
+        public T GetProcedure<T>() where T : ProcedureBase
         {
-            if (_procedureInstances.ContainsKey(typeof(T)))
+            return GetProcedure(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 获取流程
+        /// </summary>
+        /// <param name="type">流程类</param>
+        /// <returns>流程对象</returns>
+        public ProcedureBase GetProcedure(Type type)
+        {
+            if (_procedureInstances.ContainsKey(type))
             {
-                return _procedureInstances[typeof(T)] as T;
+                return _procedureInstances[type];
             }
             else
             {
-                GlobalTools.LogError("获取流程失败：不存在流程 " + typeof(T).Name + " 或者流程未激活！");
+                GlobalTools.LogError(string.Format("获取流程失败：不存在流程 {0} 或者流程未激活！", type.Name));
                 return null;
             }
         }
@@ -141,11 +157,10 @@ namespace HT.Framework
         /// 切换流程
         /// </summary>
         /// <typeparam name="T">目标流程</typeparam>
-        public void SwitchProcedure<T>() where T : Procedure
+        public void SwitchProcedure<T>() where T : ProcedureBase
         {
             SwitchProcedure(typeof(T));
         }
-
         /// <summary>
         /// 切换流程
         /// </summary>
@@ -159,17 +174,18 @@ namespace HT.Framework
                     return;
                 }
 
-                if (_currentProcedure != null)
+                ProcedureBase lastProcedure = _currentProcedure;
+                ProcedureBase nextProcedure = _procedureInstances[type];
+                if (lastProcedure != null)
                 {
-                    _currentProcedure.OnLeave();
+                    lastProcedure.OnLeave(nextProcedure);
                 }
-
-                _currentProcedure = _procedureInstances[type];
-                _currentProcedure.OnEnter();
+                nextProcedure.OnEnter(lastProcedure);
+                _currentProcedure = nextProcedure;
             }
             else
             {
-                GlobalTools.LogError("切换流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
+                GlobalTools.LogError(string.Format("切换流程失败：不存在流程 {0} 或者流程未激活！", type.Name));
             }
         }
 
@@ -188,7 +204,6 @@ namespace HT.Framework
                 SwitchProcedure(_procedureTypes[index + 1]);
             }
         }
-
         /// <summary>
         /// 切换至上一流程
         /// </summary>
@@ -211,13 +226,14 @@ namespace HT.Framework
         /// <param name="index">流程序号</param>
         public void SwitchTargetProcedure(int index)
         {
-            if (index - 1 >= 0 && index - 1 < _procedureTypes.Count)
+            index = index - 1;
+            if (index >= 0 && index < _procedureTypes.Count)
             {
-                SwitchProcedure(_procedureTypes[index - 1]);
+                SwitchProcedure(_procedureTypes[index]);
             }
             else
             {
-                GlobalTools.LogError("切换流程失败：不存在序号为 " + index + " 的流程或者流程未激活！");
+                GlobalTools.LogError(string.Format("切换流程失败：不存在序号为 {0} 的流程或者流程未激活！", index + 1));
             }
         }
     }

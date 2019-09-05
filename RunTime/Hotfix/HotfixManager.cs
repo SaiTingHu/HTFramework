@@ -10,15 +10,15 @@ namespace HT.Framework
     public sealed class HotfixManager : ModuleManager
     {
         /// <summary>
-        /// 是否启用热更新
+        /// 是否启用热更新【请勿在代码中修改】
         /// </summary>
         public bool IsEnableHotfix = false;
         /// <summary>
-        /// 热更新库文件AB包名称
+        /// 热更新库文件AB包名称【请勿在代码中修改】
         /// </summary>
         public string HotfixDllAssetBundleName = "hotfix";
         /// <summary>
-        /// 热更新库文件路径
+        /// 热更新库文件路径【请勿在代码中修改】
         /// </summary>
         public string HotfixDllAssetsPath = "Assets/Hotfix/Hotfix.dll.bytes";
         /// <summary>

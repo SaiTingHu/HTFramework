@@ -7,7 +7,7 @@ using DG.Tweening;
 /// 新建状态
 /// </summary>
 [FiniteStateName("新建状态组/#STATENAME#")]
-public class #SCRIPTNAME# : FiniteState
+public class #SCRIPTNAME# : FiniteStateBase
 {
 	/// <summary>
 	/// 初始化
@@ -17,18 +17,20 @@ public class #SCRIPTNAME# : FiniteState
 
     }
 
-	/// <summary>
-	/// 进入状态
-	/// </summary>
-    public override void OnEnter()
+    /// <summary>
+    /// 进入状态
+    /// </summary>
+    /// <param name="lastState">上一个离开的状态</param>
+    public override void OnEnter(FiniteStateBase lastState)
     {
         
     }
-    
-	/// <summary>
-	/// 离开状态
-	/// </summary>
-    public override void OnLeave()
+
+    /// <summary>
+    /// 离开状态
+    /// </summary>
+    /// <param name="nextState">下一个进入的状态</param>
+    public override void OnLeave(FiniteStateBase nextState)
     {
         
     }

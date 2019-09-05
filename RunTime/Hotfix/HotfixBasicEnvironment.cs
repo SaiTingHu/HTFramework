@@ -10,8 +10,8 @@ namespace HT.Framework
     /// </summary>
     public abstract class HotfixBasicEnvironment
     {
-        private Dictionary<Type, HotfixProcedure> _procedureInstances = new Dictionary<Type, HotfixProcedure>();
-        private HotfixProcedure _currentProcedure;
+        private Dictionary<Type, HotfixProcedureBase> _procedureInstances = new Dictionary<Type, HotfixProcedureBase>();
+        private HotfixProcedureBase _currentProcedure;
         private Type _entranceProcedure;
         private float _timer = 0;
 
@@ -20,7 +20,7 @@ namespace HT.Framework
             Type[] types = hotfixAssembly.GetTypes();
             for (int i = 0; i < types.Length; i++)
             {
-                if (types[i].BaseType == typeof(HotfixProcedure))
+                if (types[i].IsSubclassOf(typeof(HotfixProcedureBase)))
                 {
                     HotfixProcedureStateAttribute hpsa = types[i].GetCustomAttribute<HotfixProcedureStateAttribute>();
                     if (hpsa != null)
@@ -30,21 +30,21 @@ namespace HT.Framework
                             _entranceProcedure = types[i];
                             if (!_procedureInstances.ContainsKey(types[i]))
                             {
-                                _procedureInstances.Add(types[i], Activator.CreateInstance(types[i]) as HotfixProcedure);
+                                _procedureInstances.Add(types[i], Activator.CreateInstance(types[i]) as HotfixProcedureBase);
                             }
                         }
                         else if (hpsa.State == HotfixProcedureState.Normal)
                         {
                             if (!_procedureInstances.ContainsKey(types[i]))
                             {
-                                _procedureInstances.Add(types[i], Activator.CreateInstance(types[i]) as HotfixProcedure);
+                                _procedureInstances.Add(types[i], Activator.CreateInstance(types[i]) as HotfixProcedureBase);
                             }
                         }
                     }
                 }
             }
 
-            foreach (KeyValuePair<Type, HotfixProcedure> procedureInstance in _procedureInstances)
+            foreach (var procedureInstance in _procedureInstances)
             {
                 procedureInstance.Value.OnInit();
             }
@@ -83,7 +83,8 @@ namespace HT.Framework
         /// <summary>
         /// 切换热更新流程
         /// </summary>
-        public void SwitchProcedure<T>() where T : HotfixProcedure
+        /// <typeparam name="T">流程类型</typeparam>
+        public void SwitchProcedure<T>() where T : HotfixProcedureBase
         {
             if (_procedureInstances.ContainsKey(typeof(T)))
             {
@@ -102,7 +103,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("切换热更新流程失败：不存在流程 " + typeof(T).Name + " 或者流程未激活！");
+                GlobalTools.LogError(string.Format("切换热更新流程失败：不存在流程 {0} 或者流程未激活！", typeof(T).Name));
             }
         }
     }

@@ -3,7 +3,7 @@
     /// <summary>
     /// 热更新流程基类
     /// </summary>
-    public abstract class HotfixProcedure
+    public abstract class HotfixProcedureBase
     {
         /// <summary>
         /// 流程初始化

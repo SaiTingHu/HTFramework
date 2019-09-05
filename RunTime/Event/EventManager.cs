@@ -79,10 +79,6 @@ namespace HT.Framework
             {
                 _eventHandlerList[type] -= handler;
             }
-            else
-            {
-                GlobalTools.LogError(string.Format("取消订阅事件失败：不存在可以取消订阅的事件类型 {0} ！", type.Name));
-            }
         }
         /// <summary>
         /// 清空已订阅的事件
@@ -101,10 +97,6 @@ namespace HT.Framework
             if (_eventHandlerList.ContainsKey(type))
             {
                 _eventHandlerList[type] = null;
-            }
-            else
-            {
-                GlobalTools.LogError(string.Format("清空订阅事件失败：不存在可以清空订阅的事件类型 {0} ！", type.Name));
             }
         }
 

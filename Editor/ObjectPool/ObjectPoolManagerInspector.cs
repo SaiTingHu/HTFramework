@@ -19,5 +19,25 @@ namespace HT.Framework
             IntField(Target.Limit, out Target.Limit);
             GUILayout.EndHorizontal();
         }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            foreach (var pool in Target.SpawnPools)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20);
+                GUILayout.Label(pool.Key + ": " + pool.Value.Count);
+                GUILayout.FlexibleSpace();
+                GUI.enabled = pool.Value.Count > 0;
+                if (GUILayout.Button("Clear", "Minibutton"))
+                {
+                    pool.Value.Clear();
+                }
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
+            }
+        }
     }
 }

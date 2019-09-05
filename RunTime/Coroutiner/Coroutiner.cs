@@ -12,7 +12,13 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class Coroutiner : ModuleManager
     {
+        /// <summary>
+        /// 所有协程迭代器
+        /// </summary>
         public Dictionary<string, CoroutineEnumerator> CoroutineEnumerators { get; } = new Dictionary<string, CoroutineEnumerator>();
+        /// <summary>
+        /// 迭代器仓库
+        /// </summary>
         public Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
 
         /// <summary>
@@ -68,7 +74,7 @@ namespace HT.Framework
         {
             if (!CoroutineEnumerators.ContainsKey(id))
             {
-                GlobalTools.LogError("重启协程失败：不存在ID为 " + id + " 的协程！");
+                GlobalTools.LogError(string.Format("重启协程失败：不存在ID为 {0} 的协程！", id));
                 return;
             }
             CoroutineEnumerators[id].Rerun();
@@ -81,7 +87,7 @@ namespace HT.Framework
         {
             if (!CoroutineEnumerators.ContainsKey(id))
             {
-                GlobalTools.LogError("终止协程失败：不存在ID为 " + id + " 的协程！");
+                GlobalTools.LogError(string.Format("终止协程失败：不存在ID为 {0} 的协程！", id));
                 return;
             }
             CoroutineEnumerators[id].Stop();
@@ -94,7 +100,7 @@ namespace HT.Framework
         {
             if (!Warehouse.ContainsKey(action))
             {
-                GlobalTools.LogError("终止协程失败：不存在 " + action.Method.Name + " 类型的协程！");
+                GlobalTools.LogError(string.Format("终止协程失败：不存在 {0} 类型的协程！", action.Method.Name));
                 return;
             }
             for (int i = 0; i < Warehouse[action].Count; i++)

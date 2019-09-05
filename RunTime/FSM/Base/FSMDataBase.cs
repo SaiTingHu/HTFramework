@@ -14,5 +14,13 @@
         /// 数据初始化
         /// </summary>
         public abstract void OnInit();
+        /// <summary>
+        /// 所属状态机重生
+        /// </summary>
+        public abstract void OnRenewal();
+        /// <summary>
+        /// 所属状态机完结
+        /// </summary>
+        public abstract void OnFinal();
     }
 }

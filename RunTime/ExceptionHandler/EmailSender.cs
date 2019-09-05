@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -63,11 +64,11 @@ namespace HT.Framework
         /// <summary>
         /// 发送邮件
         /// </summary>
-        public void Send()
+        public Coroutine Send()
         {
             _mailMessage.Subject = _subject;
             _mailMessage.Body = _body;
-            Main.Current.StartCoroutine(SendCoroutine());
+            return Main.Current.StartCoroutine(SendCoroutine());
         }
 
         /// <summary>
@@ -75,13 +76,13 @@ namespace HT.Framework
         /// </summary>
         /// <param name="subject">邮件标题</param>
         /// <param name="body">邮件内容</param>
-        public void Send(string subject, string body)
+        public Coroutine Send(string subject, string body)
         {
             _subject = subject;
             _body = body;
             _mailMessage.Subject = _subject;
             _mailMessage.Body = _body;
-            Main.Current.StartCoroutine(SendCoroutine());
+            return Main.Current.StartCoroutine(SendCoroutine());
         }
 
         private IEnumerator SendCoroutine()

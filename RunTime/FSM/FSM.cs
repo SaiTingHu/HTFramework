@@ -137,7 +137,7 @@ namespace HT.Framework
                 if (_stateInstances.ContainsKey(_defaultState))
                 {
                     _currentState = _stateInstances[_defaultState];
-                    _currentState.OnEnter();
+                    _currentState.OnEnter(null);
                 }
                 else
                 {
@@ -166,6 +166,7 @@ namespace HT.Framework
             {
                 state.Value.OnTermination();
             }
+            _stateInstances.Clear();
 
             if (Main.m_FSM.IsExistFSM(Name))
             {
@@ -183,7 +184,6 @@ namespace HT.Framework
                 return _currentState;
             }
         }
-
         /// <summary>
         /// 当前数据
         /// </summary>
@@ -204,7 +204,6 @@ namespace HT.Framework
         {
             return GetState(typeof(T)) as T;
         }
-
         /// <summary>
         /// 获取状态
         /// </summary>
@@ -231,7 +230,6 @@ namespace HT.Framework
         {
             SwitchState(typeof(T));
         }
-
         /// <summary>
         /// 切换状态
         /// </summary>
@@ -245,13 +243,14 @@ namespace HT.Framework
                     return;
                 }
 
-                if (_currentState != null)
+                FiniteStateBase lastState = _currentState;
+                FiniteStateBase nextState = _stateInstances[type];
+                if (lastState != null)
                 {
-                    _currentState.OnLeave();
+                    lastState.OnLeave(nextState);
                 }
-
-                _currentState = _stateInstances[type];
-                _currentState.OnEnter();
+                nextState.OnEnter(lastState);
+                _currentState = nextState;
             }
             else
             {
@@ -267,13 +266,18 @@ namespace HT.Framework
         {
             TerminationState(typeof(T));
         }
-
         /// <summary>
         /// 终止状态
         /// </summary>
         /// <param name="type">状态类型</param>
         public void TerminationState(Type type)
         {
+            if (type == _defaultState || type == _finalState)
+            {
+                GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 无法终止状态 {1}！因为该状态为初始状态或最终状态！", Name, type.Name));
+                return;
+            }
+
             if (_stateInstances.ContainsKey(type))
             {
                 if (_currentState == _stateInstances[type])
@@ -299,7 +303,6 @@ namespace HT.Framework
         {
             AppendState(typeof(T));
         }
-
         /// <summary>
         /// 附加状态
         /// </summary>
@@ -317,6 +320,31 @@ namespace HT.Framework
             {
                 GlobalTools.LogError(string.Format("附加状态失败：有限状态机 {0} 已存在状态 {1}！", Name, type.Name));
             }
+        }
+
+        /// <summary>
+        /// 重生，状态机恢复为初始状态
+        /// </summary>
+        public void Renewal()
+        {
+            if (_data != null)
+            {
+                _data.OnRenewal();
+            }
+
+            SwitchState(_defaultState);
+        }
+        /// <summary>
+        /// 完结，状态机进入最终状态
+        /// </summary>
+        public void Final()
+        {
+            if (_data != null)
+            {
+                _data.OnFinal();
+            }
+
+            SwitchState(_finalState);
         }
     }
 }

@@ -24,5 +24,14 @@ namespace HT.Framework
             IntField(Target.Port, out Target.Port);
             GUILayout.EndHorizontal();
         }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("No Runtime Data!");
+            GUILayout.EndHorizontal();
+        }
     }
 }

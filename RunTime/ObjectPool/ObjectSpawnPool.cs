@@ -6,12 +6,11 @@ namespace HT.Framework
     /// <summary>
     /// 对象池
     /// </summary>
-    public sealed class ObjectSpawnPool : Object
+    public sealed class ObjectSpawnPool
     {
         private GameObject _spawnTem;
         private int _limit = 100;
         private Queue<GameObject> _objectQueue = new Queue<GameObject>();
-        
         private HTFAction<GameObject> _onSpawn;
         private HTFAction<GameObject> _onDespawn;
 
@@ -37,6 +36,7 @@ namespace HT.Framework
         /// <summary>
         /// 生成对象
         /// </summary>
+        /// <returns>对象</returns>
         public GameObject Spawn()
         {
             GameObject obj;
@@ -46,13 +46,12 @@ namespace HT.Framework
             }
             else
             {
-                obj = Instantiate(_spawnTem);
+                obj = Main.CloneGameObject(_spawnTem);
             }
 
             obj.SetActive(true);
 
-            if (_onSpawn != null)
-                _onSpawn(obj);
+            _onSpawn?.Invoke(obj);
 
             return obj;
         }
@@ -60,39 +59,35 @@ namespace HT.Framework
         /// <summary>
         /// 回收对象
         /// </summary>
+        /// <param name="obj">对象</param>
         public void Despawn(GameObject obj)
         {
             if (_objectQueue.Count >= _limit)
             {
-                Destroy(obj);
+                Main.Kill(obj);
             }
             else
             {
                 obj.SetActive(false);
 
-                if (_onDespawn != null)
-                    _onDespawn(obj);
+                _onDespawn?.Invoke(obj);
 
                 _objectQueue.Enqueue(obj);
             }
         }
 
         /// <summary>
-        /// 销毁所有对象
+        /// 清空所有对象
         /// </summary>
-        public void Clear(bool destruct)
+        public void Clear()
         {
             while (_objectQueue.Count > 0)
             {
                 GameObject obj = _objectQueue.Dequeue();
                 if (obj)
                 {
-                    Destroy(obj);
+                    Main.Kill(obj);
                 }
-            }
-            if (destruct)
-            {
-                Destroy(this);
             }
         }
     }

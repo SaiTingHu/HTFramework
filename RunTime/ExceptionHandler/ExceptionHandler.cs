@@ -13,43 +13,43 @@ namespace HT.Framework
     public sealed class ExceptionHandler : ModuleManager
     {
         /// <summary>
-        /// 是否开启异常处理监听【只在Inspector面板设置有效，代码中设置无效】
+        /// 是否开启异常处理监听【请勿在代码中修改】
         /// </summary>
         public bool IsHandler = false;
         /// <summary>
-        /// 是否启用异常反馈程序【只在Inspector面板设置有效，代码中设置无效】
+        /// 是否启用异常反馈程序【请勿在代码中修改】
         /// </summary>
         public bool IsEnableFeedback = false;
         /// <summary>
-        /// 是否启用邮件回发机制【只在Inspector面板设置有效，代码中设置无效】
+        /// 是否启用邮件回发机制【请勿在代码中修改】
         /// </summary>
         public bool IsEnableMailReport = false;
         /// <summary>
-        /// 反馈程序路径【只在Inspector面板设置有效，代码中设置无效】
+        /// 反馈程序路径【请勿在代码中修改】
         /// </summary>
         public string FeedbackProgramPath = "/Feedback.exe";
         /// <summary>
-        /// 回发邮件的发送邮箱【只在Inspector面板设置有效，代码中设置无效】
+        /// 回发邮件的发送邮箱【请勿在代码中修改】
         /// </summary>
         public string SendMailbox = "hutao_123456@sina.com";
         /// <summary>
-        /// 回发邮件的发送邮箱密码【只在Inspector面板设置有效，代码中设置无效】
+        /// 回发邮件的发送邮箱密码【请勿在代码中修改】
         /// </summary>
         public string SendMailboxPassword = "";
         /// <summary>
-        /// 回发邮件的目标邮箱【只在Inspector面板设置有效，代码中设置无效】
+        /// 回发邮件的目标邮箱【请勿在代码中修改】
         /// </summary>
         public string ReceiveMailbox = "";
         /// <summary>
-        /// 邮件服务器Host【只在Inspector面板设置有效，代码中设置无效】
+        /// 邮件服务器Host【请勿在代码中修改】
         /// </summary>
         public string Host = "smtp.sina.com";
         /// <summary>
-        /// 邮件服务器端口【只在Inspector面板设置有效，代码中设置无效】
+        /// 邮件服务器端口【请勿在代码中修改】
         /// </summary>
         public int Port = 25;
         /// <summary>
-        /// 回发邮件缓冲时间【只在Inspector面板设置有效，代码中设置无效】
+        /// 回发邮件缓冲时间【请勿在代码中修改】
         /// </summary>
         public float ReportBufferTime = 5;
 

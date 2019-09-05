@@ -34,7 +34,7 @@ namespace HT.Framework
             GUILayout.Label("FSMs: " + _fsms.Count);
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<string, FSM> fsm in _fsms)
+            foreach (var fsm in _fsms)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
