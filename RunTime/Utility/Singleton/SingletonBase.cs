@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
-    /// 单例模式 Behaviour 基类
+    /// 单例模式基类
     /// </summary>
-    public abstract class SingletonBehaviour<T> : MonoBehaviour where T : class
+    public abstract class SingletonBase<T> where T : class, new()
     {
         private static T _current;
         /// <summary>
@@ -15,13 +13,12 @@ namespace HT.Framework
         {
             get
             {
+                if (_current == null)
+                {
+                    _current = new T();
+                }
                 return _current;
             }
-        }
-
-        protected virtual void Awake()
-        {
-            _current = GetComponent<T>();
         }
     }
 }

@@ -32,6 +32,15 @@ namespace HT.Framework
             LicenseGUI();
         }
 
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("No Runtime Data!");
+            GUILayout.EndHorizontal();
+        }
+
         #region ScriptingDefine
         private ScriptingDefine _currentScriptingDefine;
         private bool _isNewDefine = false;

@@ -10,7 +10,18 @@ namespace HT.Framework
         private static bool _showCopy = false;
         private static bool _showSetting = false;
         private static bool _copyQuaternion = false;
-        
+
+        private Transform _parent;
+        private Transform _root;
+
+        protected override void OnRuntimeEnable()
+        {
+            base.OnRuntimeEnable();
+
+            _parent = Target.parent;
+            _root = Target.root;
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -212,6 +223,21 @@ namespace HT.Framework
                 GUILayout.EndVertical();
             }
             #endregion
+        }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Root: ", GUILayout.Width(60));
+            EditorGUILayout.ObjectField(_root, typeof(Transform), true);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Parent: ", GUILayout.Width(60));
+            EditorGUILayout.ObjectField(_parent, typeof(Transform), true);
+            GUILayout.EndHorizontal();
         }
     }
 }
