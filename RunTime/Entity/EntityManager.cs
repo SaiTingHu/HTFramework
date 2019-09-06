@@ -9,7 +9,7 @@ namespace HT.Framework
     /// 实体管理器
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class EntityManager : ModuleManager
+    public sealed class EntityManager : ModuleManagerBase
     {
         //所有实体列表
         private Dictionary<Type, List<EntityLogicBase>> _entities = new Dictionary<Type, List<EntityLogicBase>>();
@@ -89,6 +89,21 @@ namespace HT.Framework
             _entities.Clear();
             _entitiesGroup.Clear();
             _objectPool.Clear();
+        }
+
+        /// <summary>
+        /// 是否隐藏所有实体
+        /// </summary>
+        public bool IsHideAll
+        {
+            set
+            {
+                _entityRoot.gameObject.SetActive(!value);
+            }
+            get
+            {
+                return !_entityRoot.gameObject.activeSelf;
+            }
         }
 
         /// <summary>

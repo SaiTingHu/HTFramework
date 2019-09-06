@@ -58,10 +58,19 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Disabled Step: ");
+                GUILayout.Label("Current Step Target: ");
+                EditorGUILayout.ObjectField(Target.CurrentStepContent.Target, typeof(GameObject), true);
                 GUILayout.EndHorizontal();
 
-                foreach (KeyValuePair<string, bool> step in _stepContentEnables)
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Current Step Helper: " + (Target.CurrentStepHelper != null ? Target.CurrentStepHelper.GetType().Name : "<None>"));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Disabled Steps: ");
+                GUILayout.EndHorizontal();
+
+                foreach (var step in _stepContentEnables)
                 {
                     if (!step.Value)
                     {
@@ -76,7 +85,7 @@ namespace HT.Framework
                 GUILayout.Label("Custom Order: " + _customOrder.Count);
                 GUILayout.EndHorizontal();
 
-                foreach (KeyValuePair<string, string> order in _customOrder)
+                foreach (var order in _customOrder)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);

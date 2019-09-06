@@ -12,6 +12,7 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
+            GUI.color = Color.cyan;
             if (GUILayout.Button("Generate GUID"))
             {
                 if (Target.GUID == "<None>")
@@ -26,6 +27,7 @@ namespace HT.Framework
                     }
                 }
             }
+            GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

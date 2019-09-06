@@ -10,7 +10,7 @@ namespace HT.Framework
     /// Web请求管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class WebRequestManager : ModuleManager
+    public sealed class WebRequestManager : ModuleManagerBase
     {
         /// <summary>
         /// 当前是否是离线状态

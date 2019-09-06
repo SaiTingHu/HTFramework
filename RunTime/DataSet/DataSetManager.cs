@@ -8,7 +8,7 @@ namespace HT.Framework
     /// 数据集管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class DataSetManager : ModuleManager
+    public sealed class DataSetManager : ModuleManagerBase
     {
         private Dictionary<Type, List<DataSetBase>> _dataSets = new Dictionary<Type, List<DataSetBase>>();
 

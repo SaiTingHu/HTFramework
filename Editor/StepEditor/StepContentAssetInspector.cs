@@ -82,22 +82,6 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Export Step GUID To .txt"))
-            {
-                string path = EditorUtility.SaveFilePanel("保存数据文件", Application.dataPath, Target.name, "txt");
-                if (path != "")
-                {
-                    for (int i = 0; i < Target.Content.Count; i++)
-                    {
-                        EditorUtility.DisplayProgressBar("Export......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
-                        File.AppendAllText(path, Target.Content[i].GUID + "\r\n");
-                    }
-                    EditorUtility.ClearProgressBar();
-                }
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
             GUI.backgroundColor = Color.cyan;
             if (GUILayout.Button("Edit Step Content"))
             {

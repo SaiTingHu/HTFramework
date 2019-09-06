@@ -13,7 +13,7 @@ namespace HT.Framework
     /// 资源管理器
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ResourceManager : ModuleManager
+    public sealed class ResourceManager : ModuleManagerBase
     {
         /// <summary>
         /// 资源加载模式【请勿在代码中修改】

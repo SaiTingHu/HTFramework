@@ -57,7 +57,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 步骤指引
+        /// 步骤指引（由步骤控制者呼叫）
         /// </summary>
         public virtual void OnGuide()
         {

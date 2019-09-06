@@ -12,7 +12,7 @@ namespace HT.Framework
     /// 网络管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class NetworkManager : ModuleManager
+    public sealed class NetworkManager : ModuleManagerBase
     {
         /// <summary>
         /// 服务器IP地址

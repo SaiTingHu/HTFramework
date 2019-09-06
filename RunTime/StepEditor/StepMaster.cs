@@ -10,7 +10,7 @@ namespace HT.Framework
     /// 步骤控制者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class StepMaster : ModuleManager
+    public sealed class StepMaster : ModuleManagerBase
     {
         /// <summary>
         /// 步骤跳过时的速度
@@ -22,11 +22,11 @@ namespace HT.Framework
         /// </summary>
         public StepContentAsset ContentAsset;
         /// <summary>
-        /// 步骤开始事件【任何一个步骤开始后触发】
+        /// 步骤开始事件【任何一个步骤开始后触发，连续跳过步骤时不会触发】
         /// </summary>
         public event HTFAction<StepContent, bool> BeginStepEvent;
         /// <summary>
-        /// 步骤执行事件【任何一个步骤执行后触发】
+        /// 步骤执行事件【任何一个步骤执行后触发，跳过步骤不会触发】
         /// </summary>
         public event HTFAction<StepContent, bool> ExecuteStepEvent;
         /// <summary>
@@ -38,7 +38,7 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<StepContent, bool> RestoreStepEvent;
         /// <summary>
-        /// 显示提示事件
+        /// 显示提示事件【由操作连线界面的 Prompt 节点触发】
         /// </summary>
         public event HTFAction<string> ShowPromptEvent;
         /// <summary>
@@ -46,11 +46,11 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction BeginEvent;
         /// <summary>
-        /// 连续跳过步骤完成事件【执行连续跳过步骤完成后触发】
+        /// 连续跳过步骤完成事件【连续跳过步骤完成后触发】
         /// </summary>
         public event HTFAction SkipStepDoneEvent;
         /// <summary>
-        /// 步骤等待执行时，点击了错误的步骤目标事件【正确目标：步骤的当前目标、辅助目标】
+        /// 步骤等待执行时，点击了错误的步骤目标事件【正确目标包含：步骤的当前目标、步骤助手的辅助目标】
         /// </summary>
         public event HTFAction<StepContent> ClickWrongTargetEvent;
         /// <summary>
@@ -58,25 +58,25 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction EndEvent;
 
-        //所有的 StepTarget
+        //所有的 StepTarget <步骤目标ID、步骤目标>
         private Dictionary<string, StepTarget> _targets = new Dictionary<string, StepTarget>();
-        //所有的 自定义执行顺序
+        //所有的 自定义执行顺序 <原始步骤ID、目标步骤ID>
         private Dictionary<string, string> _customOrder = new Dictionary<string, string>();
         //所有的 步骤内容
         private List<StepContent> _stepContents = new List<StepContent>();
-        //所有的 步骤启用标记（步骤ID、启用标记）
+        //所有的 步骤启用标记 <步骤ID、启用标记>
         private Dictionary<string, bool> _stepContentEnables = new Dictionary<string, bool>();
-        //所有的 步骤内容（步骤ID、步骤内容）
+        //所有的 步骤内容 <步骤ID、步骤内容>
         private Dictionary<string, StepContent> _stepContentIDs = new Dictionary<string, StepContent>();
-        //所有的 步骤索引（步骤ID、步骤索引）
+        //所有的 步骤索引 <步骤ID、步骤索引>
         private Dictionary<string, int> _stepContentIndexs = new Dictionary<string, int>();
-        private int _currentStep = -1;
+        private int _currentStepIndex = -1;
         private StepContent _currentContent;
         private StepTarget _currentTarget;
         private StepHelper _currentHelper;
         private Button _currentButton;
         //跳过的目标步骤
-        private int _skipIndex = 0;
+        private int _skipTargetIndex = 0;
         //步骤控制者运行中
         private bool _running = false;
         //步骤控制者暂停中
@@ -117,7 +117,7 @@ namespace HT.Framework
                     switch (_currentContent.Trigger)
                     {
                         case StepTrigger.MouseClick:
-                            if (Main.m_Input.GetButtonDown("MouseLeft"))
+                            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
                             {
                                 if (Main.m_Controller.RayTarget)
                                 {
@@ -146,7 +146,7 @@ namespace HT.Framework
                             }
                             break;
                         case StepTrigger.ButtonClick:
-                            if (Main.m_Input.GetButtonDown("MouseLeft"))
+                            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
                             {
                                 if (Main.m_Controller.RayTarget && Main.m_Controller.RayTargetObj != _currentContent.Target && Main.m_Controller.RayTarget.IsStepTarget)
                                 {
@@ -169,7 +169,7 @@ namespace HT.Framework
                             }
                             break;
                         case StepTrigger.StateChange:
-                            if (Main.m_Input.GetButtonDown("MouseLeft"))
+                            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
                             {
                                 if (Main.m_Controller.RayTarget && Main.m_Controller.RayTargetObj != _currentContent.Target && Main.m_Controller.RayTarget.IsStepTarget)
                                 {
@@ -204,11 +204,11 @@ namespace HT.Framework
 
                         if (_currentContent.Instant)
                         {
-                            StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
+                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
                         }
                         else
                         {
-                            StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
+                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
                         }
                     }
                 }
@@ -276,7 +276,7 @@ namespace HT.Framework
         {
             get
             {
-                return _currentStep;
+                return _currentStepIndex;
             }
         }
         /// <summary>
@@ -300,7 +300,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 所有步骤
+        /// 当前所有的步骤，包含启用的和未启用的
         /// </summary>
         public List<StepContent> AllStep
         {
@@ -320,7 +320,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 步骤是否启用
+        /// 根据步骤ID获取步骤的启用标记
         /// </summary>
         /// <param name="stepID">步骤ID</param>
         /// <returns>是否启用</returns>
@@ -336,10 +336,10 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 步骤的真实索引
+        /// 根据步骤ID获取步骤的真实索引
         /// </summary>
         /// <param name="stepID">步骤ID</param>
-        /// <returns>真实索引</returns>
+        /// <returns>在步骤列表中的真实索引</returns>
         public int StepIndex(string stepID)
         {
             if (_stepContentIndexs.ContainsKey(stepID))
@@ -353,68 +353,71 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 重新编译步骤内容
+        /// 重新编译步骤内容，在更改步骤资源 ContentAsset 后，必须重新编译一次才可以开始任务流程
         /// </summary>
-        /// <param name="prohibitStepID">禁用的步骤ID列表（当为null时启用所有步骤，禁用的步骤会自动跳过）</param>
-        public void RecompileStepContent(HashSet<string> prohibitStepID = null)
+        /// <param name="disableStepIDs">禁用的步骤ID集合（当为null时启用所有步骤，禁用的步骤会自动跳过）</param>
+        public void RecompileStepContent(HashSet<string> disableStepIDs = null)
         {
             if (ContentAsset)
             {
-                //搜寻框架下所有目标
+                #region 搜寻步骤目标
                 _targets.Clear();
-                List<StepTarget> targets = new List<StepTarget>();
-                Main.Current.transform.GetComponentsInChildren(true, targets);
-                for (int i = 0; i < targets.Count; i++)
+                //搜寻框架下所有步骤目标
+                List<StepTarget> targetCaches = new List<StepTarget>();
+                Main.Current.transform.GetComponentsInChildren(true, targetCaches);
+                for (int i = 0; i < targetCaches.Count; i++)
                 {
-                    if (!_targets.ContainsKey(targets[i].GUID))
+                    if (!_targets.ContainsKey(targetCaches[i].GUID))
                     {
-                        _targets.Add(targets[i].GUID, targets[i]);
+                        _targets.Add(targetCaches[i].GUID, targetCaches[i]);
                     }
                     else
                     {
-                        GlobalTools.LogWarning(string.Format("发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targets[i].GUID, _targets[targets[i].GUID].transform.FullName(), targets[i].transform.FullName()));
+                        GlobalTools.LogWarning(string.Format("步骤控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
                     }
                 }
-                //搜寻场景所有目标
+                //搜寻场景中所有步骤目标
                 GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
-                    targets.Clear();
-                    rootObj.transform.GetComponentsInChildren(true, targets);
-                    for (int i = 0; i < targets.Count; i++)
+                    targetCaches.Clear();
+                    rootObj.transform.GetComponentsInChildren(true, targetCaches);
+                    for (int i = 0; i < targetCaches.Count; i++)
                     {
-                        if (!_targets.ContainsKey(targets[i].GUID))
+                        if (!_targets.ContainsKey(targetCaches[i].GUID))
                         {
-                            _targets.Add(targets[i].GUID, targets[i]);
+                            _targets.Add(targetCaches[i].GUID, targetCaches[i]);
                         }
                         else
                         {
-                            GlobalTools.LogWarning(string.Format("发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targets[i].GUID, _targets[targets[i].GUID].transform.FullName(), targets[i].transform.FullName()));
+                            GlobalTools.LogWarning(string.Format("步骤控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
                         }
                     }
                 }
+                #endregion
 
-                //判断步骤ID是否重复
+                #region 判断步骤ID是否重复
                 _stepContentIDs.Clear();
                 for (int i = 0; i < ContentAsset.Content.Count; i++)
                 {
                     StepContent content = ContentAsset.Content[i];
                     if (_stepContentIDs.ContainsKey(content.GUID))
                     {
-                        GlobalTools.LogError(string.Format("发现相同GUID的步骤！GUID：{0}\r\n步骤：{1} 和 {2}", content.GUID, _stepContentIDs[content.GUID].Name, content.Name));
-                        return;
+                        GlobalTools.LogError(string.Format("步骤控制者：发现相同GUID的步骤！GUID：{0}\r\n步骤：{1} 和 {2}", content.GUID, _stepContentIDs[content.GUID].Name, content.Name));
                     }
                     else
                     {
                         _stepContentIDs.Add(content.GUID, content);
                     }
                 }
+                #endregion
 
+                #region 生成所有步骤信息
                 _stepContents.Clear();
                 _stepContentEnables.Clear();
                 _stepContentIndexs.Clear();
                 //启用所有步骤
-                if (prohibitStepID == null || prohibitStepID.Count == 0)
+                if (disableStepIDs == null || disableStepIDs.Count == 0)
                 {
                     for (int i = 0; i < ContentAsset.Content.Count; i++)
                     {
@@ -425,7 +428,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
+                            GlobalTools.LogError(string.Format("步骤控制者：【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
                         }
 
                         for (int j = 0; j < content.Operations.Count; j++)
@@ -437,7 +440,7 @@ namespace HT.Framework
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
+                                GlobalTools.LogError(string.Format("步骤控制者：【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
                             }
                         }
 
@@ -449,7 +452,7 @@ namespace HT.Framework
                         }
                     }
                 }
-                //禁用 prohibitStepID 指定的步骤
+                //禁用 disableStepIDs 指定的步骤
                 else
                 {
                     for (int i = 0; i < ContentAsset.Content.Count; i++)
@@ -461,7 +464,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
+                            GlobalTools.LogError(string.Format("步骤控制者：【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
                         }
 
                         for (int j = 0; j < content.Operations.Count; j++)
@@ -473,44 +476,47 @@ namespace HT.Framework
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
+                                GlobalTools.LogError(string.Format("步骤控制者：【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
                             }
                         }
 
                         _stepContents.Add(content);
                         if (!_stepContentEnables.ContainsKey(content.GUID))
                         {
-                            _stepContentEnables.Add(content.GUID, !prohibitStepID.Contains(ContentAsset.Content[i].GUID));
+                            _stepContentEnables.Add(content.GUID, !disableStepIDs.Contains(content.GUID));
                             _stepContentIndexs.Add(content.GUID, _stepContents.Count - 1);
                         }
                     }
                 }
                 
-                _currentStep = 0;
+                _currentStepIndex = 0;
                 _currentContent = null;
                 _currentTarget = null;
+                _currentHelper = null;
                 _running = false;
                 _pause = false;
                 _executing = false;
 
                 ClearCustomOrder();
+                #endregion
             }
             else
             {
-                GlobalTools.LogError("步骤控制器丢失了步骤资源 Step Content Asset！");
+                GlobalTools.LogError("步骤控制者：重新编译步骤失败，步骤控制者丢失了步骤资源 StepContentAsset！");
             }
         }
         /// <summary>
-        /// 开始整个流程
+        /// 开始任务流程
         /// </summary>
         public void Begin()
         {
-            if (!ContentAsset || ContentAsset.Content.Count <= 0)
+            if (!ContentAsset || ContentAsset.Content.Count <= 0 || _stepContents.Count <= 0)
             {
+                GlobalTools.LogError("步骤控制者：当前无法开始任务流程，请重新编译步骤内容 RecompileStepContent！");
                 return;
             }
 
-            _currentStep = 0;
+            _currentStepIndex = 0;
             _currentContent = null;
             _currentTarget = null;
             _currentHelper = null;
@@ -523,10 +529,11 @@ namespace HT.Framework
             BeginCurrentStep();
         }
         /// <summary>
-        /// 结束整个流程
+        /// 结束任务流程
         /// </summary>
         public void End()
         {
+            _currentStepIndex = 0;
             _currentContent = null;
             _currentTarget = null;
             _currentHelper = null;
@@ -548,7 +555,7 @@ namespace HT.Framework
                 if (_pause)
                     return false;
 
-                StartCoroutine(SkipCurrentStepCoroutine());
+                Main.Current.StartCoroutine(SkipCurrentStepCoroutine());
                 return true;
             }
             else
@@ -572,10 +579,10 @@ namespace HT.Framework
                     return false;
 
                 int index = _stepContentIndexs[stepID];
-                if (index <= _currentStep || index > _stepContents.Count - 1)
+                if (index <= _currentStepIndex || index > _stepContents.Count - 1)
                     return false;
 
-                StartCoroutine(SkipStepCoroutine(index));
+                Main.Current.StartCoroutine(SkipStepCoroutine(index));
                 return true;
             }
             else
@@ -584,11 +591,11 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 停止未完成的跳过
+        /// 停止未完成的连续跳过
         /// </summary>
         public void StopSkip()
         {
-            _skipIndex = _currentStep;
+            _skipTargetIndex = _currentStepIndex;
         }
         /// <summary>
         /// 恢复到指定步骤
@@ -606,12 +613,12 @@ namespace HT.Framework
                     return false;
 
                 int index = _stepContentIndexs[stepID];
-                if (index < 0 || index >= _currentStep)
+                if (index < 0 || index >= _currentStepIndex)
                     return false;
 
-                while (_currentStep >= index)
+                while (_currentStepIndex >= index)
                 {
-                    _currentContent = _stepContents[_currentStep];
+                    _currentContent = _stepContents[_currentStepIndex];
                     _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
                     RestoreStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
@@ -641,7 +648,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("【步骤：{0}】的助手 {1} 丢失！", _currentStep + 1, _currentContent.Helper));
+                            GlobalTools.LogError(string.Format("步骤控制者：【步骤：{0}】的助手 {1} 丢失！", _currentStepIndex + 1, _currentContent.Helper));
                         }
                     }
                     //助手执行恢复
@@ -653,10 +660,10 @@ namespace HT.Framework
                         _currentHelper = null;
                     }
                     
-                    _currentStep -= 1;
+                    _currentStepIndex -= 1;
                 }
 
-                _currentStep = index;
+                _currentStepIndex = index;
                 BeginCurrentStep();
                 return true;
             }
@@ -669,6 +676,7 @@ namespace HT.Framework
         /// <summary>
         /// 展示提示【步骤编辑器面板的“提示”节点呼叫】
         /// </summary>
+        /// <param name="content">提示内容</param>
         public void ShowPrompt(string content)
         {
             ShowPromptEvent?.Invoke(content);
@@ -678,17 +686,17 @@ namespace HT.Framework
         /// </summary>
         public void Guide()
         {
-            if (CurrentStepContent != null)
+            if (_currentContent != null)
             {
-                GameObject target = CurrentStepContent.Target;
+                GameObject target = _currentContent.Target;
                 if (target.GetComponent<Collider>())
                 {
                     target.OpenFlashHighLight();
                 }
 
-                Main.m_Controller.TheControlMode = CurrentStepContent.InitialMode;
-                Main.m_Controller.SetLookPoint(target.transform.position + CurrentStepContent.ViewOffset, true);
-                Main.m_Controller.SetLookAngle(CurrentStepContent.BestView, true);
+                Main.m_Controller.TheControlMode = _currentContent.InitialMode;
+                Main.m_Controller.SetLookPoint(target.transform.position + _currentContent.ViewOffset);
+                Main.m_Controller.SetLookAngle(_currentContent.BestView);
 
                 if (_currentHelper != null)
                 {
@@ -710,7 +718,7 @@ namespace HT.Framework
                 if (_pause)
                     return;
 
-                if (CurrentStepContent.Trigger == StepTrigger.StateChange)
+                if (_currentContent.Trigger == StepTrigger.StateChange)
                 {
                     _currentTarget.State = StepTargetState.Done;
                 }
@@ -748,24 +756,25 @@ namespace HT.Framework
             _customOrder.Clear();
         }
 
+        //步骤开始
         private void BeginCurrentStep()
         {
             _executing = false;
-            _currentContent = _stepContents[_currentStep];
+            _currentContent = _stepContents[_currentStepIndex];
             _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
             //UGUI按钮点击型步骤，注册监听
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
                 _isButtonClick = false;
-                _currentButton = _currentContent.Target.GetComponent<Button>();
+                _currentButton = _currentTarget.GetComponent<Button>();
                 if (_currentButton)
                 {
                     _currentButton.onClick.AddListener(ButtonClickCallback);
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("【步骤：{0}】的目标丢失Button组件！", _currentStep + 1));
+                    GlobalTools.LogError(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
                 }
             }
             //状态改变触发类型的步骤，自动重置状态
@@ -799,16 +808,17 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("【步骤：{0}】的助手 {1} 丢失！", _currentStep + 1, _currentContent.Helper));
+                    GlobalTools.LogError(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
                 }
             }
             
+            //未激活的步骤自动跳过
             if (_stepContentEnables.ContainsKey(_currentContent.GUID))
             {
                 BeginStepEvent?.Invoke(_currentContent, _stepContentEnables[_currentContent.GUID]);
                 if (!_stepContentEnables[_currentContent.GUID])
                 {
-                    StartCoroutine(SkipCurrentStepCoroutine());
+                    Main.Current.StartCoroutine(SkipCurrentStepCoroutine());
                 }
             }
             else
@@ -816,10 +826,11 @@ namespace HT.Framework
                 BeginStepEvent?.Invoke(_currentContent, false);
             }
         }
+        //步骤执行
         private void ExecuteCurrentStep()
         {
             _executing = true;
-            _currentContent.Execute(this);
+            _currentContent.Execute();
 
             //UGUI按钮点击型步骤，取消按钮注册
             if (_currentButton)
@@ -837,10 +848,11 @@ namespace HT.Framework
 
             ExecuteStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
         }
+        //跳过当前步骤
         private IEnumerator SkipCurrentStepCoroutine()
         {
             _executing = true;
-            _currentContent.Skip(this);
+            _currentContent.Skip();
 
             SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
@@ -850,17 +862,18 @@ namespace HT.Framework
                 if (_currentButton)
                 {
                     _currentButton.onClick.Invoke();
+                    _currentButton.onClick.RemoveListener(ButtonClickCallback);
                 }
                 else
                 {
-                    _currentButton = _currentContent.Target.GetComponent<Button>();
+                    _currentButton = _currentTarget.GetComponent<Button>();
                     if (_currentButton)
                     {
                         _currentButton.onClick.Invoke();
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("【步骤：{0}】的目标丢失Button组件！", _currentStep + 1));
+                        GlobalTools.LogError(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
                     }
                 }
                 _currentButton = null;
@@ -891,7 +904,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("【步骤：{0}】的助手 {1} 丢失！", _currentStep + 1, _currentContent.Helper));
+                    GlobalTools.LogError(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
                 }
             }
             //助手执行跳过，等待生命周期结束后销毁助手
@@ -907,20 +920,19 @@ namespace HT.Framework
                 _currentHelper = null;
             }
             
-            yield return YieldInstructioner.GetWaitForSeconds(_currentContent.ElapseTime / SkipMultiple);
-
-            yield return WaitCoroutine(ChangeNextStep, 0);
+            yield return WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime / SkipMultiple);
         }
+        //跳过到指定步骤
         private IEnumerator SkipStepCoroutine(int index)
         {
             _executing = true;
-            _skipIndex = index;
+            _skipTargetIndex = index;
 
-            while (_currentStep < _skipIndex)
+            while (_currentStepIndex < _skipTargetIndex)
             {
-                _currentContent = _stepContents[_currentStep];
+                _currentContent = _stepContents[_currentStepIndex];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
-                _currentContent.Skip(this);
+                _currentContent.Skip();
 
                 SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
@@ -930,6 +942,7 @@ namespace HT.Framework
                     if (_currentButton)
                     {
                         _currentButton.onClick.Invoke();
+                        _currentButton.onClick.RemoveListener(ButtonClickCallback);
                     }
                     else
                     {
@@ -940,7 +953,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("【步骤：{0}】的目标丢失Button组件！", _currentStep + 1));
+                            GlobalTools.LogError(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
                         }
                     }
                     _currentButton = null;
@@ -971,7 +984,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("【步骤：{0}】的助手 {1} 丢失！", _currentStep + 1, _currentContent.Helper));
+                        GlobalTools.LogError(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
                     }
                 }
                 //助手执行跳过，等待生命周期结束后销毁助手
@@ -989,25 +1002,26 @@ namespace HT.Framework
                 
                 yield return YieldInstructioner.GetWaitForSeconds(_currentContent.ElapseTime / SkipMultiple);
 
-                _currentStep += 1;
+                _currentStepIndex += 1;
             }
 
             SkipStepDoneEvent?.Invoke();
 
             yield return WaitCoroutine(BeginCurrentStep, 0);
         }
+        //进入下一步骤
         private void ChangeNextStep()
         {
             if (_customOrder.ContainsKey(_currentContent.GUID))
             {
-                _currentStep = _stepContentIndexs[_customOrder[_currentContent.GUID]];
+                _currentStepIndex = _stepContentIndexs[_customOrder[_currentContent.GUID]];
                 BeginCurrentStep();
             }
             else
             {
-                if (_currentStep < _stepContents.Count - 1)
+                if (_currentStepIndex < _stepContents.Count - 1)
                 {
-                    _currentStep += 1;
+                    _currentStepIndex += 1;
                     BeginCurrentStep();
                 }
                 else

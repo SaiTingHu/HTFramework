@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 模块管理者基类
     /// </summary>
-    public abstract class ModuleManager : MonoBehaviour
+    public abstract class ModuleManagerBase : MonoBehaviour
     {
         /// <summary>
         /// 初始化模块

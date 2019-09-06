@@ -3,7 +3,7 @@
     /// <summary>
     /// 全局的主要数据基类
     /// </summary>
-    public abstract class MainData
+    public abstract class MainDataBase
     {
         /// <summary>
         /// 数据初始化

@@ -8,7 +8,7 @@ namespace HT.Framework
     /// 引用池管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ReferencePoolManager : ModuleManager
+    public sealed class ReferencePoolManager : ModuleManagerBase
     {
         /// <summary>
         /// 单个引用池上限【请勿在代码中修改】

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -187,23 +186,7 @@ namespace HT.Framework
                 }
                 if (GUILayout.Button("Copy FullName", "MiniButtonRight"))
                 {
-                    List<Transform> transforms = new List<Transform>();
-                    Transform transform = Target;
-                    transforms.Add(transform);
-                    while (transform.parent)
-                    {
-                        transform = transform.parent;
-                        transforms.Add(transform);
-                    }
-
-                    string name = "";
-                    name += transforms[transforms.Count - 1].name;
-                    for (int i = transforms.Count - 2; i >= 0; i--)
-                    {
-                        name += "/" + transforms[i].name;
-                    }
-
-                    GUIUtility.systemCopyBuffer = name;
+                    GUIUtility.systemCopyBuffer = Target.FullName();
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 GUILayout.EndHorizontal();

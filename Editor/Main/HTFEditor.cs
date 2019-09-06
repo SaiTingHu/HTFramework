@@ -2,10 +2,11 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace HT.Framework
 {
-    public abstract class HTFEditor<E> : Editor where E : UnityEngine.Object
+    public abstract class HTFEditor<E> : Editor where E : Object
     {
         /// <summary>
         /// 当前目标

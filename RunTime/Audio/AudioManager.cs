@@ -8,7 +8,7 @@ namespace HT.Framework
     /// 音频管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class AudioManager : ModuleManager
+    public sealed class AudioManager : ModuleManagerBase
     {
         /// <summary>
         /// 是否静音初始值【请勿在代码中修改】

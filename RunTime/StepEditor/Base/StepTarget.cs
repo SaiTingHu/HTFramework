@@ -8,7 +8,13 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class StepTarget : MonoBehaviour
     {
+        /// <summary>
+        /// 步骤目标ID
+        /// </summary>
         public string GUID = "<None>";
+        /// <summary>
+        /// 步骤目标状态
+        /// </summary>
         public StepTargetState State = StepTargetState.Normal;
     }
 

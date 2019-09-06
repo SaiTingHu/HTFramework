@@ -10,7 +10,7 @@ namespace HT.Framework
     /// 协程调度者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class Coroutiner : ModuleManager
+    public sealed class Coroutiner : ModuleManagerBase
     {
         /// <summary>
         /// 所有协程迭代器

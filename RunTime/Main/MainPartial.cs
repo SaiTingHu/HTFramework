@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace HT.Framework
 {
@@ -14,13 +15,67 @@ namespace HT.Framework
         /// <summary>
         /// 克隆实例
         /// </summary>
-        public static T Clone<T>(T original) where T : UnityEngine.Object
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="original">初始对象</param>
+        /// <returns>克隆的新对象</returns>
+        public static T Clone<T>(T original) where T : Object
         {
             return Instantiate(original);
         }
         /// <summary>
-        /// 克隆GameObject实例
+        /// 克隆实例
         /// </summary>
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="original">初始对象</param>
+        /// <param name="position">新对象的位置</param>
+        /// <param name="rotation">新对象的旋转</param>
+        /// <returns>克隆的新对象</returns>
+        public static T Clone<T>(T original, Vector3 position, Quaternion rotation) where T : Object
+        {
+            return Instantiate(original, position, rotation);
+        }
+        /// <summary>
+        /// 克隆实例
+        /// </summary>
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="original">初始对象</param>
+        /// <param name="position">新对象的位置</param>
+        /// <param name="rotation">新对象的旋转</param>
+        /// <param name="parent">新对象的父物体</param>
+        /// <returns>克隆的新对象</returns>
+        public static T Clone<T>(T original, Vector3 position, Quaternion rotation, Transform parent) where T : Object
+        {
+            return Instantiate(original, position, rotation, parent);
+        }
+        /// <summary>
+        /// 克隆实例
+        /// </summary>
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="original">初始对象</param>
+        /// <param name="parent">新对象的父物体</param>
+        /// <returns>克隆的新对象</returns>
+        public static T Clone<T>(T original, Transform parent) where T : Object
+        {
+            return Instantiate(original, parent);
+        }
+        /// <summary>
+        /// 克隆实例
+        /// </summary>
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="original">初始对象</param>
+        /// <param name="parent">新对象的父物体</param>
+        /// <param name="worldPositionStays">是否保持世界位置不变</param>
+        /// <returns>克隆的新对象</returns>
+        public static T Clone<T>(T original, Transform parent, bool worldPositionStays) where T : Object
+        {
+            return Instantiate(original, parent, worldPositionStays);
+        }
+        /// <summary>
+        /// 克隆 GameObject 实例
+        /// </summary>
+        /// <param name="original">初始对象</param>
+        /// <param name="isUI">是否是UI对象</param>
+        /// <returns>克隆的新对象</returns>
         public static GameObject CloneGameObject(GameObject original, bool isUI = false)
         {
             GameObject obj = Instantiate(original);
@@ -45,16 +100,24 @@ namespace HT.Framework
         /// 杀死实例
         /// </summary>
         /// <param name="obj">实例对象</param>
-        public static void Kill(UnityEngine.Object obj)
+        public static void Kill(Object obj)
         {
             Destroy(obj);
+        }
+        /// <summary>
+        /// 立即杀死实例
+        /// </summary>
+        /// <param name="obj">实例对象</param>
+        public static void KillImmediate(Object obj)
+        {
+            DestroyImmediate(obj);
         }
         /// <summary>
         /// 杀死一群实例
         /// </summary>
         /// <typeparam name="T">实例类型</typeparam>
         /// <param name="objs">实例集合</param>
-        public static void Kills<T>(List<T> objs) where T : UnityEngine.Object
+        public static void Kills<T>(List<T> objs) where T : Object
         {
             for (int i = 0; i < objs.Count; i++)
             {
@@ -334,14 +397,30 @@ namespace HT.Framework
         #endregion
 
         #region License
+        /// <summary>
+        /// 是否永久授权
+        /// </summary>
         public bool IsPermanentLicense = true;
+        /// <summary>
+        /// 授权到期时，主界面文字提示内容
+        /// </summary>
         public string EndingPrompt = "授权已到期！";
+        /// <summary>
+        /// 授权终止年份
+        /// </summary>
         public int Year = 5000;
+        /// <summary>
+        /// 授权终止月份
+        /// </summary>
         public int Month = 5;
+        /// <summary>
+        /// 授权终止日
+        /// </summary>
         public int Day = 5;
         
         private DateTime _endingTime;
         private GUIStyle _promptStyle;
+        private Rect _promptStyleRect;
 
         private void LicenseInitialization()
         {
@@ -359,6 +438,7 @@ namespace HT.Framework
                 {
                     m_Controller.MainCamera.enabled = false;
                     m_UI.IsHideAll = true;
+                    m_Entity.IsHideAll = true;
                 }
             }
         }
@@ -368,16 +448,20 @@ namespace HT.Framework
             {
                 if (DateTime.Now > _endingTime)
                 {
-                    GUI.Label(new Rect(0, 0, Screen.width, Screen.height), EndingPrompt, _promptStyle);
+                    _promptStyleRect.Set(0, 0, Screen.width, Screen.height);
+                    GUI.Label(_promptStyleRect, EndingPrompt, _promptStyle);
                 }
             }
         }
         #endregion
 
         #region MainData
+        /// <summary>
+        /// 当前主要数据类名【请勿在代码中修改】
+        /// </summary>
         public string MainDataType = "<None>";
 
-        private MainData _data;
+        private MainDataBase _data;
 
         private void MainDataInitialization()
         {
@@ -386,19 +470,19 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(MainDataType);
                 if (type != null)
                 {
-                    if (type.IsSubclassOf(typeof(MainData)))
+                    if (type.IsSubclassOf(typeof(MainDataBase)))
                     {
-                        _data = Activator.CreateInstance(type) as MainData;
+                        _data = Activator.CreateInstance(type) as MainDataBase;
                         _data.OnInitialization();
                     }
                     else
                     {
-                        GlobalTools.LogError("创建全局数据类失败：数据类 " + MainDataType + " 必须继承至基类：MainData！");
+                        GlobalTools.LogError(string.Format("创建全局数据类失败：数据类 {0} 必须继承至基类：MainDataBase！", MainDataType));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError("创建全局数据类失败：丢失数据类 " + MainDataType + "！");
+                    GlobalTools.LogError(string.Format("创建全局数据类失败：丢失数据类 {0}！", MainDataType));
                 }
             }
         }
@@ -413,7 +497,9 @@ namespace HT.Framework
         /// <summary>
         /// 获取全局主要数据
         /// </summary>
-        public T GetMainData<T>() where T : MainData
+        /// <typeparam name="T">数据类</typeparam>
+        /// <returns>主要数据对象</returns>
+        public T GetMainData<T>() where T : MainDataBase
         {
             if (_data != null)
             {

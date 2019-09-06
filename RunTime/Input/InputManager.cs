@@ -7,7 +7,7 @@ namespace HT.Framework
     /// 输入管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class InputManager : ModuleManager
+    public sealed class InputManager : ModuleManagerBase
     {
         /// <summary>
         /// 输入设备类型【请勿在代码中修改】
