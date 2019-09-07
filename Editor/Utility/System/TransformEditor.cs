@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -6,20 +8,17 @@ namespace HT.Framework
     [CustomEditor(typeof(Transform))]
     public sealed class TransformEditor : HTFEditor<Transform>
     {
-        private static bool _showProperty = true;
-        private static bool _showCopy = false;
-        private static bool _showSetting = false;
         private static bool _copyQuaternion = false;
-
+        private bool _showProperty = true;
+        private bool _showCopy = false;
         private Transform _parent;
-        private Transform _root;
 
-        protected override void OnRuntimeEnable()
+        protected override void OnDefaultEnable()
         {
-            base.OnRuntimeEnable();
+            base.OnDefaultEnable();
 
-            _parent = Target.parent;
-            _root = Target.root;
+            _showProperty = EditorPrefs.GetBool(EditorPrefsTable.Transform_Property, true);
+            _showCopy = EditorPrefs.GetBool(EditorPrefsTable.Transform_Copy, false);
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -29,13 +28,18 @@ namespace HT.Framework
             #region Property
             GUILayout.BeginHorizontal("MeTransitionHead");
             GUILayout.Space(12);
-            _showProperty = EditorGUILayout.Foldout(_showProperty, "Property", true);
+            bool showProperty = EditorGUILayout.Foldout(_showProperty, "Property", true);
+            if (showProperty != _showProperty)
+            {
+                _showProperty = showProperty;
+                EditorPrefs.SetBool(EditorPrefsTable.Transform_Property, _showProperty);
+            }
             GUILayout.EndHorizontal();
 
             if (_showProperty)
             {
                 GUILayout.BeginVertical("Box");
-
+                
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Position", GUILayout.Width(80));
                 Vector3 pos = EditorGUILayout.Vector3Field("", Target.position);
@@ -99,13 +103,64 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
+
+
+                GUILayout.BeginVertical("Box");
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Root: ", GUILayout.Width(80));
+                EditorGUILayout.ObjectField(Target.root, typeof(Transform), true);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Parent: ", GUILayout.Width(80));
+                GUI.color = Target.parent ? Color.white : Color.gray;
+                _parent = EditorGUILayout.ObjectField(Target.parent, typeof(Transform), true) as Transform;
+                if (_parent != Target.parent)
+                {
+                    Undo.RecordObject(Target, "Change Parent " + Target.name);
+                    Target.SetParent(_parent);
+                    HasChanged();
+                }
+                GUI.color = Color.white;
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Child Count: ", GUILayout.Width(80));
+                GUILayout.Label(Target.childCount.ToString());
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Retract All"))
+                {
+                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    EditorWindow window = EditorWindow.GetWindow(type);
+                    object hierarchy = window.GetType().GetProperty("sceneHierarchy", BindingFlags.Public | BindingFlags.Instance).GetValue(window);
+                    int[] expandedIDs = hierarchy.GetType().GetMethod("GetExpandedIDs", BindingFlags.Public | BindingFlags.Instance).Invoke(hierarchy, null) as int[];
+                    MethodInfo method = hierarchy.GetType().GetMethod("ExpandTreeViewItem", BindingFlags.NonPublic | BindingFlags.Instance);
+                    object[] args = new object[2];
+                    args[1] = false;
+                    for (int i = 0; i < expandedIDs.Length; i++)
+                    {
+                        args[0] = expandedIDs[i];
+                        method.Invoke(hierarchy, args);
+                    }
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.EndVertical();
             }
             #endregion
 
             #region Copy
             GUILayout.BeginHorizontal("MeTransitionHead");
             GUILayout.Space(12);
-            _showCopy = EditorGUILayout.Foldout(_showCopy, "Copy", true);
+            bool showCopy = EditorGUILayout.Foldout(_showCopy, "Copy", true);
+            if (showCopy != _showCopy)
+            {
+                _showCopy = showCopy;
+                EditorPrefs.SetBool(EditorPrefsTable.Transform_Copy, _showCopy);
+            }
             GUILayout.EndHorizontal();
 
             if (_showCopy)
@@ -202,20 +257,6 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
-                GUILayout.EndVertical();
-            }
-            #endregion
-
-            #region Setting
-            GUILayout.BeginHorizontal("MeTransitionHead");
-            GUILayout.Space(12);
-            _showSetting = EditorGUILayout.Foldout(_showSetting, "Setting", true);
-            GUILayout.EndHorizontal();
-
-            if (_showSetting)
-            {
-                GUILayout.BeginVertical("Box");
-
                 GUILayout.BeginHorizontal();
                 _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");
                 GUILayout.EndHorizontal();
@@ -230,13 +271,7 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Root: ", GUILayout.Width(60));
-            EditorGUILayout.ObjectField(_root, typeof(Transform), true);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Parent: ", GUILayout.Width(60));
-            EditorGUILayout.ObjectField(_parent, typeof(Transform), true);
+            GUILayout.Label("No Runtime Data!");
             GUILayout.EndHorizontal();
         }
     }

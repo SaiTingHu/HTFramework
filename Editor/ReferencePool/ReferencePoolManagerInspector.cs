@@ -15,14 +15,20 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Limit:");
-            IntField(Target.Limit, out Target.Limit);
+            IntField(Target.Limit, out Target.Limit, "Limit");
             GUILayout.EndHorizontal();
         }
 
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
+
+            if (Target.SpawnPools.Count == 0)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+            }
 
             foreach (var pool in Target.SpawnPools)
             {

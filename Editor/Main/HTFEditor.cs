@@ -113,7 +113,7 @@ namespace HT.Framework
         protected void Toggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
         {
             GUI.color = value ? Color.white : Color.gray;
-            bool newValue = GUILayout.Toggle(value, name, options);
+            bool newValue = EditorGUILayout.Toggle(name, value, options);
             if (value != newValue)
             {
                 Undo.RecordObject(target, "Set bool value");
@@ -163,9 +163,9 @@ namespace HT.Framework
         /// <summary>
         /// 制作一个IntField
         /// </summary>
-        protected void IntField(int value, out int outValue, params GUILayoutOption[] options)
+        protected void IntField(int value, out int outValue, string name, params GUILayoutOption[] options)
         {
-            int newValue = EditorGUILayout.IntField(value, options);
+            int newValue = EditorGUILayout.IntField(name, value, options);
             if (value != newValue)
             {
                 Undo.RecordObject(target, "Set int value");
@@ -195,28 +195,12 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 制作一个FloatField
-        /// </summary>
-        protected void FloatField(float value, out float outValue, params GUILayoutOption[] options)
-        {
-            float newValue = EditorGUILayout.FloatField(value, options);
-            if (!Mathf.Approximately(value, newValue))
-            {
-                Undo.RecordObject(target, "Set float value");
-                outValue = newValue;
-                HasChanged();
-            }
-            else
-            {
-                outValue = value;
-            }
-        }
-        /// <summary>
         /// 制作一个TextField
         /// </summary>
-        protected void TextField(string value, out string outValue, params GUILayoutOption[] options)
+        protected void TextField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            string newValue = EditorGUILayout.TextField(value, options);
+            GUI.color = value != "" ? Color.white : Color.gray;
+            string newValue = EditorGUILayout.TextField(name, value, options);
             if (value != newValue)
             {
                 Undo.RecordObject(target, "Set string value");
@@ -227,13 +211,15 @@ namespace HT.Framework
             {
                 outValue = value;
             }
+            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个PasswordField
         /// </summary>
-        protected void PasswordField(string value, out string outValue, params GUILayoutOption[] options)
+        protected void PasswordField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            string newValue = EditorGUILayout.PasswordField(value, options);
+            GUI.color = value != "" ? Color.white : Color.gray;
+            string newValue = EditorGUILayout.PasswordField(name, value, options);
             if (value != newValue)
             {
                 Undo.RecordObject(target, "Set string value");
@@ -244,12 +230,14 @@ namespace HT.Framework
             {
                 outValue = value;
             }
+            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个ObjectField
         /// </summary>
         protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UnityEngine.Object
         {
+            GUI.color = value ? Color.white : Color.gray;
             T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects, options) as T;
             if (value != newValue)
             {
@@ -261,6 +249,7 @@ namespace HT.Framework
             {
                 outValue = value;
             }
+            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个Vector2Field

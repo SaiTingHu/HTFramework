@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -36,7 +34,7 @@ namespace HT.Framework
             GUILayout.Label("Intercept Conditions: ");
             GUILayout.EndHorizontal();
 
-            foreach (KeyValuePair<string, HTFFunc<MethodBase, object[], bool>> condition in Target.InterceptConditions)
+            foreach (var condition in Target.InterceptConditions)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);

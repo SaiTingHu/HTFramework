@@ -49,8 +49,7 @@ namespace HT.Framework
             else if (Target.Mode == ResourceLoadMode.AssetBundle)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Manifest Name");
-                TextField(Target.AssetBundleManifestName, out Target.AssetBundleManifestName);
+                TextField(Target.AssetBundleManifestName, out Target.AssetBundleManifestName, "Manifest Name");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -95,6 +94,18 @@ namespace HT.Framework
                         GUILayout.EndHorizontal();
                     }
                 }
+                else
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("No Runtime Data!");
+                    GUILayout.EndHorizontal();
+                }
+            }
+            else
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
             }
         }
     }

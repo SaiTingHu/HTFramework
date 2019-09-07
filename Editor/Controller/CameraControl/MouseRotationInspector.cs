@@ -6,6 +6,14 @@ namespace HT.Framework
     [CustomEditor(typeof(MouseRotation))]
     public sealed class MouseRotationInspector : HTFEditor<MouseRotation>
     {
+        protected override bool IsEnableRuntimeData
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -18,97 +26,96 @@ namespace HT.Framework
             Toggle(Target.AllowOverstepDistance, out Target.AllowOverstepDistance, "Allow Overstep Distance");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical("HelpBox");
+            GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Offset:", "BoldLabel");
+            GUILayout.Label("Offset", "BoldLabel");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal("Box");
-            GUILayout.Label("X");
-            FloatField(Target.OffsetX, out Target.OffsetX);
-            GUILayout.Label("Y");
-            FloatField(Target.OffsetY, out Target.OffsetY);
+            GUILayout.BeginHorizontal();
+            FloatField(Target.OffsetX, out Target.OffsetX, "X");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.OffsetY, out Target.OffsetY, "Y");
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
 
-
-            GUILayout.BeginVertical("HelpBox");
+            GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Speed:", "BoldLabel");
+            GUILayout.Label("Speed", "BoldLabel");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal("Box");
-            GUILayout.Label("X");
-            FloatField(Target.XSpeed, out Target.XSpeed);
-            GUILayout.Label("Y");
-            FloatField(Target.YSpeed, out Target.YSpeed);
-            GUILayout.Label("M");
-            FloatField(Target.MSpeed, out Target.MSpeed);
+            GUILayout.BeginHorizontal();
+            FloatField(Target.XSpeed, out Target.XSpeed, "X");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.YSpeed, out Target.YSpeed, "Y");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.MSpeed, out Target.MSpeed, "M");
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
+            
+            GUILayout.BeginVertical("Box");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Angle Limit", "BoldLabel");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.YMinAngleLimit, out Target.YMinAngleLimit, "Y min");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.YMaxAngleLimit, out Target.YMaxAngleLimit, "Y max");
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
 
-
-            GUILayout.BeginVertical("HelpBox");
+            GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Angle Limit:", "BoldLabel");
+            GUILayout.Label("Distance", "BoldLabel");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal("Box");
-            GUILayout.Label("Y min");
-            FloatField(Target.YMinAngleLimit, out Target.YMinAngleLimit);
-            GUILayout.Label("Y max");
-            FloatField(Target.YMaxAngleLimit, out Target.YMaxAngleLimit);
+            GUILayout.BeginHorizontal();
+            FloatField(Target.Distance, out Target.Distance, "Distance");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.MinDistance, out Target.MinDistance, "Min");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.MaxDistance, out Target.MaxDistance, "Max");
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
-
-
-            GUILayout.BeginVertical("HelpBox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Distance:", "BoldLabel");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal("Box");
-            GUILayout.Label("D");
-            FloatField(Target.Distance, out Target.Distance);
-            Button(DistanceAdd, "", "OL Plus", GUILayout.Width(15));
-            Button(DistanceSubtract, "", "OL Minus", GUILayout.Width(15));
-            GUILayout.Label("Min");
-            FloatField(Target.MinDistance, out Target.MinDistance);
-            GUILayout.Label("Max");
-            FloatField(Target.MaxDistance, out Target.MaxDistance);
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-
-
-            GUILayout.BeginVertical("HelpBox");
+            
+            GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Damping:", "BoldLabel");
+            GUILayout.Label("Damping", "BoldLabel");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal("Box");
+            GUILayout.BeginHorizontal();
             Toggle(Target.NeedDamping, out Target.NeedDamping, "Need Damping");
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
-
-
-            GUILayout.BeginVertical("HelpBox");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Camera Position Limit:", "BoldLabel");
-            GUILayout.EndHorizontal();
-
+            
             GUILayout.BeginVertical("Box");
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Camera Position Limit", "BoldLabel");
+            GUILayout.EndHorizontal();
+            
             GUILayout.BeginHorizontal();
             Toggle(Target.NeedLimit, out Target.NeedLimit, "Need Limit");
             GUILayout.EndHorizontal();
@@ -116,75 +123,47 @@ namespace HT.Framework
             if (Target.NeedLimit)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("X Min");
-                FloatField(Target.XMinLimit, out Target.XMinLimit);
-                GUILayout.Label("X Max");
-                FloatField(Target.XMaxLimit, out Target.XMaxLimit);
+                FloatField(Target.XMinLimit, out Target.XMinLimit, "X Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Y Min");
-                FloatField(Target.YMinLimit, out Target.YMinLimit);
-                GUILayout.Label("Y Max");
-                FloatField(Target.YMaxLimit, out Target.YMaxLimit);
+                FloatField(Target.YMinLimit, out Target.YMinLimit, "Y Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Z Min");
-                FloatField(Target.ZMinLimit, out Target.ZMinLimit);
-                GUILayout.Label("Z Max");
-                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit);
+                FloatField(Target.ZMinLimit, out Target.ZMinLimit, "Z Min");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                FloatField(Target.XMaxLimit, out Target.XMaxLimit, "X Max");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                FloatField(Target.YMaxLimit, out Target.YMaxLimit, "Y Max");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit, "Z Max");
                 GUILayout.EndHorizontal();
             }
 
             GUILayout.EndVertical();
-
-            GUILayout.EndVertical();
-
-
-            GUILayout.BeginVertical("HelpBox");
+            
+            GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Angle:", "BoldLabel");
+            GUILayout.Label("Angle", "BoldLabel");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal("Box");
-            GUILayout.Label("X");
-            FloatField(Target.X, out Target.X);
-            Button(XAdd, "", "OL Plus", GUILayout.Width(15));
-            Button(XSubtract, "", "OL Minus", GUILayout.Width(15));
-            GUILayout.Label("Y");
-            FloatField(Target.Y, out Target.Y);
-            Button(YAdd, "", "OL Plus", GUILayout.Width(15));
-            Button(YSubtract, "", "OL Minus", GUILayout.Width(15));
+            GUILayout.BeginHorizontal();
+            FloatField(Target.X, out Target.X, "X");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.Y, out Target.Y, "Y");
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
-        }
-
-        private void DistanceAdd()
-        {
-            Target.Distance += 0.1f;
-        }
-        private void DistanceSubtract()
-        {
-            Target.Distance -= 0.1f;
-        }
-        private void XAdd()
-        {
-            Target.X += 2;
-        }
-        private void XSubtract()
-        {
-            Target.X -= 2;
-        }
-        private void YAdd()
-        {
-            Target.Y += 2;
-        }
-        private void YSubtract()
-        {
-            Target.Y -= 2;
         }
     }
 }

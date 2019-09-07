@@ -62,13 +62,12 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Name: ", GUILayout.Width(60));
-            TextField(Target.Name, out Target.Name);
+            TextField(Target.Name, out Target.Name, "Name");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUI.color = Target.Data == "<None>" ? Color.gray : Color.white;
-            GUILayout.Label("Data: ", GUILayout.Width(60));
+            GUILayout.Label("Data", GUILayout.Width(60));
             if (GUILayout.Button(Target.Data, "MiniPopup"))
             {
                 GenericMenu gm = new GenericMenu();

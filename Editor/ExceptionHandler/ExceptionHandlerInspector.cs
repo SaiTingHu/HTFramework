@@ -37,7 +37,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    TextField(Target.FeedbackProgramPath, out Target.FeedbackProgramPath);
+                    TextField(Target.FeedbackProgramPath, out Target.FeedbackProgramPath, "");
                     GUILayout.EndHorizontal();
 
                     GUILayout.EndVertical();
@@ -54,33 +54,27 @@ namespace HT.Framework
                     GUILayout.BeginVertical("Box");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Host", GUILayout.Width(80));
-                    TextField(Target.Host, out Target.Host);
+                    TextField(Target.Host, out Target.Host, "Host");
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Port", GUILayout.Width(80));
-                    IntField(Target.Port, out Target.Port);
+                    IntField(Target.Port, out Target.Port, "Port");
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Send Mail", GUILayout.Width(80));
-                    TextField(Target.SendMailbox, out Target.SendMailbox);
+                    TextField(Target.SendMailbox, out Target.SendMailbox, "Send Mail");
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Password", GUILayout.Width(80));
-                    PasswordField(Target.SendMailboxPassword, out Target.SendMailboxPassword);
+                    PasswordField(Target.SendMailboxPassword, out Target.SendMailboxPassword, "Password");
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Receive Mail", GUILayout.Width(80));
-                    TextField(Target.ReceiveMailbox, out Target.ReceiveMailbox);
+                    TextField(Target.ReceiveMailbox, out Target.ReceiveMailbox, "Receive Mail");
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Buffer Time", GUILayout.Width(80));
-                    FloatField(Target.ReportBufferTime, out Target.ReportBufferTime);
+                    FloatField(Target.ReportBufferTime, out Target.ReportBufferTime, "Buffer Time");
                     GUILayout.EndHorizontal();
 
                     GUILayout.EndVertical();

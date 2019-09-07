@@ -20,7 +20,7 @@
 
         public ResourceInfoBase(string assetBundleName, string assetPath, string resourcePath)
         {
-            AssetBundleName = assetBundleName.ToLower();
+            AssetBundleName = assetBundleName != null ? assetBundleName.ToLower() : assetBundleName;
             AssetPath = assetPath;
             ResourcePath = resourcePath;
         }

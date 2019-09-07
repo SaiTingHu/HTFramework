@@ -58,7 +58,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                TextField(Target.HotfixDllAssetBundleName, out Target.HotfixDllAssetBundleName);
+                TextField(Target.HotfixDllAssetBundleName, out Target.HotfixDllAssetBundleName, "");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -66,7 +66,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                TextField(Target.HotfixDllAssetsPath, out Target.HotfixDllAssetsPath);
+                TextField(Target.HotfixDllAssetsPath, out Target.HotfixDllAssetsPath, "");
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();

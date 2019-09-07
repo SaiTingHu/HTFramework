@@ -15,13 +15,11 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("IP", GUILayout.Width(50));
-            TextField(Target.IP, out Target.IP);
+            TextField(Target.IP, out Target.IP, "IP");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Port", GUILayout.Width(50));
-            IntField(Target.Port, out Target.Port);
+            IntField(Target.Port, out Target.Port, "Port");
             GUILayout.EndHorizontal();
         }
 

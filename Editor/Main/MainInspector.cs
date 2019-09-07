@@ -288,7 +288,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    TextField(Target.EndingPrompt, out Target.EndingPrompt);
+                    TextField(Target.EndingPrompt, out Target.EndingPrompt, "");
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -374,7 +374,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Now", "MiniButton"))
+                    if (GUILayout.Button("Now", "MiniButtonLeft"))
                     {
                         Undo.RecordObject(target, "Set Now");
                         Target.Year = DateTime.Now.Year;
@@ -383,7 +383,7 @@ namespace HT.Framework
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("2 Months Later", "MiniButton"))
+                    if (GUILayout.Button("2 Months Later", "MiniButtonRight"))
                     {
                         Undo.RecordObject(target, "Set 2 Months Later");
                         Target.Month += 2;

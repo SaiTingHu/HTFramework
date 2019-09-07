@@ -31,6 +31,13 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
+            if (_dataSets.Count == 0)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+            }
+
             foreach (var item in _dataSets)
             {
                 GUILayout.BeginHorizontal();

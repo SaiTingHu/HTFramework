@@ -45,8 +45,7 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Enable InputDevice", GUILayout.Width(120));
-            Target.IsEnableInputDevice = EditorGUILayout.Toggle(Target.IsEnableInputDevice);
+            Target.IsEnableInputDevice = EditorGUILayout.Toggle("Enable InputDevice", Target.IsEnableInputDevice);
             GUILayout.EndHorizontal();
         }
     }

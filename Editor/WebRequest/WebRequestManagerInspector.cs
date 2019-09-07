@@ -39,7 +39,7 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Web Interfaces:");
+            GUILayout.Label("Web Interfaces:" + _interfaces.Count);
             GUILayout.EndHorizontal();
 
             foreach (var inter in _interfaces)

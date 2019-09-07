@@ -120,6 +120,29 @@ namespace HT.Framework
         }
         #endregion
 
+        #region Utility
+        /// <summary>
+        /// Transform组件Inspector面板配置：是否展开Property
+        /// </summary>
+        public static string Transform_Property
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Transform.Property";
+            }
+        }
+        /// <summary>
+        /// Transform组件Inspector面板配置：是否展开Copy
+        /// </summary>
+        public static string Transform_Copy
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Transform.Copy";
+            }
+        }
+        #endregion
+
         #region AssetBundleEditor
         /// <summary>
         /// AssetBundleEditor打包路径

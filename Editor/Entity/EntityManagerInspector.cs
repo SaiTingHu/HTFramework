@@ -42,7 +42,14 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
-            foreach (KeyValuePair<Type, List<EntityLogicBase>> entity in _entities)
+            if (_entities.Count == 0 && _objectPool.Count == 0)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+            }
+
+            foreach (var entity in _entities)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);
@@ -73,7 +80,7 @@ namespace HT.Framework
                 }
             }
 
-            foreach (KeyValuePair<Type, Queue<GameObject>> pool in _objectPool)
+            foreach (var pool in _objectPool)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);

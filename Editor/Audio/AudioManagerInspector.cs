@@ -77,8 +77,7 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Mute", GUILayout.Width(30));
-            Target.Mute = EditorGUILayout.Toggle(Target.Mute);
+            Target.Mute = EditorGUILayout.Toggle("Mute", Target.Mute);
             GUILayout.EndHorizontal();
 
             #region Background Audio
@@ -91,7 +90,12 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                if (GUILayout.Button("Pause", "minibuttonleft"))
+                GUI.enabled = _backgroundAudio.clip;
+                if (GUILayout.Button("Play", "minibuttonleft"))
+                {
+                    Main.m_Audio.PlayBackgroundMusic(_backgroundAudio.clip);
+                }
+                if (GUILayout.Button("Pause", "minibuttonmid"))
                 {
                     Main.m_Audio.PauseBackgroundMusic();
                 }
@@ -103,11 +107,12 @@ namespace HT.Framework
                 {
                     Main.m_Audio.StopBackgroundMusic();
                 }
+                GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Clip: " + (_backgroundAudio.clip != null ? _backgroundAudio.clip.name : "<None>"));
+                _backgroundAudio.clip = EditorGUILayout.ObjectField("Clip:", _backgroundAudio.clip, typeof(AudioClip), true) as AudioClip;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -142,7 +147,12 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                if (GUILayout.Button("Pause", "minibuttonleft"))
+                GUI.enabled = _singleAudio.clip;
+                if (GUILayout.Button("Play", "minibuttonleft"))
+                {
+                    Main.m_Audio.PlaySingleSound(_singleAudio.clip);
+                }
+                if (GUILayout.Button("Pause", "minibuttonmid"))
                 {
                     Main.m_Audio.PauseSingleSound();
                 }
@@ -154,11 +164,12 @@ namespace HT.Framework
                 {
                     Main.m_Audio.StopSingleSound();
                 }
+                GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Clip: " + (_singleAudio.clip != null ? _singleAudio.clip.name : "<None>"));
+                _singleAudio.clip = EditorGUILayout.ObjectField("Clip:", _singleAudio.clip, typeof(AudioClip), true) as AudioClip;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
