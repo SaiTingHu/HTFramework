@@ -49,7 +49,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("注册对象池失败：已存在对象池 {0} ！", name));
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "注册对象池失败：已存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -65,7 +65,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("移除对象池失败：不存在对象池 {0} ！", name));
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "移除对象池失败：不存在对象池 " + name + " ！");
             }
         }
 
@@ -82,8 +82,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取对象数量失败：不存在对象池 {0} ！", name));
-                return -1;
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "获取对象数量失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -99,8 +98,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("生成对象失败：不存在对象池 {0} ！", name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "生成对象失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -116,7 +114,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("回收对象失败：不存在对象池 {0} ！", name));
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "回收对象失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -135,7 +133,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("回收对象失败：不存在对象池 {0} ！", name));
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "回收对象失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -155,7 +153,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("回收对象失败：不存在对象池 {0} ！", name));
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "回收对象失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -170,7 +168,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("清空对象池失败：不存在对象池 {0} ！", name));
+                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "清空对象池失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>

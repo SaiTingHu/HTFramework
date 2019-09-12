@@ -310,7 +310,7 @@ namespace HT.Framework
         /// </summary>
         public void RestoreMaterials()
         {
-            Debug.LogWarning("HighlightingSystem : RestoreMaterials() is obsolete. Please use ReinitMaterials() instead.");
+            GlobalTools.LogWarning("HighlightingSystem : RestoreMaterials() is obsolete. Please use ReinitMaterials() instead.");
             ReinitMaterials();
         }
 

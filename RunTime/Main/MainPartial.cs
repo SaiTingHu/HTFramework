@@ -513,6 +513,34 @@ namespace HT.Framework
         #endregion
     }
 
+    /// <summary>
+    /// 框架模块
+    /// </summary>
+    public enum HTFrameworkModule
+    {
+        AspectTrack,
+        Audio,
+        Controller,
+        Coroutiner,
+        DataSet,
+        Entity,
+        Event,
+        ExceptionHandler,
+        FSM,
+        Hotfix,
+        Input,
+        Main,
+        Network,
+        ObjectPool,
+        Procedure,
+        ReferencePool,
+        Resource,
+        StepEditor,
+        UI,
+        Utility,
+        WebRequest
+    }
+
     public delegate void HTFAction();
     public delegate void HTFAction<in T>(T arg);
     public delegate void HTFAction<in T1, in T2>(T1 arg1, T2 arg2);

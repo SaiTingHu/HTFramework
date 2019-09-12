@@ -50,7 +50,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
@@ -73,7 +73,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
@@ -96,7 +96,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
@@ -115,7 +115,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "添加接口失败：已存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
@@ -131,8 +131,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("获取接口失败：不存在名为 " + interfaceName + " 的网络接口！");
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "获取接口失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
@@ -157,7 +156,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("移除接口失败：不存在名为 " + interfaceName + " 的网络接口！");
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "移除接口失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
         }
         /// <summary>
@@ -193,7 +192,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
             return null;
         }
@@ -250,7 +249,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, "发起网络请求失败：不存在名为 " + interfaceName + " 的网络接口！");
             }
             return null;
         }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Text;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -197,7 +198,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("加载资源失败：Resources文件夹中不存在资源 {0}！", info.ResourcePath));
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：Resources文件夹中不存在资源 " + info.ResourcePath + "！");
                 }
             }
             else
@@ -218,7 +219,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("加载资源失败：路径中不存在资源 {0}！", info.AssetPath));
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：路径中不存在资源 " + info.AssetPath + "！");
                     }
                 }
                 else
@@ -238,7 +239,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
                         }
                     }
                     else
@@ -266,7 +267,7 @@ namespace HT.Framework
                                     }
                                     else
                                     {
-                                        GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                                        throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
                                     }
 
                                     if (IsCacheAssetBundle)
@@ -281,12 +282,12 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
+                                    throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
                                 }
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
+                                throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
                             }
                         }
                     }
@@ -307,7 +308,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
                     }
                 }
                 else
@@ -335,7 +336,7 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    GlobalTools.LogError(string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                                    throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
                                 }
 
                                 if (IsCacheAssetBundle)
@@ -350,12 +351,12 @@ namespace HT.Framework
                             }
                             else
                             {
-                                GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
+                                throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
                             }
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
                         }
                     }
                 }
@@ -363,7 +364,7 @@ namespace HT.Framework
             }
 
             DateTime endTime = DateTime.Now;
-
+            
             GlobalTools.LogInfo(string.Format("异步加载资源{0}[{1}模式]：\r\n{2}\r\n等待耗时：{3}秒  加载耗时：{4}秒", asset ? "成功" : "失败", Mode
                 , Mode == ResourceLoadMode.Resource ? info.GetResourceFullPath() : info.GetAssetBundleFullPath(_assetBundleRootPath)
                 , (waitTime - beginTime).TotalSeconds, (endTime - waitTime).TotalSeconds));
@@ -460,7 +461,7 @@ namespace HT.Framework
         {
             if (string.IsNullOrEmpty(AssetBundleManifestName) || AssetBundleManifestName == "")
             {
-                GlobalTools.LogError("请设置资源管理模块的 Manifest Name 属性，为所有AB包提供依赖清单！");
+                throw new HTFrameworkException(HTFrameworkModule.Resource, "请设置资源管理模块的 Manifest Name 属性，为所有AB包提供依赖清单！");
             }
             else
             {
@@ -496,12 +497,12 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("请求：{0} 未下载到AB包！", request.url));
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
                         }
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("请求：{0} 遇到网络错误：{1}！", request.url, request.error));
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
                     }
                 }
             }

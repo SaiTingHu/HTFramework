@@ -38,12 +38,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("加载输入设备失败：输入设备类 {0} 必须继承至输入设备基类：InputDeviceBase！", InputDeviceType));
+                    throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：输入设备类 " + InputDeviceType + " 必须继承至输入设备基类：InputDeviceBase！");
                 }
             }
             else
             {
-                GlobalTools.LogError(string.Format("加载输入设备失败：丢失输入设备类 {0}！", InputDeviceType));
+                throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：丢失输入设备类 " + InputDeviceType + "！");
             }
         }
 

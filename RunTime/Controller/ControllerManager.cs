@@ -406,8 +406,7 @@ namespace HT.Framework
         {
             if (background == null || content == null)
             {
-                GlobalTools.LogError("焦点提示框的背景和文字框均不能为空！");
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.Controller, "焦点提示框的背景和文字框均不能为空！");
             }
 
             content.transform.SetParent(background.transform);

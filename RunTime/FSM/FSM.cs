@@ -75,12 +75,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("创建有限状态机数据类失败：数据类 {0} 必须继承至有限状态机数据基类：FSMDataBase！", Data));
+                        throw new HTFrameworkException(HTFrameworkModule.FSM, "创建有限状态机数据类失败：数据类 " + Data + " 必须继承至有限状态机数据基类：FSMDataBase！");
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("创建有限状态机数据类失败：丢失数据类 {0}！", Data));
+                    throw new HTFrameworkException(HTFrameworkModule.FSM, "创建有限状态机数据类失败：丢失数据类 " + Data + " ！");
                 }
             }
             //加载所有状态
@@ -101,31 +101,28 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("加载有限状态失败：有限状态类 {0} 必须继承至有限状态基类：FiniteStateBase！", States[i]));
+                        throw new HTFrameworkException(HTFrameworkModule.FSM, "加载有限状态失败：有限状态类 " + States[i] + " 必须继承至有限状态基类：FiniteStateBase！");
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("加载有限状态失败：丢失有限状态类 {0}！", States[i]));
+                    throw new HTFrameworkException(HTFrameworkModule.FSM, "加载有限状态失败：丢失有限状态类 " + States[i] + " ！");
                 }
             }
             //设置默认状态、最终状态
             if (DefaultState == "" || FinalState == "" || _stateInstances.Count <= 0)
             {
-                GlobalTools.LogError(string.Format("有限状态机 {0} 的状态为空！或未指定默认状态、最终状态！", Name));
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "有限状态机 " + Name + " 的状态为空！或未指定默认状态、最终状态！");
             }
             _defaultState = GlobalTools.GetTypeInRunTimeAssemblies(DefaultState);
             if (_defaultState == null)
             {
-                GlobalTools.LogError(string.Format("有限状态机 {0} 丢失了默认状态 {1}！", Name, DefaultState));
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "有限状态机 " + Name + " 丢失了默认状态 " + DefaultState + "！");
             }
             _finalState = GlobalTools.GetTypeInRunTimeAssemblies(FinalState);
             if (_finalState == null)
             {
-                GlobalTools.LogError(string.Format("有限状态机 {0} 丢失了最终状态 {1}！", Name, DefaultState));
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "有限状态机 " + Name + " 丢失了最终状态 " + FinalState + "！");
             }
         }
 
@@ -141,7 +138,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("切换状态失败：有限状态机 {0} 不存在状态 {1}！", Name, _defaultState.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.FSM, "切换状态失败：有限状态机 " + Name + " 不存在状态 " + _defaultState.Name + "！");
                 }
             }
         }
@@ -217,8 +214,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取状态失败：有限状态机 {0} 不存在状态 {1}！", Name, type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "获取状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
             }
         }
 
@@ -254,7 +250,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("切换状态失败：有限状态机 {0} 不存在状态 {1}！", Name, type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "切换状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
             }
         }
 
@@ -274,16 +270,14 @@ namespace HT.Framework
         {
             if (type == _defaultState || type == _finalState)
             {
-                GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 无法终止状态 {1}！因为该状态为初始状态或最终状态！", Name, type.Name));
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为该状态为初始状态或最终状态！");
             }
 
             if (_stateInstances.ContainsKey(type))
             {
                 if (_currentState == _stateInstances[type])
                 {
-                    GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 无法终止状态 {1}！因为当前正处于该状态！", Name, type.Name));
-                    return;
+                    throw new HTFrameworkException(HTFrameworkModule.FSM, "终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为当前正处于该状态！");
                 }
 
                 _stateInstances[type].OnTermination();
@@ -291,7 +285,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("终止状态失败：有限状态机 {0} 不存在状态 {1}！", Name, type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "终止状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
             }
         }
 
@@ -318,7 +312,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("附加状态失败：有限状态机 {0} 已存在状态 {1}！", Name, type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "附加状态失败：有限状态机 " + Name + " 已存在状态 " + type.Name + "！");
             }
         }
 

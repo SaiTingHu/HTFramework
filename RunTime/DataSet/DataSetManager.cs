@@ -44,6 +44,11 @@ namespace HT.Framework
         /// <param name="dataSet">数据集</param>
         public void AddDataSet(DataSetBase dataSet)
         {
+            if (!dataSet)
+            {
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "不能添加空的数据集至仓库！");
+            }
+
             Type type = dataSet.GetType();
             if (!_dataSets.ContainsKey(type))
             {
@@ -57,6 +62,11 @@ namespace HT.Framework
         /// <param name="dataSet">数据集</param>
         public void RemoveDataSet(DataSetBase dataSet)
         {
+            if (!dataSet)
+            {
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "不能移除空的数据集！");
+            }
+
             Type type = dataSet.GetType();
             if (!_dataSets.ContainsKey(type))
             {
@@ -102,8 +112,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("新建数据集失败：{0} 并不是有效的数据集类型！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "新建数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
         
@@ -129,8 +138,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取所有数据集失败：{0} 并不是有效的数据集类型！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取所有数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
         /// <summary>
@@ -157,8 +165,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取所有数据集失败：{0} 并不是有效的数据集类型！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取所有数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
         
@@ -186,8 +193,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取数据集失败：{0} 并不是有效的数据集类型！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
         /// <summary>
@@ -226,8 +232,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取数据集失败：{0} 并不是有效的数据集类型！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
         /// <summary>
@@ -268,8 +273,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取数据集失败：{0} 并不是有效的数据集类型！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
 
@@ -295,8 +299,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取数据集数量失败：{0} 并不是有效的数据集类型！", type.Name));
-                return 0;
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取数据集数量失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
 
@@ -320,7 +323,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("清空数据集失败：{0} 并不是有效的数据集类型！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.DataSet, "清空数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
     }

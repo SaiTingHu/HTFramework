@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 namespace HT.Framework
@@ -55,6 +56,8 @@ namespace HT.Framework
 
         //异常信息
         private List<ExceptionInfo> _exceptionInfos = new List<ExceptionInfo>();
+        //异常日志Builder
+        private StringBuilder _logInfoBuilder = new StringBuilder();
         //异常日志保存路径
         private string _logPath;
         //邮件发送者
@@ -149,11 +152,15 @@ namespace HT.Framework
 
                 OnException(logString, stackTrace, type);
 
-                string logContent = string.Format("[time]:{0}\r\n\r\n[type]:{1}\r\n\r\n[message]:{2}\r\n\r\n[stack trace]:{3}\r\n\r\n", DateTime.Now.ToString(), type.ToString(), logString, stackTrace);
+                _logInfoBuilder.Clear();
+                _logInfoBuilder.Append("[time]:" + DateTime.Now.ToString() + "\r\n\r\n");
+                _logInfoBuilder.Append("[type]:" + type.ToString() + "\r\n\r\n");
+                _logInfoBuilder.Append("[message]:" + logString + "\r\n\r\n");
+                _logInfoBuilder.Append("[stack trace]:" + stackTrace + "\r\n\r\n");
 
 #if UNITY_STANDALONE_WIN
-                string logPath = string.Format("{0}/{1}.log", _logPath, DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff"));
-                File.AppendAllText(logPath, logContent);
+                string logPath = _logPath + "/" + DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff") + ".log";
+                File.AppendAllText(logPath, _logInfoBuilder.ToString());
 
                 if (IsEnableFeedback)
                 {
@@ -168,14 +175,14 @@ namespace HT.Framework
                     }
                     else
                     {
-                        File.AppendAllText(logPath, string.Format("[feedback]:Doesn't find feedback program!path: {0}\r\n", FeedbackProgramPath));
+                        File.AppendAllText(logPath, "[feedback]:Doesn't find feedback program!path: " + FeedbackProgramPath + "\r\n");
                     }
                     Application.Quit();
                 }
 #endif
                 if (IsEnableMailReport)
                 {
-                    ReportMail(string.Format("{0}.Exception.{1}", Application.productName, DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss")), logContent);
+                    ReportMail(Application.productName + ".Exception." + DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), _logInfoBuilder.ToString());
                 }
             }
         }

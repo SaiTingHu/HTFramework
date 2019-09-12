@@ -48,8 +48,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取引用数量失败：不存在引用池 {0} ！", name));
-                return -1;
+                throw new HTFrameworkException(HTFrameworkModule.ReferencePool, "获取引用数量失败：不存在引用池 " + name + " ！");
             }
         }
         /// <summary>

@@ -74,8 +74,7 @@ namespace HT.Framework
         {
             if (!CoroutineEnumerators.ContainsKey(id))
             {
-                GlobalTools.LogError(string.Format("重启协程失败：不存在ID为 {0} 的协程！", id));
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.Coroutiner, "重启协程失败：不存在ID为 " + id + " 的协程！");
             }
             CoroutineEnumerators[id].Rerun();
         }
@@ -87,8 +86,7 @@ namespace HT.Framework
         {
             if (!CoroutineEnumerators.ContainsKey(id))
             {
-                GlobalTools.LogError(string.Format("终止协程失败：不存在ID为 {0} 的协程！", id));
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.Coroutiner, "终止协程失败：不存在ID为 " + id + " 的协程！");
             }
             CoroutineEnumerators[id].Stop();
         }
@@ -100,8 +98,7 @@ namespace HT.Framework
         {
             if (!Warehouse.ContainsKey(action))
             {
-                GlobalTools.LogError(string.Format("终止协程失败：不存在 {0} 类型的协程！", action.Method.Name));
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.Coroutiner, "终止协程失败：不存在 " + action.Method.Name + " 类型的协程！");
             }
             for (int i = 0; i < Warehouse[action].Count; i++)
             {

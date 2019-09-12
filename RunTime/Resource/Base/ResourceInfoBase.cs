@@ -30,7 +30,7 @@
         /// </summary>
         public string GetResourceFullPath()
         {
-            return string.Format("Resources/{0}", ResourcePath);
+            return "Resources/" + ResourcePath;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@
         /// </summary>
         public string GetAssetBundleFullPath(string assetBundleRootPath)
         {
-            return string.Format("AssetBundlePath:{0}{1}  AssetPath:{2}", assetBundleRootPath, AssetBundleName, AssetPath);
+            return "AssetBundlePath:" + assetBundleRootPath + AssetBundleName + "  AssetPath:" + AssetPath;
         }
     }
 }

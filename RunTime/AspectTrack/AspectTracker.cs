@@ -103,7 +103,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning(string.Format("获取代理对象失败：真实对象 {0} 并不存在代理对象！", realObject));
+                GlobalTools.LogWarning("获取代理对象失败：真实对象 " + realObject.ToString() + " 并不存在代理对象！");
                 return null;
             }
         }
@@ -120,7 +120,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning(string.Format("获取代理者失败：真实对象 {0} 并不存在代理者！", realObject));
+                GlobalTools.LogWarning("获取代理者失败：真实对象 " + realObject.ToString() + " 并不存在代理者！");
                 return null;
             }
         }

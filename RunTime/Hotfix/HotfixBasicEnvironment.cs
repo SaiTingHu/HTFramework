@@ -56,7 +56,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("进入热更新流程失败：未指定热更新入口流程！");
+                throw new HTFrameworkException(HTFrameworkModule.Hotfix, "进入热更新流程失败：未指定热更新入口流程！");
             }
 
             Main.m_Hotfix.UpdateHotfixLogicEvent += UpdateHotfixLogic;
@@ -103,7 +103,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("切换热更新流程失败：不存在流程 {0} 或者流程未激活！", typeof(T).Name));
+                throw new HTFrameworkException(HTFrameworkModule.Hotfix, "切换热更新流程失败：不存在流程 " + typeof(T).Name + " 或者流程未激活！");
             }
         }
     }

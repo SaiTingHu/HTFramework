@@ -44,12 +44,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("创建流程失败：流程 {0} 必须继承至流程基类：ProcedureBase！", ActivatedProcedures[i]));
+                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：流程 " + ActivatedProcedures[i] + " 必须继承至流程基类：ProcedureBase！");
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("创建流程失败：丢失流程 {0}！", ActivatedProcedures[i]));
+                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：丢失流程 " + ActivatedProcedures[i] + "！");
                 }
             }
         }
@@ -77,12 +77,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("进入流程失败：不存在流程 {0} 或者流程未激活！", type.Name));
+                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "进入流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("进入流程失败：丢失流程 {0}！", DefaultProcedure));
+                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "进入流程失败：丢失流程 " + DefaultProcedure + " ！");
                 }
             }
         }
@@ -148,8 +148,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取流程失败：不存在流程 {0} 或者流程未激活！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.Procedure, "获取流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
             }
         }
 
@@ -185,7 +184,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("切换流程失败：不存在流程 {0} 或者流程未激活！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.Procedure, "切换流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
             }
         }
 
@@ -233,7 +232,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("切换流程失败：不存在序号为 {0} 的流程或者流程未激活！", index + 1));
+                throw new HTFrameworkException(HTFrameworkModule.Procedure, "切换流程失败：不存在序号为 " + (index + 1).ToString() + " 的流程或者流程未激活！");
             }
         }
     }

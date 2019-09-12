@@ -38,8 +38,7 @@ namespace HT.Framework
             {
                 if (Main.m_Resource.Mode == ResourceLoadMode.Resource)
                 {
-                    GlobalTools.LogError("热更新初始化失败：热更新库不支持使用Resource加载模式！");
-                    return;
+                    throw new HTFrameworkException(HTFrameworkModule.Hotfix, "热更新初始化失败：热更新库不支持使用Resource加载模式！");
                 }
 
                 AssetInfo info = new AssetInfo(HotfixDllAssetBundleName, HotfixDllAssetsPath, "");
@@ -65,7 +64,7 @@ namespace HT.Framework
 
             if (_hotfixEnvironment == null)
             {
-                GlobalTools.LogError("热更新初始化失败：热更新库中不存在热更新环境 HotfixEnvironment！");
+                throw new HTFrameworkException(HTFrameworkModule.Hotfix, "热更新初始化失败：热更新库中不存在热更新环境 HotfixEnvironment！");
             }
         }
     }

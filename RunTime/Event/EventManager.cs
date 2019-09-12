@@ -56,7 +56,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("订阅事件失败：不存在可以订阅的事件类型 {0} ！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
             }
         }
         /// <summary>
@@ -118,7 +118,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("抛出事件失败：不存在可以抛出的事件类型 {0} ！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
             }
         }
     }

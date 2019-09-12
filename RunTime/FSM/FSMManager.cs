@@ -23,7 +23,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning(string.Format("注册状态机失败：已存在状态机 {0}！", fsm.Name));
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "注册状态机失败：已存在状态机 " + fsm.Name + " ！");
             }
         }
 
@@ -39,7 +39,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning(string.Format("移除已注册的状态机失败：不存在状态机 {0}！", fsm.Name));
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "移除已注册的状态机失败：不存在状态机 " + fsm.Name + " ！");
             }
         }
 
@@ -56,8 +56,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取状态机失败：不存在状态机 {0}！", name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.FSM, "获取状态机失败：不存在状态机 " + name + " ！");
             }
         }
 

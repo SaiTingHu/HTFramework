@@ -10,6 +10,8 @@ namespace HT.Framework
     /// </summary>
     public abstract class AspectProxyBase<T> : RealProxy where T : IAspectTrackObject
     {
+        private const string VOIDSIGN = "Void";
+
         protected T _realObject;
 
         public AspectProxyBase(T realObject) : base(typeof(T))
@@ -52,7 +54,7 @@ namespace HT.Framework
             MethodInfo info = callMsg.MethodBase as MethodInfo;
             if (info != null)
             {
-                isVoid = (info.ReturnType.Name == "Void");
+                isVoid = (info.ReturnType.Name == VOIDSIGN);
                 info = null;
             }
 
@@ -76,7 +78,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogWarning(string.Format("切面追踪：方法 {0} 经过修改后传入的实参与形参数量不匹配！", callMsg.MethodBase.Name));
+                        GlobalTools.LogWarning("切面追踪：方法 " + callMsg.MethodBase.Name + " 经过修改后传入的实参与形参数量不匹配！");
                         returnValue = callMsg.MethodBase.Invoke(_realObject, callMsg.Args);
                         return new ReturnMessage(returnValue, callMsg.Args, callMsg.ArgCount - callMsg.InArgCount, callMsg.LogicalCallContext, callMsg);
                     }

@@ -49,7 +49,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("创建实体逻辑对象失败：实体逻辑类 {0} 丢失 EntityResourceAttribute 标记！", types[i].Name));
+                        throw new HTFrameworkException(HTFrameworkModule.Entity, "创建实体逻辑对象失败：实体逻辑类 " + types[i].Name + " 丢失 EntityResourceAttribute 标记！");
                     }
                 }
             }
@@ -129,14 +129,13 @@ namespace HT.Framework
                 EntityLogicBase entityLogic = _entities[type].Find((entity) => { return entity.Name == entityName; });
                 if (entityLogic == null)
                 {
-                    GlobalTools.LogError(string.Format("获取实体失败：实体名称 {0} 并未存在！", entityName));
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, "获取实体失败：实体名称 " + entityName + " 并未存在！");
                 }
                 return entityLogic;
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取实体失败：实体对象 {0} 并未存在！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.Entity, "获取实体失败：实体对象 " + type.Name + " 并未存在！");
             }
         }
         /// <summary>
@@ -167,8 +166,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取实体组失败：实体对象 {0} 并未存在！", type.Name));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.Entity, "获取实体组失败：实体对象 " + type.Name + " 并未存在！");
             }
         }
 
@@ -279,7 +277,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("显示实体失败：实体对象 {0} 并未存在！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.Entity, "显示实体失败：实体对象 " + type.Name + " 并未存在！");
             }
         }
         /// <summary>
@@ -311,7 +309,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("隐藏实体失败：实体对象 {0} 并未存在！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.Entity, "隐藏实体失败：实体对象 " + type.Name + " 并未存在！");
             }
         }
 
@@ -357,7 +355,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("创建实体失败：实体对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, "创建实体失败：实体对象 " + type.Name + " 并未存在！");
                 }
             }
             return null;
@@ -393,7 +391,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("销毁实体失败：实体对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, "销毁实体失败：实体对象 " + type.Name + " 并未存在！");
                 }
             }
         }
@@ -433,7 +431,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("销毁实体失败：实体对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, "销毁实体失败：实体对象 " + type.Name + " 并未存在！");
                 }
             }
         }

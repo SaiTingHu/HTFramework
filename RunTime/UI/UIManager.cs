@@ -107,7 +107,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("创建UI逻辑对象失败：UI逻辑类 {0} 丢失 UIResourceAttribute 标记！", types[i].Name));
+                        throw new HTFrameworkException(HTFrameworkModule.UI, "创建UI逻辑对象失败：UI逻辑类 " + types[i].Name + " 丢失 UIResourceAttribute 标记！");
                     }
                 }
             }
@@ -226,8 +226,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError(string.Format("获取世界UI域的根节点失败：不存在名为 {0} 的世界UI域！", domainName));
-                return null;
+                throw new HTFrameworkException(HTFrameworkModule.UI, "获取世界UI域的根节点失败：不存在名为 " + domainName + " 的世界UI域！");
             }
         }
         /// <summary>
@@ -282,7 +281,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.Camera:
@@ -301,7 +300,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.World:
@@ -311,9 +310,8 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
-                        break;
                 }
             }
             return null;
@@ -355,7 +353,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.Camera:
@@ -374,7 +372,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.World:
@@ -384,9 +382,8 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
-                        break;
                 }
             }
             return null;
@@ -446,7 +443,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.Camera:
@@ -481,7 +478,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.World:
@@ -491,9 +488,8 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
-                        break;
                 }
             }
             return null;
@@ -560,7 +556,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.Camera:
@@ -602,7 +598,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.World:
@@ -612,9 +608,8 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
-                        break;
                 }
             }
             return null;
@@ -656,8 +651,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("获取UI失败：UI对象 {0} 并未存在，或并未打开！", type.Name));
-                            return null;
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
                         }
                     case UIType.Camera:
                         if (_cameraUIs.ContainsKey(type))
@@ -675,8 +669,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("获取UI失败：UI对象 {0} 并未存在，或并未打开！", type.Name));
-                            return null;
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
                         }
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
@@ -685,8 +678,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("获取UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
-                            return null;
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
                 }
             }
@@ -726,7 +718,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("置顶UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.Camera:
@@ -744,7 +736,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("置顶UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.World:
@@ -754,7 +746,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("置顶UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
                         break;
                 }
@@ -799,7 +791,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("关闭UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.Camera:
@@ -822,7 +814,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("关闭UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.World:
@@ -832,7 +824,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("关闭UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
                         break;
                 }
@@ -878,7 +870,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("销毁UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.Camera:
@@ -902,7 +894,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("销毁UI失败：UI对象 {0} 并未存在！", type.Name));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 并未存在！");
                         }
                         break;
                     case UIType.World:
@@ -912,7 +904,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("销毁UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
+                            throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
                         break;
                 }
@@ -1028,7 +1020,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
                 }
                 return null;
             }
@@ -1055,7 +1047,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
                 }
                 return null;
             }
@@ -1099,7 +1091,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
                 }
                 return null;
             }
@@ -1150,7 +1142,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
                 }
                 return null;
             }
@@ -1176,8 +1168,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("获取UI失败：UI对象 {0} 并未存在，或并未打开！", type.Name));
-                    return null;
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
                 }
             }
             /// <summary>
@@ -1200,7 +1191,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("置顶UI失败：UI对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 并未存在！");
                 }
             }
             /// <summary>
@@ -1228,7 +1219,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("关闭UI失败：UI对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 并未存在！");
                 }
             }
             /// <summary>
@@ -1257,7 +1248,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("销毁UI失败：UI对象 {0} 并未存在！", type.Name));
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 并未存在！");
                 }
             }
         }
