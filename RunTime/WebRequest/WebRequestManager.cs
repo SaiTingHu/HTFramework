@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -198,11 +199,19 @@ namespace HT.Framework
         }
         private IEnumerator SendRequestCoroutine(string interfaceName, params string[] parameter)
         {
-            string url = _interfaces[interfaceName].Url + (parameter.Length > 0 ? ("?" + parameter[0]) : "");
+            StringBuilder builder = new StringBuilder();
+            builder.Append(_interfaces[interfaceName].Url);
+            if (parameter.Length > 0)
+            {
+                builder.Append("?");
+                builder.Append(parameter[0]);
+            }
             for (int i = 1; i < parameter.Length; i++)
             {
-                url += "&" + parameter[i];
+                builder.Append("&");
+                builder.Append(parameter[i]);
             }
+            string url = builder.ToString();
             
             using (UnityWebRequest request = UnityWebRequest.Get(url))
             {

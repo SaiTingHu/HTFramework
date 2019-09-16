@@ -356,7 +356,7 @@ namespace HT.Framework
                                            new object[] { reader.Value });
 
                 // No luck
-                throw new JsonException (String.Format (
+                throw new JsonException (string.Format (
                         "Can't assign value '{0}' (type {1}) to type {2}",
                         reader.Value, json_type, inst_type));
             }

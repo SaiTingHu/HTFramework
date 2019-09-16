@@ -12,8 +12,17 @@ namespace HT.Framework
     /// <summary>
     /// 编辑器全局工具
     /// </summary>
+    [InitializeOnLoad]
     public static class EditorGlobalTools
     {
+        #region 构造函数
+        static EditorGlobalTools()
+        {
+            OnInitHierarchy();
+            OnInitProject();
+        }
+        #endregion
+
         #region 框架相关目录
         /// <summary>
         /// 框架相关目录
@@ -793,7 +802,7 @@ namespace HT.Framework
             Type type = null;
             foreach (string assembly in HotfixAssemblies)
             {
-                type = Type.GetType(string.Format("{0},{1}", typeName, assembly));
+                type = Type.GetType(typeName + "," + assembly);
                 if (type != null)
                 {
                     return type;
@@ -827,7 +836,7 @@ namespace HT.Framework
             Type type = null;
             foreach (string assembly in EditorAssemblies)
             {
-                type = Type.GetType(string.Format("{0},{1}", typeName, assembly));
+                type = Type.GetType(typeName + "," + assembly);
                 if (type != null)
                 {
                     return type;
@@ -876,6 +885,63 @@ namespace HT.Framework
                 ms.Seek(0, SeekOrigin.Begin);
                 T obj = bf.Deserialize(ms) as T;
                 return obj;
+            }
+        }
+        #endregion
+
+        #region Hierarchy窗口扩展
+        private static GUIStyle HierarchyItemStyle;
+
+        /// <summary>
+        /// 编辑器初始化
+        /// </summary>
+        private static void OnInitHierarchy()
+        {
+            HierarchyItemStyle = new GUIStyle();
+            HierarchyItemStyle.alignment = TextAnchor.MiddleRight;
+            HierarchyItemStyle.normal.textColor = Color.cyan;
+
+            EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowItemOnGUI;
+        }
+        /// <summary>
+        /// Hierarchy窗口元素GUI
+        /// </summary>
+        private static void OnHierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
+        {
+            GameObject main = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (main)
+            {
+                if (main.GetComponent<Main>())
+                {
+                    GUI.Label(selectionRect, "[框架主体]", HierarchyItemStyle);
+                }
+            }
+        }
+        #endregion
+
+        #region Project窗口扩展
+        private static GUIStyle ProjectItemStyle;
+
+        /// <summary>
+        /// 编辑器初始化
+        /// </summary>
+        private static void OnInitProject()
+        {
+            ProjectItemStyle = new GUIStyle();
+            ProjectItemStyle.alignment = TextAnchor.MiddleRight;
+            ProjectItemStyle.normal.textColor = Color.cyan;
+
+            EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
+        }
+        /// <summary>
+        /// Project窗口元素GUI
+        /// </summary>
+        private static void OnProjectWindowItemOnGUI(string guid, Rect selectionRect)
+        {
+            string mainFolder = AssetDatabase.GUIDToAssetPath(guid);
+            if (string.Equals(mainFolder, "Assets/HTFramework"))
+            {
+                GUI.Label(selectionRect, "[框架主体]", ProjectItemStyle);
             }
         }
         #endregion

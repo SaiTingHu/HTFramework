@@ -1,8 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
-using System;
-using System.Diagnostics;
 
 namespace HT.Framework
 {
@@ -16,6 +17,12 @@ namespace HT.Framework
         {
             AssemblyViewer viewer = GetWindow<AssemblyViewer>();
             viewer.titleContent.text = "AssemblyViewer";
+            viewer._assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            viewer._currentAssembly = null;
+            viewer._currentType = null;
+            viewer._currentMethod = null;
+            viewer._currentField = null;
+            viewer._currentProperty = null;
             viewer.Show();
         }
 
@@ -28,7 +35,7 @@ namespace HT.Framework
         private Type _currentType;
         private Vector2 _typeScroll = Vector2.zero;
         private string _typeFilter = "";
-        private bool _onlyShowStaticType = true;
+        private bool _onlyShowStaticType = false;
 
         private FieldInfo[] _fields;
         private FieldInfo _currentField;
@@ -39,21 +46,13 @@ namespace HT.Framework
         private ParameterInfo[] _parameterInfos;
         private Vector2 _memberScroll = Vector2.zero;
         private string _memberFilter = "";
-        private bool _onlyShowStaticMember = true;
+        private bool _onlyShowStaticMember = false;
         private bool _showField = true;
         private bool _showMethod = true;
         private bool _showProperty = true;
 
-        private void OnEnable()
-        {
-            _assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            _currentAssembly = null;
-            _currentType = null;
-            _currentMethod = null;
-            _currentField = null;
-            _currentProperty = null;
-        }
-
+        private StringBuilder _builder = new StringBuilder();
+        
         private void OnGUI()
         {
             GUILayout.BeginHorizontal();
@@ -112,7 +111,7 @@ namespace HT.Framework
             for (int i = 0; i < _assemblies.Length; i++)
             {
                 AssemblyName an = _assemblies[i].GetName();
-                if (an.Name.Contains(_assemblyFilter))
+                if (an.Name.ToLower().Contains(_assemblyFilter.ToLower()))
                 {
                     GUI.color = _currentAssembly == _assemblies[i] ? Color.cyan : Color.white;
                     GUILayout.BeginHorizontal();
@@ -124,6 +123,7 @@ namespace HT.Framework
                         _currentMethod = null;
                         _currentField = null;
                         _currentProperty = null;
+                        GUI.FocusControl(null);
                     }
                     GUILayout.EndHorizontal();
 
@@ -134,7 +134,7 @@ namespace HT.Framework
                         GUILayout.FlexibleSpace();
                         if (GUILayout.Button("Open", "Minibutton"))
                         {
-                            string args = string.Format("/Select, {0}", _currentAssembly.Location);
+                            string args = "/Select, " + _currentAssembly.Location;
                             ProcessStartInfo psi = new ProcessStartInfo("Explorer.exe", args);
                             Process.Start(psi);
                         }
@@ -180,7 +180,7 @@ namespace HT.Framework
             {
                 for (int i = 0; i < _types.Length; i++)
                 {
-                    if (_types[i].Name.Contains(_typeFilter))
+                    if (!IsRejectType(_types[i]) && _types[i].Name.ToLower().Contains(_typeFilter.ToLower()))
                     {
                         if (_onlyShowStaticType && (!_types[i].IsAbstract || !_types[i].IsSealed))
                         {
@@ -198,6 +198,7 @@ namespace HT.Framework
                             _currentMethod = null;
                             _currentField = null;
                             _currentProperty = null;
+                            GUI.FocusControl(null);
                         }
                         GUILayout.EndHorizontal();
 
@@ -215,7 +216,7 @@ namespace HT.Framework
                     }
                 }
             }
-
+            
             GUILayout.EndScrollView();
 
             GUILayout.EndVertical();
@@ -257,7 +258,7 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < _fields.Length; i++)
                     {
-                        if (_fields[i].Name.Contains(_memberFilter))
+                        if (!IsRejectField(_fields[i]) && _fields[i].Name.ToLower().Contains(_memberFilter.ToLower()))
                         {
                             if (_onlyShowStaticMember && !_fields[i].IsStatic)
                             {
@@ -266,11 +267,12 @@ namespace HT.Framework
 
                             GUI.color = _currentField == _fields[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Field] " + _fields[i].Name, "Toolbarbutton"))
+                            if (GUILayout.Button("[Field]  " + _fields[i].Name, "Toolbarbutton"))
                             {
                                 _currentField = _fields[i];
                                 _currentMethod = null;
                                 _currentProperty = null;
+                                GUI.FocusControl(null);
                             }
                             GUILayout.EndHorizontal();
 
@@ -288,7 +290,7 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < _methods.Length; i++)
                     {
-                        if (_methods[i].Name.Contains(_memberFilter))
+                        if (!IsRejectMethod(_methods[i]) && _methods[i].Name.ToLower().Contains(_memberFilter.ToLower()))
                         {
                             if (_onlyShowStaticMember && !_methods[i].IsStatic)
                             {
@@ -297,12 +299,13 @@ namespace HT.Framework
 
                             GUI.color = _currentMethod == _methods[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Method] " + _methods[i].Name, "Toolbarbutton"))
+                            if (GUILayout.Button("[Method]  " + _methods[i].Name, "Toolbarbutton"))
                             {
                                 _currentMethod = _methods[i];
                                 _parameterInfos = _currentMethod.GetParameters();
                                 _currentField = null;
                                 _currentProperty = null;
+                                GUI.FocusControl(null);
                             }
                             GUILayout.EndHorizontal();
 
@@ -320,7 +323,7 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < _propertys.Length; i++)
                     {
-                        if (_propertys[i].Name.Contains(_memberFilter))
+                        if (!IsRejectProperty(_propertys[i]) && _propertys[i].Name.ToLower().Contains(_memberFilter.ToLower()))
                         {
                             if (_onlyShowStaticMember && !IsStatic(_propertys[i]))
                             {
@@ -329,11 +332,12 @@ namespace HT.Framework
 
                             GUI.color = _currentProperty == _propertys[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Property] " + _propertys[i].Name, "Toolbarbutton"))
+                            if (GUILayout.Button("[Property]  " + _propertys[i].Name, "Toolbarbutton"))
                             {
                                 _currentProperty = _propertys[i];
                                 _currentMethod = null;
                                 _currentField = null;
+                                GUI.FocusControl(null);
                             }
                             GUILayout.EndHorizontal();
 
@@ -356,60 +360,67 @@ namespace HT.Framework
 
         private string FormatTypeInfo(Type type)
         {
-            string info = "";
-            info += type.IsVisible ? (type.IsPublic ? "public " : "private ") : "internal ";
+            _builder.Clear();
+            _builder.Append(type.IsVisible ? (type.IsPublic ? "public " : "private ") : "internal ");
             if (type.IsAbstract && type.IsSealed)
             {
-                info += "static ";
+                _builder.Append("static ");
             }
             else
             {
-                info += type.IsAbstract ? "abstract " : "";
-                info += type.IsSealed ? "sealed " : "";
+                if (type.IsAbstract) _builder.Append("abstract ");
+                if (type.IsSealed) _builder.Append("sealed ");
             }
-            info += type.IsClass ? "class " : "";
-            info += type.IsInterface ? "interface " : "";
-            info += type.IsEnum ? "enum " : "";
-            info += type.Name;
-            info += type.IsGenericType ? "<T>" : "";
-            info += " : ";
-            info += type.BaseType != null ? type.BaseType.Name : "<None>";
-            return info;
+            if (type.IsClass) _builder.Append("class ");
+            if (type.IsValueType) _builder.Append("struct ");
+            if (type.IsInterface) _builder.Append("interface ");
+            if (type.IsEnum) _builder.Append("enum ");
+            _builder.Append(type.Name);
+            if (type.IsGenericType) _builder.Append("<T>");
+            _builder.Append(" : ");
+            _builder.Append(type.BaseType != null ? type.BaseType.Name : "<None>");
+            
+            return _builder.ToString();
         }
         private string FormatFieldInfo(FieldInfo field)
         {
-            string info = "";
-            info += field.IsFamily ? "protected " : (field.IsPublic ? "public " : "private ");
-            info += field.IsStatic ? "static " : "";
-            info += field.IsAssembly ? "internal " : "";
-            info += field.FieldType.Name + " ";
-            info += field.Name;
-            return info;
+            _builder.Clear();
+            _builder.Append(field.IsFamily ? "protected " : (field.IsPublic ? "public " : "private "));
+            if (field.IsStatic) _builder.Append("static ");
+            if (field.IsAssembly) _builder.Append("internal ");
+            _builder.Append(field.FieldType.Name);
+            _builder.Append(" ");
+            _builder.Append(field.Name);
+            
+            return _builder.ToString();
         }
         private string FormatMethodInfo(MethodInfo method)
         {
-            string info = "";
-            info = method.IsFamily ? "protected " : (method.IsPublic ? "public " : "private ");
-            info += method.IsStatic ? "static " : "";
-            info += method.IsAssembly ? "internal " : "";
-            info += method.IsAbstract ? "abstract " : "";
-            info += method.IsVirtual ? "virtual " : "";
-            info += method.ReturnType.Name + " ";
-            info += method.Name + "(";
-
+            _builder.Clear();
+            _builder.Append(method.IsFamily ? "protected " : (method.IsPublic ? "public " : "private "));
+            if (method.IsStatic) _builder.Append("static ");
+            if (method.IsAssembly) _builder.Append("internal ");
+            if (method.IsAbstract) _builder.Append("abstract ");
+            if (method.IsVirtual) _builder.Append("virtual ");
+            _builder.Append(method.ReturnType.Name);
+            _builder.Append(" ");
+            _builder.Append(method.Name);
+            _builder.Append("(");
             for (int i = 0; i < _parameterInfos.Length; i++)
             {
                 if (i != 0)
                 {
-                    info += ", ";
+                    _builder.Append(", ");
                 }
-                info += _parameterInfos[i].IsIn ? "in " : "";
-                info += _parameterInfos[i].IsOut ? "out " : "";
-                info += _parameterInfos[i].ParameterType.Name + " " + _parameterInfos[i].Name;
+                if (_parameterInfos[i].IsIn) _builder.Append("in ");
+                if (_parameterInfos[i].IsOut) _builder.Append("out ");
+                _builder.Append(_parameterInfos[i].ParameterType.Name);
+                _builder.Append(" ");
+                _builder.Append(_parameterInfos[i].Name);
             }
+            _builder.Append(")");
 
-            info += ")";
-            return info;
+            return _builder.ToString();
         }
         private string FormatPropertyInfo(PropertyInfo property)
         {
@@ -421,15 +432,21 @@ namespace HT.Framework
                 return "private " + property.PropertyType.Name + " " + property.Name + " {}";
             }
 
-            string info = "";
-            info += method.IsFamily ? "protected " : (method.IsPublic ? "public " : "private ");
-            info += method.IsStatic ? "static " : "";
-            info += method.IsAssembly ? "internal " : "";
-            info += method.IsAbstract ? "abstract " : "";
-            info += method.IsVirtual ? "virtual " : "";
-            info += property.PropertyType.Name + " ";
-            info += property.Name + " { " + (get != null ? "get;" : "") + (set != null ? "set;" : "") + " }";
-            return info;
+            _builder.Clear();
+            _builder.Append(method.IsFamily ? "protected " : (method.IsPublic ? "public " : "private "));
+            if (method.IsStatic) _builder.Append("static ");
+            if (method.IsAssembly) _builder.Append("internal ");
+            if (method.IsAbstract) _builder.Append("abstract ");
+            if (method.IsVirtual) _builder.Append("virtual ");
+            _builder.Append(property.PropertyType.Name);
+            _builder.Append(" ");
+            _builder.Append(property.Name);
+            _builder.Append(" { ");
+            if (get != null) _builder.Append("get;");
+            if (set != null) _builder.Append("set;");
+            _builder.Append(" }");
+
+            return _builder.ToString();
         }
         private bool IsStatic(PropertyInfo property)
         {
@@ -447,6 +464,34 @@ namespace HT.Framework
             {
                 return false;
             }
+        }
+        private bool IsRejectType(Type type)
+        {
+            if (type.Name.Contains("__") || type.Name.Contains("<") || type.Name.Contains(">"))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool IsRejectField(FieldInfo field)
+        {
+            if (field.Name.Contains("<") || field.Name.Contains(">"))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool IsRejectMethod(MethodInfo method)
+        {
+            if (method.Name.Contains("get_") || method.Name.Contains("set_"))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool IsRejectProperty(PropertyInfo property)
+        {
+            return false;
         }
     }
 }

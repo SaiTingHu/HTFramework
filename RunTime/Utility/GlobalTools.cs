@@ -650,6 +650,22 @@ namespace HT.Framework
         #endregion
 
         #region 字符串工具
+        private static StringBuilder StringInstance = new StringBuilder();
+        
+        /// <summary>
+        /// 字符串拼接
+        /// </summary>
+        /// <param name="str">待拼接的字符串</param>
+        /// <returns>拼接成功的字符串</returns>
+        public static string StringConcat(params string[] str)
+        {
+            StringInstance.Clear();
+            for (int i = 0; i < str.Length; i++)
+            {
+                StringInstance.Append(str[i]);
+            }
+            return StringInstance.ToString();
+        }
         /// <summary>
         /// 转换成枚举
         /// </summary>
@@ -1506,7 +1522,7 @@ namespace HT.Framework
             Type type = null;
             foreach (string assembly in RunTimeAssemblies)
             {
-                type = Type.GetType(string.Format("{0},{1}", typeName, assembly));
+                type = Type.GetType(typeName + "," + assembly);
                 if (type != null)
                 {
                     return type;

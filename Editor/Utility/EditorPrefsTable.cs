@@ -132,6 +132,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// Transform组件Inspector面板配置：是否展开Hierarchy
+        /// </summary>
+        public static string Transform_Hierarchy
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Transform.Hierarchy";
+            }
+        }
+        /// <summary>
         /// Transform组件Inspector面板配置：是否展开Copy
         /// </summary>
         public static string Transform_Copy

@@ -502,7 +502,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("步骤控制者：重新编译步骤失败，步骤控制者丢失了步骤资源 StepContentAsset！");
+                throw new HTFrameworkException(HTFrameworkModule.StepEditor, "步骤控制者：重新编译步骤失败，步骤控制者丢失了步骤资源 StepContentAsset！");
             }
         }
         /// <summary>
@@ -512,8 +512,7 @@ namespace HT.Framework
         {
             if (!ContentAsset || ContentAsset.Content.Count <= 0 || _stepContents.Count <= 0)
             {
-                GlobalTools.LogError("步骤控制者：当前无法开始任务流程，请重新编译步骤内容 RecompileStepContent！");
-                return;
+                throw new HTFrameworkException(HTFrameworkModule.StepEditor, "步骤控制者：当前无法开始任务流程，请重新编译步骤内容 RecompileStepContent！");
             }
 
             _currentStepIndex = 0;

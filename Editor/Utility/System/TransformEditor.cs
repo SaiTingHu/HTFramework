@@ -10,6 +10,7 @@ namespace HT.Framework
     {
         private static bool _copyQuaternion = false;
         private bool _showProperty = true;
+        private bool _showHierarchy = false;
         private bool _showCopy = false;
         private Transform _parent;
 
@@ -18,6 +19,7 @@ namespace HT.Framework
             base.OnDefaultEnable();
 
             _showProperty = EditorPrefs.GetBool(EditorPrefsTable.Transform_Property, true);
+            _showHierarchy = EditorPrefs.GetBool(EditorPrefsTable.Transform_Hierarchy, false);
             _showCopy = EditorPrefs.GetBool(EditorPrefsTable.Transform_Copy, false);
         }
 
@@ -103,8 +105,22 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
+            }
+            #endregion
 
+            #region Hierarchy
+            GUILayout.BeginHorizontal("MeTransitionHead");
+            GUILayout.Space(12);
+            bool showHierarchy = EditorGUILayout.Foldout(_showHierarchy, "Hierarchy", true);
+            if (showHierarchy != _showHierarchy)
+            {
+                _showHierarchy = showHierarchy;
+                EditorPrefs.SetBool(EditorPrefsTable.Transform_Hierarchy, _showHierarchy);
+            }
+            GUILayout.EndHorizontal();
 
+            if (_showHierarchy)
+            {
                 GUILayout.BeginVertical("Box");
 
                 GUILayout.BeginHorizontal();
@@ -128,10 +144,38 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Child Count: ", GUILayout.Width(80));
                 GUILayout.Label(Target.childCount.ToString());
+                GUILayout.FlexibleSpace();
+                GUI.enabled = Target.childCount > 0;
+                if (GUILayout.Button("Detach", "Minibutton"))
+                {
+                    Undo.RecordObject(Target, "Detach Children");
+                    Target.DetachChildren();
+                    HasChanged();
+                }
+                GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Retract All"))
+                if (GUILayout.Button("Expand Children", "MinibuttonLeft"))
+                {
+                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    EditorWindow window = EditorWindow.GetWindow(type);
+                    MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
+                    int id = Target.gameObject.GetInstanceID();
+                    method.Invoke(window, new object[] { id, true });
+                }
+                if (GUILayout.Button("Retract Children", "MinibuttonRight"))
+                {
+                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    EditorWindow window = EditorWindow.GetWindow(type);
+                    MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
+                    int id = Target.gameObject.GetInstanceID();
+                    method.Invoke(window, new object[] { id, false });
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Retract All", "Minibutton"))
                 {
                     Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
@@ -241,8 +285,6 @@ namespace HT.Framework
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 GUILayout.EndHorizontal();
-
-                GUILayout.Space(10);
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Copy Name", "MiniButtonLeft"))
