@@ -355,6 +355,8 @@ namespace HT.Framework
             {
                 StepContent content = new StepContent();
                 content.GUID = Guid.NewGuid().ToString();
+                content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
+                _contentAsset.StepIDSign += 1;
                 content.EnterAnchor = new Vector2(position.width / 2, position.height / 2);
                 _contentAsset.Content.Add(content);
                 SelectStepContent(_contentAsset.Content.Count - 1);
@@ -385,7 +387,10 @@ namespace HT.Framework
             }
             if (GUILayout.Button("Clone", "ButtonMid"))
             {
-                _contentAsset.Content.Add(_currentStepObj.Clone());
+                StepContent content = _currentStepObj.Clone();
+                content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
+                _contentAsset.StepIDSign += 1;
+                _contentAsset.Content.Add(content);
                 SelectStepContent(_contentAsset.Content.Count - 1);
                 SelectStepOperation(-1);
             }

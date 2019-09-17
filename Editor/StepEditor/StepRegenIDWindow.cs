@@ -19,16 +19,21 @@ namespace HT.Framework
 
         private StepEditorWindow _stepEditorWindow;
         private StepContentAsset _contentAsset;
-        private string _name = "Step";
         private int _startIndex = 1;
         private int _indexIncrement = 1;
-        private int _indexDigit = 3;
 
         private void OnGUI()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("ID Name:", GUILayout.Width(80));
-            _name = EditorGUILayout.TextField(_name);
+            _contentAsset.StepIDName = EditorGUILayout.TextField(_contentAsset.StepIDName);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("ID Sign:", GUILayout.Width(80));
+            GUI.enabled = false;
+            _contentAsset.StepIDSign = EditorGUILayout.IntField(_contentAsset.StepIDSign);
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -42,14 +47,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Digit:", GUILayout.Width(80));
-            _indexDigit = EditorGUILayout.IntField(_indexDigit);
-            if (_indexDigit < 1) _indexDigit = 1;
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
             GUILayout.Label("Preview:", GUILayout.Width(80));
-            GUILayout.Label(_name + _startIndex.ToString().PadLeft(_indexDigit, '0'));
+            GUILayout.Label(_contentAsset.StepIDName + _startIndex.ToString());
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -60,15 +59,17 @@ namespace HT.Framework
                     int index = _startIndex;
                     for (int i = 0; i < _contentAsset.Content.Count; i++)
                     {
-                        _contentAsset.Content[i].GUID = _name + index.ToString().PadLeft(_indexDigit, '0');
+                        _contentAsset.Content[i].GUID = _contentAsset.StepIDName + index.ToString();
                         index += _indexIncrement;
                     }
+                    _contentAsset.StepIDSign = index;
                     EditorUtility.SetDirty(_contentAsset);
                     Close();
                 }
             }
             if (GUILayout.Button("Cancel", "ButtonRight"))
             {
+                EditorUtility.SetDirty(_contentAsset);
                 Close();
             }
             GUILayout.EndHorizontal();

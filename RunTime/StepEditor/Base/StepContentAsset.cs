@@ -13,5 +13,7 @@ namespace HT.Framework
     {
         [SerializeField]
         public List<StepContent> Content = new List<StepContent>();
+        public int StepIDSign = 1;
+        public string StepIDName = "Step";
     }
 }

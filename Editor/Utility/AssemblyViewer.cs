@@ -17,12 +17,6 @@ namespace HT.Framework
         {
             AssemblyViewer viewer = GetWindow<AssemblyViewer>();
             viewer.titleContent.text = "AssemblyViewer";
-            viewer._assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            viewer._currentAssembly = null;
-            viewer._currentType = null;
-            viewer._currentMethod = null;
-            viewer._currentField = null;
-            viewer._currentProperty = null;
             viewer.Show();
         }
 
@@ -52,7 +46,16 @@ namespace HT.Framework
         private bool _showProperty = true;
 
         private StringBuilder _builder = new StringBuilder();
-        
+
+        private void OnEnable()
+        {
+            _assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            _currentAssembly = null;
+            _currentType = null;
+            _currentMethod = null;
+            _currentField = null;
+            _currentProperty = null;
+        }
         private void OnGUI()
         {
             GUILayout.BeginHorizontal();
@@ -372,7 +375,7 @@ namespace HT.Framework
                 if (type.IsSealed) _builder.Append("sealed ");
             }
             if (type.IsClass) _builder.Append("class ");
-            if (type.IsValueType) _builder.Append("struct ");
+            if (type.IsValueType && !type.IsEnum) _builder.Append("struct ");
             if (type.IsInterface) _builder.Append("interface ");
             if (type.IsEnum) _builder.Append("enum ");
             _builder.Append(type.Name);
