@@ -354,8 +354,12 @@ namespace HT.Framework
 
         #region 查找工具
         /// <summary>
-        /// 通过子物体名称获取子物体的控件
+        /// 通过子物体名称获取子物体的组件
         /// </summary>
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="tran">自身</param>
+        /// <param name="name">子物体名称</param>
+        /// <returns>组件对象</returns>
         public static T GetComponentByChild<T>(this Transform tran, string name) where T : Component
         {
             Transform gObject = tran.Find(name);
@@ -365,8 +369,12 @@ namespace HT.Framework
             return gObject.GetComponent<T>();
         }
         /// <summary>
-        /// 通过子物体名称获取子物体的控件
+        /// 通过子物体名称获取子物体的组件
         /// </summary>
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="obj">自身</param>
+        /// <param name="name">子物体名称</param>
+        /// <returns>组件对象</returns>
         public static T GetComponentByChild<T>(this GameObject obj, string name) where T : Component
         {
             Transform gObject = obj.transform.Find(name);
@@ -376,71 +384,133 @@ namespace HT.Framework
             return gObject.GetComponent<T>();
         }
         /// <summary>
-        /// 获取直系子物体上的所有组件
+        /// 通过子物体名称获取子物体的组件
         /// </summary>
-        public static List<T> GetComponentsInSons<T>(this Transform tran, bool includeInactive = false) where T : Component
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="mono">自身</param>
+        /// <param name="name">子物体名称</param>
+        /// <returns>组件对象</returns>
+        public static T GetComponentByChild<T>(this MonoBehaviour mono, string name) where T : Component
         {
-            List<T> components = new List<T>();
-            for (int i = 0; i < tran.childCount; i++)
-            {
-                T t = tran.GetChild(i).GetComponent<T>();
-                if (t)
-                {
-                    if (tran.GetChild(i).gameObject.activeSelf)
-                    {
-                        components.Add(t);
-                    }
-                    else
-                    {
-                        if (includeInactive)
-                        {
-                            components.Add(t);
-                        }
-                    }
-                }
-            }
-            return components;
+            Transform gObject = mono.transform.Find(name);
+            if (gObject == null)
+                return null;
+
+            return gObject.GetComponent<T>();
         }
         /// <summary>
         /// 获取直系子物体上的所有组件
         /// </summary>
-        public static List<T> GetComponentsInSons<T>(this GameObject obj, bool includeInactive = false) where T : Component
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="tran">自身</param>
+        /// <param name="Result">组件列表</param>
+        /// <param name="includeInactive">是否包含未激活的子物体</param>
+        public static void GetComponentsInSons<T>(this Transform tran, List<T> Result, bool includeInactive = false) where T : Component
         {
-            List<T> components = new List<T>();
-            for (int i = 0; i < obj.transform.childCount; i++)
+            if (Result == null) Result = new List<T>();
+            else Result.Clear();
+
+            for (int i = 0; i < tran.childCount; i++)
             {
-                T t = obj.transform.GetChild(i).GetComponent<T>();
+                Transform child = tran.GetChild(i);
+                T t = child.GetComponent<T>();
                 if (t)
                 {
-                    if (obj.transform.GetChild(i).gameObject.activeSelf)
+                    if (child.gameObject.activeSelf)
                     {
-                        components.Add(t);
+                        Result.Add(t);
                     }
                     else
                     {
                         if (includeInactive)
                         {
-                            components.Add(t);
+                            Result.Add(t);
                         }
                     }
                 }
             }
-            return components;
+        }
+        /// <summary>
+        /// 获取直系子物体上的所有组件
+        /// </summary>
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="obj">自身</param>
+        /// <param name="Result">组件列表</param>
+        /// <param name="includeInactive">是否包含未激活的子物体</param>
+        public static void GetComponentsInSons<T>(this GameObject obj, List<T> Result, bool includeInactive = false) where T : Component
+        {
+            if (Result == null) Result = new List<T>();
+            else Result.Clear();
+
+            for (int i = 0; i < obj.transform.childCount; i++)
+            {
+                Transform child = obj.transform.GetChild(i);
+                T t = child.GetComponent<T>();
+                if (t)
+                {
+                    if (child.gameObject.activeSelf)
+                    {
+                        Result.Add(t);
+                    }
+                    else
+                    {
+                        if (includeInactive)
+                        {
+                            Result.Add(t);
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 获取直系子物体上的所有组件
+        /// </summary>
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="mono">自身</param>
+        /// <param name="Result">组件列表</param>
+        /// <param name="includeInactive">是否包含未激活的子物体</param>
+        public static void GetComponentsInSons<T>(this MonoBehaviour mono, List<T> Result, bool includeInactive = false) where T : Component
+        {
+            if (Result == null) Result = new List<T>();
+            else Result.Clear();
+
+            for (int i = 0; i < mono.transform.childCount; i++)
+            {
+                Transform child = mono.transform.GetChild(i);
+                T t = child.GetComponent<T>();
+                if (t)
+                {
+                    if (child.gameObject.activeSelf)
+                    {
+                        Result.Add(t);
+                    }
+                    else
+                    {
+                        if (includeInactive)
+                        {
+                            Result.Add(t);
+                        }
+                    }
+                }
+            }
         }
         /// <summary>
         /// 通过组件查找场景中所有的物体，包括隐藏和激活的
         /// </summary>
-        public static List<T> FindObjectsOfType<T>() where T : Component
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <param name="Result">组件列表</param>
+        public static void FindObjectsOfType<T>(List<T> Result) where T : Component
         {
-            List<T> objs = new List<T>();
-            List<T> subObjs = new List<T>();
+            if (Result == null) Result = new List<T>();
+            else Result.Clear();
+
+            List<T> sub = new List<T>();
             GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject rootObj in rootObjs)
             {
-                rootObj.transform.GetComponentsInChildren(true, subObjs);
-                objs.AddRange(subObjs);
+                rootObj.transform.GetComponentsInChildren(true, sub);
+                Result.AddRange(sub);
             }
-            return objs;
         }
         /// <summary>
         /// 获取RectTransform组件
@@ -457,8 +527,18 @@ namespace HT.Framework
             return obj.GetComponent<RectTransform>();
         }
         /// <summary>
+        /// 获取RectTransform组件
+        /// </summary>
+        public static RectTransform rectTransform(this MonoBehaviour mono)
+        {
+            return mono.GetComponent<RectTransform>();
+        }
+        /// <summary>
         /// 查找兄弟
         /// </summary>
+        /// <param name="tran">自身</param>
+        /// <param name="name">名称</param>
+        /// <returns>对象实例</returns>
         public static GameObject FindBrother(this Transform tran, string name)
         {
             GameObject gObject = null;
@@ -484,6 +564,9 @@ namespace HT.Framework
         /// <summary>
         /// 查找兄弟
         /// </summary>
+        /// <param name="obj">自身</param>
+        /// <param name="name">名称</param>
+        /// <returns>对象实例</returns>
         public static GameObject FindBrother(this GameObject obj, string name)
         {
             GameObject gObject = null;
@@ -507,8 +590,39 @@ namespace HT.Framework
             return gObject;
         }
         /// <summary>
+        /// 查找兄弟
+        /// </summary>
+        /// <param name="mono">自身</param>
+        /// <param name="name">名称</param>
+        /// <returns>对象实例</returns>
+        public static GameObject FindBrother(this MonoBehaviour mono, string name)
+        {
+            GameObject gObject = null;
+            if (mono.transform.parent)
+            {
+                Transform tf = mono.transform.parent.Find(name);
+                gObject = tf ? tf.gameObject : null;
+            }
+            else
+            {
+                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                foreach (GameObject rootObj in rootObjs)
+                {
+                    if (rootObj.name == name)
+                    {
+                        gObject = rootObj;
+                        break;
+                    }
+                }
+            }
+            return gObject;
+        }
+        /// <summary>
         /// 查找孩子
         /// </summary>
+        /// <param name="tran">自身</param>
+        /// <param name="name">名称</param>
+        /// <returns>对象实例</returns>
         public static GameObject FindChildren(this Transform tran, string name)
         {
             Transform gObject = tran.Find(name);
@@ -520,6 +634,9 @@ namespace HT.Framework
         /// <summary>
         /// 查找孩子
         /// </summary>
+        /// <param name="obj">自身</param>
+        /// <param name="name">名称</param>
+        /// <returns>对象实例</returns>
         public static GameObject FindChildren(this GameObject obj, string name)
         {
             Transform gObject = obj.transform.Find(name);
@@ -529,8 +646,23 @@ namespace HT.Framework
             return gObject.gameObject;
         }
         /// <summary>
+        /// 查找孩子
+        /// </summary>
+        /// <param name="mono">自身</param>
+        /// <param name="name">名称</param>
+        /// <returns>对象实例</returns>
+        public static GameObject FindChildren(this MonoBehaviour mono, string name)
+        {
+            Transform gObject = mono.transform.Find(name);
+            if (gObject == null)
+                return null;
+
+            return gObject.gameObject;
+        }
+        /// <summary>
         /// 设置逆向激活
         /// </summary>
+        /// <param name="obj">对象</param>
         public static void SetActiveInverse(this GameObject obj)
         {
             obj.SetActive(!obj.activeSelf);
@@ -538,10 +670,12 @@ namespace HT.Framework
         /// <summary>
         /// 全路径
         /// </summary>
-        public static string FullName(this Transform transform)
+        /// <param name="tran">自身</param>
+        /// <returns>在场景中的全路径</returns>
+        public static string FullName(this Transform tran)
         {
             List<Transform> tfs = new List<Transform>();
-            Transform tf = transform;
+            Transform tf = tran;
             tfs.Add(tf);
             while (tf.parent)
             {
@@ -549,13 +683,13 @@ namespace HT.Framework
                 tfs.Add(tf);
             }
 
-            string name = "";
-            name += tfs[tfs.Count - 1].name;
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tfs[tfs.Count - 1].name);
             for (int i = tfs.Count - 2; i >= 0; i--)
             {
-                name += "/" + tfs[i].name;
+                builder.Append("/" + tfs[i].name);
             }
-            return name;
+            return builder.ToString();
         }
         #endregion
 
