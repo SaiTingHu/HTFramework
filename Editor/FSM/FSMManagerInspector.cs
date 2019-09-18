@@ -6,6 +6,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(FSMManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86073351")]
     public sealed class FSMManagerInspector : HTFEditor<FSMManager>
     {
         private Dictionary<string, FSM> _fsms;

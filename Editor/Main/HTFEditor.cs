@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -12,6 +13,11 @@ namespace HT.Framework
         /// 当前目标
         /// </summary>
         protected E Target;
+
+        private GithubURLAttribute _GithubURL;
+        private CSDNBlogURLAttribute _CSDNURL;
+        private Texture _GithubIcon;
+        private Texture _CSDNIcon;
 
         /// <summary>
         /// 是否启用运行时调试数据
@@ -27,6 +33,10 @@ namespace HT.Framework
         private void OnEnable()
         {
             Target = target as E;
+            _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
+            _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
+            _GithubIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
+            _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
 
             OnDefaultEnable();
 
@@ -35,9 +45,37 @@ namespace HT.Framework
                 OnRuntimeEnable();
             }
         }
-
+        
         public override void OnInspectorGUI()
         {
+            if (_GithubURL != null || _CSDNURL != null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+
+                if (_GithubURL != null)
+                {
+                    GUI.enabled = !string.IsNullOrEmpty(_GithubURL.URL);
+                    if (GUILayout.Button(_GithubIcon, "IconButton", GUILayout.Width(16), GUILayout.Height(16)))
+                    {
+                        Application.OpenURL(_GithubURL.URL);
+                    }
+                    GUI.enabled = true;
+                }
+
+                if (_CSDNURL != null)
+                {
+                    GUI.enabled = !string.IsNullOrEmpty(_CSDNURL.URL);
+                    if (GUILayout.Button(_CSDNIcon, "IconButton", GUILayout.Width(16), GUILayout.Height(16)))
+                    {
+                        Application.OpenURL(_CSDNURL.URL);
+                    }
+                    GUI.enabled = true;
+                }
+
+                GUILayout.EndHorizontal();
+            }
+
             OnInspectorDefaultGUI();
 
             if (IsEnableRuntimeData && EditorApplication.isPlaying)

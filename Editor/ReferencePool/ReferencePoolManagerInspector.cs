@@ -4,6 +4,8 @@ using UnityEditor;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ReferencePoolManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/87191712")]
     public sealed class ReferencePoolManagerInspector : HTFEditor<ReferencePoolManager>
     {
         protected override void OnInspectorDefaultGUI()

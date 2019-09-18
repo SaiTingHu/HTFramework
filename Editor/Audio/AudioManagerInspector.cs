@@ -6,6 +6,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(AudioManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89874351")]
     public sealed class AudioManagerInspector : HTFEditor<AudioManager>
     {
         private bool _backgroundAudioFoldout = true;

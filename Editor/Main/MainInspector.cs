@@ -6,6 +6,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Main))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("")]
     public sealed class MainInspector : HTFEditor<Main>
     {
         private static bool _showScriptingDefine = false;

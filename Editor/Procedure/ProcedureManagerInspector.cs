@@ -7,6 +7,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ProcedureManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86998412")]
     public sealed class ProcedureManagerInspector : HTFEditor<ProcedureManager>
     {
         private Dictionary<string, string> _procedureTypes = new Dictionary<string, string>();

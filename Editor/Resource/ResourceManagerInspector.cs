@@ -6,6 +6,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ResourceManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88852698")]
     public sealed class ResourceManagerInspector : HTFEditor<ResourceManager>
     {
         private string _assetBundleRootPath;

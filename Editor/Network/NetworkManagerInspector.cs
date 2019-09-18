@@ -4,6 +4,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(NetworkManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("")]
     public sealed class NetworkManagerInspector : HTFEditor<NetworkManager>
     {
         protected override void OnInspectorDefaultGUI()

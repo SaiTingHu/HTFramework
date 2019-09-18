@@ -7,6 +7,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(EventManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/85689865")]
     public sealed class EventManagerInspector : HTFEditor<EventManager>
     {
         private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList;

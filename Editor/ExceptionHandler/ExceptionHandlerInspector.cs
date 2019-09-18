@@ -4,6 +4,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ExceptionHandler))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("")]
     public sealed class ExceptionHandlerInspector : HTFEditor<ExceptionHandler>
     {
         protected override void OnInspectorDefaultGUI()

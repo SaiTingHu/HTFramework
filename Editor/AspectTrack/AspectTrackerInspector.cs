@@ -4,6 +4,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(AspectTracker))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/85617377")]
     public sealed class AspectTrackerInspector : HTFEditor<AspectTracker>
     {
         protected override void OnInspectorDefaultGUI()

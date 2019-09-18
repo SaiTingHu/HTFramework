@@ -8,7 +8,6 @@ namespace HT.Framework
     public sealed class StepContentAssetInspector : HTFEditor<StepContentAsset>
     {
         private Vector2 _scroll = Vector2.zero;
-        private EditorWindow _inspectorWindow;
 
         protected override bool IsEnableRuntimeData
         {
@@ -16,28 +15,6 @@ namespace HT.Framework
             {
                 return false;
             }
-        }
-
-        protected override void OnHeaderGUI()
-        {
-            base.OnHeaderGUI();
-            
-            if (GUI.Button(new Rect(_inspectorWindow.position.width - 45, 25, 40, 16), "Open"))
-            {
-                StepEditorWindow.ShowWindow(Target);
-            }
-        }
-
-        protected override bool ShouldHideOpenButton()
-        {
-            return true;
-        }
-
-        protected override void OnDefaultEnable()
-        {
-            base.OnDefaultEnable();
-
-            _inspectorWindow = EditorWindow.GetWindow(EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.InspectorWindow"));
         }
 
         protected override void OnInspectorDefaultGUI()

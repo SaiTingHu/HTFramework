@@ -4,6 +4,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Coroutiner))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/91492838")]
     public sealed class CoroutinerInspector : HTFEditor<Coroutiner>
     {
         protected override void OnInspectorDefaultGUI()

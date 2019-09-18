@@ -7,6 +7,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(EntityManager))]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
+    [CSDNBlogURL("")]
     public sealed class EntityManagerInspector : HTFEditor<EntityManager>
     {
         private Dictionary<Type, List<EntityLogicBase>> _entities;
