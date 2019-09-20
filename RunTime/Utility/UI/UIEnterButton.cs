@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -9,7 +9,7 @@ namespace HT.Framework
     /// UGUI靠近按钮
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIEnterButton")]
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
     public sealed class UIEnterButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

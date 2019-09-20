@@ -43,6 +43,81 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             Toggle(Target.IsEnableWorldUI, out Target.IsEnableWorldUI, "Is Enable World UI");
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical("Box");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Define UI Entity", "BoldLabel");
+            GUILayout.EndHorizontal();
+
+            for (int i = 0; i < Target.DefineUINames.Count; i++)
+            {
+                GUILayout.BeginVertical("HelpBox");
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Type", GUILayout.Width(40));
+                if (GUILayout.Button(Target.DefineUINames[i], "MiniPopup"))
+                {
+                    GenericMenu gm = new GenericMenu();
+                    List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                    for (int m = 0; m < types.Count; m++)
+                    {
+                        if (types[m].IsSubclassOf(typeof(UILogicBase)))
+                        {
+                            int j = i;
+                            int n = m;
+                            if (Target.DefineUINames.Contains(types[n].FullName))
+                            {
+                                gm.AddDisabledItem(new GUIContent(types[n].FullName));
+                            }
+                            else
+                            {
+                                gm.AddItem(new GUIContent(types[n].FullName), Target.DefineUINames[j] == types[n].FullName, () =>
+                                {
+                                    Undo.RecordObject(target, "Set Define UI Name");
+                                    Target.DefineUINames[j] = types[n].FullName;
+                                    HasChanged();
+                                });
+                            }
+                        }
+                    }
+                    gm.ShowAsContext();
+                }
+                if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
+                {
+                    Undo.RecordObject(target, "Delete Define UI");
+                    Target.DefineUINames.RemoveAt(i);
+                    Target.DefineUIEntitys.RemoveAt(i);
+                    HasChanged();
+                    continue;
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Entity", GUILayout.Width(40));
+                GameObject entity = Target.DefineUIEntitys[i];
+                ObjectField(Target.DefineUIEntitys[i], out entity, false, "");
+                if (entity != Target.DefineUIEntitys[i])
+                {
+                    Target.DefineUIEntitys[i] = entity;
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.EndVertical();
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("New", "Minibutton"))
+            {
+                Undo.RecordObject(target, "New Define UI");
+                Target.DefineUINames.Add("<None>");
+                Target.DefineUIEntitys.Add(null);
+                HasChanged();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
         }
 
         protected override void OnInspectorRuntimeGUI()

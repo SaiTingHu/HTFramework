@@ -23,6 +23,17 @@ namespace HT.Framework
         /// 是否启用World类型的UI【请勿在代码中修改】
         /// </summary>
         public bool IsEnableWorldUI = false;
+        /// <summary>
+        /// 当前定义的UI名称【请勿在代码中修改】
+        /// </summary>
+        public List<string> DefineUINames = new List<string>();
+        /// <summary>
+        /// 当前定义的UI实体【请勿在代码中修改】
+        /// </summary>
+        public List<GameObject> DefineUIEntitys = new List<GameObject>();
+
+        //当前定义的UI与实体对应关系
+        private Dictionary<string, GameObject> _defineUIAndEntitys = new Dictionary<string, GameObject>();
 
         //当前打开的Overlay类型的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentOverlayTemporaryUI;
@@ -52,6 +63,14 @@ namespace HT.Framework
         public override void OnInitialization()
         {
             base.OnInitialization();
+
+            for (int i = 0; i < DefineUINames.Count; i++)
+            {
+                if (!_defineUIAndEntitys.ContainsKey(DefineUINames[i]))
+                {
+                    _defineUIAndEntitys.Add(DefineUINames[i], DefineUIEntitys[i]);
+                }
+            }
 
             _UIEntity = transform.FindChildren("UIEntity");
             _overlayUIRoot = _UIEntity.transform.Find("OverlayUIRoot");
@@ -151,6 +170,8 @@ namespace HT.Framework
         public override void OnTermination()
         {
             base.OnTermination();
+
+            _defineUIAndEntitys.Clear();
 
             foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
             {
@@ -272,11 +293,21 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayResidentPanel);
+                                    ui.UIEntity.SetActive(false);
                                     ui.OnInit();
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.OnInit();
+                                    }, true);
+                                }
                             }
                         }
                         else
@@ -291,11 +322,21 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraResidentPanel);
+                                    ui.UIEntity.SetActive(false);
                                     ui.OnInit();
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.OnInit();
+                                    }, true);
+                                }
                             }
                         }
                         else
@@ -306,7 +347,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].PreloadingResidentUI(type);
+                            return _worldUIs[attribute.WorldUIDomainName].PreloadingResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
                         }
                         else
                         {
@@ -344,11 +385,21 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayTemporaryPanel);
+                                    ui.UIEntity.SetActive(false);
                                     ui.OnInit();
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.OnInit();
+                                    }, true);
+                                }
                             }
                         }
                         else
@@ -363,11 +414,21 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraTemporaryPanel);
+                                    ui.UIEntity.SetActive(false);
                                     ui.OnInit();
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.OnInit();
+                                    }, true);
+                                }
                             }
                         }
                         else
@@ -378,7 +439,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].PreloadingTemporaryUI(type);
+                            return _worldUIs[attribute.WorldUIDomainName].PreloadingTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
                         }
                         else
                         {
@@ -423,15 +484,28 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayResidentPanel);
                                     ui.UIEntity.transform.SetAsLastSibling();
                                     ui.UIEntity.SetActive(true);
                                     ui.OnInit();
                                     ui.OnOpen(args);
                                     ui.OnPlaceTop();
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.UIEntity.transform.SetAsLastSibling();
+                                        ui.UIEntity.SetActive(true);
+                                        ui.OnInit();
+                                        ui.OnOpen(args);
+                                        ui.OnPlaceTop();
+                                    }, true);
+                                }
                             }
                             else
                             {
@@ -458,15 +532,28 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraResidentPanel);
                                     ui.UIEntity.transform.SetAsLastSibling();
                                     ui.UIEntity.SetActive(true);
                                     ui.OnInit();
                                     ui.OnOpen(args);
                                     ui.OnPlaceTop();
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.UIEntity.transform.SetAsLastSibling();
+                                        ui.UIEntity.SetActive(true);
+                                        ui.OnInit();
+                                        ui.OnOpen(args);
+                                        ui.OnPlaceTop();
+                                    }, true);
+                                }
                             }
                             else
                             {
@@ -484,7 +571,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].OpenResidentUI(type, args);
+                            return _worldUIs[attribute.WorldUIDomainName].OpenResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
                         }
                         else
                         {
@@ -536,15 +623,28 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayTemporaryPanel);
                                     ui.UIEntity.transform.SetAsLastSibling();
                                     ui.UIEntity.SetActive(true);
                                     ui.OnInit();
                                     ui.OnOpen(args);
                                     _currentOverlayTemporaryUI = ui;
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.UIEntity.transform.SetAsLastSibling();
+                                        ui.UIEntity.SetActive(true);
+                                        ui.OnInit();
+                                        ui.OnOpen(args);
+                                        _currentOverlayTemporaryUI = ui;
+                                    }, true);
+                                }
                             }
                             else
                             {
@@ -578,15 +678,28 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
                                 {
-                                    ui.UIEntity = obj;
+                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraTemporaryPanel);
                                     ui.UIEntity.transform.SetAsLastSibling();
                                     ui.UIEntity.SetActive(true);
                                     ui.OnInit();
                                     ui.OnOpen(args);
                                     _currentCameraTemporaryUI = ui;
-                                }, true);
+                                    return null;
+                                }
+                                else
+                                {
+                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
+                                    {
+                                        ui.UIEntity = obj;
+                                        ui.UIEntity.transform.SetAsLastSibling();
+                                        ui.UIEntity.SetActive(true);
+                                        ui.OnInit();
+                                        ui.OnOpen(args);
+                                        _currentCameraTemporaryUI = ui;
+                                    }, true);
+                                }
                             }
                             else
                             {
@@ -604,7 +717,7 @@ namespace HT.Framework
                     case UIType.World:
                         if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].OpenTemporaryUI(type, args);
+                            return _worldUIs[attribute.WorldUIDomainName].OpenTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
                         }
                         else
                         {
@@ -910,7 +1023,7 @@ namespace HT.Framework
                 }
             }
         }
-
+        
         /// <summary>
         /// 世界UI的域
         /// </summary>
@@ -1001,8 +1114,9 @@ namespace HT.Framework
             /// 预加载常驻UI
             /// </summary>
             /// <param name="type">常驻UI逻辑类</param>
+            /// <param name="entity">UI实体</param>
             /// <returns>加载协程</returns>
-            public Coroutine PreloadingResidentUI(Type type)
+            public Coroutine PreloadingResidentUI(Type type, GameObject entity)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1010,12 +1124,22 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                        if (entity != null)
                         {
-                            ui.UIEntity = obj;
+                            ui.UIEntity = Instantiate(entity, _worldResidentPanel);
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
                             ui.OnInit();
-                        }, true);
+                            return null;
+                        }
+                        else
+                        {
+                            return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                            {
+                                ui.UIEntity = obj;
+                                ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
+                                ui.OnInit();
+                            }, true);
+                        }
                     }
                 }
                 else
@@ -1028,8 +1152,9 @@ namespace HT.Framework
             /// 预加载非常驻UI
             /// </summary>
             /// <param name="type">非常驻UI逻辑类</param>
+            /// <param name="entity">UI实体</param>
             /// <returns>加载协程</returns>
-            public Coroutine PreloadingTemporaryUI(Type type)
+            public Coroutine PreloadingTemporaryUI(Type type, GameObject entity)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1037,12 +1162,22 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                        if (entity != null)
                         {
-                            ui.UIEntity = obj;
+                            ui.UIEntity = Instantiate(entity, _worldTemporaryPanel);
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
                             ui.OnInit();
-                        }, true);
+                            return null;
+                        }
+                        else
+                        {
+                            return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                            {
+                                ui.UIEntity = obj;
+                                ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
+                                ui.OnInit();
+                            }, true);
+                        }
                     }
                 }
                 else
@@ -1055,9 +1190,10 @@ namespace HT.Framework
             /// 打开常驻UI
             /// </summary>
             /// <param name="type">常驻UI逻辑类</param>
+            /// <param name="entity">UI实体</param>
             /// <param name="args">可选参数</param>
             /// <returns>加载协程</returns>
-            public Coroutine OpenResidentUI(Type type, params object[] args)
+            public Coroutine OpenResidentUI(Type type, GameObject entity, params object[] args)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1070,16 +1206,30 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                        if (entity != null)
                         {
-                            ui.UIEntity = obj;
+                            ui.UIEntity = Instantiate(entity, _worldResidentPanel);
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
                             ui.UIEntity.transform.SetAsLastSibling();
                             ui.UIEntity.SetActive(true);
                             ui.OnInit();
                             ui.OnOpen(args);
                             ui.OnPlaceTop();
-                        }, true);
+                            return null;
+                        }
+                        else
+                        {
+                            return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
+                            {
+                                ui.UIEntity = obj;
+                                ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
+                                ui.UIEntity.transform.SetAsLastSibling();
+                                ui.UIEntity.SetActive(true);
+                                ui.OnInit();
+                                ui.OnOpen(args);
+                                ui.OnPlaceTop();
+                            }, true);
+                        }
                     }
                     else
                     {
@@ -1099,9 +1249,10 @@ namespace HT.Framework
             /// 打开非常驻UI
             /// </summary>
             /// <param name="type">非常驻UI逻辑类</param>
+            /// <param name="entity">UI实体</param>
             /// <param name="args">可选参数</param>
             /// <returns>加载协程</returns>
-            public Coroutine OpenTemporaryUI(Type type, params object[] args)
+            public Coroutine OpenTemporaryUI(Type type, GameObject entity, params object[] args)
             {
                 if (_worldUIs.ContainsKey(type))
                 {
@@ -1121,16 +1272,30 @@ namespace HT.Framework
 
                     if (!ui.IsCreated)
                     {
-                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                        if (entity != null)
                         {
-                            ui.UIEntity = obj;
+                            ui.UIEntity = Instantiate(entity, _worldTemporaryPanel);
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
                             ui.UIEntity.transform.SetAsLastSibling();
                             ui.UIEntity.SetActive(true);
                             ui.OnInit();
                             ui.OnOpen(args);
                             _currentWorldTemporaryUI = ui;
-                        }, true);
+                            return null;
+                        }
+                        else
+                        {
+                            return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
+                            {
+                                ui.UIEntity = obj;
+                                ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
+                                ui.UIEntity.transform.SetAsLastSibling();
+                                ui.UIEntity.SetActive(true);
+                                ui.OnInit();
+                                ui.OnOpen(args);
+                                _currentWorldTemporaryUI = ui;
+                            }, true);
+                        }
                     }
                     else
                     {

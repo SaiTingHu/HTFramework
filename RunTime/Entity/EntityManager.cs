@@ -11,6 +11,18 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class EntityManager : ModuleManagerBase
     {
+        /// <summary>
+        /// 当前定义的实体名称【请勿在代码中修改】
+        /// </summary>
+        public List<string> DefineEntityNames = new List<string>();
+        /// <summary>
+        /// 当前定义的实体对象【请勿在代码中修改】
+        /// </summary>
+        public List<GameObject> DefineEntityTargets = new List<GameObject>();
+
+        //当前定义的实体与对象对应关系
+        private Dictionary<string, GameObject> _defineEntities = new Dictionary<string, GameObject>();
+
         //所有实体列表
         private Dictionary<Type, List<EntityLogicBase>> _entities = new Dictionary<Type, List<EntityLogicBase>>();
         //所有实体组
@@ -23,6 +35,14 @@ namespace HT.Framework
         public override void OnInitialization()
         {
             base.OnInitialization();
+
+            for (int i = 0; i < DefineEntityNames.Count; i++)
+            {
+                if (!_defineEntities.ContainsKey(DefineEntityNames[i]))
+                {
+                    _defineEntities.Add(DefineEntityNames[i], DefineEntityTargets[i]);
+                }
+            }
 
             _entityRoot = transform.Find("EntityRoot");
 
@@ -338,11 +358,11 @@ namespace HT.Framework
                     }
                     else
                     {
-                        return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
+                        if (_defineEntities.ContainsKey(type.FullName) && _defineEntities[type.FullName] != null)
                         {
                             EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
                             _entities[type].Add(entityLogic);
-                            entityLogic.Entity = obj;
+                            entityLogic.Entity = Instantiate(_defineEntities[type.FullName], _entitiesGroup[type].transform);
                             entityLogic.Entity.name = entityLogic.Name = entityName == "<None>" ? type.Name : entityName;
                             entityLogic.Entity.SetActive(true);
                             entityLogic.OnInit();
@@ -350,7 +370,24 @@ namespace HT.Framework
 
                             loadDoneAction?.Invoke(entityLogic);
                             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
-                        });
+                            return null;
+                        }
+                        else
+                        {
+                            return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
+                            {
+                                EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
+                                _entities[type].Add(entityLogic);
+                                entityLogic.Entity = obj;
+                                entityLogic.Entity.name = entityLogic.Name = entityName == "<None>" ? type.Name : entityName;
+                                entityLogic.Entity.SetActive(true);
+                                entityLogic.OnInit();
+                                entityLogic.OnShow();
+
+                                loadDoneAction?.Invoke(entityLogic);
+                                Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
+                            });
+                        }
                     }
                 }
                 else

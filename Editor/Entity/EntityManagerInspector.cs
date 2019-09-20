@@ -38,6 +38,81 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("Entity Manager, Control all EntityLogic!", MessageType.Info);
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical("Box");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Define Entity", "BoldLabel");
+            GUILayout.EndHorizontal();
+
+            for (int i = 0; i < Target.DefineEntityNames.Count; i++)
+            {
+                GUILayout.BeginVertical("HelpBox");
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Type", GUILayout.Width(40));
+                if (GUILayout.Button(Target.DefineEntityNames[i], "MiniPopup"))
+                {
+                    GenericMenu gm = new GenericMenu();
+                    List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                    for (int m = 0; m < types.Count; m++)
+                    {
+                        if (types[m].IsSubclassOf(typeof(EntityLogicBase)))
+                        {
+                            int j = i;
+                            int n = m;
+                            if (Target.DefineEntityNames.Contains(types[n].FullName))
+                            {
+                                gm.AddDisabledItem(new GUIContent(types[n].FullName));
+                            }
+                            else
+                            {
+                                gm.AddItem(new GUIContent(types[n].FullName), Target.DefineEntityNames[j] == types[n].FullName, () =>
+                                {
+                                    Undo.RecordObject(target, "Set Define Entity Name");
+                                    Target.DefineEntityNames[j] = types[n].FullName;
+                                    HasChanged();
+                                });
+                            }
+                        }
+                    }
+                    gm.ShowAsContext();
+                }
+                if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
+                {
+                    Undo.RecordObject(target, "Delete Define Entity");
+                    Target.DefineEntityNames.RemoveAt(i);
+                    Target.DefineEntityTargets.RemoveAt(i);
+                    HasChanged();
+                    continue;
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Entity", GUILayout.Width(40));
+                GameObject entity = Target.DefineEntityTargets[i];
+                ObjectField(Target.DefineEntityTargets[i], out entity, false, "");
+                if (entity != Target.DefineEntityTargets[i])
+                {
+                    Target.DefineEntityTargets[i] = entity;
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.EndVertical();
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("New", "Minibutton"))
+            {
+                Undo.RecordObject(target, "New Define Entity");
+                Target.DefineEntityNames.Add("<None>");
+                Target.DefineEntityTargets.Add(null);
+                HasChanged();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
         }
 
         protected override void OnInspectorRuntimeGUI()

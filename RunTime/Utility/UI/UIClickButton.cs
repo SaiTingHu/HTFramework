@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -9,7 +9,7 @@ namespace HT.Framework
     /// UGUI点击按钮
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIClickButton")]
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
     public sealed class UIClickButton : MonoBehaviour, IPointerClickHandler
     {

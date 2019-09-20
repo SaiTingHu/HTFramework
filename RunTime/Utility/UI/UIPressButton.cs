@@ -9,7 +9,7 @@ namespace HT.Framework
     /// UGUI按住按钮
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIPressButton")]
-    [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
     public sealed class UIPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
