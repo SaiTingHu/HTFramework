@@ -47,7 +47,7 @@ namespace HT.Framework
             GUILayout.BeginVertical("Box");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Define UI Entity", "BoldLabel");
+            GUILayout.Label("Define UI", "BoldLabel");
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < Target.DefineUINames.Count; i++)

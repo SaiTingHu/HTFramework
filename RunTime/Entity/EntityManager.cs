@@ -368,6 +368,7 @@ namespace HT.Framework
                             entityLogic.OnInit();
                             entityLogic.OnShow();
 
+                            loadingAction?.Invoke(1);
                             loadDoneAction?.Invoke(entityLogic);
                             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
                             return null;
