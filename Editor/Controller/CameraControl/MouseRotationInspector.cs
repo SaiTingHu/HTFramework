@@ -26,21 +26,9 @@ namespace HT.Framework
             Toggle(Target.AllowOverstepDistance, out Target.AllowOverstepDistance, "Allow Overstep Distance");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical("Box");
-
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Offset", "BoldLabel");
+            Toggle(Target.IsLookAtTarget, out Target.IsLookAtTarget, "LookAt Target");
             GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.OffsetX, out Target.OffsetX, "X");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.OffsetY, out Target.OffsetY, "Y");
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
 
             GUILayout.BeginVertical("Box");
 

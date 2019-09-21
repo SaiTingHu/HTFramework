@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 namespace HT.Framework
@@ -7,6 +8,17 @@ namespace HT.Framework
     [CustomEditor(typeof(StepContentAsset))]
     public sealed class StepContentAssetInspector : HTFEditor<StepContentAsset>
     {
+        [OnOpenAsset]
+        private static bool OnOpenAsset(int instanceID, int line)
+        {
+            StepContentAsset asset = EditorUtility.InstanceIDToObject(instanceID) as StepContentAsset;
+            if (asset)
+            {
+                StepEditorWindow.ShowWindow(asset);
+            }
+            return false;
+        }
+
         private Vector2 _scroll = Vector2.zero;
 
         protected override bool IsEnableRuntimeData
@@ -79,15 +91,6 @@ namespace HT.Framework
                     EditorUtility.ClearProgressBar();
                 }
             }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUI.backgroundColor = Color.cyan;
-            if (GUILayout.Button("Edit Step Content"))
-            {
-                StepEditorWindow.ShowWindow(Target);
-            }
-            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
             _scroll = GUILayout.BeginScrollView(_scroll);

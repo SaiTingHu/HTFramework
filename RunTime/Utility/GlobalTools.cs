@@ -801,6 +801,20 @@ namespace HT.Framework
             return StringInstance.ToString();
         }
         /// <summary>
+        /// 字符串拼接
+        /// </summary>
+        /// <param name="str">待拼接的字符串</param>
+        /// <returns>拼接成功的字符串</returns>
+        public static string StringConcat(List<string> str)
+        {
+            StringInstance.Clear();
+            for (int i = 0; i < str.Count; i++)
+            {
+                StringInstance.Append(str[i]);
+            }
+            return StringInstance.ToString();
+        }
+        /// <summary>
         /// 转换成枚举
         /// </summary>
         public static EnumType ToEnum<EnumType>(this string value, EnumType defaultValue)

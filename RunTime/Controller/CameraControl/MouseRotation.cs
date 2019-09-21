@@ -10,9 +10,6 @@ namespace HT.Framework
     {
         //注视目标
         public CameraTarget Target;
-        //注视点x、y轴偏移，若都为0，则注视点等于注视目标的transform.position
-        public float OffsetX = 0f;
-        public float OffsetY = 0f;
         //x轴旋转速度，y轴旋转速度，滚轮缩放速度
         public float XSpeed = 150, YSpeed = 150, MSpeed = 30;
         //y轴视角最低值，y轴视角最高值（目标是角色的话，推荐最小10，最大85，摄像机最低不会到角色脚底，最高不会到角色头顶正上方）
@@ -42,6 +39,8 @@ namespace HT.Framework
         public bool IsCanOnUGUI = false;
         //允许在输入滚轮超越距离限制时，启用摄像机移动
         public bool AllowOverstepDistance = true;
+        //是否始终保持注视目标，即使在视角切换时
+        public bool IsLookAtTarget = true;
 
         //注视点（注视目标的准确位置，经过偏移后的位置）
         private Vector3 _targetPoint;
@@ -168,7 +167,10 @@ namespace HT.Framework
             SwitchAngle(NeedDamping);
 
             //摄像机一直保持注视目标点
-            transform.LookAt(_targetPoint);
+            if (IsLookAtTarget)
+            {
+                transform.LookAt(Target.transform.position);
+            }
         }
 
         private void CalculateAngle()
@@ -177,10 +179,7 @@ namespace HT.Framework
             Y = ClampYAngle(Y, YMinAngleLimit, YMaxAngleLimit);
             //将视角距离限制在最小值和最大值之间
             Distance = Mathf.Clamp(Distance, MinDistance, MaxDistance);
-
-            //重新获取摄像机注视点
-            _targetPoint.Set(Target.transform.position.x + OffsetX, Target.transform.position.y + OffsetY, Target.transform.position.z);
-
+            
             //摄像机的最新旋转角度
             _rotation = Quaternion.Euler(Y, X, 0f);
             //摄像机与注视点的距离向量
