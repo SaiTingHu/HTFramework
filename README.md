@@ -22,7 +22,7 @@
 
 - [DataSet](https://wanderer.blog.csdn.net/article/details/89395574) - 自定义数据集，任何需要存储数据的地方都可以定义为自定义数据集，包括预制的配置文件、运行时生成的动态数据、从后台拉取的各种数据等。
 
-- Entity - 实体管理器，除去UI以外，场景中的其余可见物体都应该抽象为Entity，在Entity之上配合FSM一起管理逻辑，将是一个不错的搭配。
+- [Entity](https://wanderer.blog.csdn.net/article/details/101541066) - 实体管理器，除去UI以外，场景中的其余可见物体都应该抽象为Entity，在Entity之上配合FSM一起管理逻辑，将是一个不错的搭配。
 
 - [Event](https://wanderer.blog.csdn.net/article/details/85689865) - 可以将一切操作定义为具体的全局事件，通过订阅事件、抛出事件以驱动整个业务逻辑。
 
