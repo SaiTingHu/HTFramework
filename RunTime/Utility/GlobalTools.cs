@@ -317,6 +317,24 @@ namespace HT.Framework
                 return JsonMapper.ToObject(value);
             }
         }
+        /// <summary>
+        /// 在安全模式下获取Json值
+        /// </summary>
+        /// <param name="json">json数据</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>获取到的键对应的值</returns>
+        public static string GetValueInSafe(this JsonData json, string key, string defaultValue)
+        {
+            if (json.Keys.Contains(key))
+            {
+                return json[key].ToString();
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
         #endregion
 
         #region 动画工具

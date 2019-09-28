@@ -108,41 +108,34 @@ namespace HT.Framework
                 return;
 
             if (has_reached_end)
-                throw new JsonException (
-                    "A complete JSON symbol has already been written");
+                throw new JsonException("已经编写了完整的json符号！");
 
             switch (cond) {
             case Condition.InArray:
-                if (! context.InArray)
-                    throw new JsonException (
-                        "Can't close an array here");
-                break;
+                    if (!context.InArray)
+                        throw new JsonException("无法在此关闭数组！");
+                    break;
 
             case Condition.InObject:
-                if (! context.InObject || context.ExpectingValue)
-                    throw new JsonException (
-                        "Can't close an object here");
-                break;
+                    if (!context.InObject || context.ExpectingValue)
+                        throw new JsonException("无法关闭此处的对象！");
+                    break;
 
             case Condition.NotAProperty:
-                if (context.InObject && ! context.ExpectingValue)
-                    throw new JsonException (
-                        "Expected a property");
-                break;
+                    if (context.InObject && !context.ExpectingValue)
+                        throw new JsonException("需要一个属性！");
+                    break;
 
             case Condition.Property:
-                if (! context.InObject || context.ExpectingValue)
-                    throw new JsonException (
-                        "Can't add a property here");
-                break;
+                    if (!context.InObject || context.ExpectingValue)
+                        throw new JsonException("无法在此处添加属性！");
+                    break;
 
             case Condition.Value:
-                if (! context.InArray &&
-                    (! context.InObject || ! context.ExpectingValue))
-                    throw new JsonException (
-                        "Can't add a value here");
-
-                break;
+                    if (!context.InArray &&
+                        (!context.InObject || !context.ExpectingValue))
+                        throw new JsonException("无法在此处添加值！");
+                    break;
             }
         }
 
@@ -209,7 +202,7 @@ namespace HT.Framework
 
         private void PutString (string str)
         {
-            Put (String.Empty);
+            Put (string.Empty);
 
             writer.Write ('"');
 
@@ -269,7 +262,7 @@ namespace HT.Framework
         public override string ToString ()
         {
             if (inst_string_builder == null)
-                return String.Empty;
+                return string.Empty;
 
             return inst_string_builder.ToString ();
         }

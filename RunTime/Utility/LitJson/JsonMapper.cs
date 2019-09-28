@@ -306,9 +306,7 @@ namespace HT.Framework
                     return null;
                 }
 
-                throw new JsonException (String.Format (
-                            "Can't assign null to an instance of type {0}",
-                            inst_type));
+                throw new JsonException(string.Format("无法将空值赋给 {0} 类型的实例！", inst_type));
             }
 
             if (reader.Token == JsonToken.Double ||
@@ -356,9 +354,7 @@ namespace HT.Framework
                                            new object[] { reader.Value });
 
                 // No luck
-                throw new JsonException (string.Format (
-                        "Can't assign value '{0}' (type {1}) to type {2}",
-                        reader.Value, json_type, inst_type));
+                throw new JsonException(string.Format("无法将值 {0}（类型{1}）赋给类型 {2}！", reader.Value, json_type, inst_type));
             }
 
             object instance = null;
@@ -369,9 +365,7 @@ namespace HT.Framework
                 ArrayMetadata t_data = array_metadata[inst_type];
 
                 if (! t_data.IsArray && ! t_data.IsList)
-                    throw new JsonException (String.Format (
-                            "Type {0} can't act as an array",
-                            inst_type));
+                    throw new JsonException(string.Format("类型 {0} 不能用作数组！", inst_type));
 
                 IList list;
                 Type elem_type;
@@ -439,10 +433,7 @@ namespace HT.Framework
                         if (! t_data.IsDictionary) {
 
                             if (! reader.SkipNonMembers) {
-                                throw new JsonException (String.Format (
-                                        "The type {0} doesn't have the " +
-                                        "property '{1}'",
-                                        inst_type, property));
+                                throw new JsonException(string.Format("类型 {0} 没有属性 {1}！", inst_type, property));
                             } else {
                                 ReadSkip (reader);
                                 continue;
@@ -676,10 +667,8 @@ namespace HT.Framework
                                         int depth)
         {
             if (depth > max_nesting_depth)
-                throw new JsonException (
-                    String.Format ("Max allowed object depth reached while " +
-                                   "trying to export from type {0}",
-                                   obj.GetType ()));
+                throw new JsonException(
+                    string.Format("尝试从类型 {0} 导出时达到了最大允许对象深度！", obj.GetType()));
 
             if (obj == null) {
                 writer.Write (null);
@@ -695,27 +684,27 @@ namespace HT.Framework
                 return;
             }
 
-            if (obj is String) {
+            if (obj is string) {
                 writer.Write ((string) obj);
                 return;
             }
 
-            if (obj is Double) {
+            if (obj is double) {
                 writer.Write ((double) obj);
                 return;
             }
 
-            if (obj is Int32) {
+            if (obj is int) {
                 writer.Write ((int) obj);
                 return;
             }
 
-            if (obj is Boolean) {
+            if (obj is bool) {
                 writer.Write ((bool) obj);
                 return;
             }
 
-            if (obj is Int64) {
+            if (obj is long) {
                 writer.Write ((long) obj);
                 return;
             }

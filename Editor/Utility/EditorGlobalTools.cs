@@ -52,6 +52,30 @@ namespace HT.Framework
 
         #region 批处理工具
         /// <summary>
+        /// 打开ComponentBatch窗口
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Component Batch", false, 0)]
+        private static void OpenComponentBatch()
+        {
+            ComponentBatch cb = EditorWindow.GetWindow<ComponentBatch>();
+            cb.titleContent.text = "Component Batch";
+            cb.position = new Rect(200, 200, 300, 140);
+            cb.Show();
+        }
+
+        /// <summary>
+        /// 打开ProjectBatch窗口
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Project Batch", false, 1)]
+        private static void OpenProjectBatch()
+        {
+            ProjectBatch cb = EditorWindow.GetWindow<ProjectBatch>();
+            cb.titleContent.text = "Project Batch";
+            cb.position = new Rect(200, 200, 300, 120);
+            cb.Show();
+        }
+
+        /// <summary>
         /// 【验证函数】设置鼠标射线可捕获物体目标
         /// </summary>
         [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", true)]
@@ -109,66 +133,6 @@ namespace HT.Framework
                 }
                 objs[i].GetComponent<MouseRayUITarget>().Name = objs[i].name;
             }
-        }
-
-        /// <summary>
-        /// 打开ReplaceFontBatch窗口
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Batch", false, 40)]
-        private static void OpenReplaceFontBatch()
-        {
-            ReplaceFontBatch rfb = EditorWindow.GetWindow<ReplaceFontBatch>();
-            rfb.titleContent.text = "ReplaceFont";
-            rfb.position = new Rect(200, 200, 300, 100);
-            rfb.Show();
-        }
-
-        /// <summary>
-        /// 打开ReplaceFontColorBatch窗口
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/Replace Font Color Batch", false, 41)]
-        private static void OpenReplaceFontColorBatch()
-        {
-            ReplaceFontColorBatch rfb = EditorWindow.GetWindow<ReplaceFontColorBatch>();
-            rfb.titleContent.text = "ReplaceFontColor";
-            rfb.position = new Rect(200, 200, 300, 100);
-            rfb.Show();
-        }
-
-        /// <summary>
-        /// 打开SetRaycastTargetBatch窗口
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Raycast Target Batch", false, 42)]
-        private static void OpenSetRaycastTargetBatch()
-        {
-            SetRaycastTargetBatch srtb = EditorWindow.GetWindow<SetRaycastTargetBatch>();
-            srtb.titleContent.text = "SetRaycastTarget";
-            srtb.position = new Rect(200, 200, 300, 250);
-            srtb.Show();
-        }
-        
-        /// <summary>
-        /// 设置网格渲染器组件
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/MeshRenderer Batch", false, 43)]
-        private static void SetMeshRendererBatch()
-        {
-            MeshRendererBatch mrb = EditorWindow.GetWindow<MeshRendererBatch>();
-            mrb.titleContent.text = "MeshRendererBatch";
-            mrb.position = new Rect(200, 200, 300, 250);
-            mrb.Show();
-        }
-
-        /// <summary>
-        /// 设置Texture导入参数
-        /// </summary>
-        [@MenuItem("HTFramework/Batch/Texture ImportSettings Batch", false, 80)]
-        private static void SetTextureImportSettingsBatch()
-        {
-            TextureImportSettingsBatch tisb = EditorWindow.GetWindow<TextureImportSettingsBatch>();
-            tisb.titleContent.text = "TextureBatch";
-            tisb.position = new Rect(200, 200, 300, 250);
-            tisb.Show();
         }
         #endregion
 
@@ -844,6 +808,20 @@ namespace HT.Framework
             }
             GlobalTools.LogError("获取类型 " + typeName + " 失败！当前编辑器程序集中不存在此类型！");
             return null;
+        }
+
+        /// <summary>
+        /// 从当前程序域的所有程序集中获取所有类型
+        /// </summary>
+        public static List<Type> GetTypesInAllAssemblies()
+        {
+            List<Type> types = new List<Type>();
+            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblys.Length; i++)
+            {
+                types.AddRange(assemblys[i].GetTypes());
+            }
+            return types;
         }
         #endregion
 

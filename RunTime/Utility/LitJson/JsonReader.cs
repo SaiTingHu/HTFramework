@@ -254,7 +254,7 @@ namespace HT.Framework
                 number.IndexOf ('E') != -1) {
 
                 double n_double;
-                if (Double.TryParse (number, out n_double)) {
+                if (double.TryParse (number, out n_double)) {
                     token = JsonToken.Double;
                     token_value = n_double;
 
@@ -263,7 +263,7 @@ namespace HT.Framework
             }
 
             int n_int32;
-            if (Int32.TryParse (number, out n_int32)) {
+            if (int.TryParse (number, out n_int32)) {
                 token = JsonToken.Int;
                 token_value = n_int32;
 
@@ -271,7 +271,7 @@ namespace HT.Framework
             }
 
             long n_int64;
-            if (Int64.TryParse (number, out n_int64)) {
+            if (long.TryParse (number, out n_int64)) {
                 token = JsonToken.Long;
                 token_value = n_int64;
 
@@ -279,7 +279,7 @@ namespace HT.Framework
             }
 
             ulong n_uint64;
-            if (UInt64.TryParse(number, out n_uint64))
+            if (ulong.TryParse(number, out n_uint64))
             {
                 token = JsonToken.Long;
                 token_value = n_uint64;
@@ -427,9 +427,8 @@ namespace HT.Framework
 
                 if (current_symbol == current_input) {
                     if (! ReadToken ()) {
-                        if (automaton_stack.Peek () != (int) ParserToken.End)
-                            throw new JsonException (
-                                "Input doesn't evaluate to proper JSON text");
+                        if (automaton_stack.Peek() != (int)ParserToken.End)
+                            throw new JsonException("输入的值不是正确的json文本！");
 
                         if (parser_return)
                             return true;
