@@ -4,10 +4,10 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 步骤参数
+    /// 主要参数
     /// </summary>
     [Serializable]
-    public sealed class StepParameter
+    public sealed class MainParameter
     {
         public ParameterType Type = ParameterType.String;
         public string Name = "参数名称";
@@ -18,38 +18,11 @@ namespace HT.Framework
         public Vector2 Vector2Value;
         public Vector3 Vector3Value;
         public Color ColorValue;
-        public GameObject GameObjectValue = null;
-        public string GameObjectGUID = "<None>";
-        public string GameObjectPath = "<None>";
+        public GameObject PrefabValue = null;
         public Texture TextureValue = null;
         public AudioClip AudioClipValue = null;
         public Material MaterialValue = null;
 
-        /// <summary>
-        /// 克隆
-        /// </summary>
-        public StepParameter Clone()
-        {
-            StepParameter parameter = new StepParameter();
-            parameter.Type = Type;
-            parameter.Name = Name;
-            parameter.StringValue = StringValue;
-            parameter.IntegerValue = IntegerValue;
-            parameter.FloatValue = FloatValue;
-            parameter.BooleanValue = BooleanValue;
-            parameter.Vector2Value = Vector2Value;
-            parameter.Vector3Value = Vector3Value;
-            parameter.ColorValue = ColorValue;
-            parameter.GameObjectValue = GameObjectValue;
-            parameter.GameObjectGUID = GameObjectGUID;
-            parameter.GameObjectPath = GameObjectPath;
-            parameter.TextureValue = TextureValue;
-            parameter.AudioClipValue = AudioClipValue;
-            parameter.MaterialValue = MaterialValue;
-
-            return parameter;
-        }
-        
         /// <summary>
         /// 参数类型
         /// </summary>
@@ -84,9 +57,9 @@ namespace HT.Framework
             /// </summary>
             Color,
             /// <summary>
-            /// 游戏物体
+            /// 预制体
             /// </summary>
-            GameObject,
+            Prefab,
             /// <summary>
             /// 图片
             /// </summary>

@@ -395,7 +395,7 @@ namespace HT.Framework
             }
         }
         #endregion
-
+        
         #region License
         /// <summary>
         /// 是否永久授权
@@ -509,6 +509,220 @@ namespace HT.Framework
             {
                 return null;
             }
+        }
+        #endregion
+
+        #region Parameter
+        /// <summary>
+        /// 主要参数【请勿在代码中修改】
+        /// </summary>
+        public List<MainParameter> MainParameters = new List<MainParameter>();
+
+        /// <summary>
+        /// 是否存在指定名称、类型的参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="parameterType">参数类型</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistParameter(string parameterName, MainParameter.ParameterType parameterType)
+        {
+            if (MainParameters == null)
+            {
+                return false;
+            }
+            else
+            {
+                MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
+                return mainParameter != null;
+            }
+        }
+        /// <summary>
+        /// 是否存在指定名称的参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistParameter(string parameterName)
+        {
+            if (MainParameters == null)
+            {
+                return false;
+            }
+            else
+            {
+                MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName; });
+                return mainParameter != null;
+            }
+        }
+        /// <summary>
+        /// 通过名称、类型获取所有参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="parameterType">参数类型</param>
+        /// <param name="mainParameters">输出的参数列表</param>
+        public void GetParameters(string parameterName, MainParameter.ParameterType parameterType, List<MainParameter> mainParameters)
+        {
+            if (MainParameters != null)
+            {
+                for (int i = 0; i < MainParameters.Count; i++)
+                {
+                    if (MainParameters[i].Name == parameterName && MainParameters[i].Type == parameterType)
+                    {
+                        mainParameters.Add(MainParameters[i]);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 通过名称获取所有参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="mainParameters">输出的参数列表</param>
+        public void GetParameters(string parameterName, List<MainParameter> mainParameters)
+        {
+            if (MainParameters != null)
+            {
+                for (int i = 0; i < MainParameters.Count; i++)
+                {
+                    if (MainParameters[i].Name == parameterName)
+                    {
+                        mainParameters.Add(MainParameters[i]);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 通过名称获取参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public MainParameter GetParameter(string parameterName)
+        {
+            if (MainParameters == null)
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
+            }
+            else
+            {
+                MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName; });
+                if (mainParameter != null)
+                {
+                    return mainParameter;
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
+                }
+            }
+        }
+        /// <summary>
+        /// 通过名称获取String参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public string GetStringParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.StringValue : "";
+        }
+        /// <summary>
+        /// 通过名称获取Integer参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public int GetIntegerParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.IntegerValue : 0;
+        }
+        /// <summary>
+        /// 通过名称获取Float参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public float GetFloatParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.FloatValue : 0f;
+        }
+        /// <summary>
+        /// 通过名称获取Boolean参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public bool GetBooleanParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.BooleanValue : false;
+        }
+        /// <summary>
+        /// 通过名称获取Vector2参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public Vector2 GetVector2Parameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.Vector2Value : Vector2.zero;
+        }
+        /// <summary>
+        /// 通过名称获取Vector3参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public Vector3 GetVector3Parameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.Vector3Value : Vector3.zero;
+        }
+        /// <summary>
+        /// 通过名称获取Color参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public Color GetColorParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.ColorValue : Color.white;
+        }
+        /// <summary>
+        /// 通过名称获取Prefab参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public GameObject GetPrefabParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.PrefabValue : null;
+        }
+        /// <summary>
+        /// 通过名称获取Texture参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public Texture GetTextureParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.TextureValue : null;
+        }
+        /// <summary>
+        /// 通过名称获取AudioClip参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public AudioClip GetAudioClipParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.AudioClipValue : null;
+        }
+        /// <summary>
+        /// 通过名称获取Material参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public Material GetMaterialParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.MaterialValue : null;
         }
         #endregion
     }

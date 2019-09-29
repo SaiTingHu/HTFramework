@@ -274,6 +274,36 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName);
             return (stepParameter != null) ? stepParameter.GameObjectValue : null;
         }
+        /// <summary>
+        /// 通过名称获取Texture参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public Texture GetTextureParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.TextureValue : null;
+        }
+        /// <summary>
+        /// 通过名称获取AudioClip参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public AudioClip GetAudioClipParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.AudioClipValue : null;
+        }
+        /// <summary>
+        /// 通过名称获取Material参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public Material GetMaterialParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName);
+            return (stepParameter != null) ? stepParameter.MaterialValue : null;
+        }
     }
 
     /// <summary>

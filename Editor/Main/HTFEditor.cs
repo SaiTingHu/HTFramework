@@ -340,5 +340,22 @@ namespace HT.Framework
                 outValue = (T)value;
             }
         }
+        /// <summary>
+        /// 制作一个ColorField
+        /// </summary>
+        protected void ColorField(Color value, out Color outValue, string name, params GUILayoutOption[] options)
+        {
+            Color newValue = EditorGUILayout.ColorField(name, value, options);
+            if (value != newValue)
+            {
+                Undo.RecordObject(target, "Set color value");
+                outValue = newValue;
+                HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+        }
     }
 }

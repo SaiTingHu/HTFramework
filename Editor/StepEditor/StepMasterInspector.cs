@@ -61,7 +61,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Current Step Target: ");
-                EditorGUILayout.ObjectField(Target.CurrentStepContent.Target, typeof(GameObject), true);
+                EditorGUILayout.ObjectField(Target.CurrentStepContent != null ? Target.CurrentStepContent.Target : null, typeof(GameObject), true);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

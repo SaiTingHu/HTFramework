@@ -177,6 +177,15 @@ namespace HT.Framework
                         }
                         #endregion
                         break;
+                    case StepParameter.ParameterType.Texture:
+                        stepParameter.TextureValue = EditorGUILayout.ObjectField(stepParameter.TextureValue, typeof(Texture), false) as Texture;
+                        break;
+                    case StepParameter.ParameterType.AudioClip:
+                        stepParameter.AudioClipValue = EditorGUILayout.ObjectField(stepParameter.AudioClipValue, typeof(AudioClip), false) as AudioClip;
+                        break;
+                    case StepParameter.ParameterType.Material:
+                        stepParameter.MaterialValue = EditorGUILayout.ObjectField(stepParameter.MaterialValue, typeof(Material), false) as Material;
+                        break;
                 }
                 GUILayout.EndHorizontal();
 

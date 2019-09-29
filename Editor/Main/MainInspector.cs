@@ -13,6 +13,7 @@ namespace HT.Framework
         private static bool _showScriptingDefine = false;
         private static bool _showMainData = false;
         private static bool _showLicense = false;
+        private static bool _showParameter = false;
 
         protected override void OnDefaultEnable()
         {
@@ -32,6 +33,7 @@ namespace HT.Framework
             ScriptingDefineGUI();
             MainDataGUI();
             LicenseGUI();
+            ParameterGUI();
         }
 
         protected override void OnInspectorRuntimeGUI()
@@ -444,6 +446,96 @@ namespace HT.Framework
                     Target.Day = 30;
                 }
             }
+        }
+        #endregion
+
+        #region Parameter
+        private void ParameterGUI()
+        {
+            GUILayout.BeginVertical("Box");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(10);
+            _showParameter = EditorGUILayout.Foldout(_showParameter, "Parameter", true);
+            GUILayout.EndHorizontal();
+
+            if (_showParameter)
+            {
+                for (int i = 0; i < Target.MainParameters.Count; i++)
+                {
+                    MainParameter mainParameter = Target.MainParameters[i];
+
+                    GUILayout.BeginVertical("HelpBox");
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Type", GUILayout.Width(40));
+                    EnumPopup(mainParameter.Type, out mainParameter.Type, "");
+                    GUI.color = Color.red;
+                    if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
+                    {
+                        Undo.RecordObject(target, "Delete Main Parameter");
+                        Target.MainParameters.RemoveAt(i);
+                        HasChanged();
+                        continue;
+                    }
+                    GUI.color = Color.white;
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Value:", GUILayout.Width(40));
+                    switch (mainParameter.Type)
+                    {
+                        case MainParameter.ParameterType.String:
+                            TextField(mainParameter.StringValue, out mainParameter.StringValue, "");
+                            break;
+                        case MainParameter.ParameterType.Integer:
+                            IntField(mainParameter.IntegerValue, out mainParameter.IntegerValue, "");
+                            break;
+                        case MainParameter.ParameterType.Float:
+                            FloatField(mainParameter.FloatValue, out mainParameter.FloatValue, "");
+                            break;
+                        case MainParameter.ParameterType.Boolean:
+                            Toggle(mainParameter.BooleanValue, out mainParameter.BooleanValue, "");
+                            break;
+                        case MainParameter.ParameterType.Vector2:
+                            Vector2Field(mainParameter.Vector2Value, out mainParameter.Vector2Value, "");
+                            break;
+                        case MainParameter.ParameterType.Vector3:
+                            Vector3Field(mainParameter.Vector3Value, out mainParameter.Vector3Value, "");
+                            break;
+                        case MainParameter.ParameterType.Color:
+                            ColorField(mainParameter.ColorValue, out mainParameter.ColorValue, "");
+                            break;
+                        case MainParameter.ParameterType.Prefab:
+                            ObjectField(mainParameter.PrefabValue, out mainParameter.PrefabValue, false, "");
+                            break;
+                        case MainParameter.ParameterType.Texture:
+                            ObjectField(mainParameter.TextureValue, out mainParameter.TextureValue, false, "");
+                            break;
+                        case MainParameter.ParameterType.AudioClip:
+                            ObjectField(mainParameter.AudioClipValue, out mainParameter.AudioClipValue, false, "");
+                            break;
+                        case MainParameter.ParameterType.Material:
+                            ObjectField(mainParameter.MaterialValue, out mainParameter.MaterialValue, false, "");
+                            break;
+                    }
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.EndVertical();
+                }
+
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("New", "Minibutton"))
+                {
+                    Undo.RecordObject(target, "New Main Parameter");
+                    Target.MainParameters.Add(new MainParameter());
+                    HasChanged();
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.EndVertical();
         }
         #endregion
     }
