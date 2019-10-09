@@ -568,6 +568,15 @@ namespace HT.Framework
                 {
                     GUI.FocusControl(null);
                     GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Enter"), false, () =>
+                    {
+                        Vector2 direction = (new Vector2(position.width / 2, position.height / 2) - _currentStepObj.EnterAnchor);
+                        for (int m = 0; m < _currentStepObj.Operations.Count; m++)
+                        {
+                            _currentStepObj.Operations[m].Anchor += direction;
+                        }
+                        _currentStepObj.EnterAnchor += direction;
+                    });
                     for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                     {
                         int j = i;
@@ -1388,7 +1397,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 打开帮助脚本
+        /// 打开助手脚本
         /// </summary>
         public void OpenHelperScript(string helper)
         {

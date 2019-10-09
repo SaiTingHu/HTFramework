@@ -178,13 +178,19 @@ namespace HT.Framework
                         #endregion
                         break;
                     case StepParameter.ParameterType.Texture:
+                        GUI.color = stepParameter.TextureValue ? Color.white : Color.gray;
                         stepParameter.TextureValue = EditorGUILayout.ObjectField(stepParameter.TextureValue, typeof(Texture), false) as Texture;
+                        GUI.color = Color.white;
                         break;
                     case StepParameter.ParameterType.AudioClip:
+                        GUI.color = stepParameter.AudioClipValue ? Color.white : Color.gray;
                         stepParameter.AudioClipValue = EditorGUILayout.ObjectField(stepParameter.AudioClipValue, typeof(AudioClip), false) as AudioClip;
+                        GUI.color = Color.white;
                         break;
                     case StepParameter.ParameterType.Material:
+                        GUI.color = stepParameter.MaterialValue ? Color.white : Color.gray;
                         stepParameter.MaterialValue = EditorGUILayout.ObjectField(stepParameter.MaterialValue, typeof(Material), false) as Material;
+                        GUI.color = Color.white;
                         break;
                 }
                 GUILayout.EndHorizontal();
