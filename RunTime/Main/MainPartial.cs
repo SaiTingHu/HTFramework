@@ -724,6 +724,149 @@ namespace HT.Framework
             MainParameter mainParameter = GetParameter(parameterName);
             return (mainParameter != null) ? mainParameter.MaterialValue : null;
         }
+        /// <summary>
+        /// 通过名称设置String参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetStringParameter(string parameterName, string value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.StringValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Integer参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetIntegerParameter(string parameterName, int value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.IntegerValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Float参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetFloatParameter(string parameterName, float value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.FloatValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Boolean参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetBooleanParameter(string parameterName, bool value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.BooleanValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Vector2参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetVector2Parameter(string parameterName, Vector2 value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.Vector2Value = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Vector3参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetVector3Parameter(string parameterName, Vector3 value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.Vector3Value = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Color参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetColorParameter(string parameterName, Color value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.ColorValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Prefab参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetPrefabParameter(string parameterName, GameObject value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.PrefabValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Texture参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetTextureParameter(string parameterName, Texture value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.TextureValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置AudioClip参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetAudioClipParameter(string parameterName, AudioClip value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.AudioClipValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置Material参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetMaterialParameter(string parameterName, Material value)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.MaterialValue = value;
+            }
+        }
         #endregion
     }
 
