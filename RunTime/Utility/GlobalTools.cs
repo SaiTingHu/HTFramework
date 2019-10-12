@@ -13,6 +13,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -523,10 +524,26 @@ namespace HT.Framework
             else Result.Clear();
 
             List<T> sub = new List<T>();
-            GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject rootObj in rootObjs)
             {
                 rootObj.transform.GetComponentsInChildren(true, sub);
+                Result.AddRange(sub);
+            }
+        }
+        /// <summary>
+        /// 获取当前打开的所有场景中的根物体
+        /// </summary>
+        /// <param name="Result">物体列表</param>
+        public static void GetRootGameObjectsInAllScene(List<GameObject> Result)
+        {
+            if (Result == null) Result = new List<GameObject>();
+            else Result.Clear();
+
+            List<GameObject> sub = new List<GameObject>();
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                SceneManager.GetSceneAt(i).GetRootGameObjects(sub);
                 Result.AddRange(sub);
             }
         }

@@ -149,6 +149,10 @@ namespace HT.Framework
         /// </summary>
         public static DataSetManager m_DataSet { get; private set; }
         /// <summary>
+        /// 调试模块
+        /// </summary>
+        public static DebugManager m_Debug { get; private set; }
+        /// <summary>
         /// 实体模块
         /// </summary>
         public static EntityManager m_Entity { get; private set; }
@@ -214,6 +218,7 @@ namespace HT.Framework
             m_Controller = transform.GetComponentByChild<ControllerManager>("Controller");
             m_Coroutiner = transform.GetComponentByChild<Coroutiner>("Coroutiner");
             m_DataSet = transform.GetComponentByChild<DataSetManager>("DataSet");
+            m_Debug = transform.GetComponentByChild<DebugManager>("Debug");
             m_Entity = transform.GetComponentByChild<EntityManager>("Entity");
             m_Event = transform.GetComponentByChild<EventManager>("Event");
             m_ExceptionHandler = transform.GetComponentByChild<ExceptionHandler>("ExceptionHandler");
@@ -234,6 +239,7 @@ namespace HT.Framework
             m_Controller.OnInitialization();
             m_Coroutiner.OnInitialization();
             m_DataSet.OnInitialization();
+            m_Debug.OnInitialization();
             m_Entity.OnInitialization();
             m_Event.OnInitialization();
             m_ExceptionHandler.OnInitialization();
@@ -256,6 +262,7 @@ namespace HT.Framework
             m_Controller.OnPreparatory();
             m_Coroutiner.OnPreparatory();
             m_DataSet.OnPreparatory();
+            m_Debug.OnPreparatory();
             m_Entity.OnPreparatory();
             m_Event.OnPreparatory();
             m_ExceptionHandler.OnPreparatory();
@@ -283,6 +290,7 @@ namespace HT.Framework
             m_Controller.OnRefresh();
             m_Coroutiner.OnRefresh();
             m_DataSet.OnRefresh();
+            m_Debug.OnRefresh();
             m_Entity.OnRefresh();
             m_Event.OnRefresh();
             m_ExceptionHandler.OnRefresh();
@@ -305,6 +313,7 @@ namespace HT.Framework
             m_Controller.OnTermination();
             m_Coroutiner.OnTermination();
             m_DataSet.OnTermination();
+            m_Debug.OnTermination();
             m_Entity.OnTermination();
             m_Event.OnTermination();
             m_ExceptionHandler.OnTermination();
@@ -327,6 +336,7 @@ namespace HT.Framework
             m_Controller.OnPause();
             m_Coroutiner.OnPause();
             m_DataSet.OnPause();
+            m_Debug.OnPause();
             m_Entity.OnPause();
             m_Event.OnPause();
             m_ExceptionHandler.OnPause();
@@ -349,6 +359,7 @@ namespace HT.Framework
             m_Controller.OnUnPause();
             m_Coroutiner.OnUnPause();
             m_DataSet.OnUnPause();
+            m_Debug.OnUnPause();
             m_Entity.OnUnPause();
             m_Event.OnUnPause();
             m_ExceptionHandler.OnUnPause();
@@ -880,6 +891,7 @@ namespace HT.Framework
         Controller,
         Coroutiner,
         DataSet,
+        Debug,
         Entity,
         Event,
         ExceptionHandler,
