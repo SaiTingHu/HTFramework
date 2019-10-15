@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -17,7 +16,26 @@ namespace HT.Framework
         /// <summary>
         /// 当前模块
         /// </summary>
-        public DebuggerModule Module { get; private set; } = DebuggerModule.Console;
+        public DebuggerModule Module
+        {
+            get
+            {
+                return _module;
+            }
+            protected set
+            {
+                if (_module != value)
+                {
+                    _module = value;
+                    switch (_module)
+                    {
+                        case DebuggerModule.Scene:
+                            _debuggerScene.Refresh();
+                            break;
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Private Field
@@ -26,8 +44,7 @@ namespace HT.Framework
         private Rect _minWindowRect;
         private Rect _maxWindowRect;
         private bool _isExpand = false;
-        private Texture _expandTexture;
-        private Texture _retractTexture;
+        private DebuggerModule _module = DebuggerModule.Console;
         //FPS
         private int _fps = 0;
         private int _minfps = 60;
@@ -48,19 +65,11 @@ namespace HT.Framework
         private Vector2 _scrollLogView = Vector2.zero;
         private Vector2 _scrollCurrentLogView = Vector2.zero;
         //Scene
-        private List<DebuggerGameObject> _gameObjects = new List<DebuggerGameObject>();
-        private List<DebuggerGameObject> _gameObjectRoots = new List<DebuggerGameObject>();
-        private Queue<DebuggerGameObject> _gameObjectPool = new Queue<DebuggerGameObject>();
-        private DebuggerGameObject _currentGameObject;
-        private List<Component> _components = new List<Component>();
-        private Component _currentComponent;
-        private DebuggerComponentBase _currentDebuggerComponent;
-
-        private Dictionary<Type, Type> _debuggerComponents = new Dictionary<Type, Type>();
-        private string _transformFiltrate = "";
+        private DebuggerScene _debuggerScene;
+        private Texture _expandTexture;
+        private Texture _retractTexture;
+        private List<DebuggerGameObject> _debuggerGameObjects = new List<DebuggerGameObject>();
         private List<Type> _addComponents = new List<Type>();
-        private string _componentFiltrate = "";
-        private bool _isAddComponent = false;
         private Vector2 _scrollSceneView = Vector2.zero;
         private Vector2 _scrollInspectorView = Vector2.zero;
         //Memory
@@ -89,22 +98,10 @@ namespace HT.Framework
             _dragWindowRect = new Rect(0, 0, 10000, 20);
             _minWindowRect = new Rect(0, 0, 100, 60);
             _maxWindowRect = new Rect(0, 0, 700, 400);
+            
+            _debuggerScene = new DebuggerScene();
             _expandTexture = Resources.Load<Texture>("Texture/Debug/Expand");
             _retractTexture = Resources.Load<Texture>("Texture/Debug/Retract");
-
-            Type baseType = typeof(DebuggerComponentBase);
-            List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
-            for (int i = 0; i < types.Count; i++)
-            {
-                if (types[i].IsSubclassOf(baseType))
-                {
-                    CustomDebuggerAttribute attr = types[i].GetCustomAttribute<CustomDebuggerAttribute>();
-                    if (attr != null)
-                    {
-                        _debuggerComponents.Add(attr.InspectedType, types[i]);
-                    }
-                }
-            }
         }
         public virtual void OnDestory()
         {
@@ -117,10 +114,26 @@ namespace HT.Framework
             if (_isExpand)
             {
                 _maxWindowRect = GUI.Window(0, _maxWindowRect, OnExpandGUIWindow, "DEBUGGER");
+                if (_maxWindowRect.x < 0)
+                {
+                    _maxWindowRect.x = 0;
+                }
+                if (_maxWindowRect.y < 0)
+                {
+                    _maxWindowRect.y = 0;
+                }
             }
             else
             {
                 _minWindowRect = GUI.Window(0, _minWindowRect, OnRetractGUIWindow, "DEBUGGER");
+                if (_minWindowRect.x < 0)
+                {
+                    _minWindowRect.x = 0;
+                }
+                if (_minWindowRect.y < 0)
+                {
+                    _minWindowRect.y = 0;
+                }
             }
 
             FPSUpdate();
@@ -145,8 +158,6 @@ namespace HT.Framework
             if (GUILayout.Button("Scene", GUILayout.Height(40)))
             {
                 Module = DebuggerModule.Scene;
-                //RefreshSceneTransforms();
-                //RefreshTransformComponents();
             }
             GUI.contentColor = (Module == DebuggerModule.Memory ? Color.white : Color.gray);
             if (GUILayout.Button("Memory", GUILayout.Height(40)))
@@ -195,7 +206,7 @@ namespace HT.Framework
                     GUI.contentColor = Color.white;
                     if (GUILayout.Button("Clear", GUILayout.Width(60), GUILayout.Height(20)))
                     {
-                        _consoleLogs.Clear();
+                        Main.m_ReferencePool.Despawns(_consoleLogs);
                         _fatalLogCount = 0;
                         _warningLogCount = 0;
                         _errorLogCount = 0;
@@ -270,8 +281,7 @@ namespace HT.Framework
                     GUI.contentColor = Color.white;
                     if (GUILayout.Button("Refresh", GUILayout.Width(60), GUILayout.Height(20)))
                     {
-                        Main.Current.StartCoroutine(CollectDebuggerGameObjects());
-                        CollectDebuggerComponents();
+                        _debuggerScene.Refresh();
                         return;
                     }
                     GUILayout.EndHorizontal();
@@ -280,12 +290,74 @@ namespace HT.Framework
 
                     {
                         GUILayout.BeginVertical("Box", GUILayout.Width(335));
+                        GUI.contentColor = Color.yellow;
                         GUILayout.Label("Hierarchy", GUILayout.Height(20));
+                        GUI.contentColor = Color.white;
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("Search:", GUILayout.Width(60));
+                        _debuggerScene.GameObjectFiltrate = GUILayout.TextField(_debuggerScene.GameObjectFiltrate);
+                        if (GUILayout.Button("Search", GUILayout.Width(60)))
+                        {
+                            _debuggerScene.ExecuteGameObjectFiltrate(_debuggerGameObjects);
+                        }
+                        GUILayout.EndHorizontal();
 
                         _scrollSceneView = GUILayout.BeginScrollView(_scrollSceneView);
-                        for (int i = 0; i < _gameObjectRoots.Count; i++)
+                        if (_debuggerScene.IsShowGameObjectFiltrate)
                         {
-                            OnDebuggerGameObjectGUI(_gameObjectRoots[i], 0);
+                            for (int i = 0; i < _debuggerGameObjects.Count; i++)
+                            {
+                                GUILayout.BeginHorizontal();
+                                GUI.contentColor = _debuggerGameObjects[i].Target ? (_debuggerGameObjects[i].Target.activeSelf ? Color.cyan : Color.gray) : Color.red;
+                                bool value = _debuggerScene.CurrentGameObject == _debuggerGameObjects[i];
+                                if (GUILayout.Toggle(value, _debuggerGameObjects[i].Name) != value)
+                                {
+                                    if (_debuggerScene.CurrentGameObject != _debuggerGameObjects[i])
+                                    {
+                                        _debuggerScene.CurrentGameObject = _debuggerGameObjects[i];
+                                    }
+                                    else
+                                    {
+                                        _debuggerScene.CurrentGameObject = null;
+                                    }
+                                }
+                                GUILayout.FlexibleSpace();
+                                GUILayout.EndHorizontal();
+
+                                if (_debuggerScene.CurrentGameObject == _debuggerGameObjects[i] && _debuggerGameObjects[i].Target)
+                                {
+                                    GUILayout.BeginVertical("Box");
+
+                                    GUILayout.BeginHorizontal();
+                                    bool active = GUILayout.Toggle(_debuggerGameObjects[i].Target.activeSelf, "Active");
+                                    if (active != _debuggerGameObjects[i].Target.activeSelf)
+                                    {
+                                        _debuggerGameObjects[i].Target.SetActive(active);
+                                    }
+                                    GUILayout.EndHorizontal();
+
+                                    GUILayout.BeginHorizontal();
+                                    GUILayout.Label("Tag: " + _debuggerGameObjects[i].Target.tag);
+                                    GUILayout.Label("Layer: " + _debuggerGameObjects[i].Layer);
+                                    GUILayout.FlexibleSpace();
+                                    if (GUILayout.Button("-", GUILayout.Width(20)))
+                                    {
+                                        Main.Kill(_debuggerGameObjects[i].Target);
+                                        _debuggerScene.Refresh();
+                                    }
+                                    GUILayout.EndHorizontal();
+
+                                    GUILayout.EndVertical();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < _debuggerScene.GameObjectRoots.Count; i++)
+                            {
+                                OnDebuggerGameObjectGUI(_debuggerScene.GameObjectRoots[i], 0);
+                            }
                         }
                         GUILayout.EndScrollView();
 
@@ -294,8 +366,93 @@ namespace HT.Framework
 
                     {
                         GUILayout.BeginVertical("Box", GUILayout.Width(335));
+                        GUI.contentColor = Color.yellow;
                         GUILayout.Label("Inspector", GUILayout.Height(20));
+                        GUI.contentColor = Color.white;
 
+                        if (_debuggerScene.CurrentGameObject != null && _debuggerScene.CurrentGameObject.Target)
+                        {
+                            GUILayout.BeginHorizontal();
+                            _debuggerScene.IsReadyAddComponent = GUILayout.Toggle(_debuggerScene.IsReadyAddComponent, "Add Component", "Button");
+                            if (_debuggerScene.CurrentComponent != null)
+                            {
+                                if (GUILayout.Button("Delete Component"))
+                                {
+                                    Main.Kill(_debuggerScene.CurrentComponent);
+                                    _debuggerScene.CurrentGameObject = _debuggerScene.CurrentGameObject;
+                                }
+                            }
+                            GUILayout.EndHorizontal();
+                        }
+
+                        _scrollInspectorView = GUILayout.BeginScrollView(_scrollInspectorView);
+                        if (_debuggerScene.CurrentGameObject != null && _debuggerScene.CurrentGameObject.Target)
+                        {
+                            if (_debuggerScene.IsReadyAddComponent)
+                            {
+                                GUILayout.BeginHorizontal();
+                                GUILayout.Label("Search:", GUILayout.Width(60));
+                                _debuggerScene.ComponentFiltrate = GUILayout.TextField(_debuggerScene.ComponentFiltrate);
+                                if (GUILayout.Button("Search", GUILayout.Width(60)))
+                                {
+                                    _debuggerScene.ExecuteComponentFiltrate(_addComponents);
+                                }
+                                GUILayout.EndHorizontal();
+
+                                for (int i = 0; i < _addComponents.Count; i++)
+                                {
+                                    if (GUILayout.Button(_addComponents[i].FullName, "Label"))
+                                    {
+                                        _debuggerScene.CurrentGameObject.Target.AddComponent(_addComponents[i]);
+                                        _debuggerScene.CurrentGameObject = _debuggerScene.CurrentGameObject;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; i < _debuggerScene.Components.Count; i++)
+                                {
+                                    Component component = _debuggerScene.Components[i];
+                                    if (component)
+                                    {
+                                        GUILayout.BeginHorizontal();
+                                        GUI.contentColor = Color.cyan;
+                                        bool value = _debuggerScene.CurrentComponent == component;
+                                        if (GUILayout.Toggle(value, component.GetType().Name) != value)
+                                        {
+                                            if (_debuggerScene.CurrentComponent != component)
+                                            {
+                                                _debuggerScene.CurrentComponent = component;
+                                            }
+                                            else
+                                            {
+                                                _debuggerScene.CurrentComponent = null;
+                                            }
+                                        }
+                                        GUILayout.FlexibleSpace();
+                                        GUILayout.EndHorizontal();
+
+                                        if (_debuggerScene.CurrentComponent == component)
+                                        {
+                                            GUI.contentColor = Color.white;
+                                            GUILayout.BeginVertical("Box");
+
+                                            if (_debuggerScene.CurrentDebuggerComponent != null)
+                                            {
+                                                _debuggerScene.CurrentDebuggerComponent.OnDebuggerGUI();
+                                            }
+                                            else
+                                            {
+                                                GUILayout.Label("No Debugger GUI!");
+                                            }
+
+                                            GUILayout.EndVertical();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        GUILayout.EndScrollView();
 
                         GUILayout.EndVertical();
                     }
@@ -575,7 +732,7 @@ namespace HT.Framework
         /// </summary>
         private void OnLogMessageReceived(string condition, string stackTrace, LogType type)
         {
-            DebuggerConsoleLog log = new DebuggerConsoleLog();
+            DebuggerConsoleLog log = Main.m_ReferencePool.Spawn<DebuggerConsoleLog>();
             log.Time = DateTime.Now.ToString("HH:mm:ss");
             log.Message = condition;
             log.StackTrace = stackTrace;
@@ -663,94 +820,6 @@ namespace HT.Framework
                 yield return 0;
             }
         }
-        /// <summary>
-        /// 收集调试器游戏对象
-        /// </summary>
-        private IEnumerator CollectDebuggerGameObjects()
-        {
-            yield return YieldInstructioner.GetWaitForEndOfFrame();
-
-            for (int i = 0; i < _gameObjects.Count; i++)
-            {
-                DespawnDebuggerGameObject(_gameObjects[i]);
-            }
-            _gameObjects.Clear();
-            _gameObjectRoots.Clear();
-
-            List<GameObject> gameObjects = new List<GameObject>();
-            GlobalTools.GetRootGameObjectsInAllScene(gameObjects);
-            gameObjects.Add(Main.Current.gameObject);
-            for (int i = 0; i < gameObjects.Count; i++)
-            {
-                CollectDebuggerGameObject(gameObjects[i].transform, null);
-            }
-            _currentGameObject = null;
-        }
-        /// <summary>
-        /// 收集游戏对象及子物体
-        /// </summary>
-        private void CollectDebuggerGameObject(Transform transform, DebuggerGameObject parent)
-        {
-            DebuggerGameObject debuggerGameObject = SpawnDebuggerGameObject();
-            debuggerGameObject.Target = transform.gameObject;
-            debuggerGameObject.Name = transform.gameObject.name;
-            debuggerGameObject.Layer = LayerMask.LayerToName(transform.gameObject.layer);
-            debuggerGameObject.Parent = parent;
-            _gameObjects.Add(debuggerGameObject);
-
-            if (debuggerGameObject.Parent != null)
-            {
-                debuggerGameObject.Parent.Childrens.Add(debuggerGameObject);
-            }
-            else
-            {
-                _gameObjectRoots.Add(debuggerGameObject);
-            }
-
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                CollectDebuggerGameObject(transform.GetChild(i), debuggerGameObject);
-            }
-        }
-        /// <summary>
-        /// 收集调试器组件
-        /// </summary>
-        private void CollectDebuggerComponents()
-        {
-            _components.Clear();
-            if (_currentGameObject != null && _currentGameObject.Target)
-            {
-                _currentGameObject.Target.GetComponents(_components);
-            }
-            _currentComponent = null;
-            _currentDebuggerComponent = null;
-            _isAddComponent = false;
-        }
-        /// <summary>
-        /// 生成调试器游戏对象
-        /// </summary>
-        private DebuggerGameObject SpawnDebuggerGameObject()
-        {
-            if (_gameObjectPool.Count > 0)
-            {
-                return _gameObjectPool.Dequeue();
-            }
-            else
-            {
-                return new DebuggerGameObject(); 
-            }
-        }
-        /// <summary>
-        /// 回收调试器游戏对象
-        /// </summary>
-        private void DespawnDebuggerGameObject(DebuggerGameObject gameObject)
-        {
-            gameObject.Target = null;
-            gameObject.IsExpand = false;
-            gameObject.Parent = null;
-            gameObject.Childrens.Clear();
-            _gameObjectPool.Enqueue(gameObject);
-        }
         #endregion
 
         #region GUI Function
@@ -773,23 +842,22 @@ namespace HT.Framework
             {
                 GUILayout.Space(20 * level + 20);
             }
-            bool value = _currentGameObject == gameObject;
+            bool value = _debuggerScene.CurrentGameObject == gameObject;
             if (GUILayout.Toggle(value, gameObject.Name) != value)
             {
-                if (_currentGameObject != gameObject)
+                if (_debuggerScene.CurrentGameObject != gameObject)
                 {
-                    _currentGameObject = gameObject;
+                    _debuggerScene.CurrentGameObject = gameObject;
                 }
                 else
                 {
-                    _currentGameObject = null;
+                    _debuggerScene.CurrentGameObject = null;
                 }
-                CollectDebuggerComponents();
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            if (_currentGameObject == gameObject && gameObject.Target)
+            if (_debuggerScene.CurrentGameObject == gameObject && gameObject.Target)
             {
                 GUILayout.BeginVertical("Box");
 
@@ -808,9 +876,7 @@ namespace HT.Framework
                 if (GUILayout.Button("-", GUILayout.Width(20)))
                 {
                     Main.Kill(gameObject.Target);
-                    Main.Current.StartCoroutine(CollectDebuggerGameObjects());
-                    CollectDebuggerComponents();
-                    return;
+                    _debuggerScene.Refresh();
                 }
                 GUILayout.EndHorizontal();
 

@@ -482,6 +482,11 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
+                    GUILayout.Label("Name:", GUILayout.Width(40));
+                    TextField(mainParameter.Name, out mainParameter.Name, "");
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
                     GUILayout.Label("Value:", GUILayout.Width(40));
                     switch (mainParameter.Type)
                     {

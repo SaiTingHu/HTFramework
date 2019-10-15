@@ -11,13 +11,13 @@ namespace HT.Framework
     {
         public ParameterType Type = ParameterType.String;
         public string Name = "参数名称";
-        public string StringValue;
-        public int IntegerValue;
-        public float FloatValue;
-        public bool BooleanValue;
-        public Vector2 Vector2Value;
-        public Vector3 Vector3Value;
-        public Color ColorValue;
+        public string StringValue = "";
+        public int IntegerValue = 0;
+        public float FloatValue = 0;
+        public bool BooleanValue = false;
+        public Vector2 Vector2Value = Vector2.zero;
+        public Vector3 Vector3Value = Vector3.zero;
+        public Color ColorValue = Color.white;
         public GameObject PrefabValue = null;
         public Texture TextureValue = null;
         public AudioClip AudioClipValue = null;

@@ -35,6 +35,7 @@ namespace HT.Framework
         {
             ModuleRefresh();
             LicenseRefresh();
+            LogicLoopRefresh();
         }
 
         private void OnDestroy()

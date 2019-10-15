@@ -126,7 +126,7 @@ namespace HT.Framework
             objs.Clear();
         }
         #endregion
-
+        
         #region Module
         /// <summary>
         /// 切面调试模块
@@ -877,6 +877,23 @@ namespace HT.Framework
             {
                 mainParameter.MaterialValue = value;
             }
+        }
+        #endregion
+
+        #region LogicLoop
+        /// <summary>
+        /// 主逻辑循环事件
+        /// </summary>
+        public event HTFAction LogicLoopEvent;
+
+        private void LogicLoopRefresh()
+        {
+            if (_isPause)
+            {
+                return;
+            }
+
+            LogicLoopEvent?.Invoke();
         }
         #endregion
     }

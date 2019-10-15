@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 调试器游戏对象
     /// </summary>
-    public sealed class DebuggerGameObject
+    public sealed class DebuggerGameObject : IReference
     {
         /// <summary>
         /// 游戏对象
@@ -32,5 +32,13 @@ namespace HT.Framework
         /// 子对象
         /// </summary>
         public List<DebuggerGameObject> Childrens = new List<DebuggerGameObject>();
+
+        public void Reset()
+        {
+            Target = null;
+            IsExpand = false;
+            Parent = null;
+            Childrens.Clear();
+        }
     }
 }
