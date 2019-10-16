@@ -7,7 +7,7 @@ namespace HT.Framework
 {
     [CustomEditor(typeof(DebugManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
-    [CSDNBlogURL("")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102570194")]
     public sealed class DebugManagerInspector : HTFEditor<DebugManager>
     {
         protected override void OnInspectorDefaultGUI()

@@ -72,18 +72,21 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.TextField(_currentScriptingDefine.Defined);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
                 GUI.enabled = _currentScriptingDefine.IsAnyDefined;
-                if (GUILayout.Button("Clear", "Minibutton", GUILayout.Width(40)))
+                if (GUILayout.Button("Clear", "Minibuttonleft"))
                 {
                     _currentScriptingDefine.ClearDefines();
                 }
                 GUI.enabled = true;
-                if (GUILayout.Button("New", "Minibutton", GUILayout.Width(40)))
+                if (GUILayout.Button("New", "MiniButtonmid"))
                 {
                     _isNewDefine = !_isNewDefine;
                     _newDefine = "";
                 }
-                if (GUILayout.Button("Apply", "Minibutton", GUILayout.Width(45)))
+                if (GUILayout.Button("Apply", "Minibuttonright"))
                 {
                     _currentScriptingDefine.Apply();
                 }
@@ -93,7 +96,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     _newDefine = EditorGUILayout.TextField(_newDefine);
-                    if (GUILayout.Button("OK", "Minibutton", GUILayout.Width(30)))
+                    if (GUILayout.Button("OK", "Minibuttonleft", GUILayout.Width(30)))
                     {
                         if (_newDefine != "")
                         {
@@ -106,7 +109,7 @@ namespace HT.Framework
                             GlobalTools.LogError("输入的宏定义不能为空！");
                         }
                     }
-                    if (GUILayout.Button("NO", "Minibutton", GUILayout.Width(30)))
+                    if (GUILayout.Button("NO", "Minibuttonright", GUILayout.Width(30)))
                     {
                         _isNewDefine = false;
                         _newDefine = "";
