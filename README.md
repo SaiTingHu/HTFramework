@@ -22,6 +22,8 @@
 
 - [DataSet](https://wanderer.blog.csdn.net/article/details/89395574) - 自定义数据集，任何需要存储数据的地方都可以定义为自定义数据集，包括预制的配置文件、运行时生成的动态数据、从后台拉取的各种数据等。
 
+- [Debug](https://wanderer.blog.csdn.net/article/details/102570194) - Debug模块自带Debugger运行时调试器，可以监控一些常规数据与软件运行环境，或是进行一些高级的操作，比如检索场景所有游戏对象（等效于编辑器内Hierarchy窗口的功能），检索游戏对象的所有组件（等效于编辑器内Inspector窗口的功能）。
+
 - [Entity](https://wanderer.blog.csdn.net/article/details/101541066) - 实体管理器，除去UI以外，场景中的其余可见物体都应该抽象为Entity，在Entity之上配合FSM一起管理逻辑，将是一个不错的搭配。
 
 - [Event](https://wanderer.blog.csdn.net/article/details/85689865) - 可以将一切操作定义为具体的全局事件，通过订阅事件、抛出事件以驱动整个业务逻辑。
