@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -18,6 +19,7 @@ namespace HT.Framework
         private CSDNBlogURLAttribute _CSDNURL;
         private Texture _GithubIcon;
         private Texture _CSDNIcon;
+        private Dictionary<string, SerializedProperty> _serializedPropertys = new Dictionary<string, SerializedProperty>();
 
         /// <summary>
         /// 是否启用运行时调试数据
@@ -37,6 +39,7 @@ namespace HT.Framework
             _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
             _GithubIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
             _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
+            _serializedPropertys.Clear();
 
             OnDefaultEnable();
 
@@ -93,6 +96,8 @@ namespace HT.Framework
 
                 GUILayout.EndVertical();
             }
+
+            serializedObject.ApplyModifiedProperties();
         }
 
         protected virtual void OnDefaultEnable()
@@ -355,6 +360,62 @@ namespace HT.Framework
             else
             {
                 outValue = value;
+            }
+        }
+        /// <summary>
+        /// 制作一个PropertyField
+        /// </summary>
+        protected void PropertyField(string propertyName, string name, params GUILayoutOption[] options)
+        {
+            SerializedProperty serializedProperty;
+            if (_serializedPropertys.ContainsKey(propertyName))
+            {
+                serializedProperty = _serializedPropertys[propertyName];
+            }
+            else
+            {
+                serializedProperty = serializedObject.FindProperty(propertyName);
+                if (serializedProperty != null)
+                {
+                    _serializedPropertys.Add(propertyName, serializedProperty);
+                }
+            }
+
+            if (serializedProperty != null)
+            {
+                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), true, options);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+            }
+        }
+        /// <summary>
+        /// 制作一个PropertyField
+        /// </summary>
+        protected void PropertyField(string propertyName, params GUILayoutOption[] options)
+        {
+            SerializedProperty serializedProperty;
+            if (_serializedPropertys.ContainsKey(propertyName))
+            {
+                serializedProperty = _serializedPropertys[propertyName];
+            }
+            else
+            {
+                serializedProperty = serializedObject.FindProperty(propertyName);
+                if (serializedProperty != null)
+                {
+                    _serializedPropertys.Add(propertyName, serializedProperty);
+                }
+            }
+
+            if (serializedProperty != null)
+            {
+                EditorGUILayout.PropertyField(serializedProperty, true, options);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
         }
     }
