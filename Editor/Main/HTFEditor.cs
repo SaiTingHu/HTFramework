@@ -418,5 +418,61 @@ namespace HT.Framework
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
         }
+        /// <summary>
+        /// 制作一个PropertyField
+        /// </summary>
+        protected void PropertyField(string propertyName, string name, bool includeChildren, params GUILayoutOption[] options)
+        {
+            SerializedProperty serializedProperty;
+            if (_serializedPropertys.ContainsKey(propertyName))
+            {
+                serializedProperty = _serializedPropertys[propertyName];
+            }
+            else
+            {
+                serializedProperty = serializedObject.FindProperty(propertyName);
+                if (serializedProperty != null)
+                {
+                    _serializedPropertys.Add(propertyName, serializedProperty);
+                }
+            }
+
+            if (serializedProperty != null)
+            {
+                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), includeChildren, options);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+            }
+        }
+        /// <summary>
+        /// 制作一个PropertyField
+        /// </summary>
+        protected void PropertyField(string propertyName, bool includeChildren, params GUILayoutOption[] options)
+        {
+            SerializedProperty serializedProperty;
+            if (_serializedPropertys.ContainsKey(propertyName))
+            {
+                serializedProperty = _serializedPropertys[propertyName];
+            }
+            else
+            {
+                serializedProperty = serializedObject.FindProperty(propertyName);
+                if (serializedProperty != null)
+                {
+                    _serializedPropertys.Add(propertyName, serializedProperty);
+                }
+            }
+
+            if (serializedProperty != null)
+            {
+                EditorGUILayout.PropertyField(serializedProperty, includeChildren, options);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+            }
+        }
     }
 }
