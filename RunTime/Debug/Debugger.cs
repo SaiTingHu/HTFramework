@@ -279,7 +279,7 @@ namespace HT.Framework
                     #region Scene
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    if (GUILayout.Button("Refresh", GUILayout.Width(60), GUILayout.Height(20)))
+                    if (GUILayout.Button("Refresh", GUILayout.Width(80), GUILayout.Height(20)))
                     {
                         _debuggerScene.Refresh();
                         return;
@@ -330,22 +330,23 @@ namespace HT.Framework
                                     GUILayout.BeginVertical("Box");
 
                                     GUILayout.BeginHorizontal();
+                                    GUI.contentColor = _debuggerGameObjects[i].Target.activeSelf ? Color.white : Color.gray;
                                     bool active = GUILayout.Toggle(_debuggerGameObjects[i].Target.activeSelf, "Active");
                                     if (active != _debuggerGameObjects[i].Target.activeSelf)
                                     {
                                         _debuggerGameObjects[i].Target.SetActive(active);
+                                    }
+                                    GUILayout.FlexibleSpace();
+                                    if (GUILayout.Button("Delete"))
+                                    {
+                                        Main.Kill(_debuggerGameObjects[i].Target);
+                                        _debuggerScene.Refresh();
                                     }
                                     GUILayout.EndHorizontal();
 
                                     GUILayout.BeginHorizontal();
                                     GUILayout.Label("Tag: " + _debuggerGameObjects[i].Target.tag);
                                     GUILayout.Label("Layer: " + _debuggerGameObjects[i].Layer);
-                                    GUILayout.FlexibleSpace();
-                                    if (GUILayout.Button("-", GUILayout.Width(20)))
-                                    {
-                                        Main.Kill(_debuggerGameObjects[i].Target);
-                                        _debuggerScene.Refresh();
-                                    }
                                     GUILayout.EndHorizontal();
 
                                     GUILayout.EndVertical();
@@ -862,22 +863,23 @@ namespace HT.Framework
                 GUILayout.BeginVertical("Box");
 
                 GUILayout.BeginHorizontal();
+                GUI.contentColor = gameObject.Target.activeSelf ? Color.white : Color.gray;
                 bool active = GUILayout.Toggle(gameObject.Target.activeSelf, "Active");
                 if (active != gameObject.Target.activeSelf)
                 {
                     gameObject.Target.SetActive(active);
+                }
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Delete"))
+                {
+                    Main.Kill(gameObject.Target);
+                    _debuggerScene.Refresh();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Tag: " + gameObject.Target.tag);
                 GUILayout.Label("Layer: " + gameObject.Layer);
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("-", GUILayout.Width(20)))
-                {
-                    Main.Kill(gameObject.Target);
-                    _debuggerScene.Refresh();
-                }
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
