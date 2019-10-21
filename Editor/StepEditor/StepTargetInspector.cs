@@ -13,34 +13,32 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUI.color = Color.cyan;
-            if (GUILayout.Button("Generate GUID"))
+            Button(GenerateGUID, "Generate GUID");
+            GUI.color = Color.white;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            TextField(Target.GUID, out Target.GUID, "GUID");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            EnumPopup(Target.State, out Target.State, "State");
+            GUILayout.EndHorizontal();
+        }
+
+        private void GenerateGUID()
+        {
+            if (Target.GUID == "<None>")
             {
-                if (Target.GUID == "<None>")
+                Target.GUID = Guid.NewGuid().ToString();
+            }
+            else
+            {
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to regenerate the GUID？", "Yes", "No"))
                 {
                     Target.GUID = Guid.NewGuid().ToString();
                 }
-                else
-                {
-                    if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to regenerate the GUID？", "Yes", "No"))
-                    {
-                        Target.GUID = Guid.NewGuid().ToString();
-                    }
-                }
             }
-            GUI.color = Color.white;
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("GUID: ", GUILayout.Width(50));
-            GUI.color = Target.GUID == "<None>" ? Color.red : Color.white;
-            EditorGUILayout.TextField(Target.GUID);
-            GUI.color = Color.white;
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("State: ", GUILayout.Width(50));
-            Target.State = (StepTargetState)EditorGUILayout.EnumPopup(Target.State);
-            GUILayout.EndHorizontal();
         }
     }
 }
