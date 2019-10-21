@@ -514,6 +514,9 @@ namespace HT.Framework
                         case MainParameter.ParameterType.Color:
                             ColorField(mainParameter.ColorValue, out mainParameter.ColorValue, "");
                             break;
+                        case MainParameter.ParameterType.DataSet:
+                            ObjectField(mainParameter.DataSet, out mainParameter.DataSet, false, "");
+                            break;
                         case MainParameter.ParameterType.Prefab:
                             ObjectField(mainParameter.PrefabValue, out mainParameter.PrefabValue, false, "");
                             break;

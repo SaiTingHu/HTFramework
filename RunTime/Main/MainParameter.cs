@@ -18,6 +18,7 @@ namespace HT.Framework
         public Vector2 Vector2Value = Vector2.zero;
         public Vector3 Vector3Value = Vector3.zero;
         public Color ColorValue = Color.white;
+        public DataSetBase DataSet = null;
         public GameObject PrefabValue = null;
         public Texture TextureValue = null;
         public AudioClip AudioClipValue = null;
@@ -56,6 +57,10 @@ namespace HT.Framework
             /// 颜色
             /// </summary>
             Color,
+            /// <summary>
+            /// 数据集
+            /// </summary>
+            DataSet,
             /// <summary>
             /// 预制体
             /// </summary>

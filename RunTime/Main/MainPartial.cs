@@ -696,6 +696,16 @@ namespace HT.Framework
             return (mainParameter != null) ? mainParameter.ColorValue : Color.white;
         }
         /// <summary>
+        /// 通过名称获取DataSet参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        public DataSetBase GetDataSetParameter(string parameterName)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            return (mainParameter != null) ? mainParameter.DataSet : null;
+        }
+        /// <summary>
         /// 通过名称获取Prefab参数
         /// </summary>
         /// <param name="parameterName">参数名称</param>
@@ -824,6 +834,19 @@ namespace HT.Framework
             if (mainParameter != null)
             {
                 mainParameter.ColorValue = value;
+            }
+        }
+        /// <summary>
+        /// 通过名称设置DataSet参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="value">参数值</param>
+        public void SetDataSetParameter(string parameterName, DataSetBase dataset)
+        {
+            MainParameter mainParameter = GetParameter(parameterName);
+            if (mainParameter != null)
+            {
+                mainParameter.DataSet = dataset;
             }
         }
         /// <summary>
