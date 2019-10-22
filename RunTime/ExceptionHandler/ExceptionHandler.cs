@@ -133,7 +133,10 @@ namespace HT.Framework
             }
             _reportBufferTimer = ReportBufferTime;
 
-            _sender.Send(subject, body);
+            if (IsHandler)
+            {
+                _sender.Send(subject, body);
+            }
         }
 
         /// <summary>
