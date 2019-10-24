@@ -12,9 +12,9 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            GUI.color = Color.cyan;
+            GUI.backgroundColor = Color.cyan;
             Button(GenerateGUID, "Generate GUID");
-            GUI.color = Color.white;
+            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

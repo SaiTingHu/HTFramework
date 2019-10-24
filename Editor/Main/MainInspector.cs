@@ -473,7 +473,7 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Type", GUILayout.Width(40));
                     EnumPopup(mainParameter.Type, out mainParameter.Type, "");
-                    GUI.color = Color.red;
+                    GUI.backgroundColor = Color.red;
                     if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
                     {
                         Undo.RecordObject(target, "Delete Main Parameter");
@@ -481,7 +481,7 @@ namespace HT.Framework
                         HasChanged();
                         continue;
                     }
-                    GUI.color = Color.white;
+                    GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();

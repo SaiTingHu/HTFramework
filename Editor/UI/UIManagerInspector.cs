@@ -83,6 +83,7 @@ namespace HT.Framework
                     }
                     gm.ShowAsContext();
                 }
+                GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
                 {
                     Undo.RecordObject(target, "Delete Define UI");
@@ -91,6 +92,7 @@ namespace HT.Framework
                     HasChanged();
                     continue;
                 }
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
