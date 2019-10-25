@@ -69,17 +69,13 @@ namespace HT.Framework
 
         private void OnGUI()
         {
-            AddOpenSceneButtonMaskGUI();
-
             if (!_isCanBuild)
             {
                 BuildButtonMaskGUI();
             }
 
             _onGUIMethod.Invoke(OpendBuildPlayerWindow, null);
-
-            AddOpenSceneButtonMaskGUI();
-
+            
             if (!_isCanBuild)
             {
                 BuildButtonMaskGUI();
@@ -105,14 +101,7 @@ namespace HT.Framework
         {
             _updateMethod.Invoke(OpendBuildPlayerWindow, null);
         }
-
-        private void AddOpenSceneButtonMaskGUI()
-        {
-            GUI.color = Color.gray;
-            GUI.Button(new Rect(position.width - 128, position.height - 395, 115, 18), "Add Open Scenes");
-            GUI.color = Color.white;
-        }
-
+        
         private void BuildButtonMaskGUI()
         {
             if (IsSelectedCurrentBuildTarget())
