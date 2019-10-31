@@ -90,7 +90,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void Update()
         {
             if (_contentAsset == null)
@@ -98,7 +97,6 @@ namespace HT.Framework
                 Close();
             }
         }
-
         private void OnGUI()
         {
             if (_contentAsset == null)
@@ -127,7 +125,7 @@ namespace HT.Framework
                 StepContentFixedGUI();
                 GUILayout.EndHorizontal();
 
-                MouseControl();
+                EventHandle();
             }
 
             if (GUI.changed)
@@ -350,14 +348,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Add", "ButtonLeft"))
             {
-                StepContent content = new StepContent();
-                content.GUID = Guid.NewGuid().ToString();
-                content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
-                _contentAsset.StepIDSign += 1;
-                content.EnterAnchor = new Vector2(position.width / 2, position.height / 2);
-                _contentAsset.Content.Add(content);
-                SelectStepContent(_contentAsset.Content.Count - 1);
-                SelectStepOperation(-1);
+                AddStepContent();
             }
             GUI.enabled = (_currentStep != -1);
             if (GUILayout.Button("Move Up", "ButtonMid"))
@@ -394,12 +385,7 @@ namespace HT.Framework
             GUI.backgroundColor = Color.red;
             if (GUILayout.Button("Delete", "ButtonRight"))
             {
-                if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete step " + _contentAsset.Content[_currentStep].Name + "？", "Yes", "No"))
-                {
-                    _contentAsset.Content.RemoveAt(_currentStep);
-                    SelectStepContent(-1);
-                    SelectStepOperation(-1);
-                }
+                DeleteStepContent(_currentStep);
             }
             GUI.backgroundColor = Color.white;
             GUI.enabled = true;
@@ -929,29 +915,7 @@ namespace HT.Framework
                         GUI.backgroundColor = Color.red;
                         if (GUILayout.Button("Delete"))
                         {
-                            for (int i = 0; i < _currentStepObj.Wireds.Count; i++)
-                            {
-                                if (_currentStepObj.Wireds[i].Left == _currentOperation || _currentStepObj.Wireds[i].Right == _currentOperation)
-                                {
-                                    _currentStepObj.Wireds.RemoveAt(i);
-                                    i--;
-                                }
-                                else
-                                {
-                                    if (_currentStepObj.Wireds[i].Left > _currentOperation)
-                                    {
-                                        _currentStepObj.Wireds[i].Left -= 1;
-                                    }
-                                    if (_currentStepObj.Wireds[i].Right > _currentOperation)
-                                    {
-                                        _currentStepObj.Wireds[i].Right -= 1;
-                                    }
-                                }
-                            }
-
-                            _currentStepObj.Operations.RemoveAt(_currentOperation);
-                            SelectStepOperation(-1);
-                            GUI.FocusControl(null);
+                            DeleteStepOperation(_currentStepObj, _currentOperation);
                         }
                         GUI.backgroundColor = Color.white;
 
@@ -1075,9 +1039,9 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 鼠标控制
+        /// 事件处理
         /// </summary>
-        private void MouseControl()
+        private void EventHandle()
         {
             if (Event.current != null)
             {
@@ -1159,6 +1123,23 @@ namespace HT.Framework
                         }
                         #endregion
                         break;
+                    case EventType.KeyDown:
+                        if (Event.current.keyCode == KeyCode.Delete)
+                        {
+                            if (_currentStep != -1)
+                            {
+                                if (_currentOperation != -1)
+                                {
+                                    DeleteStepOperation(_currentStepObj, _currentOperation);
+                                }
+                                else
+                                {
+                                    DeleteStepContent(_currentStep);
+                                }
+                                Repaint();
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -1178,6 +1159,32 @@ namespace HT.Framework
             else
             {
                 content.Wireds.Remove(wiredOld);
+            }
+        }
+        /// <summary>
+        /// 新增步骤内容
+        /// </summary>
+        private void AddStepContent()
+        {
+            StepContent content = new StepContent();
+            content.GUID = Guid.NewGuid().ToString();
+            content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
+            _contentAsset.StepIDSign += 1;
+            content.EnterAnchor = new Vector2(position.width / 2, position.height / 2);
+            _contentAsset.Content.Add(content);
+            SelectStepContent(_contentAsset.Content.Count - 1);
+            SelectStepOperation(-1);
+        }
+        /// <summary>
+        /// 删除步骤内容
+        /// </summary>
+        private void DeleteStepContent(int contentIndex)
+        {
+            if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete step " + _contentAsset.Content[contentIndex].Name + "？", "Yes", "No"))
+            {
+                _contentAsset.Content.RemoveAt(contentIndex);
+                SelectStepContent(-1);
+                SelectStepOperation(-1);
             }
         }
         /// <summary>
@@ -1255,6 +1262,35 @@ namespace HT.Framework
                 });
             }
             gm.ShowAsContext();
+        }
+        /// <summary>
+        /// 删除步骤操作
+        /// </summary>
+        private void DeleteStepOperation(StepContent stepContent, int operationIndex)
+        {
+            for (int i = 0; i < stepContent.Wireds.Count; i++)
+            {
+                if (stepContent.Wireds[i].Left == operationIndex || stepContent.Wireds[i].Right == operationIndex)
+                {
+                    stepContent.Wireds.RemoveAt(i);
+                    i--;
+                }
+                else
+                {
+                    if (stepContent.Wireds[i].Left > operationIndex)
+                    {
+                        stepContent.Wireds[i].Left -= 1;
+                    }
+                    if (stepContent.Wireds[i].Right > operationIndex)
+                    {
+                        stepContent.Wireds[i].Right -= 1;
+                    }
+                }
+            }
+
+            stepContent.Operations.RemoveAt(operationIndex);
+            SelectStepOperation(-1);
+            GUI.FocusControl(null);
         }
         /// <summary>
         /// 选中步骤内容
@@ -1349,7 +1385,10 @@ namespace HT.Framework
             {
                 gm.AddItem(new GUIContent("Paste " + stepContent.Name), false, () =>
                 {
-                    _contentAsset.Content.Add(stepContent.Clone());
+                    StepContent content = stepContent.Clone();
+                    content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
+                    _contentAsset.StepIDSign += 1;
+                    _contentAsset.Content.Add(content);
                     SelectStepContent(_contentAsset.Content.Count - 1);
                     SelectStepOperation(-1);
                 });
