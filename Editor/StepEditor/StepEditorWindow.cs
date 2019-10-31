@@ -292,13 +292,11 @@ namespace HT.Framework
                     }
 
                     GUILayout.BeginHorizontal();
-                    GUI.color = (_currentStep == i ? Color.cyan : Color.white);
+                    string style = _currentStep == i ? "InsertionMarker" : "Label";
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
                     content.text = i + "." + StepShowName(_contentAsset.Content[i]);
                     content.tooltip = _contentAsset.Content[i].Prompt;
-                    GUILayout.Label(content, GUILayout.Height(16));
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("-->", "Minibutton"))
+                    if (GUILayout.Button(content, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
                     {
                         SelectStepContent(i);
                         SelectStepOperation(-1);
@@ -310,7 +308,6 @@ namespace HT.Framework
                             EditorGUIUtility.PingObject(_currentStepObj.Target);
                         }
                     }
-                    GUI.color = Color.white;
                     GUILayout.EndHorizontal();
                 }
             }
