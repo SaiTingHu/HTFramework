@@ -1124,20 +1124,22 @@ namespace HT.Framework
                         #endregion
                         break;
                     case EventType.KeyDown:
-                        if (Event.current.keyCode == KeyCode.Delete)
+                        switch (Event.current.keyCode)
                         {
-                            if (_currentStep != -1)
-                            {
-                                if (_currentOperation != -1)
+                            case KeyCode.Delete:
+                                if (_currentStep != -1)
                                 {
-                                    DeleteStepOperation(_currentStepObj, _currentOperation);
+                                    if (_currentOperation != -1)
+                                    {
+                                        DeleteStepOperation(_currentStepObj, _currentOperation);
+                                    }
+                                    else
+                                    {
+                                        DeleteStepContent(_currentStep);
+                                    }
+                                    Repaint();
                                 }
-                                else
-                                {
-                                    DeleteStepContent(_currentStep);
-                                }
-                                Repaint();
-                            }
+                                break;
                         }
                         break;
                 }

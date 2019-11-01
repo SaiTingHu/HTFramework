@@ -99,7 +99,9 @@ namespace HT.Framework
                 if (Target.Content[i].Ancillary != "")
                 {
                     GUILayout.BeginHorizontal();
+                    GUI.color = Color.yellow;
                     GUILayout.Label("【" + Target.Content[i].Ancillary + "】");
+                    GUI.color = Color.white;
                     GUILayout.EndHorizontal();
                 }
 

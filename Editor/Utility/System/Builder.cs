@@ -18,29 +18,17 @@ namespace HT.Framework
         }
         private static void CheckBuildPlayerWindow()
         {
-            if (focusedWindow == OpendBuildPlayerWindow)
+            if (focusedWindow is BuildPlayerWindow)
             {
+                focusedWindow.Close();
+
                 Builder builder = GetWindow<Builder>(true, "HTFramework Builder", true);
                 builder.minSize = new Vector2(640, 580);
                 builder.Show();
-
-                OpendBuildPlayerWindow.Close();
             }
         }
-        private static BuildPlayerWindow OpendBuildPlayerWindow
-        {
-            get
-            {
-                if (_opendBuildPlayerWindow == null)
-                {
-                    BuildPlayerWindow[] array = Resources.FindObjectsOfTypeAll<BuildPlayerWindow>();
-                    _opendBuildPlayerWindow = (array.Length <= 0) ? CreateInstance<BuildPlayerWindow>() : array[0];
-                }
-                return _opendBuildPlayerWindow;
-            }
-        }
-        private static BuildPlayerWindow _opendBuildPlayerWindow;
 
+        private BuildPlayerWindow _buildPlayerWindow;
         private MethodInfo _onDisableMethod;
         private MethodInfo _onGUIMethod;
         private MethodInfo _updateMethod;
@@ -51,9 +39,11 @@ namespace HT.Framework
 
         private void OnEnable()
         {
-            _onDisableMethod = OpendBuildPlayerWindow.GetType().GetMethod("OnDisable", BindingFlags.Instance | BindingFlags.NonPublic);
-            _onGUIMethod = OpendBuildPlayerWindow.GetType().GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
-            _updateMethod = OpendBuildPlayerWindow.GetType().GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic);
+            BuildPlayerWindow[] buildPlayerWindows = Resources.FindObjectsOfTypeAll<BuildPlayerWindow>();
+            _buildPlayerWindow = buildPlayerWindows.Length > 0 ? buildPlayerWindows[0] : CreateInstance<BuildPlayerWindow>();
+            _onDisableMethod = _buildPlayerWindow.GetType().GetMethod("OnDisable", BindingFlags.Instance | BindingFlags.NonPublic);
+            _onGUIMethod = _buildPlayerWindow.GetType().GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
+            _updateMethod = _buildPlayerWindow.GetType().GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic);
             _calculateSelectedBuildTarget = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.EditorUserBuildSettingsUtils").GetMethod("CalculateSelectedBuildTarget", BindingFlags.Static | BindingFlags.Public);
             _activeBuildTargetGroup = typeof(EditorUserBuildSettings).GetProperty("activeBuildTargetGroup", BindingFlags.Static | BindingFlags.NonPublic);
 
@@ -64,7 +54,7 @@ namespace HT.Framework
 
         private void OnDisable()
         {
-            _onDisableMethod.Invoke(OpendBuildPlayerWindow, null);
+            _onDisableMethod.Invoke(_buildPlayerWindow, null);
         }
 
         private void OnGUI()
@@ -74,7 +64,7 @@ namespace HT.Framework
                 BuildButtonMaskGUI();
             }
 
-            _onGUIMethod.Invoke(OpendBuildPlayerWindow, null);
+            _onGUIMethod.Invoke(_buildPlayerWindow, null);
             
             if (!_isCanBuild)
             {
@@ -99,7 +89,13 @@ namespace HT.Framework
 
         private void Update()
         {
-            _updateMethod.Invoke(OpendBuildPlayerWindow, null);
+            if (!_buildPlayerWindow)
+            {
+                Close();
+                return;
+            }
+
+            _updateMethod.Invoke(_buildPlayerWindow, null);
         }
         
         private void BuildButtonMaskGUI()
