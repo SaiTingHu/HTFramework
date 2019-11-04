@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class StepParameterWindow : EditorWindow
+    public sealed class StepParameterWindow : HTFEditorWindow
     {
         public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset, StepContent content)
         {
@@ -23,9 +23,10 @@ namespace HT.Framework
         private StepContent _content;
         private Vector2 _scroll;
         
-        private void OnGUI()
+        protected override void OnTitleGUI()
         {
-            GUILayout.BeginHorizontal("Toolbar");
+            base.OnTitleGUI();
+
             if (GUILayout.Button(_content.Name, "Toolbarpopup"))
             {
                 GenericMenu gm = new GenericMenu();
@@ -47,7 +48,11 @@ namespace HT.Framework
                 }
             }
             GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
+        }
+
+        protected override void OnBodyGUI()
+        {
+            base.OnBodyGUI();
 
             GUILayout.BeginVertical("Box");
             _scroll = GUILayout.BeginScrollView(_scroll);

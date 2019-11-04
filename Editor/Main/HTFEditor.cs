@@ -49,7 +49,7 @@ namespace HT.Framework
             }
         }
         
-        public override void OnInspectorGUI()
+        public sealed override void OnInspectorGUI()
         {
             if (_GithubURL != null || _CSDNURL != null)
             {
@@ -100,18 +100,33 @@ namespace HT.Framework
             serializedObject.ApplyModifiedProperties();
         }
 
+        /// <summary>
+        /// 默认 Enable 初始化
+        /// </summary>
         protected virtual void OnDefaultEnable()
         { }
 
+        /// <summary>
+        /// 运行时 Enable 初始化
+        /// </summary>
         protected virtual void OnRuntimeEnable()
         { }
 
+        /// <summary>
+        /// 默认 Inspector GUI
+        /// </summary>
         protected virtual void OnInspectorDefaultGUI()
         { }
 
+        /// <summary>
+        /// 运行时 Inspector GUI
+        /// </summary>
         protected virtual void OnInspectorRuntimeGUI()
         { }
 
+        /// <summary>
+        /// 标记目标已改变
+        /// </summary>
         protected void HasChanged()
         {
             if (!EditorApplication.isPlaying)

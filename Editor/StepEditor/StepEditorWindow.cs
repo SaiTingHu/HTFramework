@@ -99,12 +99,6 @@ namespace HT.Framework
         }
         private void OnGUI()
         {
-            if (_contentAsset == null)
-            {
-                Close();
-                return;
-            }
-
             if (_isMinimize)
             {
                 MinimizeGUI();

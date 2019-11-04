@@ -5,21 +5,32 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class ResourcesFolderViewWindow : EditorWindow
+    public sealed class ResourcesFolderViewWindow : HTFEditorWindow
     {
         private List<ResourceFolder> _resourcesFolders;
+
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         public void Init()
         {
             _resourcesFolders = new List<ResourceFolder>();
             SearchResourcesFolder(Application.dataPath);
         }
-        
-        private void OnGUI()
+        protected override void OnBodyGUI()
         {
+            base.OnBodyGUI();
+
             for (int i = 0; i < _resourcesFolders.Count; i++)
             {
-                GUILayout.BeginHorizontal("MeTransitionHead");
+                GUILayout.BeginVertical("Box");
+
+                GUILayout.BeginHorizontal();
                 _resourcesFolders[i].IsExpanding = EditorGUILayout.Foldout(_resourcesFolders[i].IsExpanding, string.Format("{0}  [{1}]", _resourcesFolders[i].AssetName, _resourcesFolders[i].Resources.Count), true);
                 GUILayout.EndHorizontal();
 
@@ -50,6 +61,8 @@ namespace HT.Framework
                         GUILayout.EndHorizontal();
                     }
                 }
+
+                GUILayout.EndVertical();
             }
         }
         private void Update()

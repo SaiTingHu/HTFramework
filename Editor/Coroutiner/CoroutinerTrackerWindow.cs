@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class CoroutinerTrackerWindow : EditorWindow
+    public sealed class CoroutinerTrackerWindow : HTFEditorWindow
     {
         private Coroutiner _coroutiner;
         private Dictionary<Delegate, bool> _enumerators = new Dictionary<Delegate, bool>();
@@ -29,14 +29,6 @@ namespace HT.Framework
         {
             _coroutiner = coroutiner;
         }
-        private void OnGUI()
-        {
-            GUI.color = _bgColor;
-
-            TitleGUI();
-            ContentGUI();
-            StackTraceGUI();
-        }
         private void Update()
         {
             if (!_coroutiner)
@@ -44,22 +36,31 @@ namespace HT.Framework
                 Close();
             }
         }
-        private void TitleGUI()
+        protected override void OnTitleGUI()
         {
-            GUILayout.BeginHorizontal("Toolbar");
-            GUILayout.Label("No.", "toolbarbutton", GUILayout.Width(_firstLineBlank));
-            GUILayout.Label("ID", "toolbarbutton", GUILayout.Width(_IDWidth));
-            GUILayout.Label("State", "toolbarbutton", GUILayout.Width(_stateWidth));
-            GUILayout.Label("Creation Time", "toolbarbutton", GUILayout.Width(_creationTimeWidth));
-            GUILayout.Label("Stopping Time", "toolbarbutton", GUILayout.Width(_stoppingTimeWidth));
-            GUILayout.Label("Elapsed Time", "toolbarbutton", GUILayout.Width(_elapsedTimeWidth));
-            GUILayout.Label("Rerun Number", "toolbarbutton", GUILayout.Width(_rerunNumberWidth));
+            base.OnTitleGUI();
+
+            GUILayout.Label("No.", "Toolbarbutton", GUILayout.Width(_firstLineBlank));
+            GUILayout.Label("ID", "Toolbarbutton", GUILayout.Width(_IDWidth));
+            GUILayout.Label("State", "Toolbarbutton", GUILayout.Width(_stateWidth));
+            GUILayout.Label("Creation Time", "Toolbarbutton", GUILayout.Width(_creationTimeWidth));
+            GUILayout.Label("Stopping Time", "Toolbarbutton", GUILayout.Width(_stoppingTimeWidth));
+            GUILayout.Label("Elapsed Time", "Toolbarbutton", GUILayout.Width(_elapsedTimeWidth));
+            GUILayout.Label("Rerun Number", "Toolbarbutton", GUILayout.Width(_rerunNumberWidth));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Clear Not Running", "toolbarbutton", GUILayout.Width(120)))
+            if (GUILayout.Button("Clear Not Running", "Toolbarbutton", GUILayout.Width(120)))
             {
                 _coroutiner.ClearNotRunning();
             }
-            GUILayout.EndHorizontal();
+        }
+        protected override void OnBodyGUI()
+        {
+            base.OnBodyGUI();
+
+            GUI.color = _bgColor;
+
+            ContentGUI();
+            StackTraceGUI();
         }
         private void ContentGUI()
         {

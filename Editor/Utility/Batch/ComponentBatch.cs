@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class ComponentBatch : EditorWindow
+    public sealed class ComponentBatch : HTFEditorWindow
     {
         private GameObject _root;
         private string _componentTypeFilter = "";
@@ -14,6 +14,14 @@ namespace HT.Framework
         private bool _includeInactive = true;
         private MethodInfo _selectionAddMethod;
         private object[] _parameter = new object[1];
+
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         private void OnEnable()
         {
@@ -35,8 +43,10 @@ namespace HT.Framework
             }
         }
 
-        private void OnGUI()
+        protected override void OnBodyGUI()
         {
+            base.OnBodyGUI();
+
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("批处理[ " + (_root ? _root.name : "Root") + " ]下的[ " + (_componentType != null ? _componentType.FullName : "Component") + " ]组件！", MessageType.Info);
             EditorGUILayout.EndHorizontal();

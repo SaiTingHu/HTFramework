@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 程序集查看器
     /// </summary>
-    public sealed class AssemblyViewer : EditorWindow
+    public sealed class AssemblyViewer : HTFEditorWindow
     {
         [@MenuItem("HTFramework/Assembly Viewer")]
         private static void ShowWindow()
@@ -47,6 +47,14 @@ namespace HT.Framework
 
         private StringBuilder _builder = new StringBuilder();
 
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         private void OnEnable()
         {
             _assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -56,8 +64,10 @@ namespace HT.Framework
             _currentField = null;
             _currentProperty = null;
         }
-        private void OnGUI()
+        protected override void OnBodyGUI()
         {
+            base.OnBodyGUI();
+
             GUILayout.BeginHorizontal();
 
             OnAssemblyGUI();
@@ -66,7 +76,6 @@ namespace HT.Framework
 
             GUILayout.EndHorizontal();
         }
-
         private void OnAssemblyGUI()
         {
             GUILayout.BeginVertical("Helpbox", GUILayout.Width(position.width / 3 - 5));

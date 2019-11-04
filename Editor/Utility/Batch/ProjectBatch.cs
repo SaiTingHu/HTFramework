@@ -6,13 +6,21 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class ProjectBatch : EditorWindow
+    public sealed class ProjectBatch : HTFEditorWindow
     {
         private DefaultAsset _folder;
         private string _objectTypeFilter = "";
         private Type _objectType;
         private MethodInfo _selectionAddMethod;
         private object[] _parameter = new object[1];
+
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         private void OnEnable()
         {
@@ -34,8 +42,10 @@ namespace HT.Framework
             }
         }
 
-        private void OnGUI()
+        protected override void OnBodyGUI()
         {
+            base.OnBodyGUI();
+
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox("批处理[ " + (_folder ? _folder.name : "Root") + " ]文件夹下的[ " + (_objectType != null ? _objectType.FullName : "Object") + " ]对象！", MessageType.Info);
             EditorGUILayout.EndHorizontal();

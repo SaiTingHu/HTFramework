@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class StepRegenIDWindow : EditorWindow
+    public sealed class StepRegenIDWindow : HTFEditorWindow
     {
         public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset)
         {
@@ -22,8 +22,18 @@ namespace HT.Framework
         private int _startIndex = 1;
         private int _indexIncrement = 1;
 
-        private void OnGUI()
+        protected override bool IsEnableTitleGUI
         {
+            get
+            {
+                return false;
+            }
+        }
+
+        protected override void OnBodyGUI()
+        {
+            base.OnBodyGUI();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("ID Name:", GUILayout.Width(80));
             _contentAsset.StepIDName = EditorGUILayout.TextField(_contentAsset.StepIDName);
