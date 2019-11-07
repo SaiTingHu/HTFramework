@@ -38,7 +38,7 @@
 
 - [Input](https://wanderer.blog.csdn.net/article/details/89001848) - 将任意输入都定义为虚拟输入，再由Input模块统一调用，将是跨平台输入的最优解决方案。
 
-- Main - 框架主模块，提供访问其他模块的快捷接口。
+- [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口。
 
 - Network - 网络客户端模块，主要支持TCP/UDP等协议。
 
