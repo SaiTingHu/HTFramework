@@ -16,7 +16,7 @@ namespace HT.Framework
         /// </summary>
         public bool IsStepTarget = false;
         /// <summary>
-        /// 是否开启提示名称，当目标被射线捕获时
+        /// 是否开启提示，当目标被射线捕获时
         /// </summary>
         public bool IsOpenPrompt = true;
     }

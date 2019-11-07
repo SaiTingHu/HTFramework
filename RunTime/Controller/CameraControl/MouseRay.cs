@@ -152,37 +152,39 @@ namespace HT.Framework
                 _rayTarget = target;
                 _rayTargetType = _rayTarget.rectTransform() ? TargetType.UI : TargetType.GameObject;
 
-                if (_rayTargetType == TargetType.GameObject)
-                {
-                    switch (TriggerHighlighting)
-                    {
-                        case HighlightingType.Normal:
-                            _rayTarget.OpenHighLight(NormalColor);
-                            break;
-                        case HighlightingType.Flash:
-                            _rayTarget.OpenFlashHighLight(FlashColor1, FlashColor2);
-                            break;
-                    }
-                }
-
-                if (IsOpenPrompt)
+                if (IsOpenPrompt && Target.IsOpenPrompt)
                 {
                     if (RayHitBG)
                     {
-                        RayHitBG.gameObject.SetActive(Target.IsOpenPrompt);
+                        RayHitBG.gameObject.SetActive(true);
                         RayHitText.text = Target.Name;
+                    }
+                    if (_rayTargetType == TargetType.GameObject)
+                    {
+                        switch (TriggerHighlighting)
+                        {
+                            case HighlightingType.Normal:
+                                _rayTarget.OpenHighLight(NormalColor);
+                                break;
+                            case HighlightingType.Flash:
+                                _rayTarget.OpenFlashHighLight(FlashColor1, FlashColor2);
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (RayHitBG && RayHitBG.gameObject.activeSelf)
+                    {
+                        RayHitBG.gameObject.SetActive(false);
                     }
                 }
             }
             else
             {
-                if (IsOpenPrompt)
+                if (RayHitBG && RayHitBG.gameObject.activeSelf)
                 {
-                    if (RayHitBG && RayHitBG.gameObject.activeSelf)
-                    {
-                        RayHitBG.gameObject.SetActive(false);
-                        RayHitText.text = "";
-                    }
+                    RayHitBG.gameObject.SetActive(false);
                 }
             }
         }

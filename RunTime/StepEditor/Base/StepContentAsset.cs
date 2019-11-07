@@ -9,11 +9,21 @@ namespace HT.Framework
     /// </summary>
     [CreateAssetMenu(menuName = "HTFramework/Step Content Asset", order = 0)]
     [Serializable]
-    public sealed class StepContentAsset : ScriptableObject
+    public sealed class StepContentAsset : DataSetBase
     {
         [SerializeField]
         public List<StepContent> Content = new List<StepContent>();
         public int StepIDSign = 1;
         public string StepIDName = "Step";
+
+        public override void Fill(JsonData data)
+        {
+
+        }
+
+        public override JsonData Pack()
+        {
+            return null;
+        }
     }
 }
