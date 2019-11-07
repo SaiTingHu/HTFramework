@@ -244,7 +244,7 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 【验证方法】打包资源
         /// </summary>
-        [@MenuItem("HTFramework/AssetBundle/Build AssetBundles", true)]
+        [@MenuItem("HTFramework/Tools/AssetBundle/Build AssetBundles", true)]
         private static bool BuildAssetBundlesValidate()
         {
             return !EditorApplication.isPlaying;
@@ -252,7 +252,7 @@ namespace HT.Framework.AssetBundleEditor
         /// <summary>
         /// 打包资源
         /// </summary>
-        [@MenuItem("HTFramework/AssetBundle/Build AssetBundles")]
+        [@MenuItem("HTFramework/Tools/AssetBundle/Build AssetBundles")]
         public static void BuildAssetBundles()
         {
             if (EditorUtility.DisplayDialog("Prompt", "Are you sure build assetBundles？This could be a time consuming job.", "Yes", "No"))

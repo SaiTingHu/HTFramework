@@ -1,0 +1,12 @@
+﻿#NAMESPACE#
+
+namespace HT.Framework.Dynamic
+{
+    public static class DynamicClass
+    {
+        private static void DynamicMethod()
+        {
+            #CODE#
+        }
+    }
+}

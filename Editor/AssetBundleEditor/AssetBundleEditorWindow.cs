@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace HT.Framework.AssetBundleEditor
 {
-    public sealed class AssetBundleEditorWindow : EditorWindow
+    public sealed class AssetBundleEditorWindow : HTFEditorWindow
     {
-        [MenuItem("HTFramework/AssetBundle/AssetBundle Editor")]
+        [MenuItem("HTFramework/Tools/AssetBundle/AssetBundle Editor")]
         private static void OpenAssetBundleWindow()
         {
             AssetBundleEditorWindow abEditor = GetWindow<AssetBundleEditorWindow>("AssetBundlesEditor");
@@ -68,7 +68,15 @@ namespace HT.Framework.AssetBundleEditor
         private GUIStyle _assetLabel;
         private GUIContent _redundant;
         #endregion
-        
+
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         private void Init()
         {
             _assetRootFolder = AssetBundleEditorUtility.GetFolderInfoByFullPath(Application.dataPath);
@@ -107,8 +115,10 @@ namespace HT.Framework.AssetBundleEditor
             EditorUtility.UnloadUnusedAssetsImmediate();
             System.GC.Collect();
         }
-        private void OnGUI()
+        protected override void OnBodyGUI()
         {
+            base.OnBodyGUI();
+
             TitleGUI();
             AssetBundlesGUI();
             CurrentAssetBundlesGUI();

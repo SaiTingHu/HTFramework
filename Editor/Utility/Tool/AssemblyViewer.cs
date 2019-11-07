@@ -12,14 +12,6 @@ namespace HT.Framework
     /// </summary>
     public sealed class AssemblyViewer : HTFEditorWindow
     {
-        [@MenuItem("HTFramework/Assembly Viewer")]
-        private static void ShowWindow()
-        {
-            AssemblyViewer viewer = GetWindow<AssemblyViewer>();
-            viewer.titleContent.text = "AssemblyViewer";
-            viewer.Show();
-        }
-
         private Assembly[] _assemblies;
         private Assembly _currentAssembly;
         private Vector2 _assemblyScroll = Vector2.zero;

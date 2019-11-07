@@ -1078,6 +1078,26 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 遍历数组
+        /// </summary>
+        public static void Foreach<T>(this T[] array, HTFAction<T, int> action)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                action(array[i], i);
+            }
+        }
+        /// <summary>
+        /// 遍历集合
+        /// </summary>
+        public static void Foreach<T>(this List<T> array, HTFAction<T, int> action)
+        {
+            for (int i = 0; i < array.Count; i++)
+            {
+                action(array[i], i);
+            }
+        }
+        /// <summary>
         /// 生成一个长度为length的数组，数组中每个数据均为此值
         /// </summary>
         public static T[] GenerateArray<T>(this T value, int length)

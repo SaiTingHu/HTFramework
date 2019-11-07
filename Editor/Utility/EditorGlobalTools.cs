@@ -30,7 +30,7 @@ namespace HT.Framework
         public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary", "HTFrameworkILHotfix" };
         #endregion
 
-        #region 关于
+        #region About 【优先级0-1】
         /// <summary>
         /// CSDN专栏
         /// </summary>
@@ -50,11 +50,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 批处理工具
+        #region Batch 【优先级100-101】
         /// <summary>
         /// 打开ComponentBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Component Batch", false, 0)]
+        [@MenuItem("HTFramework/Batch/Component Batch", false, 100)]
         private static void OpenComponentBatch()
         {
             ComponentBatch cb = EditorWindow.GetWindow<ComponentBatch>();
@@ -66,7 +66,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ProjectBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Project Batch", false, 1)]
+        [@MenuItem("HTFramework/Batch/Project Batch", false, 101)]
         private static void OpenProjectBatch()
         {
             ProjectBatch cb = EditorWindow.GetWindow<ProjectBatch>();
@@ -86,7 +86,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置鼠标射线可捕获物体目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 20)]
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 120)]
         private static void SetMouseRayTarget()
         {
             GameObject[] objs = Selection.gameObjects;
@@ -115,7 +115,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置鼠标射线可捕获UI目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 21)]
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 121)]
         private static void SetMouseRayUITarget()
         {
             GameObject[] objs = Selection.gameObjects;
@@ -136,11 +136,90 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 网格工具
+        #region Console 【优先级102-105】
+        /// <summary>
+        /// 清理控制台
+        /// </summary>
+        [@MenuItem("HTFramework/Console/Clear &1", false, 102)]
+        private static void ClearConsole()
+        {
+            Type logEntries = GetTypeInEditorAssemblies("UnityEditor.LogEntries");
+            MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+            clearMethod.Invoke(null, null);
+        }
+
+        /// <summary>
+        /// 打印普通日志
+        /// </summary>
+        [@MenuItem("HTFramework/Console/Debug Log", false, 103)]
+        private static void ConsoleDebugLog()
+        {
+            GlobalTools.LogInfo("Debug.Log!");
+        }
+
+        /// <summary>
+        /// 打印警告日志
+        /// </summary>
+        [@MenuItem("HTFramework/Console/Debug LogWarning", false, 104)]
+        private static void ConsoleDebugLogWarning()
+        {
+            GlobalTools.LogWarning("Debug.LogWarning!");
+        }
+
+        /// <summary>
+        /// 打印错误日志
+        /// </summary>
+        [@MenuItem("HTFramework/Console/Debug LogError", false, 105)]
+        private static void ConsoleDebugLogError()
+        {
+            GlobalTools.LogError("Debug.LogError!");
+        }
+        #endregion
+
+        #region Editor 【优先级106-108】
+        /// <summary>
+        /// 运行场景
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Run &2", false, 106)]
+        private static void RunScene()
+        {
+            EditorApplication.isPlaying = !EditorApplication.isPlaying;
+        }
+
+        /// <summary>
+        /// 【验证函数】看向指定目标
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Look At", true)]
+        private static bool LookAtValidate()
+        {
+            return EditorApplication.isPlaying && Selection.activeGameObject != null;
+        }
+        /// <summary>
+        /// 看向指定目标
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Look At", false, 107)]
+        private static void LookAt()
+        {
+            Main.m_Controller.SetLookPoint(Selection.activeGameObject.transform.position);
+        }
+
+        /// <summary>
+        /// 打开编辑器安装路径
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Open Installation Path", false, 108)]
+        private static void OpenInstallationPath()
+        {
+            string path = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/"));
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
+            System.Diagnostics.Process.Start(psi);
+        }
+        #endregion
+
+        #region Tools 【优先级109-112】
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
-        [@MenuItem("HTFramework/Mesh/Mesh Combines")]
+        [@MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 109)]
         private static void MeshCombines()
         {
             if (Selection.gameObjects.Length <= 1)
@@ -190,7 +269,7 @@ namespace HT.Framework
         /// <summary>
         /// 展示模型信息
         /// </summary>
-        [@MenuItem("HTFramework/Mesh/Mesh Info")]
+        [@MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 110)]
         private static void ShowMeshInfo()
         {
             for (int i = 0; i < Selection.gameObjects.Length; i++)
@@ -202,84 +281,29 @@ namespace HT.Framework
                 }
             }
         }
-        #endregion
 
-        #region 控制台工具
         /// <summary>
-        /// 清理控制台
+        /// 打开 Assembly Viewer
         /// </summary>
-        [@MenuItem("HTFramework/Console/Clear &1")]
-        private static void ClearConsole()
+        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 111)]
+        private static void OpenAssemblyViewer()
         {
-            Type logEntries = GetTypeInEditorAssemblies("UnityEditor.LogEntries");
-            MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
-            clearMethod.Invoke(null, null);
+            AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
+            viewer.titleContent.text = "AssemblyViewer";
+            viewer.Show();
         }
 
         /// <summary>
-        /// 打印普通日志
+        /// 打开 Custom Tools
         /// </summary>
-        [@MenuItem("HTFramework/Console/Debug Log")]
-        private static void ConsoleDebugLog()
+        [@MenuItem("HTFramework/Tools/Custom Executer", false, 112)]
+        private static void OpenCustomTools()
         {
-            GlobalTools.LogInfo("Debug.Log!");
-        }
-
-        /// <summary>
-        /// 打印警告日志
-        /// </summary>
-        [@MenuItem("HTFramework/Console/Debug LogWarning")]
-        private static void ConsoleDebugLogWarning()
-        {
-            GlobalTools.LogWarning("Debug.LogWarning!");
-        }
-
-        /// <summary>
-        /// 打印错误日志
-        /// </summary>
-        [@MenuItem("HTFramework/Console/Debug LogError")]
-        private static void ConsoleDebugLogError()
-        {
-            GlobalTools.LogError("Debug.LogError!");
-        }
-        #endregion
-
-        #region 编辑器工具
-        /// <summary>
-        /// 运行场景
-        /// </summary>
-        [@MenuItem("HTFramework/Editor/Run &2")]
-        private static void RunScene()
-        {
-            EditorApplication.isPlaying = !EditorApplication.isPlaying;
-        }
-
-        /// <summary>
-        /// 【验证函数】看向指定目标
-        /// </summary>
-        [@MenuItem("HTFramework/Editor/Look At", true)]
-        private static bool LookAtValidate()
-        {
-            return EditorApplication.isPlaying && Selection.activeGameObject != null;
-        }
-        /// <summary>
-        /// 看向指定目标
-        /// </summary>
-        [@MenuItem("HTFramework/Editor/Look At")]
-        private static void LookAt()
-        {
-            Main.m_Controller.SetLookPoint(Selection.activeGameObject.transform.position);
-        }
-
-        /// <summary>
-        /// 打开编辑器安装路径
-        /// </summary>
-        [@MenuItem("HTFramework/Editor/Open Installation Path")]
-        private static void OpenInstallationPath()
-        {
-            string path = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/"));
-            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
-            System.Diagnostics.Process.Start(psi);
+            CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
+            tools.titleContent.text = "Custom Executer";
+            tools.minSize = new Vector2(500, 600);
+            tools.Initialization();
+            tools.Show();
         }
         #endregion
 

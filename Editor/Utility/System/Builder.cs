@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class Builder : EditorWindow
+    public sealed class Builder : HTFEditorWindow
     {
         /// <summary>
         /// 检查项目构建的前置条件，如果返回false，将禁止打包，返回true，才启用打包
@@ -37,6 +37,14 @@ namespace HT.Framework
         private bool _isCanBuild = false;
         private bool _isShowBuildABButton = false;
 
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         private void OnEnable()
         {
             BuildPlayerWindow[] buildPlayerWindows = Resources.FindObjectsOfTypeAll<BuildPlayerWindow>();
@@ -56,16 +64,18 @@ namespace HT.Framework
         {
             _onDisableMethod.Invoke(_buildPlayerWindow, null);
         }
-
-        private void OnGUI()
+        
+        protected override void OnBodyGUI()
         {
+            base.OnBodyGUI();
+
             if (!_isCanBuild)
             {
                 BuildButtonMaskGUI();
             }
 
             _onGUIMethod.Invoke(_buildPlayerWindow, null);
-            
+
             if (!_isCanBuild)
             {
                 BuildButtonMaskGUI();

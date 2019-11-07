@@ -15,7 +15,7 @@ namespace HT.Framework
                 return true;
             }
         }
-
+        
         private void OnGUI()
         {
             if (IsEnableTitleGUI)
@@ -27,7 +27,12 @@ namespace HT.Framework
 
             OnBodyGUI();
         }
-        
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public virtual void Initialization()
+        {
+        }
         /// <summary>
         /// 标题UI
         /// </summary>

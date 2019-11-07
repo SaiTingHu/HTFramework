@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class StepEditorWindow : EditorWindow
+    public sealed class StepEditorWindow : HTFEditorWindow
     {
         public static void ShowWindow(StepContentAsset contentAsset)
         {
@@ -58,12 +58,18 @@ namespace HT.Framework
         private MousePosition _mp;
         private MouseRotation _mr;
         private Transform _player;
-
         private Type _baseType = typeof(StepHelper);
         private Dictionary<string, string> _helpers = new Dictionary<string, string>();
 
         private string _stepListBGStyle;
 
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
         private void OnEnable()
         {
             SelectStepContent(_currentStep);
@@ -97,8 +103,10 @@ namespace HT.Framework
                 Close();
             }
         }
-        private void OnGUI()
+        protected override void OnBodyGUI()
         {
+            base.OnBodyGUI();
+
             if (_isMinimize)
             {
                 MinimizeGUI();
@@ -127,7 +135,7 @@ namespace HT.Framework
                 EditorUtility.SetDirty(_contentAsset);
             }
         }
-        
+
         /// <summary>
         /// 最小化后的GUI
         /// </summary>
