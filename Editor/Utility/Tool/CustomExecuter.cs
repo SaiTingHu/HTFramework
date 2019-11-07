@@ -433,11 +433,19 @@ namespace HT.Framework
             }
             if (Method.IsStatic)
             {
-                Method.Invoke(null, parameters);
+                object returnValue = Method.Invoke(null, parameters);
+                if (Method.ReturnType.Name != "Void")
+                {
+                    GlobalTools.LogInfo("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
+                }
             }
             else
             {
-                Method.Invoke(Target, parameters);
+                object returnValue = Method.Invoke(Target, parameters);
+                if (Method.ReturnType.Name != "Void")
+                {
+                    GlobalTools.LogInfo("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
+                }
             }
         }
         private void FormatMethodName()
