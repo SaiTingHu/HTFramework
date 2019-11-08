@@ -55,6 +55,7 @@ namespace HT.Framework
                 }
                 else
                 {
+                    _mouseLeftClickTimer = 0;
                     Main.m_Input.SetButtonDown(InputButtonType.MouseLeftDoubleClick);
                     Main.m_Input.SetButtonUp(InputButtonType.MouseLeftDoubleClick);
                 }

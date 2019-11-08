@@ -32,6 +32,17 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 是否启用基础属性展示
+        /// </summary>
+        protected virtual bool IsEnableBaseInspectorGUI
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         private void OnEnable()
         {
             Target = target as E;
@@ -77,6 +88,11 @@ namespace HT.Framework
                 }
 
                 GUILayout.EndHorizontal();
+            }
+
+            if (IsEnableBaseInspectorGUI)
+            {
+                base.OnInspectorGUI();
             }
 
             OnInspectorDefaultGUI();
@@ -172,6 +188,63 @@ namespace HT.Framework
         {
             GUI.color = value ? Color.white : Color.gray;
             bool newValue = EditorGUILayout.Toggle(name, value, options);
+            if (value != newValue)
+            {
+                Undo.RecordObject(target, "Set bool value");
+                outValue = newValue;
+                HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+            GUI.color = Color.white;
+        }
+        /// <summary>
+        /// 制作一个Toggle
+        /// </summary>
+        protected void Toggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUI.color = value ? Color.white : Color.gray;
+            bool newValue = EditorGUILayout.Toggle(name, value, style, options);
+            if (value != newValue)
+            {
+                Undo.RecordObject(target, "Set bool value");
+                outValue = newValue;
+                HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+            GUI.color = Color.white;
+        }
+        /// <summary>
+        /// 制作一个GUILayout Toggle
+        /// </summary>
+        protected void GUILayoutToggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
+        {
+            GUI.color = value ? Color.white : Color.gray;
+            bool newValue = GUILayout.Toggle(value, name, options);
+            if (value != newValue)
+            {
+                Undo.RecordObject(target, "Set bool value");
+                outValue = newValue;
+                HasChanged();
+            }
+            else
+            {
+                outValue = value;
+            }
+            GUI.color = Color.white;
+        }
+        /// <summary>
+        /// 制作一个GUILayout Toggle
+        /// </summary>
+        protected void GUILayoutToggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
+        {
+            GUI.color = value ? Color.white : Color.gray;
+            bool newValue = GUILayout.Toggle(value, name, style, options);
             if (value != newValue)
             {
                 Undo.RecordObject(target, "Set bool value");
