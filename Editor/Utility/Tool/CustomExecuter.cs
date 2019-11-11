@@ -138,7 +138,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("About", "Toolbarbutton"))
             {
-
+                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/102971712");
             }
         }
         protected override void OnBodyGUI()
