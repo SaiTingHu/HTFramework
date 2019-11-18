@@ -607,11 +607,6 @@ namespace HT.Framework
             SkinnedMeshRenderer[] smr = GetComponentsInChildren<SkinnedMeshRenderer>();
             CacheRenderers(smr);
 
-            /*#if !UNITY_FLASH
-            ClothRenderer[] cr = GetComponentsInChildren<ClothRenderer>();
-            CacheRenderers(cr);
-            #endif*/
-
             currentState = false;
             materialsIsDirty = false;
             currentColor = Color.clear;

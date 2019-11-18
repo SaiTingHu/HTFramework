@@ -57,7 +57,7 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 高光工具
+        #region 高亮工具
         private static List<HighlightableObject> HOCache = new List<HighlightableObject>();
         private static HashSet<HighlightableObject> HighLightObjects = new HashSet<HighlightableObject>();
         private static HashSet<HighlightableObject> FlashHighLightObjects = new HashSet<HighlightableObject>();
@@ -208,6 +208,70 @@ namespace HT.Framework
                 }
             }
             FlashHighLightObjects.Clear();
+        }
+        #endregion
+
+        #region 网格轮廓高亮工具
+        private static HashSet<MeshOutlineObject> MeshOutlineObjects = new HashSet<MeshOutlineObject>();
+
+        /// <summary>
+        /// 开启网格轮廓高亮，使用默认颜色
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="intensity">强度</param>
+        public static void OpenMeshOutline(this GameObject target, float intensity = 1)
+        {
+            target.OpenMeshOutline(Color.yellow, intensity);
+        }
+        /// <summary>
+        /// 开启网格轮廓高亮，使用指定颜色
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="color">高亮颜色</param>
+        /// <param name="intensity">强度</param>
+        public static void OpenMeshOutline(this GameObject target, Color color, float intensity = 1)
+        {
+            MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
+            if (mo == null) mo = target.AddComponent<MeshOutlineObject>();
+
+            if (!MeshOutlineObjects.Contains(mo))
+            {
+                MeshOutlineObjects.Add(mo);
+            }
+            mo.Open(color, intensity);
+        }
+        /// <summary>
+        /// 关闭网格轮廓发光
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="die">是否销毁实例</param>
+        public static void CloseMeshOutline(this GameObject target, bool die = false)
+        {
+            MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
+            if (mo == null) return;
+
+            if (MeshOutlineObjects.Contains(mo))
+            {
+                MeshOutlineObjects.Remove(mo);
+            }
+            mo.Close();
+            if (die) mo.Die();
+        }
+        /// <summary>
+        /// 关闭所有的网格轮廓发光
+        /// </summary>
+        /// <param name="die">是否销毁实例</param>
+        public static void CloseAllMeshOutline(bool die = false)
+        {
+            foreach (MeshOutlineObject mo in MeshOutlineObjects)
+            {
+                if (mo)
+                {
+                    mo.Close();
+                    if (die) mo.Die();
+                }
+            }
+            MeshOutlineObjects.Clear();
         }
         #endregion
 

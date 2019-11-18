@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -9,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 邮件发送者
     /// </summary>
-    public sealed class EmailSender
+    public sealed class EmailSender : IDisposable
     {
         private MailMessage _mailMessage;
         private SmtpClient _smtpClient;
@@ -83,6 +84,15 @@ namespace HT.Framework
             _mailMessage.Subject = _subject;
             _mailMessage.Body = _body;
             return Main.Current.StartCoroutine(SendCoroutine());
+        }
+
+        /// <summary>
+        /// 销毁
+        /// </summary>
+        public void Dispose()
+        {
+            _mailMessage.Dispose();
+            _smtpClient.Dispose();
         }
 
         private IEnumerator SendCoroutine()

@@ -28,7 +28,6 @@ namespace HT.Framework
         private int _currentOperation = -1;
         private StepContent _currentStepObj;
         private StepOperation _currentOperationObj;
-        private Vector2 _mouseDownPos;
         private Texture _background;
         private bool _isMinimize = false;
         private Rect _recordedPosition;
@@ -912,7 +911,7 @@ namespace HT.Framework
                             operationClone.Name += "(Clone)";
                             _currentStepObj.Operations.Add(operationClone);
                             SelectStepOperation(_currentStepObj.Operations.Count - 1);
-                            Repaint();
+                            GUI.changed = true;
                         }
                         GUI.backgroundColor = Color.red;
                         if (GUILayout.Button("Delete"))
@@ -987,7 +986,7 @@ namespace HT.Framework
                             SelectStepOperation(i);
                             operation.Anchor = Event.current.mousePosition;
                             _stepContentGUIRepaint = true;
-                            Repaint();
+                            GUI.changed = true;
                         }
                         else if (Event.current.button == 1)
                         {
@@ -1020,7 +1019,7 @@ namespace HT.Framework
                         _currentStepObj.EnterAnchor = Event.current.mousePosition;
                         SelectStepOperation(-1);
                         _stepContentGUIRepaint = true;
-                        Repaint();
+                        GUI.changed = true;
                     }
                     else if (Event.current.button == 1)
                     {
@@ -1059,13 +1058,12 @@ namespace HT.Framework
                         else if (_stepContentRect.Contains(Event.current.mousePosition))
                         {
                             GUI.FocusControl(null);
-                            _mouseDownPos = Event.current.mousePosition;
                             
                             if (Event.current.button == 1)
                             {
                                 if (_currentStep != -1)
                                 {
-                                    AddStepOperation();
+                                    AddStepOperation(Event.current.mousePosition);
                                 }
                             }
                             else if (Event.current.button == 2)
@@ -1076,7 +1074,6 @@ namespace HT.Framework
                         else if (_stepListRect.Contains(Event.current.mousePosition))
                         {
                             GUI.FocusControl(null);
-                            _mouseDownPos = Event.current.mousePosition;
 
                             if (Event.current.button == 1)
                             {
@@ -1098,18 +1095,16 @@ namespace HT.Framework
                             {
                                 _stepListGUIWidth = 100;
                             }
-                            Repaint();
+                            GUI.changed = true;
                         }
                         else if (_stepContentDragging)
                         {
-                            Vector2 direction = (Event.current.mousePosition - _mouseDownPos);
                             for (int i = 0; i < _contentAsset.Content[_currentStep].Operations.Count; i++)
                             {
-                                _contentAsset.Content[_currentStep].Operations[i].Anchor += direction;
+                                _contentAsset.Content[_currentStep].Operations[i].Anchor += Event.current.delta;
                             }
-                            _contentAsset.Content[_currentStep].EnterAnchor += direction;
-                            _mouseDownPos = Event.current.mousePosition;
-                            Repaint();
+                            _contentAsset.Content[_currentStep].EnterAnchor += Event.current.delta;
+                            GUI.changed = true;
                         }
                         #endregion
                         break;
@@ -1139,7 +1134,7 @@ namespace HT.Framework
                                     {
                                         DeleteStepContent(_currentStep);
                                     }
-                                    Repaint();
+                                    GUI.changed = true;
                                 }
                                 break;
                         }
@@ -1194,7 +1189,7 @@ namespace HT.Framework
         /// <summary>
         /// 新增步骤操作
         /// </summary>
-        private void AddStepOperation()
+        private void AddStepOperation(Vector2 position)
         {
             GenericMenu gm = new GenericMenu();
             foreach (StepOperationType type in Enum.GetValues(typeof(StepOperationType)))
@@ -1204,7 +1199,7 @@ namespace HT.Framework
                     StepOperation operation = new StepOperation();
                     operation.GUID = Guid.NewGuid().ToString();
                     operation.OperationType = type;
-                    operation.Anchor = _mouseDownPos;
+                    operation.Anchor = position;
                     operation.Instant = false;
                     string showName = "";
                     switch (type)
@@ -1262,7 +1257,7 @@ namespace HT.Framework
                     }
                     operation.Name = showName + _currentStepObj.GetOperationsCout(type);
                     _contentAsset.Content[_currentStep].Operations.Add(operation);
-                    Repaint();
+                    GUI.changed = true;
                 });
             }
             gm.ShowAsContext();

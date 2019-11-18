@@ -95,7 +95,11 @@ namespace HT.Framework
             if (IsHandler)
             {
                 Application.logMessageReceived -= Handler;
-                _sender = null;
+                if (_sender != null)
+                {
+                    _sender.Dispose();
+                    _sender = null;
+                }
             }
         }
 
