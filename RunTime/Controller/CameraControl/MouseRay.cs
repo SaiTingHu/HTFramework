@@ -41,6 +41,10 @@ namespace HT.Framework
         /// </summary>
         public Color FlashColor2 = Color.white;
         /// <summary>
+        /// 轮廓发光强度
+        /// </summary>
+        public float OutlineIntensity = 1;
+        /// <summary>
         /// 提示框背景
         /// </summary>
         public Image RayHitBG;
@@ -140,6 +144,9 @@ namespace HT.Framework
                         case HighlightingType.Flash:
                             _rayTarget.CloseFlashHighLight(true);
                             break;
+                        case HighlightingType.Outline:
+                            _rayTarget.CloseMeshOutline(true);
+                            break;
                     }
                 }
                 Target = null;
@@ -168,6 +175,9 @@ namespace HT.Framework
                                 break;
                             case HighlightingType.Flash:
                                 _rayTarget.OpenFlashHighLight(FlashColor1, FlashColor2);
+                                break;
+                            case HighlightingType.Outline:
+                                _rayTarget.OpenMeshOutline(NormalColor, OutlineIntensity);
                                 break;
                         }
                     }
@@ -218,7 +228,7 @@ namespace HT.Framework
             }
             return null;
         }
-        
+
         /// <summary>
         /// 高光类型
         /// </summary>
@@ -232,6 +242,10 @@ namespace HT.Framework
             /// 闪光
             /// </summary>
             Flash,
+            /// <summary>
+            /// 轮廓发光
+            /// </summary>
+            Outline
         }
 
         /// <summary>

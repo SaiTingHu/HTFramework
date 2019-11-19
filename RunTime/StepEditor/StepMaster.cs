@@ -22,6 +22,10 @@ namespace HT.Framework
         /// </summary>
         public StepContentAsset ContentAsset;
         /// <summary>
+        /// 指引目标的高亮方式
+        /// </summary>
+        public MouseRay.HighlightingType GuideHighlighting = MouseRay.HighlightingType.Flash;
+        /// <summary>
         /// 步骤开始事件【任何一个步骤开始后触发，连续跳过步骤时不会触发】
         /// </summary>
         public event HTFAction<StepContent, bool> BeginStepEvent;
@@ -690,7 +694,18 @@ namespace HT.Framework
                 GameObject target = _currentContent.Target;
                 if (target.GetComponent<Collider>())
                 {
-                    target.OpenFlashHighLight();
+                    switch (GuideHighlighting)
+                    {
+                        case MouseRay.HighlightingType.Normal:
+                            target.OpenHighLight();
+                            break;
+                        case MouseRay.HighlightingType.Flash:
+                            target.OpenFlashHighLight();
+                            break;
+                        case MouseRay.HighlightingType.Outline:
+                            target.OpenMeshOutline();
+                            break;
+                    }
                 }
 
                 Main.m_Controller.TheControlMode = _currentContent.InitialMode;

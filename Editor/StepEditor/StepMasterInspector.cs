@@ -34,6 +34,10 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             ObjectField(Target.ContentAsset, out Target.ContentAsset, false, "Asset");
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            EnumPopup(Target.GuideHighlighting, out Target.GuideHighlighting, "Guide Highlighting");
+            GUILayout.EndHorizontal();
         }
 
         protected override void OnInspectorRuntimeGUI()
