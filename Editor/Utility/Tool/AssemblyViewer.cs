@@ -38,15 +38,7 @@ namespace HT.Framework
         private bool _showProperty = true;
 
         private StringBuilder _builder = new StringBuilder();
-
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
-
+        
         private void OnEnable()
         {
             _assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -55,6 +47,16 @@ namespace HT.Framework
             _currentMethod = null;
             _currentField = null;
             _currentProperty = null;
+        }
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
+
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("About", "Toolbarbutton"))
+            {
+                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/102971712");
+            }
         }
         protected override void OnBodyGUI()
         {
