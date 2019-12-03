@@ -1,6 +1,8 @@
 # Unity HTFramework
 
-一个开源的适用于Unity的简易、轻量级框架，更适用于应用软件、小型游戏项目。
+一个开源的基于Unity的简易、轻量级、模块化框架，更适用于应用软件、小型游戏项目。
+
+设计思想参考[EllanJiang/GameFramework](https://github.com/EllanJiang/GameFramework)。
 
 ## 环境
 
