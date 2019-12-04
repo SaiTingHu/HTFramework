@@ -26,6 +26,8 @@
 
 - [Coroutiner](https://wanderer.blog.csdn.net/article/details/91492838) - 协程调度器，通过协程调度器启动的协程，将会处于调度器的监控中，可以通过CoroutinerTracker追踪面板查看协程的运行状态、运行耗时，可重启、终止任意协程。
 
+- [CustomModule](https://wanderer.blog.csdn.net/article/details/103390089) - 框架内置了多个常用的模块，如果想要添加自己的模块，通过CustomModule添加自定义模块即可，自定义模块拥有与内置模块完全一样的生命周期。
+
 - [DataSet](https://wanderer.blog.csdn.net/article/details/89395574) - 自定义数据集，任何需要存储数据的地方都可以定义为自定义数据集，包括预制的配置文件、运行时生成的动态数据、从后台拉取的各种数据等。
 
 - [Debug](https://wanderer.blog.csdn.net/article/details/102570194) - Debug模块自带Debugger运行时调试器，可以监控一些常规数据与软件运行环境，或是进行一些高级的操作，比如检索场景所有游戏对象（等效于编辑器内Hierarchy窗口的功能），检索游戏对象的所有组件（等效于编辑器内Inspector窗口的功能）。
