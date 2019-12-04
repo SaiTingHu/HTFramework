@@ -37,7 +37,7 @@ namespace HT.Framework
         [@MenuItem("HTFramework/About/CSDN Blog", false, 0)]
         private static void AboutCSDN()
         {
-            Application.OpenURL(@"https://blog.csdn.net/qq992817263/column/info/32162");
+            Application.OpenURL(@"https://blog.csdn.net/qq992817263/category_9283445.html");
         }
 
         /// <summary>
