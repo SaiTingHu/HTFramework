@@ -99,6 +99,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 新建CustomModule脚本的文件夹
+        /// </summary>
+        public static string Script_CustomModule_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.CustomModule";
+            }
+        }
+        /// <summary>
         /// 新建HotfixProcedure脚本的文件夹
         /// </summary>
         public static string Script_HotfixProcedure_Directory

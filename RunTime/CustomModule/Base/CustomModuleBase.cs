@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
-    /// 模块管理者基类
+    /// 自定义模块基类
     /// </summary>
-    public abstract class ModuleManagerBase : MonoBehaviour, IModuleManager
+    public abstract class CustomModuleBase : IModuleManager
     {
         /// <summary>
         /// 初始化模块

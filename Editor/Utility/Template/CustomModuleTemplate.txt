@@ -1,0 +1,59 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using HT.Framework;
+using DG.Tweening;
+/// <summary>
+/// 新建自定义模块
+/// </summary>
+[CustomModule("#MODULENAME#", true)]
+public class #SCRIPTNAME# : CustomModuleBase
+{
+    /// <summary>
+    /// 初始化模块
+    /// </summary>
+    public override void OnInitialization()
+    {
+        base.OnInitialization();
+    }
+
+    /// <summary>
+    /// 模块准备工作
+    /// </summary>
+    public override void OnPreparatory()
+    {
+        base.OnPreparatory();
+    }
+
+    /// <summary>
+    /// 刷新模块
+    /// </summary>
+    public override void OnRefresh()
+    {
+        base.OnRefresh();
+    }
+
+    /// <summary>
+    /// 终结模块
+    /// </summary>
+    public override void OnTermination()
+    {
+        base.OnTermination();
+    }
+
+    /// <summary>
+    /// 暂停模块
+    /// </summary>
+    public override void OnPause()
+    {
+        base.OnPause();
+    }
+
+    /// <summary>
+    /// 恢复模块
+    /// </summary>
+    public override void OnUnPause()
+    {
+        base.OnUnPause();
+    }
+}
