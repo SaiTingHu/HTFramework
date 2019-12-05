@@ -1,41 +1,33 @@
-﻿using UnityEngine;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
-    /// 模块管理者基类
+    /// 模块管理者接口
     /// </summary>
-    public abstract class ModuleManagerBase : MonoBehaviour, IModuleManager
+    public interface IModuleManager
     {
         /// <summary>
         /// 初始化模块
         /// </summary>
-        public virtual void OnInitialization()
-        { }
+        void OnInitialization();
         /// <summary>
         /// 模块准备工作
         /// </summary>
-        public virtual void OnPreparatory()
-        { }
+        void OnPreparatory();
         /// <summary>
         /// 刷新模块
         /// </summary>
-        public virtual void OnRefresh()
-        { }
+        void OnRefresh();
         /// <summary>
         /// 终结模块
         /// </summary>
-        public virtual void OnTermination()
-        { }
+        void OnTermination();
         /// <summary>
         /// 暂停模块
         /// </summary>
-        public virtual void OnPause()
-        { }
+        void OnPause();
         /// <summary>
         /// 恢复模块
         /// </summary>
-        public virtual void OnUnPause()
-        { }
+        void OnUnPause();
     }
 }

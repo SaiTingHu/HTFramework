@@ -37,7 +37,7 @@ namespace HT.Framework
         [@MenuItem("HTFramework/About/CSDN Blog", false, 0)]
         private static void AboutCSDN()
         {
-            Application.OpenURL(@"https://blog.csdn.net/qq992817263/column/info/32162");
+            Application.OpenURL(@"https://blog.csdn.net/qq992817263/category_9283445.html");
         }
 
         /// <summary>
@@ -644,9 +644,47 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 新建CustomModule类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/C# CustomModule Script", false, 20)]
+        private static void CreateCustomModule()
+        {
+            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_CustomModule_Directory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 CustomModule 类", directory, "NewCustomModule", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/CustomModuleTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        code = code.Replace("#MODULENAME#", className);
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_CustomModule_Directory, path.Substring(0, path.LastIndexOf("/")));
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError("新建CustomModule失败，已存在类型 " + className);
+                }
+            }
+        }
+
+        /// <summary>
         /// 新建HotfixProcedure类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 40)]
+        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 60)]
         private static void CreateHotfixProcedure()
         {
             string directory = EditorPrefs.GetString(EditorPrefsTable.Script_HotfixProcedure_Directory, Application.dataPath);
@@ -683,7 +721,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建HotfixObject类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 41)]
+        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 61)]
         private static void CreateHotfixObject()
         {
             string directory = EditorPrefs.GetString(EditorPrefsTable.Script_HotfixObject_Directory, Application.dataPath);
@@ -720,7 +758,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建WebGL插件
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 60)]
+        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 100)]
         private static void CreateWebGLPlugin()
         {
             string pluginsDirectory = Application.dataPath + "/Plugins";

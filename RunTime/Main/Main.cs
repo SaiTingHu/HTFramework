@@ -38,14 +38,19 @@ namespace HT.Framework
             LogicLoopRefresh();
         }
 
+        private void OnGUI()
+        {
+            LicenseOnGUI();
+        }
+
         private void OnDestroy()
         {
             ModuleTermination();
         }
 
-        private void OnGUI()
+        private void OnApplicationQuit()
         {
-            LicenseOnGUI();
+            ApplicationQuitEvent?.Invoke();
         }
     }
 }

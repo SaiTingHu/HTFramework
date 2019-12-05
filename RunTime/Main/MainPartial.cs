@@ -145,6 +145,10 @@ namespace HT.Framework
         /// </summary>
         public static Coroutiner m_Coroutiner { get; private set; }
         /// <summary>
+        /// 自定义模块
+        /// </summary>
+        public static CustomModuleManager m_CustomModule { get; private set; }
+        /// <summary>
         /// 数据集模块
         /// </summary>
         public static DataSetManager m_DataSet { get; private set; }
@@ -217,6 +221,7 @@ namespace HT.Framework
             m_Audio = transform.GetComponentByChild<AudioManager>("Audio");
             m_Controller = transform.GetComponentByChild<ControllerManager>("Controller");
             m_Coroutiner = transform.GetComponentByChild<Coroutiner>("Coroutiner");
+            m_CustomModule = transform.GetComponentByChild<CustomModuleManager>("CustomModule");
             m_DataSet = transform.GetComponentByChild<DataSetManager>("DataSet");
             m_Debug = transform.GetComponentByChild<DebugManager>("Debug");
             m_Entity = transform.GetComponentByChild<EntityManager>("Entity");
@@ -238,6 +243,7 @@ namespace HT.Framework
             m_Audio.OnInitialization();
             m_Controller.OnInitialization();
             m_Coroutiner.OnInitialization();
+            m_CustomModule.OnInitialization();
             m_DataSet.OnInitialization();
             m_Debug.OnInitialization();
             m_Entity.OnInitialization();
@@ -261,6 +267,7 @@ namespace HT.Framework
             m_Audio.OnPreparatory();
             m_Controller.OnPreparatory();
             m_Coroutiner.OnPreparatory();
+            m_CustomModule.OnPreparatory();
             m_DataSet.OnPreparatory();
             m_Debug.OnPreparatory();
             m_Entity.OnPreparatory();
@@ -289,6 +296,7 @@ namespace HT.Framework
             m_Audio.OnRefresh();
             m_Controller.OnRefresh();
             m_Coroutiner.OnRefresh();
+            m_CustomModule.OnRefresh();
             m_DataSet.OnRefresh();
             m_Debug.OnRefresh();
             m_Entity.OnRefresh();
@@ -312,6 +320,7 @@ namespace HT.Framework
             m_Audio.OnTermination();
             m_Controller.OnTermination();
             m_Coroutiner.OnTermination();
+            m_CustomModule.OnTermination();
             m_DataSet.OnTermination();
             m_Debug.OnTermination();
             m_Entity.OnTermination();
@@ -335,6 +344,7 @@ namespace HT.Framework
             m_Audio.OnPause();
             m_Controller.OnPause();
             m_Coroutiner.OnPause();
+            m_CustomModule.OnPause();
             m_DataSet.OnPause();
             m_Debug.OnPause();
             m_Entity.OnPause();
@@ -358,6 +368,7 @@ namespace HT.Framework
             m_Audio.OnUnPause();
             m_Controller.OnUnPause();
             m_Coroutiner.OnUnPause();
+            m_CustomModule.OnUnPause();
             m_DataSet.OnUnPause();
             m_Debug.OnUnPause();
             m_Entity.OnUnPause();
@@ -919,6 +930,13 @@ namespace HT.Framework
             LogicLoopEvent?.Invoke();
         }
         #endregion
+
+        #region ApplicationQuit
+        /// <summary>
+        /// 程序退出事件
+        /// </summary>
+        public event HTFAction ApplicationQuitEvent;
+        #endregion
     }
 
     /// <summary>
@@ -930,6 +948,7 @@ namespace HT.Framework
         Audio,
         Controller,
         Coroutiner,
+        CustomModule,
         DataSet,
         Debug,
         Entity,
