@@ -82,6 +82,14 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             FloatField(Target.BGWidthOffset, out Target.BGWidthOffset, "BG Width Offset");
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            IntField(Target.ScreenWidthHalf, out Target.ScreenWidthHalf, "Screen Width Half");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            IntField(Target.ScreenHeightHalf, out Target.ScreenHeightHalf, "Screen Height Half");
+            GUILayout.EndHorizontal();
         }
     }
 }

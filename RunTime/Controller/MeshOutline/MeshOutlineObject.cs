@@ -183,7 +183,10 @@ namespace HT.Framework
                         ReplacementMaterials[i].SetTextureOffset("_MainTex", material.mainTextureOffset);
                         ReplacementMaterials[i].SetTextureScale("_MainTex", material.mainTextureScale);
                     }
-                    ReplacementMaterials[i].SetColor("_Diffuse", material.color);
+                    if (material.HasProperty("_Color"))
+                    {
+                        ReplacementMaterials[i].SetColor("_Diffuse", material.color);
+                    }
                 }
             }
 
