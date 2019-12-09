@@ -91,6 +91,8 @@ namespace HT.Framework
         private bool _execute = false;
         //UGUI按钮点击触发型步骤，当前是否被点击
         private bool _isButtonClick = false;
+        //等待协程
+        private Coroutine _waitCoroutine;
         //暂停时等待
         private WaitUntil _pauseWait;
 
@@ -208,11 +210,11 @@ namespace HT.Framework
 
                         if (_currentContent.Instant)
                         {
-                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
+                            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
                         }
                         else
                         {
-                            Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
+                            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
                         }
                     }
                 }
@@ -543,6 +545,14 @@ namespace HT.Framework
             _running = false;
             _pause = false;
             _executing = false;
+
+            StopSkip();
+
+            if (_waitCoroutine != null)
+            {
+                Main.Current.StopCoroutine(_waitCoroutine);
+                _waitCoroutine = null;
+            }
 
             EndEvent?.Invoke();
         }
@@ -933,8 +943,8 @@ namespace HT.Framework
                 _currentHelper.OnTermination();
                 _currentHelper = null;
             }
-            
-            yield return WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime / SkipMultiple);
+
+            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime / SkipMultiple));
         }
         //跳过到指定步骤
         private IEnumerator SkipStepCoroutine(int index)
@@ -1021,7 +1031,7 @@ namespace HT.Framework
 
             SkipStepDoneEvent?.Invoke();
 
-            yield return WaitCoroutine(BeginCurrentStep, 0);
+            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(BeginCurrentStep, 0));
         }
         //进入下一步骤
         private void ChangeNextStep()
