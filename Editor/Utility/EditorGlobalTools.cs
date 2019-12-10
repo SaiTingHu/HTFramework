@@ -931,6 +931,7 @@ namespace HT.Framework
 
         #region Hierarchy窗口扩展
         private static GUIStyle HierarchyItemStyle;
+        private static Texture HTFrameworkLOGO;
 
         /// <summary>
         /// 编辑器初始化
@@ -940,6 +941,7 @@ namespace HT.Framework
             HierarchyItemStyle = new GUIStyle();
             HierarchyItemStyle.alignment = TextAnchor.MiddleRight;
             HierarchyItemStyle.normal.textColor = Color.cyan;
+            HTFrameworkLOGO = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGO.png");
 
             EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowItemOnGUI;
         }
@@ -953,7 +955,7 @@ namespace HT.Framework
             {
                 if (main.GetComponent<Main>())
                 {
-                    GUI.Label(selectionRect, "[框架主体]", HierarchyItemStyle);
+                    GUI.Box(selectionRect, HTFrameworkLOGO, HierarchyItemStyle);
                 }
             }
         }
@@ -961,6 +963,7 @@ namespace HT.Framework
 
         #region Project窗口扩展
         private static GUIStyle ProjectItemStyle;
+        private static Texture HTFrameworkLOGOTitle;
 
         /// <summary>
         /// 编辑器初始化
@@ -970,6 +973,7 @@ namespace HT.Framework
             ProjectItemStyle = new GUIStyle();
             ProjectItemStyle.alignment = TextAnchor.MiddleRight;
             ProjectItemStyle.normal.textColor = Color.cyan;
+            HTFrameworkLOGOTitle = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGOTitle.png");
 
             EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
         }
@@ -981,7 +985,7 @@ namespace HT.Framework
             string mainFolder = AssetDatabase.GUIDToAssetPath(guid);
             if (string.Equals(mainFolder, "Assets/HTFramework"))
             {
-                GUI.Label(selectionRect, "[框架主体]", ProjectItemStyle);
+                GUI.Box(selectionRect, HTFrameworkLOGOTitle, ProjectItemStyle);
             }
         }
         #endregion

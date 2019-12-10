@@ -1194,21 +1194,24 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 枚举工具
+        #region 特性工具
         /// <summary>
         /// 获取枚举的备注信息
         /// </summary>
-        public static string GetRemark(this Enum value)
+        /// <param name="value">枚举值</param>
+        /// <param name="inherit">是否包含继承</param>
+        /// <returns>备注信息</returns>
+        public static string GetRemark(this Enum value, bool inherit = false)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
             if (fi == null)
             {
                 return value.ToString();
             }
-            object[] attributes = fi.GetCustomAttributes(typeof(RemarkAttribute), false);
-            if (attributes.Length > 0)
+            RemarkAttribute remark = fi.GetCustomAttribute<RemarkAttribute>(inherit);
+            if (remark != null)
             {
-                return ((RemarkAttribute)attributes[0]).Remark;
+                return remark.Remark;
             }
             else
             {
@@ -1218,61 +1221,36 @@ namespace HT.Framework
         /// <summary>
         /// 判断枚举是否标记有指定特性
         /// </summary>
-        public static bool IsExistAttribute<T>(this Enum value) where T : Attribute
+        /// <typeparam name="T">特性类型</typeparam>
+        /// <param name="value">枚举值</param>
+        /// <param name="inherit">是否包含继承</param>
+        /// <returns>是否标记该特性</returns>
+        public static bool IsExistAttribute<T>(this Enum value, bool inherit = false) where T : Attribute
+        {
+            return value.IsExistAttribute(typeof(T), inherit);
+        }
+        /// <summary>
+        /// 判断枚举是否标记有指定特性
+        /// </summary>
+        /// <param name="value">枚举值</param>
+        /// <param name="type">特性类型</param>
+        /// <param name="inherit">是否包含继承</param>
+        /// <returns>是否标记该特性</returns>
+        public static bool IsExistAttribute(this Enum value, Type type, bool inherit = false)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
             if (fi == null)
             {
                 return false;
             }
-            object[] attributes = fi.GetCustomAttributes(typeof(T), false);
-            if (attributes.Length > 0)
+            Attribute attr = fi.GetCustomAttribute(type, inherit);
+            if (attr != null)
             {
                 return true;
             }
             else
             {
                 return false;
-            }
-        }
-        /// <summary>
-        /// 获取枚举标记的指定的第一个特性
-        /// </summary>
-        public static T GetAttribute<T>(this Enum value) where T : Attribute
-        {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
-            if (fi == null)
-            {
-                return null;
-            }
-            object[] attributes = fi.GetCustomAttributes(typeof(T), false);
-            if (attributes.Length > 0)
-            {
-                return attributes[0] as T;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        /// <summary>
-        /// 获取枚举标记的指定的第一个特性
-        /// </summary>
-        public static object GetAttribute(this Enum value, Type type)
-        {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
-            if (fi == null)
-            {
-                return null;
-            }
-            object[] attributes = fi.GetCustomAttributes(type, false);
-            if (attributes.Length > 0)
-            {
-                return attributes[0];
-            }
-            else
-            {
-                return null;
             }
         }
         #endregion
