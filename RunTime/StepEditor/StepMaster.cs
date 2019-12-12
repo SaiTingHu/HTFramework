@@ -114,7 +114,7 @@ namespace HT.Framework
 
                 if (!_executing)
                 {
-                    if (_currentHelper != null)
+                    if (_currentHelper != null && _currentHelper.IsEnableUpdate)
                     {
                         _currentHelper.OnUpdate();
                     }

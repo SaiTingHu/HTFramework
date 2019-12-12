@@ -28,6 +28,10 @@ namespace HT.Framework
         /// 步骤辅助目标
         /// </summary>
         public List<GameObject> AuxiliaryTarget = new List<GameObject>();
+        /// <summary>
+        /// 是否启用帧刷新
+        /// </summary>
+        public bool IsEnableUpdate = true;
 
         /// <summary>
         /// 跳过时生命周期（仅在跳过时生效）
