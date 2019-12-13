@@ -1,5 +1,5 @@
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -13,19 +13,19 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
 #if UNITY_IPHONE
-		    if (Handheld.use32BitDisplayBuffer == false)
+		    if (PlayerSettings.use32BitDisplayBuffer == false)
 		    {
-			    EditorGUILayout.HelpBox("Highlighting System requires 32-bit display buffer. Set the 'Use 32-bit Display Buffer' checkbox under the 'Resolution and Presentation' section of Player Settings.", MessageType.Error);
+                EditorGUILayout.HelpBox("Highlighting System requires 32-bit display buffer. Set the 'Use 32-bit Display Buffer' checkbox under the 'Resolution and Presentation' section of Player Settings.", MessageType.Error);
 		    }
 #endif
             EditorGUILayout.Space();
 
             GUILayout.BeginHorizontal();
-            bool useZBuffer = EditorGUILayout.Toggle("Use Z-Buffer", Target.stencilZBufferEnabled);
-            if (useZBuffer != Target.stencilZBufferEnabled)
+            bool useZBuffer = EditorGUILayout.Toggle("Use Z-Buffer", Target.StencilZBufferEnabled);
+            if (useZBuffer != Target.StencilZBufferEnabled)
             {
                 Undo.RecordObject(Target, "Set Use Z-Buffer");
-                Target.stencilZBufferEnabled = useZBuffer;
+                Target.StencilZBufferEnabled = useZBuffer;
                 HasChanged();
             }
             GUILayout.EndHorizontal();
@@ -47,44 +47,44 @@ namespace HT.Framework
 
             EditorGUILayout.Space();
             
-            Target.downsampleFactor = EditorGUILayout.Popup("Downsampling:", Target.downsampleFactor, _downsampleOptions);
-            Target.iterations = Mathf.Clamp(EditorGUILayout.IntField("Iterations:", Target.iterations), 0, 50);
-            Target.blurMinSpread = EditorGUILayout.Slider("Min Spread:", Target.blurMinSpread, 0f, 3f);
-            Target.blurSpread = EditorGUILayout.Slider("Spread:", Target.blurSpread, 0f, 3f);
-            Target.blurIntensity = EditorGUILayout.Slider("Intensity:", Target.blurIntensity, 0f, 1f);
+            Target.DownSampleFactorProperty = EditorGUILayout.Popup("Downsampling:", Target.DownSampleFactorProperty, _downsampleOptions);
+            Target.BlurIterations = Mathf.Clamp(EditorGUILayout.IntField("Iterations:", Target.BlurIterations), 0, 50);
+            Target.BlurMinSpread = EditorGUILayout.Slider("Min Spread:", Target.BlurMinSpread, 0f, 3f);
+            Target.BlurSpread = EditorGUILayout.Slider("Spread:", Target.BlurSpread, 0f, 3f);
+            Target.BlurIntensityProperty = EditorGUILayout.Slider("Intensity:", Target.BlurIntensityProperty, 0f, 1f);
         }
 
         private void Default()
         {
-            Target.downsampleFactor = 2;
-            Target.iterations = 2;
-            Target.blurMinSpread = 0.65f;
-            Target.blurSpread = 0.25f;
-            Target.blurIntensity = 0.3f;
+            Target.DownSampleFactorProperty = 2;
+            Target.BlurIterations = 2;
+            Target.BlurMinSpread = 0.65f;
+            Target.BlurSpread = 0.25f;
+            Target.BlurIntensityProperty = 0.3f;
         }
         private void Strong()
         {
-            Target.downsampleFactor = 2;
-            Target.iterations = 2;
-            Target.blurMinSpread = 0.5f;
-            Target.blurSpread = 0.15f;
-            Target.blurIntensity = 0.325f;
+            Target.DownSampleFactorProperty = 2;
+            Target.BlurIterations = 2;
+            Target.BlurMinSpread = 0.5f;
+            Target.BlurSpread = 0.15f;
+            Target.BlurIntensityProperty = 0.325f;
         }
         private void Speed()
         {
-            Target.downsampleFactor = 2;
-            Target.iterations = 1;
-            Target.blurMinSpread = 0.75f;
-            Target.blurSpread = 0.0f;
-            Target.blurIntensity = 0.35f;
+            Target.DownSampleFactorProperty = 2;
+            Target.BlurIterations = 1;
+            Target.BlurMinSpread = 0.75f;
+            Target.BlurSpread = 0.0f;
+            Target.BlurIntensityProperty = 0.35f;
         }
         private void Quality()
         {
-            Target.downsampleFactor = 1;
-            Target.iterations = 3;
-            Target.blurMinSpread = 1.0f;
-            Target.blurSpread = 0.0f;
-            Target.blurIntensity = 0.28f;
+            Target.DownSampleFactorProperty = 1;
+            Target.BlurIterations = 3;
+            Target.BlurMinSpread = 1.0f;
+            Target.BlurSpread = 0.0f;
+            Target.BlurIntensityProperty = 0.28f;
         }
     }
 }

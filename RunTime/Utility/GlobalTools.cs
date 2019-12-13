@@ -61,21 +61,22 @@ namespace HT.Framework
         private static List<HighlightableObject> HOCache = new List<HighlightableObject>();
         private static HashSet<HighlightableObject> HighLightObjects = new HashSet<HighlightableObject>();
         private static HashSet<HighlightableObject> FlashHighLightObjects = new HashSet<HighlightableObject>();
+        private static HashSet<HighlightableObject> OccluderObjects = new HashSet<HighlightableObject>();
 
         /// <summary>
-        /// 开启高光，使用默认发光颜色
+        /// 开启高亮一次，使用默认发光颜色
         /// </summary>
         /// <param name="target">目标物体</param>
-        public static void OpenHighLight(this GameObject target)
+        public static void OpenOnceHighLight(this GameObject target)
         {
-            target.OpenHighLight(Color.cyan);
+            target.OpenOnceHighLight(Color.cyan);
         }
         /// <summary>
-        /// 开启高光，使用指定发光颜色
+        /// 开启高亮一次，使用指定发光颜色
         /// </summary>
         /// <param name="target">目标物体</param>
         /// <param name="color">发光颜色</param>
-        public static void OpenHighLight(this GameObject target, Color color)
+        public static void OpenOnceHighLight(this GameObject target, Color color)
         {
             HOCache.Clear();
             target.transform.GetComponentsInChildren(true, HOCache);
@@ -83,7 +84,40 @@ namespace HT.Framework
             {
                 if (HOCache[i].gameObject != target)
                 {
-                    HOCache[i].ConstantOff();
+                    HOCache[i].CloseAll();
+                    HOCache[i].Die();
+                }
+            }
+
+            HighlightableObject ho = target.GetComponent<HighlightableObject>();
+            if (ho == null) ho = target.AddComponent<HighlightableObject>();
+            
+            ho.OpenOnce(color);
+        }
+
+        /// <summary>
+        /// 开启持续高光，使用默认发光颜色
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        public static void OpenHighLight(this GameObject target)
+        {
+            target.OpenHighLight(Color.cyan);
+        }
+        /// <summary>
+        /// 开启持续高光，使用指定发光颜色
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="color">发光颜色</param>
+        /// <param name="isImmediate">是否立即模式</param>
+        public static void OpenHighLight(this GameObject target, Color color, bool isImmediate = true)
+        {
+            HOCache.Clear();
+            target.transform.GetComponentsInChildren(true, HOCache);
+            for (int i = 0; i < HOCache.Count; i++)
+            {
+                if (HOCache[i].gameObject != target)
+                {
+                    HOCache[i].CloseAll();
                     HOCache[i].Die();
                 }
             }
@@ -95,10 +129,12 @@ namespace HT.Framework
             {
                 HighLightObjects.Add(ho);
             }
-            ho.ConstantOnImmediate(color);
+
+            if (isImmediate) ho.OpenConstantImmediate(color);
+            else ho.OpenConstant(color);
         }
         /// <summary>
-        /// 关闭高光
+        /// 关闭持续高光
         /// </summary>
         /// <param name="target">目标物体</param>
         /// <param name="die">是否销毁高光实例</param>
@@ -111,19 +147,21 @@ namespace HT.Framework
             {
                 HighLightObjects.Remove(ho);
             }
-            ho.ConstantOff();
+
+            ho.CloseConstant();
             if (die) ho.Die();
         }
         /// <summary>
-        /// 关闭所有的高光
+        /// 关闭所有的持续高光
         /// </summary>
+        /// <param name="die">是否销毁高光实例</param>
         public static void CloseAllHighLight(bool die = false)
         {
             foreach (HighlightableObject ho in HighLightObjects)
             {
                 if (ho)
                 {
-                    ho.ConstantOff();
+                    ho.CloseConstant();
                     if (die) ho.Die();
                 }
             }
@@ -163,7 +201,7 @@ namespace HT.Framework
             {
                 if (HOCache[i].gameObject != target)
                 {
-                    HOCache[i].FlashingOff();
+                    HOCache[i].CloseAll();
                     HOCache[i].Die();
                 }
             }
@@ -175,7 +213,8 @@ namespace HT.Framework
             {
                 FlashHighLightObjects.Add(ho);
             }
-            ho.FlashingOn(color1, color2, freq);
+
+            ho.OpenFlashing(color1, color2, freq);
         }
         /// <summary>
         /// 关闭闪光
@@ -191,23 +230,87 @@ namespace HT.Framework
             {
                 FlashHighLightObjects.Remove(ho);
             }
-            ho.FlashingOff();
+
+            ho.CloseFlashing();
             if (die) ho.Die();
         }
         /// <summary>
         /// 关闭所有的闪光
         /// </summary>
+        /// <param name="die">是否销毁高光实例</param>
         public static void CloseAllFlashHighLight(bool die = false)
         {
             foreach (HighlightableObject ho in FlashHighLightObjects)
             {
                 if (ho)
                 {
-                    ho.FlashingOff();
+                    ho.CloseFlashing();
                     if (die) ho.Die();
                 }
             }
             FlashHighLightObjects.Clear();
+        }
+        
+        /// <summary>
+        /// 开启遮光板
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        public static void OpenOccluder(this GameObject target)
+        {
+            HOCache.Clear();
+            target.transform.GetComponentsInChildren(true, HOCache);
+            for (int i = 0; i < HOCache.Count; i++)
+            {
+                if (HOCache[i].gameObject != target)
+                {
+                    HOCache[i].CloseAll();
+                    HOCache[i].Die();
+                }
+            }
+
+            HighlightableObject ho = target.GetComponent<HighlightableObject>();
+            if (ho == null) ho = target.AddComponent<HighlightableObject>();
+
+            if (!OccluderObjects.Contains(ho))
+            {
+                OccluderObjects.Add(ho);
+            }
+
+            ho.OpenOccluder();
+        }
+        /// <summary>
+        /// 关闭遮光板
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="die">是否销毁高光实例</param>
+        public static void CloseOccluder(this GameObject target, bool die = false)
+        {
+            HighlightableObject ho = target.GetComponent<HighlightableObject>();
+            if (ho == null) return;
+
+            if (OccluderObjects.Contains(ho))
+            {
+                OccluderObjects.Remove(ho);
+            }
+
+            ho.CloseOccluder();
+            if (die) ho.Die();
+        }
+        /// <summary>
+        /// 关闭所有的遮光板
+        /// </summary>
+        /// <param name="die">是否销毁高光实例</param>
+        public static void CloseAllOccluder(bool die = false)
+        {
+            foreach (HighlightableObject ho in OccluderObjects)
+            {
+                if (ho)
+                {
+                    ho.CloseOccluder();
+                    if (die) ho.Die();
+                }
+            }
+            OccluderObjects.Clear();
         }
         #endregion
 
@@ -1253,6 +1356,34 @@ namespace HT.Framework
                 return false;
             }
         }
+        /// <summary>
+        /// 获取枚举的特性
+        /// </summary>
+        /// <typeparam name="T">特性类型</typeparam>
+        /// <param name="value">枚举值</param>
+        /// <param name="inherit">是否包含继承</param>
+        /// <returns>特性</returns>
+        public static T GetEnumAttribute<T>(this Enum value, bool inherit = false) where T : Attribute
+        {
+            return value.GetEnumAttribute(typeof(T), inherit) as T;
+        }
+        /// <summary>
+        /// 获取枚举的特性
+        /// </summary>
+        /// <param name="value">枚举值</param>
+        /// <param name="type">特性类型</param>
+        /// <param name="inherit">是否包含继承</param>
+        /// <returns>特性</returns>
+        public static Attribute GetEnumAttribute(this Enum value, Type type, bool inherit = false)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            if (fi == null)
+            {
+                return null;
+            }
+            Attribute attr = fi.GetCustomAttribute(type, inherit);
+            return attr;
+        }
         #endregion
 
         #region UGUI工具
@@ -1643,15 +1774,30 @@ namespace HT.Framework
             {
                 case UIType.Overlay:
                     screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
-                    screenPos.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
+                    if (screenPos.z < 0)
+                    {
+                        anchoredPos.Set(-100000, -100000);
+                    }
+                    else
+                    {
+                        screenPos.z = 0;
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
+                    }
                     break;
                 case UIType.Camera:
                     screenPos = Main.m_UI.UICamera.WorldToScreenPoint(position);
-                    screenPos.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, screenPos, Main.m_UI.UICamera, out anchoredPos);
+                    if (screenPos.z < 0)
+                    {
+                        anchoredPos.Set(-100000, -100000);
+                    }
+                    else
+                    {
+                        screenPos.z = 0;
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, screenPos, Main.m_UI.UICamera, out anchoredPos);
+                    }
                     break;
                 case UIType.World:
+                    anchoredPos = position;
                     break;
             }
             return anchoredPos;
@@ -1669,14 +1815,29 @@ namespace HT.Framework
             switch (uIType)
             {
                 case UIType.Overlay:
-                    position.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
+                    if (position.z < 0)
+                    {
+                        anchoredPos.Set(-100000, -100000);
+                    }
+                    else
+                    {
+                        position.z = 0;
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
+                    }
                     break;
                 case UIType.Camera:
-                    position.z = 0;
-                    RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
+                    if (position.z < 0)
+                    {
+                        anchoredPos.Set(-100000, -100000);
+                    }
+                    else
+                    {
+                        position.z = 0;
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
+                    }
                     break;
                 case UIType.World:
+                    anchoredPos = position;
                     break;
             }
             return anchoredPos;

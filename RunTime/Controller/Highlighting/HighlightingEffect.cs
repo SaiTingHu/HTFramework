@@ -4,123 +4,20 @@ namespace HT.Framework
 {
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(-800)]
     public sealed class HighlightingEffect : MonoBehaviour
     {
-        public static event HTFAction<bool, bool> highlightingEvent;
-
-        #region Inspector Fields
-        // Stencil (highlighting) buffer depth
-        public int stencilZBufferDepth = 0;
-
-        // Stencil (highlighting) buffer size downsample factor
-        public int _downsampleFactor = 4;
-
-        // Blur iterations
-        public int iterations = 2;
-
-        // Blur minimal spread
-        public float blurMinSpread = 0.65f;
-
-        // Blur spread per iteration
-        public float blurSpread = 0.25f;
-
-        // Blurring intensity for the blur material
-        public float _blurIntensity = 0.3f;
-
-        // These properties available only in Editor - we don't need them in standalone build
-#if UNITY_EDITOR
-        // Z-buffer writing state getter/setter
-        public bool stencilZBufferEnabled
-        {
-            get
-            {
-                return (stencilZBufferDepth > 0);
-            }
-            set
-            {
-                if (stencilZBufferEnabled != value)
-                {
-                    stencilZBufferDepth = value ? 16 : 0;
-                }
-            }
-        }
-
-        // Downsampling factor getter/setter
-        public int downsampleFactor
-        {
-            get
-            {
-                if (_downsampleFactor == 1)
-                {
-                    return 0;
-                }
-                if (_downsampleFactor == 2)
-                {
-                    return 1;
-                }
-                return 2;
-            }
-            set
-            {
-                if (value == 0)
-                {
-                    _downsampleFactor = 1;
-                }
-                if (value == 1)
-                {
-                    _downsampleFactor = 2;
-                }
-                if (value == 2)
-                {
-                    _downsampleFactor = 4;
-                }
-            }
-        }
-
-        // Blur alpha intensity getter/setter
-        public float blurIntensity
-        {
-            get
-            {
-                return _blurIntensity;
-            }
-            set
-            {
-                if (_blurIntensity != value)
-                {
-                    _blurIntensity = value;
-                    if (Application.isPlaying)
-                    {
-                        blurMaterial.SetFloat("_Intensity", _blurIntensity);
-                    }
-                }
-            }
-        }
-#endif
-        #endregion
-
-        #region Private Fields
-        // Highlighting camera layers culling mask
-        private int layerMask = (1 << HighlightableObject.highlightingLayer);
-
-        // This GameObject reference
-        private GameObject go = null;
-
-        // Camera for rendering stencil buffer GameObject
-        private GameObject shaderCameraGO = null;
-
-        // Camera for rendering stencil buffer
-        private Camera shaderCamera = null;
-
-        // RenderTexture with stencil buffer
-        private RenderTexture stencilBuffer = null;
-
-        // Camera reference
-        private Camera refCam = null;
-
-        // Blur Shader
+        #region Static Fields
+        /// <summary>
+        /// 高亮渲染事件
+        /// </summary>
+        public static event HTFAction<bool, bool> HighlightingEvent;
+        
         private static Shader _blurShader;
-        private static Shader blurShader
+        /// <summary>
+        /// 模糊 Shader
+        /// </summary>
+        private static Shader BlurShader
         {
             get
             {
@@ -132,94 +29,173 @@ namespace HT.Framework
             }
         }
 
-        // Compositing Shader
-        private static Shader _compShader;
-        private static Shader compShader
+        private static Shader _compositeShader;
+        /// <summary>
+        /// 合成 Shader
+        /// </summary>
+        private static Shader CompositeShader
         {
             get
             {
-                if (_compShader == null)
+                if (_compositeShader == null)
                 {
-                    _compShader = Shader.Find("Hidden/Highlighted/Composite");
+                    _compositeShader = Shader.Find("Hidden/Highlighted/Composite");
                 }
-                return _compShader;
+                return _compositeShader;
             }
         }
 
-        // Blur Material
         private static Material _blurMaterial = null;
-        private static Material blurMaterial
+        /// <summary>
+        /// 模糊 Material
+        /// </summary>
+        private static Material BlurMaterial
         {
             get
             {
                 if (_blurMaterial == null)
                 {
-                    _blurMaterial = new Material(blurShader);
+                    _blurMaterial = new Material(BlurShader);
                     _blurMaterial.hideFlags = HideFlags.HideAndDontSave;
                 }
                 return _blurMaterial;
             }
         }
 
-        // Compositing Material
-        private static Material _compMaterial = null;
-        private static Material compMaterial
+        private static Material _compositeMaterial = null;
+        /// <summary>
+        /// 合成 Material
+        /// </summary>
+        private static Material CompositeMaterial
         {
             get
             {
-                if (_compMaterial == null)
+                if (_compositeMaterial == null)
                 {
-                    _compMaterial = new Material(compShader);
-                    _compMaterial.hideFlags = HideFlags.HideAndDontSave;
+                    _compositeMaterial = new Material(CompositeShader);
+                    _compositeMaterial.hideFlags = HideFlags.HideAndDontSave;
                 }
-                return _compMaterial;
+                return _compositeMaterial;
             }
         }
+        #endregion
+
+        #region Public Fields
+        //Z缓冲深度
+        public int StencilZBufferDepth = 0;
+        //采样因子
+        public int DownSampleFactor = 4;
+        //模糊迭代次数
+        public int BlurIterations = 2;
+        //模糊最小扩散值
+        public float BlurMinSpread = 0.65f;
+        //模糊扩散值
+        public float BlurSpread = 0.25f;
+        //材质的模糊强度
+        public float BlurIntensity = 0.3f;
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// 是否启用Z缓冲深度
+        /// </summary>
+        public bool StencilZBufferEnabled
+        {
+            get
+            {
+                return StencilZBufferDepth > 0;
+            }
+            set
+            {
+                if (StencilZBufferEnabled != value)
+                {
+                    StencilZBufferDepth = value ? 16 : 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 采样因子
+        /// </summary>
+        public int DownSampleFactorProperty
+        {
+            get
+            {
+                if (DownSampleFactor == 1)
+                {
+                    return 0;
+                }
+                else if (DownSampleFactor == 2)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 2;
+                }
+            }
+            set
+            {
+                if (value == 0)
+                {
+                    DownSampleFactor = 1;
+                }
+                if (value == 1)
+                {
+                    DownSampleFactor = 2;
+                }
+                if (value == 2)
+                {
+                    DownSampleFactor = 4;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 材质的模糊强度
+        /// </summary>
+        public float BlurIntensityProperty
+        {
+            get
+            {
+                return BlurIntensity;
+            }
+            set
+            {
+                if (BlurIntensity != value)
+                {
+                    BlurIntensity = value;
+
+                    if (Application.isPlaying)
+                    {
+                        BlurMaterial.SetFloat("_Intensity", BlurIntensity);
+                    }
+                }
+            }
+        }
+#endif
+        #endregion
+
+        #region Private Fields
+        //高亮摄像机层遮罩
+        private int _layerMask = 1 << HighlightableObject.HighlightingLayer;
+        //高亮渲染的缓冲摄像机对象
+        private GameObject _shaderCameraObject = null;
+        //高亮渲染的缓冲摄像机
+        private Camera _shaderCamera = null;
+        //模板缓冲的渲染纹理
+        private RenderTexture _stencilBuffer = null;
+        //高亮渲染摄像机
+        private Camera _camera = null;
         #endregion
         
         private void Awake()
         {
-            go = gameObject;
-            refCam = GetComponent<Camera>();
-        }
-
-        private void OnDisable()
-        {
-            if (shaderCameraGO != null)
-            {
-                DestroyImmediate(shaderCameraGO);
-            }
-
-            if (_blurShader)
-            {
-                _blurShader = null;
-            }
-
-            if (_compShader)
-            {
-                _compShader = null;
-            }
-
-            if (_blurMaterial)
-            {
-                DestroyImmediate(_blurMaterial);
-            }
-
-            if (_compMaterial)
-            {
-                DestroyImmediate(_compMaterial);
-            }
-
-            if (stencilBuffer != null)
-            {
-                RenderTexture.ReleaseTemporary(stencilBuffer);
-                stencilBuffer = null;
-            }
+            _camera = GetComponent<Camera>();
         }
 
         private void Start()
         {
-            // Disable if Image Effects is not supported
+            //不支持后期特效
             if (!SystemInfo.supportsImageEffects)
             {
                 GlobalTools.LogWarning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
@@ -227,7 +203,7 @@ namespace HT.Framework
                 return;
             }
 
-            // Disable if required Render Texture Format is not supported
+            //不支持渲染纹理格式
             if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
             {
                 GlobalTools.LogWarning("HighlightingSystem : RenderTextureFormat.ARGB32 is not supported on this platform! Disabling.");
@@ -235,7 +211,7 @@ namespace HT.Framework
                 return;
             }
 
-            // Disable if HighlightingStencilOpaque shader is not supported
+            //不支持Highlighting Stencil着色器
             if (!Shader.Find("Hidden/Highlighted/StencilOpaque").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaque shader is not supported on this platform! Disabling.");
@@ -243,7 +219,7 @@ namespace HT.Framework
                 return;
             }
 
-            // Disable if HighlightingStencilTransparent shader is not supported
+            //不支持Highlighting StencilTransparent着色器
             if (!Shader.Find("Hidden/Highlighted/StencilTransparent").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparent shader is not supported on this platform! Disabling.");
@@ -251,7 +227,7 @@ namespace HT.Framework
                 return;
             }
 
-            // Disable if HighlightingStencilOpaqueZ shader is not supported
+            //不支持Highlighting StencilZ着色器
             if (!Shader.Find("Hidden/Highlighted/StencilOpaqueZ").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaqueZ shader is not supported on this platform! Disabling.");
@@ -259,7 +235,7 @@ namespace HT.Framework
                 return;
             }
 
-            // Disable if HighlightingStencilTransparentZ shader is not supported
+            //不支持Highlighting StencilTransparentZ着色器
             if (!Shader.Find("Hidden/Highlighted/StencilTransparentZ").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparentZ shader is not supported on this platform! Disabling.");
@@ -267,143 +243,173 @@ namespace HT.Framework
                 return;
             }
 
-            // Disable if HighlightingBlur shader is not supported
-            if (!blurShader.isSupported)
+            //不支持HighlightingBlur着色器
+            if (!BlurShader.isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingBlur shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
 
-            // Disable if HighlightingComposite shader is not supported
-            if (!compShader.isSupported)
+            //不支持HighlightingComposite着色器
+            if (!CompositeShader.isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingComposite shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
 
-            // Set the initial intensity in blur shader
-            blurMaterial.SetFloat("_Intensity", _blurIntensity);
+            BlurMaterial.SetFloat("_Intensity", BlurIntensity);
         }
 
-        public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
+        private void OnDisable()
         {
-            float off = blurMinSpread + iteration * blurSpread;
-            blurMaterial.SetFloat("_OffsetScale", off);
-            Graphics.Blit(source, dest, blurMaterial);
+            if (_shaderCameraObject != null)
+            {
+                DestroyImmediate(_shaderCameraObject);
+            }
+
+            if (_blurShader)
+            {
+                _blurShader = null;
+            }
+
+            if (_compositeShader)
+            {
+                _compositeShader = null;
+            }
+
+            if (_blurMaterial)
+            {
+                DestroyImmediate(_blurMaterial);
+            }
+
+            if (_compositeMaterial)
+            {
+                DestroyImmediate(_compositeMaterial);
+            }
+
+            if (_stencilBuffer != null)
+            {
+                RenderTexture.ReleaseTemporary(_stencilBuffer);
+                _stencilBuffer = null;
+            }
+        }
+
+        private void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
+        {
+            float off = BlurMinSpread + iteration * BlurSpread;
+            BlurMaterial.SetFloat("_OffsetScale", off);
+            Graphics.Blit(source, dest, BlurMaterial);
         }
 
         private void DownSample4x(RenderTexture source, RenderTexture dest)
         {
             float off = 1.0f;
-            blurMaterial.SetFloat("_OffsetScale", off);
-            Graphics.Blit(source, dest, blurMaterial);
+            BlurMaterial.SetFloat("_OffsetScale", off);
+            Graphics.Blit(source, dest, BlurMaterial);
         }
 
         private void OnPreRender()
         {
 #if UNITY_4_0
-            if (enabled == false || go.activeInHierarchy == false)
+            if (enabled == false || gameObject.activeInHierarchy == false)
 #else
-            if (enabled == false || go.activeSelf == false)
+            if (enabled == false || gameObject.activeSelf == false)
 #endif
                 return;
 
-            if (stencilBuffer != null)
+            if (_stencilBuffer != null)
             {
-                RenderTexture.ReleaseTemporary(stencilBuffer);
-                stencilBuffer = null;
+                RenderTexture.ReleaseTemporary(_stencilBuffer);
+                _stencilBuffer = null;
             }
 
-            // Turn on highlighted shaders
-            if (highlightingEvent != null)
+            //启用渲染
+            if (HighlightingEvent != null)
             {
-                highlightingEvent(true, stencilZBufferDepth > 0);
+                HighlightingEvent(true, StencilZBufferDepth > 0);
             }
-            // We don't need to render the scene if there's no HighlightableObjects
             else
             {
                 return;
             }
 
-            stencilBuffer = RenderTexture.GetTemporary(GetComponent<Camera>().pixelWidth, GetComponent<Camera>().pixelHeight, stencilZBufferDepth, RenderTextureFormat.ARGB32);
+            _stencilBuffer = RenderTexture.GetTemporary(_camera.pixelWidth, _camera.pixelHeight, StencilZBufferDepth, RenderTextureFormat.ARGB32);
 
-            if (!shaderCameraGO)
+            if (!_shaderCameraObject)
             {
-                shaderCameraGO = new GameObject("HighlightingCamera", typeof(Camera));
-                shaderCameraGO.GetComponent<Camera>().enabled = false;
-                shaderCameraGO.hideFlags = HideFlags.HideAndDontSave;
+                _shaderCameraObject = new GameObject("HighlightingCamera", typeof(Camera));
+                _shaderCameraObject.GetComponent<Camera>().enabled = false;
+                _shaderCameraObject.hideFlags = HideFlags.HideAndDontSave;
             }
 
-            if (!shaderCamera)
+            if (!_shaderCamera)
             {
-                shaderCamera = shaderCameraGO.GetComponent<Camera>();
+                _shaderCamera = _shaderCameraObject.GetComponent<Camera>();
             }
 
-            shaderCamera.CopyFrom(refCam);
-            //shaderCamera.projectionMatrix = refCam.projectionMatrix;		// Uncomment this line if you have problems using Highlighting System with custom projection matrix on your camera
-            shaderCamera.cullingMask = layerMask;
-            shaderCamera.rect = new Rect(0f, 0f, 1f, 1f);
-            shaderCamera.renderingPath = RenderingPath.VertexLit;
-            shaderCamera.allowHDR = false;
-            shaderCamera.useOcclusionCulling = false;
-            shaderCamera.backgroundColor = new Color(0f, 0f, 0f, 0f);
-            shaderCamera.clearFlags = CameraClearFlags.SolidColor;
-            shaderCamera.targetTexture = stencilBuffer;
-            shaderCamera.Render();
+            _shaderCamera.CopyFrom(_camera);
+            //_shaderCamera.projectionMatrix = _camera.projectionMatrix;
+            _shaderCamera.cullingMask = _layerMask;
+            _shaderCamera.rect = new Rect(0f, 0f, 1f, 1f);
+            _shaderCamera.renderingPath = RenderingPath.VertexLit;
+            _shaderCamera.allowHDR = false;
+            _shaderCamera.useOcclusionCulling = false;
+            _shaderCamera.backgroundColor = new Color(0f, 0f, 0f, 0f);
+            _shaderCamera.clearFlags = CameraClearFlags.SolidColor;
+            _shaderCamera.targetTexture = _stencilBuffer;
+            _shaderCamera.Render();
 
-            // Turn off highlighted shaders
-            highlightingEvent?.Invoke(false, false);
+            //关闭渲染
+            HighlightingEvent?.Invoke(false, false);
         }
 
         private void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            // If stencilBuffer is not created by some reason
-            if (stencilBuffer == null)
+            if (_stencilBuffer == null)
             {
-                // Simply transfer framebuffer to destination
                 Graphics.Blit(source, destination);
                 return;
             }
 
-            // Create two buffers for blurring the image
-            int width = source.width / _downsampleFactor;
-            int height = source.height / _downsampleFactor;
-            RenderTexture buffer = RenderTexture.GetTemporary(width, height, stencilZBufferDepth, RenderTextureFormat.ARGB32);
-            RenderTexture buffer2 = RenderTexture.GetTemporary(width, height, stencilZBufferDepth, RenderTextureFormat.ARGB32);
+            //创建两个纹理来模糊图像
+            int width = source.width / DownSampleFactor;
+            int height = source.height / DownSampleFactor;
+            RenderTexture buffer1 = RenderTexture.GetTemporary(width, height, StencilZBufferDepth, RenderTextureFormat.ARGB32);
+            RenderTexture buffer2 = RenderTexture.GetTemporary(width, height, StencilZBufferDepth, RenderTextureFormat.ARGB32);
 
-            // Copy stencil buffer to the 4x4 smaller texture
-            DownSample4x(stencilBuffer, buffer);
+            //复制纹理到4x4的小纹理
+            DownSample4x(_stencilBuffer, buffer1);
 
-            // Blur the small texture
+            //模糊小纹理
             bool oddEven = true;
-            for (int i = 0; i < iterations; i++)
+            for (int i = 0; i < BlurIterations; i++)
             {
                 if (oddEven)
                 {
-                    FourTapCone(buffer, buffer2, i);
+                    FourTapCone(buffer1, buffer2, i);
                 }
                 else
                 {
-                    FourTapCone(buffer2, buffer, i);
+                    FourTapCone(buffer2, buffer1, i);
                 }
 
                 oddEven = !oddEven;
             }
 
-            // Compose
-            compMaterial.SetTexture("_StencilTex", stencilBuffer);
-            compMaterial.SetTexture("_BlurTex", oddEven ? buffer : buffer2);
-            Graphics.Blit(source, destination, compMaterial);
+            //合成
+            CompositeMaterial.SetTexture("_StencilTex", _stencilBuffer);
+            CompositeMaterial.SetTexture("_BlurTex", oddEven ? buffer1 : buffer2);
+            Graphics.Blit(source, destination, CompositeMaterial);
 
-            // Cleanup
-            RenderTexture.ReleaseTemporary(buffer);
+            //清理
+            RenderTexture.ReleaseTemporary(buffer1);
             RenderTexture.ReleaseTemporary(buffer2);
-            if (stencilBuffer != null)
+            if (_stencilBuffer != null)
             {
-                RenderTexture.ReleaseTemporary(stencilBuffer);
-                stencilBuffer = null;
+                RenderTexture.ReleaseTemporary(_stencilBuffer);
+                _stencilBuffer = null;
             }
         }
     }
