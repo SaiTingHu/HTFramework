@@ -15,20 +15,54 @@ namespace HT.Framework
     public sealed class NetworkManager : ModuleManagerBase
     {
         /// <summary>
+        /// 发送消息助手的类型【请勿在代码中修改】
+        /// </summary>
+        public string SendMessageHelperType;
+        /// <summary>
+        /// 接收消息助手的类型【请勿在代码中修改】
+        /// </summary>
+        public string ReceiveMessageHelperType;
+        /// <summary>
         /// 服务器IP地址
         /// </summary>
-        public string IP;
+        public string ServerIP;
         /// <summary>
         /// 服务器端口号
         /// </summary>
         public int Port;
-        public event HTFAction BeginConnectEvent;
-        public event HTFAction ConnectSuccessEvent;
-        public event HTFAction ConnectFailEvent;
-        public event HTFAction<NetworkInfo> ReceiveMessageEvent;
+        /// <summary>
+        /// 通信协议
+        /// </summary>
+        public ProtocolType Protocol;
+        /// <summary>
+        /// 开始连接服务器事件
+        /// </summary>
+        public event HTFAction BeginConnectServerEvent;
+        /// <summary>
+        /// 连接服务器成功事件
+        /// </summary>
+        public event HTFAction ConnectServerSuccessEvent;
+        /// <summary>
+        /// 连接服务器失败事件
+        /// </summary>
+        public event HTFAction ConnectServerFailEvent;
+        /// <summary>
+        /// 与服务器断开连接事件
+        /// </summary>
+        public event HTFAction DisconnectServerEvent;
+        /// <summary>
+        /// 发送消息成功事件
+        /// </summary>
+        public event HTFAction SendMessageEvent;
+        /// <summary>
+        /// 接收消息成功事件
+        /// </summary>
+        public event HTFAction<INetworkInfo> ReceiveMessageEvent;
 
         private Socket _client;
         private Thread _receiveThread;
+        private ISendMessageHelper _sendMessageHelper;
+        private IReceiveMessageHelper _receiveMessageHelper;
         private List<byte[]> _sendDataBuffer = new List<byte[]>();
         private bool _isSending = false;
         
@@ -54,18 +88,9 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 设置服务器IP与端口号
-        /// </summary>
-        public void SetIPPort(string ip, int port)
-        {
-            IP = ip;
-            Port = port;
-        }
-
-        /// <summary>
         /// 连接服务器
         /// </summary>
-        public void ConnectServer(float delayed)
+        public void ConnectServer()
         {
             if (IsConnect)
             {
@@ -73,44 +98,89 @@ namespace HT.Framework
                 return;
             }
 
-            if (BeginConnectEvent != null)
-                BeginConnectEvent();
-
-            this.DelayExecute(() =>
+            //加载发送消息助手
+            if (_sendMessageHelper == null)
             {
-                try
+                Type type = GlobalTools.GetTypeInRunTimeAssemblies(SendMessageHelperType);
+                if (type != null)
                 {
-                    _client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                    _client.Connect(IPAddress.Parse(IP), Port);
-                }
-                catch (Exception e)
-                {
-                    GlobalTools.LogError("连接服务器出错：" + e.ToString());
-                }
-                finally
-                {
-                    if (IsConnect)
+                    if (typeof(ISendMessageHelper).IsAssignableFrom(type))
                     {
-                        _receiveThread = new Thread(ReceiveMessage);
-                        _receiveThread.Start();
-
-                        if (ConnectSuccessEvent != null)
-                            ConnectSuccessEvent();
+                        _sendMessageHelper = Activator.CreateInstance(type) as ISendMessageHelper;
                     }
                     else
                     {
-                        if (ConnectFailEvent != null)
-                            ConnectFailEvent();
+                        throw new HTFrameworkException(HTFrameworkModule.Network, "加载发送消息助手失败：发送消息助手类 " + SendMessageHelperType + " 必须实现接口：ISendMessageHelper！");
                     }
                 }
-            }, delayed);
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Network, "加载发送消息助手失败：丢失发送消息助手类 " + SendMessageHelperType + "！");
+                }
+            }
+
+            //加载接收消息助手
+            if (_receiveMessageHelper == null)
+            {
+                Type type = GlobalTools.GetTypeInRunTimeAssemblies(ReceiveMessageHelperType);
+                if (type != null)
+                {
+                    if (typeof(IReceiveMessageHelper).IsAssignableFrom(type))
+                    {
+                        _receiveMessageHelper = Activator.CreateInstance(type) as IReceiveMessageHelper;
+                    }
+                    else
+                    {
+                        throw new HTFrameworkException(HTFrameworkModule.Network, "加载接收消息助手失败：接收消息助手类 " + ReceiveMessageHelperType + " 必须实现接口：IReceiveMessageHelper！");
+                    }
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Network, "加载接收消息助手失败：丢失接收消息助手类 " + ReceiveMessageHelperType + "！");
+                }
+            }
+
+            BeginConnectServerEvent?.Invoke();
+
+            Main.Current.StartCoroutine(ConnectServerCoroutine());
         }
-        
+        private IEnumerator ConnectServerCoroutine()
+        {
+            yield return YieldInstructioner.GetWaitForEndOfFrame();
+
+            try
+            {
+                _client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, Protocol);
+                _client.Connect(IPAddress.Parse(ServerIP), Port);
+            }
+            catch (Exception e)
+            {
+                GlobalTools.LogError("连接服务器出错：" + e.ToString());
+            }
+            finally
+            {
+                if (IsConnect)
+                {
+                    _receiveThread = new Thread(ReceiveMessage);
+                    _receiveThread.Start();
+
+                    ConnectServerSuccessEvent?.Invoke();
+                }
+                else
+                {
+                    ConnectServerFailEvent?.Invoke();
+                }
+            }
+        }
+
         /// <summary>
         /// 与服务器断开连接
         /// </summary>
         public void DisconnectServer()
         {
+            _sendDataBuffer.Clear();
+            _isSending = false;
+
             if (_receiveThread != null && _receiveThread.IsAlive)
             {
                 _receiveThread.Abort();
@@ -118,24 +188,28 @@ namespace HT.Framework
             }
             if (_client != null)
             {
+                _client.Disconnect(false);
                 _client.Close();
+                _client.Dispose();
                 _client = null;
             }
+
+            DisconnectServerEvent?.Invoke();
         }
 
         /// <summary>
         /// 发送消息
         /// </summary>
-        public void SendInfo(NetworkInfo info)
+        /// <param name="info">消息</param>
+        public void SendMessage(INetworkInfo info)
         {
             if (IsConnect)
             {
-                byte[] sendBytes = info.ToByte();
-                _sendDataBuffer.Add(sendBytes);
+                _sendDataBuffer.Add(_sendMessageHelper.SendMessage(info));
 
                 if (!_isSending)
                 {
-                    Main.Current.StartCoroutine(SendInfoCoroutine(sendBytes));
+                    Main.Current.StartCoroutine(SendMessageCoroutine());
                 }
             }
             else
@@ -143,24 +217,26 @@ namespace HT.Framework
                 GlobalTools.LogError("发送消息失败：客户端已断开连接！");
             }
         }
-        private IEnumerator SendInfoCoroutine(byte[] sendBytes)
+        private IEnumerator SendMessageCoroutine()
         {
             _isSending = true;
             while (_sendDataBuffer.Count > 0)
             {
                 try
                 {
-                    int sendNum = _client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, 0);
-                    if (sendNum > 0)
+                    int sendCount = _client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, 0);
+                    if (sendCount > 0)
                     {
                         _sendDataBuffer.RemoveAt(0);
+
+                        SendMessageEvent?.Invoke();
                     }
                 }
                 catch (Exception e)
                 {
-                    GlobalTools.LogError("发送数据出错：" + e.ToString());
+                    GlobalTools.LogError("发送消息失败：" + e.ToString());
                 }
-                yield return 0;
+                yield return null;
             }
             _isSending = false;
         }
@@ -172,51 +248,9 @@ namespace HT.Framework
         {
             while (true)
             {
-                //接收消息头（消息校验码4字节 + 消息体长度4字节 + 身份ID8字节 + 主命令4字节 + 子命令4字节 + 加密方式4字节 + 返回码4字节 = 32字节）
-                int restHeadLength = 32;
-                byte[] recvBytesHead = new byte[restHeadLength];
-                while (restHeadLength > 0)
-                {
-                    byte[] recvBytes1 = new byte[32];
-                    int alreadyRecvHead = 0;
-                    if (restHeadLength >= recvBytes1.Length)
-                    {
-                        alreadyRecvHead = _client.Receive(recvBytes1, recvBytes1.Length, 0);
-                    }
-                    else
-                    {
-                        alreadyRecvHead = _client.Receive(recvBytes1, restHeadLength, 0);
-                    }
-                    recvBytes1.CopyTo(recvBytesHead, recvBytesHead.Length - restHeadLength);
-                    restHeadLength -= alreadyRecvHead;
-                }
+                INetworkInfo info = _receiveMessageHelper.ReceiveMessage(_client);
 
-                //接收消息体（消息体的长度存储在消息头的4至8索引位置的字节里）
-                byte[] bytes = new byte[4];
-                Array.Copy(recvBytesHead, 4, bytes, 0, 4);
-                int restBodyLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(bytes, 0));
-                byte[] recvBytesBody = new byte[restBodyLength];
-                while (restBodyLength > 0)
-                {
-                    byte[] recvBytes2 = new byte[restBodyLength < 1024 ? restBodyLength : 1024];
-                    int alreadyRecvBody = 0;
-                    if (restBodyLength >= recvBytes2.Length)
-                    {
-                        alreadyRecvBody = _client.Receive(recvBytes2, recvBytes2.Length, 0);
-                    }
-                    else
-                    {
-                        alreadyRecvBody = _client.Receive(recvBytes2, restBodyLength, 0);
-                    }
-                    recvBytes2.CopyTo(recvBytesBody, recvBytesBody.Length - restBodyLength);
-                    restBodyLength -= alreadyRecvBody;
-                }
-
-                //解析
-                NetworkInfo info = new NetworkInfo();
-                info.Fill(recvBytesHead, recvBytesBody);
-                if (ReceiveMessageEvent != null)
-                    ReceiveMessageEvent(info);
+                ReceiveMessageEvent?.Invoke(info);
             }
         }
     }

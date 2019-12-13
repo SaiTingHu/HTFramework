@@ -828,12 +828,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c11fc24807cfa642acf94cc7d4d4a21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stencilZBufferDepth: 0
-  _downsampleFactor: 4
-  iterations: 2
-  blurMinSpread: 0.65
-  blurSpread: 0.25
-  _blurIntensity: 0.3
+  StencilZBufferDepth: 0
+  DownSampleFactor: 4
+  BlurIterations: 2
+  BlurMinSpread: 0.65
+  BlurSpread: 0.25
+  BlurIntensity: 0.3
 --- !u!114 &114153458188676398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -861,6 +861,8 @@ MonoBehaviour:
   RayHitImageType: 0
   BGPosOffset: {x: 0, y: 0}
   BGWidthOffset: 40
+  ScreenWidthHalf: 640
+  ScreenHeightHalf: 360
 --- !u!1 &1797080342905102
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,8 +906,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f225c8f05c84b84bb22577ad1cf67ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IP: 127.0.0.1
+  SendMessageHelperType: HT.Framework.SendMessageHelper
+  ReceiveMessageHelperType: HT.Framework.ReceiveMessageHelper
+  ServerIP: 127.0.0.1
   Port: 8080
+  Protocol: 6
 --- !u!1 &1832947091760460
 GameObject:
   m_ObjectHideFlags: 0
