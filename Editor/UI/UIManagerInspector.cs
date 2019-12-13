@@ -62,7 +62,7 @@ namespace HT.Framework
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                     for (int m = 0; m < types.Count; m++)
                     {
-                        if (types[m].IsSubclassOf(typeof(UILogicBase)))
+                        if (types[m].IsSubclassOf(typeof(UILogicBase)) && types[m] != typeof(UILogicResident) && types[m] != typeof(UILogicTemporary))
                         {
                             int j = i;
                             int n = m;

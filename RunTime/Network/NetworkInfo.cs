@@ -20,22 +20,26 @@ namespace HT.Framework
         public List<string> Messages;
 
         /// <summary>
-        /// 填充
+        /// 填充消息对象
         /// </summary>
-        public void Fill(int crccode, long sessionid, int command, int subcommand, int encrypt, int returnCode, string[] messageBody)
+        public void Fill(int checkCode, long sessionid, int command, int subcommand, int encrypt, int returnCode, List<string> messageBody)
         {
-            CheckCode = crccode;
+            CheckCode = checkCode;
             BodyLength = 0;
             Sessionid = sessionid;
             Command = command;
             Subcommand = subcommand;
             Encrypt = encrypt;
             ReturnCode = returnCode;
-            Messages = new List<string>(messageBody);
+            Messages = messageBody;
             for (int i = 0; i < Messages.Count; i++)
             {
-                if (Messages[i] == "" || string.IsNullOrEmpty(Messages[i]))
-                    break;
+                if (string.IsNullOrEmpty(Messages[i]) || Messages[i] == "")
+                {
+                    Messages.RemoveAt(i);
+                    i -= 1;
+                    continue;
+                }
                 BodyLength += Encoding.UTF8.GetBytes(Messages[i]).Length;
             }
             BodyLength += Messages.Count * 4;

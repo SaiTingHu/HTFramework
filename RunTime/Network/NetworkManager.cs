@@ -146,7 +146,7 @@ namespace HT.Framework
         }
         private IEnumerator ConnectServerCoroutine()
         {
-            yield return YieldInstructioner.GetWaitForEndOfFrame();
+            yield return null;
 
             try
             {
