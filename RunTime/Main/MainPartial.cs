@@ -931,6 +931,38 @@ namespace HT.Framework
         }
         #endregion
 
+        #region Utility
+        private List<HTFAction> _actionQueue = new List<HTFAction>();
+        private List<HTFAction> _actionExecuteQueue = new List<HTFAction>();
+        private bool _isCanDoQueue = false;
+
+        private void UtilityRefresh()
+        {
+            if (_isCanDoQueue)
+            {
+                _actionExecuteQueue.Clear();
+                _actionExecuteQueue.AddRange(_actionQueue);
+                _actionQueue.Clear();
+            }
+            for (int i = 0; i < _actionExecuteQueue.Count; i++)
+            {
+                _actionExecuteQueue[i]();
+            }
+            _actionExecuteQueue.Clear();
+        }
+
+        /// <summary>
+        /// 返回到主线程
+        /// </summary>
+        /// <param name="action">返回到主线程执行的操作</param>
+        public void QueueOnMainThread(HTFAction action)
+        {
+            _isCanDoQueue = false;
+            _actionQueue.Add(action);
+            _isCanDoQueue = true;
+        }
+        #endregion
+
         #region ApplicationQuit
         /// <summary>
         /// 程序退出事件

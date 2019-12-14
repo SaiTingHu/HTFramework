@@ -60,11 +60,12 @@ namespace HT.Framework
         public event HTFAction<INetworkInfo> ReceiveMessageEvent;
 
         private Socket _client;
+        private Thread _sendThread;
         private Thread _receiveThread;
         private ISendMessageHelper _sendMessageHelper;
         private IReceiveMessageHelper _receiveMessageHelper;
         private List<byte[]> _sendDataBuffer = new List<byte[]>();
-        private bool _isSending = false;
+        private bool _isCanSend = false;
         
         public override void OnTermination()
         {
@@ -161,6 +162,9 @@ namespace HT.Framework
             {
                 if (IsConnect)
                 {
+                    _sendThread = new Thread(SendMessage);
+                    _sendThread.Start();
+
                     _receiveThread = new Thread(ReceiveMessage);
                     _receiveThread.Start();
 
@@ -179,8 +183,13 @@ namespace HT.Framework
         public void DisconnectServer()
         {
             _sendDataBuffer.Clear();
-            _isSending = false;
+            _isCanSend = false;
 
+            if (_sendThread != null && _sendThread.IsAlive)
+            {
+                _sendThread.Abort();
+                _sendThread = null;
+            }
             if (_receiveThread != null && _receiveThread.IsAlive)
             {
                 _receiveThread.Abort();
@@ -205,40 +214,44 @@ namespace HT.Framework
         {
             if (IsConnect)
             {
+                _isCanSend = false;
                 _sendDataBuffer.Add(_sendMessageHelper.SendMessage(info));
-
-                if (!_isSending)
-                {
-                    Main.Current.StartCoroutine(SendMessageCoroutine());
-                }
+                _isCanSend = true;
             }
             else
             {
-                GlobalTools.LogError("发送消息失败：客户端已断开连接！");
+                GlobalTools.LogError("发送消息出错：客户端已断开连接！");
             }
         }
-        private IEnumerator SendMessageCoroutine()
-        {
-            _isSending = true;
-            while (_sendDataBuffer.Count > 0)
-            {
-                try
-                {
-                    int sendCount = _client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, 0);
-                    if (sendCount > 0)
-                    {
-                        _sendDataBuffer.RemoveAt(0);
 
-                        SendMessageEvent?.Invoke();
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        private void SendMessage()
+        {
+            while (true)
+            {
+                if (_isCanSend && _sendDataBuffer.Count > 0)
+                {
+                    try
+                    {
+                        int sendCount = _client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, 0);
+                        if (sendCount > 0)
+                        {
+                            _sendDataBuffer.RemoveAt(0);
+
+                            Main.Current.QueueOnMainThread(() =>
+                            {
+                                SendMessageEvent?.Invoke();
+                            });
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        GlobalTools.LogError("发送消息出错：" + e.ToString());
                     }
                 }
-                catch (Exception e)
-                {
-                    GlobalTools.LogError("发送消息失败：" + e.ToString());
-                }
-                yield return null;
             }
-            _isSending = false;
         }
 
         /// <summary>
@@ -250,7 +263,13 @@ namespace HT.Framework
             {
                 INetworkInfo info = _receiveMessageHelper.ReceiveMessage(_client);
 
-                ReceiveMessageEvent?.Invoke(info);
+                if (info != null)
+                {
+                    Main.Current.QueueOnMainThread(() =>
+                    {
+                        ReceiveMessageEvent?.Invoke(info);
+                    });
+                }
             }
         }
     }

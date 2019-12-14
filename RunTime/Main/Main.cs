@@ -33,9 +33,10 @@ namespace HT.Framework
 
         private void Update()
         {
+            LogicLoopRefresh();
+            UtilityRefresh();
             ModuleRefresh();
             LicenseRefresh();
-            LogicLoopRefresh();
         }
 
         private void OnGUI()
