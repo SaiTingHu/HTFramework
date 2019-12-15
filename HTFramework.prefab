@@ -906,11 +906,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f225c8f05c84b84bb22577ad1cf67ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SendMessageHelperType: HT.Framework.SendMessageHelper
-  ReceiveMessageHelperType: HT.Framework.ReceiveMessageHelper
+  ChannelTypes: []
   ServerIP: 127.0.0.1
-  Port: 8080
-  Protocol: 6
+  ServerPort: 8080
+  ClientIP: 127.0.0.1
+  ClientPort: 8080
 --- !u!1 &1832947091760460
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,16 +7,76 @@ using System.Text;
 namespace HT.Framework
 {
     /// <summary>
-    /// 默认的接收消息助手
+    /// 默认的TCP协议通道
     /// </summary>
-    public sealed class ReceiveMessageHelper : IReceiveMessageHelper
+    public sealed class TcpChannel : ProtocolChannel
     {
+        /// <summary>
+        /// 通信协议
+        /// </summary>
+        public override ProtocolType Protocol
+        {
+            get
+            {
+                return ProtocolType.Tcp;
+            }
+        }
+        /// <summary>
+        /// 是否需要保持连接
+        /// </summary>
+        public override bool IsNeedConnect
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 封装消息
+        /// </summary>
+        /// <param name="info">消息对象</param>
+        /// <returns>封装后的字节数组</returns>
+        public override byte[] OnEncapsulatedMessage(INetworkInfo info)
+        {
+            TcpNetworkInfo networkInfo = info as TcpNetworkInfo;
+            byte[] checkCodeByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.CheckCode));
+            byte[] bodyLengthByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.BodyLength));
+            byte[] sessionidByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Sessionid));
+            byte[] commandByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Command));
+            byte[] subcommandByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Subcommand));
+            byte[] encryptByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Encrypt));
+            byte[] returnCodeByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.ReturnCode));
+
+            byte[] messageBodyByte = new byte[networkInfo.BodyLength];
+            int copyIndex = 0;
+            for (int i = 0; i < networkInfo.Messages.Count; i++)
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(networkInfo.Messages[i]);
+                BitConverter.GetBytes(IPAddress.HostToNetworkOrder(bytes.Length)).CopyTo(messageBodyByte, copyIndex);
+                copyIndex += 4;
+                bytes.CopyTo(messageBodyByte, copyIndex);
+                copyIndex += bytes.Length;
+            }
+
+            byte[] totalByte = new byte[32 + networkInfo.BodyLength];
+            checkCodeByte.CopyTo(totalByte, 0);
+            bodyLengthByte.CopyTo(totalByte, 4);
+            sessionidByte.CopyTo(totalByte, 8);
+            commandByte.CopyTo(totalByte, 16);
+            subcommandByte.CopyTo(totalByte, 20);
+            encryptByte.CopyTo(totalByte, 24);
+            returnCodeByte.CopyTo(totalByte, 28);
+            messageBodyByte.CopyTo(totalByte, 32);
+
+            return totalByte;
+        }
         /// <summary>
         /// 接收消息
         /// </summary>
-        /// <param name="client">客户端Socket</param>
-        /// <returns>消息对象</returns>
-        public INetworkInfo ReceiveMessage(Socket client)
+        /// <param name="client">客户端</param>
+        /// <returns>接收到的消息对象</returns>
+        protected override INetworkInfo OnReceiveMessage(Socket client)
         {
             //接收消息头（消息校验码4字节 + 消息体长度4字节 + 身份ID8字节 + 主命令4字节 + 子命令4字节 + 加密方式4字节 + 返回码4字节 = 32字节）
             int recvHeadLength = 32;
@@ -59,7 +119,7 @@ namespace HT.Framework
             }
 
             //解析消息
-            NetworkInfo info = new NetworkInfo();
+            TcpNetworkInfo info = new TcpNetworkInfo();
             info.CheckCode = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(recvBytesHead, 0));
             info.BodyLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(recvBytesHead, 4));
             info.Sessionid = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(recvBytesHead, 8));

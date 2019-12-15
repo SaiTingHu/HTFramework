@@ -19,65 +19,72 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Send Helper", GUILayout.Width(100));
-            if (GUILayout.Button(Target.SendMessageHelperType, "MiniPopup"))
+            TextField(Target.ServerIP, out Target.ServerIP, "Server IP");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            IntField(Target.ServerPort, out Target.ServerPort, "Server Port");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            TextField(Target.ClientIP, out Target.ClientIP, "Client IP");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            IntField(Target.ClientPort, out Target.ClientPort, "Client Port");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical("Box");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Enabled Channels:");
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            for (int i = 0; i < Target.ChannelTypes.Count; i++)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label((i + 1) + "." + Target.ChannelTypes[i]);
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Delete", "minibutton"))
+                {
+                    Undo.RecordObject(target, "Delete Channel");
+                    Target.ChannelTypes.RemoveAt(i);
+                    HasChanged();
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add Channel", "MiniPopup"))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (typeof(ISendMessageHelper).IsAssignableFrom(types[i]) && typeof(ISendMessageHelper) != types[i])
+                    if (types[i].IsSubclassOf(typeof(ProtocolChannel)))
                     {
                         int j = i;
-                        gm.AddItem(new GUIContent(types[j].FullName), Target.SendMessageHelperType == types[j].FullName, () =>
+                        if (Target.ChannelTypes.Contains(types[j].FullName))
                         {
-                            Undo.RecordObject(target, "Set SendMessageHelper");
-                            Target.SendMessageHelperType = types[j].FullName;
-                            HasChanged();
-                        });
+                            gm.AddDisabledItem(new GUIContent(types[j].FullName));
+                        }
+                        else
+                        {
+                            gm.AddItem(new GUIContent(types[j].FullName), false, () =>
+                            {
+                                Undo.RecordObject(target, "Add Channel");
+                                Target.ChannelTypes.Add(types[j].FullName);
+                                HasChanged();
+                            });
+                        }
                     }
                 }
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Receive Helper", GUILayout.Width(100));
-            if (GUILayout.Button(Target.ReceiveMessageHelperType, "MiniPopup"))
-            {
-                GenericMenu gm = new GenericMenu();
-                List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
-                for (int i = 0; i < types.Count; i++)
-                {
-                    if (typeof(IReceiveMessageHelper).IsAssignableFrom(types[i]) && typeof(IReceiveMessageHelper) != types[i])
-                    {
-                        int j = i;
-                        gm.AddItem(new GUIContent(types[j].FullName), Target.ReceiveMessageHelperType == types[j].FullName, () =>
-                        {
-                            Undo.RecordObject(target, "Set ReceiveMessageHelper");
-                            Target.ReceiveMessageHelperType = types[j].FullName;
-                            HasChanged();
-                        });
-                    }
-                }
-                gm.ShowAsContext();
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Server IP", GUILayout.Width(100));
-            TextField(Target.ServerIP, out Target.ServerIP, "");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Port", GUILayout.Width(100));
-            IntField(Target.Port, out Target.Port, "");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Protocol", GUILayout.Width(100));
-            EnumPopup(Target.Protocol, out Target.Protocol, "");
-            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
         }
 
         protected override void OnInspectorRuntimeGUI()
