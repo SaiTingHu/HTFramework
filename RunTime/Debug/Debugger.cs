@@ -791,11 +791,11 @@ namespace HT.Framework
         {
             string path = "";
 #if UNITY_ANDROID
-            path = "/mnt/sdcard/DCIM/ScreenShot/";
+            path = "/sdcard/DCIM/ScreenShots/";
 #endif
 
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
-            path = Application.dataPath + "/ScreenShot/";
+            path = Application.dataPath + "/ScreenShots/";
 #endif
 
             if (path != "")
