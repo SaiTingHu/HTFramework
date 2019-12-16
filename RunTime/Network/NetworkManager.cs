@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
 using UnityEngine;
 
 namespace HT.Framework
@@ -52,11 +51,11 @@ namespace HT.Framework
         /// <summary>
         /// 发送消息成功事件
         /// </summary>
-        public event HTFAction SendMessageEvent;
+        public event HTFAction<ProtocolChannel> SendMessageEvent;
         /// <summary>
         /// 接收消息成功事件
         /// </summary>
-        public event HTFAction<INetworkInfo> ReceiveMessageEvent;
+        public event HTFAction<ProtocolChannel, INetworkMessage> ReceiveMessageEvent;
 
         private Dictionary<Type, ProtocolChannel> _protocolChannels = new Dictionary<Type, ProtocolChannel>();
         private IPEndPoint _serverEndPoint;
@@ -92,8 +91,18 @@ namespace HT.Framework
             foreach (var channel in _protocolChannels)
             {
                 channel.Value.OnInitialization();
-                channel.Value.SendMessageEvent += SendMessageEvent;
-                channel.Value.ReceiveMessageEvent += ReceiveMessageEvent;
+                channel.Value.SendMessageEvent += (cha) =>
+                {
+                    SendMessageEvent?.Invoke(cha);
+                };
+                channel.Value.ReceiveMessageEvent += (cha, message) =>
+                {
+                    ReceiveMessageEvent?.Invoke(cha, message);
+                };
+                channel.Value.DisconnectServerEvent += (cha) =>
+                {
+                    DisconnectServerEvent?.Invoke(cha);
+                };
             }
         }
 
@@ -208,7 +217,8 @@ namespace HT.Framework
 
             try
             {
-                protocolChannel.Client.Connect(ServerEndPoint);
+                protocolChannel.DisconnectServer();
+                protocolChannel.ConnectServer();
             }
             catch (Exception e)
             {
@@ -231,15 +241,17 @@ namespace HT.Framework
         /// 与服务器断开连接
         /// </summary>
         /// <typeparam name="T">通信协议通道类型</typeparam>
-        public void DisconnectServer<T>() where T : ProtocolChannel
+        /// <param name="message">断开连接请求</param>
+        public void DisconnectServer<T>(INetworkMessage message) where T : ProtocolChannel
         {
-            DisconnectServer(typeof(T));
+            DisconnectServer(typeof(T), message);
         }
         /// <summary>
         /// 与服务器断开连接
         /// </summary>
         /// <param name="channelType">通信协议通道类型</param>
-        public void DisconnectServer(Type channelType)
+        /// <param name="message">断开连接请求</param>
+        public void DisconnectServer(Type channelType, INetworkMessage message)
         {
             if (_protocolChannels.ContainsKey(channelType))
             {
@@ -250,10 +262,14 @@ namespace HT.Framework
                         return;
                     }
 
-                    DisconnectServerEvent?.Invoke(_protocolChannels[channelType]);
-
-                    _protocolChannels[channelType].Client.Shutdown(SocketShutdown.Both);
-                    _protocolChannels[channelType].Client.Disconnect(true);
+                    if (_protocolChannels[channelType].IsDisconnectRequest(message))
+                    {
+                        SendMessage(channelType, message);
+                    }
+                    else
+                    {
+                        GlobalTools.LogWarning("与服务器断开连接出错：发送的消息并不是断开连接的请求！");
+                    }
                 }
                 else
                 {
@@ -270,17 +286,19 @@ namespace HT.Framework
         /// 发送消息
         /// </summary>
         /// <typeparam name="T">通信协议通道类型</typeparam>
-        /// <param name="info">消息对象</param>
-        public void SendMessage<T>(INetworkInfo info) where T : ProtocolChannel
+        /// <param name="message">消息对象</param>
+        /// <returns>是否发送成功</returns>
+        public bool SendMessage<T>(INetworkMessage message) where T : ProtocolChannel
         {
-            SendMessage(typeof(T), info);
+            return SendMessage(typeof(T), message);
         }
         /// <summary>
         /// 发送消息
         /// </summary>
         /// <param name="channelType">通信协议通道类型</param>
-        /// <param name="info">消息对象</param>
-        public void SendMessage(Type channelType, INetworkInfo info)
+        /// <param name="message">消息对象</param>
+        /// <returns>是否发送成功</returns>
+        public bool SendMessage(Type channelType, INetworkMessage message)
         {
             if (_protocolChannels.ContainsKey(channelType))
             {
@@ -288,21 +306,25 @@ namespace HT.Framework
                 {
                     if (_protocolChannels[channelType].IsConnect)
                     {
-                        _protocolChannels[channelType].OnSendMessage(_protocolChannels[channelType].OnEncapsulatedMessage(info));
+                        _protocolChannels[channelType].InjectMessage(_protocolChannels[channelType].EncapsulatedMessage(message));
+                        return true;
                     }
                     else
                     {
                         GlobalTools.LogError("发送消息出错：客户端已断开连接！");
+                        return false;
                     }
                 }
                 else
                 {
-                    _protocolChannels[channelType].OnSendMessage(_protocolChannels[channelType].OnEncapsulatedMessage(info));
+                    _protocolChannels[channelType].InjectMessage(_protocolChannels[channelType].EncapsulatedMessage(message));
+                    return true;
                 }
             }
             else
             {
                 GlobalTools.LogWarning("发送消息出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
+                return true;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -17,6 +18,16 @@ namespace HT.Framework
             get
             {
                 return ProtocolType.Udp;
+            }
+        }
+        /// <summary>
+        /// 通道类型
+        /// </summary>
+        public override SocketType Way
+        {
+            get
+            {
+                return SocketType.Dgram;
             }
         }
         /// <summary>
@@ -40,16 +51,24 @@ namespace HT.Framework
             base.OnInitialization();
 
             Client.Bind(Main.m_Network.ClientEndPoint);
-            _serverEndPoint = Main.m_Network.ServerEndPoint;
+        }
+        /// <summary>
+        /// 是否是断开连接请求
+        /// </summary>
+        /// <param name="message">消息对象</param>
+        /// <returns>是否是断开连接请求</returns>
+        public override bool IsDisconnectRequest(INetworkMessage message)
+        {
+            return false;
         }
         /// <summary>
         /// 封装消息
         /// </summary>
-        /// <param name="info">消息对象</param>
+        /// <param name="message">消息对象</param>
         /// <returns>封装后的字节数组</returns>
-        public override byte[] OnEncapsulatedMessage(INetworkInfo info)
+        public override byte[] EncapsulatedMessage(INetworkMessage message)
         {
-            UdpNetworkInfo networkInfo = info as UdpNetworkInfo;
+            UdpNetworkInfo networkInfo = message as UdpNetworkInfo;
             byte[] bytes = Encoding.UTF8.GetBytes(networkInfo.Message);
             return bytes;
         }
@@ -58,14 +77,23 @@ namespace HT.Framework
         /// </summary>
         /// <param name="client">客户端</param>
         /// <returns>接收到的消息对象</returns>
-        protected override INetworkInfo OnReceiveMessage(Socket client)
+        protected override INetworkMessage ReceiveMessage(Socket client)
         {
-            byte[] buffer = new byte[1024];
-            int length = client.ReceiveFrom(buffer, ref _serverEndPoint);
+            try
+            {
+                if (_serverEndPoint == null) _serverEndPoint = Main.m_Network.ServerEndPoint;
 
-            UdpNetworkInfo info = new UdpNetworkInfo();
-            info.Message = Encoding.UTF8.GetString(buffer, 0, length);
-            return info;
+                byte[] buffer = new byte[1024];
+                int length = client.ReceiveFrom(buffer, ref _serverEndPoint);
+
+                UdpNetworkInfo info = new UdpNetworkInfo();
+                info.Message = Encoding.UTF8.GetString(buffer, 0, length);
+                return info;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

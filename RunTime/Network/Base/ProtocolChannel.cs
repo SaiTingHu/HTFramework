@@ -22,6 +22,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 通道类型
+        /// </summary>
+        public virtual SocketType Way
+        {
+            get
+            {
+                return SocketType.Stream;
+            }
+        }
+        /// <summary>
         /// 是否需要保持连接
         /// </summary>
         public virtual bool IsNeedConnect
@@ -38,10 +48,14 @@ namespace HT.Framework
         {
             get
             {
-                if (Client != null)
-                    return Client.Connected;
-                else
+                try
+                {
+                    return Client != null && Client.Connected;
+                }
+                catch (Exception)
+                {
                     return false;
+                }
             }
         }
         /// <summary>
@@ -51,12 +65,17 @@ namespace HT.Framework
         /// <summary>
         /// 发送消息成功事件
         /// </summary>
-        public event HTFAction SendMessageEvent;
+        public event HTFAction<ProtocolChannel> SendMessageEvent;
         /// <summary>
         /// 接收消息成功事件
         /// </summary>
-        public event HTFAction<INetworkInfo> ReceiveMessageEvent;
+        public event HTFAction<ProtocolChannel, INetworkMessage> ReceiveMessageEvent;
+        /// <summary>
+        /// 与服务器断开连接事件
+        /// </summary>
+        public event HTFAction<ProtocolChannel> DisconnectServerEvent;
 
+        private bool _isEnableThread = false;
         private Thread _sendThread;
         private Thread _receiveThread;
         private List<byte[]> _sendDataBuffer = new List<byte[]>();
@@ -67,23 +86,33 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnInitialization()
         {
-            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, Protocol);
-            
-            if (IsNeedConnect) _sendThread = new Thread(SendMessageNeedConnect);
-            else _sendThread = new Thread(SendMessageNoConnect);
-            _sendThread.Start();
+            _isEnableThread = true;
 
-            if (IsNeedConnect) _receiveThread = new Thread(ReceiveMessageNeedConnect);
-            else _receiveThread = new Thread(ReceiveMessageNoConnect);
-            _receiveThread.Start();
+            if (IsNeedConnect)
+            {
+                _sendThread = new Thread(SendMessageNeedConnect);
+                _sendThread.Start();
+
+                _receiveThread = new Thread(ReceiveMessageNeedConnect);
+                _receiveThread.Start();
+            }
+            else
+            {
+                Client = new Socket(AddressFamily.InterNetwork, Way, Protocol);
+
+                _sendThread = new Thread(SendMessageNoConnect);
+                _sendThread.Start();
+
+                _receiveThread = new Thread(ReceiveMessageNoConnect);
+                _receiveThread.Start();
+            }
         }
         /// <summary>
         /// 终结通道
         /// </summary>
         public virtual void OnTermination()
         {
-            _sendDataBuffer.Clear();
-            _isCanSend = false;
+            _isEnableThread = false;
 
             if (_sendThread != null && _sendThread.IsAlive)
             {
@@ -95,32 +124,17 @@ namespace HT.Framework
                 _receiveThread.Abort();
                 _receiveThread = null;
             }
-            if (Client != null)
-            {
-                Client.Shutdown(SocketShutdown.Both);
-                Client.Disconnect(false);
-                Client.Close();
-                Client.Dispose();
-                Client = null;
-            }
+            
+            _sendDataBuffer.Clear();
+            _isCanSend = false;
+
+            DisconnectServer();
         }
         /// <summary>
-        /// 封装消息
+        /// 向通道中注入消息
         /// </summary>
-        /// <param name="info">消息对象</param>
-        /// <returns>封装后的字节数组</returns>
-        public abstract byte[] OnEncapsulatedMessage(INetworkInfo info);
-        /// <summary>
-        /// 接收消息
-        /// </summary>
-        /// <param name="client">客户端</param>
-        /// <returns>接收到的消息对象</returns>
-        protected abstract INetworkInfo OnReceiveMessage(Socket client);
-        /// <summary>
-        /// 发送消息
-        /// </summary>
-        /// <param name="info">封装后的字节数组</param>
-        public void OnSendMessage(byte[] info)
+        /// <param name="info">封装后的消息字节数组</param>
+        public void InjectMessage(byte[] info)
         {
             _isCanSend = false;
             _sendDataBuffer.Add(info);
@@ -134,32 +148,74 @@ namespace HT.Framework
         {
             return Protocol.ToString() + "协议通道";
         }
+        /// <summary>
+        /// 连接服务器
+        /// </summary>
+        public void ConnectServer()
+        {
+            if (Client == null)
+            {
+                Client = new Socket(AddressFamily.InterNetwork, Way, Protocol);
+                Client.Connect(Main.m_Network.ServerEndPoint);
+            }
+        }
+        /// <summary>
+        /// 与服务器断开连接
+        /// </summary>
+        public void DisconnectServer()
+        {
+            if (Client != null)
+            {
+                if (IsNeedConnect && IsConnect)
+                {
+                    Client.Shutdown(SocketShutdown.Both);
+                    Client.Disconnect(false);
 
+                    DisconnectServerEvent?.Invoke(this);
+                }
+                Client.Close();
+                Client.Dispose();
+                Client = null;
+            }
+        }
+
+        /// <summary>
+        /// 是否是断开连接请求
+        /// </summary>
+        /// <param name="message">消息对象</param>
+        /// <returns>是否是断开连接请求</returns>
+        public abstract bool IsDisconnectRequest(INetworkMessage message);
+        /// <summary>
+        /// 封装消息
+        /// </summary>
+        /// <param name="info">消息对象</param>
+        /// <returns>封装后的字节数组</returns>
+        public abstract byte[] EncapsulatedMessage(INetworkMessage message);
+        /// <summary>
+        /// 接收消息
+        /// </summary>
+        /// <param name="client">客户端</param>
+        /// <returns>接收到的消息对象</returns>
+        protected abstract INetworkMessage ReceiveMessage(Socket client);
+        
         /// <summary>
         /// 发送消息（需要保持连接的协议）
         /// </summary>
         private void SendMessageNeedConnect()
         {
-            while (true)
+            while (_isEnableThread)
             {
                 if (IsConnect && _isCanSend && _sendDataBuffer.Count > 0)
                 {
-                    try
+                    int sendCount = Client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, 0);
+                    if (sendCount > 0)
                     {
-                        int sendCount = Client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, 0);
-                        if (sendCount > 0)
-                        {
-                            _sendDataBuffer.RemoveAt(0);
+                        _sendDataBuffer.RemoveAt(0);
 
-                            Main.Current.QueueOnMainThread(() =>
-                            {
-                                SendMessageEvent?.Invoke();
-                            });
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        GlobalTools.LogError("发送消息出错：" + e.ToString());
+                        Main.Current.QueueOnMainThread(() =>
+                        {
+                            SendMessageEvent?.Invoke(this);
+                        });
                     }
                 }
             }
@@ -169,17 +225,22 @@ namespace HT.Framework
         /// </summary>
         private void ReceiveMessageNeedConnect()
         {
-            while (true)
+            while (_isEnableThread)
             {
                 if (IsConnect)
                 {
-                    INetworkInfo info = OnReceiveMessage(Client);
+                    INetworkMessage message = ReceiveMessage(Client);
 
-                    if (info != null)
+                    if (message != null)
                     {
                         Main.Current.QueueOnMainThread(() =>
                         {
-                            ReceiveMessageEvent?.Invoke(info);
+                            ReceiveMessageEvent?.Invoke(this, message);
+
+                            if (IsDisconnectRequest(message))
+                            {
+                                DisconnectServer();
+                            }
                         });
                     }
                 }
@@ -190,26 +251,19 @@ namespace HT.Framework
         /// </summary>
         private void SendMessageNoConnect()
         {
-            while (true)
+            while (_isEnableThread)
             {
                 if (_isCanSend && _sendDataBuffer.Count > 0)
                 {
-                    try
+                    int sendCount = Client.SendTo(_sendDataBuffer[0], Main.m_Network.ServerEndPoint);
+                    if (sendCount > 0)
                     {
-                        int sendCount = Client.SendTo(_sendDataBuffer[0], Main.m_Network.ServerEndPoint);
-                        if (sendCount > 0)
-                        {
-                            _sendDataBuffer.RemoveAt(0);
+                        _sendDataBuffer.RemoveAt(0);
 
-                            Main.Current.QueueOnMainThread(() =>
-                            {
-                                SendMessageEvent?.Invoke();
-                            });
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        GlobalTools.LogError("发送消息出错：" + e.ToString());
+                        Main.Current.QueueOnMainThread(() =>
+                        {
+                            SendMessageEvent?.Invoke(this);
+                        });
                     }
                 }
             }
@@ -219,15 +273,15 @@ namespace HT.Framework
         /// </summary>
         private void ReceiveMessageNoConnect()
         {
-            while (true)
+            while (_isEnableThread)
             {
-                INetworkInfo info = OnReceiveMessage(Client);
+                INetworkMessage message = ReceiveMessage(Client);
 
-                if (info != null)
+                if (message != null)
                 {
                     Main.Current.QueueOnMainThread(() =>
                     {
-                        ReceiveMessageEvent?.Invoke(info);
+                        ReceiveMessageEvent?.Invoke(this, message);
                     });
                 }
             }

@@ -908,9 +908,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChannelTypes: []
   ServerIP: 127.0.0.1
-  ServerPort: 8080
+  ServerPort: 10000
   ClientIP: 127.0.0.1
-  ClientPort: 8080
+  ClientPort: 1000
 --- !u!1 &1832947091760460
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +11,15 @@ namespace HT.Framework
     [CSDNBlogURL("")]
     public sealed class NetworkManagerInspector : HTFEditor<NetworkManager>
     {
+        private Dictionary<Type, ProtocolChannel> _protocolChannels;
+
+        protected override void OnRuntimeEnable()
+        {
+            base.OnRuntimeEnable();
+
+            _protocolChannels = Target.GetType().GetField("_protocolChannels", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, ProtocolChannel>;
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -92,8 +102,23 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("No Runtime Data!");
+            GUILayout.Label("Enabled Channels:");
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+
+            foreach (var channel in _protocolChannels)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(channel.Key.FullName + " [" + channel.Value.Protocol.ToString() + "]");
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20);
+                GUILayout.Label("IsConnect:" + channel.Value.IsConnect.ToString());
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
         }
     }
 }
