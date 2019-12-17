@@ -8,7 +8,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的UDP协议通道
     /// </summary>
-    public sealed class UdpChannel : ProtocolChannel
+    public sealed class UdpChannel : ProtocolChannelBase
     {
         /// <summary>
         /// 通信协议
@@ -81,7 +81,7 @@ namespace HT.Framework
         {
             try
             {
-                if (_serverEndPoint == null) _serverEndPoint = Main.m_Network.ServerEndPoint;
+                if (_serverEndPoint == null) _serverEndPoint = new IPEndPoint(IPAddress.Parse(Main.m_Network.ServerIP), Main.m_Network.ServerPort);
 
                 byte[] buffer = new byte[1024];
                 int length = client.ReceiveFrom(buffer, ref _serverEndPoint);

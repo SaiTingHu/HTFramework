@@ -35,29 +35,29 @@ namespace HT.Framework
         /// <summary>
         /// 开始连接服务器事件
         /// </summary>
-        public event HTFAction<ProtocolChannel> BeginConnectServerEvent;
+        public event HTFAction<ProtocolChannelBase> BeginConnectServerEvent;
         /// <summary>
         /// 连接服务器成功事件
         /// </summary>
-        public event HTFAction<ProtocolChannel> ConnectServerSuccessEvent;
+        public event HTFAction<ProtocolChannelBase> ConnectServerSuccessEvent;
         /// <summary>
         /// 连接服务器失败事件
         /// </summary>
-        public event HTFAction<ProtocolChannel> ConnectServerFailEvent;
+        public event HTFAction<ProtocolChannelBase> ConnectServerFailEvent;
         /// <summary>
         /// 与服务器断开连接事件
         /// </summary>
-        public event HTFAction<ProtocolChannel> DisconnectServerEvent;
+        public event HTFAction<ProtocolChannelBase> DisconnectServerEvent;
         /// <summary>
         /// 发送消息成功事件
         /// </summary>
-        public event HTFAction<ProtocolChannel> SendMessageEvent;
+        public event HTFAction<ProtocolChannelBase> SendMessageEvent;
         /// <summary>
         /// 接收消息成功事件
         /// </summary>
-        public event HTFAction<ProtocolChannel, INetworkMessage> ReceiveMessageEvent;
+        public event HTFAction<ProtocolChannelBase, INetworkMessage> ReceiveMessageEvent;
 
-        private Dictionary<Type, ProtocolChannel> _protocolChannels = new Dictionary<Type, ProtocolChannel>();
+        private Dictionary<Type, ProtocolChannelBase> _protocolChannels = new Dictionary<Type, ProtocolChannelBase>();
         private IPEndPoint _serverEndPoint;
         private IPEndPoint _clientEndPoint;
 
@@ -71,10 +71,10 @@ namespace HT.Framework
                 Type type = GlobalTools.GetTypeInRunTimeAssemblies(ChannelTypes[i]);
                 if (type != null)
                 {
-                    if (type.IsSubclassOf(typeof(ProtocolChannel)))
+                    if (type.IsSubclassOf(typeof(ProtocolChannelBase)))
                     {
                         if (!_protocolChannels.ContainsKey(type))
-                            _protocolChannels.Add(type, Activator.CreateInstance(type) as ProtocolChannel);
+                            _protocolChannels.Add(type, Activator.CreateInstance(type) as ProtocolChannelBase);
                     }
                     else
                     {
@@ -153,7 +153,7 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">通信协议通道类型</typeparam>
         /// <returns>是否已连接</returns>
-        public bool IsConnect<T>() where T : ProtocolChannel
+        public bool IsConnect<T>() where T : ProtocolChannelBase
         {
             return IsConnect(typeof(T));
         }
@@ -178,7 +178,7 @@ namespace HT.Framework
         /// 连接服务器
         /// </summary>
         /// <typeparam name="T">通信协议通道类型</typeparam>
-        public void ConnectServer<T>() where T : ProtocolChannel
+        public void ConnectServer<T>() where T : ProtocolChannelBase
         {
             ConnectServer(typeof(T));
         }
@@ -211,7 +211,7 @@ namespace HT.Framework
                 GlobalTools.LogWarning("连接服务器出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
             }
         }
-        private IEnumerator ConnectServerCoroutine(ProtocolChannel protocolChannel)
+        private IEnumerator ConnectServerCoroutine(ProtocolChannelBase protocolChannel)
         {
             yield return null;
 
@@ -242,7 +242,7 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">通信协议通道类型</typeparam>
         /// <param name="message">断开连接请求</param>
-        public void DisconnectServer<T>(INetworkMessage message) where T : ProtocolChannel
+        public void DisconnectServer<T>(INetworkMessage message) where T : ProtocolChannelBase
         {
             DisconnectServer(typeof(T), message);
         }
@@ -288,7 +288,7 @@ namespace HT.Framework
         /// <typeparam name="T">通信协议通道类型</typeparam>
         /// <param name="message">消息对象</param>
         /// <returns>是否发送成功</returns>
-        public bool SendMessage<T>(INetworkMessage message) where T : ProtocolChannel
+        public bool SendMessage<T>(INetworkMessage message) where T : ProtocolChannelBase
         {
             return SendMessage(typeof(T), message);
         }

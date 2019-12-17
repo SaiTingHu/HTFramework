@@ -9,7 +9,7 @@ namespace HT.Framework
     /// 通信协议通道的基类
     /// </summary>
     /// </summary>
-    public abstract class ProtocolChannel
+    public abstract class ProtocolChannelBase
     {
         /// <summary>
         /// 通信协议
@@ -65,15 +65,15 @@ namespace HT.Framework
         /// <summary>
         /// 发送消息成功事件
         /// </summary>
-        public event HTFAction<ProtocolChannel> SendMessageEvent;
+        public event HTFAction<ProtocolChannelBase> SendMessageEvent;
         /// <summary>
         /// 接收消息成功事件
         /// </summary>
-        public event HTFAction<ProtocolChannel, INetworkMessage> ReceiveMessageEvent;
+        public event HTFAction<ProtocolChannelBase, INetworkMessage> ReceiveMessageEvent;
         /// <summary>
         /// 与服务器断开连接事件
         /// </summary>
-        public event HTFAction<ProtocolChannel> DisconnectServerEvent;
+        public event HTFAction<ProtocolChannelBase> DisconnectServerEvent;
 
         private bool _isEnableThread = false;
         private Thread _sendThread;
@@ -188,7 +188,7 @@ namespace HT.Framework
         /// <summary>
         /// 封装消息
         /// </summary>
-        /// <param name="info">消息对象</param>
+        /// <param name="message">消息对象</param>
         /// <returns>封装后的字节数组</returns>
         public abstract byte[] EncapsulatedMessage(INetworkMessage message);
         /// <summary>

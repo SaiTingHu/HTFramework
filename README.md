@@ -48,7 +48,7 @@
 
 - [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口。
 
-- Network - 网络客户端模块，主要支持TCP/UDP等协议。
+- [Network](https://wanderer.blog.csdn.net/article/details/103575999) - 网络客户端模块，以单个通信管道为单位，每个管道均支持TCP/UDP等协议，可以为每个管道定义通信消息格式，基本能胜任一些常见的通信环境。
 
 - [ObjectPool](https://wanderer.blog.csdn.net/article/details/86610600) - 专用于GameObject类型的对象池，可以复用任意GameObject对象，以达到减少系统在频繁创建和删除对象时的开销。
 

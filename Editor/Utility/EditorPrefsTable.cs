@@ -109,6 +109,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 新建ProtocolChannel脚本的文件夹
+        /// </summary>
+        public static string Script_ProtocolChannel_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.ProtocolChannel";
+            }
+        }
+        /// <summary>
         /// 新建HotfixProcedure脚本的文件夹
         /// </summary>
         public static string Script_HotfixProcedure_Directory

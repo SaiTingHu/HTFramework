@@ -8,16 +8,16 @@ namespace HT.Framework
 {
     [CustomEditor(typeof(NetworkManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
-    [CSDNBlogURL("")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103575999")]
     public sealed class NetworkManagerInspector : HTFEditor<NetworkManager>
     {
-        private Dictionary<Type, ProtocolChannel> _protocolChannels;
+        private Dictionary<Type, ProtocolChannelBase> _protocolChannels;
 
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _protocolChannels = Target.GetType().GetField("_protocolChannels", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, ProtocolChannel>;
+            _protocolChannels = Target.GetType().GetField("_protocolChannels", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, ProtocolChannelBase>;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -72,7 +72,7 @@ namespace HT.Framework
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(ProtocolChannel)))
+                    if (types[i].IsSubclassOf(typeof(ProtocolChannelBase)))
                     {
                         int j = i;
                         if (Target.ChannelTypes.Contains(types[j].FullName))

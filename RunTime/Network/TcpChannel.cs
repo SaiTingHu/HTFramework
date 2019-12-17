@@ -9,7 +9,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的TCP协议通道
     /// </summary>
-    public sealed class TcpChannel : ProtocolChannel
+    public sealed class TcpChannel : ProtocolChannelBase
     {
         /// <summary>
         /// 通信协议
