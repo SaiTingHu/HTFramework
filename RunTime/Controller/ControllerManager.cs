@@ -9,7 +9,8 @@ namespace HT.Framework
     /// 操作控制者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ControllerManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Controller)]
+    public sealed class ControllerManager : InternalModuleBase
     {
         /// <summary>
         /// 切换至自由控制事件

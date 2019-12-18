@@ -14,6 +14,7 @@ namespace HT.Framework
         private static bool _showMainData = false;
         private static bool _showLicense = false;
         private static bool _showParameter = false;
+        private static bool _showSetting = false;
 
         protected override void OnDefaultEnable()
         {
@@ -34,6 +35,7 @@ namespace HT.Framework
             MainDataGUI();
             LicenseGUI();
             ParameterGUI();
+            SettingGUI();
         }
 
         protected override void OnInspectorRuntimeGUI()
@@ -543,6 +545,39 @@ namespace HT.Framework
                     Target.MainParameters.Add(new MainParameter());
                     HasChanged();
                 }
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.EndVertical();
+        }
+        #endregion
+
+        #region Setting
+        private void SettingGUI()
+        {
+            GUILayout.BeginVertical("Box");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(10);
+            _showSetting = EditorGUILayout.Foldout(_showSetting, "Setting", true);
+            GUILayout.EndHorizontal();
+
+            if (_showSetting)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Log", "BoldLabel");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                Toggle(Target.IsEnabledLogInfo, out Target.IsEnabledLogInfo, "Enabled Log Info");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                Toggle(Target.IsEnabledLogWarning, out Target.IsEnabledLogWarning, "Enabled Log Warning");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                Toggle(Target.IsEnabledLogError, out Target.IsEnabledLogError, "Enabled Log Error");
                 GUILayout.EndHorizontal();
             }
 

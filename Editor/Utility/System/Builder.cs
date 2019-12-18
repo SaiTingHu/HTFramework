@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 namespace HT.Framework
@@ -9,7 +10,11 @@ namespace HT.Framework
         /// <summary>
         /// 检查项目构建的前置条件，如果返回false，将禁止打包，返回true，才启用打包
         /// </summary>
-        public static event HTFFunc<bool> CheckBuildPrecondition;
+        public static event HTFFunc<bool> CheckBuildPreconditionEvent;
+        /// <summary>
+        /// 项目发布完成事件
+        /// </summary>
+        public static event HTFAction<BuildTarget,string> PostProcessBuildEvent;
 
         [InitializeOnLoadMethod]
         private static void RegisterUpdate()
@@ -26,6 +31,14 @@ namespace HT.Framework
                 builder.minSize = new Vector2(640, 580);
                 builder.Show();
             }
+        }
+        
+        [PostProcessBuild(0)]
+        private static void OnPostProcessBuild(BuildTarget target, string pathToBuildProject)
+        {
+            GlobalTools.LogInfo("项目发布成功！发布平台：" + target.ToString() + "！发布路径：" + pathToBuildProject + "！");
+
+            PostProcessBuildEvent?.Invoke(target, pathToBuildProject);
         }
 
         private BuildPlayerWindow _buildPlayerWindow;
@@ -55,7 +68,6 @@ namespace HT.Framework
             _calculateSelectedBuildTarget = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.EditorUserBuildSettingsUtils").GetMethod("CalculateSelectedBuildTarget", BindingFlags.Static | BindingFlags.Public);
             _activeBuildTargetGroup = typeof(EditorUserBuildSettings).GetProperty("activeBuildTargetGroup", BindingFlags.Static | BindingFlags.NonPublic);
 
-            RemoveAllScene();
             CheckResourceMode();
             Check();
         }
@@ -68,6 +80,11 @@ namespace HT.Framework
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
+
+            if (EditorBuildSettings.scenes != null)
+            {
+                EditorBuildSettings.scenes = null;
+            }
 
             if (!_isCanBuild)
             {
@@ -126,12 +143,7 @@ namespace HT.Framework
             BuildTargetGroup activeBuildTargetGroup = (BuildTargetGroup)_activeBuildTargetGroup.GetValue(null);
             return EditorUserBuildSettings.activeBuildTarget == selectedBuildTarget && activeBuildTargetGroup == selectedBuildTargetGroup;
         }
-
-        private void RemoveAllScene()
-        {
-            EditorBuildSettings.scenes = null;
-        }
-
+        
         private void CheckResourceMode()
         {
             _isShowBuildABButton = false;
@@ -149,9 +161,9 @@ namespace HT.Framework
 
         private void Check()
         {
-            if (CheckBuildPrecondition != null)
+            if (CheckBuildPreconditionEvent != null)
             {
-                if (!CheckBuildPrecondition())
+                if (!CheckBuildPreconditionEvent())
                 {
                     _isCanBuild = false;
                     GlobalTools.LogError("当前无法构建项目：未满足允许项目构建的前置条件！");

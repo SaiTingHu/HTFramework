@@ -11,7 +11,8 @@ namespace HT.Framework
     /// 异常处理模块
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ExceptionHandler : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.ExceptionHandler)]
+    public sealed class ExceptionHandler : InternalModuleBase
     {
         /// <summary>
         /// 是否开启异常处理监听【请勿在代码中修改】

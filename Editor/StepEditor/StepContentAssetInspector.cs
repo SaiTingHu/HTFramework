@@ -15,6 +15,7 @@ namespace HT.Framework
             if (asset)
             {
                 StepEditorWindow.ShowWindow(asset);
+                return true;
             }
             return false;
         }

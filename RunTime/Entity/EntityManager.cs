@@ -9,7 +9,8 @@ namespace HT.Framework
     /// 实体管理器
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class EntityManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Entity)]
+    public sealed class EntityManager : InternalModuleBase
     {
         /// <summary>
         /// 当前定义的实体名称【请勿在代码中修改】

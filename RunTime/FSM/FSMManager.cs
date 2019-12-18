@@ -7,7 +7,8 @@ namespace HT.Framework
     /// 有限状态机管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class FSMManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.FSM)]
+    public sealed class FSMManager : InternalModuleBase
     {
         private Dictionary<string, FSM> _fsms = new Dictionary<string, FSM>();
 

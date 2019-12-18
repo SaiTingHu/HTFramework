@@ -3,9 +3,9 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 模块管理者基类
+    /// 内置模块基类
     /// </summary>
-    public abstract class ModuleManagerBase : MonoBehaviour, IModuleManager
+    public abstract class InternalModuleBase : MonoBehaviour, IModuleManager
     {
         /// <summary>
         /// 初始化模块

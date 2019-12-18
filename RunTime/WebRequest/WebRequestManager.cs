@@ -11,7 +11,8 @@ namespace HT.Framework
     /// Web请求管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class WebRequestManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.WebRequest)]
+    public sealed class WebRequestManager : InternalModuleBase
     {
         /// <summary>
         /// 当前是否是离线状态

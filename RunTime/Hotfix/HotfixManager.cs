@@ -7,7 +7,8 @@ namespace HT.Framework
     /// 热更新模块管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class HotfixManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Hotfix)]
+    public sealed class HotfixManager : InternalModuleBase
     {
         /// <summary>
         /// 是否启用热更新【请勿在代码中修改】

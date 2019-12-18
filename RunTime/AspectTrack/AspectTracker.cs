@@ -8,7 +8,8 @@ namespace HT.Framework
     /// 切面代理追踪者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class AspectTracker : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.AspectTrack)]
+    public sealed class AspectTracker : InternalModuleBase
     {
         /// <summary>
         /// 是否启用切面追踪【请勿在代码中修改】

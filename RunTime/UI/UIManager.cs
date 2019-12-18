@@ -9,7 +9,8 @@ namespace HT.Framework
     /// UI管理器
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class UIManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.UI)]
+    public sealed class UIManager : InternalModuleBase
     {
         /// <summary>
         /// 是否启用Overlay类型的UI【请勿在代码中修改】

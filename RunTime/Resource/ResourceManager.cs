@@ -14,7 +14,8 @@ namespace HT.Framework
     /// 资源管理器
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ResourceManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Resource)]
+    public sealed class ResourceManager : InternalModuleBase
     {
         /// <summary>
         /// 资源加载模式【请勿在代码中修改】

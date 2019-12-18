@@ -7,7 +7,8 @@ namespace HT.Framework
     /// 对象池管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ObjectPoolManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.ObjectPool)]
+    public sealed class ObjectPoolManager : InternalModuleBase
     {
         /// <summary>
         /// 单个对象池上限【请勿在代码中修改】

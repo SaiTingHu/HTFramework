@@ -966,6 +966,34 @@ namespace HT.Framework
         }
         #endregion
 
+        #region IO工具
+        /// <summary>
+        /// 删除文件夹及以下的所有文件夹、文件
+        /// </summary>
+        /// <param name="folderPath">文件夹路径</param>
+        public static void DeleteFolder(string folderPath)
+        {
+            if (Directory.Exists(folderPath))
+            {
+                DirectoryInfo directory = Directory.CreateDirectory(folderPath);
+
+                FileInfo[] files = directory.GetFiles();
+                foreach (var file in files)
+                {
+                    file.Delete();
+                }
+
+                DirectoryInfo[] folders = directory.GetDirectories();
+                foreach (var folder in folders)
+                {
+                    DeleteFolder(folder.FullName);
+                }
+
+                directory.Delete();
+            }
+        }
+        #endregion
+
         #region Hierarchy窗口扩展
         private static GUIStyle HierarchyItemStyle;
         private static Texture HTFrameworkLOGO;

@@ -10,7 +10,8 @@ namespace HT.Framework
     /// 协程调度者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class Coroutiner : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Coroutiner)]
+    public sealed class Coroutiner : InternalModuleBase
     {
         /// <summary>
         /// 所有协程迭代器

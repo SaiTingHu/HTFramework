@@ -10,7 +10,8 @@ namespace HT.Framework
     /// 网络管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class NetworkManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Network)]
+    public sealed class NetworkManager : InternalModuleBase
     {
         /// <summary>
         /// 启用的通信协议通道类型【请勿在代码中修改】

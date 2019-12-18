@@ -8,7 +8,8 @@ namespace HT.Framework
     /// 流程管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ProcedureManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Procedure)]
+    public sealed class ProcedureManager : InternalModuleBase
     {
         /// <summary>
         /// 当前激活的流程类名【请勿在代码中修改】

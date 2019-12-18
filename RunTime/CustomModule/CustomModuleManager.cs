@@ -9,7 +9,8 @@ namespace HT.Framework
     /// 自定义模块管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class CustomModuleManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.CustomModule)]
+    public sealed class CustomModuleManager : InternalModuleBase
     {
         private Dictionary<string, CustomModuleBase> _customModules = new Dictionary<string, CustomModuleBase>();
 

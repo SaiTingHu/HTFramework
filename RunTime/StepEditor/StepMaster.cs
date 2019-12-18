@@ -10,7 +10,8 @@ namespace HT.Framework
     /// 步骤控制者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class StepMaster : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.StepEditor)]
+    public sealed class StepMaster : InternalModuleBase
     {
         /// <summary>
         /// 步骤跳过时的速度

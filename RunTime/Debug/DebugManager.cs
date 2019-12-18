@@ -7,7 +7,8 @@ namespace HT.Framework
     /// 调试管理器
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class DebugManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Debug)]
+    public sealed class DebugManager : InternalModuleBase
     {
         /// <summary>
         /// 调试器类型【请勿在代码中修改】

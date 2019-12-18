@@ -8,7 +8,8 @@ namespace HT.Framework
     /// 事件管理者
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class EventManager : ModuleManagerBase
+    [InternalModule(HTFrameworkModule.Event)]
+    public sealed class EventManager : InternalModuleBase
     {
         private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
 

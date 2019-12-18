@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -213,77 +214,65 @@ namespace HT.Framework
         /// </summary>
         public static WebRequestManager m_WebRequest { get; private set; }
 
+        private Dictionary<HTFrameworkModule, InternalModuleBase> _internalModules = new Dictionary<HTFrameworkModule, InternalModuleBase>();
         private bool _isPause = false;
 
         private void ModuleInitialization()
         {
-            m_AspectTrack = transform.GetComponentByChild<AspectTracker>("AspectTrack");
-            m_Audio = transform.GetComponentByChild<AudioManager>("Audio");
-            m_Controller = transform.GetComponentByChild<ControllerManager>("Controller");
-            m_Coroutiner = transform.GetComponentByChild<Coroutiner>("Coroutiner");
-            m_CustomModule = transform.GetComponentByChild<CustomModuleManager>("CustomModule");
-            m_DataSet = transform.GetComponentByChild<DataSetManager>("DataSet");
-            m_Debug = transform.GetComponentByChild<DebugManager>("Debug");
-            m_Entity = transform.GetComponentByChild<EntityManager>("Entity");
-            m_Event = transform.GetComponentByChild<EventManager>("Event");
-            m_ExceptionHandler = transform.GetComponentByChild<ExceptionHandler>("ExceptionHandler");
-            m_FSM = transform.GetComponentByChild<FSMManager>("FSM");
-            m_Hotfix = transform.GetComponentByChild<HotfixManager>("Hotfix");
-            m_Input = transform.GetComponentByChild<InputManager>("Input");
-            m_Network = transform.GetComponentByChild<NetworkManager>("Network");
-            m_ObjectPool = transform.GetComponentByChild<ObjectPoolManager>("ObjectPool");
-            m_Procedure = transform.GetComponentByChild<ProcedureManager>("Procedure");
-            m_ReferencePool = transform.GetComponentByChild<ReferencePoolManager>("ReferencePool");
-            m_Resource = transform.GetComponentByChild<ResourceManager>("Resource");
-            m_StepMaster = transform.GetComponentByChild<StepMaster>("StepMaster");
-            m_UI = transform.GetComponentByChild<UIManager>("UI");
-            m_WebRequest = transform.GetComponentByChild<WebRequestManager>("WebRequest");
+            InternalModuleBase[] internalModules = transform.GetComponentsInChildren<InternalModuleBase>(true);
+            for (int i = 0; i < internalModules.Length; i++)
+            {
+                InternalModuleAttribute attribute = internalModules[i].GetType().GetCustomAttribute<InternalModuleAttribute>();
+                if (attribute != null)
+                {
+                    if (!_internalModules.ContainsKey(attribute.ModuleName))
+                    {
+                        _internalModules.Add(attribute.ModuleName, internalModules[i]);
+                    }
+                    else
+                    {
+                        throw new HTFrameworkException(HTFrameworkModule.Main, "获取内置模块失败：内置模块类 " + internalModules[i].GetType().FullName + " 的 InternalModule 标记与已有模块重复！");
+                    }
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Main, "获取内置模块失败：内置模块类 " + internalModules[i].GetType().FullName + " 丢失了 InternalModule 标记！");
+                }
+            }
 
-            m_AspectTrack.OnInitialization();
-            m_Audio.OnInitialization();
-            m_Controller.OnInitialization();
-            m_Coroutiner.OnInitialization();
-            m_CustomModule.OnInitialization();
-            m_DataSet.OnInitialization();
-            m_Debug.OnInitialization();
-            m_Entity.OnInitialization();
-            m_Event.OnInitialization();
-            m_ExceptionHandler.OnInitialization();
-            m_FSM.OnInitialization();
-            m_Hotfix.OnInitialization();
-            m_Input.OnInitialization();
-            m_Network.OnInitialization();
-            m_ObjectPool.OnInitialization();
-            m_Procedure.OnInitialization();
-            m_ReferencePool.OnInitialization();
-            m_Resource.OnInitialization();
-            m_StepMaster.OnInitialization();
-            m_UI.OnInitialization();
-            m_WebRequest.OnInitialization();
+            m_AspectTrack = GetInternalModule(HTFrameworkModule.AspectTrack) as AspectTracker;
+            m_Audio = GetInternalModule(HTFrameworkModule.Audio) as AudioManager;
+            m_Controller = GetInternalModule(HTFrameworkModule.Controller) as ControllerManager;
+            m_Coroutiner = GetInternalModule(HTFrameworkModule.Coroutiner) as Coroutiner;
+            m_CustomModule = GetInternalModule(HTFrameworkModule.CustomModule) as CustomModuleManager;
+            m_DataSet = GetInternalModule(HTFrameworkModule.DataSet) as DataSetManager;
+            m_Debug = GetInternalModule(HTFrameworkModule.Debug) as DebugManager;
+            m_Entity = GetInternalModule(HTFrameworkModule.Entity) as EntityManager;
+            m_Event = GetInternalModule(HTFrameworkModule.Event) as EventManager;
+            m_ExceptionHandler = GetInternalModule(HTFrameworkModule.ExceptionHandler) as ExceptionHandler;
+            m_FSM = GetInternalModule(HTFrameworkModule.FSM) as FSMManager;
+            m_Hotfix = GetInternalModule(HTFrameworkModule.Hotfix) as HotfixManager;
+            m_Input = GetInternalModule(HTFrameworkModule.Input) as InputManager;
+            m_Network = GetInternalModule(HTFrameworkModule.Network) as NetworkManager;
+            m_ObjectPool = GetInternalModule(HTFrameworkModule.ObjectPool) as ObjectPoolManager;
+            m_Procedure = GetInternalModule(HTFrameworkModule.Procedure) as ProcedureManager;
+            m_ReferencePool = GetInternalModule(HTFrameworkModule.ReferencePool) as ReferencePoolManager;
+            m_Resource = GetInternalModule(HTFrameworkModule.Resource) as ResourceManager;
+            m_StepMaster = GetInternalModule(HTFrameworkModule.StepEditor) as StepMaster;
+            m_UI = GetInternalModule(HTFrameworkModule.UI) as UIManager;
+            m_WebRequest = GetInternalModule(HTFrameworkModule.WebRequest) as WebRequestManager;
+
+            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            {
+                internalModule.Value.OnInitialization();
+            }
         }
         private void ModulePreparatory()
         {
-            m_AspectTrack.OnPreparatory();
-            m_Audio.OnPreparatory();
-            m_Controller.OnPreparatory();
-            m_Coroutiner.OnPreparatory();
-            m_CustomModule.OnPreparatory();
-            m_DataSet.OnPreparatory();
-            m_Debug.OnPreparatory();
-            m_Entity.OnPreparatory();
-            m_Event.OnPreparatory();
-            m_ExceptionHandler.OnPreparatory();
-            m_FSM.OnPreparatory();
-            m_Hotfix.OnPreparatory();
-            m_Input.OnPreparatory();
-            m_Network.OnPreparatory();
-            m_ObjectPool.OnPreparatory();
-            m_Procedure.OnPreparatory();
-            m_ReferencePool.OnPreparatory();
-            m_Resource.OnPreparatory();
-            m_StepMaster.OnPreparatory();
-            m_UI.OnPreparatory();
-            m_WebRequest.OnPreparatory();
+            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            {
+                internalModule.Value.OnPreparatory();
+            }
         }
         private void ModuleRefresh()
         {
@@ -292,101 +281,49 @@ namespace HT.Framework
                 return;
             }
 
-            m_AspectTrack.OnRefresh();
-            m_Audio.OnRefresh();
-            m_Controller.OnRefresh();
-            m_Coroutiner.OnRefresh();
-            m_CustomModule.OnRefresh();
-            m_DataSet.OnRefresh();
-            m_Debug.OnRefresh();
-            m_Entity.OnRefresh();
-            m_Event.OnRefresh();
-            m_ExceptionHandler.OnRefresh();
-            m_FSM.OnRefresh();
-            m_Hotfix.OnRefresh();
-            m_Input.OnRefresh();
-            m_Network.OnRefresh();
-            m_ObjectPool.OnRefresh();
-            m_Procedure.OnRefresh();
-            m_ReferencePool.OnRefresh();
-            m_Resource.OnRefresh();
-            m_StepMaster.OnRefresh();
-            m_UI.OnRefresh();
-            m_WebRequest.OnRefresh();
+            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            {
+                internalModule.Value.OnRefresh();
+            }
         }
         private void ModuleTermination()
         {
-            m_AspectTrack.OnTermination();
-            m_Audio.OnTermination();
-            m_Controller.OnTermination();
-            m_Coroutiner.OnTermination();
-            m_CustomModule.OnTermination();
-            m_DataSet.OnTermination();
-            m_Debug.OnTermination();
-            m_Entity.OnTermination();
-            m_Event.OnTermination();
-            m_ExceptionHandler.OnTermination();
-            m_FSM.OnTermination();
-            m_Hotfix.OnTermination();
-            m_Input.OnTermination();
-            m_Network.OnTermination();
-            m_ObjectPool.OnTermination();
-            m_Procedure.OnTermination();
-            m_ReferencePool.OnTermination();
-            m_Resource.OnTermination();
-            m_StepMaster.OnTermination();
-            m_UI.OnTermination();
-            m_WebRequest.OnTermination();
+            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            {
+                internalModule.Value.OnTermination();
+            }
         }
         private void ModulePause()
         {
-            m_AspectTrack.OnPause();
-            m_Audio.OnPause();
-            m_Controller.OnPause();
-            m_Coroutiner.OnPause();
-            m_CustomModule.OnPause();
-            m_DataSet.OnPause();
-            m_Debug.OnPause();
-            m_Entity.OnPause();
-            m_Event.OnPause();
-            m_ExceptionHandler.OnPause();
-            m_FSM.OnPause();
-            m_Hotfix.OnPause();
-            m_Input.OnPause();
-            m_Network.OnPause();
-            m_ObjectPool.OnPause();
-            m_Procedure.OnPause();
-            m_ReferencePool.OnPause();
-            m_Resource.OnPause();
-            m_StepMaster.OnPause();
-            m_UI.OnPause();
-            m_WebRequest.OnPause();
+            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            {
+                internalModule.Value.OnPause();
+            }
         }
         private void ModuleUnPause()
         {
-            m_AspectTrack.OnUnPause();
-            m_Audio.OnUnPause();
-            m_Controller.OnUnPause();
-            m_Coroutiner.OnUnPause();
-            m_CustomModule.OnUnPause();
-            m_DataSet.OnUnPause();
-            m_Debug.OnUnPause();
-            m_Entity.OnUnPause();
-            m_Event.OnUnPause();
-            m_ExceptionHandler.OnUnPause();
-            m_FSM.OnUnPause();
-            m_Hotfix.OnUnPause();
-            m_Input.OnUnPause();
-            m_Network.OnUnPause();
-            m_ObjectPool.OnUnPause();
-            m_Procedure.OnUnPause();
-            m_ReferencePool.OnUnPause();
-            m_Resource.OnUnPause();
-            m_StepMaster.OnUnPause();
-            m_UI.OnUnPause();
-            m_WebRequest.OnUnPause();
+            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            {
+                internalModule.Value.OnUnPause();
+            }
         }
 
+        /// <summary>
+        /// 获取内置模块
+        /// </summary>
+        /// <param name="moduleName">内置模块名称</param>
+        /// <returns>内置模块对象</returns>
+        public InternalModuleBase GetInternalModule(HTFrameworkModule moduleName)
+        {
+            if (_internalModules.ContainsKey(moduleName))
+            {
+                return _internalModules[moduleName];
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Main, "获取内置模块失败：不存在名为 " + moduleName.ToString() + " 的内置模块！");
+            }
+        }
         /// <summary>
         /// 暂停主程序
         /// </summary>
@@ -417,7 +354,7 @@ namespace HT.Framework
             }
         }
         #endregion
-        
+
         #region License
         /// <summary>
         /// 是否永久授权
@@ -459,8 +396,10 @@ namespace HT.Framework
                 if (DateTime.Now > _endingTime)
                 {
                     m_Controller.MainCamera.enabled = false;
+                    m_Audio.Mute = true;
                     m_UI.IsHideAll = true;
                     m_Entity.IsHideAll = true;
+                    m_Input.IsEnableInputDevice = false;
                 }
             }
         }
@@ -914,6 +853,21 @@ namespace HT.Framework
         }
         #endregion
 
+        #region Setting
+        /// <summary>
+        /// 是否启用常规日志打印
+        /// </summary>
+        public bool IsEnabledLogInfo = true;
+        /// <summary>
+        /// 是否启用警告日志打印
+        /// </summary>
+        public bool IsEnabledLogWarning = true;
+        /// <summary>
+        /// 是否启用错误日志打印
+        /// </summary>
+        public bool IsEnabledLogError = true;
+        #endregion
+
         #region LogicLoop
         /// <summary>
         /// 主逻辑循环事件
@@ -972,7 +926,7 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 框架模块
+    /// 框架内置模块
     /// </summary>
     public enum HTFrameworkModule
     {
