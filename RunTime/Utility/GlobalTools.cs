@@ -1879,6 +1879,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印普通日志
         /// </summary>
+        /// <param name="value">日志</param>
         public static void LogInfo(string value)
         {
             if (Main.Current && Main.Current.IsEnabledLogInfo)
@@ -1893,6 +1894,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印警告日志
         /// </summary>
+        /// <param name="value">日志</param>
         public static void LogWarning(string value)
         {
             if (Main.Current && Main.Current.IsEnabledLogWarning)
@@ -1907,6 +1909,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印错误日志
         /// </summary>
+        /// <param name="value">日志</param>
         public static void LogError(string value)
         {
             if (Main.Current && Main.Current.IsEnabledLogError)

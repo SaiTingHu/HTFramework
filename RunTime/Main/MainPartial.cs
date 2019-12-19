@@ -395,7 +395,7 @@ namespace HT.Framework
             {
                 if (DateTime.Now > _endingTime)
                 {
-                    m_Controller.MainCamera.enabled = false;
+                    m_Controller.MainCamera.cullingMask = 0;
                     m_Audio.Mute = true;
                     m_UI.IsHideAll = true;
                     m_Entity.IsHideAll = true;
