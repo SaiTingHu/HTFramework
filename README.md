@@ -18,8 +18,6 @@
 
 - [AspectTrack](https://wanderer.blog.csdn.net/article/details/85617377) - 根据AOP思想架构的一个面向切面的程序代码追踪模块，它可以跟踪每一个方法的调用，在调用前阻断该方法，亦或是更改其传入的实参，更改其返回值等！可以用于调用日志打印，系统运行监控等需求。
 
-- [AssetBundleEditor](https://wanderer.blog.csdn.net/article/details/90081589) - 项目资源监控与资源打包统一编辑器，也可以对项目中的冗余资源进行管理和筛除。
-
 - [Audio](https://wanderer.blog.csdn.net/article/details/89874351) - 项目中所有音频的管理器，提供统一的接口用来播放、暂停、停止各种音频资源。
 
 - [Controller](https://wanderer.blog.csdn.net/article/details/89416110) - 封装了主角控制、主摄像机控制等，简化了大量重复代码。
@@ -66,6 +64,16 @@
 
 - [WebRequest](https://wanderer.blog.csdn.net/article/details/89886124) - 网络请求模块，主要用于与web服务器通信，比如请求某一网络链接或服务器接口，获得回复或下载网络上的资源。
 
+## 内置工具
+
+- [Unity Asset Bundle Browser tool](https://docs.unity3d.com/Manual/AssetBundles-Browser.html)。
+
+## 注意事项
+
+- 框架中所有On开头的函数为生命周期函数或回调函数，均由框架呼叫，请勿手动调用。
+
+- 框架中的Procedure（流程）必须包含至少一个流程才能正确构建项目，而其他模块，如无需要，均可以不使用。
+
 ## 使用方法
 
 - 1.拉取框架到项目中的Assets文件夹下（Assets/HTFramework/），或以添加子模块的形式。
@@ -73,9 +81,3 @@
 - 2.将框架根目录下的HTFramework.prefab拖到主场景，并删除主场景其他的东西（除了框架的主要模块，其他任何东西都应该是动态加载的）。
 
 - 3.开始开发。
-
-## 注意事项
-
-- 1.框架中所有On开头的函数为生命周期函数或回调函数，均由框架呼叫，请勿手动调用。
-
-- 2.框架中的Procedure（流程）必须包含至少一个流程才能正确构建项目，而其他模块，如无需要，均可以不使用。

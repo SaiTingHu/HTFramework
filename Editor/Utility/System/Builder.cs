@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using AssetBundleBrowser;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -104,7 +105,7 @@ namespace HT.Framework
             {
                 if (GUI.Button(new Rect(position.width - 422, position.height - 31, 123, 18), "Build AssetBundles"))
                 {
-                    AssetBundleEditor.AssetBundleEditorUtility.BuildAssetBundles();
+                    AssetBundleBrowserMain.ShowWindow();
                 }
             }
             if (GUI.Button(new Rect(position.width - 294, position.height - 31, 52, 18), "Check"))

@@ -244,9 +244,9 @@ namespace HT.Framework
                     }
                     else
                     {
-                        string x = Target.rotation.eulerAngles.x > 180 ? ((int)Target.rotation.eulerAngles.x - 360).ToString() : ((int)Target.rotation.eulerAngles.x).ToString();
-                        string y = Target.rotation.eulerAngles.y > 180 ? ((int)Target.rotation.eulerAngles.y - 360).ToString() : ((int)Target.rotation.eulerAngles.y).ToString();
-                        string z = Target.rotation.eulerAngles.z > 180 ? ((int)Target.rotation.eulerAngles.z - 360).ToString() : ((int)Target.rotation.eulerAngles.z).ToString();
+                        string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
+                        string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
+                        string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
 
                         GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
                         GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
@@ -265,9 +265,9 @@ namespace HT.Framework
                     }
                     else
                     {
-                        string x = Target.localRotation.eulerAngles.x > 180 ? ((int)Target.localRotation.eulerAngles.x - 360).ToString() : ((int)Target.localRotation.eulerAngles.x).ToString();
-                        string y = Target.localRotation.eulerAngles.y > 180 ? ((int)Target.localRotation.eulerAngles.y - 360).ToString() : ((int)Target.localRotation.eulerAngles.y).ToString();
-                        string z = Target.localRotation.eulerAngles.z > 180 ? ((int)Target.localRotation.eulerAngles.z - 360).ToString() : ((int)Target.localRotation.eulerAngles.z).ToString();
+                        string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
+                        string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
+                        string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
 
                         GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
                         GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
@@ -315,6 +315,14 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("No Runtime Data!");
             GUILayout.EndHorizontal();
+        }
+
+        private int ClampAngle(float angle)
+        {
+            if (angle > 180) angle -= 360;
+            else if (angle < -180) angle += 360;
+
+            return (int)angle;
         }
     }
 }

@@ -1882,9 +1882,12 @@ namespace HT.Framework
         /// <param name="value">日志</param>
         public static void LogInfo(string value)
         {
-            if (Main.Current && Main.Current.IsEnabledLogInfo)
+            if (Main.Current)
             {
-                Debug.Log("<b><color=cyan>[HTFramework.Info]</color></b> " + value);
+                if (Main.Current.IsEnabledLogInfo)
+                {
+                    Debug.Log("<b><color=cyan>[HTFramework.Info]</color></b> " + value);
+                }
             }
             else
             {
@@ -1897,9 +1900,12 @@ namespace HT.Framework
         /// <param name="value">日志</param>
         public static void LogWarning(string value)
         {
-            if (Main.Current && Main.Current.IsEnabledLogWarning)
+            if (Main.Current)
             {
-                Debug.LogWarning("<b><color=yellow>[HTFramework.Warning]</color></b> " + value);
+                if (Main.Current.IsEnabledLogWarning)
+                {
+                    Debug.LogWarning("<b><color=yellow>[HTFramework.Warning]</color></b> " + value);
+                }
             }
             else
             {
@@ -1912,9 +1918,12 @@ namespace HT.Framework
         /// <param name="value">日志</param>
         public static void LogError(string value)
         {
-            if (Main.Current && Main.Current.IsEnabledLogError)
+            if (Main.Current)
             {
-                Debug.LogError("<b><color=red>[HTFramework.Error]</color></b> " + value);
+                if (Main.Current.IsEnabledLogError)
+                {
+                    Debug.LogError("<b><color=red>[HTFramework.Error]</color></b> " + value);
+                }
             }
             else
             {
