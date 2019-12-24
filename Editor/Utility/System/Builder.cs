@@ -123,7 +123,10 @@ namespace HT.Framework
                 return;
             }
 
-            _updateMethod.Invoke(_buildPlayerWindow, null);
+            if (_updateMethod != null)
+            {
+                _updateMethod.Invoke(_buildPlayerWindow, null);
+            }
         }
         
         private void BuildButtonMaskGUI()
