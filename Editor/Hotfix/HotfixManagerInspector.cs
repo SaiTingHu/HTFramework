@@ -53,7 +53,7 @@ namespace HT.Framework
             if (Target.IsEnableHotfix)
             {
                 #region HotfixDll
-                GUILayout.BeginVertical("box");
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("HotfixDll AssetBundleName");
@@ -81,7 +81,7 @@ namespace HT.Framework
                     EditorGUILayout.HelpBox("Hotfix environment is Created!", MessageType.Info);
                     GUILayout.EndHorizontal();
 
-                    GUILayout.BeginVertical("box");
+                    GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Hotfix Directory");
@@ -94,7 +94,7 @@ namespace HT.Framework
                     GUILayout.EndVertical();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Correct Hotfix Environment", "LargeButton"))
+                    if (GUILayout.Button("Correct Hotfix Environment", EditorGlobalTools.Styles.LargeButton))
                     {
                         SetHotfixAssemblyDefinition(Application.dataPath + _hotfixAssemblyDefinitionPath);
                     }
@@ -103,7 +103,7 @@ namespace HT.Framework
                 else
                 {
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Create Hotfix Environment", "LargeButton"))
+                    if (GUILayout.Button("Create Hotfix Environment", EditorGlobalTools.Styles.LargeButton))
                     {
                         CreateHotfixEnvironment();
                         _hotfixIsCreated = true;

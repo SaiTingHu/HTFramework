@@ -219,6 +219,25 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 是否存在状态
+        /// </summary>
+        /// <typeparam name="T">状态类型</typeparam>
+        /// <returns>是否存在</returns>
+        public bool IsExistState<T>() where T : FiniteStateBase
+        {
+            return IsExistState(typeof(T));
+        }
+        /// <summary>
+        /// 是否存在状态
+        /// </summary>
+        /// <param name="type">状态类型</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistState(Type type)
+        {
+            return _stateInstances.ContainsKey(type);
+        }
+
+        /// <summary>
         /// 切换状态
         /// </summary>
         /// <typeparam name="T">状态类型</typeparam>

@@ -148,7 +148,7 @@ namespace HT.Framework
                 GUILayout.Space(20);
                 GUILayout.Label(Target.LookPoint.ToString());
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Copy", "Minibutton"))
+                if (GUILayout.Button("Copy", EditorStyles.miniButton))
                 {
                     GUIUtility.systemCopyBuffer =
                            _mousePosition.Target.transform.localPosition.x.ToString("F2") + "f," +
@@ -165,7 +165,7 @@ namespace HT.Framework
                 GUILayout.Space(20);
                 GUILayout.Label(Target.LookAngle.ToString());
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Copy", "Minibutton"))
+                if (GUILayout.Button("Copy", EditorStyles.miniButton))
                 {
                     GUIUtility.systemCopyBuffer =
                        _mouseRotation.X.ToString("F2") + "f," +

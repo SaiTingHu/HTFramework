@@ -20,7 +20,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("InputDevice ");
-            if (GUILayout.Button(Target.InputDeviceType, "MiniPopup"))
+            if (GUILayout.Button(Target.InputDeviceType, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();

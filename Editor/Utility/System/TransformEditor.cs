@@ -40,7 +40,7 @@ namespace HT.Framework
 
             if (_showProperty)
             {
-                GUILayout.BeginVertical("Box");
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
                 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Position", GUILayout.Width(80));
@@ -121,7 +121,7 @@ namespace HT.Framework
 
             if (_showHierarchy)
             {
-                GUILayout.BeginVertical("Box");
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Root: ", GUILayout.Width(80));
@@ -209,10 +209,10 @@ namespace HT.Framework
 
             if (_showCopy)
             {
-                GUILayout.BeginVertical("Box");
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Position", "MiniButtonLeft"))
+                if (GUILayout.Button("Copy Position", EditorStyles.miniButtonLeft))
                 {
                     GUIUtility.systemCopyBuffer =
                         Target.position.x.ToString("F4") + "f," +
@@ -220,7 +220,7 @@ namespace HT.Framework
                         Target.position.z.ToString("F4") + "f";
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
-                if (GUILayout.Button("Copy LocalPosition", "MiniButtonRight"))
+                if (GUILayout.Button("Copy LocalPosition", EditorStyles.miniButtonRight))
                 {
                     GUIUtility.systemCopyBuffer =
                         Target.localPosition.x.ToString("F4") + "f," +
@@ -231,7 +231,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Rotation", "MiniButtonLeft"))
+                if (GUILayout.Button("Copy Rotation", EditorStyles.miniButtonLeft))
                 {
                     if (_copyQuaternion)
                     {
@@ -252,7 +252,7 @@ namespace HT.Framework
                         GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                     }
                 }
-                if (GUILayout.Button("Copy LocalRotation", "MiniButtonRight"))
+                if (GUILayout.Button("Copy LocalRotation", EditorStyles.miniButtonRight))
                 {
                     if (_copyQuaternion)
                     {
@@ -276,7 +276,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Scale", "MiniButton"))
+                if (GUILayout.Button("Copy Scale", EditorStyles.miniButton))
                 {
                     GUIUtility.systemCopyBuffer =
                         Target.localScale.x.ToString("F4") + "f," +
@@ -287,12 +287,12 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Name", "MiniButtonLeft"))
+                if (GUILayout.Button("Copy Name", EditorStyles.miniButtonLeft))
                 {
                     GUIUtility.systemCopyBuffer = Target.name;
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);
                 }
-                if (GUILayout.Button("Copy FullName", "MiniButtonRight"))
+                if (GUILayout.Button("Copy FullName", EditorStyles.miniButtonRight))
                 {
                     GUIUtility.systemCopyBuffer = Target.FullName();
                     GlobalTools.LogInfo("已复制：" + GUIUtility.systemCopyBuffer);

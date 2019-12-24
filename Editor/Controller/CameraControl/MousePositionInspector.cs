@@ -22,10 +22,10 @@ namespace HT.Framework
             Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Speed", "BoldLabel");
+            GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
@@ -42,10 +42,10 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Damping", "BoldLabel");
+            GUILayout.Label("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -54,10 +54,10 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Target Position Limit", "BoldLabel");
+            GUILayout.Label("Target Position Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

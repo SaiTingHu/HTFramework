@@ -39,7 +39,7 @@ namespace HT.Framework
                 GUILayout.Label(pool.Key.Name + ": " + pool.Value.Count);
                 GUILayout.FlexibleSpace();
                 GUI.enabled = pool.Value.Count > 0;
-                if (GUILayout.Button("Clear", "Minibutton"))
+                if (GUILayout.Button("Clear", EditorStyles.miniButton))
                 {
                     pool.Value.Clear();
                 }

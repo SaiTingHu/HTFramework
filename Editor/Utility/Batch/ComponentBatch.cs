@@ -63,7 +63,7 @@ namespace HT.Framework
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Component：", GUILayout.Width(120));
-            if (GUILayout.Button(_componentType != null ? _componentType.FullName : "<None>", "Minipopup"))
+            if (GUILayout.Button(_componentType != null ? _componentType.FullName : "<None>", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = EditorGlobalTools.GetTypesInAllAssemblies();

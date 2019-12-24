@@ -44,7 +44,7 @@ namespace HT.Framework
                 GUILayout.Label(item.Key.Name);
                 GUILayout.FlexibleSpace();
                 GUI.enabled = item.Value != null;
-                if (GUILayout.Button("Throw", "Minibutton", GUILayout.Width(50)))
+                if (GUILayout.Button("Throw", EditorStyles.miniButton, GUILayout.Width(50)))
                 {
                     Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn(item.Key) as EventHandlerBase);
                 }

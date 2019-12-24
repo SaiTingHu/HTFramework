@@ -39,19 +39,19 @@ namespace HT.Framework
             EditorGUILayout.HelpBox("Entity Manager, Control all EntityLogic!", MessageType.Info);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Define Entity", "BoldLabel");
+            GUILayout.Label("Define Entity", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < Target.DefineEntityNames.Count; i++)
             {
-                GUILayout.BeginVertical("HelpBox");
+                GUILayout.BeginVertical(EditorStyles.helpBox);
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Type", GUILayout.Width(40));
-                if (GUILayout.Button(Target.DefineEntityNames[i], "MiniPopup"))
+                if (GUILayout.Button(Target.DefineEntityNames[i], EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -79,7 +79,7 @@ namespace HT.Framework
                     gm.ShowAsContext();
                 }
                 GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
+                if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
                 {
                     Undo.RecordObject(target, "Delete Define Entity");
                     Target.DefineEntityNames.RemoveAt(i);
@@ -105,7 +105,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("New", "Minibutton"))
+            if (GUILayout.Button("New", EditorStyles.miniButton))
             {
                 Undo.RecordObject(target, "New Define Entity");
                 Target.DefineEntityNames.Add("<None>");
@@ -144,12 +144,12 @@ namespace HT.Framework
                         EditorGUILayout.ObjectField(entity.Value[i].Entity, typeof(GameObject), true);
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !entity.Value[i].IsShowed;
-                        if (GUILayout.Button("Show", "minibuttonleft", GUILayout.Width(40)))
+                        if (GUILayout.Button("Show", EditorStyles.miniButtonLeft, GUILayout.Width(40)))
                         {
                             Main.m_Entity.ShowEntity(entity.Value[i]);
                         }
                         GUI.enabled = entity.Value[i].IsShowed;
-                        if (GUILayout.Button("Hide", "minibuttonright", GUILayout.Width(40)))
+                        if (GUILayout.Button("Hide", EditorStyles.miniButtonRight, GUILayout.Width(40)))
                         {
                             Main.m_Entity.HideEntity(entity.Value[i]);
                         }

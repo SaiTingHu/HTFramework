@@ -140,7 +140,7 @@ namespace HT.Framework
             base.OnTitleGUI();
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("About", "Toolbarbutton"))
+            if (GUILayout.Button("About", EditorStyles.toolbarButton))
             {
                 Application.OpenURL("https://wanderer.blog.csdn.net/article/details/102971712");
             }
@@ -150,11 +150,11 @@ namespace HT.Framework
             base.OnBodyGUI();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Toggle(_mode == ExecuterMode.Dynamic, "Dynamic", "LargeButtonLeft"))
+            if (GUILayout.Toggle(_mode == ExecuterMode.Dynamic, "Dynamic", EditorGlobalTools.Styles.LargeButtonLeft))
             {
                 _mode = ExecuterMode.Dynamic;
             }
-            if (GUILayout.Toggle(_mode == ExecuterMode.Static, "Static", "LargeButtonRight"))
+            if (GUILayout.Toggle(_mode == ExecuterMode.Static, "Static", EditorGlobalTools.Styles.LargeButtonRight))
             {
                 _mode = ExecuterMode.Static;
             }
@@ -179,7 +179,7 @@ namespace HT.Framework
             if (_isShowNamespace)
             {
                 _scrollNamespace = GUILayout.BeginScrollView(_scrollNamespace, "TextField", GUILayout.Height(150));
-                _namespace = EditorGUILayout.TextArea(_namespace, "Label");
+                _namespace = EditorGUILayout.TextArea(_namespace, EditorGlobalTools.Styles.Label);
                 GUILayout.EndScrollView();
             }
             #endregion
@@ -191,7 +191,7 @@ namespace HT.Framework
 
             if (_isShowAssemblies)
             {
-                GUILayout.BeginVertical("Box", GUILayout.Height(150));
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box, GUILayout.Height(150));
 
                 _scrollAssemblies = GUILayout.BeginScrollView(_scrollAssemblies);
                 for (int i = 0; i < _assemblies.Count; i++)
@@ -199,7 +199,7 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(i + ".", GUILayout.Width(25));
                     _assemblies[i] = EditorGUILayout.TextField(_assemblies[i]);
-                    if (GUILayout.Button("Browse", "Minibuttonleft", GUILayout.Width(50)))
+                    if (GUILayout.Button("Browse", EditorStyles.miniButtonLeft, GUILayout.Width(50)))
                     {
                         string initialPath = File.Exists(_assemblies[i]) ? Path.GetDirectoryName(_assemblies[i]) : _assembliesPath;
                         string path = EditorUtility.OpenFilePanel("Browse Assembly Path", initialPath, "*.dll");
@@ -209,7 +209,7 @@ namespace HT.Framework
                             GUI.FocusControl(null);
                         }
                     }
-                    if (GUILayout.Button("Delete", "Minibuttonright", GUILayout.Width(50)))
+                    if (GUILayout.Button("Delete", EditorStyles.miniButtonRight, GUILayout.Width(50)))
                     {
                         _assemblies.RemoveAt(i);
                         GUI.FocusControl(null);
@@ -218,7 +218,7 @@ namespace HT.Framework
                 }
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Add", "Minibutton", GUILayout.Width(50)))
+                if (GUILayout.Button("Add", EditorStyles.miniButton, GUILayout.Width(50)))
                 {
                     _assemblies.Add("");
                 }
@@ -237,12 +237,12 @@ namespace HT.Framework
             if (_isShowCode)
             {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Clear Code", "Minibuttonleft"))
+                if (GUILayout.Button("Clear Code", EditorStyles.miniButtonLeft))
                 {
                     _code = "";
                     GUI.FocusControl(null);
                 }
-                if (GUILayout.Button("Clear Console", "Minibuttonright"))
+                if (GUILayout.Button("Clear Console", EditorStyles.miniButtonRight))
                 {
                     Type logEntries = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
                     MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
@@ -253,7 +253,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 _scrollCode = GUILayout.BeginScrollView(_scrollCode, "TextField");
-                _code = EditorGUILayout.TextArea(_code, "Label");
+                _code = EditorGUILayout.TextArea(_code, EditorGlobalTools.Styles.Label);
                 GUILayout.EndScrollView();
             }
             #endregion
@@ -261,7 +261,7 @@ namespace HT.Framework
             #region Execute
             GUILayout.BeginHorizontal();
             GUI.enabled = _code != "";
-            if (GUILayout.Button("Execute", "LargeButton"))
+            if (GUILayout.Button("Execute", EditorGlobalTools.Styles.LargeButton))
             {
                 DynamicExecute();
             }
@@ -280,7 +280,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Target:", GUILayout.Width(60));
             GUIContent content = Target != null ? new GUIContent(EditorGUIUtility.ObjectContent(Target, Target.GetType())) : new GUIContent("<None>");
-            if (GUILayout.Button(content, "MiniPopup"))
+            if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] components = Entity.GetComponents<Component>();
@@ -304,7 +304,7 @@ namespace HT.Framework
             GUI.enabled = Target != null;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Method:", GUILayout.Width(60));
-            if (GUILayout.Button(_methodName, "MiniPopup"))
+            if (GUILayout.Button(_methodName, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 MethodInfo[] methods = Target.GetType().GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -328,7 +328,7 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
             
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             GUILayout.BeginHorizontal();
             GUILayout.Label("Parameters:");
             GUILayout.FlexibleSpace();
@@ -382,7 +382,7 @@ namespace HT.Framework
             #region Execute
             GUILayout.BeginHorizontal();
             GUI.enabled = Method != null;
-            if (GUILayout.Button("Execute", "LargeButton"))
+            if (GUILayout.Button("Execute", EditorGlobalTools.Styles.LargeButton))
             {
                 StaticExecute();
             }

@@ -38,7 +38,7 @@ namespace HT.Framework
             if (Target.Mode == ResourceLoadMode.Resource)
             {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Resources Folder View", "LargeButton"))
+                if (GUILayout.Button("Resources Folder View", EditorGlobalTools.Styles.LargeButton))
                 {
                     ResourcesFolderViewWindow window = EditorWindow.GetWindow<ResourcesFolderViewWindow>();
                     window.titleContent.text = "Resources Folder View";

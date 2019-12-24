@@ -17,7 +17,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Coroutiner Tracker", "LargeButton"))
+            if (GUILayout.Button("Coroutiner Tracker", EditorGlobalTools.Styles.LargeButton))
             {
                 CoroutinerTrackerWindow tracker = EditorWindow.GetWindow<CoroutinerTrackerWindow>();
                 tracker.titleContent.text = "Coroutiner Tracker";

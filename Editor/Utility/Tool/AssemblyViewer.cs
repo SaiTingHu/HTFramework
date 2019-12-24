@@ -53,7 +53,7 @@ namespace HT.Framework
             base.OnTitleGUI();
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("About", "Toolbarbutton"))
+            if (GUILayout.Button("About", EditorStyles.toolbarButton))
             {
                 Application.OpenURL("https://wanderer.blog.csdn.net/article/details/102971712");
             }
@@ -72,9 +72,9 @@ namespace HT.Framework
         }
         private void OnAssemblyGUI()
         {
-            GUILayout.BeginVertical("Helpbox", GUILayout.Width(position.width / 3 - 5));
+            GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(position.width / 3 - 5));
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Assembly", "PreLabel");
@@ -82,19 +82,19 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Tag:");
-            if (GUILayout.Button("UnityEngine", "Minibutton"))
+            if (GUILayout.Button("UnityEngine", EditorStyles.miniButton))
             {
                 _assemblyFilter = "UnityEngine";
             }
-            if (GUILayout.Button("UnityEditor", "Minibutton"))
+            if (GUILayout.Button("UnityEditor", EditorStyles.miniButton))
             {
                 _assemblyFilter = "UnityEditor";
             }
-            if (GUILayout.Button("Assembly-CSharp", "Minibutton"))
+            if (GUILayout.Button("Assembly-CSharp", EditorStyles.miniButton))
             {
                 _assemblyFilter = "Assembly-CSharp";
             }
-            if (GUILayout.Button("Assembly-CSharp-Editor", "Minibutton"))
+            if (GUILayout.Button("Assembly-CSharp-Editor", EditorStyles.miniButton))
             {
                 _assemblyFilter = "Assembly-CSharp-Editor";
             }
@@ -102,8 +102,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _assemblyFilter = EditorGUILayout.TextField("", _assemblyFilter, "SearchTextField");
-            if (GUILayout.Button("", _assemblyFilter != "" ? "SearchCancelButton" : "SearchCancelButtonEmpty"))
+            _assemblyFilter = EditorGUILayout.TextField("", _assemblyFilter, EditorGlobalTools.Styles.SearchTextField);
+            if (GUILayout.Button("", _assemblyFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
             {
                 _assemblyFilter = "";
                 GUI.FocusControl(null);
@@ -112,7 +112,7 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            _assemblyScroll = GUILayout.BeginScrollView(_assemblyScroll, "Box");
+            _assemblyScroll = GUILayout.BeginScrollView(_assemblyScroll, EditorGlobalTools.Styles.Box);
 
             for (int i = 0; i < _assemblies.Length; i++)
             {
@@ -121,7 +121,7 @@ namespace HT.Framework
                 {
                     GUI.color = _currentAssembly == _assemblies[i] ? Color.cyan : Color.white;
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(an.Name, "Toolbarbutton"))
+                    if (GUILayout.Button(an.Name, EditorStyles.toolbarButton))
                     {
                         _currentAssembly = _assemblies[i];
                         _types = _currentAssembly.GetTypes();
@@ -138,7 +138,7 @@ namespace HT.Framework
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Version:" + an.Version);
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Open", "Minibutton"))
+                        if (GUILayout.Button("Open", EditorStyles.miniButton))
                         {
                             string args = "/Select, " + _currentAssembly.Location;
                             ProcessStartInfo psi = new ProcessStartInfo("Explorer.exe", args);
@@ -156,9 +156,9 @@ namespace HT.Framework
         }
         private void OnTypeGUI()
         {
-            GUILayout.BeginVertical("Helpbox", GUILayout.Width(position.width / 3 - 5));
+            GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(position.width / 3 - 5));
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Type", "PreLabel");
@@ -170,8 +170,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _typeFilter = EditorGUILayout.TextField("", _typeFilter, "SearchTextField");
-            if (GUILayout.Button("", _typeFilter != "" ? "SearchCancelButton" : "SearchCancelButtonEmpty"))
+            _typeFilter = EditorGUILayout.TextField("", _typeFilter, EditorGlobalTools.Styles.SearchTextField);
+            if (GUILayout.Button("", _typeFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
             {
                 _typeFilter = "";
                 GUI.FocusControl(null);
@@ -180,7 +180,7 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            _typeScroll = GUILayout.BeginScrollView(_typeScroll, "Box");
+            _typeScroll = GUILayout.BeginScrollView(_typeScroll, EditorGlobalTools.Styles.Box);
 
             if (_currentAssembly != null)
             {
@@ -195,7 +195,7 @@ namespace HT.Framework
 
                         GUI.color = _currentType == _types[i] ? Color.cyan : Color.white;
                         GUILayout.BeginHorizontal();
-                        if (GUILayout.Button(_types[i].Name, "Toolbarbutton"))
+                        if (GUILayout.Button(_types[i].Name, EditorStyles.toolbarButton))
                         {
                             _currentType = _types[i];
                             _fields = _currentType.GetFields(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -229,9 +229,9 @@ namespace HT.Framework
         }
         private void OnMemberGUI()
         {
-            GUILayout.BeginVertical("Helpbox", GUILayout.Width(position.width / 3 - 5));
+            GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(position.width / 3 - 5));
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Member", "PreLabel");
@@ -246,8 +246,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _memberFilter = EditorGUILayout.TextField("", _memberFilter, "SearchTextField");
-            if (GUILayout.Button("", _memberFilter != "" ? "SearchCancelButton" : "SearchCancelButtonEmpty"))
+            _memberFilter = EditorGUILayout.TextField("", _memberFilter, EditorGlobalTools.Styles.SearchTextField);
+            if (GUILayout.Button("", _memberFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
             {
                 _memberFilter = "";
                 GUI.FocusControl(null);
@@ -256,7 +256,7 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            _memberScroll = GUILayout.BeginScrollView(_memberScroll, "Box");
+            _memberScroll = GUILayout.BeginScrollView(_memberScroll, EditorGlobalTools.Styles.Box);
 
             if (_currentType != null)
             {
@@ -273,7 +273,7 @@ namespace HT.Framework
 
                             GUI.color = _currentField == _fields[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Field]  " + _fields[i].Name, "Toolbarbutton"))
+                            if (GUILayout.Button("[Field]  " + _fields[i].Name, EditorStyles.toolbarButton))
                             {
                                 _currentField = _fields[i];
                                 _currentMethod = null;
@@ -305,7 +305,7 @@ namespace HT.Framework
 
                             GUI.color = _currentMethod == _methods[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Method]  " + _methods[i].Name, "Toolbarbutton"))
+                            if (GUILayout.Button("[Method]  " + _methods[i].Name, EditorStyles.toolbarButton))
                             {
                                 _currentMethod = _methods[i];
                                 _parameterInfos = _currentMethod.GetParameters();
@@ -338,7 +338,7 @@ namespace HT.Framework
 
                             GUI.color = _currentProperty == _propertys[i] ? Color.cyan : Color.white;
                             GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Property]  " + _propertys[i].Name, "Toolbarbutton"))
+                            if (GUILayout.Button("[Property]  " + _propertys[i].Name, EditorStyles.toolbarButton))
                             {
                                 _currentProperty = _propertys[i];
                                 _currentMethod = null;

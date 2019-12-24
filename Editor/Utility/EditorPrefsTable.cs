@@ -172,40 +172,7 @@ namespace HT.Framework
             }
         }
         #endregion
-
-        #region AssetBundleEditor
-        /// <summary>
-        /// AssetBundleEditor打包路径
-        /// </summary>
-        public static string AssetBundleEditor_BuildPath
-        {
-            get
-            {
-                return Application.productName + ".HT.Framework.AssetBundleEditor.BuildPath";
-            }
-        }
-        /// <summary>
-        /// AssetBundleEditor打包平台
-        /// </summary>
-        public static string AssetBundleEditor_BuildTarget
-        {
-            get
-            {
-                return Application.productName + ".HT.Framework.AssetBundleEditor.BuildTarget";
-            }
-        }
-        /// <summary>
-        /// AssetBundleEditor打包变体设置
-        /// </summary>
-        public static string AssetBundleEditor_Variant
-        {
-            get
-            {
-                return Application.productName + ".HT.Framework.AssetBundleEditor.Variant";
-            }
-        }
-        #endregion
-
+        
         #region Main
         /// <summary>
         /// ScriptingDefine历史记录

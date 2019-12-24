@@ -154,6 +154,25 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 是否存在流程
+        /// </summary>
+        /// <typeparam name="T">流程类</typeparam>
+        /// <returns>是否存在</returns>
+        public bool IsExistProcedure<T>() where T : ProcedureBase
+        {
+            return IsExistProcedure(typeof(T));
+        }
+        /// <summary>
+        /// 是否存在流程
+        /// </summary>
+        /// <param name="type">流程类</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistProcedure(Type type)
+        {
+            return _procedureInstances.ContainsKey(type);
+        }
+
+        /// <summary>
         /// 切换流程
         /// </summary>
         /// <typeparam name="T">目标流程</typeparam>

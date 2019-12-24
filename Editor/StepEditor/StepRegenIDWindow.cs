@@ -62,7 +62,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Regen", "ButtonLeft"))
+            if (GUILayout.Button("Regen", EditorGlobalTools.Styles.ButtonLeft))
             {
                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure regen all step id？", "Yes", "No"))
                 {
@@ -77,7 +77,7 @@ namespace HT.Framework
                     Close();
                 }
             }
-            if (GUILayout.Button("Cancel", "ButtonRight"))
+            if (GUILayout.Button("Cancel", EditorGlobalTools.Styles.ButtonRight))
             {
                 EditorUtility.SetDirty(_contentAsset);
                 Close();

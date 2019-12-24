@@ -44,7 +44,7 @@ namespace HT.Framework
             IntField(Target.ClientPort, out Target.ClientPort, "Client Port");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Enabled Channels:");
@@ -56,7 +56,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label((i + 1) + "." + Target.ChannelTypes[i]);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Delete", "minibutton"))
+                if (GUILayout.Button("Delete", EditorStyles.miniButton))
                 {
                     Undo.RecordObject(target, "Delete Channel");
                     Target.ChannelTypes.RemoveAt(i);
@@ -66,7 +66,7 @@ namespace HT.Framework
             }
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add Channel", "MiniPopup"))
+            if (GUILayout.Button("Add Channel", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();

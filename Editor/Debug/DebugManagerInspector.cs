@@ -26,7 +26,7 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Debugger", GUILayout.Width(100));
-                if (GUILayout.Button(Target.DebuggerType, "MiniPopup"))
+                if (GUILayout.Button(Target.DebuggerType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();

@@ -27,7 +27,7 @@ namespace HT.Framework
         {
             base.OnTitleGUI();
 
-            if (GUILayout.Button(_content.Name, "Toolbarpopup"))
+            if (GUILayout.Button(_content.Name, EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < _contentAsset.Content.Count; i++)
@@ -40,7 +40,7 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
-            if (GUILayout.Button(_content.Helper, "Toolbarbutton"))
+            if (GUILayout.Button(_content.Helper, EditorStyles.toolbarButton))
             {
                 if (_content.Helper != "<None>")
                 {
@@ -54,20 +54,20 @@ namespace HT.Framework
         {
             base.OnBodyGUI();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _scroll = GUILayout.BeginScrollView(_scroll);
 
             for (int i = 0; i < _content.Parameters.Count; i++)
             {
                 StepParameter stepParameter = _content.Parameters[i];
 
-                GUILayout.BeginVertical("Helpbox");
+                GUILayout.BeginVertical(EditorStyles.helpBox);
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Type:", GUILayout.Width(40));
                 stepParameter.Type = (StepParameter.ParameterType)EditorGUILayout.EnumPopup(stepParameter.Type, GUILayout.Width(100));
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("▲", "MiniButtonleft", GUILayout.Width(20)))
+                if (GUILayout.Button("▲", EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     if (i > 0)
                     {
@@ -76,7 +76,7 @@ namespace HT.Framework
                         continue;
                     }
                 }
-                if (GUILayout.Button("▼", "MiniButtonmid", GUILayout.Width(20)))
+                if (GUILayout.Button("▼", EditorStyles.miniButtonMid, GUILayout.Width(20)))
                 {
                     if (i < _content.Parameters.Count - 1)
                     {
@@ -86,7 +86,7 @@ namespace HT.Framework
                     }
                 }
                 GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Delete", "Minibuttonright"))
+                if (GUILayout.Button("Delete", EditorStyles.miniButtonRight))
                 {
                     _content.Parameters.RemoveAt(i);
                     continue;
@@ -206,7 +206,7 @@ namespace HT.Framework
                     GUILayout.Label("GUID:", GUILayout.Width(40));
                     EditorGUILayout.TextField(_content.Parameters[i].GameObjectGUID);
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Clear", "Minibutton", GUILayout.Width(40)))
+                    if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         _content.Parameters[i].GameObjectValue = null;
                         _content.Parameters[i].GameObjectGUID = "<None>";
@@ -223,11 +223,11 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", "ButtonLeft"))
+            if (GUILayout.Button("Add", EditorGlobalTools.Styles.ButtonLeft))
             {
                 _content.Parameters.Add(new StepParameter());
             }
-            if (GUILayout.Button("Clear", "ButtonRight"))
+            if (GUILayout.Button("Clear", EditorGlobalTools.Styles.ButtonRight))
             {
                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete all parameter？", "Yes", "No"))
                 {

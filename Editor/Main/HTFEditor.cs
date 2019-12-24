@@ -70,7 +70,7 @@ namespace HT.Framework
                 if (_GithubURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_GithubURL.URL);
-                    if (GUILayout.Button(_GithubIcon, "IconButton", GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(_GithubIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         Application.OpenURL(_GithubURL.URL);
                     }
@@ -80,7 +80,7 @@ namespace HT.Framework
                 if (_CSDNURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_CSDNURL.URL);
-                    if (GUILayout.Button(_CSDNIcon, "IconButton", GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(_CSDNIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         Application.OpenURL(_CSDNURL.URL);
                     }
@@ -102,10 +102,10 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.cyan;
                 GUI.color = Color.white;
 
-                GUILayout.BeginVertical("Helpbox");
+                GUILayout.BeginVertical(EditorStyles.helpBox);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Runtime Data", "BoldLabel");
+                GUILayout.Label("Runtime Data", EditorStyles.boldLabel);
                 GUILayout.EndHorizontal();
 
                 OnInspectorRuntimeGUI();

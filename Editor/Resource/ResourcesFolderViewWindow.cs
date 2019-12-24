@@ -28,7 +28,7 @@ namespace HT.Framework
 
             for (int i = 0; i < _resourcesFolders.Count; i++)
             {
-                GUILayout.BeginVertical("Box");
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
                 _resourcesFolders[i].IsExpanding = EditorGUILayout.Foldout(_resourcesFolders[i].IsExpanding, string.Format("{0}  [{1}]", _resourcesFolders[i].AssetName, _resourcesFolders[i].Resources.Count), true);
@@ -51,7 +51,7 @@ namespace HT.Framework
                         if (resource.GetType() == typeof(GameObject))
                         {
                             GUILayout.FlexibleSpace();
-                            if (GUILayout.Button("Load to Scene", "Minibutton"))
+                            if (GUILayout.Button("Load to Scene", EditorStyles.miniButton))
                             {
                                 GameObject obj = Instantiate(resource) as GameObject;
                                 Selection.activeGameObject = obj;

@@ -40,15 +40,15 @@ namespace HT.Framework
         {
             base.OnTitleGUI();
 
-            GUILayout.Label("No.", "Toolbarbutton", GUILayout.Width(_firstLineBlank));
-            GUILayout.Label("ID", "Toolbarbutton", GUILayout.Width(_IDWidth));
-            GUILayout.Label("State", "Toolbarbutton", GUILayout.Width(_stateWidth));
-            GUILayout.Label("Creation Time", "Toolbarbutton", GUILayout.Width(_creationTimeWidth));
-            GUILayout.Label("Stopping Time", "Toolbarbutton", GUILayout.Width(_stoppingTimeWidth));
-            GUILayout.Label("Elapsed Time", "Toolbarbutton", GUILayout.Width(_elapsedTimeWidth));
-            GUILayout.Label("Rerun Number", "Toolbarbutton", GUILayout.Width(_rerunNumberWidth));
+            GUILayout.Label("No.", EditorStyles.toolbarButton, GUILayout.Width(_firstLineBlank));
+            GUILayout.Label("ID", EditorStyles.toolbarButton, GUILayout.Width(_IDWidth));
+            GUILayout.Label("State", EditorStyles.toolbarButton, GUILayout.Width(_stateWidth));
+            GUILayout.Label("Creation Time", EditorStyles.toolbarButton, GUILayout.Width(_creationTimeWidth));
+            GUILayout.Label("Stopping Time", EditorStyles.toolbarButton, GUILayout.Width(_stoppingTimeWidth));
+            GUILayout.Label("Elapsed Time", EditorStyles.toolbarButton, GUILayout.Width(_elapsedTimeWidth));
+            GUILayout.Label("Rerun Number", EditorStyles.toolbarButton, GUILayout.Width(_rerunNumberWidth));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Clear Not Running", "Toolbarbutton", GUILayout.Width(120)))
+            if (GUILayout.Button("Clear Not Running", EditorStyles.toolbarButton, GUILayout.Width(120)))
             {
                 _coroutiner.ClearNotRunning();
             }
@@ -65,7 +65,7 @@ namespace HT.Framework
         private void ContentGUI()
         {
             int index1 = 1;
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _scrollContent = GUILayout.BeginScrollView(_scrollContent);
             foreach (KeyValuePair<Delegate, List<Coroutiner.CoroutineEnumerator>> executor in _coroutiner.Warehouse)
             {
@@ -104,12 +104,12 @@ namespace HT.Framework
                         }
                         GUILayout.Label(enumerator.RerunNumber.ToString(), GUILayout.Width(_rerunNumberWidth));
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Rerun", "Minibuttonleft", GUILayout.Width(50)))
+                        if (GUILayout.Button("Rerun", EditorStyles.miniButtonLeft, GUILayout.Width(50)))
                         {
                             enumerator.RerunInEditor();
                         }
                         GUI.enabled = enumerator.State == Coroutiner.CoroutineState.Running;
-                        if (GUILayout.Button("Stop", "Minibuttonright", GUILayout.Width(50)))
+                        if (GUILayout.Button("Stop", EditorStyles.miniButtonRight, GUILayout.Width(50)))
                         {
                             enumerator.Stop();
                         }
@@ -137,7 +137,7 @@ namespace HT.Framework
         {
             if (_currentEnumerator != null)
             {
-                GUILayout.BeginVertical("Box", GUILayout.Height(_stackTraceHeight));
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box, GUILayout.Height(_stackTraceHeight));
                 _scrollStackTrace = GUILayout.BeginScrollView(_scrollStackTrace);
                 
                 EditorGUILayout.TextArea(_currentStackTrace);

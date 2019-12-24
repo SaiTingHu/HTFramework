@@ -1054,5 +1054,26 @@ namespace HT.Framework
             }
         }
         #endregion
+
+        #region Styles
+        public static class Styles
+        {
+            public static readonly string Box = "Box";
+            public static readonly string IconButton = "IconButton";
+            public static readonly string LargeButton = "LargeButton";
+            public static readonly string LargeButtonLeft = "LargeButtonLeft";
+            public static readonly string LargeButtonRight = "LargeButtonRight";
+            public static readonly string ButtonLeft = "ButtonLeft";
+            public static readonly string ButtonMid = "ButtonMid";
+            public static readonly string ButtonRight = "ButtonRight";
+            public static readonly string MiniPopup = "MiniPopup";
+            public static readonly string OLPlus = "OL Plus";
+            public static readonly string OLMinus = "OL Minus";
+            public static readonly string Label = "Label";
+            public static readonly string SearchTextField = "SearchTextField";
+            public static readonly string SearchCancelButton = "SearchCancelButton";
+            public static readonly string SearchCancelButtonEmpty = "SearchCancelButtonEmpty";
+        }
+        #endregion
     }
 }

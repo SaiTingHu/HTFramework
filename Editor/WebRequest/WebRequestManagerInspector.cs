@@ -46,7 +46,7 @@ namespace HT.Framework
 
             foreach (var inter in _interfaces)
             {
-                GUILayout.BeginVertical("Box");
+                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Name", GUILayout.Width(40));

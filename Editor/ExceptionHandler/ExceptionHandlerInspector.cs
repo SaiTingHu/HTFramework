@@ -32,7 +32,7 @@ namespace HT.Framework
 
                 if (Target.IsEnableFeedback)
                 {
-                    GUILayout.BeginVertical("Box");
+                    GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Feedback Program Path");
@@ -53,7 +53,7 @@ namespace HT.Framework
 
                 if (Target.IsEnableMailReport)
                 {
-                    GUILayout.BeginVertical("Box");
+                    GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                     GUILayout.BeginHorizontal();
                     TextField(Target.Host, out Target.Host, "Host");

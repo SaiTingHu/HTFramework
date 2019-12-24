@@ -116,7 +116,7 @@ namespace HT.Framework
 
                 StepContentRemovableGUI();
 
-                GUILayout.BeginHorizontal("Toolbar");
+                GUILayout.BeginHorizontal(EditorStyles.toolbar);
                 TitleGUI();
                 GUILayout.EndHorizontal();
 
@@ -140,9 +140,9 @@ namespace HT.Framework
         /// </summary>
         private void MinimizeGUI()
         {
-            GUILayout.BeginHorizontal("Toolbar");
+            GUILayout.BeginHorizontal(EditorStyles.toolbar);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Maximize", "Toolbarbutton"))
+            if (GUILayout.Button("Maximize", EditorStyles.toolbarButton))
             {
                 MaximizeWindow();
             }
@@ -167,12 +167,12 @@ namespace HT.Framework
         /// </summary>
         private void TitleGUI()
         {
-            if (GUILayout.Button(_contentAsset.name, "Toolbarbutton"))
+            if (GUILayout.Button(_contentAsset.name, EditorStyles.toolbarButton))
             {
                 Selection.activeObject = _contentAsset;
                 EditorGUIUtility.PingObject(_contentAsset);
             }
-            if (GUILayout.Button("Clear Unused GUID", "Toolbarbutton"))
+            if (GUILayout.Button("Clear Unused GUID", EditorStyles.toolbarButton))
             {
                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure clear unused GUID [StepTarget] in the current opened scene？", "Yes", "No"))
                 {
@@ -209,12 +209,12 @@ namespace HT.Framework
                     }
                 }
             }
-            if (GUILayout.Button("Regen Step ID", "Toolbarbutton"))
+            if (GUILayout.Button("Regen Step ID", EditorStyles.toolbarButton))
             {
                 StepRegenIDWindow.ShowWindow(this, _contentAsset);
             }
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Setting", "ToolbarPopup"))
+            if (GUILayout.Button("Setting", EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Style/StepList Background/Dark"), _stepListBGStyle == "PreBackground", () =>
@@ -229,7 +229,7 @@ namespace HT.Framework
                 });
                 gm.ShowAsContext();
             }
-            if (GUILayout.Button("About", "ToolbarPopup"))
+            if (GUILayout.Button("About", EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Browse Ease Type"), false, () =>
@@ -238,7 +238,7 @@ namespace HT.Framework
                 });
                 gm.ShowAsContext();
             }
-            if (GUILayout.Button("Minimize", "Toolbarbutton"))
+            if (GUILayout.Button("Minimize", EditorStyles.toolbarPopup))
             {
                 MinimizeWindow();
             }
@@ -252,7 +252,7 @@ namespace HT.Framework
 
             #region 筛选步骤
             GUILayout.BeginHorizontal("Icon.OutlineBorder");
-            GUILayout.Label("Step Content List", "BoldLabel");
+            GUILayout.Label("Step Content List", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -266,8 +266,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _stepListFilter = EditorGUILayout.TextField("", _stepListFilter, "SearchTextField");
-            if (GUILayout.Button("", _stepListFilter != "" ? "SearchCancelButton" : "SearchCancelButtonEmpty"))
+            _stepListFilter = EditorGUILayout.TextField("", _stepListFilter, EditorGlobalTools.Styles.SearchTextField);
+            if (GUILayout.Button("", _stepListFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
             {
                 _stepListFilter = "";
                 GUI.FocusControl(null);
@@ -291,7 +291,7 @@ namespace HT.Framework
                     }
 
                     GUILayout.BeginHorizontal();
-                    string style = _currentStep == i ? "InsertionMarker" : "Label";
+                    string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
                     content.text = i + "." + StepShowName(_contentAsset.Content[i]);
                     content.tooltip = _contentAsset.Content[i].Prompt;
@@ -322,7 +322,7 @@ namespace HT.Framework
                 GUI.enabled = (_currentStep != -1);
                 GUILayout.Label("Move To: ");
                 _moveToIndex = EditorGUILayout.IntField(_moveToIndex);
-                if (GUILayout.Button("Sure", "MiniButtonLeft"))
+                if (GUILayout.Button("Sure", EditorStyles.miniButtonLeft))
                 {
                     if (_moveToIndex >= 0 && _moveToIndex <= _contentAsset.Content.Count - 1)
                     {
@@ -336,7 +336,7 @@ namespace HT.Framework
                     }
                     _isMoveTo = false;
                 }
-                if (GUILayout.Button("Cancel", "MiniButtonRight"))
+                if (GUILayout.Button("Cancel", EditorStyles.miniButtonRight))
                 {
                     _isMoveTo = false;
                 }
@@ -347,12 +347,12 @@ namespace HT.Framework
 
             #region 添加、移动、克隆、删除步骤
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", "ButtonLeft"))
+            if (GUILayout.Button("Add", EditorGlobalTools.Styles.ButtonLeft))
             {
                 AddStepContent();
             }
             GUI.enabled = (_currentStep != -1);
-            if (GUILayout.Button("Move Up", "ButtonMid"))
+            if (GUILayout.Button("Move Up", EditorGlobalTools.Styles.ButtonMid))
             {
                 if (_currentStep > 0)
                 {
@@ -361,7 +361,7 @@ namespace HT.Framework
                     _contentAsset.Content.Insert(_currentStep, _currentStepObj);
                 }
             }
-            if (GUILayout.Button("Move Down", "ButtonMid"))
+            if (GUILayout.Button("Move Down", EditorGlobalTools.Styles.ButtonMid))
             {
                 if (_currentStep < _contentAsset.Content.Count - 1)
                 {
@@ -370,11 +370,11 @@ namespace HT.Framework
                     _contentAsset.Content.Insert(_currentStep, _currentStepObj);
                 }
             }
-            if (GUILayout.Button("Move To", "ButtonMid"))
+            if (GUILayout.Button("Move To", EditorGlobalTools.Styles.ButtonMid))
             {
                 _isMoveTo = !_isMoveTo;
             }
-            if (GUILayout.Button("Clone", "ButtonMid"))
+            if (GUILayout.Button("Clone", EditorGlobalTools.Styles.ButtonMid))
             {
                 StepContent content = _currentStepObj.Clone();
                 content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
@@ -384,7 +384,7 @@ namespace HT.Framework
                 SelectStepOperation(-1);
             }
             GUI.backgroundColor = Color.red;
-            if (GUILayout.Button("Delete", "ButtonRight"))
+            if (GUILayout.Button("Delete", EditorGlobalTools.Styles.ButtonRight))
             {
                 DeleteStepContent(_currentStep);
             }
@@ -414,7 +414,7 @@ namespace HT.Framework
             if (_currentStep == -1)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Please select a Step Content!", "BoldLabel");
+                GUILayout.Label("Please select a Step Content!", EditorStyles.boldLabel);
                 GUILayout.EndHorizontal();
             }
             else
@@ -422,10 +422,10 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
 
                 #region 步骤的属性
-                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(420));
+                GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(420));
 
                 GUILayout.BeginHorizontal("Icon.OutlineBorder");
-                GUILayout.Label("Step Content Properties", "BoldLabel");
+                GUILayout.Label("Step Content Properties", EditorStyles.boldLabel);
                 GUILayout.EndHorizontal();
 
                 GUILayout.Space(5);
@@ -494,7 +494,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("GUID: " + _currentStepObj.TargetGUID, GUILayout.Width(140));
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Clear", "Minibutton", GUILayout.Width(40)))
+                if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
                 {
                     contentObj = _currentStepObj.Target = null;
                     _currentStepObj.TargetGUID = "<None>";
@@ -548,7 +548,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Operation: " + _currentStepObj.Operations.Count, GUILayout.Width(130));
-                if (GUILayout.Button("Find", "MiniPopup", GUILayout.Width(50)))
+                if (GUILayout.Button("Find", EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(50)))
                 {
                     GUI.FocusControl(null);
                     GenericMenu gm = new GenericMenu();
@@ -594,7 +594,7 @@ namespace HT.Framework
                 GUILayout.Label("Best View:", GUILayout.Width(80));
                 GUILayout.FlexibleSpace();
                 GUI.enabled = _mr;
-                if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(40)))
+                if (GUILayout.Button("Get", EditorStyles.miniButton, GUILayout.Width(40)))
                 {
                     _currentStepObj.BestView = new Vector3(_mr.X, _mr.Y, _mr.Distance);
                 }
@@ -609,7 +609,7 @@ namespace HT.Framework
                 GUILayout.Label("View Offset:", GUILayout.Width(80));
                 GUILayout.FlexibleSpace();
                 GUI.enabled = _ct && _currentStepObj.Target;
-                if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(40)))
+                if (GUILayout.Button("Get", EditorStyles.miniButton, GUILayout.Width(40)))
                 {
                     _currentStepObj.ViewOffset = _ct.transform.position - _currentStepObj.Target.transform.position;
                 }
@@ -624,7 +624,7 @@ namespace HT.Framework
                 GUILayout.Label("Best Pos:", GUILayout.Width(80));
                 GUILayout.FlexibleSpace();
                 GUI.enabled = _player && _currentStepObj.Target;
-                if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(40)))
+                if (GUILayout.Button("Get", EditorStyles.miniButton, GUILayout.Width(40)))
                 {
                     _currentStepObj.BestPos = _player.transform.position;
                 }
@@ -637,7 +637,7 @@ namespace HT.Framework
                 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Helper:", GUILayout.Width(50));
-                if (GUILayout.Button(_currentStepObj.Helper, "MiniPopup", GUILayout.Width(100)))
+                if (GUILayout.Button(_currentStepObj.Helper, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(100)))
                 {
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                     GenericMenu gm = new GenericMenu();
@@ -690,7 +690,7 @@ namespace HT.Framework
                     gm.ShowAsContext();
                 }
                 GUI.enabled = _currentStepObj.Helper != "<None>";
-                if (GUILayout.Button("Edit", "MiniButton", GUILayout.Width(30)))
+                if (GUILayout.Button("Edit", EditorStyles.miniButton, GUILayout.Width(30)))
                 {
                     OpenHelperScript(_currentStepObj.Helper);
                 }
@@ -699,7 +699,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Parameter:", GUILayout.Width(80));
-                if (GUILayout.Button("Edit Parameter", "MiniButton"))
+                if (GUILayout.Button("Edit Parameter", EditorStyles.miniButton))
                 {
                     StepParameterWindow.ShowWindow(this, _contentAsset, _currentStepObj);
                 }
@@ -715,10 +715,10 @@ namespace HT.Framework
                 #endregion
 
                 #region 摄像机组件
-                GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(120));
+                GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(120));
 
                 GUILayout.BeginHorizontal("Icon.OutlineBorder");
-                GUILayout.Label("Camera Control", "BoldLabel");
+                GUILayout.Label("Camera Control", EditorStyles.boldLabel);
                 GUILayout.EndHorizontal();
 
                 GUILayout.Space(5);
@@ -769,10 +769,10 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GUILayout.BeginVertical("HelpBox", GUILayout.Width(205), GUILayout.Height(320));
+                        GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(320));
 
                         GUILayout.BeginHorizontal("Icon.OutlineBorder");
-                        GUILayout.Label("Step Operation Properties", "BoldLabel");
+                        GUILayout.Label("Step Operation Properties", EditorStyles.boldLabel);
                         GUILayout.EndHorizontal();
 
                         GUILayout.Space(5);
@@ -838,7 +838,7 @@ namespace HT.Framework
                         GUI.color = Color.white;
                         GUILayout.FlexibleSpace();
                         GUI.enabled = _currentOperationObj.Target;
-                        if (GUILayout.Button("Clone", "Minibutton", GUILayout.Width(40)))
+                        if (GUILayout.Button("Clone", EditorStyles.miniButton, GUILayout.Width(40)))
                         {
                             GameObject clone = Instantiate(_currentOperationObj.Target, _currentOperationObj.Target.transform.parent);
                             clone.transform.localPosition = _currentOperationObj.Target.transform.localPosition;
@@ -855,7 +855,7 @@ namespace HT.Framework
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("GUID: " + _currentOperationObj.TargetGUID, GUILayout.Width(140));
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Clear", "Minibutton", GUILayout.Width(40)))
+                        if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
                         {
                             operationObj = _currentOperationObj.Target = null;
                             _currentOperationObj.TargetGUID = "<None>";

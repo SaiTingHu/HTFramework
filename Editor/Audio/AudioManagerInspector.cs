@@ -93,19 +93,19 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 GUI.enabled = _backgroundAudio.clip;
-                if (GUILayout.Button("Play", "minibuttonleft"))
+                if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
                     Main.m_Audio.PlayBackgroundMusic(_backgroundAudio.clip);
                 }
-                if (GUILayout.Button("Pause", "minibuttonmid"))
+                if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
                     Main.m_Audio.PauseBackgroundMusic();
                 }
-                if (GUILayout.Button("UnPause", "minibuttonmid"))
+                if (GUILayout.Button("UnPause", EditorStyles.miniButtonMid))
                 {
                     Main.m_Audio.UnPauseBackgroundMusic();
                 }
-                if (GUILayout.Button("Stop", "minibuttonright"))
+                if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
                 {
                     Main.m_Audio.StopBackgroundMusic();
                 }
@@ -150,19 +150,19 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 GUI.enabled = _singleAudio.clip;
-                if (GUILayout.Button("Play", "minibuttonleft"))
+                if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
                     Main.m_Audio.PlaySingleSound(_singleAudio.clip);
                 }
-                if (GUILayout.Button("Pause", "minibuttonmid"))
+                if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
                     Main.m_Audio.PauseSingleSound();
                 }
-                if (GUILayout.Button("UnPause", "minibuttonmid"))
+                if (GUILayout.Button("UnPause", EditorStyles.miniButtonMid))
                 {
                     Main.m_Audio.UnPauseSingleSound();
                 }
-                if (GUILayout.Button("Stop", "minibuttonright"))
+                if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
                 {
                     Main.m_Audio.StopSingleSound();
                 }
@@ -206,11 +206,11 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                if (GUILayout.Button("Clear", "minibuttonleft"))
+                if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
                 {
                     Main.m_Audio.ClearIdleMultipleAudioSource();
                 }
-                if (GUILayout.Button("Stop All", "minibuttonright"))
+                if (GUILayout.Button("Stop All", EditorStyles.miniButtonRight))
                 {
                     Main.m_Audio.StopAllMultipleSound();
                 }
@@ -267,11 +267,11 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                if (GUILayout.Button("Clear", "minibuttonleft"))
+                if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
                 {
                     Main.m_Audio.ClearIdleWorldAudioSource();
                 }
-                if (GUILayout.Button("Stop All", "minibuttonright"))
+                if (GUILayout.Button("Stop All", EditorStyles.miniButtonRight))
                 {
                     Main.m_Audio.StopAllWorldSound();
                 }

@@ -70,7 +70,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUI.color = Target.Data == "<None>" ? Color.gray : Color.white;
             GUILayout.Label("Data", GUILayout.Width(60));
-            if (GUILayout.Button(Target.Data, "MiniPopup"))
+            if (GUILayout.Button(Target.Data, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("<None>"), Target.Data == "<None>", () =>
@@ -104,7 +104,7 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.StateNames.Count > 0;
-            if (GUILayout.Button("Set Default", "MiniPopup"))
+            if (GUILayout.Button("Set Default", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < Target.StateNames.Count; i++)
@@ -129,7 +129,7 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.StateNames.Count > 0;
-            if (GUILayout.Button("Set Final", "MiniPopup"))
+            if (GUILayout.Button("Set Final", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < Target.StateNames.Count; i++)
@@ -153,7 +153,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(string.Format("{0}.{1}", i + 1, Target.StateNames[i]));
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Edit", "minibuttonleft"))
+                if (GUILayout.Button("Edit", EditorStyles.miniButtonLeft))
                 {
                     string[] names = Target.States[i].Split('.');
                     if (_stateTypes.ContainsKey(names[names.Length - 1]))
@@ -169,7 +169,7 @@ namespace HT.Framework
                         GlobalTools.LogError("没有找到 " + Target.States[i] + " 脚本文件！");
                     }
                 }
-                if (GUILayout.Button("Delete", "minibuttonright"))
+                if (GUILayout.Button("Delete", EditorStyles.miniButtonRight))
                 {
                     Undo.RecordObject(target, "Delete FSM State");
 
@@ -204,7 +204,7 @@ namespace HT.Framework
             }
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add State", "MiniPopup"))
+            if (GUILayout.Button("Add State", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -271,7 +271,7 @@ namespace HT.Framework
                 GUILayout.Label(state.Key);
                 GUILayout.FlexibleSpace();
                 GUI.enabled = _currentStateName != state.Key;
-                if (GUILayout.Button("Switch", "Minibutton"))
+                if (GUILayout.Button("Switch", EditorStyles.miniButton))
                 {
                     Target.SwitchState(state.Value);
 
@@ -283,14 +283,14 @@ namespace HT.Framework
             }
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Renewal", "minibuttonleft"))
+            if (GUILayout.Button("Renewal", EditorStyles.miniButtonLeft))
             {
                 Target.Renewal();
 
                 FiniteStateNameAttribute nameAttribute = Target.CurrentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
                 _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
             }
-            if (GUILayout.Button("Final", "minibuttonright"))
+            if (GUILayout.Button("Final", EditorStyles.miniButtonRight))
             {
                 Target.Final();
 

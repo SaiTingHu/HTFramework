@@ -44,19 +44,19 @@ namespace HT.Framework
             Toggle(Target.IsEnableWorldUI, out Target.IsEnableWorldUI, "Is Enable World UI");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Define UI", "BoldLabel");
+            GUILayout.Label("Define UI", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < Target.DefineUINames.Count; i++)
             {
-                GUILayout.BeginVertical("HelpBox");
+                GUILayout.BeginVertical(EditorStyles.helpBox);
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Type", GUILayout.Width(40));
-                if (GUILayout.Button(Target.DefineUINames[i], "MiniPopup"))
+                if (GUILayout.Button(Target.DefineUINames[i], EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -84,7 +84,7 @@ namespace HT.Framework
                     gm.ShowAsContext();
                 }
                 GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
+                if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
                 {
                     Undo.RecordObject(target, "Delete Define UI");
                     Target.DefineUINames.RemoveAt(i);
@@ -110,7 +110,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("New", "Minibutton"))
+            if (GUILayout.Button("New", EditorStyles.miniButton))
             {
                 Undo.RecordObject(target, "New Define UI");
                 Target.DefineUINames.Add("<None>");
@@ -149,7 +149,7 @@ namespace HT.Framework
                     {
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !ui.Value.IsOpened;
-                        if (GUILayout.Button("Open", "minibuttonleft", GUILayout.Width(45)))
+                        if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
@@ -161,7 +161,7 @@ namespace HT.Framework
                             }
                         }
                         GUI.enabled = ui.Value.IsOpened;
-                        if (GUILayout.Button("Close", "minibuttonright", GUILayout.Width(45)))
+                        if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
                         {
                             Main.m_UI.CloseUI(ui.Key);
                         }
@@ -194,7 +194,7 @@ namespace HT.Framework
                     {
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !ui.Value.IsOpened;
-                        if (GUILayout.Button("Open", "minibuttonleft", GUILayout.Width(45)))
+                        if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
@@ -206,7 +206,7 @@ namespace HT.Framework
                             }
                         }
                         GUI.enabled = ui.Value.IsOpened;
-                        if (GUILayout.Button("Close", "minibuttonright", GUILayout.Width(45)))
+                        if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
                         {
                             Main.m_UI.CloseUI(ui.Key);
                         }

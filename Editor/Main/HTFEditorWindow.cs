@@ -20,7 +20,7 @@ namespace HT.Framework
         {
             if (IsEnableTitleGUI)
             {
-                GUILayout.BeginHorizontal("Toolbar");
+                GUILayout.BeginHorizontal(EditorStyles.toolbar);
                 OnTitleGUI();
                 GUILayout.EndHorizontal();
             }

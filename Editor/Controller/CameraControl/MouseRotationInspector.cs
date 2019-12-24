@@ -30,10 +30,10 @@ namespace HT.Framework
             Toggle(Target.IsLookAtTarget, out Target.IsLookAtTarget, "LookAt Target");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Speed", "BoldLabel");
+            GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -50,10 +50,10 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
             
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Angle Limit", "BoldLabel");
+            GUILayout.Label("Angle Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -66,10 +66,10 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Distance", "BoldLabel");
+            GUILayout.Label("Distance", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -86,10 +86,10 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
             
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Damping", "BoldLabel");
+            GUILayout.Label("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -98,10 +98,10 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
             
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Camera Position Limit", "BoldLabel");
+            GUILayout.Label("Camera Position Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
@@ -137,10 +137,10 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
             
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Angle", "BoldLabel");
+            GUILayout.Label("Angle", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

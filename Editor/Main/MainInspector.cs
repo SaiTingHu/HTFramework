@@ -58,7 +58,7 @@ namespace HT.Framework
         }
         private void ScriptingDefineGUI()
         {
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
@@ -78,17 +78,17 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUI.enabled = _currentScriptingDefine.IsAnyDefined;
-                if (GUILayout.Button("Clear", "Minibuttonleft"))
+                if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
                 {
                     _currentScriptingDefine.ClearDefines();
                 }
                 GUI.enabled = true;
-                if (GUILayout.Button("New", "MiniButtonmid"))
+                if (GUILayout.Button("New", EditorStyles.miniButtonMid))
                 {
                     _isNewDefine = !_isNewDefine;
                     _newDefine = "";
                 }
-                if (GUILayout.Button("Apply", "Minibuttonright"))
+                if (GUILayout.Button("Apply", EditorStyles.miniButtonRight))
                 {
                     _currentScriptingDefine.Apply();
                 }
@@ -98,7 +98,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     _newDefine = EditorGUILayout.TextField(_newDefine);
-                    if (GUILayout.Button("OK", "Minibuttonleft", GUILayout.Width(30)))
+                    if (GUILayout.Button("OK", EditorStyles.miniButtonLeft, GUILayout.Width(30)))
                     {
                         if (_newDefine != "")
                         {
@@ -111,7 +111,7 @@ namespace HT.Framework
                             GlobalTools.LogError("输入的宏定义不能为空！");
                         }
                     }
-                    if (GUILayout.Button("NO", "Minibuttonright", GUILayout.Width(30)))
+                    if (GUILayout.Button("NO", EditorStyles.miniButtonRight, GUILayout.Width(30)))
                     {
                         _isNewDefine = false;
                         _newDefine = "";
@@ -121,7 +121,7 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Historical record");
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Clear record", "Minibutton", GUILayout.Width(80)))
+                    if (GUILayout.Button("Clear record", EditorStyles.miniButton, GUILayout.Width(80)))
                     {
                         _currentScriptingDefine.ClearDefinesRecord();
                     }
@@ -133,7 +133,7 @@ namespace HT.Framework
                         GUILayout.Space(10);
                         GUILayout.Label(_currentScriptingDefine.DefinedsRecord[i], "PR PrefabLabel");
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Use", "Minibutton", GUILayout.Width(30)))
+                        if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(30)))
                         {
                             _newDefine += _currentScriptingDefine.DefinedsRecord[i] + ";";
                         }
@@ -231,7 +231,7 @@ namespace HT.Framework
         #region MainData
         private void MainDataGUI()
         {
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
@@ -242,7 +242,7 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("MainData");
-                if (GUILayout.Button(Target.MainDataType, "MiniPopup"))
+                if (GUILayout.Button(Target.MainDataType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -277,7 +277,7 @@ namespace HT.Framework
         #region License
         private void LicenseGUI()
         {
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
@@ -293,7 +293,7 @@ namespace HT.Framework
                 if (!Target.IsPermanentLicense)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Prompt:", "BoldLabel");
+                    GUILayout.Label("Prompt:", EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -301,7 +301,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Ending Time:", "BoldLabel");
+                    GUILayout.Label("Ending Time:", EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -314,14 +314,14 @@ namespace HT.Framework
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
+                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLPlus, GUILayout.Width(15)))
                     {
                         Undo.RecordObject(target, "Set Year");
                         Target.Year += 1;
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
+                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLMinus, GUILayout.Width(15)))
                     {
                         Undo.RecordObject(target, "Set Year");
                         Target.Year -= 1;
@@ -340,14 +340,14 @@ namespace HT.Framework
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
+                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLPlus, GUILayout.Width(15)))
                     {
                         Undo.RecordObject(target, "Set Month");
                         Target.Month += 1;
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
+                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLMinus, GUILayout.Width(15)))
                     {
                         Undo.RecordObject(target, "Set Month");
                         Target.Month -= 1;
@@ -366,14 +366,14 @@ namespace HT.Framework
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("", "OL Plus", GUILayout.Width(15)))
+                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLPlus, GUILayout.Width(15)))
                     {
                         Undo.RecordObject(target, "Set Day");
                         Target.Day += 1;
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("", "OL Minus", GUILayout.Width(15)))
+                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLMinus, GUILayout.Width(15)))
                     {
                         Undo.RecordObject(target, "Set Day");
                         Target.Day -= 1;
@@ -383,7 +383,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Now", "MiniButtonLeft"))
+                    if (GUILayout.Button("Now", EditorStyles.miniButtonLeft))
                     {
                         Undo.RecordObject(target, "Set Now");
                         Target.Year = DateTime.Now.Year;
@@ -392,7 +392,7 @@ namespace HT.Framework
                         CorrectDateTime();
                         HasChanged();
                     }
-                    if (GUILayout.Button("2 Months Later", "MiniButtonRight"))
+                    if (GUILayout.Button("2 Months Later", EditorStyles.miniButtonRight))
                     {
                         Undo.RecordObject(target, "Set 2 Months Later");
                         Target.Month += 2;
@@ -457,7 +457,7 @@ namespace HT.Framework
         #region Parameter
         private void ParameterGUI()
         {
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
@@ -470,13 +470,13 @@ namespace HT.Framework
                 {
                     MainParameter mainParameter = Target.MainParameters[i];
 
-                    GUILayout.BeginVertical("HelpBox");
+                    GUILayout.BeginVertical(EditorStyles.helpBox);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Type", GUILayout.Width(40));
                     EnumPopup(mainParameter.Type, out mainParameter.Type, "");
                     GUI.backgroundColor = Color.red;
-                    if (GUILayout.Button("Delete", "Minibutton", GUILayout.Width(50)))
+                    if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
                     {
                         Undo.RecordObject(target, "Delete Main Parameter");
                         Target.MainParameters.RemoveAt(i);
@@ -539,7 +539,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("New", "Minibutton"))
+                if (GUILayout.Button("New", EditorStyles.miniButton))
                 {
                     Undo.RecordObject(target, "New Main Parameter");
                     Target.MainParameters.Add(new MainParameter());
@@ -555,7 +555,7 @@ namespace HT.Framework
         #region Setting
         private void SettingGUI()
         {
-            GUILayout.BeginVertical("Box");
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
@@ -565,7 +565,7 @@ namespace HT.Framework
             if (_showSetting)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Log", "BoldLabel");
+                GUILayout.Label("Log", EditorStyles.boldLabel);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

@@ -55,7 +55,7 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.ActivatedProcedures.Count > 0;
-            if (GUILayout.Button("Set Default", "MiniPopup"))
+            if (GUILayout.Button("Set Default", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < Target.ActivatedProcedures.Count; i++)
@@ -78,7 +78,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label((i + 1) + "." + Target.ActivatedProcedures[i]);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("▲", "MiniButtonleft"))
+                if (GUILayout.Button("▲", EditorStyles.miniButtonLeft))
                 {
                     if (i > 0)
                     {
@@ -90,7 +90,7 @@ namespace HT.Framework
                         continue;
                     }
                 }
-                if (GUILayout.Button("▼", "MiniButtonmid"))
+                if (GUILayout.Button("▼", EditorStyles.miniButtonMid))
                 {
                     if (i < Target.ActivatedProcedures.Count - 1)
                     {
@@ -102,7 +102,7 @@ namespace HT.Framework
                         continue;
                     }
                 }
-                if (GUILayout.Button("Edit", "MiniButtonmid"))
+                if (GUILayout.Button("Edit", EditorStyles.miniButtonMid))
                 {
                     string[] names = Target.ActivatedProcedures[i].Split('.');
                     if (_procedureTypes.ContainsKey(names[names.Length - 1]))
@@ -118,7 +118,7 @@ namespace HT.Framework
                         GlobalTools.LogError("没有找到 " + Target.ActivatedProcedures[i] + " 脚本文件！");
                     }
                 }
-                if (GUILayout.Button("Delete", "minibuttonright"))
+                if (GUILayout.Button("Delete", EditorStyles.miniButtonRight))
                 {
                     Undo.RecordObject(target, "Delete Procedure");
 
@@ -140,7 +140,7 @@ namespace HT.Framework
             }
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add Procedure", "MiniPopup"))
+            if (GUILayout.Button("Add Procedure", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -194,7 +194,7 @@ namespace HT.Framework
                 GUILayout.Label(procedure.Key.Name);
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.CurrentProcedure != procedure.Value;
-                if (GUILayout.Button("Switch", "Minibutton"))
+                if (GUILayout.Button("Switch", EditorStyles.miniButton))
                 {
                     Target.SwitchProcedure(procedure.Key);
                 }
