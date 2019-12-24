@@ -834,22 +834,8 @@ namespace HT.Framework
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Target:", GUILayout.Width(50));
                         GUI.color = _currentOperationObj.Target ? Color.white : Color.gray;
-                        GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(90)) as GameObject;
+                        GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
                         GUI.color = Color.white;
-                        GUILayout.FlexibleSpace();
-                        GUI.enabled = _currentOperationObj.Target;
-                        if (GUILayout.Button("Clone", EditorStyles.miniButton, GUILayout.Width(40)))
-                        {
-                            GameObject clone = Instantiate(_currentOperationObj.Target, _currentOperationObj.Target.transform.parent);
-                            clone.transform.localPosition = _currentOperationObj.Target.transform.localPosition;
-                            clone.transform.localRotation = _currentOperationObj.Target.transform.localRotation;
-                            clone.transform.localScale = _currentOperationObj.Target.transform.localScale;
-                            clone.SetActive(true);
-                            operationObj = _currentOperationObj.Target = clone;
-                            Selection.activeGameObject = _currentOperationObj.Target;
-                            EditorGUIUtility.PingObject(_currentOperationObj.Target);
-                        }
-                        GUI.enabled = true;
                         GUILayout.EndHorizontal();
 
                         GUILayout.BeginHorizontal();

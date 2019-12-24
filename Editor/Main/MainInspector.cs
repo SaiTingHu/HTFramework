@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace HT.Framework
@@ -21,6 +22,7 @@ namespace HT.Framework
             base.OnDefaultEnable();
 
             ScriptingDefineEnable();
+            ParameterEnable();
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -73,7 +75,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.TextField(_currentScriptingDefine.Defined);
+                EditorGUILayout.TextField(_currentScriptingDefine.Defined);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -455,6 +457,101 @@ namespace HT.Framework
         #endregion
 
         #region Parameter
+        private SerializedProperty _mainParameters;
+        private ReorderableList _parameterList;        
+
+        private void ParameterEnable()
+        {
+            _mainParameters = GetProperty("MainParameters");
+            _parameterList = new ReorderableList(serializedObject, _mainParameters, true, true, true, true);
+            _parameterList.elementHeight = 65;
+            _parameterList.drawHeaderCallback = (Rect rect) =>
+            {
+                GUI.Label(rect, "Parameter");
+            };
+            _parameterList.drawElementCallback = (Rect rect, int index, bool selected, bool focused) =>
+            {
+                SerializedProperty mainParameter = _mainParameters.GetArrayElementAtIndex(index);
+                SerializedProperty nameProperty = mainParameter.FindPropertyRelative("Name");
+                SerializedProperty typeProperty = mainParameter.FindPropertyRelative("Type");
+                
+                Rect subrect = rect;
+
+                subrect.Set(rect.x, rect.y + 2, 50, 16);
+                GUI.Label(subrect, "Name:");
+                if (selected)
+                {
+                    subrect.Set(rect.x + 50, rect.y + 2, rect.width - 50, 16);
+                    nameProperty.stringValue = EditorGUI.TextField(subrect, nameProperty.stringValue);
+                }
+                else
+                {
+                    subrect.Set(rect.x + 50, rect.y + 2, rect.width - 50, 16);
+                    GUI.Label(subrect, nameProperty.stringValue);
+                }
+
+                subrect.Set(rect.x, rect.y + 22, 50, 16);
+                GUI.Label(subrect, "Type:");
+                subrect.Set(rect.x + 50, rect.y + 22, rect.width - 50, 16);
+                typeProperty.enumValueIndex = (int)(MainParameter.ParameterType)EditorGUI.EnumPopup(subrect, (MainParameter.ParameterType)typeProperty.enumValueIndex);
+
+                subrect.Set(rect.x, rect.y + 42, 50, 16);
+                GUI.Label(subrect, "Value:");
+                subrect.Set(rect.x + 50, rect.y + 42, rect.width - 50, 16);
+                SerializedProperty valueProperty;
+                switch ((MainParameter.ParameterType)typeProperty.enumValueIndex)
+                {
+                    case MainParameter.ParameterType.String:
+                        valueProperty = mainParameter.FindPropertyRelative("StringValue");
+                        valueProperty.stringValue = EditorGUI.TextField(subrect, valueProperty.stringValue);
+                        break;
+                    case MainParameter.ParameterType.Integer:
+                        valueProperty = mainParameter.FindPropertyRelative("IntegerValue");
+                        valueProperty.intValue = EditorGUI.IntField(subrect, valueProperty.intValue);
+                        break;
+                    case MainParameter.ParameterType.Float:
+                        valueProperty = mainParameter.FindPropertyRelative("FloatValue");
+                        valueProperty.floatValue = EditorGUI.FloatField(subrect, valueProperty.floatValue);
+                        break;
+                    case MainParameter.ParameterType.Boolean:
+                        valueProperty = mainParameter.FindPropertyRelative("BooleanValue");
+                        valueProperty.boolValue = EditorGUI.Toggle(subrect, valueProperty.boolValue);
+                        break;
+                    case MainParameter.ParameterType.Vector2:
+                        valueProperty = mainParameter.FindPropertyRelative("Vector2Value");
+                        valueProperty.vector2Value = EditorGUI.Vector2Field(subrect, "", valueProperty.vector2Value);
+                        break;
+                    case MainParameter.ParameterType.Vector3:
+                        valueProperty = mainParameter.FindPropertyRelative("Vector3Value");
+                        valueProperty.vector3Value = EditorGUI.Vector3Field(subrect, "", valueProperty.vector3Value);
+                        break;
+                    case MainParameter.ParameterType.Color:
+                        valueProperty = mainParameter.FindPropertyRelative("ColorValue");
+                        valueProperty.colorValue = EditorGUI.ColorField(subrect, valueProperty.colorValue);
+                        break;
+                    case MainParameter.ParameterType.DataSet:
+                        valueProperty = mainParameter.FindPropertyRelative("DataSet");
+                        valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(DataSetBase), false);
+                        break;
+                    case MainParameter.ParameterType.Prefab:
+                        valueProperty = mainParameter.FindPropertyRelative("PrefabValue");
+                        valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(GameObject), true);
+                        break;
+                    case MainParameter.ParameterType.Texture:
+                        valueProperty = mainParameter.FindPropertyRelative("TextureValue");
+                        valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(Texture), false);
+                        break;
+                    case MainParameter.ParameterType.AudioClip:
+                        valueProperty = mainParameter.FindPropertyRelative("AudioClipValue");
+                        valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(AudioClip), false);
+                        break;
+                    case MainParameter.ParameterType.Material:
+                        valueProperty = mainParameter.FindPropertyRelative("MaterialValue");
+                        valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(Material), false);
+                        break;
+                }
+            };
+        }
         private void ParameterGUI()
         {
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -466,86 +563,7 @@ namespace HT.Framework
 
             if (_showParameter)
             {
-                for (int i = 0; i < Target.MainParameters.Count; i++)
-                {
-                    MainParameter mainParameter = Target.MainParameters[i];
-
-                    GUILayout.BeginVertical(EditorStyles.helpBox);
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Type", GUILayout.Width(40));
-                    EnumPopup(mainParameter.Type, out mainParameter.Type, "");
-                    GUI.backgroundColor = Color.red;
-                    if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
-                    {
-                        Undo.RecordObject(target, "Delete Main Parameter");
-                        Target.MainParameters.RemoveAt(i);
-                        HasChanged();
-                        continue;
-                    }
-                    GUI.backgroundColor = Color.white;
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Name:", GUILayout.Width(40));
-                    TextField(mainParameter.Name, out mainParameter.Name, "");
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Value:", GUILayout.Width(40));
-                    switch (mainParameter.Type)
-                    {
-                        case MainParameter.ParameterType.String:
-                            TextField(mainParameter.StringValue, out mainParameter.StringValue, "");
-                            break;
-                        case MainParameter.ParameterType.Integer:
-                            IntField(mainParameter.IntegerValue, out mainParameter.IntegerValue, "");
-                            break;
-                        case MainParameter.ParameterType.Float:
-                            FloatField(mainParameter.FloatValue, out mainParameter.FloatValue, "");
-                            break;
-                        case MainParameter.ParameterType.Boolean:
-                            Toggle(mainParameter.BooleanValue, out mainParameter.BooleanValue, "");
-                            break;
-                        case MainParameter.ParameterType.Vector2:
-                            Vector2Field(mainParameter.Vector2Value, out mainParameter.Vector2Value, "");
-                            break;
-                        case MainParameter.ParameterType.Vector3:
-                            Vector3Field(mainParameter.Vector3Value, out mainParameter.Vector3Value, "");
-                            break;
-                        case MainParameter.ParameterType.Color:
-                            ColorField(mainParameter.ColorValue, out mainParameter.ColorValue, "");
-                            break;
-                        case MainParameter.ParameterType.DataSet:
-                            ObjectField(mainParameter.DataSet, out mainParameter.DataSet, false, "");
-                            break;
-                        case MainParameter.ParameterType.Prefab:
-                            ObjectField(mainParameter.PrefabValue, out mainParameter.PrefabValue, false, "");
-                            break;
-                        case MainParameter.ParameterType.Texture:
-                            ObjectField(mainParameter.TextureValue, out mainParameter.TextureValue, false, "");
-                            break;
-                        case MainParameter.ParameterType.AudioClip:
-                            ObjectField(mainParameter.AudioClipValue, out mainParameter.AudioClipValue, false, "");
-                            break;
-                        case MainParameter.ParameterType.Material:
-                            ObjectField(mainParameter.MaterialValue, out mainParameter.MaterialValue, false, "");
-                            break;
-                    }
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.EndVertical();
-                }
-
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("New", EditorStyles.miniButton))
-                {
-                    Undo.RecordObject(target, "New Main Parameter");
-                    Target.MainParameters.Add(new MainParameter());
-                    HasChanged();
-                }
-                GUILayout.EndHorizontal();
+                _parameterList.DoLayoutList();
             }
 
             GUILayout.EndVertical();

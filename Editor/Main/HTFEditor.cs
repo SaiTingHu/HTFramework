@@ -156,6 +156,29 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 根据名字获取序列化属性
+        /// </summary>
+        /// <param name="propertyName">序列化属性名字</param>
+        /// <returns>序列化属性</returns>
+        protected SerializedProperty GetProperty(string propertyName)
+        {
+            SerializedProperty serializedProperty;
+            if (_serializedPropertys.ContainsKey(propertyName))
+            {
+                serializedProperty = _serializedPropertys[propertyName];
+            }
+            else
+            {
+                serializedProperty = serializedObject.FindProperty(propertyName);
+                if (serializedProperty != null)
+                {
+                    _serializedPropertys.Add(propertyName, serializedProperty);
+                }
+            }
+            return serializedProperty;
+        }
+
         //可撤销操作、根据改变 SetDirty 的控件
         /// <summary>
         /// 制作一个Button
@@ -455,19 +478,7 @@ namespace HT.Framework
         /// </summary>
         protected void PropertyField(string propertyName, string name, params GUILayoutOption[] options)
         {
-            SerializedProperty serializedProperty;
-            if (_serializedPropertys.ContainsKey(propertyName))
-            {
-                serializedProperty = _serializedPropertys[propertyName];
-            }
-            else
-            {
-                serializedProperty = serializedObject.FindProperty(propertyName);
-                if (serializedProperty != null)
-                {
-                    _serializedPropertys.Add(propertyName, serializedProperty);
-                }
-            }
+            SerializedProperty serializedProperty = GetProperty(propertyName);
 
             if (serializedProperty != null)
             {
@@ -483,19 +494,7 @@ namespace HT.Framework
         /// </summary>
         protected void PropertyField(string propertyName, params GUILayoutOption[] options)
         {
-            SerializedProperty serializedProperty;
-            if (_serializedPropertys.ContainsKey(propertyName))
-            {
-                serializedProperty = _serializedPropertys[propertyName];
-            }
-            else
-            {
-                serializedProperty = serializedObject.FindProperty(propertyName);
-                if (serializedProperty != null)
-                {
-                    _serializedPropertys.Add(propertyName, serializedProperty);
-                }
-            }
+            SerializedProperty serializedProperty = GetProperty(propertyName);
 
             if (serializedProperty != null)
             {
@@ -511,19 +510,7 @@ namespace HT.Framework
         /// </summary>
         protected void PropertyField(string propertyName, string name, bool includeChildren, params GUILayoutOption[] options)
         {
-            SerializedProperty serializedProperty;
-            if (_serializedPropertys.ContainsKey(propertyName))
-            {
-                serializedProperty = _serializedPropertys[propertyName];
-            }
-            else
-            {
-                serializedProperty = serializedObject.FindProperty(propertyName);
-                if (serializedProperty != null)
-                {
-                    _serializedPropertys.Add(propertyName, serializedProperty);
-                }
-            }
+            SerializedProperty serializedProperty = GetProperty(propertyName);
 
             if (serializedProperty != null)
             {
@@ -539,19 +526,7 @@ namespace HT.Framework
         /// </summary>
         protected void PropertyField(string propertyName, bool includeChildren, params GUILayoutOption[] options)
         {
-            SerializedProperty serializedProperty;
-            if (_serializedPropertys.ContainsKey(propertyName))
-            {
-                serializedProperty = _serializedPropertys[propertyName];
-            }
-            else
-            {
-                serializedProperty = serializedObject.FindProperty(propertyName);
-                if (serializedProperty != null)
-                {
-                    _serializedPropertys.Add(propertyName, serializedProperty);
-                }
-            }
+            SerializedProperty serializedProperty = GetProperty(propertyName);
 
             if (serializedProperty != null)
             {
