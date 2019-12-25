@@ -463,13 +463,14 @@ namespace HT.Framework
         private void ParameterEnable()
         {
             _mainParameters = GetProperty("MainParameters");
-            _parameterList = new ReorderableList(serializedObject, _mainParameters, true, true, true, true);
+            _parameterList = new ReorderableList(serializedObject, _mainParameters, true, false, true, true);
+            _parameterList.headerHeight = 2;
             _parameterList.elementHeight = 65;
             _parameterList.drawHeaderCallback = (Rect rect) =>
             {
                 GUI.Label(rect, "Parameter");
             };
-            _parameterList.drawElementCallback = (Rect rect, int index, bool selected, bool focused) =>
+            _parameterList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
             {
                 SerializedProperty mainParameter = _mainParameters.GetArrayElementAtIndex(index);
                 SerializedProperty nameProperty = mainParameter.FindPropertyRelative("Name");
@@ -479,7 +480,7 @@ namespace HT.Framework
 
                 subrect.Set(rect.x, rect.y + 2, 50, 16);
                 GUI.Label(subrect, "Name:");
-                if (selected)
+                if (isActive)
                 {
                     subrect.Set(rect.x + 50, rect.y + 2, rect.width - 50, 16);
                     nameProperty.stringValue = EditorGUI.TextField(subrect, nameProperty.stringValue);
@@ -549,6 +550,15 @@ namespace HT.Framework
                         valueProperty = mainParameter.FindPropertyRelative("MaterialValue");
                         valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(Material), false);
                         break;
+                }
+            };
+            _parameterList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                if (Event.current.type == EventType.Repaint)
+                {
+                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
+                    gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
+                    gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
                 }
             };
         }

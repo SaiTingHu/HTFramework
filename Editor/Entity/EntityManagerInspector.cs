@@ -42,7 +42,7 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Define Entity", EditorStyles.boldLabel);
+            GUILayout.Label("Define Entity:");
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < Target.DefineEntityNames.Count; i++)

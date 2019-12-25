@@ -47,7 +47,7 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Define UI", EditorStyles.boldLabel);
+            GUILayout.Label("Define UI:");
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < Target.DefineUINames.Count; i++)

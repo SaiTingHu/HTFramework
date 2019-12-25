@@ -46,7 +46,7 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Activated Procedure Count:" + Target.ActivatedProcedures.Count, MessageType.Info);
+            EditorGUILayout.HelpBox("Procedure Manager, this is the beginning and the end of everything!", MessageType.Info);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -71,6 +71,13 @@ namespace HT.Framework
                 gm.ShowAsContext();
             }
             GUI.enabled = true;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Enabled Procedures:");
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             for (int i = 0; i < Target.ActivatedProcedures.Count; i++)
@@ -173,6 +180,8 @@ namespace HT.Framework
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
         }
 
         protected override void OnInspectorRuntimeGUI()
