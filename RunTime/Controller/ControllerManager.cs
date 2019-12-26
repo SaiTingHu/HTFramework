@@ -108,6 +108,13 @@ namespace HT.Framework
             }
         }
 
+        public override void OnTermination()
+        {
+            base.OnTermination();
+
+            ClearClickListener();
+        }
+
         /// <summary>
         /// 主摄像机
         /// </summary>

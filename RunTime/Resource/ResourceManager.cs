@@ -59,7 +59,7 @@ namespace HT.Framework
         {
             base.OnTermination();
 
-            UnLoadAllAsset();
+            UnLoadAllAsset(true);
             ClearMemory();
         }
 

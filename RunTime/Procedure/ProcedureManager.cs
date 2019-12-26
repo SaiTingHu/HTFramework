@@ -19,6 +19,10 @@ namespace HT.Framework
         /// 当前的默认流程类名【请勿在代码中修改】
         /// </summary>
         public string DefaultProcedure = "";
+        /// <summary>
+        /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
+        /// </summary>
+        public event HTFAction<ProcedureBase, ProcedureBase> AnyProcedureSwitchEvent;
 
         private Dictionary<Type, ProcedureBase> _procedureInstances = new Dictionary<Type, ProcedureBase>();
         private List<Type> _procedureTypes = new List<Type>();
@@ -201,6 +205,8 @@ namespace HT.Framework
                 }
                 nextProcedure.OnEnter(lastProcedure);
                 _currentProcedure = nextProcedure;
+
+                AnyProcedureSwitchEvent?.Invoke(lastProcedure, nextProcedure);
             }
             else
             {

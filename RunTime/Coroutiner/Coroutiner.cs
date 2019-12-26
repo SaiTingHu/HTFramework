@@ -22,6 +22,14 @@ namespace HT.Framework
         /// </summary>
         public Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
 
+        public override void OnTermination()
+        {
+            base.OnTermination();
+
+            CoroutineEnumerators.Clear();
+            Warehouse.Clear();
+        }
+
         /// <summary>
         /// 运行协程
         /// </summary>

@@ -65,6 +65,8 @@ namespace HT.Framework
             {
                 module.Value.OnTermination();
             }
+
+            _customModules.Clear();
         }
 
         public override void OnPause()

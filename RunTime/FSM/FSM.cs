@@ -48,6 +48,14 @@ namespace HT.Framework
         /// 有限状态机名称
         /// </summary>
         public string Name = "New Finite State Machine";
+        /// <summary>
+        /// 任意状态切换事件（上一个离开的状态、下一个进入的状态）
+        /// </summary>
+        public event HTFAction<FiniteStateBase, FiniteStateBase> AnyStateSwitchEvent;
+        /// <summary>
+        /// 任意状态动机监听事件
+        /// </summary>
+        public event HTFAction AnyStateReasonEvent;
 
         private FSMDataBase _data;
         private Dictionary<Type, FiniteStateBase> _stateInstances = new Dictionary<Type, FiniteStateBase>();
@@ -149,6 +157,8 @@ namespace HT.Framework
             {
                 return;
             }
+
+            AnyStateReasonEvent?.Invoke();
 
             if (_currentState != null)
             {
@@ -266,6 +276,8 @@ namespace HT.Framework
                 }
                 nextState.OnEnter(lastState);
                 _currentState = nextState;
+
+                AnyStateSwitchEvent?.Invoke(lastState, nextState);
             }
             else
             {

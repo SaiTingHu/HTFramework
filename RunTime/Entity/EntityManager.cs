@@ -96,6 +96,8 @@ namespace HT.Framework
         {
             base.OnTermination();
 
+            _defineEntities.Clear();
+
             foreach (KeyValuePair<Type, GameObject> group in _entitiesGroup)
             {
                 Destroy(group.Value);
