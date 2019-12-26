@@ -39,7 +39,7 @@ namespace HT.Framework
         private Vector2 _stepContentScroll = Vector3.zero;
         private Vector2 _stepOperationScroll = Vector3.zero;
         private string _stepListFilter = "";
-        private float _stepListGUIWidth = 200;
+        private float _stepListGUIWidth = 340;
 
         private Rect _stepContentRect;
         private float _operationButtonWidth = 150;
@@ -403,6 +403,7 @@ namespace HT.Framework
         {
             GUILayout.Box("", "PreVerticalScrollbarThumb", GUILayout.Width(_splitterWidth), GUILayout.MaxWidth(_splitterWidth), GUILayout.MinWidth(_splitterWidth), GUILayout.ExpandHeight(true));
             _splitterRect = GUILayoutUtility.GetLastRect();
+            EditorGUIUtility.AddCursorRect(_splitterRect, MouseCursor.SplitResizeLeftRight);
         }
         /// <summary>
         /// 步骤内容GUI（固定内容）
@@ -552,28 +553,20 @@ namespace HT.Framework
                 {
                     GUI.FocusControl(null);
                     GenericMenu gm = new GenericMenu();
-                    gm.AddItem(new GUIContent("Enter"), false, () =>
+                    EditorGlobalTools.BeginNoRepeatNaming();
+                    gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Enter")), false, () =>
                     {
-                        Vector2 direction = (new Vector2(position.width / 2, position.height / 2) - _currentStepObj.EnterAnchor);
-                        for (int m = 0; m < _currentStepObj.Operations.Count; m++)
-                        {
-                            _currentStepObj.Operations[m].Anchor += direction;
-                        }
-                        _currentStepObj.EnterAnchor += direction;
+                        FindStepOperation(_currentStepObj.EnterAnchor);
                     });
+                    gm.AddSeparator("");
                     for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                     {
                         int j = i;
-                        gm.AddItem(new GUIContent(_currentStepObj.Operations[j].Name), _currentOperation == j, () =>
+                        gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName(_currentStepObj.Operations[j].Name)), _currentOperation == j, () =>
                         {
                             SelectStepOperation(j);
 
-                            Vector2 direction = (new Vector2(position.width / 2, position.height / 2) - _currentStepObj.Operations[j].Anchor);
-                            for (int m = 0; m < _currentStepObj.Operations.Count; m++)
-                            {
-                                _currentStepObj.Operations[m].Anchor += direction;
-                            }
-                            _currentStepObj.EnterAnchor += direction;
+                            FindStepOperation(_currentStepObj.Operations[j].Anchor);
                         });
                     }
                     gm.ShowAsContext();
@@ -641,6 +634,7 @@ namespace HT.Framework
                 {
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                     GenericMenu gm = new GenericMenu();
+                    EditorGlobalTools.BeginNoRepeatNaming();
                     gm.AddItem(new GUIContent("<Create>"), false, () =>
                     {
                         string directory = EditorPrefs.GetString(EditorPrefsTable.Script_Helper_Directory, Application.dataPath);
@@ -680,7 +674,7 @@ namespace HT.Framework
                             CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
                             if (helper != null)
                             {
-                                gm.AddItem(new GUIContent(helper.Name), _currentStepObj.Helper == type.FullName, () =>
+                                gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName(helper.Name)), _currentStepObj.Helper == type.FullName, () =>
                                 {
                                     _currentStepObj.Helper = type.FullName;
                                 });
@@ -926,6 +920,9 @@ namespace HT.Framework
         {
             if (_currentStep != -1)
             {
+                _stepContentRect.Set(_stepListGUIWidth, 0, position.width - _stepListGUIWidth, position.height);
+                GUILayout.BeginArea(_stepContentRect);
+
                 #region 步骤的所有连线
                 Vector2 offsetHalf = new Vector2(_operationButtonWidth / 2, 0);
                 Vector2 offset = new Vector2(_operationButtonWidth, 0);
@@ -934,15 +931,21 @@ namespace HT.Framework
                     StepWired wired = _currentStepObj.Wireds[i];
                     if (wired.Left == -1)
                     {
-                        Handles.DrawBezier(_currentStepObj.EnterAnchor + offsetHalf, _currentStepObj.Operations[wired.Right].Anchor - offsetHalf,
-                        _currentStepObj.EnterAnchor + offset, _currentStepObj.Operations[wired.Right].Anchor - offset,
-                        Color.white, null, 5);
+                        Vector2 leftAnchor = _currentStepObj.EnterAnchor + offsetHalf;
+                        Vector2 rightAnchor = _currentStepObj.Operations[wired.Right].Anchor - offsetHalf;
+                        Vector2 leftTangent = _currentStepObj.EnterAnchor + offset;
+                        Vector2 rightTangent = _currentStepObj.Operations[wired.Right].Anchor - offset;
+
+                        Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
                     }
                     else
                     {
-                        Handles.DrawBezier(_currentStepObj.Operations[wired.Left].Anchor + offsetHalf, _currentStepObj.Operations[wired.Right].Anchor - offsetHalf,
-                        _currentStepObj.Operations[wired.Left].Anchor + offset, _currentStepObj.Operations[wired.Right].Anchor - offset,
-                        Color.white, null, 5);
+                        Vector2 leftAnchor = _currentStepObj.Operations[wired.Left].Anchor + offsetHalf;
+                        Vector2 rightAnchor = _currentStepObj.Operations[wired.Right].Anchor - offsetHalf;
+                        Vector2 leftTangent = _currentStepObj.Operations[wired.Left].Anchor + offset;
+                        Vector2 rightTangent = _currentStepObj.Operations[wired.Right].Anchor - offset;
+
+                        Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
                     }
                 }
                 #endregion
@@ -954,14 +957,14 @@ namespace HT.Framework
                     Rect rectOperation = new Rect(operation.Anchor.x - _operationButtonWidth / 2, operation.Anchor.y - _operationButtonHeight / 2, _operationButtonWidth, _operationButtonHeight);
                     Rect rectLeft = new Rect(operation.Anchor.x - _operationButtonWidth / 2 - 10, operation.Anchor.y - 10, 20, 20);
                     Rect rectRight = new Rect(operation.Anchor.x + _operationButtonWidth / 2 - 10, operation.Anchor.y - 10, 20, 20);
-                    string style = (_currentOperation == i ? "flow node 0 on" : "flow node 0");
+                    string style = _currentOperation == i ? "flow node 0 on" : "flow node 0";
                     GUI.Box(rectLeft, "", style);
                     GUI.Box(rectRight, "", style);
                     string showName = "[" + operation.OperationType + "] " + operation.Name + "\r\n" + (operation.Instant ? "Instant" : operation.ElapseTime + "s");
                     if (GUI.RepeatButton(rectOperation, showName, style))
                     {
                         GUI.FocusControl(null);
-                        
+
                         if (Event.current.button == 0)
                         {
                             if (operation.Target && Selection.activeGameObject != operation.Target)
@@ -977,13 +980,14 @@ namespace HT.Framework
                         else if (Event.current.button == 1)
                         {
                             GenericMenu gm = new GenericMenu();
+                            EditorGlobalTools.BeginNoRepeatNaming();
                             for (int m = 0; m < _currentStepObj.Operations.Count; m++)
                             {
                                 if (i != m)
                                 {
                                     int j = i;
                                     int n = m;
-                                    gm.AddItem(new GUIContent("Connect or break/" + _currentStepObj.Operations[n].Name), _currentStepObj.IsExistWired(j, n), () =>
+                                    gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[n].Name)), _currentStepObj.IsExistWired(j, n), () =>
                                     {
                                         ConnectOrBreakWired(_currentStepObj, j, n);
                                     });
@@ -992,6 +996,7 @@ namespace HT.Framework
                             gm.ShowAsContext();
                         }
                     }
+                    EditorGUIUtility.AddCursorRect(rectOperation, MouseCursor.MoveArrow);
                 }
                 #endregion
 
@@ -1010,10 +1015,11 @@ namespace HT.Framework
                     else if (Event.current.button == 1)
                     {
                         GenericMenu gm = new GenericMenu();
+                        EditorGlobalTools.BeginNoRepeatNaming();
                         for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                         {
                             int j = i;
-                            gm.AddItem(new GUIContent("Connect or break/" + _currentStepObj.Operations[j].Name), _currentStepObj.IsExistWired(-1, j), () =>
+                            gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
                             {
                                 ConnectOrBreakWired(_currentStepObj, -1, j);
                             });
@@ -1021,7 +1027,10 @@ namespace HT.Framework
                         gm.ShowAsContext();
                     }
                 }
+                EditorGUIUtility.AddCursorRect(rectEnter, MouseCursor.MoveArrow);
                 #endregion
+
+                GUILayout.EndArea();
             }
         }
 
@@ -1077,9 +1086,9 @@ namespace HT.Framework
                             {
                                 _stepListGUIWidth = 500;
                             }
-                            if (_stepListGUIWidth < 100)
+                            if (_stepListGUIWidth < 340)
                             {
-                                _stepListGUIWidth = 100;
+                                _stepListGUIWidth = 340;
                             }
                             GUI.changed = true;
                         }
@@ -1292,6 +1301,18 @@ namespace HT.Framework
         {
             _currentOperation = currentOperation;
             _currentOperationObj = ((_currentOperation != -1 && _currentStep != -1) ? _currentStepObj.Operations[_currentOperation] : null);
+        }
+        /// <summary>
+        /// 查找步骤操作
+        /// </summary>
+        private void FindStepOperation(Vector2 operationAnchor)
+        {
+            Vector2 direction = new Vector2((position.width - _stepListGUIWidth) / 2, position.height / 2) - operationAnchor;
+            for (int i = 0; i < _currentStepObj.Operations.Count; i++)
+            {
+                _currentStepObj.Operations[i].Anchor += direction;
+            }
+            _currentStepObj.EnterAnchor += direction;
         }
         /// <summary>
         /// 步骤筛选

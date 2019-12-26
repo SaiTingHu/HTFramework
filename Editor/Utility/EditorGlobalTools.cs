@@ -994,6 +994,44 @@ namespace HT.Framework
         }
         #endregion
 
+        #region GUI工具
+        private static HashSet<string> _noRepeatNames = new HashSet<string>();
+
+        /// <summary>
+        /// 开始不重复命名
+        /// </summary>
+        public static void BeginNoRepeatNaming()
+        {
+            _noRepeatNames.Clear();
+        }
+        /// <summary>
+        /// 获取不重复命名（自动加工原名，以防止重复）
+        /// </summary>
+        /// <param name="rawName">原名</param>
+        /// <returns>不重复命名</returns>
+        public static string GetNoRepeatName(string rawName)
+        {
+            if (_noRepeatNames.Contains(rawName))
+            {
+                int index = 0;
+                string noRepeatName = rawName + " " + index.ToString();
+                while (_noRepeatNames.Contains(noRepeatName))
+                {
+                    index += 1;
+                    noRepeatName = rawName + " " + index.ToString();
+                }
+
+                _noRepeatNames.Add(noRepeatName);
+                return noRepeatName;
+            }
+            else
+            {
+                _noRepeatNames.Add(rawName);
+                return rawName;
+            }
+        }
+        #endregion
+
         #region Hierarchy窗口扩展
         private static GUIStyle HierarchyItemStyle;
         private static Texture HTFrameworkLOGO;
