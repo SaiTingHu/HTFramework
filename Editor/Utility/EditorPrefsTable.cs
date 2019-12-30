@@ -118,26 +118,6 @@ namespace HT.Framework
                 return Application.productName + ".HT.Framework.Script.ProtocolChannel";
             }
         }
-        /// <summary>
-        /// 新建HotfixProcedure脚本的文件夹
-        /// </summary>
-        public static string Script_HotfixProcedure_Directory
-        {
-            get
-            {
-                return Application.productName + ".HT.Framework.Script.HotfixProcedure";
-            }
-        }
-        /// <summary>
-        /// 新建HotfixObject脚本的文件夹
-        /// </summary>
-        public static string Script_HotfixObject_Directory
-        {
-            get
-            {
-                return Application.productName + ".HT.Framework.Script.HotfixObject";
-            }
-        }
         #endregion
 
         #region Utility

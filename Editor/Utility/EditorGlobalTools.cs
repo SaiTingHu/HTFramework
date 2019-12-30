@@ -717,15 +717,23 @@ namespace HT.Framework
                 }
             }
         }
-        
+
+        /// <summary>
+        /// 【验证函数】新建HotfixProcedure类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", true)]
+        private static bool CreateHotfixProcedureValidate()
+        {
+            return AssetDatabase.IsValidFolder("Assets/Hotfix");
+        }
+
         /// <summary>
         /// 新建HotfixProcedure类
         /// </summary>
         [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 100)]
         private static void CreateHotfixProcedure()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_HotfixProcedure_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 HotfixProcedure 类", directory, "NewHotfixProcedure", "cs");
+            string path = EditorUtility.SaveFilePanel("新建 HotfixProcedure 类", Application.dataPath + "/Hotfix", "NewHotfixProcedure", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -745,7 +753,6 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_HotfixProcedure_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -756,13 +763,21 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 【验证函数】新建HotfixObject类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", true)]
+        private static bool CreateHotfixObjectValidate()
+        {
+            return AssetDatabase.IsValidFolder("Assets/Hotfix");
+        }
+
+        /// <summary>
         /// 新建HotfixObject类
         /// </summary>
         [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 101)]
         private static void CreateHotfixObject()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_HotfixObject_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 HotfixObject 类", directory, "NewHotfixObject", "cs");
+            string path = EditorUtility.SaveFilePanel("新建 HotfixObject 类", Application.dataPath + "/Hotfix", "NewHotfixObject", "cs");
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
@@ -782,7 +797,6 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(cs);
                         Selection.activeObject = cs;
                         AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_HotfixObject_Directory, path.Substring(0, path.LastIndexOf("/")));
                     }
                 }
                 else
@@ -790,6 +804,19 @@ namespace HT.Framework
                     GlobalTools.LogError("新建HotfixObject失败，已存在类型 " + className);
                 }
             }
+        }
+
+        /// <summary>
+        /// 【验证函数】新建WebGL插件
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", true)]
+        private static bool CreateWebGLPluginValidate()
+        {
+#if UNITY_WEBGL
+            return true;
+#else
+            return false;
+#endif
         }
 
         /// <summary>
