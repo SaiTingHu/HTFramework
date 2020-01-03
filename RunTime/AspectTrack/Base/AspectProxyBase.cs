@@ -34,7 +34,7 @@ namespace HT.Framework
         /// 获取代理对象
         /// </summary>
         /// <returns>代理对象</returns>
-        public override object GetTransparentProxy()
+        public sealed override object GetTransparentProxy()
         {
             if (Main.m_AspectTrack.IsEnableAspectTrack)
             {
@@ -46,7 +46,7 @@ namespace HT.Framework
             }
         }
 
-        public override IMessage Invoke(IMessage msg)
+        public sealed override IMessage Invoke(IMessage msg)
         {
             IMethodCallMessage callMsg = msg as IMethodCallMessage;
 
