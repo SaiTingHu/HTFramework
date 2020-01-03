@@ -59,13 +59,13 @@ namespace HT.Framework
         /// <summary>
         /// 是否可以控制
         /// </summary>
-        public bool CanControl { get; set; } = true;
+        internal bool CanControl { get; set; } = true;
 
         /// <summary>
         /// 设置旋转限定最小值
         /// </summary>
         /// <param name="value">视野旋转时，视角在x,y,z三个轴的最小值</param>
-        public void SetMinLimit(Vector3 value)
+        internal void SetMinLimit(Vector3 value)
         {
             XMinLimit = value.x;
             YMinLimit = value.y;
@@ -76,7 +76,7 @@ namespace HT.Framework
         /// 设置旋转限定最大值
         /// </summary>
         /// <param name="value">视野旋转时，视角在x,y,z三个轴的最大值</param>
-        public void SetMaxLimit(Vector3 value)
+        internal void SetMaxLimit(Vector3 value)
         {
             XMaxLimit = value.x;
             YMaxLimit = value.y;
@@ -88,7 +88,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="angle">目标角度</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetAngle(Vector3 angle, bool damping = true)
+        internal void SetAngle(Vector3 angle, bool damping = true)
         {
             X = angle.x;
             Y = angle.y;
@@ -107,7 +107,7 @@ namespace HT.Framework
         /// <param name="angle">目标角度</param>
         /// <param name="distance">距离</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetAngle(Vector2 angle, float distance, bool damping = true)
+        internal void SetAngle(Vector2 angle, float distance, bool damping = true)
         {
             X = angle.x;
             Y = angle.y;
@@ -119,11 +119,11 @@ namespace HT.Framework
                 SwitchAngle(damping);
             }
         }
-        
+
         /// <summary>
         /// 刷新
         /// </summary>
-        public void OnRefresh()
+        internal void OnRefresh()
         {
             //控制
             Control();

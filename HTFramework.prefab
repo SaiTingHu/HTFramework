@@ -437,6 +437,9 @@ MonoBehaviour:
   Day: 5
   MainDataType: <None>
   MainParameters: []
+  IsEnabledLogInfo: 1
+  IsEnabledLogWarning: 1
+  IsEnabledLogError: 1
 --- !u!1 &1704541190228656
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,7 +853,7 @@ MonoBehaviour:
   IsOpenPrompt: 1
   ActivatedLayer:
     serializedVersion: 2
-    m_Bits: 531
+    m_Bits: 3
   TriggerHighlighting: 1
   NormalColor: {r: 0, g: 1, b: 1, a: 1}
   FlashColor1: {r: 1, g: 0, b: 0, a: 1}

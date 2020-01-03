@@ -40,13 +40,13 @@ namespace HT.Framework
         /// <summary>
         /// 是否可以控制
         /// </summary>
-        public bool CanControl { get; set; } = true;
+        internal bool CanControl { get; set; } = true;
 
         /// <summary>
         /// 设置平移限定最小值
         /// </summary>
         /// <param name="value">视野平移时，视角在x,y,z三个轴的最小值</param>
-        public void SetMinLimit(Vector3 value)
+        internal void SetMinLimit(Vector3 value)
         {
             XMinLimit = value.x;
             YMinLimit = value.y;
@@ -57,7 +57,7 @@ namespace HT.Framework
         /// 设置平移限定最大值
         /// </summary>
         /// <param name="value">视野平移时，视角在x,y,z三个轴的最大值</param>
-        public void SetMaxLimit(Vector3 value)
+        internal void SetMaxLimit(Vector3 value)
         {
             XMaxLimit = value.x;
             YMaxLimit = value.y;
@@ -69,7 +69,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="position">目标位置</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetPosition(Vector3 position, bool damping = true)
+        internal void SetPosition(Vector3 position, bool damping = true)
         {
             if (_isKeepTrack)
             {
@@ -101,7 +101,7 @@ namespace HT.Framework
         /// 进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>
-        public void EnterKeepTrack(Transform target)
+        internal void EnterKeepTrack(Transform target)
         {
             if (!target)
             {
@@ -115,7 +115,7 @@ namespace HT.Framework
         /// <summary>
         /// 退出保持追踪模式
         /// </summary>
-        public void LeaveKeepTrack()
+        internal void LeaveKeepTrack()
         {
             _isKeepTrack = false;
         }
@@ -123,7 +123,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新
         /// </summary>
-        public void OnRefresh()
+        internal void OnRefresh()
         {
             //控制
             Control();

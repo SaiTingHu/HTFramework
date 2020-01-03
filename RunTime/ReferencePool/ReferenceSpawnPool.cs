@@ -11,7 +11,7 @@ namespace HT.Framework
         private int _limit = 100;
         private Queue<IReference> _referenceQueue = new Queue<IReference>();
 
-        public ReferenceSpawnPool(int limit)
+        internal ReferenceSpawnPool(int limit)
         {
             _limit = limit;
         }

@@ -14,7 +14,7 @@ namespace HT.Framework
         private HTFAction<GameObject> _onSpawn;
         private HTFAction<GameObject> _onDespawn;
 
-        public ObjectSpawnPool(GameObject spawnTem, int limit, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
+        internal ObjectSpawnPool(GameObject spawnTem, int limit, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
         {
             _spawnTem = spawnTem;
             _limit = limit;

@@ -75,7 +75,7 @@ namespace HT.Framework
         /// <summary>
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI位置)
         /// </summary>
-        public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
+        internal event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
 
         private Ray _ray;
         private RaycastHit _hit;
@@ -90,20 +90,20 @@ namespace HT.Framework
         /// <summary>
         /// 射线发射摄像机
         /// </summary>
-        public Camera RayCamera { get; set; }
+        internal Camera RayCamera { get; set; }
         /// <summary>
         /// 当前被射线捕获的目标
         /// </summary>
-        public MouseRayTargetBase Target { get; private set; }
+        internal MouseRayTargetBase Target { get; private set; }
         /// <summary>
         /// 当前被射线击中的点
         /// </summary>
-        public Vector3 HitPoint { get; private set; }
+        internal Vector3 HitPoint { get; private set; }
 
         /// <summary>
         /// 刷新
         /// </summary>
-        public void OnRefresh()
+        internal void OnRefresh()
         {
             if (IsOpenRay)
             {

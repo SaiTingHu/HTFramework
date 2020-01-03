@@ -11,7 +11,7 @@ namespace HT.Framework
         /// <summary>
         /// ¸ßÁÁäÖÈ¾ÊÂ¼ş
         /// </summary>
-        public static event HTFAction<bool, bool> HighlightingEvent;
+        internal static event HTFAction<bool, bool> HighlightingEvent;
         
         private static Shader _blurShader;
         /// <summary>

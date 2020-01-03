@@ -69,7 +69,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="color">高亮颜色</param>
         /// <param name="isFlash">是否闪烁</param>
-        public void Open(Color color, float intensity)
+        internal void Open(Color color, float intensity)
         {
             if (!_isInit)
             {
@@ -108,7 +108,7 @@ namespace HT.Framework
         /// <summary>
         /// 关闭轮廓高亮
         /// </summary>
-        public void Close()
+        internal void Close()
         {
             if (_isOpened)
             {
@@ -123,7 +123,7 @@ namespace HT.Framework
         /// <summary>
         /// 死亡
         /// </summary>
-        public void Die()
+        internal void Die()
         {
             Destroy(this);
         }
