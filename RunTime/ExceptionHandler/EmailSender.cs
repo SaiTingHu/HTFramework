@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 邮件发送者
     /// </summary>
-    public sealed class EmailSender : IDisposable
+    internal sealed class EmailSender : IDisposable
     {
         private MailMessage _mailMessage;
         private SmtpClient _smtpClient;

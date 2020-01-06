@@ -7,12 +7,8 @@ namespace HT.Framework
     /// 摄像机注视目标移动控制
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class MousePosition : MonoBehaviour
+    internal sealed class MousePosition : MonoBehaviour
     {
-        //注视目标
-        public CameraTarget Target;
-        //旋转控制器
-        public MouseRotation MR;
         //阻尼缓冲时长
         public float DampingTime = 1;
         //x轴移动速度，y轴移动速度，z轴移动速度
@@ -41,6 +37,16 @@ namespace HT.Framework
         /// 是否可以控制
         /// </summary>
         internal bool CanControl { get; set; } = true;
+
+        /// <summary>
+        /// 注视目标
+        /// </summary>
+        internal CameraTarget Target { get; set; }
+
+        /// <summary>
+        /// 旋转控制器
+        /// </summary>
+        internal MouseRotation MR { get; set; }
 
         /// <summary>
         /// 设置平移限定最小值

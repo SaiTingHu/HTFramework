@@ -14,7 +14,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用切面追踪【请勿在代码中修改】
         /// </summary>
-        public bool IsEnableAspectTrack = false;
+        [SerializeField] internal bool IsEnableAspectTrack = false;
         /// <summary>
         /// 是否启用全局拦截（注意：只拦截无返回值的方法的调用）
         /// </summary>
@@ -22,7 +22,7 @@ namespace HT.Framework
         /// <summary>
         /// 全局拦截条件
         /// </summary>
-        public Dictionary<string, HTFFunc<MethodBase, object[], bool>> InterceptConditions { get; private set; } = new Dictionary<string, HTFFunc<MethodBase, object[], bool>>();
+        internal Dictionary<string, HTFFunc<MethodBase, object[], bool>> InterceptConditions { get; private set; } = new Dictionary<string, HTFFunc<MethodBase, object[], bool>>();
         
         //所有的代理对象 <真实对象、代理对象>
         private Dictionary<IAspectTrackObject, IAspectTrackObject> _proxyObjects = new Dictionary<IAspectTrackObject, IAspectTrackObject>();

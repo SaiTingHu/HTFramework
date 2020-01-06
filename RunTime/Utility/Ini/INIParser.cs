@@ -135,7 +135,7 @@ namespace HT.Framework
             return true;
         }
 
-        private bool isComment(string Line)
+        private bool IsComment(string Line)
         {
             string tmpKey = null, tmpValue = null;
             if (ParseSectionName(Line) != null) return false;
@@ -323,7 +323,7 @@ namespace HT.Framework
 
                         if (Unmodified)
                         {
-                            if (isComment(s)) sw.WriteLine(s);
+                            if (IsComment(s)) sw.WriteLine(s);
                             else if (!Deleted) sw.WriteLine(s);
                         }
                     }

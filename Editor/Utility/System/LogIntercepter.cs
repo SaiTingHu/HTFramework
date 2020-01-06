@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class LogIntercepter
+    internal sealed class LogIntercepter
     {
         private static LogIntercepter _current;
         private static LogIntercepter Current

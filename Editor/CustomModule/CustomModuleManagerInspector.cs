@@ -8,7 +8,7 @@ namespace HT.Framework
     [CustomEditor(typeof(CustomModuleManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103390089")]
-    public sealed class CustomModuleManagerInspector : HTFEditor<CustomModuleManager>
+    internal sealed class CustomModuleManagerInspector : HTFEditor<CustomModuleManager>
     {
         private Dictionary<string, CustomModuleBase> _customModules;
 

@@ -9,7 +9,7 @@ namespace HT.Framework
     [CustomEditor(typeof(UIManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88125982")]
-    public sealed class UIManagerInspector : HTFEditor<UIManager>
+    internal sealed class UIManagerInspector : HTFEditor<UIManager>
     {
         private Dictionary<Type, UILogicBase> _overlayUIs;
         private Dictionary<Type, UILogicBase> _cameraUIs;

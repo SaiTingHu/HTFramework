@@ -8,7 +8,7 @@ namespace HT.Framework
     [CustomEditor(typeof(WebRequestManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89886124")]
-    public sealed class WebRequestManagerInspector : HTFEditor<WebRequestManager>
+    internal sealed class WebRequestManagerInspector : HTFEditor<WebRequestManager>
     {
         private Dictionary<string, WebInterfaceBase> _interfaces;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(HighlightingEffect))]
-    public sealed class HighlightingEffectInspector : HTFEditor<HighlightingEffect>
+    internal sealed class HighlightingEffectInspector : HTFEditor<HighlightingEffect>
     {
         private static string[] _downsampleOptions = new string[] { "None", "Half", "Quarter" };
         

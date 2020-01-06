@@ -8,7 +8,7 @@ namespace HT.Framework
     [CustomEditor(typeof(InputManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89001848")]
-    public sealed class InputManagerInspector : HTFEditor<InputManager>
+    internal sealed class InputManagerInspector : HTFEditor<InputManager>
     {
         protected override void OnInspectorDefaultGUI()
         {

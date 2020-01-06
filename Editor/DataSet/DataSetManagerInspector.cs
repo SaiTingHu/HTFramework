@@ -9,7 +9,7 @@ namespace HT.Framework
     [CustomEditor(typeof(DataSetManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89395574")]
-    public sealed class DataSetManagerInspector : HTFEditor<DataSetManager>
+    internal sealed class DataSetManagerInspector : HTFEditor<DataSetManager>
     {
         private Dictionary<Type, List<DataSetBase>> _dataSets;
 

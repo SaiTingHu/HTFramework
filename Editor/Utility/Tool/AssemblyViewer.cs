@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 程序集查看器
     /// </summary>
-    public sealed class AssemblyViewer : HTFEditorWindow
+    internal sealed class AssemblyViewer : HTFEditorWindow
     {
         private Assembly[] _assemblies;
         private Assembly _currentAssembly;

@@ -15,11 +15,11 @@ namespace HT.Framework
         /// <summary>
         /// 当前定义的实体名称【请勿在代码中修改】
         /// </summary>
-        public List<string> DefineEntityNames = new List<string>();
+        [SerializeField] internal List<string> DefineEntityNames = new List<string>();
         /// <summary>
         /// 当前定义的实体对象【请勿在代码中修改】
         /// </summary>
-        public List<GameObject> DefineEntityTargets = new List<GameObject>();
+        [SerializeField] internal List<GameObject> DefineEntityTargets = new List<GameObject>();
 
         //当前定义的实体与对象对应关系
         private Dictionary<string, GameObject> _defineEntities = new Dictionary<string, GameObject>();

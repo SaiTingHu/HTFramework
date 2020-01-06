@@ -14,39 +14,39 @@ namespace HT.Framework
         /// <summary>
         /// 是否静音初始值【请勿在代码中修改】
         /// </summary>
-        public bool MuteDefault = false;
+        [SerializeField] internal bool MuteDefault = false;
         /// <summary>
         /// 背景音乐优先级初始值【请勿在代码中修改】
         /// </summary>
-        public int BackgroundPriorityDefault = 0;
+        [SerializeField] internal int BackgroundPriorityDefault = 0;
         /// <summary>
         /// 单通道音效优先级初始值【请勿在代码中修改】
         /// </summary>
-        public int SinglePriorityDefault = 10;
+        [SerializeField] internal int SinglePriorityDefault = 10;
         /// <summary>
         /// 多通道音效优先级初始值【请勿在代码中修改】
         /// </summary>
-        public int MultiplePriorityDefault = 20;
+        [SerializeField] internal int MultiplePriorityDefault = 20;
         /// <summary>
         /// 世界音效优先级初始值【请勿在代码中修改】
         /// </summary>
-        public int WorldPriorityDefault = 30;
+        [SerializeField] internal int WorldPriorityDefault = 30;
         /// <summary>
         /// 背景音乐音量初始值【请勿在代码中修改】
         /// </summary>
-        public float BackgroundVolumeDefault = 0.6f;
+        [SerializeField] internal float BackgroundVolumeDefault = 0.6f;
         /// <summary>
         /// 单通道音效音量初始值【请勿在代码中修改】
         /// </summary>
-        public float SingleVolumeDefault = 1;
+        [SerializeField] internal float SingleVolumeDefault = 1;
         /// <summary>
         /// 多通道音效音量初始值【请勿在代码中修改】
         /// </summary>
-        public float MultipleVolumeDefault = 1;
+        [SerializeField] internal float MultipleVolumeDefault = 1;
         /// <summary>
         /// 世界音效音量初始值【请勿在代码中修改】
         /// </summary>
-        public float WorldVolumeDefault = 1;
+        [SerializeField] internal float WorldVolumeDefault = 1;
 
         /// <summary>
         /// 单通道音效播放结束事件

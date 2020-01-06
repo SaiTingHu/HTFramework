@@ -62,6 +62,9 @@ namespace HT.Framework
             Main.m_Hotfix.UpdateHotfixLogicEvent += UpdateHotfixLogic;
         }
 
+        /// <summary>
+        /// 更新逻辑
+        /// </summary>
         public void UpdateHotfixLogic()
         {
             if (_currentProcedure != null)

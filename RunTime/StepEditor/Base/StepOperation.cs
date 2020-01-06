@@ -13,7 +13,7 @@ namespace HT.Framework
         /// 操作ID
         /// </summary>
         public string GUID = "";
-        public Vector2 Anchor = Vector2.zero;
+        [SerializeField] internal Vector2 Anchor = Vector2.zero;
         /// <summary>
         /// 操作执行到进入下一个操作的时间
         /// </summary>
@@ -26,8 +26,8 @@ namespace HT.Framework
         /// 操作目标
         /// </summary>
         public GameObject Target = null;
-        public string TargetGUID = "<None>";
-        public string TargetPath = "<None>";
+        [SerializeField] internal string TargetGUID = "<None>";
+        [SerializeField] internal string TargetPath = "<None>";
         /// <summary>
         /// 操作简述名称
         /// </summary>

@@ -13,6 +13,23 @@ namespace HT.Framework
     public sealed class ControllerManager : InternalModuleBase
     {
         /// <summary>
+        /// 默认的控制模式【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal ControlMode DefaultControlMode = ControlMode.FreeControl;
+        /// <summary>
+        /// Dotween动画的默认缓动类型【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal Ease DefaultEase = Ease.Linear;
+        /// <summary>
+        /// Dotween动画的默认自动启动方式【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal AutoPlay DefaultAutoPlay = AutoPlay.All;
+        /// <summary>
+        /// Dotween动画是否自动销毁【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal bool IsAutoKill = true;
+
+        /// <summary>
         /// 切换至自由控制事件
         /// </summary>
         public event HTFAction SwitchToFreeControlEvent;
@@ -29,23 +46,6 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
 
-        /// <summary>
-        /// 默认的控制模式【请勿在代码中修改】
-        /// </summary>
-        public ControlMode DefaultControlMode = ControlMode.FreeControl;
-        /// <summary>
-        /// Dotween动画的默认缓动类型【请勿在代码中修改】
-        /// </summary>
-        public Ease DefaultEase = Ease.Linear;
-        /// <summary>
-        /// Dotween动画的默认自动启动方式【请勿在代码中修改】
-        /// </summary>
-        public AutoPlay DefaultAutoPlay = AutoPlay.All;
-        /// <summary>
-        /// Dotween动画是否自动销毁【请勿在代码中修改】
-        /// </summary>
-        public bool IsAutoKill = true;
-        
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;

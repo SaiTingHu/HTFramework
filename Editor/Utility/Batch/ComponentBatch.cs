@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class ComponentBatch : HTFEditorWindow
+    internal sealed class ComponentBatch : HTFEditorWindow
     {
         private GameObject _root;
         private string _componentTypeFilter = "";

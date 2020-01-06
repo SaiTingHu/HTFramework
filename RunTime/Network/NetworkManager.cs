@@ -16,23 +16,24 @@ namespace HT.Framework
         /// <summary>
         /// 启用的通信协议通道类型【请勿在代码中修改】
         /// </summary>
-        public List<string> ChannelTypes = new List<string>();
+        [SerializeField] internal List<string> ChannelTypes = new List<string>();
         /// <summary>
         /// 服务器IP地址【请勿在代码中修改】
         /// </summary>
-        public string ServerIP;
+        [SerializeField] internal string ServerIP;
         /// <summary>
         /// 服务器端口号【请勿在代码中修改】
         /// </summary>
-        public int ServerPort;
+        [SerializeField] internal int ServerPort;
         /// <summary>
         /// 客户端IP地址【请勿在代码中修改】
         /// </summary>
-        public string ClientIP;
+        [SerializeField] internal string ClientIP;
         /// <summary>
         /// 客户端端口号【请勿在代码中修改】
         /// </summary>
-        public int ClientPort;
+        [SerializeField] internal int ClientPort;
+
         /// <summary>
         /// 开始连接服务器事件
         /// </summary>

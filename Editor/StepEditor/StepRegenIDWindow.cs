@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class StepRegenIDWindow : HTFEditorWindow
+    internal sealed class StepRegenIDWindow : HTFEditorWindow
     {
         public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset)
         {

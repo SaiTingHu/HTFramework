@@ -20,19 +20,19 @@ namespace HT.Framework
         /// <summary>
         /// 资源加载模式【请勿在代码中修改】
         /// </summary>
-        public ResourceLoadMode Mode = ResourceLoadMode.Resource;
+        [SerializeField] internal ResourceLoadMode Mode = ResourceLoadMode.Resource;
         /// <summary>
         /// 是否是编辑器模式【请勿在代码中修改】
         /// </summary>
-        public bool IsEditorMode = true;
+        [SerializeField] internal bool IsEditorMode = true;
         /// <summary>
         /// 是否缓存AB包【请勿在代码中修改】
         /// </summary>
-        public bool IsCacheAssetBundle = true;
+        [SerializeField] internal bool IsCacheAssetBundle = true;
         /// <summary>
         /// 所有AssetBundle资源包清单的名称【请勿在代码中修改】
         /// </summary>
-        public string AssetBundleManifestName;
+        [SerializeField] internal string AssetBundleManifestName;
 
         //AssetBundle资源加载根路径
         private string _assetBundleRootPath;

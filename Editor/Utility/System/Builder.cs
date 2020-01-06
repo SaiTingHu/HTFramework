@@ -1,4 +1,5 @@
 ﻿using AssetBundleBrowser;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -6,12 +7,12 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class Builder : HTFEditorWindow
+    internal sealed class Builder : HTFEditorWindow
     {
         /// <summary>
-        /// 检查项目构建的前置条件，如果返回false，将禁止打包，返回true，才启用打包
+        /// 检查项目构建的前置条件，如果至少有一个条件返回false，将禁止打包，全部返回true，才启用打包
         /// </summary>
-        public static event HTFFunc<bool> CheckBuildPreconditionEvent;
+        public static List<HTFFunc<bool>> CheckBuildPreconditions = new List<HTFFunc<bool>>();
         /// <summary>
         /// 项目发布完成事件
         /// </summary>
@@ -165,9 +166,9 @@ namespace HT.Framework
 
         private void Check()
         {
-            if (CheckBuildPreconditionEvent != null)
+            for (int i = 0; i < CheckBuildPreconditions.Count; i++)
             {
-                if (!CheckBuildPreconditionEvent())
+                if (!CheckBuildPreconditions[i]())
                 {
                     _isCanBuild = false;
                     GlobalTools.LogError("当前无法构建项目：未满足允许项目构建的前置条件！");

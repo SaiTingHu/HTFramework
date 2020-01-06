@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(StepTarget))]
-    public sealed class StepTargetInspector : HTFEditor<StepTarget>
+    internal sealed class StepTargetInspector : HTFEditor<StepTarget>
     {
         protected override void OnInspectorDefaultGUI()
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(MousePosition))]
-    public sealed class MousePositionInspector : HTFEditor<MousePosition>
+    internal sealed class MousePositionInspector : HTFEditor<MousePosition>
     {
         protected override bool IsEnableRuntimeData
         {

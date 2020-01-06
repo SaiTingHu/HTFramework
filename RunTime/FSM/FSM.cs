@@ -15,35 +15,36 @@ namespace HT.Framework
         /// <summary>
         /// 是否自动注册到管理器【请勿在代码中修改】
         /// </summary>
-        public bool IsAutoRegister = true;
+        [SerializeField] internal bool IsAutoRegister = true;
         /// <summary>
         /// 有限状态机数据类型【请勿在代码中修改】
         /// </summary>
-        public string Data = "<None>";
+        [SerializeField] internal string Data = "<None>";
         /// <summary>
         /// 当前激活的所有状态类名【请勿在代码中修改】
         /// </summary>
-        public List<string> States = new List<string>();
+        [SerializeField] internal List<string> States = new List<string>();
         /// <summary>
         /// 当前激活的所有状态名称【请勿在代码中修改】
         /// </summary>
-        public List<string> StateNames = new List<string>();
+        [SerializeField] internal List<string> StateNames = new List<string>();
         /// <summary>
         /// 当前初始状态类名【请勿在代码中修改】
         /// </summary>
-        public string DefaultState = "";
+        [SerializeField] internal string DefaultState = "";
         /// <summary>
         /// 当前初始状态名称【请勿在代码中修改】
         /// </summary>
-        public string DefaultStateName = "";
+        [SerializeField] internal string DefaultStateName = "";
         /// <summary>
         /// 当前最终状态类名【请勿在代码中修改】
         /// </summary>
-        public string FinalState = "";
+        [SerializeField] internal string FinalState = "";
         /// <summary>
         /// 当前最终状态名称【请勿在代码中修改】
         /// </summary>
-        public string FinalStateName = "";
+        [SerializeField] internal string FinalStateName = "";
+
         /// <summary>
         /// 有限状态机名称
         /// </summary>

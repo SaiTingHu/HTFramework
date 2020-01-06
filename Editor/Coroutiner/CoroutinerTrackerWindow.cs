@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class CoroutinerTrackerWindow : HTFEditorWindow
+    internal sealed class CoroutinerTrackerWindow : HTFEditorWindow
     {
         private Coroutiner _coroutiner;
         private Dictionary<Delegate, bool> _enumerators = new Dictionary<Delegate, bool>();

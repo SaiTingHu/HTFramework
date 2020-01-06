@@ -25,7 +25,7 @@ namespace HT.Framework
         /// <summary>
         /// 指引目标的高亮方式
         /// </summary>
-        public MouseRay.HighlightingType GuideHighlighting = MouseRay.HighlightingType.Flash;
+        [SerializeField] internal MouseRay.HighlightingType GuideHighlighting = MouseRay.HighlightingType.Flash;
         /// <summary>
         /// 步骤开始事件【任何一个步骤开始后触发，连续跳过步骤时不会触发】
         /// </summary>

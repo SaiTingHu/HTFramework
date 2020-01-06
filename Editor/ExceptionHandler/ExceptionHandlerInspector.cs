@@ -6,7 +6,7 @@ namespace HT.Framework
     [CustomEditor(typeof(ExceptionHandler))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102894933")]
-    public sealed class ExceptionHandlerInspector : HTFEditor<ExceptionHandler>
+    internal sealed class ExceptionHandlerInspector : HTFEditor<ExceptionHandler>
     {
         protected override void OnInspectorDefaultGUI()
         {

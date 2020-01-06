@@ -15,23 +15,23 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用Overlay类型的UI【请勿在代码中修改】
         /// </summary>
-        public bool IsEnableOverlayUI = true;
+        [SerializeField] internal bool IsEnableOverlayUI = true;
         /// <summary>
         /// 是否启用Camera类型的UI【请勿在代码中修改】
         /// </summary>
-        public bool IsEnableCameraUI = false;
+        [SerializeField] internal bool IsEnableCameraUI = false;
         /// <summary>
         /// 是否启用World类型的UI【请勿在代码中修改】
         /// </summary>
-        public bool IsEnableWorldUI = false;
+        [SerializeField] internal bool IsEnableWorldUI = false;
         /// <summary>
         /// 当前定义的UI名称【请勿在代码中修改】
         /// </summary>
-        public List<string> DefineUINames = new List<string>();
+        [SerializeField] internal List<string> DefineUINames = new List<string>();
         /// <summary>
         /// 当前定义的UI实体【请勿在代码中修改】
         /// </summary>
-        public List<GameObject> DefineUIEntitys = new List<GameObject>();
+        [SerializeField] internal List<GameObject> DefineUIEntitys = new List<GameObject>();
 
         //当前定义的UI与实体对应关系
         private Dictionary<string, GameObject> _defineUIAndEntitys = new Dictionary<string, GameObject>();

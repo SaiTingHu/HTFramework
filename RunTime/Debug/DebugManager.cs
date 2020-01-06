@@ -13,11 +13,11 @@ namespace HT.Framework
         /// <summary>
         /// 调试器类型【请勿在代码中修改】
         /// </summary>
-        public string DebuggerType = "";
+        [SerializeField] internal string DebuggerType = "";
         /// <summary>
         /// 调试器皮肤【请勿在代码中修改】
         /// </summary>
-        public GUISkin DebuggerSkin;
+        [SerializeField] internal GUISkin DebuggerSkin;
         /// <summary>
         /// 是否启用调试器
         /// </summary>

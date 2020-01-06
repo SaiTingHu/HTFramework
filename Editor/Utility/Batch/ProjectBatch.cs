@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class ProjectBatch : HTFEditorWindow
+    internal sealed class ProjectBatch : HTFEditorWindow
     {
         private DefaultAsset _folder;
         private string _objectTypeFilter = "";

@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 对象池
     /// </summary>
-    public sealed class ObjectSpawnPool
+    internal sealed class ObjectSpawnPool
     {
         private GameObject _spawnTem;
         private int _limit = 100;
@@ -14,7 +14,7 @@ namespace HT.Framework
         private HTFAction<GameObject> _onSpawn;
         private HTFAction<GameObject> _onDespawn;
 
-        internal ObjectSpawnPool(GameObject spawnTem, int limit, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
+        public ObjectSpawnPool(GameObject spawnTem, int limit, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
         {
             _spawnTem = spawnTem;
             _limit = limit;

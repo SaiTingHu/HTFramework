@@ -16,11 +16,11 @@ namespace HT.Framework
         /// <summary>
         /// 所有协程迭代器
         /// </summary>
-        public Dictionary<string, CoroutineEnumerator> CoroutineEnumerators { get; } = new Dictionary<string, CoroutineEnumerator>();
+        internal Dictionary<string, CoroutineEnumerator> CoroutineEnumerators { get; } = new Dictionary<string, CoroutineEnumerator>();
         /// <summary>
         /// 迭代器仓库
         /// </summary>
-        public Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
+        internal Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
 
         public override void OnTermination()
         {
@@ -172,7 +172,7 @@ namespace HT.Framework
         /// <summary>
         /// 协程迭代器
         /// </summary>
-        public sealed class CoroutineEnumerator : IEnumerator, IReference
+        internal sealed class CoroutineEnumerator : IEnumerator, IReference
         {
             public string ID { get; private set; }
             public object TargetObject { get; private set; }

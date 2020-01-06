@@ -13,15 +13,16 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用热更新【请勿在代码中修改】
         /// </summary>
-        public bool IsEnableHotfix = false;
+        [SerializeField] internal bool IsEnableHotfix = false;
         /// <summary>
         /// 热更新库文件AB包名称【请勿在代码中修改】
         /// </summary>
-        public string HotfixDllAssetBundleName = "hotfix";
+        [SerializeField] internal string HotfixDllAssetBundleName = "hotfix";
         /// <summary>
         /// 热更新库文件路径【请勿在代码中修改】
         /// </summary>
-        public string HotfixDllAssetsPath = "Assets/Hotfix/Hotfix.dll.bytes";
+        [SerializeField] internal string HotfixDllAssetsPath = "Assets/Hotfix/Hotfix.dll.bytes";
+
         /// <summary>
         /// 执行热更新逻辑事件
         /// </summary>

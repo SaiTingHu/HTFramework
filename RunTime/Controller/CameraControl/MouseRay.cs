@@ -10,7 +10,7 @@ namespace HT.Framework
     /// </summary>
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
-    public sealed class MouseRay : MonoBehaviour
+    internal sealed class MouseRay : MonoBehaviour
     {
         /// <summary>
         /// 是否开启射线投射
@@ -91,10 +91,12 @@ namespace HT.Framework
         /// 射线发射摄像机
         /// </summary>
         internal Camera RayCamera { get; set; }
+
         /// <summary>
         /// 当前被射线捕获的目标
         /// </summary>
         internal MouseRayTargetBase Target { get; private set; }
+
         /// <summary>
         /// 当前被射线击中的点
         /// </summary>

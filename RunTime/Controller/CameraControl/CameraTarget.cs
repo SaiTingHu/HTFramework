@@ -6,7 +6,8 @@ namespace HT.Framework
     /// 摄像机注视目标
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class CameraTarget : MonoBehaviour
+    internal sealed class CameraTarget : MonoBehaviour
     {
+
     }
 }

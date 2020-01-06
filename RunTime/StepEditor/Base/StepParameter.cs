@@ -28,7 +28,8 @@ namespace HT.Framework
         /// <summary>
         /// 克隆
         /// </summary>
-        public StepParameter Clone()
+        /// <returns>新的对象</returns>
+        internal StepParameter Clone()
         {
             StepParameter parameter = new StepParameter();
             parameter.Type = Type;

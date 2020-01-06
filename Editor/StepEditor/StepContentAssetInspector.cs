@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(StepContentAsset))]
-    public sealed class StepContentAssetInspector : HTFEditor<StepContentAsset>
+    internal sealed class StepContentAssetInspector : HTFEditor<StepContentAsset>
     {
         [OnOpenAsset]
         private static bool OnOpenAsset(int instanceID, int line)

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(MouseRotation))]
-    public sealed class MouseRotationInspector : HTFEditor<MouseRotation>
+    internal sealed class MouseRotationInspector : HTFEditor<MouseRotation>
     {
         protected override bool IsEnableRuntimeData
         {

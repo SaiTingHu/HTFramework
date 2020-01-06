@@ -4,7 +4,8 @@ using UnityEngine;
 namespace HT.Framework
 {
     [DisallowMultipleComponent]
-    public sealed class MeshOutlineObject : MonoBehaviour
+    [DefaultExecutionOrder(-700)]
+    internal sealed class MeshOutlineObject : MonoBehaviour
     {
         private static Material GetOpaqueMaterial()
         {
@@ -52,7 +53,7 @@ namespace HT.Framework
         /// <summary>
         /// 重置轮廓
         /// </summary>
-        public void ResetOutline()
+        internal void ResetOutline()
         {
             Close();
 

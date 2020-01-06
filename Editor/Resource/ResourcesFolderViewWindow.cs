@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class ResourcesFolderViewWindow : HTFEditorWindow
+    internal sealed class ResourcesFolderViewWindow : HTFEditorWindow
     {
         private List<ResourceFolder> _resourcesFolders;
 

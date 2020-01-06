@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Object = UnityEngine.Object;
+
+[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
 
 namespace HT.Framework
 {
@@ -357,25 +360,25 @@ namespace HT.Framework
 
         #region License
         /// <summary>
-        /// 是否永久授权
+        /// 是否永久授权【请勿在代码中修改】
         /// </summary>
-        public bool IsPermanentLicense = true;
+        [SerializeField] internal bool IsPermanentLicense = true;
         /// <summary>
-        /// 授权到期时，主界面文字提示内容
+        /// 授权到期时，主界面文字提示内容【请勿在代码中修改】
         /// </summary>
-        public string EndingPrompt = "授权已到期！";
+        [SerializeField] internal string EndingPrompt = "授权已到期！";
         /// <summary>
-        /// 授权终止年份
+        /// 授权终止年份【请勿在代码中修改】
         /// </summary>
-        public int Year = 5000;
+        [SerializeField] internal int Year = 5000;
         /// <summary>
-        /// 授权终止月份
+        /// 授权终止月份【请勿在代码中修改】
         /// </summary>
-        public int Month = 5;
+        [SerializeField] internal int Month = 5;
         /// <summary>
-        /// 授权终止日
+        /// 授权终止日【请勿在代码中修改】
         /// </summary>
-        public int Day = 5;
+        [SerializeField] internal int Day = 5;
         
         private DateTime _endingTime;
         private GUIStyle _promptStyle;
@@ -420,7 +423,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前主要数据类名【请勿在代码中修改】
         /// </summary>
-        public string MainDataType = "<None>";
+        [SerializeField] internal string MainDataType = "<None>";
 
         private MainDataBase _data;
 
@@ -477,7 +480,7 @@ namespace HT.Framework
         /// <summary>
         /// 主要参数【请勿在代码中修改】
         /// </summary>
-        public List<MainParameter> MainParameters = new List<MainParameter>();
+        [SerializeField] internal List<MainParameter> MainParameters = new List<MainParameter>();
 
         /// <summary>
         /// 是否存在指定名称、类型的参数

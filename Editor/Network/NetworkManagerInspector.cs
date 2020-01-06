@@ -9,7 +9,7 @@ namespace HT.Framework
     [CustomEditor(typeof(NetworkManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103575999")]
-    public sealed class NetworkManagerInspector : HTFEditor<NetworkManager>
+    internal sealed class NetworkManagerInspector : HTFEditor<NetworkManager>
     {
         private Dictionary<Type, ProtocolChannelBase> _protocolChannels;
 

@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomEditor(typeof(CameraTarget))]
-    public sealed class CameraTargetInspector : HTFEditor<CameraTarget>
+    internal sealed class CameraTargetInspector : HTFEditor<CameraTarget>
     {
         protected override bool IsEnableRuntimeData
         {

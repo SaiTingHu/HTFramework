@@ -6,7 +6,7 @@ namespace HT.Framework
     [CustomEditor(typeof(ObjectPoolManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86610600")]
-    public sealed class ObjectPoolManagerInspector : HTFEditor<ObjectPoolManager>
+    internal sealed class ObjectPoolManagerInspector : HTFEditor<ObjectPoolManager>
     {
         protected override void OnInspectorDefaultGUI()
         {

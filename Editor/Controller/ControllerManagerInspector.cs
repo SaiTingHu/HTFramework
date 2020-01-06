@@ -7,7 +7,7 @@ namespace HT.Framework
     [CustomEditor(typeof(ControllerManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89416110")]
-    public sealed class ControllerManagerInspector : HTFEditor<ControllerManager>
+    internal sealed class ControllerManagerInspector : HTFEditor<ControllerManager>
     {
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;

@@ -13,9 +13,12 @@ namespace HT.Framework
         /// <summary>
         /// 单个对象池上限【请勿在代码中修改】
         /// </summary>
-        public int Limit = 100;
+        [SerializeField] internal int Limit = 100;
 
-        private Dictionary<string, ObjectSpawnPool> _spawnPools = new Dictionary<string, ObjectSpawnPool>();
+        /// <summary>
+        /// 所有对象池
+        /// </summary>
+        internal Dictionary<string, ObjectSpawnPool> SpawnPools { get; private set; } = new Dictionary<string, ObjectSpawnPool>();
 
         public override void OnTermination()
         {
@@ -23,18 +26,7 @@ namespace HT.Framework
 
             ClearAll();
         }
-
-        /// <summary>
-        /// 所有对象池
-        /// </summary>
-        public Dictionary<string, ObjectSpawnPool> SpawnPools
-        {
-            get
-            {
-                return _spawnPools;
-            }
-        }
-
+        
         /// <summary>
         /// 注册对象池
         /// </summary>
@@ -44,9 +36,9 @@ namespace HT.Framework
         /// <param name="onDespawn">对象回收时处理委托</param>
         public void RegisterSpawnPool(string name, GameObject spawnTem, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
         {
-            if (!_spawnPools.ContainsKey(name))
+            if (!SpawnPools.ContainsKey(name))
             {
-                _spawnPools.Add(name, new ObjectSpawnPool(spawnTem, Limit, onSpawn, onDespawn));
+                SpawnPools.Add(name, new ObjectSpawnPool(spawnTem, Limit, onSpawn, onDespawn));
             }
             else
             {
@@ -59,10 +51,10 @@ namespace HT.Framework
         /// <param name="name">对象池名称</param>
         public void UnRegisterSpawnPool(string name)
         {
-            if (_spawnPools.ContainsKey(name))
+            if (SpawnPools.ContainsKey(name))
             {
-                _spawnPools[name].Clear();
-                _spawnPools.Remove(name);
+                SpawnPools[name].Clear();
+                SpawnPools.Remove(name);
             }
             else
             {
@@ -77,9 +69,9 @@ namespace HT.Framework
         /// <returns>对象数量</returns>
         public int GetPoolCount(string name)
         {
-            if (_spawnPools.ContainsKey(name))
+            if (SpawnPools.ContainsKey(name))
             {
-                return _spawnPools[name].Count;
+                return SpawnPools[name].Count;
             }
             else
             {
@@ -93,9 +85,9 @@ namespace HT.Framework
         /// <returns>对象</returns>
         public GameObject Spawn(string name)
         {
-            if (_spawnPools.ContainsKey(name))
+            if (SpawnPools.ContainsKey(name))
             {
-                return _spawnPools[name].Spawn();
+                return SpawnPools[name].Spawn();
             }
             else
             {
@@ -109,9 +101,9 @@ namespace HT.Framework
         /// <param name="target">对象</param>
         public void Despawn(string name, GameObject target)
         {
-            if (_spawnPools.ContainsKey(name))
+            if (SpawnPools.ContainsKey(name))
             {
-                _spawnPools[name].Despawn(target);
+                SpawnPools[name].Despawn(target);
             }
             else
             {
@@ -125,11 +117,11 @@ namespace HT.Framework
         /// <param name="targets">对象数组</param>
         public void Despawns(string name, GameObject[] targets)
         {
-            if (_spawnPools.ContainsKey(name))
+            if (SpawnPools.ContainsKey(name))
             {
                 for (int i = 0; i < targets.Length; i++)
                 {
-                    _spawnPools[name].Despawn(targets[i]);
+                    SpawnPools[name].Despawn(targets[i]);
                 }
             }
             else
@@ -144,11 +136,11 @@ namespace HT.Framework
         /// <param name="targets">对象集合</param>
         public void Despawns(string name, List<GameObject> targets)
         {
-            if (_spawnPools.ContainsKey(name))
+            if (SpawnPools.ContainsKey(name))
             {
                 for (int i = 0; i < targets.Count; i++)
                 {
-                    _spawnPools[name].Despawn(targets[i]);
+                    SpawnPools[name].Despawn(targets[i]);
                 }
                 targets.Clear();
             }
@@ -163,9 +155,9 @@ namespace HT.Framework
         /// <param name="name">对象池名称</param>
         public void Clear(string name)
         {
-            if (_spawnPools.ContainsKey(name))
+            if (SpawnPools.ContainsKey(name))
             {
-                _spawnPools[name].Clear();
+                SpawnPools[name].Clear();
             }
             else
             {
@@ -177,7 +169,7 @@ namespace HT.Framework
         /// </summary>
         public void ClearAll()
         {
-            foreach (var spawnPool in _spawnPools)
+            foreach (var spawnPool in SpawnPools)
             {
                 spawnPool.Value.Clear();
             }

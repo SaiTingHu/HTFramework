@@ -27,7 +27,8 @@ namespace HT.Framework
         /// <summary>
         /// 克隆
         /// </summary>
-        public StepOperation Clone()
+        /// <returns>新的对象</returns>
+        internal StepOperation Clone()
         {
             StepOperation operation = new StepOperation();
             operation.GUID = Guid.NewGuid().ToString();
@@ -56,7 +57,7 @@ namespace HT.Framework
             return operation;
         }
 
-        public void Execute()
+        internal void Execute()
         {
             switch (OperationType)
             {
@@ -231,7 +232,7 @@ namespace HT.Framework
             }
         }
 
-        public void Skip()
+        internal void Skip()
         {
             switch (OperationType)
             {
@@ -405,7 +406,7 @@ namespace HT.Framework
         }
 
 #if UNITY_EDITOR
-        public void OnEditorGUI()
+        internal void OnEditorGUI()
         {
             switch (OperationType)
             {

@@ -8,7 +8,7 @@ namespace HT.Framework
     [CustomEditor(typeof(HotfixManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/90479971")]
-    public sealed class HotfixManagerInspector : HTFEditor<HotfixManager>
+    internal sealed class HotfixManagerInspector : HTFEditor<HotfixManager>
     {
         private static readonly string SourceDllPath = "/Library/ScriptAssemblies/Hotfix.dll";
         private static readonly string AssetsDllPath = "/Assets/Hotfix/Hotfix.dll.bytes";

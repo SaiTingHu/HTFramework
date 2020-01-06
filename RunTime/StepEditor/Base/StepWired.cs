@@ -14,7 +14,8 @@ namespace HT.Framework
         /// <summary>
         /// 克隆
         /// </summary>
-        public StepWired Clone()
+        /// <returns>新的对象</returns>
+        internal StepWired Clone()
         {
             StepWired wired = new StepWired();
             wired.Left = Left;

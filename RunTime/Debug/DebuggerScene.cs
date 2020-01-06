@@ -9,7 +9,7 @@ namespace HT.Framework
     /// <summary>
     /// 调试器场景
     /// </summary>
-    public sealed class DebuggerScene
+    internal sealed class DebuggerScene
     {
         private Dictionary<Type, Type> _debuggerComponents = new Dictionary<Type, Type>();
         private List<Type> _componentTypes = new List<Type>();

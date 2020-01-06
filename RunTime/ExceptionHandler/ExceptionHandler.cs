@@ -17,43 +17,43 @@ namespace HT.Framework
         /// <summary>
         /// 是否开启异常处理监听【请勿在代码中修改】
         /// </summary>
-        public bool IsHandler = false;
+        [SerializeField] internal bool IsHandler = false;
         /// <summary>
         /// 是否启用异常反馈程序【请勿在代码中修改】
         /// </summary>
-        public bool IsEnableFeedback = false;
+        [SerializeField] internal bool IsEnableFeedback = false;
         /// <summary>
         /// 是否启用邮件回发机制【请勿在代码中修改】
         /// </summary>
-        public bool IsEnableMailReport = false;
+        [SerializeField] internal bool IsEnableMailReport = false;
         /// <summary>
         /// 反馈程序路径【请勿在代码中修改】
         /// </summary>
-        public string FeedbackProgramPath = "/Feedback.exe";
+        [SerializeField] internal string FeedbackProgramPath = "/Feedback.exe";
         /// <summary>
         /// 回发邮件的发送邮箱【请勿在代码中修改】
         /// </summary>
-        public string SendMailbox = "hutao_123456@sina.com";
+        [SerializeField] internal string SendMailbox = "hutao_123456@sina.com";
         /// <summary>
         /// 回发邮件的发送邮箱密码【请勿在代码中修改】
         /// </summary>
-        public string SendMailboxPassword = "";
+        [SerializeField] internal string SendMailboxPassword = "";
         /// <summary>
         /// 回发邮件的目标邮箱【请勿在代码中修改】
         /// </summary>
-        public string ReceiveMailbox = "";
+        [SerializeField] internal string ReceiveMailbox = "";
         /// <summary>
         /// 邮件服务器Host【请勿在代码中修改】
         /// </summary>
-        public string Host = "smtp.sina.com";
+        [SerializeField] internal string Host = "smtp.sina.com";
         /// <summary>
         /// 邮件服务器端口【请勿在代码中修改】
         /// </summary>
-        public int Port = 25;
+        [SerializeField] internal int Port = 25;
         /// <summary>
         /// 回发邮件缓冲时间【请勿在代码中修改】
         /// </summary>
-        public float ReportBufferTime = 5;
+        [SerializeField] internal float ReportBufferTime = 5;
 
         //异常信息
         private List<ExceptionInfo> _exceptionInfos = new List<ExceptionInfo>();

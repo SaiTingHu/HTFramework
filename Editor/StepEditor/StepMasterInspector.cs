@@ -8,7 +8,7 @@ namespace HT.Framework
     [CustomEditor(typeof(StepMaster))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/87712995")]
-    public sealed class StepMasterInspector : HTFEditor<StepMaster>
+    internal sealed class StepMasterInspector : HTFEditor<StepMaster>
     {
         private Dictionary<string, StepContent> _stepContentIDs;
         private Dictionary<string, bool> _stepContentEnables;

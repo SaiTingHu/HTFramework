@@ -13,7 +13,7 @@ namespace HT.Framework
         /// <summary>
         /// 输入设备类型【请勿在代码中修改】
         /// </summary>
-        public string InputDeviceType = "";
+        [SerializeField] internal string InputDeviceType = "";
 
         private VirtualInput _inputModule;
         private InputDeviceBase _inputDevice;

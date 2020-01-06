@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class StepEditorWindow : HTFEditorWindow
+    internal sealed class StepEditorWindow : HTFEditorWindow
     {
         public static void ShowWindow(StepContentAsset contentAsset)
         {

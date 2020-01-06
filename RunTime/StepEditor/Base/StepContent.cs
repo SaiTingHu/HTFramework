@@ -14,7 +14,7 @@ namespace HT.Framework
         /// 步骤ID
         /// </summary>
         public string GUID = "";
-        public Vector2 EnterAnchor = Vector2.zero;
+        [SerializeField] internal Vector2 EnterAnchor = Vector2.zero;
         /// <summary>
         /// 步骤执行到进入下一步的时间
         /// </summary>
@@ -27,8 +27,8 @@ namespace HT.Framework
         /// 步骤目标
         /// </summary>
         public GameObject Target = null;
-        public string TargetGUID = "<None>";
-        public string TargetPath = "<None>";
+        [SerializeField] internal string TargetGUID = "<None>";
+        [SerializeField] internal string TargetPath = "<None>";
         /// <summary>
         /// 步骤简述名称
         /// </summary>
@@ -64,28 +64,26 @@ namespace HT.Framework
         /// <summary>
         /// 步骤助手类名
         /// </summary>
-        public string Helper = "<None>";
+        [SerializeField] internal string Helper = "<None>";
 
         /// <summary>
         /// 步骤参数列表
         /// </summary>
-        [SerializeField]
-        public List<StepParameter> Parameters = new List<StepParameter>();
+        [SerializeField] public List<StepParameter> Parameters = new List<StepParameter>();
         /// <summary>
         /// 步骤操作列表
         /// </summary>
-        [SerializeField]
-        public List<StepOperation> Operations = new List<StepOperation>();
+        [SerializeField] public List<StepOperation> Operations = new List<StepOperation>();
         /// <summary>
         /// 步骤连线列表
         /// </summary>
-        [SerializeField]
-        public List<StepWired> Wireds = new List<StepWired>();
+        [SerializeField] public List<StepWired> Wireds = new List<StepWired>();
 
         /// <summary>
         /// 克隆
         /// </summary>
-        public StepContent Clone()
+        /// <returns>新的对象</returns>
+        internal StepContent Clone()
         {
             StepContent content = new StepContent();
             content.GUID = Guid.NewGuid().ToString();
@@ -125,7 +123,7 @@ namespace HT.Framework
         /// <param name="left">连线左侧</param>
         /// <param name="right">连线右侧</param>
         /// <returns>是否存在</returns>
-        public bool IsExistWired(int left, int right)
+        internal bool IsExistWired(int left, int right)
         {
             for (int i = 0; i < Wireds.Count; i++)
             {
@@ -142,7 +140,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">操作类型</param>
         /// <returns>包含数量</returns>
-        public int GetOperationsCout(StepOperationType type)
+        internal int GetOperationsCout(StepOperationType type)
         {
             int cout = 0;
             for (int i = 0; i < Operations.Count; i++)
@@ -158,7 +156,7 @@ namespace HT.Framework
         /// <summary>
         /// 执行步骤内容
         /// </summary>
-        public void Execute()
+        internal void Execute()
         {
             for (int i = 0; i < Wireds.Count; i++)
             {
@@ -201,7 +199,7 @@ namespace HT.Framework
         /// <summary>
         /// 跳过步骤内容
         /// </summary>
-        public void Skip()
+        internal void Skip()
         {
             for (int i = 0; i < Wireds.Count; i++)
             {

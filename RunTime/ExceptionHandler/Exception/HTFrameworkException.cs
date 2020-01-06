@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// HTFramework框架异常
     /// </summary>
-    public sealed class HTFrameworkException : UnityException
+    internal sealed class HTFrameworkException : UnityException
     {
         /// <summary>
         /// 异常模块

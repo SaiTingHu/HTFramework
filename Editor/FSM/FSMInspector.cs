@@ -9,7 +9,7 @@ namespace HT.Framework
     [CustomEditor(typeof(FSM))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86073351")]
-    public sealed class FSMInspector : HTFEditor<FSM>
+    internal sealed class FSMInspector : HTFEditor<FSM>
     {
         private Dictionary<string, string> _stateTypes;
 

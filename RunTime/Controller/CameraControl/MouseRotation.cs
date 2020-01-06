@@ -6,10 +6,8 @@ namespace HT.Framework
     /// 摄像机注视目标旋转控制
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class MouseRotation : MonoBehaviour
+    internal sealed class MouseRotation : MonoBehaviour
     {
-        //注视目标
-        public CameraTarget Target;
         //x轴旋转速度，y轴旋转速度，滚轮缩放速度
         public float XSpeed = 150, YSpeed = 150, MSpeed = 30;
         //y轴视角最低值，y轴视角最高值（目标是角色的话，推荐最小10，最大85，摄像机最低不会到角色脚底，最高不会到角色头顶正上方）
@@ -60,6 +58,11 @@ namespace HT.Framework
         /// 是否可以控制
         /// </summary>
         internal bool CanControl { get; set; } = true;
+
+        /// <summary>
+        /// 注视目标
+        /// </summary>
+        internal CameraTarget Target { get; set; }
 
         /// <summary>
         /// 设置旋转限定最小值

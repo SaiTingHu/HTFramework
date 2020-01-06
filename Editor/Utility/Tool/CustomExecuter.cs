@@ -17,7 +17,7 @@ namespace HT.Framework
     /// <summary>
     /// 自定义执行器
     /// </summary>
-    public sealed class CustomExecuter : HTFEditorWindow
+    internal sealed class CustomExecuter : HTFEditorWindow
     {
         private ExecuterMode _mode = ExecuterMode.Dynamic;
 

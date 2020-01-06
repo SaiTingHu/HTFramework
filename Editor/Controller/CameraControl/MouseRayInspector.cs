@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(MouseRay))]
-    public sealed class MouseRayInspector : HTFEditor<MouseRay>
+    internal sealed class MouseRayInspector : HTFEditor<MouseRay>
     {
         protected override bool IsEnableRuntimeData
         {

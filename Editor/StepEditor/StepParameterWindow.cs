@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public sealed class StepParameterWindow : HTFEditorWindow
+    internal sealed class StepParameterWindow : HTFEditorWindow
     {
         public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset, StepContent content)
         {

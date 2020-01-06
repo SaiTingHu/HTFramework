@@ -8,7 +8,7 @@ namespace HT.Framework
     [CustomEditor(typeof(ResourceManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88852698")]
-    public sealed class ResourceManagerInspector : HTFEditor<ResourceManager>
+    internal sealed class ResourceManagerInspector : HTFEditor<ResourceManager>
     {
         private string _assetBundleRootPath;
         private Dictionary<string, AssetBundle> _assetBundles;

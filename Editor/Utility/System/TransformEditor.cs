@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Transform))]
-    public sealed class TransformEditor : HTFEditor<Transform>
+    internal sealed class TransformEditor : HTFEditor<Transform>
     {
         private static bool _copyQuaternion = false;
         private bool _showProperty = true;

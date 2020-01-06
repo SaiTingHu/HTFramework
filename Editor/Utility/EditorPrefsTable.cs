@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// HT.Framework编辑器配置表
     /// </summary>
-    public static class EditorPrefsTable
+    internal static class EditorPrefsTable
     {
         #region EditorGlobalTools
         /// <summary>

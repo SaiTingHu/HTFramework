@@ -5,7 +5,7 @@ namespace HT.Framework
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-800)]
-    public sealed class HighlightingEffect : MonoBehaviour
+    internal sealed class HighlightingEffect : MonoBehaviour
     {
         #region Static Fields
         /// <summary>

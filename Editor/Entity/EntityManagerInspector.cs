@@ -9,7 +9,7 @@ namespace HT.Framework
     [CustomEditor(typeof(EntityManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/101541066")]
-    public sealed class EntityManagerInspector : HTFEditor<EntityManager>
+    internal sealed class EntityManagerInspector : HTFEditor<EntityManager>
     {
         private Dictionary<Type, List<EntityLogicBase>> _entities;
         private Dictionary<Type, Queue<GameObject>> _objectPool;

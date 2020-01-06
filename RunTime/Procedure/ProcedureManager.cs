@@ -14,11 +14,12 @@ namespace HT.Framework
         /// <summary>
         /// 当前激活的流程类名【请勿在代码中修改】
         /// </summary>
-        public List<string> ActivatedProcedures = new List<string>();
+        [SerializeField] internal List<string> ActivatedProcedures = new List<string>();
         /// <summary>
         /// 当前的默认流程类名【请勿在代码中修改】
         /// </summary>
-        public string DefaultProcedure = "";
+        [SerializeField] internal string DefaultProcedure = "";
+
         /// <summary>
         /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
         /// </summary>

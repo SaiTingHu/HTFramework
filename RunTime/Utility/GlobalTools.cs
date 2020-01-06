@@ -344,6 +344,18 @@ namespace HT.Framework
             mo.Open(color, intensity);
         }
         /// <summary>
+        /// 重置高亮网格轮廓
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        public static void ResetOutline(this GameObject target)
+        {
+            MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
+            if (mo != null)
+            {
+                mo.ResetOutline();
+            }
+        }
+        /// <summary>
         /// 关闭网格轮廓发光
         /// </summary>
         /// <param name="target">目标物体</param>
