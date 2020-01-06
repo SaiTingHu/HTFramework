@@ -50,6 +50,15 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 是否存在拦截条件
+        /// </summary>
+        /// <param name="conditionName">条件名称</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistCondition(string conditionName)
+        {
+            return InterceptConditions.ContainsKey(conditionName);
+        }
+        /// <summary>
         /// 移除拦截条件
         /// </summary>
         /// <param name="conditionName">条件名称</param>

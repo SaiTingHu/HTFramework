@@ -46,6 +46,15 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 是否存在指定名称的对象池
+        /// </summary>
+        /// <param name="name">对象池名称</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistSpawnPool(string name)
+        {
+            return SpawnPools.ContainsKey(name);
+        }
+        /// <summary>
         /// 移除已注册的对象池
         /// </summary>
         /// <param name="name">对象池名称</param>
