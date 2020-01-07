@@ -993,6 +993,102 @@ namespace HT.Framework
         }
         #endregion
 
+        #region 数学工具
+        /// <summary>
+        /// Vector2转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Vector2值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Vector2 value, string format)
+        {
+            return GlobalTools.StringConcat(value.x.ToString(format), "f,", value.y.ToString(format), "f");
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为Vector2
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <returns>Vector2值</returns>
+        public static Vector2 ToPasteVector2(this string value)
+        {
+            string[] vector2 = value.Split(',');
+            if (vector2.Length == 2)
+            {
+                float x, y;
+                vector2[0] = vector2[0].Replace("f", "");
+                vector2[1] = vector2[1].Replace("f", "");
+                if (float.TryParse(vector2[0], out x) && float.TryParse(vector2[1], out y))
+                {
+                    return new Vector2(x, y);
+                }
+            }
+            return Vector2.zero;
+        }
+        /// <summary>
+        /// Vector3转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Vector3值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Vector3 value, string format)
+        {
+            return GlobalTools.StringConcat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f");
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为Vector3
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <returns>Vector3值</returns>
+        public static Vector3 ToPasteVector3(this string value)
+        {
+            string[] vector3 = value.Split(',');
+            if (vector3.Length == 3)
+            {
+                float x, y, z;
+                vector3[0] = vector3[0].Replace("f", "");
+                vector3[1] = vector3[1].Replace("f", "");
+                vector3[2] = vector3[2].Replace("f", "");
+                if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
+                {
+                    return new Vector3(x, y, z);
+                }
+            }
+            return Vector3.zero;
+        }
+        /// <summary>
+        /// Quaternion转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Quaternion值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Quaternion value, string format)
+        {
+            return GlobalTools.StringConcat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为Quaternion
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <returns>Quaternion值</returns>
+        public static Quaternion ToPasteQuaternion(this string value)
+        {
+            string[] quaternion = value.Split(',');
+            if (quaternion.Length == 4)
+            {
+                float x, y, z, w;
+                quaternion[0] = quaternion[0].Replace("f", "");
+                quaternion[1] = quaternion[1].Replace("f", "");
+                quaternion[2] = quaternion[2].Replace("f", "");
+                quaternion[3] = quaternion[3].Replace("f", "");
+                if (float.TryParse(quaternion[0], out x) && float.TryParse(quaternion[1], out y) && float.TryParse(quaternion[2], out z) && float.TryParse(quaternion[3], out w))
+                {
+                    return new Quaternion(x, y, z, w);
+                }
+            }
+            return Quaternion.identity;
+        }
+        #endregion
+
         #region IO工具
         /// <summary>
         /// 删除文件夹及以下的所有文件夹、文件

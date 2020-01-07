@@ -907,31 +907,6 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 网络工具
-        /// <summary>
-        /// 加载外部图片
-        /// </summary>
-        public static Sprite LoadSprite(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return null;
-            }
-
-            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, (int)stream.Length);
-
-            Texture2D tex = new Texture2D(80, 80);
-            tex.LoadImage(buffer);
-
-            stream.Close();
-
-            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
-        }
-        #endregion
-
         #region 打开或保存文件
         /// <summary>
         /// 文件窗口参数
@@ -1884,6 +1859,28 @@ namespace HT.Framework
                     dropdown.value = i;
                 }
             }
+        }
+        /// <summary>
+        /// 加载外部图片
+        /// </summary>
+        public static Sprite LoadSprite(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, (int)stream.Length);
+
+            Texture2D tex = new Texture2D(80, 80);
+            tex.LoadImage(buffer);
+
+            stream.Close();
+
+            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
         }
         #endregion
 

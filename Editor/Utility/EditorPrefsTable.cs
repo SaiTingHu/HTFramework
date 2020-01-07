@@ -151,8 +151,38 @@ namespace HT.Framework
                 return Application.productName + ".HT.Framework.Transform.Copy";
             }
         }
+        /// <summary>
+        /// RectTransform组件Inspector面板配置：是否展开Property
+        /// </summary>
+        public static string RectTransform_Property
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.RectTransform.Property";
+            }
+        }
+        /// <summary>
+        /// RectTransform组件Inspector面板配置：是否展开Hierarchy
+        /// </summary>
+        public static string RectTransform_Hierarchy
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.RectTransform.Hierarchy";
+            }
+        }
+        /// <summary>
+        /// RectTransform组件Inspector面板配置：是否展开Copy
+        /// </summary>
+        public static string RectTransform_Copy
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.RectTransform.Copy";
+            }
+        }
         #endregion
-        
+
         #region Main
         /// <summary>
         /// ScriptingDefine历史记录

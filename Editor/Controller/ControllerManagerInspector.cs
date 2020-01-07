@@ -150,10 +150,7 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Copy", EditorStyles.miniButton))
                 {
-                    GUIUtility.systemCopyBuffer =
-                           _mousePosition.Target.transform.localPosition.x.ToString("F2") + "f," +
-                           _mousePosition.Target.transform.localPosition.y.ToString("F2") + "f," +
-                           _mousePosition.Target.transform.localPosition.z.ToString("F2") + "f";
+                    GUIUtility.systemCopyBuffer = _mousePosition.Target.transform.localPosition.ToCopyString("F2");
                 }
                 GUILayout.EndHorizontal();
 
