@@ -150,7 +150,7 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Copy", EditorStyles.miniButton))
                 {
-                    GUIUtility.systemCopyBuffer = _mousePosition.Target.transform.localPosition.ToCopyString("F2");
+                    GUIUtility.systemCopyBuffer = Target.LookPoint.ToCopyString("F2");
                 }
                 GUILayout.EndHorizontal();
 
@@ -164,10 +164,7 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Copy", EditorStyles.miniButton))
                 {
-                    GUIUtility.systemCopyBuffer =
-                       _mouseRotation.X.ToString("F2") + "f," +
-                       _mouseRotation.Y.ToString("F2") + "f," +
-                       _mouseRotation.Distance.ToString("F2") + "f";
+                    GUIUtility.systemCopyBuffer = Target.LookAngle.ToCopyString("F2");
                 }
                 GUILayout.EndHorizontal();
             }

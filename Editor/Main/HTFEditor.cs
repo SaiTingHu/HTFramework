@@ -74,6 +74,7 @@ namespace HT.Framework
                     {
                         Application.OpenURL(_GithubURL.URL);
                     }
+                    EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
                     GUI.enabled = true;
                 }
 
@@ -84,6 +85,7 @@ namespace HT.Framework
                     {
                         Application.OpenURL(_CSDNURL.URL);
                     }
+                    EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
                     GUI.enabled = true;
                 }
 

@@ -30,23 +30,18 @@ namespace HT.Framework
         public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary", "HTFrameworkILHotfix" };
         #endregion
 
-        #region About 【优先级0-1】
+        #region About 【优先级0】
         /// <summary>
-        /// CSDN专栏
+        /// About
         /// </summary>
-        [@MenuItem("HTFramework/About/CSDN Blog", false, 0)]
-        private static void AboutCSDN()
+        [@MenuItem("HTFramework/About", false, 0)]
+        private static void About()
         {
-            Application.OpenURL(@"https://blog.csdn.net/qq992817263/category_9283445.html");
-        }
-
-        /// <summary>
-        /// Github
-        /// </summary>
-        [@MenuItem("HTFramework/About/Github", false, 1)]
-        private static void AboutGithub()
-        {
-            Application.OpenURL(@"https://github.com/SaiTingHu/HTFramework");
+            About about = EditorWindow.GetWindow<About>(true, "HTFramework About", true);
+            about.position = new Rect(200, 200, 600, 350);
+            about.minSize = new Vector2(600, 350);
+            about.maxSize = new Vector2(600, 350);
+            about.Show();
         }
         #endregion
 
