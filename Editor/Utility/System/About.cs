@@ -8,7 +8,7 @@ namespace HT.Framework
         [InitializeOnLoadMethod]
         private static void OnEditorStart()
         {
-            if (EditorApplication.timeSinceStartup < 10)
+            if (EditorApplication.timeSinceStartup < 30)
             {
                 if (INIParser.ReadIniData("HTFrameworkEditor", "IsShowOnStart", "0", Application.dataPath + "/HTFramework/Editor/Utility/Config/Config.ini") == "1")
                 {
@@ -29,6 +29,9 @@ namespace HT.Framework
         private Texture _githubLogo;
         private GUIContent _csdnGUIContent;
         private GUIContent _githubGUIContent;
+        private GUIContent _pcGUIContent;
+        private GUIContent _androidGUIContent;
+        private GUIContent _webglGUIContent;
         private string _version;
         private string _supported;
         private string _scripting;
@@ -55,6 +58,12 @@ namespace HT.Framework
             _githubGUIContent = new GUIContent();
             _githubGUIContent.image = _githubLogo;
             _githubGUIContent.text = "Github";
+            _pcGUIContent = EditorGUIUtility.IconContent("BuildSettings.Standalone.Small");
+            _pcGUIContent.text = "PC,Mac & Linux Standalone";
+            _androidGUIContent = EditorGUIUtility.IconContent("BuildSettings.Android.Small");
+            _androidGUIContent.text = "Android";
+            _webglGUIContent = EditorGUIUtility.IconContent("BuildSettings.WebGL.Small");
+            _webglGUIContent.text = "WebGL";
 
             ReadConfig();
         }
@@ -121,6 +130,14 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.Space(60);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Supported Runtime Platforms: ");
+            GUILayout.Label(_pcGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+            GUILayout.Label(_androidGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+            GUILayout.Label(_webglGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Supported Unity versions: " + _supported);

@@ -1223,6 +1223,7 @@ namespace HT.Framework
             public static readonly string ButtonMid = "ButtonMid";
             public static readonly string ButtonRight = "ButtonRight";
             public static readonly string MiniPopup = "MiniPopup";
+            public static readonly string Wordwrapminibutton = "Wordwrapminibutton";
             public static readonly string OLPlus = "OL Plus";
             public static readonly string OLMinus = "OL Minus";
             public static readonly string Label = "Label";
