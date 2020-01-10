@@ -53,6 +53,7 @@ namespace HT.Framework
         private static void OpenComponentBatch()
         {
             ComponentBatch cb = EditorWindow.GetWindow<ComponentBatch>();
+            cb.titleContent = EditorGUIUtility.IconContent("d_editicon.sml");
             cb.titleContent.text = "Component Batch";
             cb.position = new Rect(200, 200, 300, 140);
             cb.Show();
@@ -64,10 +65,11 @@ namespace HT.Framework
         [@MenuItem("HTFramework/Batch/Project Batch", false, 101)]
         private static void OpenProjectBatch()
         {
-            ProjectBatch cb = EditorWindow.GetWindow<ProjectBatch>();
-            cb.titleContent.text = "Project Batch";
-            cb.position = new Rect(200, 200, 300, 120);
-            cb.Show();
+            ProjectBatch pb = EditorWindow.GetWindow<ProjectBatch>();
+            pb.titleContent = EditorGUIUtility.IconContent("d_editicon.sml");
+            pb.titleContent.text = "Project Batch";
+            pb.position = new Rect(200, 200, 300, 120);
+            pb.Show();
         }
 
         /// <summary>
@@ -284,7 +286,8 @@ namespace HT.Framework
         private static void OpenAssemblyViewer()
         {
             AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
-            viewer.titleContent.text = "AssemblyViewer";
+            viewer.titleContent = EditorGUIUtility.IconContent("Assembly Icon");
+            viewer.titleContent.text = "Assembly Viewer";
             viewer.Show();
         }
 
@@ -295,6 +298,7 @@ namespace HT.Framework
         private static void OpenCustomTools()
         {
             CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
+            tools.titleContent = EditorGUIUtility.IconContent("LightProbeProxyVolume Icon");
             tools.titleContent.text = "Custom Executer";
             tools.minSize = new Vector2(500, 600);
             tools.Initialization();

@@ -83,9 +83,10 @@ namespace HT.Framework
         {
             base.OnBodyGUI();
 
-            if (EditorBuildSettings.scenes != null)
+            if (EditorBuildSettings.scenes != null && EditorBuildSettings.scenes.Length > 0)
             {
                 EditorBuildSettings.scenes = null;
+                GlobalTools.LogWarning("只允许构建包含框架主体的场景！如有多场景切换的需求，请将其他场景打入AB包！");
             }
 
             if (!_isCanBuild)

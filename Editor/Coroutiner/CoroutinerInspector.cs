@@ -20,6 +20,7 @@ namespace HT.Framework
             if (GUILayout.Button("Coroutiner Tracker", EditorGlobalTools.Styles.LargeButton))
             {
                 CoroutinerTrackerWindow tracker = EditorWindow.GetWindow<CoroutinerTrackerWindow>();
+                tracker.titleContent = EditorGUIUtility.IconContent("NavMeshAgent Icon");
                 tracker.titleContent.text = "Coroutiner Tracker";
                 tracker.Init(Target);
                 tracker.minSize = new Vector2(400, 400);

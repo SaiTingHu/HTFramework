@@ -41,6 +41,7 @@ namespace HT.Framework
                 if (GUILayout.Button("Resources Folder View", EditorGlobalTools.Styles.LargeButton))
                 {
                     ResourcesFolderViewWindow window = EditorWindow.GetWindow<ResourcesFolderViewWindow>();
+                    window.titleContent = EditorGUIUtility.IconContent("ViewToolOrbit");
                     window.titleContent.text = "Resources Folder View";
                     window.position = new Rect(200, 200, 400, 400);
                     window.Init();

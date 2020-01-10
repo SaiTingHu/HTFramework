@@ -212,6 +212,20 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 自由控制：在UGUI目标上是否可以控制
+        /// </summary>
+        public bool IsCanControlOnUGUI
+        {
+            get
+            {
+                return _mousePosition.IsCanOnUGUI || _mouseRotation.IsCanOnUGUI;
+            }
+            set
+            {
+                _mousePosition.IsCanOnUGUI = _mouseRotation.IsCanOnUGUI = value;
+            }
+        }
+        /// <summary>
         /// 自由控制：允许在输入滚轮超越距离限制时，启用摄像机移动
         /// </summary>
         public bool AllowOverstepDistance
