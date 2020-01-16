@@ -532,47 +532,9 @@ namespace HT.Framework
         }
         
         /// <summary>
-        /// 新建Helper类
-        /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# Helper Script", false, 17)]
-        private static void CreateHelper()
-        {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_Helper_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 Helper 类", directory, "NewHelper", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/HelperTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        code = code.Replace("#HELPERNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_Helper_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    GlobalTools.LogError("新建Helper失败，已存在类型 " + className);
-                }
-            }
-        }
-        
-        /// <summary>
         /// 新建Procedure类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 18)]
+        [@MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 17)]
         private static void CreateProcedure()
         {
             string directory = EditorPrefs.GetString(EditorPrefsTable.Script_Procedure_Directory, Application.dataPath);
@@ -609,7 +571,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ProtocolChannel类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# Protocol Channel Script", false, 19)]
+        [@MenuItem("Assets/Create/HTFramework/C# Protocol Channel Script", false, 18)]
         private static void CreateProtocolChannel()
         {
             string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ProtocolChannel_Directory, Application.dataPath);
@@ -646,7 +608,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicResident类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 20)]
+        [@MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 19)]
         private static void CreateUILogicResident()
         {
             string directory = EditorPrefs.GetString(EditorPrefsTable.Script_UILogicResident_Directory, Application.dataPath);
@@ -683,7 +645,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicTemporary类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 21)]
+        [@MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 20)]
         private static void CreateUILogicTemporary()
         {
             string directory = EditorPrefs.GetString(EditorPrefsTable.Script_UILogicTemporary_Directory, Application.dataPath);

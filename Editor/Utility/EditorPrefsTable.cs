@@ -9,13 +9,13 @@ namespace HT.Framework
     {
         #region EditorGlobalTools
         /// <summary>
-        /// 新建Helper脚本的文件夹
+        /// 新建StepHelper脚本的文件夹
         /// </summary>
-        public static string Script_Helper_Directory
+        public static string Script_StepHelper_Directory
         {
             get
             {
-                return Application.productName + ".HT.Framework.Script.Helper";
+                return Application.productName + ".HT.Framework.Script.StepHelper";
             }
         }
         /// <summary>
@@ -116,6 +116,26 @@ namespace HT.Framework
             get
             {
                 return Application.productName + ".HT.Framework.Script.ProtocolChannel";
+            }
+        }
+        /// <summary>
+        /// 新建TaskContent脚本的文件夹
+        /// </summary>
+        public static string Script_TaskContent_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.TaskContent";
+            }
+        }
+        /// <summary>
+        /// 新建TaskPoint脚本的文件夹
+        /// </summary>
+        public static string Script_TaskPoint_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.TaskPoint";
             }
         }
         #endregion

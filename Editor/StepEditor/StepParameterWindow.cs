@@ -9,6 +9,7 @@ namespace HT.Framework
         public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset, StepContent content)
         {
             StepParameterWindow window = GetWindow<StepParameterWindow>();
+            window.titleContent = EditorGUIUtility.IconContent("d_editicon.sml");
             window.titleContent.text = "Parameters";
             window._stepEditorWindow = stepEditorWindow;
             window._contentAsset = contentAsset;

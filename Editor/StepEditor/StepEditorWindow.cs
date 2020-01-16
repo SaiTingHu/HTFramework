@@ -12,6 +12,7 @@ namespace HT.Framework
         public static void ShowWindow(StepContentAsset contentAsset)
         {
             StepEditorWindow window = GetWindow<StepEditorWindow>();
+            window.titleContent = EditorGUIUtility.IconContent("BlendTree Icon");
             window.titleContent.text = "Step Editor";
             window._contentAsset = contentAsset;
             window._currentStep = -1;
@@ -635,37 +636,13 @@ namespace HT.Framework
                     List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
                     GenericMenu gm = new GenericMenu();
                     EditorGlobalTools.BeginNoRepeatNaming();
-                    gm.AddItem(new GUIContent("<Create>"), false, () =>
-                    {
-                        string directory = EditorPrefs.GetString(EditorPrefsTable.Script_Helper_Directory, Application.dataPath);
-                        string path = EditorUtility.SaveFilePanel("新建 Helper 类", directory, "NewHelper", "cs");
-                        if (path != "")
-                        {
-                            string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                            if (!_helpers.ContainsKey(className))
-                            {
-                                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/HelperTemplate.txt", typeof(TextAsset)) as TextAsset;
-                                if (asset)
-                                {
-                                    string code = asset.text;
-                                    code = code.Replace("#SCRIPTNAME#", className);
-                                    code = code.Replace("#HELPERNAME#", className);
-                                    File.AppendAllText(path, code);
-                                    _currentStepObj.Helper = className;
-                                    asset = null;
-                                    AssetDatabase.Refresh();
-                                    EditorPrefs.SetString(EditorPrefsTable.Script_Helper_Directory, path.Substring(0, path.LastIndexOf("/")));
-                                }
-                            }
-                            else
-                            {
-                                GlobalTools.LogError("新建Helper失败，已存在类型 " + className);
-                            }
-                        }
-                    });
                     gm.AddItem(new GUIContent("<None>"), _currentStepObj.Helper == "<None>", () =>
                     {
                         _currentStepObj.Helper = "<None>";
+                    });
+                    gm.AddItem(new GUIContent("<New Helper Script>"), false, () =>
+                    {
+                        NewHelperScript();
                     });
                     foreach (Type type in types)
                     {
@@ -1454,6 +1431,43 @@ namespace HT.Framework
             else
             {
                 GlobalTools.LogError("没有找到 " + helper + " 脚本文件！");
+            }
+        }
+        /// <summary>
+        /// 新建助手脚本
+        /// </summary>
+        private void NewHelperScript()
+        {
+            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_StepHelper_Directory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 Helper 类", directory, "NewHelper", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!_helpers.ContainsKey(className))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/StepHelperTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        code = code.Replace("#HELPERNAME#", className);
+                        File.AppendAllText(path, code);
+                        _currentStepObj.Helper = className;
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_StepHelper_Directory, path.Substring(0, path.LastIndexOf("/")));
+                    }
+                }
+                else
+                {
+                    GlobalTools.LogError("新建Helper失败，已存在类型 " + className);
+                }
             }
         }
 

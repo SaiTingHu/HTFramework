@@ -209,6 +209,10 @@ namespace HT.Framework
         /// </summary>
         public static StepMaster m_StepMaster { get; private set; }
         /// <summary>
+        /// 任务模块
+        /// </summary>
+        public static TaskMaster m_TaskMaster { get; private set; }
+        /// <summary>
         /// UI模块
         /// </summary>
         public static UIManager m_UI { get; private set; }
@@ -262,6 +266,7 @@ namespace HT.Framework
             m_ReferencePool = GetInternalModule(HTFrameworkModule.ReferencePool) as ReferencePoolManager;
             m_Resource = GetInternalModule(HTFrameworkModule.Resource) as ResourceManager;
             m_StepMaster = GetInternalModule(HTFrameworkModule.StepEditor) as StepMaster;
+            m_TaskMaster = GetInternalModule(HTFrameworkModule.TaskEditor) as TaskMaster;
             m_UI = GetInternalModule(HTFrameworkModule.UI) as UIManager;
             m_WebRequest = GetInternalModule(HTFrameworkModule.WebRequest) as WebRequestManager;
 
@@ -953,6 +958,7 @@ namespace HT.Framework
         ReferencePool,
         Resource,
         StepEditor,
+        TaskEditor,
         UI,
         Utility,
         WebRequest

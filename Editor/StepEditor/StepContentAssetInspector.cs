@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -41,7 +42,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Export Step Data To .txt"))
             {
-                string path = EditorUtility.SaveFilePanel("保存数据文件", Application.dataPath, Target.name, "txt");
+                string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
@@ -61,7 +62,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Export Step Name To .txt"))
             {
-                string path = EditorUtility.SaveFilePanel("保存数据文件", Application.dataPath, Target.name, "txt");
+                string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
@@ -81,7 +82,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Export Step Prompt To .txt"))
             {
-                string path = EditorUtility.SaveFilePanel("保存数据文件", Application.dataPath, Target.name, "txt");
+                string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
@@ -113,6 +114,13 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
+        }
+
+        protected override void OnHeaderGUI()
+        {
+            base.OnHeaderGUI();
+
+            GUI.Label(new Rect(45, 25, 110, 20), "StepContentAsset", "AssetLabel");
         }
     }
 }
