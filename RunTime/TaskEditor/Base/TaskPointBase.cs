@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -10,6 +11,10 @@ namespace HT.Framework
     /// </summary>
     public abstract class TaskPointBase : ScriptableObject
     {
+        /// <summary>
+        /// 任务点ID
+        /// </summary>
+        public string GUID;
         /// <summary>
         /// 任务点名称
         /// </summary>
@@ -23,16 +28,90 @@ namespace HT.Framework
         /// </summary>
         public Rect Anchor;
 
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool IsEnable { get; set; } = true;
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool IsDone { get; protected set; } = false;
+        /// <summary>
+        /// 是否开始
+        /// </summary>
+        internal bool IsStart { get; private set; } = false;
+        /// <summary>
+        /// 是否执行
+        /// </summary>
+        internal bool IsExecute { get; private set; } = false;
+
         public TaskPointBase()
         {
+            GUID = "";
             Name = "New Task Point";
             Details = "New Task Point";
             Anchor = Rect.zero;
+        }
+        
+        /// <summary>
+        /// 任务点开始
+        /// </summary>
+        public virtual void OnStart()
+        {
+            
+        }
+
+        /// <summary>
+        /// 任务点开始后，帧刷新
+        /// </summary>
+        public virtual void OnUpdate()
+        {
+
+        }
+
+        /// <summary>
+        /// 任务点执行
+        /// </summary>
+        public virtual void OnExecute()
+        {
+
+        }
+
+        internal void OnMonitor()
+        {
+            if (!IsStart)
+            {
+                IsStart = true;
+
+                OnStart();
+
+                Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
+            }
+
+            OnUpdate();
+
+            if (!IsExecute && IsDone)
+            {
+                IsExecute = true;
+
+                OnExecute();
+
+                Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointExecute>().Fill(this));
+            }
+        }
+
+        internal void ReSet()
+        {
+            IsEnable = true;
+            IsDone = false;
+            IsStart = false;
+            IsExecute = false;
         }
 
 #if UNITY_EDITOR
         private bool _isDraging = false;
         private bool _isSelected = false;
+        private bool _isEditID = false;
         private bool _isEditName = false;
         private bool _isEditDetails = false;
         private int _height = 0;
@@ -71,7 +150,18 @@ namespace HT.Framework
 
         internal void OnEditorGUI(TaskContentBase taskContent)
         {
-            GUI.backgroundColor = _isSelected ? Color.yellow : Color.white;
+            if (!IsEnable)
+            {
+                GUI.backgroundColor = Color.gray;
+            }
+            else if (IsDone)
+            {
+                GUI.backgroundColor = Color.green;
+            }
+            else
+            {
+                GUI.backgroundColor = _isSelected ? Color.yellow : Color.white;
+            }
 
             GUILayout.BeginArea(Anchor, Name, "Window");
 
@@ -110,6 +200,7 @@ namespace HT.Framework
                         else
                         {
                             _isSelected = false;
+                            _isEditID = false;
                             _isEditName = false;
                             _isEditDetails = false;
                             GUI.changed = true;
@@ -207,17 +298,42 @@ namespace HT.Framework
         public virtual int OnPropertyGUI()
         {
             int height = 0;
-
-            #region Name
+            
+            #region ID
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Name:", GUILayout.Width(40));
-            if (_isEditName)
+            GUILayout.Label("ID:", GUILayout.Width(50));
+            if (_isEditID)
             {
-                Name = EditorGUILayout.TextField(Name, GUILayout.Width(120));
+                GUID = EditorGUILayout.TextField(GUID, GUILayout.Width(110));
             }
             else
             {
-                GUILayout.Label(Name, GUILayout.Width(120));
+                GUILayout.Label(GUID, GUILayout.Width(110));
+            }
+            GUILayout.FlexibleSpace();
+            if (_isSelected)
+            {
+                if (GUILayout.Button(EditorGUIUtility.IconContent("editicon.sml"), "IconButton"))
+                {
+                    _isEditID = !_isEditID;
+                    GUI.FocusControl(null);
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+
+            height += 20;
+
+            #region Name
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Name:", GUILayout.Width(50));
+            if (_isEditName)
+            {
+                Name = EditorGUILayout.TextField(Name, GUILayout.Width(110));
+            }
+            else
+            {
+                GUILayout.Label(Name, GUILayout.Width(110));
             }
             GUILayout.FlexibleSpace();
             if (_isSelected)
@@ -235,14 +351,14 @@ namespace HT.Framework
 
             #region Details
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Details:", GUILayout.Width(40));
+            GUILayout.Label("Details:", GUILayout.Width(50));
             if (_isEditDetails)
             {
-                Details = EditorGUILayout.TextField(Details, GUILayout.Width(120));
+                Details = EditorGUILayout.TextField(Details, GUILayout.Width(110));
             }
             else
             {
-                GUILayout.Label(Details, GUILayout.Width(120));
+                GUILayout.Label(Details, GUILayout.Width(110));
             }
             GUILayout.FlexibleSpace();
             if (_isSelected)
@@ -304,6 +420,78 @@ namespace HT.Framework
 
             TaskContentBase.DestroySerializeSubObject(this, content);
             content.Points.Remove(this);
+        }
+
+        protected void TaskGameObjectField(ref TaskGameObject taskGameObject, string name, float nameWidth)
+        {
+            if (taskGameObject == null)
+            {
+                taskGameObject = new TaskGameObject();
+            }
+
+            GUIContent gUIContent = new GUIContent(name);
+            gUIContent.tooltip = "GUID: " + taskGameObject.GUID;
+            GUILayout.Label(gUIContent, GUILayout.Width(nameWidth));
+
+            GUI.color = taskGameObject.AgentEntity ? Color.white : Color.gray;
+            GameObject newEntity = EditorGUILayout.ObjectField(taskGameObject.AgentEntity, typeof(GameObject), true, GUILayout.Width(Anchor.width - nameWidth - 35)) as GameObject;
+            if (newEntity != taskGameObject.AgentEntity)
+            {
+                if (newEntity != null)
+                {
+                    TaskTarget target = newEntity.GetComponent<TaskTarget>();
+                    if (!target)
+                    {
+                        target = newEntity.AddComponent<TaskTarget>();
+                    }
+                    if (target.GUID == "<None>")
+                    {
+                        target.GUID = Guid.NewGuid().ToString();
+                    }
+                    taskGameObject.AgentEntity = newEntity;
+                    taskGameObject.GUID = target.GUID;
+                    taskGameObject.Path = newEntity.transform.FullName();
+                }
+            }
+            GUI.color = Color.white;
+
+            if (taskGameObject.AgentEntity == null && taskGameObject.GUID != "<None>")
+            {
+                taskGameObject.AgentEntity = GameObject.Find(taskGameObject.Path);
+                if (taskGameObject.AgentEntity == null)
+                {
+                    TaskTarget[] targets = FindObjectsOfType<TaskTarget>();
+                    foreach (TaskTarget target in targets)
+                    {
+                        if (taskGameObject.GUID == target.GUID)
+                        {
+                            taskGameObject.AgentEntity = target.gameObject;
+                            taskGameObject.Path = target.transform.FullName();
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    TaskTarget target = taskGameObject.AgentEntity.GetComponent<TaskTarget>();
+                    if (!target)
+                    {
+                        target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
+                        target.GUID = taskGameObject.GUID;
+                    }
+                }
+            }
+
+            gUIContent = EditorGUIUtility.IconContent("TreeEditor.Trash");
+            gUIContent.tooltip = "Delete";
+            GUI.enabled = taskGameObject.GUID != "<None>";
+            if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            {
+                taskGameObject.AgentEntity = null;
+                taskGameObject.GUID = "<None>";
+                taskGameObject.Path = "";
+            }
+            GUI.enabled = true;
         }
 #endif
     }

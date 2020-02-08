@@ -15,6 +15,7 @@ namespace HT.Framework
         [SerializeField] internal int TaskIDSign = 1;
         [SerializeField] internal string TaskIDName = "Task";
         [SerializeField] internal int TaskPointIDSign = 1;
+        [SerializeField] internal string TaskPointIDName = "TaskPoint";
 
         public override void Fill(JsonData data)
         {

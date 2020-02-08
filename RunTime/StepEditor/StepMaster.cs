@@ -360,7 +360,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 重新编译步骤内容，在更改步骤资源 ContentAsset 后，必须重新编译一次才可以开始任务流程
+        /// 重新编译步骤内容，在更改步骤资源 ContentAsset 后，必须重新编译一次才可以开始步骤流程
         /// </summary>
         /// <param name="disableStepIDs">禁用的步骤ID集合（当为null时启用所有步骤，禁用的步骤会自动跳过）</param>
         public void RecompileStepContent(HashSet<string> disableStepIDs = null)
@@ -513,13 +513,13 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 开始任务流程
+        /// 开始步骤流程
         /// </summary>
         public void Begin()
         {
             if (!ContentAsset || ContentAsset.Content.Count <= 0 || _stepContents.Count <= 0)
             {
-                throw new HTFrameworkException(HTFrameworkModule.StepEditor, "步骤控制者：当前无法开始任务流程，请重新编译步骤内容 RecompileStepContent！");
+                throw new HTFrameworkException(HTFrameworkModule.StepEditor, "步骤控制者：当前无法开始步骤流程，请重新编译步骤内容 RecompileStepContent！");
             }
 
             _currentStepIndex = 0;
@@ -535,7 +535,7 @@ namespace HT.Framework
             BeginCurrentStep();
         }
         /// <summary>
-        /// 结束任务流程
+        /// 结束步骤流程
         /// </summary>
         public void End()
         {

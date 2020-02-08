@@ -37,11 +37,81 @@ namespace HT.Framework
         /// </summary>
         public List<TaskDepend> Depends = new List<TaskDepend>();
 
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool IsDone { get; private set; } = false;
+
         public TaskContentBase()
         {
             GUID = "";
             Name = "New Task";
             Details = "New Task";
+        }
+        
+        /// <summary>
+        /// 任务内容开始
+        /// </summary>
+        public virtual void OnStart()
+        {
+            
+        }
+
+        /// <summary>
+        /// 任务开始后，帧刷新
+        /// </summary>
+        public virtual void OnUpdate()
+        {
+
+        }
+
+        /// <summary>
+        /// 任务内容执行
+        /// </summary>
+        public virtual void OnExecute()
+        {
+            
+        }
+
+        internal void OnMonitor()
+        {
+            OnUpdate();
+
+            bool isDone = true;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if (Points[i].IsEnable && !Points[i].IsDone)
+                {
+                    isDone = false;
+
+                    if (IsDependDone(i))
+                    {
+                        Points[i].OnMonitor();
+                    }
+                }
+            }
+            IsDone = isDone;
+        }
+
+        internal void ReSet()
+        {
+            IsDone = false;
+        }
+
+        private bool IsDependDone(int taskPointIndex)
+        {
+            for (int i = 0; i < Depends.Count; i++)
+            {
+                if (Depends[i].OriginalPoint == taskPointIndex)
+                {
+                    int depend = Depends[i].DependPoint;
+                    if (Points[depend].IsEnable && !Points[depend].IsDone)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
 #if UNITY_EDITOR
@@ -146,9 +216,9 @@ namespace HT.Framework
             gUIContent.tooltip = "GUID: " + taskGameObject.GUID;
             GUILayout.Label(gUIContent, GUILayout.Width(nameWidth));
 
-            GUI.color = taskGameObject.Entity ? Color.white : Color.gray;
-            GameObject newEntity = EditorGUILayout.ObjectField(taskGameObject.Entity, typeof(GameObject), true, GUILayout.Width(_width - nameWidth - 35)) as GameObject;
-            if (newEntity != taskGameObject.Entity)
+            GUI.color = taskGameObject.AgentEntity ? Color.white : Color.gray;
+            GameObject newEntity = EditorGUILayout.ObjectField(taskGameObject.AgentEntity, typeof(GameObject), true, GUILayout.Width(_width - nameWidth - 35)) as GameObject;
+            if (newEntity != taskGameObject.AgentEntity)
             {
                 if (newEntity != null)
                 {
@@ -161,24 +231,24 @@ namespace HT.Framework
                     {
                         target.GUID = Guid.NewGuid().ToString();
                     }
-                    taskGameObject.Entity = newEntity;
+                    taskGameObject.AgentEntity = newEntity;
                     taskGameObject.GUID = target.GUID;
                     taskGameObject.Path = newEntity.transform.FullName();
                 }
             }
             GUI.color = Color.white;
 
-            if (taskGameObject.Entity == null && taskGameObject.GUID != "<None>")
+            if (taskGameObject.AgentEntity == null && taskGameObject.GUID != "<None>")
             {
-                taskGameObject.Entity = GameObject.Find(taskGameObject.Path);
-                if (taskGameObject.Entity == null)
+                taskGameObject.AgentEntity = GameObject.Find(taskGameObject.Path);
+                if (taskGameObject.AgentEntity == null)
                 {
                     TaskTarget[] targets = FindObjectsOfType<TaskTarget>();
                     foreach (TaskTarget target in targets)
                     {
                         if (taskGameObject.GUID == target.GUID)
                         {
-                            taskGameObject.Entity = target.gameObject;
+                            taskGameObject.AgentEntity = target.gameObject;
                             taskGameObject.Path = target.transform.FullName();
                             break;
                         }
@@ -186,21 +256,21 @@ namespace HT.Framework
                 }
                 else
                 {
-                    TaskTarget target = taskGameObject.Entity.GetComponent<TaskTarget>();
+                    TaskTarget target = taskGameObject.AgentEntity.GetComponent<TaskTarget>();
                     if (!target)
                     {
-                        target = taskGameObject.Entity.AddComponent<TaskTarget>();
+                        target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
                         target.GUID = taskGameObject.GUID;
                     }
                 }
             }
 
             gUIContent = EditorGUIUtility.IconContent("TreeEditor.Trash");
-            gUIContent.tooltip = "Delete Target";
+            gUIContent.tooltip = "Delete";
             GUI.enabled = taskGameObject.GUID != "<None>";
             if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
             {
-                taskGameObject.Entity = null;
+                taskGameObject.AgentEntity = null;
                 taskGameObject.GUID = "<None>";
                 taskGameObject.Path = "";
             }

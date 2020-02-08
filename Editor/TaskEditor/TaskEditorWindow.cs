@@ -105,6 +105,18 @@ namespace HT.Framework
             _isShowContent = GUILayout.Toggle(_isShowContent, "Task Content", EditorStyles.toolbarButton);
             _isShowProperty = GUILayout.Toggle(_isShowProperty, "Property", EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
+            if (GUILayout.Button("ReSet", EditorStyles.toolbarButton))
+            {
+                for (int i = 0; i < _asset.Content.Count; i++)
+                {
+                    TaskContentBase taskContent = _asset.Content[i];
+                    taskContent.ReSet();
+                    for (int j = 0; j < taskContent.Points.Count; j++)
+                    {
+                        taskContent.Points[j].ReSet();
+                    }
+                }
+            }
             if (GUILayout.Button("About", EditorStyles.toolbarButton))
             {
                 
@@ -398,6 +410,13 @@ namespace HT.Framework
                         GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
                         gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
                         gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
+
+                        if (_asset.Content[index].IsDone)
+                        {
+                            GUI.backgroundColor = Color.green;
+                            GUI.Box(rect, "");
+                            GUI.backgroundColor = Color.white;
+                        }
                     }
                 };
             }
@@ -410,6 +429,7 @@ namespace HT.Framework
         {
             TaskPointBase taskPoint = CreateInstance(type) as TaskPointBase;
             taskPoint.Anchor = new Rect(position.x, position.y, 200, 85);
+            taskPoint.GUID = _asset.TaskPointIDName + _asset.TaskPointIDSign.ToString();
             taskPoint.Details = taskPoint.Name = "New Task Point " + _asset.TaskPointIDSign.ToString();
             _asset.TaskPointIDSign += 1;
             _currentContent.Points.Add(taskPoint);

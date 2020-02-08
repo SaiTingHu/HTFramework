@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(TaskMaster))]
-    [GithubURL("")]
+    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("")]
     internal sealed class TaskMasterInspector : HTFEditor<TaskMaster>
     {
@@ -18,6 +18,15 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             ObjectField(Target.ContentAsset, out Target.ContentAsset, false, "Asset");
+            GUILayout.EndHorizontal();
+        }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("No Runtime Data!");
             GUILayout.EndHorizontal();
         }
     }

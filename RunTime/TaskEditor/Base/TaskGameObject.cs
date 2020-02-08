@@ -12,7 +12,7 @@ namespace HT.Framework
         /// <summary>
         /// 游戏物体实体
         /// </summary>
-        public GameObject Entity;
+        internal GameObject AgentEntity;
         /// <summary>
         /// 游戏物体ID
         /// </summary>
@@ -21,5 +21,24 @@ namespace HT.Framework
         /// 游戏物体路径
         /// </summary>
         [SerializeField] internal string Path = "";
+
+        /// <summary>
+        /// 游戏物体实体
+        /// </summary>
+        public GameObject Entity
+        {
+            get
+            {
+                TaskTarget taskTarget = Main.m_TaskMaster.GetTarget(GUID);
+                if (taskTarget != null)
+                {
+                    return taskTarget.gameObject;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
     }
 }

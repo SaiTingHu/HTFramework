@@ -18,6 +18,21 @@ public class #SCRIPTNAME# : TaskPointBase
         
     }
 
+	public override void OnStart()
+    {
+        base.OnStart();
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+    }
+
+    public override void OnExecute()
+    {
+        base.OnExecute();
+    }
+
 #if UNITY_EDITOR
     public override int OnPropertyGUI()
     {
