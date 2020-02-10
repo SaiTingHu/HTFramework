@@ -7,6 +7,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 [assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
+[assembly: InternalsVisibleTo("HTFramework.AI.RunTime")]
+[assembly: InternalsVisibleTo("HTFramework.ILHotfix.RunTime")]
 
 namespace HT.Framework
 {
