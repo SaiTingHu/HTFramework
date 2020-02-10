@@ -58,11 +58,14 @@ namespace HT.Framework
             _githubGUIContent = new GUIContent();
             _githubGUIContent.image = _githubLogo;
             _githubGUIContent.text = "Github";
-            _pcGUIContent = EditorGUIUtility.IconContent("BuildSettings.Standalone.Small");
+            _pcGUIContent = new GUIContent();
+            _pcGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.Standalone.Small").image;
             _pcGUIContent.text = "PC,Mac & Linux Standalone";
-            _androidGUIContent = EditorGUIUtility.IconContent("BuildSettings.Android.Small");
+            _androidGUIContent = new GUIContent();
+            _androidGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.Android.Small").image;
             _androidGUIContent.text = "Android";
-            _webglGUIContent = EditorGUIUtility.IconContent("BuildSettings.WebGL.Small");
+            _webglGUIContent = new GUIContent();
+            _webglGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.WebGL.Small").image;
             _webglGUIContent.text = "WebGL";
 
             ReadConfig();

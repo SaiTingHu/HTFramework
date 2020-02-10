@@ -13,7 +13,7 @@ namespace HT.Framework
         public static void ShowWindow(TaskContentAsset contentAsset)
         {
             TaskEditorWindow window = GetWindow<TaskEditorWindow>();
-            window.titleContent = EditorGUIUtility.IconContent("AnimatorStateMachine Icon");
+            window.titleContent.image = EditorGUIUtility.IconContent("AnimatorStateMachine Icon").image;
             window.titleContent.text = "Task Editor";
             window._asset = contentAsset;
             window.minSize = new Vector2(800, 600);
@@ -51,12 +51,15 @@ namespace HT.Framework
         private void OnEnable()
         {
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
-            
-            _addGUIContent = EditorGUIUtility.IconContent("d_Toolbar Plus More");
+
+            _addGUIContent = new GUIContent();
+            _addGUIContent.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
             _addGUIContent.tooltip = "Add a task";
-            _editGUIContent = EditorGUIUtility.IconContent("d_editicon.sml");
+            _editGUIContent = new GUIContent();
+            _editGUIContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             _editGUIContent.tooltip = "Edit Content Script";
-            _deleteGUIContent = EditorGUIUtility.IconContent("TreeEditor.Trash");
+            _deleteGUIContent = new GUIContent();
+            _deleteGUIContent.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _deleteGUIContent.tooltip = "Delete";
         }
         private void Update()

@@ -12,7 +12,7 @@ namespace HT.Framework
         public static void ShowWindow(StepContentAsset contentAsset)
         {
             StepEditorWindow window = GetWindow<StepEditorWindow>();
-            window.titleContent = EditorGUIUtility.IconContent("BlendTree Icon");
+            window.titleContent.image = EditorGUIUtility.IconContent("BlendTree Icon").image;
             window.titleContent.text = "Step Editor";
             window._contentAsset = contentAsset;
             window._currentStep = -1;

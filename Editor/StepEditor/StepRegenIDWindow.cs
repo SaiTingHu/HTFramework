@@ -8,7 +8,7 @@ namespace HT.Framework
         public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset)
         {
             StepRegenIDWindow window = GetWindow<StepRegenIDWindow>();
-            window.titleContent = EditorGUIUtility.IconContent("d_editicon.sml");
+            window.titleContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             window.titleContent.text = "Regen Step ID";
             window._stepEditorWindow = stepEditorWindow;
             window._contentAsset = contentAsset;
