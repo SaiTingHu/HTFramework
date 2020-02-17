@@ -57,7 +57,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Export Step Name To .txt"))
+            if (GUILayout.Button("Export Task Name To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")
@@ -77,7 +77,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Export Step Details To .txt"))
+            if (GUILayout.Button("Export Task Details To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")

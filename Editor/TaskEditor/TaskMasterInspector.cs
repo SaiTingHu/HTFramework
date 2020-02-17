@@ -5,7 +5,7 @@ namespace HT.Framework
 {
     [CustomEditor(typeof(TaskMaster))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
-    [CSDNBlogURL("")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/104317219")]
     internal sealed class TaskMasterInspector : HTFEditor<TaskMaster>
     {
         protected override void OnInspectorDefaultGUI()

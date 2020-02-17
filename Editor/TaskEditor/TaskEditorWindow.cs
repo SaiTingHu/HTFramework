@@ -408,17 +408,20 @@ namespace HT.Framework
                 };
                 _taskContentList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
                 {
-                    if (Event.current.type == EventType.Repaint)
+                    if (index >= 0 && index < _asset.Content.Count)
                     {
-                        GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
-                        gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
-                        gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
-
-                        if (_asset.Content[index].IsDone)
+                        if (Event.current.type == EventType.Repaint)
                         {
-                            GUI.backgroundColor = Color.green;
-                            GUI.Box(rect, "");
-                            GUI.backgroundColor = Color.white;
+                            GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
+                            gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
+                            gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
+
+                            if (_asset.Content[index].IsDone)
+                            {
+                                GUI.backgroundColor = Color.green;
+                                GUI.Box(rect, "");
+                                GUI.backgroundColor = Color.white;
+                            }
                         }
                     }
                 };

@@ -54,7 +54,9 @@
 
 - [Resource](https://wanderer.blog.csdn.net/article/details/88852698) - 资源加载管理器，主要用于动态加载资源（只支持异步加载），在加载中或加载完成后都可以进行自定义操作，现在主要支持Resource直接加载和AssetBundle加载，比如，UI模块就会自动调用资源管理器加载UI实体。
 
-- [StepEditor](https://wanderer.blog.csdn.net/article/details/87712995) - 严格来说，StepEditor只是框架的一个内置工具，他最开始的用途是用来解决一系列冗长的线性任务，为了实现可视化和降低后期改动的复杂度，当然，也可以用作流程控制器。
+- [StepEditor](https://wanderer.blog.csdn.net/article/details/87712995) - 步骤编辑器，严格来说，StepEditor只是框架的一个内置工具，他最开始的用途是用来解决一系列冗长的线性任务，为了实现可视化和降低后期改动的复杂度，当然，也可以用作流程控制器。
+
+- [TaskEditor](https://wanderer.blog.csdn.net/article/details/104317219) - 任务编辑器，可以自定义任务点，设置任务达成条件，多个任务点组成一个任务内容，使用一系列任务内容完成角色扮演的设计。
 
 - [UI](https://wanderer.blog.csdn.net/article/details/88125982) - 用于管理全局的UI实体，以省去手动创建UI实例、销毁UI实例等一系列操作，他可以在非常方便且省去不必要的开销优势下，让你条例清晰的组织和管控好任何复杂的UI结构。
 
