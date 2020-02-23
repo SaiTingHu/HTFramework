@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    [CustomEditor(typeof(StepTarget))]
-    internal sealed class StepTargetInspector : HTFEditor<StepTarget>
+    [CustomEditor(typeof(TaskTarget))]
+    internal sealed class TaskTargetInspector : HTFEditor<TaskTarget>
     {
         protected override bool IsEnableRuntimeData
         {
@@ -27,10 +27,6 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             TextField(Target.GUID, out Target.GUID, "GUID");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.State, out Target.State, "State");
             GUILayout.EndHorizontal();
         }
 

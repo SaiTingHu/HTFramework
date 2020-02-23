@@ -294,21 +294,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayResidentPanel);
-                                    ui.UIEntity.SetActive(false);
-                                    ui.OnInit();
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.OnInit();
-                                    }, true);
-                                }
+                                return CreateUIEntity(attribute, type.FullName, ui, _overlayResidentPanel);
                             }
                         }
                         else
@@ -323,21 +309,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraResidentPanel);
-                                    ui.UIEntity.SetActive(false);
-                                    ui.OnInit();
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.OnInit();
-                                    }, true);
-                                }
+                                return CreateUIEntity(attribute, type.FullName, ui, _cameraResidentPanel);
                             }
                         }
                         else
@@ -386,21 +358,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayTemporaryPanel);
-                                    ui.UIEntity.SetActive(false);
-                                    ui.OnInit();
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.OnInit();
-                                    }, true);
-                                }
+                                return CreateUIEntity(attribute, type.FullName, ui, _overlayTemporaryPanel);
                             }
                         }
                         else
@@ -415,21 +373,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraTemporaryPanel);
-                                    ui.UIEntity.SetActive(false);
-                                    ui.OnInit();
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.OnInit();
-                                    }, true);
-                                }
+                                return CreateUIEntity(attribute, type.FullName, ui, _cameraTemporaryPanel);
                             }
                         }
                         else
@@ -485,28 +429,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayResidentPanel);
-                                    ui.UIEntity.transform.SetAsLastSibling();
-                                    ui.UIEntity.SetActive(true);
-                                    ui.OnInit();
-                                    ui.OnOpen(args);
-                                    ui.OnPlaceTop();
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayResidentPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.UIEntity.transform.SetAsLastSibling();
-                                        ui.UIEntity.SetActive(true);
-                                        ui.OnInit();
-                                        ui.OnOpen(args);
-                                        ui.OnPlaceTop();
-                                    }, true);
-                                }
+                                return OpenUIEntity(attribute, type.FullName, ui, _overlayResidentPanel, args);
                             }
                             else
                             {
@@ -533,28 +456,7 @@ namespace HT.Framework
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraResidentPanel);
-                                    ui.UIEntity.transform.SetAsLastSibling();
-                                    ui.UIEntity.SetActive(true);
-                                    ui.OnInit();
-                                    ui.OnOpen(args);
-                                    ui.OnPlaceTop();
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraResidentPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.UIEntity.transform.SetAsLastSibling();
-                                        ui.UIEntity.SetActive(true);
-                                        ui.OnInit();
-                                        ui.OnOpen(args);
-                                        ui.OnPlaceTop();
-                                    }, true);
-                                }
+                                return OpenUIEntity(attribute, type.FullName, ui, _cameraResidentPanel, args);
                             }
                             else
                             {
@@ -621,38 +523,17 @@ namespace HT.Framework
                                 _currentOverlayTemporaryUI.OnClose();
                                 _currentOverlayTemporaryUI = null;
                             }
+                            _currentOverlayTemporaryUI = ui;
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _overlayTemporaryPanel);
-                                    ui.UIEntity.transform.SetAsLastSibling();
-                                    ui.UIEntity.SetActive(true);
-                                    ui.OnInit();
-                                    ui.OnOpen(args);
-                                    _currentOverlayTemporaryUI = ui;
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _overlayTemporaryPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.UIEntity.transform.SetAsLastSibling();
-                                        ui.UIEntity.SetActive(true);
-                                        ui.OnInit();
-                                        ui.OnOpen(args);
-                                        _currentOverlayTemporaryUI = ui;
-                                    }, true);
-                                }
+                                return OpenUIEntity(attribute, type.FullName, ui, _overlayTemporaryPanel, args);
                             }
                             else
                             {
                                 ui.UIEntity.transform.SetAsLastSibling();
                                 ui.UIEntity.SetActive(true);
                                 ui.OnOpen(args);
-                                _currentOverlayTemporaryUI = ui;
                             }
                         }
                         else
@@ -676,38 +557,17 @@ namespace HT.Framework
                                 _currentCameraTemporaryUI.OnClose();
                                 _currentCameraTemporaryUI = null;
                             }
+                            _currentCameraTemporaryUI = ui;
 
                             if (!ui.IsCreated)
                             {
-                                if (_defineUIAndEntitys.ContainsKey(type.FullName) && _defineUIAndEntitys[type.FullName] != null)
-                                {
-                                    ui.UIEntity = Instantiate(_defineUIAndEntitys[type.FullName], _cameraTemporaryPanel);
-                                    ui.UIEntity.transform.SetAsLastSibling();
-                                    ui.UIEntity.SetActive(true);
-                                    ui.OnInit();
-                                    ui.OnOpen(args);
-                                    _currentCameraTemporaryUI = ui;
-                                    return null;
-                                }
-                                else
-                                {
-                                    return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _cameraTemporaryPanel, null, (obj) =>
-                                    {
-                                        ui.UIEntity = obj;
-                                        ui.UIEntity.transform.SetAsLastSibling();
-                                        ui.UIEntity.SetActive(true);
-                                        ui.OnInit();
-                                        ui.OnOpen(args);
-                                        _currentCameraTemporaryUI = ui;
-                                    }, true);
-                                }
+                                return OpenUIEntity(attribute, type.FullName, ui, _cameraTemporaryPanel, args);
                             }
                             else
                             {
                                 ui.UIEntity.transform.SetAsLastSibling();
                                 ui.UIEntity.SetActive(true);
                                 ui.OnOpen(args);
-                                _currentCameraTemporaryUI = ui;
                             }
                         }
                         else
@@ -1024,7 +884,59 @@ namespace HT.Framework
                 }
             }
         }
-        
+
+        //创建UI实体
+        private Coroutine CreateUIEntity(UIResourceAttribute uIResource, string uITypeName, UILogicBase uILogic, Transform uIParent)
+        {
+            if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)
+            {
+                uILogic.UIEntity = Instantiate(_defineUIAndEntitys[uITypeName], uIParent);
+                uILogic.UIEntity.SetActive(false);
+                uILogic.OnInit();
+                return null;
+            }
+            else
+            {
+                return Main.m_Resource.LoadPrefab(new PrefabInfo(uIResource), uIParent, null, (obj) =>
+                {
+                    uILogic.UIEntity = obj;
+                    uILogic.OnInit();
+                }, true);
+            }
+        }
+        //打开UI实体
+        private Coroutine OpenUIEntity(UIResourceAttribute uIResource, string uITypeName, UILogicBase uILogic, Transform uIParent, params object[] args)
+        {
+            if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)
+            {
+                uILogic.UIEntity = Instantiate(_defineUIAndEntitys[uITypeName], uIParent);
+                uILogic.UIEntity.transform.SetAsLastSibling();
+                uILogic.UIEntity.SetActive(true);
+                uILogic.OnInit();
+                uILogic.OnOpen(args);
+                if (uILogic is UILogicResident)
+                {
+                    uILogic.Cast<UILogicResident>().OnPlaceTop();
+                }
+                return null;
+            }
+            else
+            {
+                return Main.m_Resource.LoadPrefab(new PrefabInfo(uIResource), uIParent, null, (obj) =>
+                {
+                    uILogic.UIEntity = obj;
+                    uILogic.UIEntity.transform.SetAsLastSibling();
+                    uILogic.UIEntity.SetActive(true);
+                    uILogic.OnInit();
+                    uILogic.OnOpen(args);
+                    if (uILogic is UILogicResident)
+                    {
+                        uILogic.Cast<UILogicResident>().OnPlaceTop();
+                    }
+                }, true);
+            }
+        }
+
         /// <summary>
         /// 世界UI的域
         /// </summary>

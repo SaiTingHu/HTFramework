@@ -10,7 +10,7 @@ namespace HT.Framework
     {
         #region Static Fields
         //高亮物体所在的层
-        internal static int HighlightingLayer = 7;
+        public static int HighlightingLayer = 7;
         //高亮开启速度
         private static float ConstantOnSpeed = 4.5f;
         //高亮关闭速度
@@ -128,7 +128,7 @@ namespace HT.Framework
         }
 
         private static Shader _transparentShader;
-        public static Shader transparentShader
+        private static Shader transparentShader
         {
             get
             {
@@ -270,11 +270,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Internal Methods
+        #region public Methods
         /// <summary>
         /// 重新初始化材质
         /// </summary>
-        internal void ReinitMaterials()
+        public void ReinitMaterials()
         {
             _materialsIsDirty = true;
         }
@@ -283,7 +283,7 @@ namespace HT.Framework
         /// 设置只高亮一帧的参数
         /// </summary>
         /// <param name="color">颜色</param>
-        internal void SetOnceParams(Color color)
+        public void SetOnceParams(Color color)
         {
             _onceColor = color;
         }
@@ -291,7 +291,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启高亮一帧
         /// </summary>
-        internal void OpenOnce()
+        public void OpenOnce()
         {
             _isOnce = true;
         }
@@ -300,7 +300,7 @@ namespace HT.Framework
         /// 开启高亮一帧
         /// </summary>
         /// <param name="color">颜色</param>
-        internal void OpenOnce(Color color)
+        public void OpenOnce(Color color)
         {
             _onceColor = color;
             _isOnce = true;
@@ -312,7 +312,7 @@ namespace HT.Framework
         /// <param name="color1">闪光开始颜色</param>
         /// <param name="color2">闪光结束颜色</param>
         /// <param name="freq">闪光频率</param>
-        internal void SetFlashingParams(Color color1, Color color2, float freq)
+        public void SetFlashingParams(Color color1, Color color2, float freq)
         {
             _flashingColorMin = color1;
             _flashingColorMax = color2;
@@ -322,7 +322,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启闪光
         /// </summary>
-        internal void OpenFlashing()
+        public void OpenFlashing()
         {
             _isFlashing = true;
         }
@@ -332,7 +332,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="color1">闪光开始颜色</param>
         /// <param name="color2">闪光结束颜色</param>
-        internal void OpenFlashing(Color color1, Color color2)
+        public void OpenFlashing(Color color1, Color color2)
         {
             _flashingColorMin = color1;
             _flashingColorMax = color2;
@@ -345,7 +345,7 @@ namespace HT.Framework
         /// <param name="color1">闪光开始颜色</param>
         /// <param name="color2">闪光结束颜色</param>
         /// <param name="freq">闪光频率</param>
-        internal void OpenFlashing(Color color1, Color color2, float freq)
+        public void OpenFlashing(Color color1, Color color2, float freq)
         {
             _flashingColorMin = color1;
             _flashingColorMax = color2;
@@ -357,7 +357,7 @@ namespace HT.Framework
         /// 开启闪光
         /// </summary>
         /// <param name="freq">闪光频率</param>
-        internal void OpenFlashing(float freq)
+        public void OpenFlashing(float freq)
         {
             _flashingFrequency = freq;
             _isFlashing = true;
@@ -366,7 +366,7 @@ namespace HT.Framework
         /// <summary>
         /// 关闭闪光
         /// </summary>
-        internal void CloseFlashing()
+        public void CloseFlashing()
         {
             _isFlashing = false;
         }
@@ -374,7 +374,7 @@ namespace HT.Framework
         /// <summary>
         /// 闪光模式切换
         /// </summary>
-        internal void FlashingSwitch()
+        public void FlashingSwitch()
         {
             _isFlashing = !_isFlashing;
         }
@@ -383,7 +383,7 @@ namespace HT.Framework
         /// 设置持续高亮参数
         /// </summary>
         /// <param name="color">颜色</param>
-        internal void SetConstantParams(Color color)
+        public void SetConstantParams(Color color)
         {
             _constantColor = color;
         }
@@ -391,7 +391,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启持续高亮
         /// </summary>
-        internal void OpenConstant()
+        public void OpenConstant()
         {
             _isConstantly = true;
             _transitionActive = true;
@@ -401,7 +401,7 @@ namespace HT.Framework
         /// 开启持续高亮
         /// </summary>
         /// <param name="color">颜色</param>
-        internal void OpenConstant(Color color)
+        public void OpenConstant(Color color)
         {
             _constantColor = color;
             _isConstantly = true;
@@ -411,7 +411,7 @@ namespace HT.Framework
         /// <summary>
         /// 关闭持续高亮
         /// </summary>
-        internal void CloseConstant()
+        public void CloseConstant()
         {
             _isConstantly = false;
             _transitionActive = true;
@@ -420,7 +420,7 @@ namespace HT.Framework
         /// <summary>
         /// 持续高亮模式切换
         /// </summary>
-        internal void ConstantSwitch()
+        public void ConstantSwitch()
         {
             _isConstantly = !_isConstantly;
             _transitionActive = true;
@@ -429,7 +429,7 @@ namespace HT.Framework
         /// <summary>
         /// 立即开启持续高亮
         /// </summary>
-        internal void OpenConstantImmediate()
+        public void OpenConstantImmediate()
         {
             _isConstantly = true;
             _transitionValue = 1f;
@@ -440,7 +440,7 @@ namespace HT.Framework
         /// 立即开启持续高亮
         /// </summary>
         /// <param name="color">颜色</param>
-        internal void OpenConstantImmediate(Color color)
+        public void OpenConstantImmediate(Color color)
         {
             _constantColor = color;
             _isConstantly = true;
@@ -451,7 +451,7 @@ namespace HT.Framework
         /// <summary>
         /// 立即关闭持续高亮
         /// </summary>
-        internal void CloseConstantImmediate()
+        public void CloseConstantImmediate()
         {
             _isConstantly = false;
             _transitionValue = 0f;
@@ -461,7 +461,7 @@ namespace HT.Framework
         /// <summary>
         /// 持续高亮模式立即切换
         /// </summary>
-        internal void ConstantSwitchImmediate()
+        public void ConstantSwitchImmediate()
         {
             _isConstantly = !_isConstantly;
             _transitionValue = _isConstantly ? 1f : 0f;
@@ -471,7 +471,7 @@ namespace HT.Framework
         /// <summary>
         /// 开启遮光板
         /// </summary>
-        internal void OpenOccluder()
+        public void OpenOccluder()
         {
             _isOccluder = true;
         }
@@ -479,7 +479,7 @@ namespace HT.Framework
         /// <summary>
         /// 关闭遮光板
         /// </summary>
-        internal void CloseOccluder()
+        public void CloseOccluder()
         {
             _isOccluder = false;
         }
@@ -487,7 +487,7 @@ namespace HT.Framework
         /// <summary>
         /// 遮光板模式切换
         /// </summary>
-        internal void OccluderSwitch()
+        public void OccluderSwitch()
         {
             _isOccluder = !_isOccluder;
         }
@@ -495,7 +495,7 @@ namespace HT.Framework
         /// <summary>
         /// 关闭所有高亮模式
         /// </summary>
-        internal void CloseAll()
+        public void CloseAll()
         {
             _isOnce = false;
             _isFlashing = false;
@@ -508,7 +508,7 @@ namespace HT.Framework
         /// <summary>
         /// 死亡
         /// </summary>
-        internal void Die()
+        public void Die()
         {
             Destroy(this);
         }

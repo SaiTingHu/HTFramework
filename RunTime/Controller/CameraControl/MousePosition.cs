@@ -9,19 +9,33 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     internal sealed class MousePosition : MonoBehaviour
     {
-        //阻尼缓冲时长
+        /// <summary>
+        /// 阻尼缓冲时长
+        /// </summary>
         public float DampingTime = 1;
-        //x轴移动速度，y轴移动速度，z轴移动速度
+        /// <summary>
+        /// x轴移动速度，y轴移动速度，z轴移动速度
+        /// </summary>
         public float XSpeed = 0.1f, YSpeed = 0.1f, ZSpeed = 0.1f;
-        //是否限定平移位置
+        /// <summary>
+        /// 是否限定平移位置
+        /// </summary>
         public bool NeedLimit = true;
-        //x轴平移最低值，x轴平移最高值
+        /// <summary>
+        /// x轴平移最低值，x轴平移最高值
+        /// </summary>
         public float XMinLimit = -5, XMaxLimit = 5;
-        //y轴平移最低值，y轴平移最高值
+        /// <summary>
+        /// y轴平移最低值，y轴平移最高值
+        /// </summary>
         public float YMinLimit = 0.1f, YMaxLimit = 5;
-        //z轴平移最低值，z轴平移最高值
+        /// <summary>
+        /// z轴平移最低值，z轴平移最高值
+        /// </summary>
         public float ZMinLimit = -5, ZMaxLimit = 5;
-        //在UGUI目标上是否可以控制
+        /// <summary>
+        /// 在UGUI目标上是否可以控制
+        /// </summary>
         public bool IsCanOnUGUI = false;
         
         //最终的位置
@@ -36,23 +50,23 @@ namespace HT.Framework
         /// <summary>
         /// 是否可以控制
         /// </summary>
-        internal bool CanControl { get; set; } = true;
+        public bool CanControl { get; set; } = true;
 
         /// <summary>
         /// 注视目标
         /// </summary>
-        internal CameraTarget Target { get; set; }
+        public CameraTarget Target { get; set; }
 
         /// <summary>
         /// 旋转控制器
         /// </summary>
-        internal MouseRotation MR { get; set; }
+        public MouseRotation MR { get; set; }
 
         /// <summary>
         /// 设置平移限定最小值
         /// </summary>
         /// <param name="value">视野平移时，视角在x,y,z三个轴的最小值</param>
-        internal void SetMinLimit(Vector3 value)
+        public void SetMinLimit(Vector3 value)
         {
             XMinLimit = value.x;
             YMinLimit = value.y;
@@ -63,7 +77,7 @@ namespace HT.Framework
         /// 设置平移限定最大值
         /// </summary>
         /// <param name="value">视野平移时，视角在x,y,z三个轴的最大值</param>
-        internal void SetMaxLimit(Vector3 value)
+        public void SetMaxLimit(Vector3 value)
         {
             XMaxLimit = value.x;
             YMaxLimit = value.y;
@@ -75,7 +89,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="position">目标位置</param>
         /// <param name="damping">阻尼缓动模式</param>
-        internal void SetPosition(Vector3 position, bool damping = true)
+        public void SetPosition(Vector3 position, bool damping = true)
         {
             if (_isKeepTrack)
             {
@@ -107,7 +121,7 @@ namespace HT.Framework
         /// 进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>
-        internal void EnterKeepTrack(Transform target)
+        public void EnterKeepTrack(Transform target)
         {
             if (!target)
             {
@@ -121,7 +135,7 @@ namespace HT.Framework
         /// <summary>
         /// 退出保持追踪模式
         /// </summary>
-        internal void LeaveKeepTrack()
+        public void LeaveKeepTrack()
         {
             _isKeepTrack = false;
         }
@@ -129,7 +143,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新
         /// </summary>
-        internal void OnRefresh()
+        public void OnRefresh()
         {
             //控制
             Control();

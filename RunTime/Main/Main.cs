@@ -39,6 +39,11 @@ namespace HT.Framework
             LicenseRefresh();
         }
 
+        private void FixedUpdate()
+        {
+            LogicFixedLoopRefresh();
+        }
+
         private void OnGUI()
         {
             LicenseOnGUI();

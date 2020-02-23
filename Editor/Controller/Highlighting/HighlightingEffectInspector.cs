@@ -7,7 +7,15 @@ namespace HT.Framework
     internal sealed class HighlightingEffectInspector : HTFEditor<HighlightingEffect>
     {
         private static string[] _downsampleOptions = new string[] { "None", "Half", "Quarter" };
-        
+
+        protected override bool IsEnableRuntimeData
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

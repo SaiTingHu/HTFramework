@@ -13,6 +13,9 @@ namespace HT.Framework
         /// 操作ID
         /// </summary>
         public string GUID = "";
+        /// <summary>
+        /// 节点的锚点
+        /// </summary>
         [SerializeField] internal Vector2 Anchor = Vector2.zero;
         /// <summary>
         /// 操作执行到进入下一个操作的时间

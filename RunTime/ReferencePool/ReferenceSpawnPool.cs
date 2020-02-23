@@ -6,12 +6,12 @@ namespace HT.Framework
     /// <summary>
     /// 引用池
     /// </summary>
-    public sealed class ReferenceSpawnPool
+    internal sealed class ReferenceSpawnPool
     {
         private int _limit = 100;
         private Queue<IReference> _referenceQueue = new Queue<IReference>();
 
-        internal ReferenceSpawnPool(int limit)
+        public ReferenceSpawnPool(int limit)
         {
             _limit = limit;
         }

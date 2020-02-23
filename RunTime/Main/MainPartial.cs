@@ -880,9 +880,9 @@ namespace HT.Framework
 
         #region LogicLoop
         /// <summary>
-        /// 主逻辑循环事件
+        /// 主逻辑循环
         /// </summary>
-        public event HTFAction LogicLoopEvent;
+        public event HTFAction LogicLoop;
 
         private void LogicLoopRefresh()
         {
@@ -891,7 +891,24 @@ namespace HT.Framework
                 return;
             }
 
-            LogicLoopEvent?.Invoke();
+            LogicLoop?.Invoke();
+        }
+        #endregion
+
+        #region LogicFixedLoop
+        /// <summary>
+        /// 主逻辑循环（固定帧）
+        /// </summary>
+        public event HTFAction LogicFixedLoop;
+
+        private void LogicFixedLoopRefresh()
+        {
+            if (_isPause)
+            {
+                return;
+            }
+
+            LogicFixedLoop?.Invoke();
         }
         #endregion
 

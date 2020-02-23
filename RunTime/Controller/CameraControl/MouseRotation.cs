@@ -8,36 +8,65 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     internal sealed class MouseRotation : MonoBehaviour
     {
-        //x轴旋转速度，y轴旋转速度，滚轮缩放速度
+        /// <summary>
+        /// x轴旋转速度，y轴旋转速度，滚轮缩放速度
+        /// </summary>
         public float XSpeed = 150, YSpeed = 150, MSpeed = 30;
         //y轴视角最低值，y轴视角最高值（目标是角色的话，推荐最小10，最大85，摄像机最低不会到角色脚底，最高不会到角色头顶正上方）
         //例如视角最低值为10，那么摄像机在y轴旋转最小只能到10
         //例如视角最高值为85，那么摄像机在y轴旋转最大只能到85
         public float YMinAngleLimit = -85, YMaxAngleLimit = 85;
-        //摄像机与注释目标距离
+        /// <summary>
+        /// 摄像机与注释目标距离
+        /// </summary>
         public float Distance = 2.0f;
-        //摄像机与注释目标最小距离
+        /// <summary>
+        /// 摄像机与注释目标最小距离
+        /// </summary>
         public float MinDistance = 0;
-        //摄像机与注释目标最大距离
+        /// <summary>
+        /// 摄像机与注释目标最大距离
+        /// </summary>
         public float MaxDistance = 4;
-        //摄像机围绕目标旋转时是否使用阻尼缓动模式
+        /// <summary>
+        /// 摄像机围绕目标旋转时是否使用阻尼缓动模式
+        /// </summary>
         public bool NeedDamping = true;
-        //初始的摄像机x轴旋转值，y轴旋转值
+        /// <summary>
+        /// 初始的摄像机x轴旋转值
+        /// </summary>
         public float X = 90.0f;
+        /// <summary>
+        /// 初始的摄像机y轴旋转值
+        /// </summary>
         public float Y = 30.0f;
-        //是否限定旋转位置
+        /// <summary>
+        /// 是否限定旋转位置
+        /// </summary>
         public bool NeedLimit = false;
-        //x轴旋转最低值，x轴旋转最高值
+        /// <summary>
+        /// x轴旋转最低值，x轴旋转最高值
+        /// </summary>
         public float XMinLimit = -5, XMaxLimit = 5;
-        //y轴旋转最低值，y轴旋转最高值
+        /// <summary>
+        /// y轴旋转最低值，y轴旋转最高值
+        /// </summary>
         public float YMinLimit = 0.1f, YMaxLimit = 5;
-        //z轴旋转最低值，z轴旋转最高值
+        /// <summary>
+        /// z轴旋转最低值，z轴旋转最高值
+        /// </summary>
         public float ZMinLimit = -5, ZMaxLimit = 5;
-        //在UGUI目标上是否可以控制
+        /// <summary>
+        /// 在UGUI目标上是否可以控制
+        /// </summary>
         public bool IsCanOnUGUI = false;
-        //允许在输入滚轮超越距离限制时，启用摄像机移动
+        /// <summary>
+        /// 允许在输入滚轮超越距离限制时，启用摄像机移动
+        /// </summary>
         public bool AllowOverstepDistance = true;
-        //是否始终保持注视目标，即使在视角切换时
+        /// <summary>
+        /// 是否始终保持注视目标，即使在视角切换时
+        /// </summary>
         public bool IsLookAtTarget = true;
 
         //注视点（注视目标的准确位置，经过偏移后的位置）
@@ -46,7 +75,6 @@ namespace HT.Framework
         private float _damping = 5.0f;
         //系数
         private float _factor = 0.02f;
-
         //目标位置
         private Quaternion _rotation;
         private Vector3 _position;
@@ -57,18 +85,18 @@ namespace HT.Framework
         /// <summary>
         /// 是否可以控制
         /// </summary>
-        internal bool CanControl { get; set; } = true;
+        public bool CanControl { get; set; } = true;
 
         /// <summary>
         /// 注视目标
         /// </summary>
-        internal CameraTarget Target { get; set; }
+        public CameraTarget Target { get; set; }
 
         /// <summary>
         /// 设置旋转限定最小值
         /// </summary>
         /// <param name="value">视野旋转时，视角在x,y,z三个轴的最小值</param>
-        internal void SetMinLimit(Vector3 value)
+        public void SetMinLimit(Vector3 value)
         {
             XMinLimit = value.x;
             YMinLimit = value.y;
@@ -79,7 +107,7 @@ namespace HT.Framework
         /// 设置旋转限定最大值
         /// </summary>
         /// <param name="value">视野旋转时，视角在x,y,z三个轴的最大值</param>
-        internal void SetMaxLimit(Vector3 value)
+        public void SetMaxLimit(Vector3 value)
         {
             XMaxLimit = value.x;
             YMaxLimit = value.y;
@@ -91,7 +119,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="angle">目标角度</param>
         /// <param name="damping">阻尼缓动模式</param>
-        internal void SetAngle(Vector3 angle, bool damping = true)
+        public void SetAngle(Vector3 angle, bool damping = true)
         {
             X = angle.x;
             Y = angle.y;
@@ -110,7 +138,7 @@ namespace HT.Framework
         /// <param name="angle">目标角度</param>
         /// <param name="distance">距离</param>
         /// <param name="damping">阻尼缓动模式</param>
-        internal void SetAngle(Vector2 angle, float distance, bool damping = true)
+        public void SetAngle(Vector2 angle, float distance, bool damping = true)
         {
             X = angle.x;
             Y = angle.y;
@@ -126,7 +154,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新
         /// </summary>
-        internal void OnRefresh()
+        public void OnRefresh()
         {
             //控制
             Control();

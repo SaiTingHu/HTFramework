@@ -27,8 +27,10 @@ namespace HT.Framework
         /// <summary>
         /// 延时执行
         /// </summary>
+        /// <param name="behaviour">执行者</param>
         /// <param name="action">执行的代码</param>
         /// <param name="delaySeconds">延时的秒数</param>
+        /// <returns>延时的协程</returns>
         public static Coroutine DelayExecute(this MonoBehaviour behaviour, HTFAction action, float delaySeconds)
         {
             Coroutine coroutine = behaviour.StartCoroutine(DelayExecute(action, delaySeconds));
@@ -43,8 +45,10 @@ namespace HT.Framework
         /// <summary>
         /// 等待执行
         /// </summary>
+        /// <param name="behaviour">执行者</param>
         /// <param name="action">执行的代码</param>
         /// <param name="waitUntil">等待的WaitUntil</param>
+        /// <returns>等待的协程</returns>
         public static Coroutine WaitExecute(this MonoBehaviour behaviour, HTFAction action, WaitUntil waitUntil)
         {
             Coroutine coroutine = behaviour.StartCoroutine(WaitExecute(action, waitUntil));
@@ -472,6 +476,8 @@ namespace HT.Framework
         /// <summary>
         /// Json数据转换为字符串
         /// </summary>
+        /// <param name="json">Json数据</param>
+        /// <returns>字符串</returns>
         public static string JsonToString(JsonData json)
         {
             if (json == null)
@@ -484,8 +490,8 @@ namespace HT.Framework
         /// <summary>
         /// 字符串转换为Json数据
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">字符串</param>
+        /// <returns>Json数据</returns>
         public static JsonData StringToJson(string value)
         {
             if (string.IsNullOrEmpty(value) || value == "")
@@ -521,6 +527,10 @@ namespace HT.Framework
         /// <summary>
         /// Text文本动画，从null值开始
         /// </summary>
+        /// <param name="target">Text对象</param>
+        /// <param name="endValue">动画目标值</param>
+        /// <param name="duration">动画时间</param>
+        /// <returns>Tweener</returns>
         public static Tweener DoTextBeginsNull(this Text target, string endValue, float duration)
         {
             target.text = "";
@@ -964,8 +974,10 @@ namespace HT.Framework
 
         #region 时间工具
         /// <summary>
-        /// 转换为标准时间字符串
+        /// 转换为标准时间字符串（yyyy/MM/dd HH:mm:ss）
         /// </summary>
+        /// <param name="time">时间对象</param>
+        /// <returns>字符串</returns>
         public static string ToDefaultDateString(this DateTime time)
         {
             return time.ToString("yyyy/MM/dd HH:mm:ss");
@@ -1006,6 +1018,10 @@ namespace HT.Framework
         /// <summary>
         /// 转换成枚举
         /// </summary>
+        /// <typeparam name="EnumType">枚举类型</typeparam>
+        /// <param name="value">字符串</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <returns>枚举值</returns>
         public static EnumType ToEnum<EnumType>(this string value, EnumType defaultValue)
         {
             if (!string.IsNullOrEmpty(value))
@@ -1022,8 +1038,10 @@ namespace HT.Framework
             return defaultValue;
         }
         /// <summary>
-        /// 转换成三维向量，格式：x,y,z
+        /// 转换成Vector3，格式：x,y,z
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <returns>Vector3值</returns>
         public static Vector3 ToVector3(this string value)
         {
             value = value.Replace("f", "");
@@ -1038,6 +1056,8 @@ namespace HT.Framework
         /// <summary>
         /// 转换成四元素
         /// </summary>
+        /// <param name="value">Vector3值</param>
+        /// <returns>四元素</returns>
         public static Quaternion ToQuaternion(this Vector3 value)
         {
             return Quaternion.Euler(value);
@@ -1045,6 +1065,8 @@ namespace HT.Framework
         /// <summary>
         /// MD5算法加密
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <returns>加密后的字符串</returns>
         public static string MD5Encrypt(string value)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
@@ -1058,6 +1080,8 @@ namespace HT.Framework
         /// <summary>
         /// 256位AES加密
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <returns>加密后的字符串</returns>
         public static string AESEncrypt(string value)
         {
             byte[] keyArray = Encoding.UTF8.GetBytes("12AE5C7VV01JK45L7OP0R2WE5AS8XD12");
@@ -1076,6 +1100,9 @@ namespace HT.Framework
         /// <summary>
         /// 判断数组中是否存在某元素
         /// </summary>
+        /// <param name="array">数组</param>
+        /// <param name="value">元素</param>
+        /// <returns>是否存在</returns>
         public static bool Contains(this string[] array, string value)
         {
             for (int i = 0; i < array.Length; i++)
@@ -1090,6 +1117,10 @@ namespace HT.Framework
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <param name="subStr">子字串</param>
+        /// <param name="color">颜色</param>
+        /// <returns>转换后的字符串</returns>
         public static string ToRichBoldColor(this string value, string subStr, Color color)
         {
             if (subStr.Length <= 0 || !value.Contains(subStr))
@@ -1111,6 +1142,10 @@ namespace HT.Framework
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <param name="subStr">子字串</param>
+        /// <param name="color">颜色</param>
+        /// <returns>转换后的字符串</returns>
         public static string ToRichColor(this string value, string subStr, Color color)
         {
             if (subStr.Length <= 0 || !value.Contains(subStr))
@@ -1132,6 +1167,10 @@ namespace HT.Framework
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <param name="subStr">子字串</param>
+        /// <param name="size">字体大小</param>
+        /// <returns>转换后的字符串</returns>
         public static string ToRichSize(this string value, string subStr, int size)
         {
             if (subStr.Length <= 0 || !value.Contains(subStr))
@@ -1153,6 +1192,9 @@ namespace HT.Framework
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <param name="subStr">子字串</param>
+        /// <returns>转换后的字符串</returns>
         public static string ToRichBold(this string value, string subStr)
         {
             if (subStr.Length <= 0 || !value.Contains(subStr))
@@ -1174,6 +1216,9 @@ namespace HT.Framework
         /// <summary>
         /// 将指定位置的子字串转换为富文本
         /// </summary>
+        /// <param name="value">字符串</param>
+        /// <param name="subStr">子字串</param>
+        /// <returns>转换后的字符串</returns>
         public static string ToRichItalic(this string value, string subStr)
         {
             if (subStr.Length <= 0 || !value.Contains(subStr))
@@ -1196,8 +1241,10 @@ namespace HT.Framework
 
         #region 数组工具
         /// <summary>
-        /// 打乱数组
+        /// 随机打乱数组
         /// </summary>
+        /// <typeparam name="T">数组类型</typeparam>
+        /// <param name="array">数组</param>
         public static void Disrupt<T>(this T[] array)
         {
             int index = 0;
@@ -1214,8 +1261,10 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 打乱集合
+        /// 随机打乱集合
         /// </summary>
+        /// <typeparam name="T">集合类型</typeparam>
+        /// <param name="array">集合</param>
         public static void Disrupt<T>(this List<T> array)
         {
             int index = 0;
@@ -1234,6 +1283,9 @@ namespace HT.Framework
         /// <summary>
         /// 遍历数组
         /// </summary>
+        /// <typeparam name="T">数组类型</typeparam>
+        /// <param name="array">数组对象</param>
+        /// <param name="action">执行操作</param>
         public static void Foreach<T>(this T[] array, HTFAction<T, int> action)
         {
             for (int i = 0; i < array.Length; i++)
@@ -1244,6 +1296,9 @@ namespace HT.Framework
         /// <summary>
         /// 遍历集合
         /// </summary>
+        /// <typeparam name="T">集合类型</typeparam>
+        /// <param name="array">集合对象</param>
+        /// <param name="action">执行操作</param>
         public static void Foreach<T>(this List<T> array, HTFAction<T, int> action)
         {
             for (int i = 0; i < array.Count; i++)
@@ -1254,6 +1309,10 @@ namespace HT.Framework
         /// <summary>
         /// 生成一个长度为length的数组，数组中每个数据均为此值
         /// </summary>
+        /// <typeparam name="T">数组类型</typeparam>
+        /// <param name="value">数组值</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>数组</returns>
         public static T[] GenerateArray<T>(this T value, int length)
         {
             T[] array = new T[length];
@@ -2075,7 +2134,8 @@ namespace HT.Framework
         /// 使用 as 强转目标
         /// </summary>
         /// <typeparam name="T">强转的类型</typeparam>
-        /// <returns>结果</returns>
+        /// <param name="target">强转的对象</param>
+        /// <returns>转换后的对象</returns>
         public static T Cast<T>(this object target) where T : class
         {
             return target as T;

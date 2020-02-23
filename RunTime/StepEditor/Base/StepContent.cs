@@ -14,6 +14,9 @@ namespace HT.Framework
         /// 步骤ID
         /// </summary>
         public string GUID = "";
+        /// <summary>
+        /// Enter节点的锚点
+        /// </summary>
         [SerializeField] internal Vector2 EnterAnchor = Vector2.zero;
         /// <summary>
         /// 步骤执行到进入下一步的时间
@@ -65,19 +68,18 @@ namespace HT.Framework
         /// 步骤助手类名
         /// </summary>
         [SerializeField] internal string Helper = "<None>";
-
         /// <summary>
         /// 步骤参数列表
         /// </summary>
-        [SerializeField] public List<StepParameter> Parameters = new List<StepParameter>();
+        [SerializeField] internal List<StepParameter> Parameters = new List<StepParameter>();
         /// <summary>
         /// 步骤操作列表
         /// </summary>
-        [SerializeField] public List<StepOperation> Operations = new List<StepOperation>();
+        [SerializeField] internal List<StepOperation> Operations = new List<StepOperation>();
         /// <summary>
         /// 步骤连线列表
         /// </summary>
-        [SerializeField] public List<StepWired> Wireds = new List<StepWired>();
+        [SerializeField] internal List<StepWired> Wireds = new List<StepWired>();
 
         /// <summary>
         /// 克隆

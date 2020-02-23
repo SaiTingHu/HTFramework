@@ -21,11 +21,11 @@ namespace HT.Framework
         /// <summary>
         /// 所有游戏对象根物体
         /// </summary>
-        internal List<DebuggerGameObject> GameObjectRoots { get; private set; } = new List<DebuggerGameObject>();
+        public List<DebuggerGameObject> GameObjectRoots { get; private set; } = new List<DebuggerGameObject>();
         /// <summary>
         /// 当前选中的游戏对象
         /// </summary>
-        internal DebuggerGameObject CurrentGameObject
+        public DebuggerGameObject CurrentGameObject
         {
             get
             {
@@ -40,11 +40,11 @@ namespace HT.Framework
         /// <summary>
         /// 当前选中的游戏对象的所有组件
         /// </summary>
-        internal List<Component> Components { get; private set; } = new List<Component>();
+        public List<Component> Components { get; private set; } = new List<Component>();
         /// <summary>
         /// 当前选中的组件
         /// </summary>
-        internal Component CurrentComponent
+        public Component CurrentComponent
         {
             get
             {
@@ -76,25 +76,25 @@ namespace HT.Framework
         /// <summary>
         /// 当前选中的调试器组件
         /// </summary>
-        internal DebuggerComponentBase CurrentDebuggerComponent { get; private set; }
+        public DebuggerComponentBase CurrentDebuggerComponent { get; private set; }
         /// <summary>
         /// 当前是否准备添加组件
         /// </summary>
-        internal bool IsReadyAddComponent { get; set; } = false;
+        public bool IsReadyAddComponent { get; set; } = false;
         /// <summary>
         /// 当前是否显示筛选的游戏物体
         /// </summary>
-        internal bool IsShowGameObjectFiltrate { get; set; } = false;
+        public bool IsShowGameObjectFiltrate { get; set; } = false;
         /// <summary>
         /// 游戏对象名称筛选
         /// </summary>
-        internal string GameObjectFiltrate { get; set; } = "";
+        public string GameObjectFiltrate { get; set; } = "";
         /// <summary>
         /// 组件类型筛选
         /// </summary>
-        internal string ComponentFiltrate { get; set; } = "";
+        public string ComponentFiltrate { get; set; } = "";
 
-        internal DebuggerScene()
+        public DebuggerScene()
         {
             Type baseType = typeof(DebuggerComponentBase);
             List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
@@ -123,7 +123,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新场景
         /// </summary>
-        internal void Refresh()
+        public void Refresh()
         {
             Main.Current.StartCoroutine(CollectDebuggerGameObjects());
         }
@@ -131,7 +131,7 @@ namespace HT.Framework
         /// 游戏对象筛选
         /// </summary>
         /// <param name="gameObjects">游戏对象列表</param>
-        internal void ExecuteGameObjectFiltrate(List<DebuggerGameObject> gameObjects)
+        public void ExecuteGameObjectFiltrate(List<DebuggerGameObject> gameObjects)
         {
             if (gameObjects == null) gameObjects = new List<DebuggerGameObject>();
             else gameObjects.Clear();
@@ -157,7 +157,7 @@ namespace HT.Framework
         /// 组件类型筛选
         /// </summary>
         /// <param name="types">组件类型列表</param>
-        internal void ExecuteComponentFiltrate(List<Type> types)
+        public void ExecuteComponentFiltrate(List<Type> types)
         {
             if (types == null) types = new List<Type>();
             else types.Clear();

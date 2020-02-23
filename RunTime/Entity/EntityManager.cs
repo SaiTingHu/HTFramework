@@ -150,10 +150,6 @@ namespace HT.Framework
             if (_entities.ContainsKey(type))
             {
                 EntityLogicBase entityLogic = _entities[type].Find((entity) => { return entity.Name == entityName; });
-                if (entityLogic == null)
-                {
-                    throw new HTFrameworkException(HTFrameworkModule.Entity, "获取实体失败：实体名称 " + entityName + " 并未存在！");
-                }
                 return entityLogic;
             }
             else

@@ -53,7 +53,7 @@ namespace HT.Framework
         /// <summary>
         /// 重置轮廓
         /// </summary>
-        internal void ResetOutline()
+        public void ResetOutline()
         {
             Close();
 
@@ -70,7 +70,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="color">高亮颜色</param>
         /// <param name="isFlash">是否闪烁</param>
-        internal void Open(Color color, float intensity)
+        public void Open(Color color, float intensity)
         {
             if (!_isInit)
             {
@@ -109,7 +109,7 @@ namespace HT.Framework
         /// <summary>
         /// 关闭轮廓高亮
         /// </summary>
-        internal void Close()
+        public void Close()
         {
             if (_isOpened)
             {
@@ -124,7 +124,7 @@ namespace HT.Framework
         /// <summary>
         /// 死亡
         /// </summary>
-        internal void Die()
+        public void Die()
         {
             Destroy(this);
         }

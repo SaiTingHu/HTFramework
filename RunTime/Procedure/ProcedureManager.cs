@@ -214,7 +214,6 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.Procedure, "切换流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
             }
         }
-
         /// <summary>
         /// 切换至下一流程
         /// </summary>
@@ -245,7 +244,6 @@ namespace HT.Framework
                 SwitchProcedure(_procedureTypes[index - 1]);
             }
         }
-
         /// <summary>
         /// 切换至指定序号的流程（依据编辑器面板的序号）
         /// </summary>

@@ -564,7 +564,21 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 停止播放所有的世界音效
+        /// 停止播放指定的世界音效
+        /// </summary>
+        /// <param name="attachTarget">附加目标</param>
+        public void StopWorldSound(GameObject attachTarget)
+        {
+            if (_worldAudios.ContainsKey(attachTarget))
+            {
+                if (_worldAudios[attachTarget].isPlaying)
+                {
+                    _worldAudios[attachTarget].Stop();
+                }
+            }
+        }
+        /// <summary>
+        /// 停止播放所有世界音效
         /// </summary>
         public void StopAllWorldSound()
         {

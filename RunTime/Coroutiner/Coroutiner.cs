@@ -105,14 +105,22 @@ namespace HT.Framework
         /// <param name="action">协程方法</param>
         public void Stop(Delegate action)
         {
-            if (!Warehouse.ContainsKey(action))
+            if (Warehouse.ContainsKey(action))
             {
-                throw new HTFrameworkException(HTFrameworkModule.Coroutiner, "终止协程失败：不存在 " + action.Method.Name + " 类型的协程！");
+                for (int i = 0; i < Warehouse[action].Count; i++)
+                {
+                    Warehouse[action][i].Stop();
+                }
             }
-            for (int i = 0; i < Warehouse[action].Count; i++)
-            {
-                Warehouse[action][i].Stop();
-            }
+        }
+        /// <summary>
+        /// 是否存在
+        /// </summary>
+        /// <param name="id">协程迭代器ID</param>
+        /// <returns>是否存在</returns>
+        public bool IsExist(string id)
+        {
+            return CoroutineEnumerators.ContainsKey(id);
         }
         /// <summary>
         /// 是否运行中
