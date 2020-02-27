@@ -1109,6 +1109,44 @@ namespace HT.Framework
                                     GUI.changed = true;
                                 }
                                 break;
+                            case KeyCode.DownArrow:
+                                if (_currentStep == -1)
+                                {
+                                    if (0 < _contentAsset.Content.Count)
+                                    {
+                                        SelectStepContent(0);
+                                        GUI.changed = true;
+                                    }
+                                }
+                                else
+                                {
+                                    int stepIndex = _currentStep + 1;
+                                    if (stepIndex < _contentAsset.Content.Count)
+                                    {
+                                        SelectStepContent(stepIndex);
+                                        GUI.changed = true;
+                                    }
+                                }
+                                break;
+                            case KeyCode.UpArrow:
+                                if (_currentStep == -1)
+                                {
+                                    if (0 < _contentAsset.Content.Count)
+                                    {
+                                        SelectStepContent(_contentAsset.Content.Count - 1);
+                                        GUI.changed = true;
+                                    }
+                                }
+                                else
+                                {
+                                    int stepIndex = _currentStep - 1;
+                                    if (stepIndex >= 0 && stepIndex < _contentAsset.Content.Count)
+                                    {
+                                        SelectStepContent(stepIndex);
+                                        GUI.changed = true;
+                                    }
+                                }
+                                break;
                         }
                         break;
                 }

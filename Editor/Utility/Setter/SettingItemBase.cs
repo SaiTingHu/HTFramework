@@ -4,48 +4,41 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    public abstract class HTFEditorWindow : EditorWindow
+    /// <summary>
+    /// 设置项基类
+    /// </summary>
+    public abstract class SettingItemBase
     {
         /// <summary>
-        /// 是否启用标题UI
+        /// 设置面板的显示名称
         /// </summary>
-        protected virtual bool IsEnableTitleGUI
+        public virtual string Name
         {
             get
             {
-                return true;
+                return GetType().FullName;
             }
         }
-        
-        private void OnGUI()
-        {
-            if (IsEnableTitleGUI)
-            {
-                GUILayout.BeginHorizontal(EditorStyles.toolbar);
-                OnTitleGUI();
-                GUILayout.EndHorizontal();
-            }
-
-            OnBodyGUI();
-        }
         /// <summary>
-        /// 初始化
+        /// 开始设置
         /// </summary>
-        public virtual void Initialization()
-        {
-        }
+        public virtual void OnBeginSetting()
+        { }
         /// <summary>
-        /// 标题UI
+        /// 设置面板UI
         /// </summary>
-        protected virtual void OnTitleGUI()
-        {
-        }
+        public virtual void OnSettingGUI()
+        { }
         /// <summary>
-        /// 窗体UI
+        /// 结束设置
         /// </summary>
-        protected virtual void OnBodyGUI()
-        {
-        }
+        public virtual void OnEndSetting()
+        { }
+        /// <summary>
+        /// 重置所有设置
+        /// </summary>
+        public virtual void OnReset()
+        { }
         /// <summary>
         /// 标记目标已改变
         /// </summary>

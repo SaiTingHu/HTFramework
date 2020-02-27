@@ -306,6 +306,21 @@ namespace HT.Framework
         }
         #endregion
 
+        #region HTFramework Setting... 【优先级1000】
+        /// <summary>
+        /// HTFramework Setting...
+        /// </summary>
+        [@MenuItem("HTFramework/HTFramework Settings...", false, 1000)]
+        private static void OpenHTFrameworkSettings()
+        {
+            Setter setter = EditorWindow.GetWindow<Setter>();
+            setter.titleContent.image = EditorGUIUtility.IconContent("SettingsIcon").image;
+            setter.titleContent.text = "HTFramework Setter";
+            setter.minSize = new Vector2(640, 580);
+            setter.Show();
+        }
+        #endregion
+
         #region 工程视图新建菜单
         /// <summary>
         /// 新建AspectProxy类
@@ -1196,6 +1211,9 @@ namespace HT.Framework
             public static readonly string SearchTextField = "SearchTextField";
             public static readonly string SearchCancelButton = "SearchCancelButton";
             public static readonly string SearchCancelButtonEmpty = "SearchCancelButtonEmpty";
+            public static readonly string ToolbarSeachTextField = "ToolbarSeachTextField";
+            public static readonly string ToolbarSeachCancelButton = "ToolbarSeachCancelButton";
+            public static readonly string ToolbarSeachCancelButtonEmpty = "ToolbarSeachCancelButtonEmpty";
         }
         #endregion
     }

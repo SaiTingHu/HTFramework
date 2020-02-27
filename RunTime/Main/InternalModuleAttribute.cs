@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 内置模块标记
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class InternalModuleAttribute : Attribute
+    internal sealed class InternalModuleAttribute : Attribute
     {
         public HTFrameworkModule ModuleName { get; private set; }
 

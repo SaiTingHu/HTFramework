@@ -115,6 +115,14 @@ namespace HT.Framework
                 CheckResourceMode();
                 Check();
             }
+            if (GUI.Button(new Rect(position.width - 170, 3, 160, 18), "HTFramework Settings..."))
+            {
+                Setter setter = GetWindow<Setter>();
+                setter.titleContent.image = EditorGUIUtility.IconContent("SettingsIcon").image;
+                setter.titleContent.text = "HTFramework Setter";
+                setter.minSize = new Vector2(640, 580);
+                setter.Show();
+            }
         }
 
         private void Update()

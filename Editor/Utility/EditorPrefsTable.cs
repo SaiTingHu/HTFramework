@@ -138,6 +138,16 @@ namespace HT.Framework
                 return Application.productName + ".HT.Framework.Script.TaskPoint";
             }
         }
+        /// <summary>
+        /// 新建SettingItem脚本的文件夹
+        /// </summary>
+        public static string Script_SettingItem_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.SettingItem";
+            }
+        }
         #endregion
 
         #region Utility
