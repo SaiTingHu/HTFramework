@@ -1635,36 +1635,51 @@ namespace HT.Framework
         {
             foreach (KeyValuePair<Button, TweenerCore<Color, Color, ColorOptions>> button in TwinkleButtons)
             {
-                ColorBlock block = button.Key.colors;
-                block.normalColor = button.Value.startValue;
-                button.Value.Kill();
-                button.Key.colors = block;
+                if (button.Key)
+                {
+                    ColorBlock block = button.Key.colors;
+                    block.normalColor = button.Value.startValue;
+                    button.Value.Kill();
+                    button.Key.colors = block;
+                }
             }
             foreach (KeyValuePair<Toggle, TweenerCore<Color, Color, ColorOptions>> toggle in TwinkleToggles)
             {
-                ColorBlock block = toggle.Key.colors;
-                block.normalColor = toggle.Value.startValue;
-                toggle.Value.Kill();
-                toggle.Key.colors = block;
+                if (toggle.Key)
+                {
+                    ColorBlock block = toggle.Key.colors;
+                    block.normalColor = toggle.Value.startValue;
+                    toggle.Value.Kill();
+                    toggle.Key.colors = block;
+                }
             }
             foreach (KeyValuePair<Image, TweenerCore<Color, Color, ColorOptions>> image in TwinkleImages)
             {
-                Color normalColor = image.Value.startValue;
-                image.Value.Kill();
-                image.Key.color = normalColor;
+                if (image.Key)
+                {
+                    Color normalColor = image.Value.startValue;
+                    image.Value.Kill();
+                    image.Key.color = normalColor;
+                }
             }
             foreach (KeyValuePair<Text, TweenerCore<Color, Color, ColorOptions>> text in TwinkleTexts)
             {
-                Color normalColor = text.Value.startValue;
-                text.Value.Kill();
-                text.Key.color = normalColor;
+                if (text.Key)
+                {
+                    Color normalColor = text.Value.startValue;
+                    text.Value.Kill();
+                    text.Key.color = normalColor;
+                }
             }
             foreach (KeyValuePair<Dropdown, TweenerCore<Color, Color, ColorOptions>> dropdown in TwinkleDropdowns)
             {
-                ColorBlock block = dropdown.Key.colors;
-                block.normalColor = dropdown.Value.startValue;
-                dropdown.Value.Kill();
-                dropdown.Key.colors = block;
+                if (dropdown.Key)
+                {
+                    ColorBlock block = dropdown.Key.colors;
+                    block.normalColor = dropdown.Value.startValue;
+                    dropdown.Value.Kill();
+                    dropdown.Key.colors = block;
+                }
             }
             TwinkleButtons.Clear();
             TwinkleToggles.Clear();
