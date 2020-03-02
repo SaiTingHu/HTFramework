@@ -91,6 +91,11 @@ namespace HT.Framework
                 _itemFilter = "";
                 GUI.FocusControl(null);
             }
+
+            if (GUILayout.Button("About", EditorStyles.toolbarButton))
+            {
+                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/104610857");
+            }
         }
         protected override void OnBodyGUI()
         {
