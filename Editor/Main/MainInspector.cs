@@ -295,164 +295,37 @@ namespace HT.Framework
                 if (!Target.IsPermanentLicense)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Prompt:", EditorStyles.boldLabel);
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    TextField(Target.EndingPrompt, out Target.EndingPrompt, "");
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Ending Time:", EditorStyles.boldLabel);
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Year:", GUILayout.Width(45));
-                    int year = EditorGUILayout.IntField(Target.Year, GUILayout.Width(50));
-                    if (year != Target.Year)
+                    GUILayout.Label("Licenser");
+                    if (GUILayout.Button(Target.LicenserType, EditorGlobalTools.Styles.MiniPopup))
                     {
-                        Undo.RecordObject(target, "Set Year");
-                        Target.Year = year;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLPlus, GUILayout.Width(15)))
-                    {
-                        Undo.RecordObject(target, "Set Year");
-                        Target.Year += 1;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLMinus, GUILayout.Width(15)))
-                    {
-                        Undo.RecordObject(target, "Set Year");
-                        Target.Year -= 1;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Month:", GUILayout.Width(45));
-                    int month = EditorGUILayout.IntField(Target.Month, GUILayout.Width(50));
-                    if (month != Target.Month)
-                    {
-                        Undo.RecordObject(target, "Set Month");
-                        Target.Month = month;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLPlus, GUILayout.Width(15)))
-                    {
-                        Undo.RecordObject(target, "Set Month");
-                        Target.Month += 1;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLMinus, GUILayout.Width(15)))
-                    {
-                        Undo.RecordObject(target, "Set Month");
-                        Target.Month -= 1;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Day:", GUILayout.Width(45));
-                    int day = EditorGUILayout.IntField(Target.Day, GUILayout.Width(50));
-                    if (day != Target.Day)
-                    {
-                        Undo.RecordObject(target, "Set Day");
-                        Target.Day = day;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLPlus, GUILayout.Width(15)))
-                    {
-                        Undo.RecordObject(target, "Set Day");
-                        Target.Day += 1;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    if (GUILayout.Button("", EditorGlobalTools.Styles.OLMinus, GUILayout.Width(15)))
-                    {
-                        Undo.RecordObject(target, "Set Day");
-                        Target.Day -= 1;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Now", EditorStyles.miniButtonLeft))
-                    {
-                        Undo.RecordObject(target, "Set Now");
-                        Target.Year = DateTime.Now.Year;
-                        Target.Month = DateTime.Now.Month;
-                        Target.Day = DateTime.Now.Day;
-                        CorrectDateTime();
-                        HasChanged();
-                    }
-                    if (GUILayout.Button("2 Months Later", EditorStyles.miniButtonRight))
-                    {
-                        Undo.RecordObject(target, "Set 2 Months Later");
-                        Target.Month += 2;
-                        CorrectDateTime();
-                        HasChanged();
+                        GenericMenu gm = new GenericMenu();
+                        List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                        gm.AddItem(new GUIContent("<None>"), Target.LicenserType == "<None>", () =>
+                        {
+                            Undo.RecordObject(target, "Set Licenser");
+                            Target.LicenserType = "<None>";
+                            HasChanged();
+                        });
+                        for (int i = 0; i < types.Count; i++)
+                        {
+                            if (types[i].IsSubclassOf(typeof(LicenserBase)))
+                            {
+                                int j = i;
+                                gm.AddItem(new GUIContent(types[j].FullName), Target.LicenserType == types[j].FullName, () =>
+                                {
+                                    Undo.RecordObject(target, "Set Licenser");
+                                    Target.LicenserType = types[j].FullName;
+                                    HasChanged();
+                                });
+                            }
+                        }
+                        gm.ShowAsContext();
                     }
                     GUILayout.EndHorizontal();
                 }
             }
 
             GUILayout.EndVertical();
-        }
-
-        /// <summary>
-        /// 纠正时间
-        /// </summary>
-        private void CorrectDateTime()
-        {
-            if (Target.Year < DateTime.Now.Year)
-            {
-                Target.Year = DateTime.Now.Year;
-            }
-            else if (Target.Year > 9999)
-            {
-                Target.Year = 9999;
-            }
-
-            if (Target.Month < 1)
-            {
-                Target.Month = 1;
-            }
-            else if (Target.Month > 12)
-            {
-                Target.Month = 12;
-            }
-
-            if (Target.Month == 2)
-            {
-                if (Target.Day < 1)
-                {
-                    Target.Day = 1;
-                }
-                else if (Target.Day > 28)
-                {
-                    Target.Day = 28;
-                }
-            }
-            else
-            {
-                if (Target.Day < 1)
-                {
-                    Target.Day = 1;
-                }
-                else if (Target.Day > 30)
-                {
-                    Target.Day = 30;
-                }
-            }
         }
         #endregion
 

@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 主程序
+    /// HTFramework 主程序
     /// </summary>
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-1000)]
@@ -27,6 +27,7 @@ namespace HT.Framework
 
         private void Start()
         {
+            LicensePreparatory();
             MainDataPreparatory();
             ModulePreparatory();
         }
@@ -36,7 +37,6 @@ namespace HT.Framework
             LogicLoopRefresh();
             UtilityRefresh();
             ModuleRefresh();
-            LicenseRefresh();
         }
 
         private void FixedUpdate()

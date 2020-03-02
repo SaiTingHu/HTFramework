@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 namespace HT.Framework
 {
     /// <summary>
-    /// 主程序
+    /// HTFramework 主程序
     /// </summary>
     public sealed partial class Main : MonoBehaviour
     {
@@ -371,58 +371,91 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsPermanentLicense = true;
         /// <summary>
-        /// 授权到期时，主界面文字提示内容【请勿在代码中修改】
+        /// 当前授权者类名【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal string EndingPrompt = "授权已到期！";
-        /// <summary>
-        /// 授权终止年份【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal int Year = 5000;
-        /// <summary>
-        /// 授权终止月份【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal int Month = 5;
-        /// <summary>
-        /// 授权终止日【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal int Day = 5;
-        
-        private DateTime _endingTime;
+        [SerializeField] internal string LicenserType = "<None>";
+
+        private LicenserBase _licenser;
         private GUIStyle _promptStyle;
-        private Rect _promptStyleRect;
+        private Rect _promptRect;
+        private bool _isLicenseEnd = false;
+        private bool _isLicensePass = false;
 
         private void LicenseInitialization()
         {
-            _endingTime = new DateTime(Year, Month, Day);
-            _promptStyle = new GUIStyle();
-            _promptStyle.alignment = TextAnchor.MiddleCenter;
-            _promptStyle.normal.textColor = Color.red;
-            _promptStyle.fontSize = 30;
-        }
-        private void LicenseRefresh()
-        {
-            if (!IsPermanentLicense)
+            if (IsPermanentLicense)
             {
-                if (DateTime.Now > _endingTime)
+                _isLicenseEnd = true;
+                _isLicensePass = true;
+            }
+            else
+            {
+                if (LicenserType != "<None>")
                 {
-                    m_Controller.MainCamera.cullingMask = 0;
-                    m_Audio.Mute = true;
-                    m_UI.IsHideAll = true;
-                    m_Entity.IsHideAll = true;
-                    m_Input.IsEnableInputDevice = false;
+                    Type type = GlobalTools.GetTypeInRunTimeAssemblies(LicenserType);
+                    if (type != null)
+                    {
+                        if (type.IsSubclassOf(typeof(LicenserBase)))
+                        {
+                            _licenser = Activator.CreateInstance(type) as LicenserBase;
+                            _licenser.OnInitialization();
+                        }
+                        else
+                        {
+                            GlobalTools.LogError(string.Format("创建授权者失败：授权者类 {0} 必须继承至基类：LicenserBase！", LicenserType));
+                        }
+                    }
+                    else
+                    {
+                        GlobalTools.LogError(string.Format("创建授权者失败：丢失授权者类 {0}！", LicenserType));
+                    }
                 }
+                else
+                {
+                    GlobalTools.LogError("已启用授权验证，但授权者类型不能为 <None>！");
+                }
+
+                _promptStyle = new GUIStyle();
+                _promptStyle.alignment = TextAnchor.MiddleCenter;
+                _promptStyle.normal.textColor = Color.red;
+                _promptStyle.fontSize = 30;
+
+                _isLicenseEnd = false;
+                _isLicensePass = false;
+            }
+        }
+        private void LicensePreparatory()
+        {
+            if (_licenser != null)
+            {
+                StartCoroutine(LicenseChecking());
             }
         }
         private void LicenseOnGUI()
         {
-            if (!IsPermanentLicense)
+            if (_isLicenseEnd && !_isLicensePass)
             {
-                if (DateTime.Now > _endingTime)
-                {
-                    _promptStyleRect.Set(0, 0, Screen.width, Screen.height);
-                    GUI.Label(_promptStyleRect, EndingPrompt, _promptStyle);
-                }
+                Paralyze();
+
+                _promptRect.Set(0, 0, Screen.width, Screen.height);
+                GUI.Label(_promptRect, _licenser.LicenseFailurePrompt, _promptStyle);
             }
+        }
+
+        private IEnumerator LicenseChecking()
+        {
+            yield return StartCoroutine(_licenser.Checking());
+
+            _isLicenseEnd = true;
+            _isLicensePass = _licenser.IsLicensePass;
+        }
+        private void Paralyze()
+        {
+            m_Controller.MainCamera.cullingMask = 0;
+            m_Audio.Mute = true;
+            m_UI.IsHideAll = true;
+            m_Entity.IsHideAll = true;
+            m_Input.IsEnableInputDevice = false;
         }
         #endregion
 
@@ -432,7 +465,7 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal string MainDataType = "<None>";
 
-        private MainDataBase _data;
+        private MainDataBase _mainData;
 
         private void MainDataInitialization()
         {
@@ -443,8 +476,8 @@ namespace HT.Framework
                 {
                     if (type.IsSubclassOf(typeof(MainDataBase)))
                     {
-                        _data = Activator.CreateInstance(type) as MainDataBase;
-                        _data.OnInitialization();
+                        _mainData = Activator.CreateInstance(type) as MainDataBase;
+                        _mainData.OnInitialization();
                     }
                     else
                     {
@@ -459,9 +492,9 @@ namespace HT.Framework
         }
         private void MainDataPreparatory()
         {
-            if (_data != null)
+            if (_mainData != null)
             {
-                _data.OnPreparatory();
+                _mainData.OnPreparatory();
             }
         }
 
@@ -472,9 +505,9 @@ namespace HT.Framework
         /// <returns>主要数据对象</returns>
         public T GetMainData<T>() where T : MainDataBase
         {
-            if (_data != null)
+            if (_mainData != null)
             {
-                return _data as T;
+                return _mainData as T;
             }
             else
             {
