@@ -154,6 +154,8 @@ namespace HT.Framework
             json["includePlatforms"].Add("Editor");
             json["references"] = new JsonData();
             json["references"].Add("HTFramework.RunTime");
+            json["optionalUnityReferences"] = new JsonData();
+            json["optionalUnityReferences"].Add("TestAssemblies");
             string contentNew = GlobalTools.JsonToString(json);
 
             if (contentOld != contentNew)
@@ -172,6 +174,8 @@ namespace HT.Framework
             json["includePlatforms"].Add("Editor");
             json["references"] = new JsonData();
             json["references"].Add("HTFramework.RunTime");
+            json["optionalUnityReferences"] = new JsonData();
+            json["optionalUnityReferences"].Add("TestAssemblies");
 
             File.WriteAllText(filePath, GlobalTools.JsonToString(json));
             AssetDatabase.Refresh();
