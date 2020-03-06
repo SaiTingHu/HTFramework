@@ -212,7 +212,7 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Tools 【优先级109-112】
+        #region Tools 【优先级109-113】
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
@@ -292,10 +292,10 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 打开 Custom Tools
+        /// 打开 Custom Executer
         /// </summary>
         [@MenuItem("HTFramework/Tools/Custom Executer", false, 112)]
-        private static void OpenCustomTools()
+        private static void OpenCustomExecuter()
         {
             CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
             tools.titleContent.image = EditorGUIUtility.IconContent("LightProbeProxyVolume Icon").image;
@@ -303,6 +303,42 @@ namespace HT.Framework
             tools.minSize = new Vector2(500, 600);
             tools.Initialization();
             tools.Show();
+        }
+
+        private static List<MethodInfo> _customTools = new List<MethodInfo>();
+
+        /// <summary>
+        /// 执行 Custom Tool
+        /// </summary>
+        [@MenuItem("HTFramework/Tools/Custom Tool", false, 113)]
+        private static void ExecuteCustomTool()
+        {
+            _customTools.Clear();
+            List<Type> types = GetTypesInEditorAssemblies();
+            for (int i = 0; i < types.Count; i++)
+            {
+                MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                for (int j = 0; j < methods.Length; j++)
+                {
+                    if (methods[j].IsDefined(typeof(CustomToolAttribute), false))
+                    {
+                        _customTools.Add(methods[j]);
+                    }
+                }
+            }
+            if (_customTools.Count <= 0)
+            {
+                GlobalTools.LogWarning("当前不存在至少一个自定义工具！为任何处于 Editor 文件夹中的类的无参静态函数添加 CustomTool 特性，可将该函数附加至自定义工具菜单！");
+            }
+            else
+            {
+                for (int i = 0; i < _customTools.Count; i++)
+                {
+                    _customTools[i].Invoke(null, null);
+                }
+                GlobalTools.LogInfo("已执行 " + _customTools.Count + " 个自定义工具！");
+                _customTools.Clear();
+            }
         }
         #endregion
 
