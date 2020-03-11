@@ -38,7 +38,7 @@
 
 - [FSM](https://wanderer.blog.csdn.net/article/details/86073351) - 模拟一切可以抽象为有限状态机结构的业务逻辑，类似于角色动画、怪物AI、任意有独立逻辑的个体等。
 
-- [Hotfix](https://wanderer.blog.csdn.net/article/details/90479971) - 以C#反射实现的轻量级热更新框架，开发非常方便，新项目只需要拉取框架源码后，一键即可创建热更新环境，之后便可以正常开发。
+- [Hotfix](https://wanderer.blog.csdn.net/article/details/90479971) - 以C#反射实现的轻量级热更新框架，开发非常方便，新项目只需要拉取框架源码后，一键即可创建热更新环境，之后便可以用C#正常开发，目前已支持在热更新库中动态修复外界的任何方法，无需重新发布项目。
 
 - [Input](https://wanderer.blog.csdn.net/article/details/89001848) - 将任意输入都定义为虚拟输入，再由Input模块统一调用，将是跨平台输入的最优解决方案。
 

@@ -23,6 +23,30 @@ namespace HT.Framework
     /// </summary>
     public static class GlobalTools
     {
+        #region 构造函数
+        static GlobalTools()
+        {
+            #region 反射工具
+            List<Type> types = GetTypesInAllAssemblies();
+            for (int i = 0; i < types.Count; i++)
+            {
+                FieldInfo[] fields = types[i].GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                for (int j = 0; j < fields.Length; j++)
+                {
+                    if (fields[j].FieldType == typeof(string) && fields[j].IsDefined(typeof(RunTimeAssemblyAttribute), false))
+                    {
+                        string value = fields[j].GetValue(null) as string;
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            if (!RunTimeAssemblies.Contains(value)) RunTimeAssemblies.Add(value);
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
+        #endregion
+
         #region 延时工具
         /// <summary>
         /// 延时执行
@@ -2020,7 +2044,7 @@ namespace HT.Framework
         /// 当前的运行时程序集
         /// </summary>
         private static readonly HashSet<string> RunTimeAssemblies = new HashSet<string>() {
-            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.ILHotfix.RunTime", "HTFramework.XLua.RunTime",
+            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.ILHotfix.RunTime",
             "UnityEngine", "UnityEngine.CoreModule", "UnityEngine.UI", "UnityEngine.PhysicsModule" };
         /// <summary>
         /// 从当前程序域的运行时程序集中获取所有类型
@@ -2054,6 +2078,20 @@ namespace HT.Framework
             }
             LogError("获取类型 " + typeName + " 失败！当前运行时程序集中不存在此类型！");
             return null;
+        }
+
+        /// <summary>
+        /// 从当前程序域的所有程序集中获取所有类型
+        /// </summary>
+        public static List<Type> GetTypesInAllAssemblies()
+        {
+            List<Type> types = new List<Type>();
+            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblys.Length; i++)
+            {
+                types.AddRange(assemblys[i].GetTypes());
+            }
+            return types;
         }
         #endregion
 

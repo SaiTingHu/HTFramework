@@ -874,7 +874,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前的热更新程序集
         /// </summary>
-        private static readonly HashSet<string> HotfixAssemblies = new HashSet<string>() { "Hotfix", "HTFramework.ILHotfix.RunTime " };
+        private static readonly HashSet<string> HotfixAssemblies = new HashSet<string>() { "Hotfix", "ILHotfix" };
         /// <summary>
         /// 当前的编辑器程序集
         /// </summary>
@@ -946,20 +946,6 @@ namespace HT.Framework
             }
             GlobalTools.LogError("获取类型 " + typeName + " 失败！当前编辑器程序集中不存在此类型！");
             return null;
-        }
-
-        /// <summary>
-        /// 从当前程序域的所有程序集中获取所有类型
-        /// </summary>
-        public static List<Type> GetTypesInAllAssemblies()
-        {
-            List<Type> types = new List<Type>();
-            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
-            for (int i = 0; i < assemblys.Length; i++)
-            {
-                types.AddRange(assemblys[i].GetTypes());
-            }
-            return types;
         }
         #endregion
 

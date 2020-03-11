@@ -65,7 +65,7 @@ namespace HT.Framework
         /// <summary>
         /// 更新逻辑
         /// </summary>
-        public void UpdateHotfixLogic()
+        private void UpdateHotfixLogic()
         {
             if (_currentProcedure != null)
             {
