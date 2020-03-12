@@ -25,7 +25,7 @@ namespace HT.Framework
         {
             base.OnTermination();
 
-            Clear();
+            ClearAll();
         }
         
         /// <summary>
@@ -131,7 +131,7 @@ namespace HT.Framework
         /// <summary>
         /// 清空所有引用池
         /// </summary>
-        public void Clear()
+        public void ClearAll()
         {
             foreach (var spawnPool in SpawnPools)
             {

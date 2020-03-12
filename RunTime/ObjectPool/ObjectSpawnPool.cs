@@ -64,6 +64,8 @@ namespace HT.Framework
         {
             if (_objectQueue.Count >= _limit)
             {
+                _onDespawn?.Invoke(obj);
+
                 Main.Kill(obj);
             }
             else

@@ -26,7 +26,7 @@ namespace HT.Framework
 
             ClearAll();
         }
-        
+
         /// <summary>
         /// 注册对象池
         /// </summary>
@@ -34,11 +34,12 @@ namespace HT.Framework
         /// <param name="spawnTem">对象模板</param>
         /// <param name="onSpawn">对象生成时初始化委托</param>
         /// <param name="onDespawn">对象回收时处理委托</param>
-        public void RegisterSpawnPool(string name, GameObject spawnTem, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
+        /// <param name="limit">对象池上限，等于0时，表示使用默认值</param>
+        public void RegisterSpawnPool(string name, GameObject spawnTem, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn, int limit = 0)
         {
             if (!SpawnPools.ContainsKey(name))
             {
-                SpawnPools.Add(name, new ObjectSpawnPool(spawnTem, Limit, onSpawn, onDespawn));
+                SpawnPools.Add(name, new ObjectSpawnPool(spawnTem, limit <= 0 ? Limit : limit, onSpawn, onDespawn));
             }
             else
             {
