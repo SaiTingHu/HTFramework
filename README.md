@@ -14,6 +14,10 @@
 
 - .NET API版本：4.x。
 
+## 编码规范
+
+- 编码及代码审查遵循此规范[HTCODINGSTANDARD](https://github.com/SaiTingHu/HTFramework/blob/master/HTCODINGSTANDARD.md)。
+
 ## 模块简介
 
 - [AspectTrack](https://wanderer.blog.csdn.net/article/details/85617377) - 根据AOP思想架构的一个面向切面的程序代码追踪模块，它可以跟踪每一个方法的调用，在调用前阻断该方法，亦或是更改其传入的实参，更改其返回值等！可以用于调用日志打印，系统运行监控等需求。
