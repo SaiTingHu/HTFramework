@@ -1,5 +1,9 @@
 ![image](Editor/Main/Texture/HTFrameworkLOGOTitle.png)
 
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SaiTingHu/HTFramework/blob/master/LICENSE)
+![version](https://img.shields.io/badge/version-Unstable-green.svg)
+[![supported](https://img.shields.io/badge/supported-Unity-success.svg)](https://unity.com/)
+
 # Unity HTFramework
 
 一个开源的基于Unity的简易、轻量级、模块式框架，更适用于应用软件、小型游戏项目，可插拨特性使其能够最大兼容性的与其他框架、环境混合开发。
