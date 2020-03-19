@@ -47,6 +47,17 @@ namespace HT.Framework
         //单线下载等待
         private WaitUntil _loadWait;
 
+        /// <summary>
+        /// 当前的资源加载模式
+        /// </summary>
+        public ResourceLoadMode LoadMode
+        {
+            get
+            {
+                return Mode;
+            }
+        }
+
         public override void OnInitialization()
         {
             base.OnInitialization();
@@ -61,6 +72,23 @@ namespace HT.Framework
 
             UnLoadAllAsset(true);
             ClearMemory();
+        }
+
+        /// <summary>
+        /// 通过名称获取指定的AssetBundle
+        /// </summary>
+        /// <param name="assetBundleName">名称</param>
+        /// <returns>AssetBundle</returns>
+        public AssetBundle GetAssetBundle(string assetBundleName)
+        {
+            if (_assetBundles.ContainsKey(assetBundleName))
+            {
+                return _assetBundles[assetBundleName];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

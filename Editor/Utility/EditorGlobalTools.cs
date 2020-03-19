@@ -27,7 +27,7 @@ namespace HT.Framework
         /// <summary>
         /// 框架相关目录
         /// </summary>
-        public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkAuxiliary", "HTFrameworkILHotfix" };
+        public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkILHotfix", "HTFrameworkXLua" };
         #endregion
 
         #region About 【优先级0】
