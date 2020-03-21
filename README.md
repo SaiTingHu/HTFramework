@@ -76,6 +76,8 @@
 
 - [ILHotfix](https://github.com/SaiTingHu/HTFrameworkILHotfix)【可选模块】 - 基于ILRuntime实现的跨平台热更新框架，开发非常方便，新项目只需要拉取框架源码及本模块，一键即可创建热更新环境，之后便可以正常开发。
 
+- [XLua](https://github.com/SaiTingHu/HTFrameworkXLua)【可选模块】 - 本模块旨在结合XLua与框架的资源加载策略，快速实现热更流程，并优化了开发环境，使得开发人员可以最低成本的投入到Lua业务开发。
+
 ## 内置工具
 
 - [Unity Asset Bundle Browser tool](https://docs.unity3d.com/Manual/AssetBundles-Browser.html)。
