@@ -47,6 +47,7 @@ namespace HT.Framework
         protected override void Reset()
         {
             base.Reset();
+
             transform.localPosition = Vector3.zero;
             float w = (rectTransform.sizeDelta.x * 0.5f) + 0.1f;
             float h = (rectTransform.sizeDelta.y * 0.5f) + 0.1f;
@@ -56,7 +57,7 @@ namespace HT.Framework
             new Vector2(w,-h),
             new Vector2(w,h),
             new Vector2(-w,h)
-              };
+            };
         }
 #endif
     }

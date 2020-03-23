@@ -13,17 +13,23 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class UIEnterButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        public UnityEvent OnEnter;
-        public UnityEvent OnExit;
+        /// <summary>
+        /// 鼠标进入事件
+        /// </summary>
+        public UnityEvent OnMouseEnter;
+        /// <summary>
+        /// 鼠标离开事件
+        /// </summary>
+        public UnityEvent OnMouseExit;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            OnEnter.Invoke();
+            OnMouseEnter.Invoke();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            OnExit.Invoke();
+            OnMouseExit.Invoke();
         }
     }
 }

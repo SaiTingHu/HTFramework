@@ -18,7 +18,7 @@ namespace HT.Framework
         public float TheTargetFloat = 0;
         public Color TheTargetColor = Color.white;
         public float TheTime = 1;
-        public int Loops = -1;
+        public int TheLoops = -1;
         public bool PlayOnStart = true;
 
         private Graphic _theGraphic;
@@ -37,7 +37,7 @@ namespace HT.Framework
             {
                 if (TheAnimationType == UIAnimationType.Transparency || TheAnimationType == UIAnimationType.Color)
                 {
-                    GlobalTools.LogError(name + " 丢失组件Graphic！不能执行UIAnimation！");
+                    GlobalTools.LogError(name + " 丢失组件Graphic！不能执行相应的UIAnimation！");
                     Destroy(this);
                     return;
                 }
@@ -63,19 +63,19 @@ namespace HT.Framework
             switch (TheAnimationType)
             {
                 case UIAnimationType.Move:
-                    _theTweener = transform.rectTransform().DOAnchorPos(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = transform.rectTransform().DOAnchorPos(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case UIAnimationType.Rotate:
-                    _theTweener = transform.rectTransform().DOLocalRotate(TheTargetVector3, TheTime, TheRotateMode).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = transform.rectTransform().DOLocalRotate(TheTargetVector3, TheTime, TheRotateMode).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case UIAnimationType.Scale:
-                    _theTweener = transform.rectTransform().DOScale(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = transform.rectTransform().DOScale(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case UIAnimationType.Transparency:
-                    _theTweener = _theGraphic.DOFade(TheTargetFloat, TheTime).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = _theGraphic.DOFade(TheTargetFloat, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case UIAnimationType.Color:
-                    _theTweener = _theGraphic.DOColor(TheTargetColor, TheTime).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = _theGraphic.DOColor(TheTargetColor, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 default:
                     break;

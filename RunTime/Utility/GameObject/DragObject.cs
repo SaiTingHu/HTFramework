@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace HT.Framework
 {
@@ -10,15 +11,44 @@ namespace HT.Framework
     public sealed class DragObject : MonoBehaviour
     {
         /// <summary>
+        /// 是否启用全局拖拽
+        /// </summary>
+        public static bool IsAllowDragEnvironment = true;
+
+        /// <summary>
         /// 是否启用拖拽
         /// </summary>
-        public static bool IsAllowDrag = true;
+        public bool IsAllowDrag = true;
+        /// <summary>
+        /// 开始拖拽事件
+        /// </summary>
+        public UnityEvent BeginDragEvent;
+        /// <summary>
+        /// 拖拽中事件
+        /// </summary>
+        public UnityEvent DragingEvent;
+        /// <summary>
+        /// 结束拖拽事件
+        /// </summary>
+        public UnityEvent EndDragEvent;
 
         private Vector3 _offset;
+        private bool _isDraging = false;
+
+        /// <summary>
+        /// 是否可以拖拽
+        /// </summary>
+        public bool IsCanDrag
+        {
+            get
+            {
+                return IsAllowDragEnvironment && IsAllowDrag;
+            }
+        }
 
         private void OnMouseDown()
         {
-            if (IsAllowDrag)
+            if (IsCanDrag)
             {
                 if (GlobalTools.IsPointerOverUGUI())
                     return;
@@ -32,7 +62,7 @@ namespace HT.Framework
 
         private void OnMouseDrag()
         {
-            if (IsAllowDrag)
+            if (IsCanDrag)
             {
                 if (GlobalTools.IsPointerOverUGUI())
                     return;
@@ -41,6 +71,30 @@ namespace HT.Framework
                 Vector3 screenPoint = Main.m_Controller.MainCamera.WorldToScreenPoint(transform.position);
                 mousePoint.z = screenPoint.z;
                 transform.position = Main.m_Controller.MainCamera.ScreenToWorldPoint(mousePoint + _offset);
+
+                if (!_isDraging)
+                {
+                    _isDraging = true;
+                    BeginDragEvent.Invoke();
+                }
+                else
+                {
+                    DragingEvent.Invoke();
+                }
+            }
+        }
+
+        private void OnMouseUp()
+        {
+            if (IsCanDrag)
+            {
+                _offset = Vector3.zero;
+
+                if (_isDraging)
+                {
+                    _isDraging = false;
+                    EndDragEvent.Invoke();
+                }
             }
         }
     }

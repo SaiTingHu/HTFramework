@@ -15,7 +15,7 @@ namespace HT.Framework
         public RotateMode TheRotateMode = RotateMode.LocalAxisAdd;
         public Vector3 TheTargetVector3 = Vector3.zero;
         public float TheTime = 1;
-        public int Loops = -1;
+        public int TheLoops = -1;
         public bool PlayOnStart = true;
 
         private Tweener _theTweener;
@@ -42,13 +42,13 @@ namespace HT.Framework
             switch (TheAnimationType)
             {
                 case GameObjectAnimationType.Move:
-                    _theTweener = transform.DOLocalMove(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = transform.DOLocalMove(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case GameObjectAnimationType.Rotate:
-                    _theTweener = transform.DOLocalRotate(TheTargetVector3, TheTime, TheRotateMode).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = transform.DOLocalRotate(TheTargetVector3, TheTime, TheRotateMode).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case GameObjectAnimationType.Scale:
-                    _theTweener = transform.DOScale(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(Loops, TheLoopType);
+                    _theTweener = transform.DOScale(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 default:
                     break;

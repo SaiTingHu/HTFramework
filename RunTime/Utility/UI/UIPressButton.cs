@@ -13,8 +13,14 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class UIPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
-        public UnityEvent OnPressed;
-        public UnityEvent OnRelease;
+        /// <summary>
+        /// 鼠标按住事件
+        /// </summary>
+        public UnityEvent OnMousePressed;
+        /// <summary>
+        /// 鼠标释放事件
+        /// </summary>
+        public UnityEvent OnMouseRelease;
 
         private bool _isPressed;
 
@@ -28,7 +34,7 @@ namespace HT.Framework
             if (_isPressed)
             {
                 _isPressed = false;
-                OnRelease.Invoke();
+                OnMouseRelease.Invoke();
             }
         }
 
@@ -36,7 +42,7 @@ namespace HT.Framework
         {
             if (_isPressed)
             {
-                OnPressed.Invoke();
+                OnMousePressed.Invoke();
             }
         }
     }
