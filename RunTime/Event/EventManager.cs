@@ -11,7 +11,9 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.Event)]
     public sealed class EventManager : InternalModuleBase
     {
-        private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
+        private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList1 = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
+        private Dictionary<Type, HTFAction> _eventHandlerList2 = new Dictionary<Type, HTFAction>();
+        private Dictionary<Type, HTFAction<EventHandlerBase>> _eventHandlerList3 = new Dictionary<Type, HTFAction<EventHandlerBase>>();
 
         public override void OnInitialization()
         {
@@ -23,7 +25,9 @@ namespace HT.Framework
             {
                 if (types[i].IsSubclassOf(typeof(EventHandlerBase)))
                 {
-                    _eventHandlerList.Add(types[i], null);
+                    _eventHandlerList1.Add(types[i], null);
+                    _eventHandlerList2.Add(types[i], null);
+                    _eventHandlerList3.Add(types[i], null);
                 }
             }
         }
@@ -32,7 +36,9 @@ namespace HT.Framework
         {
             base.OnTermination();
 
-            _eventHandlerList.Clear();
+            _eventHandlerList1.Clear();
+            _eventHandlerList2.Clear();
+            _eventHandlerList3.Clear();
         }
 
         /// <summary>
@@ -51,9 +57,59 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Subscribe(Type type, HTFAction<object, EventHandlerBase> handler)
         {
-            if (_eventHandlerList.ContainsKey(type))
+            if (_eventHandlerList1.ContainsKey(type))
             {
-                _eventHandlerList[type] += handler;
+                _eventHandlerList1[type] += handler;
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+            }
+        }
+        /// <summary>
+        /// 订阅事件
+        /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        /// <param name="handler">事件处理者</param>
+        public void Subscribe<T>(HTFAction handler) where T : EventHandlerBase
+        {
+            Subscribe(typeof(T), handler);
+        }
+        /// <summary>
+        /// 订阅事件
+        /// </summary>
+        /// <param name="type">事件处理类</param>
+        /// <param name="handler">事件处理者</param>
+        public void Subscribe(Type type, HTFAction handler)
+        {
+            if (_eventHandlerList2.ContainsKey(type))
+            {
+                _eventHandlerList2[type] += handler;
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+            }
+        }
+        /// <summary>
+        /// 订阅事件
+        /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        /// <param name="handler">事件处理者</param>
+        public void Subscribe<T>(HTFAction<EventHandlerBase> handler) where T : EventHandlerBase
+        {
+            Subscribe(typeof(T), handler);
+        }
+        /// <summary>
+        /// 订阅事件
+        /// </summary>
+        /// <param name="type">事件处理类</param>
+        /// <param name="handler">事件处理者</param>
+        public void Subscribe(Type type, HTFAction<EventHandlerBase> handler)
+        {
+            if (_eventHandlerList3.ContainsKey(type))
+            {
+                _eventHandlerList3[type] += handler;
             }
             else
             {
@@ -76,9 +132,51 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Unsubscribe(Type type, HTFAction<object, EventHandlerBase> handler)
         {
-            if (_eventHandlerList.ContainsKey(type))
+            if (_eventHandlerList1.ContainsKey(type))
             {
-                _eventHandlerList[type] -= handler;
+                _eventHandlerList1[type] -= handler;
+            }
+        }
+        /// <summary>
+        /// 取消订阅事件
+        /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        /// <param name="handler">事件处理者</param>
+        public void Unsubscribe<T>(HTFAction handler) where T : EventHandlerBase
+        {
+            Unsubscribe(typeof(T), handler);
+        }
+        /// <summary>
+        /// 取消订阅事件
+        /// </summary>
+        /// <param name="type">事件处理类</param>
+        /// <param name="handler">事件处理者</param>
+        public void Unsubscribe(Type type, HTFAction handler)
+        {
+            if (_eventHandlerList2.ContainsKey(type))
+            {
+                _eventHandlerList2[type] -= handler;
+            }
+        }
+        /// <summary>
+        /// 取消订阅事件
+        /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        /// <param name="handler">事件处理者</param>
+        public void Unsubscribe<T>(HTFAction<EventHandlerBase> handler) where T : EventHandlerBase
+        {
+            Unsubscribe(typeof(T), handler);
+        }
+        /// <summary>
+        /// 取消订阅事件
+        /// </summary>
+        /// <param name="type">事件处理类</param>
+        /// <param name="handler">事件处理者</param>
+        public void Unsubscribe(Type type, HTFAction<EventHandlerBase> handler)
+        {
+            if (_eventHandlerList3.ContainsKey(type))
+            {
+                _eventHandlerList3[type] -= handler;
             }
         }
         /// <summary>
@@ -95,9 +193,17 @@ namespace HT.Framework
         /// <param name="type">事件处理类</param>
         public void ClearSubscribe(Type type)
         {
-            if (_eventHandlerList.ContainsKey(type))
+            if (_eventHandlerList1.ContainsKey(type))
             {
-                _eventHandlerList[type] = null;
+                _eventHandlerList1[type] = null;
+            }
+            if (_eventHandlerList2.ContainsKey(type))
+            {
+                _eventHandlerList2[type] = null;
+            }
+            if (_eventHandlerList3.ContainsKey(type))
+            {
+                _eventHandlerList3[type] = null;
             }
         }
 
@@ -109,13 +215,56 @@ namespace HT.Framework
         public void Throw(object sender, EventHandlerBase handler)
         {
             Type type = handler.GetType();
-            if (_eventHandlerList.ContainsKey(type))
+            if (_eventHandlerList1.ContainsKey(type))
             {
-                if (_eventHandlerList[type] != null)
+                if (_eventHandlerList1[type] != null)
                 {
-                    _eventHandlerList[type](sender, handler);
+                    _eventHandlerList1[type](sender, handler);
                     Main.m_ReferencePool.Despawn(handler);
                 }
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+            }
+        }
+        /// <summary>
+        /// 抛出事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// </summary>
+        /// <param name="handler">事件处理类实例</param>
+        public void Throw(EventHandlerBase handler)
+        {
+            Type type = handler.GetType();
+            if (_eventHandlerList3.ContainsKey(type))
+            {
+                if (_eventHandlerList3[type] != null)
+                {
+                    _eventHandlerList3[type](handler);
+                    Main.m_ReferencePool.Despawn(handler);
+                }
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+            }
+        }
+        /// <summary>
+        /// 抛出事件
+        /// </summary>
+        /// <typeparam name="T">事件处理类</typeparam>
+        public void Throw<T>() where T : EventHandlerBase
+        {
+            Throw(typeof(T));
+        }
+        /// <summary>
+        /// 抛出事件
+        /// </summary>
+        /// <param name="type">事件处理类</param>
+        public void Throw(Type type)
+        {
+            if (_eventHandlerList2.ContainsKey(type))
+            {
+                _eventHandlerList2[type]?.Invoke();
             }
             else
             {
