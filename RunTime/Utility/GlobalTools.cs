@@ -2126,6 +2126,28 @@ namespace HT.Framework
         {
             return Mathf.Approximately(sourceValue, targetValue);
         }
+        /// <summary>
+        /// 从数组中随机获取一个值
+        /// </summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="values">值数组</param>
+        /// <returns>随机获取的值</returns>
+        public static T RandomValue<T>(T[] values)
+        {
+            int index = UnityEngine.Random.Range(0, values.Length);
+            return values[index];
+        }
+        /// <summary>
+        /// 从集合中随机获取一个值
+        /// </summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="values">值数组</param>
+        /// <returns>随机获取的值</returns>
+        public static T RandomValue<T>(List<T> values)
+        {
+            int index = UnityEngine.Random.Range(0, values.Count);
+            return values[index];
+        }
         #endregion
 
         #region 系统工具
