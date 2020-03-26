@@ -176,6 +176,11 @@ namespace HT.Framework
             }
             _stateInstances.Clear();
 
+            if (_data != null)
+            {
+                _data.OnTermination();
+            }
+
             if (Main.m_FSM.IsExistFSM(Name))
             {
                 Main.m_FSM.UnRegisterFSM(this);

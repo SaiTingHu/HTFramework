@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -354,6 +355,55 @@ namespace HT.Framework
             setter.titleContent.text = "HTFramework Setter";
             setter.minSize = new Vector2(640, 580);
             setter.Show();
+        }
+        #endregion
+
+        #region 层级视图新建菜单
+        /// <summary>
+        /// 【验证函数】新建框架主环境
+        /// </summary>
+        [@MenuItem("GameObject/HTFramework/Main Environment", true)]
+        private static bool CreateMainValidate()
+        {
+            return UnityEngine.Object.FindObjectOfType<Main>() == null;
+        }
+        /// <summary>
+        /// 新建框架主环境
+        /// </summary>
+        [@MenuItem("GameObject/HTFramework/Main Environment", false, 0)]
+        private static void CreateMain()
+        {
+            UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/HTFramework/HTFramework.prefab");
+            if (asset)
+            {
+                GameObject main = PrefabUtility.InstantiatePrefab(asset) as GameObject;
+                main.name = "HTFramework";
+                main.transform.localPosition = Vector3.zero;
+                main.transform.localRotation = Quaternion.identity;
+                main.transform.localScale = Vector3.one;
+                Selection.activeGameObject = main;
+                EditorSceneManager.MarkSceneDirty(main.scene);
+            }
+            else
+            {
+                GlobalTools.LogError("新建框架主环境失败，丢失主预制体：Assets/HTFramework/HTFramework.prefab");
+            }
+        }
+
+        /// <summary>
+        /// 新建FSM
+        /// </summary>
+        [@MenuItem("GameObject/HTFramework/FSM", false, 1)]
+        private static void CreateFSM()
+        {
+            GameObject fsm = new GameObject();
+            fsm.name = "New FSM";
+            fsm.transform.localPosition = Vector3.zero;
+            fsm.transform.localRotation = Quaternion.identity;
+            fsm.transform.localScale = Vector3.one;
+            fsm.AddComponent<FSM>();
+            Selection.activeGameObject = fsm;
+            EditorSceneManager.MarkSceneDirty(fsm.scene);
         }
         #endregion
 
