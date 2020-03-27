@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
@@ -420,21 +419,24 @@ namespace HT.Framework
 
         #region 事件工具
         /// <summary>
-        /// UGUI 控件添加事件监听
+        /// UGUI 控件添加公共事件监听
         /// </summary>
         /// <param name="target">事件监听目标</param>
         /// <param name="type">事件类型</param>
         /// <param name="callback">回调函数</param>
-        public static void AddEventListener(this RectTransform target, EventTriggerType type, UnityAction<BaseEventData> callback)
+        public static void AddCommonEventListener(this RectTransform target, EventTriggerType type, UnityAction<BaseEventData> callback)
         {
             EventTrigger trigger = target.GetComponent<EventTrigger>();
             if (trigger == null)
             {
                 trigger = target.gameObject.AddComponent<EventTrigger>();
+            }
+            if (trigger.triggers == null)
+            {
                 trigger.triggers = new List<EventTrigger.Entry>();
             }
 
-            //定义一个事件
+            //定义一个事件入口
             EventTrigger.Entry entry = new EventTrigger.Entry();
             //设置事件类型
             entry.eventID = type;
@@ -443,6 +445,21 @@ namespace HT.Framework
             entry.callback.AddListener(callback);
             //添加事件到事件组
             trigger.triggers.Add(entry);
+        }
+        /// <summary>
+        /// UGUI 控件移除所有公共事件监听
+        /// </summary>
+        /// <param name="target">事件监听目标</param>
+        public static void RemoveAllCommonEventListener(this RectTransform target)
+        {
+            EventTrigger trigger = target.GetComponent<EventTrigger>();
+            if (trigger != null)
+            {
+                if (trigger.triggers != null)
+                {
+                    trigger.triggers.Clear();
+                }
+            }
         }
         /// <summary>
         /// UGUI Button添加点击事件监听
@@ -462,7 +479,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// UGUI Button移除所有事件监听
+        /// UGUI Button移除所有点击事件监听
         /// </summary>
         /// <param name="target">事件监听目标</param>
         public static void RemoveAllEventListener(this RectTransform target)
@@ -940,62 +957,7 @@ namespace HT.Framework
             return builder.ToString();
         }
         #endregion
-
-        #region 打开或保存文件
-        /// <summary>
-        /// 文件窗口参数
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public sealed class OpenAndSaveFileAttribute
-        {
-            public int structSize = 0;
-            public IntPtr dlgOwner = IntPtr.Zero;
-            public IntPtr instance = IntPtr.Zero;
-            public string filter = null;
-            public string customFilter = null;
-            public int maxCustFilter = 0;
-            public int filterIndex = 0;
-            public string file = null;
-            public int maxFile = 0;
-            public string fileTitle = null;
-            public int maxFileTitle = 0;
-            public string initialDir = null;
-            public string title = null;
-            public int flags = 0;
-            public short fileOffset = 0;
-            public short fileExtension = 0;
-            public string defExt = null;
-            public IntPtr custData = IntPtr.Zero;
-            public IntPtr hook = IntPtr.Zero;
-            public string templateName = null;
-            public IntPtr reservedPtr = IntPtr.Zero;
-            public int reservedInt = 0;
-            public int flagsEx = 0;
-        }
-
-        /// <summary>
-        /// 打开或保存文件
-        /// </summary>
-        public sealed class OpenAndSaveFile
-        {
-            /// <summary>
-            /// 打开一个文件打开界面
-            /// </summary>
-            /// <param name="ofn"></param>
-            /// <returns></returns>
-            [DllImport("Comdlg32.dll", SetLastError = true, ThrowOnUnmappableChar = true, CharSet = CharSet.Auto)]
-            public static extern bool GetOpenFileName([In, Out] OpenAndSaveFileAttribute ofn);
-
-            /// <summary>
-            /// 打开一个文件保存界面
-            /// </summary>
-            /// <param name="ofn"></param>
-            /// <returns></returns>
-            [DllImport("Comdlg32.dll", SetLastError = true, ThrowOnUnmappableChar = true, CharSet = CharSet.Auto)]
-            public static extern bool GetSaveFileName([In, Out] OpenAndSaveFileAttribute ofn);
-        }
-        #endregion
-
+        
         #region 时间工具
         /// <summary>
         /// 转换为标准时间字符串（yyyy/MM/dd HH:mm:ss）
@@ -1085,58 +1047,6 @@ namespace HT.Framework
         public static Quaternion ToQuaternion(this Vector3 value)
         {
             return Quaternion.Euler(value);
-        }
-        /// <summary>
-        /// MD5算法加密
-        /// </summary>
-        /// <param name="value">字符串</param>
-        /// <returns>加密后的字符串</returns>
-        public static string MD5Encrypt(string value)
-        {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            //将字符串转换为字节数组
-            byte[] fromData = Encoding.UTF8.GetBytes(value);
-            //计算字节数组的哈希值
-            byte[] toData = md5.ComputeHash(fromData);
-
-            return Convert.ToBase64String(toData);
-        }
-        /// <summary>
-        /// 256位AES加密
-        /// </summary>
-        /// <param name="value">字符串</param>
-        /// <returns>加密后的字符串</returns>
-        public static string AESEncrypt(string value)
-        {
-            byte[] keyArray = Encoding.UTF8.GetBytes("12AE5C7VV01JK45L7OP0R2WE5AS8XD12");
-            byte[] toEncryptArray = Encoding.UTF8.GetBytes(value);
-
-            RijndaelManaged rDel = new RijndaelManaged();
-            rDel.Key = keyArray;
-            rDel.Mode = CipherMode.ECB;
-            rDel.Padding = PaddingMode.PKCS7;
-
-            ICryptoTransform cTransform = rDel.CreateEncryptor();
-            byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-
-            return Convert.ToBase64String(resultArray, 0, resultArray.Length);
-        }
-        /// <summary>
-        /// 判断数组中是否存在某元素
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <param name="value">元素</param>
-        /// <returns>是否存在</returns>
-        public static bool Contains(this string[] array, string value)
-        {
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (array[i] == value)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
         /// <summary>
         /// 将指定位置的子字串转换为富文本
@@ -1345,6 +1255,40 @@ namespace HT.Framework
                 array[i] = value;
             }
             return array;
+        }
+        /// <summary>
+        /// 判断数组中是否存在某元素
+        /// </summary>
+        /// <param name="array">数组</param>
+        /// <param name="value">元素</param>
+        /// <returns>是否存在</returns>
+        public static bool Contains(this string[] array, string value)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == value)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 判断数组中是否存在某元素
+        /// </summary>
+        /// <param name="array">数组</param>
+        /// <param name="value">元素</param>
+        /// <returns>是否存在</returns>
+        public static bool Contains(this int[] array, int value)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == value)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         /// <summary>
         /// 强制转换List的类型（使用as强转）
@@ -1833,6 +1777,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前鼠标是否停留在UGUI控件上
         /// </summary>
+        /// <returns>是否</returns>
         public static bool IsPointerOverUGUI()
         {
             if (EventSystem.current)
@@ -1930,6 +1875,8 @@ namespace HT.Framework
         /// <summary>
         /// 获取输入框的int类型值，若不是该类型值，则返回-1
         /// </summary>
+        /// <param name="input">输入框</param>
+        /// <returns>值</returns>
         public static int IntText(this InputField input)
         {
             int value = -1;
@@ -1939,6 +1886,8 @@ namespace HT.Framework
         /// <summary>
         /// 获取输入框的float类型值，若不是该类型值，则返回-1f
         /// </summary>
+        /// <param name="input">输入框</param>
+        /// <returns>值</returns>
         public static float FloatText(this InputField input)
         {
             float value = -1f;
@@ -1946,8 +1895,10 @@ namespace HT.Framework
             return value;
         }
         /// <summary>
-        /// 设置下拉框值
+        /// 设置下拉框值，若该下拉框不存在该值，则无效
         /// </summary>
+        /// <param name="dropdown">下拉框</param>
+        /// <param name="value">目标值</param>
         public static void SetValue(this Dropdown dropdown, string value)
         {
             for (int i = 0; i < dropdown.options.Count; i++)
@@ -1955,12 +1906,15 @@ namespace HT.Framework
                 if (dropdown.options[i].text == value)
                 {
                     dropdown.value = i;
+                    return;
                 }
             }
         }
         /// <summary>
-        /// 加载外部图片
+        /// 加载外部图片，并转换为Sprite
         /// </summary>
+        /// <param name="path">图片路径</param>
+        /// <returns>转换后的Sprite</returns>
         public static Sprite LoadSprite(string path)
         {
             if (!File.Exists(path))
@@ -2049,6 +2003,7 @@ namespace HT.Framework
         /// <summary>
         /// 从当前程序域的运行时程序集中获取所有类型
         /// </summary>
+        /// <returns>所有类型集合</returns>
         public static List<Type> GetTypesInRunTimeAssemblies()
         {
             List<Type> types = new List<Type>();
@@ -2065,6 +2020,8 @@ namespace HT.Framework
         /// <summary>
         /// 从当前程序域的运行时程序集中获取指定类型
         /// </summary>
+        /// <param name="typeName">类型名称</param>
+        /// <returns>类型</returns>
         public static Type GetTypeInRunTimeAssemblies(string typeName)
         {
             Type type = null;
@@ -2083,6 +2040,7 @@ namespace HT.Framework
         /// <summary>
         /// 从当前程序域的所有程序集中获取所有类型
         /// </summary>
+        /// <returns>所有类型集合</returns>
         public static List<Type> GetTypesInAllAssemblies()
         {
             List<Type> types = new List<Type>();
@@ -2097,8 +2055,40 @@ namespace HT.Framework
 
         #region 数学工具
         /// <summary>
-        /// 限制value的值在最小值与最大值之间
+        /// 限制目标值在最小值与最大值之间
         /// </summary>
+        /// <param name="value">目标值</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <returns>目标值</returns>
+        public static Vector2 Clamp(Vector2 value, Vector2 min, Vector2 max)
+        {
+            value.x = Mathf.Clamp(value.x, min.x, max.x);
+            value.y = Mathf.Clamp(value.y, min.y, max.y);
+            return value;
+        }
+        /// <summary>
+        /// 限制目标值在最小值与最大值之间
+        /// </summary>
+        /// <param name="value">目标值</param>
+        /// <param name="minX">X最小值</param>
+        /// <param name="minY">Y最小值</param>
+        /// <param name="maxX">X最大值</param>
+        /// <param name="maxY">Y最大值</param>
+        /// <returns>目标值</returns>
+        public static Vector2 Clamp(Vector3 value, float minX, float minY, float maxX, float maxY)
+        {
+            value.x = Mathf.Clamp(value.x, minX, maxX);
+            value.y = Mathf.Clamp(value.y, minY, maxY);
+            return value;
+        }
+        /// <summary>
+        /// 限制目标值在最小值与最大值之间
+        /// </summary>
+        /// <param name="value">目标值</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <returns>目标值</returns>
         public static Vector3 Clamp(Vector3 value, Vector3 min, Vector3 max)
         {
             value.x = Mathf.Clamp(value.x, min.x, max.x);
@@ -2107,8 +2097,16 @@ namespace HT.Framework
             return value;
         }
         /// <summary>
-        /// 限制value的值在最小值与最大值之间
+        /// 限制目标值在最小值与最大值之间
         /// </summary>
+        /// <param name="value">目标值</param>
+        /// <param name="minX">X最小值</param>
+        /// <param name="minY">Y最小值</param>
+        /// <param name="minZ">Z最小值</param>
+        /// <param name="maxX">X最大值</param>
+        /// <param name="maxY">Y最大值</param>
+        /// <param name="maxZ">Z最大值</param>
+        /// <returns>目标值</returns>
         public static Vector3 Clamp(Vector3 value, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
         {
             value.x = Mathf.Clamp(value.x, minX, maxX);
@@ -2148,12 +2146,22 @@ namespace HT.Framework
             int index = UnityEngine.Random.Range(0, values.Count);
             return values[index];
         }
+        /// <summary>
+        /// 随机执行一个Action
+        /// </summary>
+        /// <param name="values">Action数组</param>
+        public static void RandomExecute(params HTFAction[] values)
+        {
+            int index = UnityEngine.Random.Range(0, values.Length);
+            values[index]?.Invoke();
+        }
         #endregion
 
         #region 系统工具
         /// <summary>
         /// 获取本机Mac地址
         /// </summary>
+        /// <returns>Mac地址</returns>
         public static string GetMacAddress()
         {
             try
@@ -2174,21 +2182,40 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 获取与Assets同级的目录，也就是发布之后与EXE同级
+        /// 获取与Assets同级的目录
         /// </summary>
+        /// <param name="directory">目录名（例如：/Library，获取项目的Library目录）</param>
+        /// <returns>目录</returns>
         public static string GetDirectorySameLevelOfAssets(string directory)
         {
             return Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + directory;
         }
         /// <summary>
-        /// 获取颜色RGB参数的十六进制字符串
+        /// 转换为颜色RGB参数的十六进制字符串
         /// </summary>
+        /// <param name="color">颜色值</param>
+        /// <returns>十六进制字符串</returns>
         public static string ToHexSystemString(this Color color)
         {
             return "#" + ((int)(color.r * 255)).ToString("x2") +
                 ((int)(color.g * 255)).ToString("x2") +
                 ((int)(color.b * 255)).ToString("x2") +
                 ((int)(color.a * 255)).ToString("x2");
+        }
+        /// <summary>
+        /// MD5算法加密
+        /// </summary>
+        /// <param name="value">字符串</param>
+        /// <returns>加密后的字符串</returns>
+        public static string MD5Encrypt(string value)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            //将字符串转换为字节数组
+            byte[] fromData = Encoding.UTF8.GetBytes(value);
+            //计算字节数组的哈希值
+            byte[] toData = md5.ComputeHash(fromData);
+
+            return Convert.ToBase64String(toData);
         }
         #endregion
 
