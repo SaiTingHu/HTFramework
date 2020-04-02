@@ -292,7 +292,7 @@ namespace HT.Framework
                     }
 
                     GUILayout.BeginHorizontal();
-                    GUI.color = _contentAsset.Content[i].Target != null ? Color.white : Color.gray;
+                    GUI.color = _contentAsset.Content[i].TargetGUID != "<None>" ? Color.white : Color.gray;
                     string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
                     content.text = i + "." + StepShowName(_contentAsset.Content[i]);
@@ -933,7 +933,7 @@ namespace HT.Framework
                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                 {
                     StepOperation operation = _currentStepObj.Operations[i];
-                    GUI.color = operation.Target != null ? Color.white : Color.gray;
+                    GUI.color = operation.TargetGUID != "<None>" ? Color.white : Color.gray;
                     Rect rectOperation = new Rect(operation.Anchor.x - _operationButtonWidth / 2, operation.Anchor.y - _operationButtonHeight / 2, _operationButtonWidth, _operationButtonHeight);
                     Rect rectLeft = new Rect(operation.Anchor.x - _operationButtonWidth / 2 - 10, operation.Anchor.y - 10, 20, 20);
                     Rect rectRight = new Rect(operation.Anchor.x + _operationButtonWidth / 2 - 10, operation.Anchor.y - 10, 20, 20);
