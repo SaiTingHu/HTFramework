@@ -2233,6 +2233,18 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 激活自身及所有子物体的碰撞器
+        /// </summary>
+        /// <param name="gameObject">自身</param>
+        /// <param name="activateState">激活状态</param>
+        public static void ActivateCollider(this GameObject gameObject, bool activateState)
+        {
+            foreach (Collider coll in gameObject.GetComponentsInChildren<Collider>(true))
+            {
+                coll.enabled = activateState;
+            }
+        }
+        /// <summary>
         /// 使用 as 强转目标
         /// </summary>
         /// <typeparam name="T">强转的类型</typeparam>
