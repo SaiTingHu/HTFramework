@@ -32,6 +32,7 @@ namespace HT.Framework
         private Texture _background;
         private bool _isShowStepContent = true;
         private bool _isShowCamControl = false;
+        private bool _isShowStepOperation = true;
         private bool _isMinimize = false;
         private Rect _recordedPosition;
 
@@ -218,6 +219,7 @@ namespace HT.Framework
             }
             _isShowStepContent = GUILayout.Toggle(_isShowStepContent, "Step Content Properties", EditorStyles.toolbarButton);
             _isShowCamControl = GUILayout.Toggle(_isShowCamControl, "Camera Control", EditorStyles.toolbarButton);
+            _isShowStepOperation = GUILayout.Toggle(_isShowStepOperation, "Step Operation Properties", EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Setting", EditorStyles.toolbarPopup))
             {
@@ -742,7 +744,7 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
 
                 #region 步骤操作的属性
-                if (_currentOperation != -1)
+                if (_isShowStepOperation && _currentOperation != -1)
                 {
                     if (_stepContentGUIRepaint)
                     {
@@ -905,7 +907,7 @@ namespace HT.Framework
         /// </summary>
         private void StepContentRemovableGUI()
         {
-            if (_currentStep != -1)
+            if (_isShowStepOperation && _currentStep != -1)
             {
                 _stepContentRect.Set(_stepListGUIWidth, 0, position.width - _stepListGUIWidth, position.height);
                 GUILayout.BeginArea(_stepContentRect);
