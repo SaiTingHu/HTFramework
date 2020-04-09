@@ -1998,7 +1998,7 @@ namespace HT.Framework
         /// 当前的运行时程序集
         /// </summary>
         private static readonly HashSet<string> RunTimeAssemblies = new HashSet<string>() {
-            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.ILHotfix.RunTime",
+            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.ILHotfix.RunTime", "HTFramework.GC.RunTime",
             "UnityEngine", "UnityEngine.CoreModule", "UnityEngine.UI", "UnityEngine.PhysicsModule" };
         /// <summary>
         /// 从当前程序域的运行时程序集中获取所有类型

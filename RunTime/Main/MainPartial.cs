@@ -9,6 +9,7 @@ using Object = UnityEngine.Object;
 [assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.RunTime")]
 [assembly: InternalsVisibleTo("HTFramework.ILHotfix.RunTime")]
+[assembly: InternalsVisibleTo("HTFramework.GC.RunTime")]
 
 namespace HT.Framework
 {
