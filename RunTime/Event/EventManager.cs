@@ -11,8 +11,11 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.Event)]
     public sealed class EventManager : InternalModuleBase
     {
+        //I型事件
         private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList1 = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
+        //II型事件
         private Dictionary<Type, HTFAction> _eventHandlerList2 = new Dictionary<Type, HTFAction>();
+        //III型事件
         private Dictionary<Type, HTFAction<EventHandlerBase>> _eventHandlerList3 = new Dictionary<Type, HTFAction<EventHandlerBase>>();
 
         public override void OnInitialization()
@@ -42,7 +45,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 订阅事件
+        /// 订阅I型事件 ------ HTFAction(object, EventHandlerBase)
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -51,7 +54,7 @@ namespace HT.Framework
             Subscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 订阅事件
+        /// 订阅I型事件 ------ HTFAction(object, EventHandlerBase)
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -63,11 +66,11 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅I型事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
             }
         }
         /// <summary>
-        /// 订阅事件
+        /// 订阅II型事件 ------ HTFAction()
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -76,7 +79,7 @@ namespace HT.Framework
             Subscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 订阅事件
+        /// 订阅II型事件 ------ HTFAction()
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -88,11 +91,11 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅II型事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
             }
         }
         /// <summary>
-        /// 订阅事件
+        /// 订阅III型事件 ------ HTFAction(EventHandlerBase)
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -101,7 +104,7 @@ namespace HT.Framework
             Subscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 订阅事件
+        /// 订阅III型事件 ------ HTFAction(EventHandlerBase)
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -113,11 +116,11 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅III型事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
             }
         }
         /// <summary>
-        /// 取消订阅事件
+        /// 取消订阅I型事件 ------ HTFAction(object, EventHandlerBase)
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -126,7 +129,7 @@ namespace HT.Framework
             Unsubscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 取消订阅事件
+        /// 取消订阅I型事件 ------ HTFAction(object, EventHandlerBase)
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -138,7 +141,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 取消订阅事件
+        /// 取消订阅II型事件 ------ HTFAction()
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -147,7 +150,7 @@ namespace HT.Framework
             Unsubscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 取消订阅事件
+        /// 取消订阅II型事件 ------ HTFAction()
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -159,7 +162,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 取消订阅事件
+        /// 取消订阅III型事件 ------ HTFAction(EventHandlerBase)
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -168,7 +171,7 @@ namespace HT.Framework
             Unsubscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 取消订阅事件
+        /// 取消订阅III型事件 ------ HTFAction(EventHandlerBase)
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -208,7 +211,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 抛出事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// 抛出I型事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="sender">事件发送者</param>
         /// <param name="handler">事件处理类实例</param>
@@ -225,11 +228,11 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出I型事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
             }
         }
         /// <summary>
-        /// 抛出事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// 抛出III型事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="handler">事件处理类实例</param>
         public void Throw(EventHandlerBase handler)
@@ -245,11 +248,11 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出III型事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
             }
         }
         /// <summary>
-        /// 抛出事件
+        /// 抛出II型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         public void Throw<T>() where T : EventHandlerBase
@@ -257,7 +260,7 @@ namespace HT.Framework
             Throw(typeof(T));
         }
         /// <summary>
-        /// 抛出事件
+        /// 抛出II型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         public void Throw(Type type)
@@ -268,7 +271,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出II型事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
             }
         }
     }

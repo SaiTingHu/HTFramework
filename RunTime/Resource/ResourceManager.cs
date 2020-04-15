@@ -101,7 +101,7 @@ namespace HT.Framework
         /// <returns>加载协程</returns>
         public Coroutine LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : UnityEngine.Object
         {
-            return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction));
+            return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction, false, null, false));
         }
         /// <summary>
         /// 加载数据集（异步）
@@ -113,7 +113,7 @@ namespace HT.Framework
         /// <returns>加载协程</returns>
         public Coroutine LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : DataSetBase
         {
-            return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction));
+            return Main.Current.StartCoroutine(LoadAssetAsync(info, loadingAction, loadDoneAction, false, null, false));
         }
         /// <summary>
         /// 加载预制体（异步）
@@ -192,7 +192,7 @@ namespace HT.Framework
         }
 
         //异步加载资源
-        private IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab = false, Transform parent = null, bool isUI = false) where T : UnityEngine.Object
+        private IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object
         {
             DateTime beginTime = DateTime.Now;
 
@@ -393,8 +393,9 @@ namespace HT.Framework
             }
 
             DateTime endTime = DateTime.Now;
-            
-            GlobalTools.LogInfo(string.Format("异步加载资源{0}[{1}模式]：\r\n{2}\r\n等待耗时：{3}秒  加载耗时：{4}秒", asset ? "成功" : "失败", Mode
+
+            GlobalTools.LogInfo(string.Format("异步加载资源{0}[{1}模式]：\r\n{2}\r\n等待耗时：{3}秒  加载耗时：{4}秒"
+                , asset ? "成功" : "失败", Mode
                 , Mode == ResourceLoadMode.Resource ? info.GetResourceFullPath() : info.GetAssetBundleFullPath(_assetBundleRootPath)
                 , (waitTime - beginTime).TotalSeconds, (endTime - waitTime).TotalSeconds));
 

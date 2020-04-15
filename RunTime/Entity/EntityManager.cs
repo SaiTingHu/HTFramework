@@ -333,7 +333,7 @@ namespace HT.Framework
         }
 
         //提取实体
-        private Coroutine ExtractEntity(Type type, string entityName = "<None>", HTFAction<float> loadingAction = null, HTFAction<EntityLogicBase> loadDoneAction = null)
+        private Coroutine ExtractEntity(Type type, string entityName, HTFAction<float> loadingAction, HTFAction<EntityLogicBase> loadDoneAction)
         {
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
@@ -342,14 +342,8 @@ namespace HT.Framework
                 {
                     if (attribute.IsUseObjectPool && _objectPool[type].Count > 0)
                     {
-                        EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
-                        _entities[type].Add(entityLogic);
-                        entityLogic.Entity = _objectPool[type].Dequeue();
-                        entityLogic.Entity.name = entityLogic.Name = entityName == "<None>" ? type.Name : entityName;
-                        entityLogic.Entity.SetActive(true);
-                        entityLogic.OnInit();
-                        entityLogic.OnShow();
-
+                        EntityLogicBase entityLogic = GenerateEntity(type, _objectPool[type].Dequeue(), entityName == "<None>" ? type.Name : entityName);
+                        
                         loadingAction?.Invoke(1);
                         loadDoneAction?.Invoke(entityLogic);
                         Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
@@ -359,14 +353,8 @@ namespace HT.Framework
                     {
                         if (_defineEntities.ContainsKey(type.FullName) && _defineEntities[type.FullName] != null)
                         {
-                            EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
-                            _entities[type].Add(entityLogic);
-                            entityLogic.Entity = Instantiate(_defineEntities[type.FullName], _entitiesGroup[type].transform);
-                            entityLogic.Entity.name = entityLogic.Name = entityName == "<None>" ? type.Name : entityName;
-                            entityLogic.Entity.SetActive(true);
-                            entityLogic.OnInit();
-                            entityLogic.OnShow();
-
+                            EntityLogicBase entityLogic = GenerateEntity(type, Instantiate(_defineEntities[type.FullName], _entitiesGroup[type].transform), entityName == "<None>" ? type.Name : entityName);
+                            
                             loadingAction?.Invoke(1);
                             loadDoneAction?.Invoke(entityLogic);
                             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
@@ -376,13 +364,7 @@ namespace HT.Framework
                         {
                             return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
                             {
-                                EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
-                                _entities[type].Add(entityLogic);
-                                entityLogic.Entity = obj;
-                                entityLogic.Entity.name = entityLogic.Name = entityName == "<None>" ? type.Name : entityName;
-                                entityLogic.Entity.SetActive(true);
-                                entityLogic.OnInit();
-                                entityLogic.OnShow();
+                                EntityLogicBase entityLogic = GenerateEntity(type, obj, entityName == "<None>" ? type.Name : entityName);
 
                                 loadDoneAction?.Invoke(entityLogic);
                                 Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
@@ -396,6 +378,18 @@ namespace HT.Framework
                 }
             }
             return null;
+        }
+        //生成实体
+        private EntityLogicBase GenerateEntity(Type type, GameObject entity, string entityName)
+        {
+            EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
+            _entities[type].Add(entityLogic);
+            entityLogic.Entity = entity;
+            entityLogic.Entity.name = entityLogic.Name = entityName;
+            entityLogic.Entity.SetActive(true);
+            entityLogic.OnInit();
+            entityLogic.OnShow();
+            return entityLogic;
         }
         //回收实体
         private void RecoveryEntity(EntityLogicBase entityLogic)
