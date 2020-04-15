@@ -531,15 +531,8 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistParameter(string parameterName, MainParameter.ParameterType parameterType)
         {
-            if (MainParameters == null)
-            {
-                return false;
-            }
-            else
-            {
-                MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
-                return mainParameter != null;
-            }
+            MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
+            return mainParameter != null;
         }
         /// <summary>
         /// 是否存在指定名称的参数
@@ -548,15 +541,8 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistParameter(string parameterName)
         {
-            if (MainParameters == null)
-            {
-                return false;
-            }
-            else
-            {
-                MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName; });
-                return mainParameter != null;
-            }
+            MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName; });
+            return mainParameter != null;
         }
         /// <summary>
         /// 通过名称、类型获取所有参数
@@ -566,14 +552,11 @@ namespace HT.Framework
         /// <param name="mainParameters">输出的参数列表</param>
         public void GetParameters(string parameterName, MainParameter.ParameterType parameterType, List<MainParameter> mainParameters)
         {
-            if (MainParameters != null)
+            for (int i = 0; i < MainParameters.Count; i++)
             {
-                for (int i = 0; i < MainParameters.Count; i++)
+                if (MainParameters[i].Name == parameterName && MainParameters[i].Type == parameterType)
                 {
-                    if (MainParameters[i].Name == parameterName && MainParameters[i].Type == parameterType)
-                    {
-                        mainParameters.Add(MainParameters[i]);
-                    }
+                    mainParameters.Add(MainParameters[i]);
                 }
             }
         }
@@ -584,15 +567,30 @@ namespace HT.Framework
         /// <param name="mainParameters">输出的参数列表</param>
         public void GetParameters(string parameterName, List<MainParameter> mainParameters)
         {
-            if (MainParameters != null)
+            for (int i = 0; i < MainParameters.Count; i++)
             {
-                for (int i = 0; i < MainParameters.Count; i++)
+                if (MainParameters[i].Name == parameterName)
                 {
-                    if (MainParameters[i].Name == parameterName)
-                    {
-                        mainParameters.Add(MainParameters[i]);
-                    }
+                    mainParameters.Add(MainParameters[i]);
                 }
+            }
+        }
+        /// <summary>
+        /// 通过名称、类型获取参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <param name="parameterType">参数类型</param>
+        /// <returns>参数</returns>
+        public MainParameter GetParameter(string parameterName, MainParameter.ParameterType parameterType)
+        {
+            MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
+            if (mainParameter != null)
+            {
+                return mainParameter;
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
             }
         }
         /// <summary>
@@ -602,21 +600,14 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public MainParameter GetParameter(string parameterName)
         {
-            if (MainParameters == null)
+            MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName; });
+            if (mainParameter != null)
             {
-                throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
+                return mainParameter;
             }
             else
             {
-                MainParameter mainParameter = MainParameters.Find((p) => { return p.Name == parameterName; });
-                if (mainParameter != null)
-                {
-                    return mainParameter;
-                }
-                else
-                {
-                    throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
-                }
+                throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
             }
         }
         /// <summary>
@@ -626,7 +617,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public string GetStringParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.String);
             return (mainParameter != null) ? mainParameter.StringValue : "";
         }
         /// <summary>
@@ -636,7 +627,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public int GetIntegerParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Integer);
             return (mainParameter != null) ? mainParameter.IntegerValue : 0;
         }
         /// <summary>
@@ -646,7 +637,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public float GetFloatParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Float);
             return (mainParameter != null) ? mainParameter.FloatValue : 0f;
         }
         /// <summary>
@@ -656,7 +647,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public bool GetBooleanParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Boolean);
             return (mainParameter != null) ? mainParameter.BooleanValue : false;
         }
         /// <summary>
@@ -666,7 +657,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public Vector2 GetVector2Parameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Vector2);
             return (mainParameter != null) ? mainParameter.Vector2Value : Vector2.zero;
         }
         /// <summary>
@@ -676,7 +667,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public Vector3 GetVector3Parameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Vector3);
             return (mainParameter != null) ? mainParameter.Vector3Value : Vector3.zero;
         }
         /// <summary>
@@ -686,7 +677,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public Color GetColorParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Color);
             return (mainParameter != null) ? mainParameter.ColorValue : Color.white;
         }
         /// <summary>
@@ -696,7 +687,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public DataSetBase GetDataSetParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.DataSet);
             return (mainParameter != null) ? mainParameter.DataSet : null;
         }
         /// <summary>
@@ -706,7 +697,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public GameObject GetPrefabParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Prefab);
             return (mainParameter != null) ? mainParameter.PrefabValue : null;
         }
         /// <summary>
@@ -716,7 +707,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public Texture GetTextureParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Texture);
             return (mainParameter != null) ? mainParameter.TextureValue : null;
         }
         /// <summary>
@@ -726,7 +717,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public AudioClip GetAudioClipParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.AudioClip);
             return (mainParameter != null) ? mainParameter.AudioClipValue : null;
         }
         /// <summary>
@@ -736,7 +727,7 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public Material GetMaterialParameter(string parameterName)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Material);
             return (mainParameter != null) ? mainParameter.MaterialValue : null;
         }
         /// <summary>
@@ -746,7 +737,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetStringParameter(string parameterName, string value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.String);
             if (mainParameter != null)
             {
                 mainParameter.StringValue = value;
@@ -759,7 +750,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetIntegerParameter(string parameterName, int value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Integer);
             if (mainParameter != null)
             {
                 mainParameter.IntegerValue = value;
@@ -772,7 +763,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetFloatParameter(string parameterName, float value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Float);
             if (mainParameter != null)
             {
                 mainParameter.FloatValue = value;
@@ -785,7 +776,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetBooleanParameter(string parameterName, bool value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Boolean);
             if (mainParameter != null)
             {
                 mainParameter.BooleanValue = value;
@@ -798,7 +789,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetVector2Parameter(string parameterName, Vector2 value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Vector2);
             if (mainParameter != null)
             {
                 mainParameter.Vector2Value = value;
@@ -811,7 +802,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetVector3Parameter(string parameterName, Vector3 value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Vector3);
             if (mainParameter != null)
             {
                 mainParameter.Vector3Value = value;
@@ -824,7 +815,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetColorParameter(string parameterName, Color value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Color);
             if (mainParameter != null)
             {
                 mainParameter.ColorValue = value;
@@ -837,7 +828,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetDataSetParameter(string parameterName, DataSetBase dataset)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.DataSet);
             if (mainParameter != null)
             {
                 mainParameter.DataSet = dataset;
@@ -850,7 +841,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetPrefabParameter(string parameterName, GameObject value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Prefab);
             if (mainParameter != null)
             {
                 mainParameter.PrefabValue = value;
@@ -863,7 +854,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetTextureParameter(string parameterName, Texture value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Texture);
             if (mainParameter != null)
             {
                 mainParameter.TextureValue = value;
@@ -876,7 +867,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetAudioClipParameter(string parameterName, AudioClip value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.AudioClip);
             if (mainParameter != null)
             {
                 mainParameter.AudioClipValue = value;
@@ -889,7 +880,7 @@ namespace HT.Framework
         /// <param name="value">参数值</param>
         public void SetMaterialParameter(string parameterName, Material value)
         {
-            MainParameter mainParameter = GetParameter(parameterName);
+            MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.Material);
             if (mainParameter != null)
             {
                 mainParameter.MaterialValue = value;

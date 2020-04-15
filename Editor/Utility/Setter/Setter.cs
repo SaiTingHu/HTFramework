@@ -21,12 +21,14 @@ namespace HT.Framework
         private void OnEnable()
         {
             _settingItems.Clear();
+            _settingItems.Add(new SettingItemMain());
             _settingItems.Add(new SettingItemAspectTrack());
             _settingItems.Add(new SettingItemAudio());
             _settingItems.Add(new SettingItemController());
             _settingItems.Add(new SettingItemWebRequest());
 
             _settingItemSigns.Clear();
+            _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
@@ -234,6 +236,9 @@ namespace HT.Framework
             GameObject moduleEntity = null;
             switch (module)
             {
+                case HTFrameworkModule.Main:
+                    moduleEntity = GameObject.Find("HTFramework");
+                    break;
                 case HTFrameworkModule.AspectTrack:
                     moduleEntity = GameObject.Find("HTFramework/AspectTrack");
                     break;
