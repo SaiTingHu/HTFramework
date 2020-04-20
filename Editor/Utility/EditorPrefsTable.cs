@@ -148,6 +148,16 @@ namespace HT.Framework
                 return Application.productName + ".HT.Framework.Script.SettingItem";
             }
         }
+        /// <summary>
+        /// 快捷工具是否展开
+        /// </summary>
+        public static string LnkTools_Expansion
+        {
+            get
+            {
+                return "LnkTools.Expansion";
+            }
+        }
         #endregion
 
         #region Utility

@@ -21,6 +21,7 @@ namespace HT.Framework
         {
             OnInitHierarchy();
             OnInitProject();
+            OnInitLnkTools();
         }
         #endregion
 
@@ -174,7 +175,7 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Editor 【优先级106-108】
+        #region Editor 【优先级106-107】
         /// <summary>
         /// 运行场景
         /// </summary>
@@ -183,28 +184,11 @@ namespace HT.Framework
         {
             EditorApplication.isPlaying = !EditorApplication.isPlaying;
         }
-
-        /// <summary>
-        /// 【验证函数】看向指定目标
-        /// </summary>
-        [@MenuItem("HTFramework/Editor/Look At", true)]
-        private static bool LookAtValidate()
-        {
-            return EditorApplication.isPlaying && Selection.activeGameObject != null;
-        }
-        /// <summary>
-        /// 看向指定目标
-        /// </summary>
-        [@MenuItem("HTFramework/Editor/Look At", false, 107)]
-        private static void LookAt()
-        {
-            Main.m_Controller.SetLookPoint(Selection.activeGameObject.transform.position);
-        }
-
+        
         /// <summary>
         /// 打开编辑器安装路径
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Open Installation Path", false, 108)]
+        [@MenuItem("HTFramework/Editor/Open Installation Path", false, 107)]
         private static void OpenInstallationPath()
         {
             string path = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/"));
@@ -306,7 +290,7 @@ namespace HT.Framework
             tools.Show();
         }
 
-        private static List<MethodInfo> _customTools = new List<MethodInfo>();
+        private static List<MethodInfo> CustomTools = new List<MethodInfo>();
 
         /// <summary>
         /// 执行 Custom Tool
@@ -314,7 +298,7 @@ namespace HT.Framework
         [@MenuItem("HTFramework/Tools/Custom Tool", false, 113)]
         private static void ExecuteCustomTool()
         {
-            _customTools.Clear();
+            CustomTools.Clear();
             List<Type> types = GetTypesInEditorAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
@@ -323,22 +307,22 @@ namespace HT.Framework
                 {
                     if (methods[j].IsDefined(typeof(CustomToolAttribute), false))
                     {
-                        _customTools.Add(methods[j]);
+                        CustomTools.Add(methods[j]);
                     }
                 }
             }
-            if (_customTools.Count <= 0)
+            if (CustomTools.Count <= 0)
             {
                 GlobalTools.LogWarning("当前不存在至少一个自定义工具！为任何处于 Editor 文件夹中的类的无参静态函数添加 CustomTool 特性，可将该函数附加至自定义工具菜单！");
             }
             else
             {
-                for (int i = 0; i < _customTools.Count; i++)
+                for (int i = 0; i < CustomTools.Count; i++)
                 {
-                    _customTools[i].Invoke(null, null);
+                    CustomTools[i].Invoke(null, null);
                 }
-                GlobalTools.LogInfo("已执行 " + _customTools.Count + " 个自定义工具！");
-                _customTools.Clear();
+                GlobalTools.LogInfo("已执行 " + CustomTools.Count + " 个自定义工具！");
+                CustomTools.Clear();
             }
         }
         #endregion
@@ -1260,6 +1244,119 @@ namespace HT.Framework
             if (string.Equals(mainFolder, "Assets/HTFramework"))
             {
                 GUI.Box(selectionRect, HTFrameworkLOGOTitle, ProjectItemStyle);
+            }
+        }
+        #endregion
+
+        #region LnkTools
+        private static List<LnkTools> LnkToolss = new List<LnkTools>();
+        private static bool IsExpansionLnkTools = false;
+
+        /// <summary>
+        /// LnkTools初始化
+        /// </summary>
+        private static void OnInitLnkTools()
+        {
+            LnkToolss.Clear();
+            List<Type> types = GetTypesInEditorAssemblies();
+            for (int i = 0; i < types.Count; i++)
+            {
+                MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                for (int j = 0; j < methods.Length; j++)
+                {
+                    if (methods[j].IsDefined(typeof(LnkToolsAttribute), false))
+                    {
+                        LnkToolsAttribute attribute = methods[j].GetCustomAttribute<LnkToolsAttribute>();
+                        LnkTools lnkTools = new LnkTools(attribute.Tooltip, attribute.Priority, methods[j]);
+                        LnkToolss.Add(lnkTools);
+                    }
+                }
+            }
+
+            LnkToolss.Sort((x, y) =>
+            {
+                if (x.Priority < y.Priority) return -1;
+                else if (x.Priority == y.Priority) return 0;
+                else return 1;
+            });
+
+            IsExpansionLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Expansion, false);
+
+            SceneView.onSceneGUIDelegate += OnLnkToolsGUI;
+        }
+        /// <summary>
+        /// LnkTools界面
+        /// </summary>
+        private static void OnLnkToolsGUI(SceneView sceneView)
+        {
+            Handles.BeginGUI();
+
+            Rect rect = Rect.zero;
+
+            if (IsExpansionLnkTools)
+            {
+                rect.Set(sceneView.position.width - 115, 120, 110, (LnkToolss.Count + 1) * 22 + 8);
+                GUI.Box(rect, "");
+            }
+
+            rect.Set(sceneView.position.width - 110, 125, 100, 20);
+            bool expansion = GUI.Toggle(rect, IsExpansionLnkTools, "LnkTools", "Prebutton");
+            if (expansion != IsExpansionLnkTools)
+            {
+                IsExpansionLnkTools = expansion;
+                EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Expansion, IsExpansionLnkTools);
+            }
+            rect.y += 22;
+
+            if (IsExpansionLnkTools)
+            {
+                for (int i = 0; i < LnkToolss.Count; i++)
+                {
+                    if (GUI.Button(rect, LnkToolss[i].Tooltip))
+                    {
+                        LnkToolss[i].Method.Invoke(null, null);
+                    }
+                    rect.y += 22;
+                }
+            }
+
+            Handles.EndGUI();
+        }
+        
+        /// <summary>
+        /// LnkTools，看向指定目标
+        /// </summary>
+        [LnkTools("Look At")]
+        private static void LookAt()
+        {
+            if (EditorApplication.isPlaying && Main.m_Controller != null)
+            {
+                if (Selection.activeGameObject != null)
+                {
+                    Main.m_Controller.SetLookPoint(Selection.activeGameObject.transform.position);
+                }
+                else
+                {
+                    GlobalTools.LogWarning("请选中一个LookAt的目标！");
+                }
+            }
+            else
+            {
+                GlobalTools.LogWarning("仅在运行时才能调用框架的Controller模块LookAt至选中目标！");
+            }
+        }
+
+        private class LnkTools
+        {
+            public string Tooltip;
+            public int Priority;
+            public MethodInfo Method;
+
+            public LnkTools(string tooltip, int priority, MethodInfo method)
+            {
+                Tooltip = tooltip;
+                Priority = priority;
+                Method = method;
             }
         }
         #endregion
