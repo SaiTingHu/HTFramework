@@ -39,5 +39,32 @@ namespace HT.Framework
         /// 操作类型
         /// </summary>
         public StepOperationType OperationType = StepOperationType.Move;
+
+#if UNITY_EDITOR
+        internal static float Width = 150;
+        internal static float Height = 40;
+        
+        internal Rect Position
+        {
+            get
+            {
+                return new Rect(Anchor.x - Width / 2, Anchor.y - Height / 2, Width, Height);
+            }
+        }
+        internal Rect LeftPosition
+        {
+            get
+            {
+                return new Rect(Anchor.x - Width / 2 - 10, Anchor.y - 10, 20, 20);
+            }
+        }
+        internal Rect RightPosition
+        {
+            get
+            {
+                return new Rect(Anchor.x + Width / 2 - 10, Anchor.y - 10, 20, 20);
+            }
+        }
+#endif
     }
 }

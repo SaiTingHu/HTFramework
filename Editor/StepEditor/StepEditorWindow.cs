@@ -46,17 +46,20 @@ namespace HT.Framework
         private float _stepListGUIWidth = 340;
 
         private Rect _stepContentRect;
-        private float _operationButtonWidth = 150;
-        private float _operationButtonHeight = 40;
         private bool _stepContentDragging = false;
-        private bool _stepContentGUIRepaint = false;
 
         private Rect _splitterRect;
         private float _splitterWidth = 5;
         private bool _splitterDragging = false;
         private bool _isMoveTo = false;
         private int _moveToIndex = 1;
-        
+
+        private bool _enterDragging = false;
+        private bool _stepOperationDragging = false;
+        private bool _isWired = false;
+        private bool _isWiredRight = false;
+        private int _wiredOriginIndex;
+
         private CameraTarget _ct;
         private MousePosition _mp;
         private MouseRotation _mr;
@@ -746,151 +749,144 @@ namespace HT.Framework
                 #region 步骤操作的属性
                 if (_isShowStepOperation && _currentOperation != -1)
                 {
-                    if (_stepContentGUIRepaint)
+                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(320));
+
+                    GUILayout.BeginHorizontal("Icon.OutlineBorder");
+                    GUILayout.Label("Step Operation Properties", EditorStyles.boldLabel);
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.Space(5);
+
+                    _stepOperationScroll = GUILayout.BeginScrollView(_stepOperationScroll);
+
+                    GUILayout.BeginVertical("Tooltip");
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Name:", GUILayout.Width(50));
+                    _currentOperationObj.Name = EditorGUILayout.TextField(_currentOperationObj.Name, GUILayout.Width(130));
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("GUID:", GUILayout.Width(50));
+                    _currentOperationObj.GUID = EditorGUILayout.TextField(_currentOperationObj.GUID, GUILayout.Width(130));
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUI.enabled = !_currentOperationObj.Instant;
+                    GUILayout.Label("Elapse Time:", GUILayout.Width(80));
+                    _currentOperationObj.ElapseTime = EditorGUILayout.FloatField(_currentOperationObj.ElapseTime, GUILayout.Width(40));
+                    GUI.enabled = true;
+                    _currentOperationObj.Instant = GUILayout.Toggle(_currentOperationObj.Instant, "Instant", GUILayout.Width(60));
+                    GUILayout.EndHorizontal();
+
+                    #region 步骤目标物体丢失，根据目标GUID重新搜寻
+                    if (!_currentOperationObj.Target)
                     {
-                        _stepContentGUIRepaint = false;
-                    }
-                    else
-                    {
-                        GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(320));
-
-                        GUILayout.BeginHorizontal("Icon.OutlineBorder");
-                        GUILayout.Label("Step Operation Properties", EditorStyles.boldLabel);
-                        GUILayout.EndHorizontal();
-
-                        GUILayout.Space(5);
-
-                        _stepOperationScroll = GUILayout.BeginScrollView(_stepOperationScroll);
-
-                        GUILayout.BeginVertical("Tooltip");
-
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Name:", GUILayout.Width(50));
-                        _currentOperationObj.Name = EditorGUILayout.TextField(_currentOperationObj.Name, GUILayout.Width(130));
-                        GUILayout.EndHorizontal();
-
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("GUID:", GUILayout.Width(50));
-                        _currentOperationObj.GUID = EditorGUILayout.TextField(_currentOperationObj.GUID, GUILayout.Width(130));
-                        GUILayout.EndHorizontal();
-
-                        GUILayout.BeginHorizontal();
-                        GUI.enabled = !_currentOperationObj.Instant;
-                        GUILayout.Label("Elapse Time:", GUILayout.Width(80));
-                        _currentOperationObj.ElapseTime = EditorGUILayout.FloatField(_currentOperationObj.ElapseTime, GUILayout.Width(40));
-                        GUI.enabled = true;
-                        _currentOperationObj.Instant = GUILayout.Toggle(_currentOperationObj.Instant, "Instant", GUILayout.Width(60));
-                        GUILayout.EndHorizontal();
-
-                        #region 步骤目标物体丢失，根据目标GUID重新搜寻
-                        if (!_currentOperationObj.Target)
+                        if (_currentOperationObj.TargetGUID != "<None>")
                         {
-                            if (_currentOperationObj.TargetGUID != "<None>")
+                            _currentOperationObj.Target = GameObject.Find(_currentOperationObj.TargetPath);
+                            if (!_currentOperationObj.Target)
                             {
-                                _currentOperationObj.Target = GameObject.Find(_currentOperationObj.TargetPath);
-                                if (!_currentOperationObj.Target)
+                                StepTarget[] targets = FindObjectsOfType<StepTarget>();
+                                foreach (StepTarget target in targets)
                                 {
-                                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
-                                    foreach (StepTarget target in targets)
+                                    if (target.GUID == _currentOperationObj.TargetGUID)
                                     {
-                                        if (target.GUID == _currentOperationObj.TargetGUID)
-                                        {
-                                            _currentOperationObj.Target = target.gameObject;
-                                            _currentOperationObj.TargetPath = target.transform.FullName();
-                                            break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    StepTarget target = _currentOperationObj.Target.GetComponent<StepTarget>();
-                                    if (!target)
-                                    {
-                                        target = _currentOperationObj.Target.AddComponent<StepTarget>();
-                                        target.GUID = _currentOperationObj.TargetGUID;
+                                        _currentOperationObj.Target = target.gameObject;
+                                        _currentOperationObj.TargetPath = target.transform.FullName();
+                                        break;
                                     }
                                 }
                             }
-                        }
-                        #endregion
-
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Target:", GUILayout.Width(50));
-                        GUI.color = _currentOperationObj.Target ? Color.white : Color.gray;
-                        GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
-                        GUI.color = Color.white;
-                        GUILayout.EndHorizontal();
-
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("GUID: " + _currentOperationObj.TargetGUID, GUILayout.Width(140));
-                        GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
-                        {
-                            operationObj = _currentOperationObj.Target = null;
-                            _currentOperationObj.TargetGUID = "<None>";
-                            _currentOperationObj.TargetPath = "<None>";
-                            GUI.FocusControl(null);
-                        }
-                        GUILayout.EndHorizontal();
-
-                        GUILayout.EndVertical();
-
-                        GUILayout.Space(5);
-
-                        #region 步骤目标改变
-                        if (operationObj != _currentOperationObj.Target)
-                        {
-                            if (operationObj)
+                            else
                             {
-                                StepTarget target = operationObj.GetComponent<StepTarget>();
+                                StepTarget target = _currentOperationObj.Target.GetComponent<StepTarget>();
                                 if (!target)
                                 {
-                                    target = operationObj.AddComponent<StepTarget>();
+                                    target = _currentOperationObj.Target.AddComponent<StepTarget>();
+                                    target.GUID = _currentOperationObj.TargetGUID;
                                 }
-                                if (target.GUID == "<None>")
-                                {
-                                    target.GUID = Guid.NewGuid().ToString();
-                                }
-                                _currentOperationObj.Target = operationObj;
-                                _currentOperationObj.TargetGUID = target.GUID;
-                                _currentOperationObj.TargetPath = operationObj.transform.FullName();
                             }
                         }
-                        #endregion
-
-                        GUILayout.BeginVertical("Tooltip");
-
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("Type:", GUILayout.Width(50));
-                        _currentOperationObj.OperationType = (StepOperationType)EditorGUILayout.EnumPopup(_currentOperationObj.OperationType, GUILayout.Width(130));
-                        GUILayout.EndHorizontal();
-
-                        _currentOperationObj.OnEditorGUI();
-
-                        GUILayout.EndVertical();
-
-                        GUILayout.FlexibleSpace();
-
-                        GUILayout.EndScrollView();
-
-                        if (GUILayout.Button("Clone"))
-                        {
-                            StepOperation operationClone = _currentOperationObj.Clone();
-                            operationClone.Anchor = _currentOperationObj.Anchor + new Vector2(_operationButtonWidth + 20, 0);
-                            operationClone.Name += "(Clone)";
-                            _currentStepObj.Operations.Add(operationClone);
-                            SelectStepOperation(_currentStepObj.Operations.Count - 1);
-                            GUI.changed = true;
-                        }
-                        GUI.backgroundColor = Color.red;
-                        if (GUILayout.Button("Delete"))
-                        {
-                            DeleteStepOperation(_currentStepObj, _currentOperation);
-                        }
-                        GUI.backgroundColor = Color.white;
-
-                        GUILayout.EndVertical();
                     }
+                    #endregion
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Target:", GUILayout.Width(50));
+                    GUI.color = _currentOperationObj.Target ? Color.white : Color.gray;
+                    GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
+                    GUI.color = Color.white;
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("GUID: " + _currentOperationObj.TargetGUID, GUILayout.Width(140));
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
+                    {
+                        operationObj = _currentOperationObj.Target = null;
+                        _currentOperationObj.TargetGUID = "<None>";
+                        _currentOperationObj.TargetPath = "<None>";
+                        GUI.FocusControl(null);
+                    }
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.EndVertical();
+
+                    GUILayout.Space(5);
+
+                    #region 步骤目标改变
+                    if (operationObj != _currentOperationObj.Target)
+                    {
+                        if (operationObj)
+                        {
+                            StepTarget target = operationObj.GetComponent<StepTarget>();
+                            if (!target)
+                            {
+                                target = operationObj.AddComponent<StepTarget>();
+                            }
+                            if (target.GUID == "<None>")
+                            {
+                                target.GUID = Guid.NewGuid().ToString();
+                            }
+                            _currentOperationObj.Target = operationObj;
+                            _currentOperationObj.TargetGUID = target.GUID;
+                            _currentOperationObj.TargetPath = operationObj.transform.FullName();
+                        }
+                    }
+                    #endregion
+
+                    GUILayout.BeginVertical("Tooltip");
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Type:", GUILayout.Width(50));
+                    _currentOperationObj.OperationType = (StepOperationType)EditorGUILayout.EnumPopup(_currentOperationObj.OperationType, GUILayout.Width(130));
+                    GUILayout.EndHorizontal();
+
+                    _currentOperationObj.OnEditorGUI();
+
+                    GUILayout.EndVertical();
+
+                    GUILayout.FlexibleSpace();
+
+                    GUILayout.EndScrollView();
+
+                    if (GUILayout.Button("Clone"))
+                    {
+                        StepOperation operationClone = _currentOperationObj.Clone();
+                        operationClone.Anchor = _currentOperationObj.Anchor + new Vector2(StepOperation.Width + 20, 0);
+                        operationClone.Name += "(Clone)";
+                        _currentStepObj.Operations.Add(operationClone);
+                        SelectStepOperation(_currentStepObj.Operations.Count - 1);
+                        GUI.changed = true;
+                    }
+                    GUI.backgroundColor = Color.red;
+                    if (GUILayout.Button("Delete"))
+                    {
+                        DeleteStepOperation(_currentStepObj, _currentOperation);
+                    }
+                    GUI.backgroundColor = Color.white;
+
+                    GUILayout.EndVertical();
                 }
                 #endregion
 
@@ -913,26 +909,61 @@ namespace HT.Framework
                 GUILayout.BeginArea(_stepContentRect);
 
                 #region 步骤的所有连线
-                Vector2 offsetHalf = new Vector2(_operationButtonWidth / 2, 0);
-                Vector2 offset = new Vector2(_operationButtonWidth, 0);
+                Vector2 offset = new Vector2(StepOperation.Width * 1.5f, 0);
+                Vector2 offsetHalf = new Vector2(StepOperation.Width / 2, 0);
                 for (int i = 0; i < _currentStepObj.Wireds.Count; i++)
                 {
                     StepWired wired = _currentStepObj.Wireds[i];
+
+                    Vector2 leftAnchor;
+                    Vector2 rightAnchor;
+                    Vector2 leftTangent;
+                    Vector2 rightTangent;
                     if (wired.Left == -1)
                     {
-                        Vector2 leftAnchor = _currentStepObj.EnterAnchor + offsetHalf;
-                        Vector2 rightAnchor = _currentStepObj.Operations[wired.Right].Anchor - offsetHalf;
-                        Vector2 leftTangent = _currentStepObj.EnterAnchor + offset;
-                        Vector2 rightTangent = _currentStepObj.Operations[wired.Right].Anchor - offset;
+                        leftAnchor = _currentStepObj.EnterAnchor + offsetHalf;
+                        rightAnchor = _currentStepObj.Operations[wired.Right].Anchor - offsetHalf;
+                        leftTangent = _currentStepObj.EnterAnchor + offset;
+                        rightTangent = _currentStepObj.Operations[wired.Right].Anchor - offset;
+                    }
+                    else
+                    {
+                        leftAnchor = _currentStepObj.Operations[wired.Left].Anchor + offsetHalf;
+                        rightAnchor = _currentStepObj.Operations[wired.Right].Anchor - offsetHalf;
+                        leftTangent = _currentStepObj.Operations[wired.Left].Anchor + offset;
+                        rightTangent = _currentStepObj.Operations[wired.Right].Anchor - offset;
+                    }
+                    Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
+
+                    Vector2 center = (leftAnchor + rightAnchor) / 2;
+                    Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
+                    if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
+                    {
+                        _currentStepObj.Wireds.RemoveAt(i);
+                        break;
+                    }
+                    EditorGUIUtility.AddCursorRect(centerRect, MouseCursor.ArrowMinus);
+                }
+                #endregion
+
+                #region 鼠标左键拖拽连线
+                if (_isWired)
+                {
+                    if (_isWiredRight)
+                    {
+                        Vector2 leftAnchor = _currentStepObj.Operations[_wiredOriginIndex].Anchor + offsetHalf;
+                        Vector2 rightAnchor = Event.current.mousePosition;
+                        Vector2 leftTangent = _currentStepObj.Operations[_wiredOriginIndex].Anchor + offset;
+                        Vector2 rightTangent = Event.current.mousePosition;
 
                         Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
                     }
                     else
                     {
-                        Vector2 leftAnchor = _currentStepObj.Operations[wired.Left].Anchor + offsetHalf;
-                        Vector2 rightAnchor = _currentStepObj.Operations[wired.Right].Anchor - offsetHalf;
-                        Vector2 leftTangent = _currentStepObj.Operations[wired.Left].Anchor + offset;
-                        Vector2 rightTangent = _currentStepObj.Operations[wired.Right].Anchor - offset;
+                        Vector2 leftAnchor = _currentStepObj.Operations[_wiredOriginIndex].Anchor - offsetHalf;
+                        Vector2 rightAnchor = Event.current.mousePosition;
+                        Vector2 leftTangent = _currentStepObj.Operations[_wiredOriginIndex].Anchor - offset;
+                        Vector2 rightTangent = Event.current.mousePosition;
 
                         Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
                     }
@@ -944,87 +975,31 @@ namespace HT.Framework
                 {
                     StepOperation operation = _currentStepObj.Operations[i];
                     GUI.color = operation.TargetGUID != "<None>" ? Color.white : Color.gray;
-                    Rect rectOperation = new Rect(operation.Anchor.x - _operationButtonWidth / 2, operation.Anchor.y - _operationButtonHeight / 2, _operationButtonWidth, _operationButtonHeight);
-                    Rect rectLeft = new Rect(operation.Anchor.x - _operationButtonWidth / 2 - 10, operation.Anchor.y - 10, 20, 20);
-                    Rect rectRight = new Rect(operation.Anchor.x + _operationButtonWidth / 2 - 10, operation.Anchor.y - 10, 20, 20);
                     string style = _currentOperation == i ? "flow node 0 on" : "flow node 0";
-                    GUI.Box(rectLeft, "", style);
-                    GUI.Box(rectRight, "", style);
-                    string showName = "[" + operation.OperationType + "] " + operation.Name + "\r\n" + (operation.Instant ? "Instant" : operation.ElapseTime + "s");
-                    if (GUI.RepeatButton(rectOperation, showName, style))
-                    {
-                        GUI.FocusControl(null);
-
-                        if (Event.current.button == 0)
-                        {
-                            if (operation.Target && Selection.activeGameObject != operation.Target)
-                            {
-                                Selection.activeGameObject = operation.Target;
-                                EditorGUIUtility.PingObject(operation.Target);
-                            }
-                            SelectStepOperation(i);
-                            operation.Anchor = Event.current.mousePosition;
-                            _stepContentGUIRepaint = true;
-                            GUI.changed = true;
-                        }
-                        else if (Event.current.button == 1)
-                        {
-                            GenericMenu gm = new GenericMenu();
-                            EditorGlobalTools.BeginNoRepeatNaming();
-                            for (int m = 0; m < _currentStepObj.Operations.Count; m++)
-                            {
-                                if (i != m)
-                                {
-                                    int j = i;
-                                    int n = m;
-                                    gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[n].Name)), _currentStepObj.IsExistWired(j, n), () =>
-                                    {
-                                        ConnectOrBreakWired(_currentStepObj, j, n);
-                                    });
-                                }
-                            }
-                            gm.ShowAsContext();
-                        }
-                    }
-                    EditorGUIUtility.AddCursorRect(rectOperation, MouseCursor.MoveArrow);
+                    string showName = string.Format("[{0}] {1}\r\n{2}", operation.OperationType, operation.Name, operation.Instant ? "Instant" : (operation.ElapseTime.ToString() + "s"));
+                    Rect leftRect = operation.LeftPosition;
+                    Rect rightRect = operation.RightPosition;
+                    Rect operationRect = operation.Position;
+                    GUI.Box(leftRect, "", style);
+                    GUI.Box(rightRect, "", style);
+                    GUI.Box(operationRect, showName, style);
+                    EditorGUIUtility.AddCursorRect(leftRect, MouseCursor.ArrowPlus);
+                    EditorGUIUtility.AddCursorRect(rightRect, MouseCursor.ArrowPlus);
+                    EditorGUIUtility.AddCursorRect(operationRect, MouseCursor.MoveArrow);
                 }
                 GUI.color = Color.white;
                 #endregion
 
                 #region Enter
-                Rect rectEnter = new Rect(_currentStepObj.EnterAnchor.x - _operationButtonWidth / 2, _currentStepObj.EnterAnchor.y - _operationButtonHeight / 2, _operationButtonWidth, _operationButtonHeight);
-                if (GUI.RepeatButton(rectEnter, "Enter", "flow node 3"))
-                {
-                    GUI.FocusControl(null);
-                    if (Event.current.button == 0)
-                    {
-                        _currentStepObj.EnterAnchor = Event.current.mousePosition;
-                        SelectStepOperation(-1);
-                        _stepContentGUIRepaint = true;
-                        GUI.changed = true;
-                    }
-                    else if (Event.current.button == 1)
-                    {
-                        GenericMenu gm = new GenericMenu();
-                        EditorGlobalTools.BeginNoRepeatNaming();
-                        for (int i = 0; i < _currentStepObj.Operations.Count; i++)
-                        {
-                            int j = i;
-                            gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
-                            {
-                                ConnectOrBreakWired(_currentStepObj, -1, j);
-                            });
-                        }
-                        gm.ShowAsContext();
-                    }
-                }
-                EditorGUIUtility.AddCursorRect(rectEnter, MouseCursor.MoveArrow);
+                Rect enterRect = _currentStepObj.EnterPosition;
+                GUI.Box(enterRect, "Enter", "flow node 3");
+                EditorGUIUtility.AddCursorRect(enterRect, MouseCursor.MoveArrow);
                 #endregion
-
+                
                 GUILayout.EndArea();
             }
         }
-
+        
         /// <summary>
         /// 事件处理
         /// </summary>
@@ -1036,21 +1011,90 @@ namespace HT.Framework
                 {
                     case EventType.MouseDown:
                         #region MouseDown
-                        if (_splitterRect.Contains(Event.current.mousePosition))
+                        int downIndex;
+                        if (ChooseEnter(Event.current.mousePosition))
                         {
                             GUI.FocusControl(null);
-                            _splitterDragging = true;
+
+                            if (Event.current.button == 0)
+                            {
+                                SelectStepOperation(-1);
+                                _enterDragging = true;
+                                GUI.changed = true;
+                            }
+                            else if (Event.current.button == 1)
+                            {
+                                GenericMenu gm = new GenericMenu();
+                                EditorGlobalTools.BeginNoRepeatNaming();
+                                for (int i = 0; i < _currentStepObj.Operations.Count; i++)
+                                {
+                                    int j = i;
+                                    gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
+                                    {
+                                        ConnectOrBreakWired(_currentStepObj, -1, j);
+                                    });
+                                }
+                                gm.ShowAsContext();
+                            }
                         }
-                        else if (_stepContentRect.Contains(Event.current.mousePosition))
+                        else if (ChooseOperation(Event.current.mousePosition, out downIndex))
                         {
                             GUI.FocusControl(null);
-                            
+
+                            if (Event.current.button == 0)
+                            {
+                                SelectStepOperation(downIndex);
+                                if (_currentOperationObj.Target && Selection.activeGameObject != _currentOperationObj.Target)
+                                {
+                                    Selection.activeGameObject = _currentOperationObj.Target;
+                                    EditorGUIUtility.PingObject(_currentOperationObj.Target);
+                                }
+                                _stepOperationDragging = true;
+                                GUI.changed = true;
+                            }
+                            else if (Event.current.button == 1)
+                            {
+                                GenericMenu gm = new GenericMenu();
+                                EditorGlobalTools.BeginNoRepeatNaming();
+                                for (int i = 0; i < _currentStepObj.Operations.Count; i++)
+                                {
+                                    if (i != downIndex)
+                                    {
+                                        int j = i;
+                                        gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(downIndex, j), () =>
+                                        {
+                                            ConnectOrBreakWired(_currentStepObj, downIndex, j);
+                                        });
+                                    }
+                                }
+                                gm.ShowAsContext();
+                            }
+                        }
+                        else if (ChooseLeftRight(Event.current.mousePosition))
+                        {
+                            GUI.FocusControl(null);
+
+                            if (Event.current.button == 0)
+                            {
+                                _isWired = true;
+                            }
+                        }
+                        else if (_splitterRect.Contains(Event.current.mousePosition))
+                        {
+                            GUI.FocusControl(null);
+
+                            if (Event.current.button == 0)
+                            {
+                                _splitterDragging = true;
+                            }
+                        }
+                        else if (_stepContentRect.Contains(Event.current.mousePosition) && _currentStep != -1)
+                        {
+                            GUI.FocusControl(null);
+
                             if (Event.current.button == 1)
                             {
-                                if (_currentStep != -1)
-                                {
-                                    AddStepOperation(Event.current.mousePosition);
-                                }
+                                AddStepOperation(_currentStepObj, Event.current.mousePosition);
                             }
                             else if (Event.current.button == 2)
                             {
@@ -1070,7 +1114,21 @@ namespace HT.Framework
                         break;
                     case EventType.MouseDrag:
                         #region MouseDrag
-                        if (_splitterDragging)
+                        if (_enterDragging)
+                        {
+                            _currentStepObj.EnterAnchor += Event.current.delta;
+                            GUI.changed = true;
+                        }
+                        else if (_stepOperationDragging)
+                        {
+                            _currentOperationObj.Anchor += Event.current.delta;
+                            GUI.changed = true;
+                        }
+                        else if (_isWired)
+                        {
+                            GUI.changed = true;
+                        }
+                        else if (_splitterDragging)
                         {
                             _stepListGUIWidth += Event.current.delta.x;
                             if (_stepListGUIWidth > 500)
@@ -1085,25 +1143,52 @@ namespace HT.Framework
                         }
                         else if (_stepContentDragging)
                         {
-                            for (int i = 0; i < _contentAsset.Content[_currentStep].Operations.Count; i++)
+                            for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                             {
-                                _contentAsset.Content[_currentStep].Operations[i].Anchor += Event.current.delta;
+                                _currentStepObj.Operations[i].Anchor += Event.current.delta;
                             }
-                            _contentAsset.Content[_currentStep].EnterAnchor += Event.current.delta;
+                            _currentStepObj.EnterAnchor += Event.current.delta;
                             GUI.changed = true;
                         }
                         #endregion
                         break;
                     case EventType.MouseUp:
                         #region MouseUp
-                        if (_splitterDragging)
+                        int upIndex;
+                        if (ChooseEnter(Event.current.mousePosition))
                         {
-                            _splitterDragging = false;
+                            if (_isWired)
+                            {
+                                ConnectOrBreakWired(_currentStepObj, -1, _wiredOriginIndex);
+                            }
                         }
-                        if (_stepContentDragging)
+                        else if (ChooseOperation(Event.current.mousePosition, out upIndex))
                         {
-                            _stepContentDragging = false;
+                            if (_isWired)
+                            {
+                                if (_wiredOriginIndex != upIndex)
+                                {
+                                    if (_isWiredRight)
+                                    {
+                                        ConnectOrBreakWired(_currentStepObj, _wiredOriginIndex, upIndex);
+                                    }
+                                    else
+                                    {
+                                        ConnectOrBreakWired(_currentStepObj, upIndex, _wiredOriginIndex);
+                                    }
+                                }
+                            }
                         }
+
+                        _enterDragging = false;
+                        _stepOperationDragging = false;
+                        if (_isWired)
+                        {
+                            _isWired = false;
+                            GUI.changed = true;
+                        }
+                        _splitterDragging = false;
+                        _stepContentDragging = false;
                         #endregion
                         break;
                     case EventType.KeyDown:
@@ -1167,6 +1252,73 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 鼠标选中步骤Enter节点
+        /// </summary>
+        private bool ChooseEnter(Vector2 mousePosition)
+        {
+            if (_currentStep != -1)
+            {
+                Rect rect = _currentStepObj.EnterPosition;
+                rect.x += _stepListGUIWidth;
+                return rect.Contains(mousePosition);
+            }
+            return false;
+        }
+        /// <summary>
+        /// 鼠标选中步骤操作节点
+        /// </summary>
+        private bool ChooseOperation(Vector2 mousePosition, out int index)
+        {
+            if (_currentStep != -1)
+            {
+                for (int i = 0; i < _currentStepObj.Operations.Count; i++)
+                {
+                    Rect rect = _currentStepObj.Operations[i].Position;
+                    rect.x += _stepListGUIWidth;
+                    if (rect.Contains(mousePosition))
+                    {
+                        index = i;
+                        return true;
+                    }
+                }
+            }
+            index = -1;
+            return false;
+        }
+        /// <summary>
+        /// 鼠标选中步骤节点的左、右连线区域
+        /// </summary>
+        private bool ChooseLeftRight(Vector2 mousePosition)
+        {
+            if (_currentStep != -1)
+            {
+                for (int i = 0; i < _currentStepObj.Operations.Count; i++)
+                {
+                    Rect rect = _currentStepObj.Operations[i].LeftPosition;
+                    rect.x += _stepListGUIWidth;
+                    if (rect.Contains(mousePosition))
+                    {
+                        _isWiredRight = false;
+                        _wiredOriginIndex = i;
+                        return true;
+                    }
+                    else
+                    {
+                        rect = _currentStepObj.Operations[i].RightPosition;
+                        rect.x += _stepListGUIWidth;
+                        if (rect.Contains(mousePosition))
+                        {
+                            _isWiredRight = true;
+                            _wiredOriginIndex = i;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 连接或断开连线
         /// </summary>
         private void ConnectOrBreakWired(StepContent content, int left, int right)
@@ -1213,7 +1365,7 @@ namespace HT.Framework
         /// <summary>
         /// 新增步骤操作
         /// </summary>
-        private void AddStepOperation(Vector2 position)
+        private void AddStepOperation(StepContent content, Vector2 position)
         {
             GenericMenu gm = new GenericMenu();
             foreach (StepOperationType type in Enum.GetValues(typeof(StepOperationType)))
@@ -1279,8 +1431,8 @@ namespace HT.Framework
                             showName = "未知节点";
                             break;
                     }
-                    operation.Name = showName + _currentStepObj.GetOperationsCout(type);
-                    _contentAsset.Content[_currentStep].Operations.Add(operation);
+                    operation.Name = showName + content.GetOperationsCout(type);
+                    content.Operations.Add(operation);
                     GUI.changed = true;
                 });
             }
@@ -1289,29 +1441,29 @@ namespace HT.Framework
         /// <summary>
         /// 删除步骤操作
         /// </summary>
-        private void DeleteStepOperation(StepContent stepContent, int operationIndex)
+        private void DeleteStepOperation(StepContent content, int operationIndex)
         {
-            for (int i = 0; i < stepContent.Wireds.Count; i++)
+            for (int i = 0; i < content.Wireds.Count; i++)
             {
-                if (stepContent.Wireds[i].Left == operationIndex || stepContent.Wireds[i].Right == operationIndex)
+                if (content.Wireds[i].Left == operationIndex || content.Wireds[i].Right == operationIndex)
                 {
-                    stepContent.Wireds.RemoveAt(i);
+                    content.Wireds.RemoveAt(i);
                     i--;
                 }
                 else
                 {
-                    if (stepContent.Wireds[i].Left > operationIndex)
+                    if (content.Wireds[i].Left > operationIndex)
                     {
-                        stepContent.Wireds[i].Left -= 1;
+                        content.Wireds[i].Left -= 1;
                     }
-                    if (stepContent.Wireds[i].Right > operationIndex)
+                    if (content.Wireds[i].Right > operationIndex)
                     {
-                        stepContent.Wireds[i].Right -= 1;
+                        content.Wireds[i].Right -= 1;
                     }
                 }
             }
 
-            stepContent.Operations.RemoveAt(operationIndex);
+            content.Operations.RemoveAt(operationIndex);
             SelectStepOperation(-1);
             GUI.FocusControl(null);
         }

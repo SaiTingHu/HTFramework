@@ -240,5 +240,18 @@ namespace HT.Framework
                 }, Operations[stepIndex].ElapseTime / StepMaster.SkipMultiple);
             }
         }
+
+#if UNITY_EDITOR
+        internal static float Width = 150;
+        internal static float Height = 40;
+
+        internal Rect EnterPosition
+        {
+            get
+            {
+                return new Rect(EnterAnchor.x - Width / 2, EnterAnchor.y - Height / 2, Width, Height);
+            }
+        }
+#endif
     }
 }
