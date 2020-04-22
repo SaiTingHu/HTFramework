@@ -23,6 +23,10 @@ namespace HT.Framework
         /// </summary>
         public float ElapseTime = 1;
         /// <summary>
+        /// 步骤Enter节点开始执行的所有操作的总时间
+        /// </summary>
+        [SerializeField] internal float Totaltime = 0;
+        /// <summary>
         /// 立即执行模式
         /// </summary>
         public bool Instant = false;
@@ -118,43 +122,7 @@ namespace HT.Framework
             }
             return content;
         }
-
-        /// <summary>
-        /// 是否存在指定连线
-        /// </summary>
-        /// <param name="left">连线左侧</param>
-        /// <param name="right">连线右侧</param>
-        /// <returns>是否存在</returns>
-        internal bool IsExistWired(int left, int right)
-        {
-            for (int i = 0; i < Wireds.Count; i++)
-            {
-                if (Wireds[i].Left == left && Wireds[i].Right == right)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 当前步骤包含指定类型的操作数量
-        /// </summary>
-        /// <param name="type">操作类型</param>
-        /// <returns>包含数量</returns>
-        internal int GetOperationsCout(StepOperationType type)
-        {
-            int cout = 0;
-            for (int i = 0; i < Operations.Count; i++)
-            {
-                if (Operations[i].OperationType == type)
-                {
-                    cout += 1;
-                }
-            }
-            return cout;
-        }
-
+        
         /// <summary>
         /// 执行步骤内容
         /// </summary>
@@ -251,6 +219,126 @@ namespace HT.Framework
             {
                 return new Rect(EnterAnchor.x - Width / 2, EnterAnchor.y - Height / 2, Width, Height);
             }
+        }
+
+        /// <summary>
+        /// 是否存在指定连线
+        /// </summary>
+        /// <param name="left">连线左侧</param>
+        /// <param name="right">连线右侧</param>
+        /// <returns>是否存在</returns>
+        internal bool IsExistWired(int left, int right)
+        {
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                if (Wireds[i].Left == left && Wireds[i].Right == right)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /// <summary>
+        /// 当前步骤包含指定类型的操作数量
+        /// </summary>
+        /// <param name="type">操作类型</param>
+        /// <returns>包含数量</returns>
+        internal int GetOperationsCout(StepOperationType type)
+        {
+            int cout = 0;
+            for (int i = 0; i < Operations.Count; i++)
+            {
+                if (Operations[i].OperationType == type)
+                {
+                    cout += 1;
+                }
+            }
+            return cout;
+        }
+
+        /// <summary>
+        /// 获取可能会被执行两次或以上的节点
+        /// </summary>
+        /// <param name="indexs">节点索引集合</param>
+        internal void GetExecuteTwice(HashSet<int> indexs)
+        {
+            HashSet<int> sign = new HashSet<int>();
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                if (sign.Contains(Wireds[i].Right))
+                {
+                    indexs.Add(Wireds[i].Right);
+                }
+                else
+                {
+                    sign.Add(Wireds[i].Right);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取所有执行终点
+        /// </summary>
+        /// <param name="indexs">节点索引集合</param>
+        internal void GetTerminus(HashSet<int> indexs)
+        {
+            HashSet<int> sign = new HashSet<int>();
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                sign.Add(Wireds[i].Left);
+            }
+
+            for (int i = 0; i < Operations.Count; i++)
+            {
+                if (!sign.Contains(i))
+                {
+                    indexs.Add(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 计算节点到Enter节点的执行总时间
+        /// </summary>
+        /// <param name="index">节点索引</param>
+        /// <returns>总时间</returns>
+        internal float ComputeTotalTime(int index)
+        {
+            float totalTime = 0;
+
+            int left = index;
+            while (left >= 0)
+            {
+                totalTime += Operations[left].Instant ? 0 : Operations[left].ElapseTime;
+                left = GetLeftIndex(left);
+            }
+
+            if (left == -1)
+            {
+                return totalTime;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 获取连线的左侧节点
+        /// </summary>
+        /// <param name="rightIndex">右侧节点</param>
+        /// <returns>左侧节点</returns>
+        internal int GetLeftIndex(int rightIndex)
+        {
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                if (Wireds[i].Right == rightIndex)
+                {
+                    return Wireds[i].Left;
+                }
+            }
+            return -2;
         }
 #endif
     }

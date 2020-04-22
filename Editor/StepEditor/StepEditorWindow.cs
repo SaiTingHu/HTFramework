@@ -59,6 +59,7 @@ namespace HT.Framework
         private bool _isWired = false;
         private bool _isWiredRight = false;
         private int _wiredOriginIndex;
+        private bool _isBreakWired = false;
 
         private CameraTarget _ct;
         private MousePosition _mp;
@@ -66,6 +67,7 @@ namespace HT.Framework
         private Transform _player;
         private Type _baseType = typeof(StepHelper);
         private Dictionary<string, string> _helpers = new Dictionary<string, string>();
+        private HashSet<int> _operationIndexs = new HashSet<int>();
 
         private string _stepListBGStyle;
 
@@ -935,14 +937,17 @@ namespace HT.Framework
                     }
                     Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
 
-                    Vector2 center = (leftAnchor + rightAnchor) / 2;
-                    Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
-                    if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
+                    if (_isBreakWired)
                     {
-                        _currentStepObj.Wireds.RemoveAt(i);
-                        break;
+                        Vector2 center = (leftAnchor + rightAnchor) / 2;
+                        Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
+                        if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
+                        {
+                            _currentStepObj.Wireds.RemoveAt(i);
+                            break;
+                        }
+                        EditorGUIUtility.AddCursorRect(centerRect, MouseCursor.ArrowMinus);
                     }
-                    EditorGUIUtility.AddCursorRect(centerRect, MouseCursor.ArrowMinus);
                 }
                 #endregion
 
@@ -992,7 +997,7 @@ namespace HT.Framework
 
                 #region Enter
                 Rect enterRect = _currentStepObj.EnterPosition;
-                GUI.Box(enterRect, "Enter", "flow node 3");
+                GUI.Box(enterRect, "Enter\r\n" + _currentStepObj.Totaltime.ToString() + "s", "flow node 3");
                 EditorGUIUtility.AddCursorRect(enterRect, MouseCursor.MoveArrow);
                 #endregion
                 
@@ -1025,6 +1030,11 @@ namespace HT.Framework
                             else if (Event.current.button == 1)
                             {
                                 GenericMenu gm = new GenericMenu();
+                                gm.AddItem(new GUIContent("Compute total time"), false, () =>
+                                {
+                                    ComputeTotalTime(_currentStepObj);
+                                });
+                                gm.AddSeparator("");
                                 EditorGlobalTools.BeginNoRepeatNaming();
                                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                                 {
@@ -1246,6 +1256,21 @@ namespace HT.Framework
                                     }
                                 }
                                 break;
+                            case KeyCode.LeftAlt:
+                            case KeyCode.RightAlt:
+                                _isBreakWired = true;
+                                GUI.changed = true;
+                                break;
+                        }
+                        break;
+                    case EventType.KeyUp:
+                        switch (Event.current.keyCode)
+                        {
+                            case KeyCode.LeftAlt:
+                            case KeyCode.RightAlt:
+                                _isBreakWired = false;
+                                GUI.changed = true;
+                                break;
                         }
                         break;
                 }
@@ -1375,7 +1400,7 @@ namespace HT.Framework
                     StepOperation operation = new StepOperation();
                     operation.GUID = Guid.NewGuid().ToString();
                     operation.OperationType = type;
-                    operation.Anchor = position;
+                    operation.Anchor = position - new Vector2(340, 0);
                     operation.Instant = false;
                     string showName = "";
                     switch (type)
@@ -1673,6 +1698,33 @@ namespace HT.Framework
                     GlobalTools.LogError("新建Helper失败，已存在类型 " + className);
                 }
             }
+        }
+
+        /// <summary>
+        /// 计算Enter节点开始执行的所有操作的总时间
+        /// </summary>
+        private void ComputeTotalTime(StepContent content)
+        {
+            content.GetExecuteTwice(_operationIndexs);
+            foreach (var item in _operationIndexs)
+            {
+                GlobalTools.LogWarning("注意：操作节点【" + content.Operations[item].Name + "】有两次或以上连线接入，可能会被多次执行！");
+            }
+            _operationIndexs.Clear();
+
+            float totalTime = 0;
+            content.GetTerminus(_operationIndexs);
+            foreach (var item in _operationIndexs)
+            {
+                float time = content.ComputeTotalTime(item);
+                if (time > totalTime)
+                {
+                    totalTime = time;
+                }
+            }
+            _operationIndexs.Clear();
+
+            content.Totaltime = totalTime;
         }
 
         /// <summary>
