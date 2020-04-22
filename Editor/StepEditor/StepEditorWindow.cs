@@ -23,7 +23,7 @@ namespace HT.Framework
             window.GetEditorStyle();
             window.Show();
         }
-
+        
         private StepContentAsset _contentAsset;
         private int _currentStep = -1;
         private int _currentOperation = -1;
@@ -40,20 +40,24 @@ namespace HT.Framework
         private bool _showAncillary = true;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
-        private Vector2 _stepContentScroll = Vector3.zero;
-        private Vector2 _stepOperationScroll = Vector3.zero;
         private string _stepListFilter = "";
         private float _stepListGUIWidth = 340;
+        private bool _isMoveTo = false;
+        private int _moveToIndex = 1;
 
-        private Rect _stepContentRect;
-        private bool _stepContentDragging = false;
+        private Rect _stepContentProRect;
+        private Vector2 _stepContentProScroll = Vector3.zero;
+
+        private Rect _stepOperationProRect;
+        private Vector2 _stepOperationProScroll = Vector3.zero;
+
+        private Rect _stepContentAreaRect;
+        private bool _stepContentAreaDragging = false;
 
         private Rect _splitterRect;
         private float _splitterWidth = 5;
         private bool _splitterDragging = false;
-        private bool _isMoveTo = false;
-        private int _moveToIndex = 1;
-
+        
         private bool _enterDragging = false;
         private bool _stepOperationDragging = false;
         private bool _isWired = false;
@@ -445,7 +449,7 @@ namespace HT.Framework
 
                     GUILayout.Space(5);
 
-                    _stepContentScroll = GUILayout.BeginScrollView(_stepContentScroll);
+                    _stepContentProScroll = GUILayout.BeginScrollView(_stepContentProScroll);
 
                     GUILayout.BeginVertical("Tooltip");
 
@@ -696,6 +700,12 @@ namespace HT.Framework
                     GUILayout.EndScrollView();
 
                     GUILayout.EndVertical();
+
+                    _stepContentProRect = GUILayoutUtility.GetLastRect();
+                }
+                else
+                {
+                    _stepContentProRect.Set(0, 0, 0, 0);
                 }
                 #endregion
 
@@ -759,7 +769,7 @@ namespace HT.Framework
 
                     GUILayout.Space(5);
 
-                    _stepOperationScroll = GUILayout.BeginScrollView(_stepOperationScroll);
+                    _stepOperationProScroll = GUILayout.BeginScrollView(_stepOperationProScroll);
 
                     GUILayout.BeginVertical("Tooltip");
 
@@ -889,6 +899,12 @@ namespace HT.Framework
                     GUI.backgroundColor = Color.white;
 
                     GUILayout.EndVertical();
+
+                    _stepOperationProRect = GUILayoutUtility.GetLastRect();
+                }
+                else
+                {
+                    _stepOperationProRect.Set(0, 0, 0, 0);
                 }
                 #endregion
 
@@ -898,7 +914,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
 
             GUILayout.EndVertical();
-            _stepContentRect = GUILayoutUtility.GetLastRect();
+            _stepContentAreaRect = GUILayoutUtility.GetLastRect();
         }
         /// <summary>
         /// 步骤内容GUI（可移动内容加连线）
@@ -907,8 +923,8 @@ namespace HT.Framework
         {
             if (_isShowStepOperation && _currentStep != -1)
             {
-                _stepContentRect.Set(_stepListGUIWidth, 0, position.width - _stepListGUIWidth, position.height);
-                GUILayout.BeginArea(_stepContentRect);
+                _stepContentAreaRect.Set(_stepListGUIWidth, 0, position.width - _stepListGUIWidth, position.height);
+                GUILayout.BeginArea(_stepContentAreaRect);
 
                 #region 步骤的所有连线
                 Vector2 offset = new Vector2(StepOperation.Width * 1.5f, 0);
@@ -1017,7 +1033,29 @@ namespace HT.Framework
                     case EventType.MouseDown:
                         #region MouseDown
                         int downIndex;
-                        if (ChooseEnter(Event.current.mousePosition))
+                        if (_stepListRect.Contains(Event.current.mousePosition))
+                        {
+                            GUI.FocusControl(null);
+
+                            if (Event.current.button == 1)
+                            {
+                                CopyOrPasteStep();
+                            }
+                        }
+                        else if (_splitterRect.Contains(Event.current.mousePosition))
+                        {
+                            GUI.FocusControl(null);
+
+                            if (Event.current.button == 0)
+                            {
+                                _splitterDragging = true;
+                            }
+                        }
+                        else if (_stepContentProRect.Contains(Event.current.mousePosition))
+                        { }
+                        else if (_stepOperationProRect.Contains(Event.current.mousePosition))
+                        { }
+                        else if (ChooseEnter(Event.current.mousePosition))
                         {
                             GUI.FocusControl(null);
 
@@ -1089,16 +1127,7 @@ namespace HT.Framework
                                 _isWired = true;
                             }
                         }
-                        else if (_splitterRect.Contains(Event.current.mousePosition))
-                        {
-                            GUI.FocusControl(null);
-
-                            if (Event.current.button == 0)
-                            {
-                                _splitterDragging = true;
-                            }
-                        }
-                        else if (_stepContentRect.Contains(Event.current.mousePosition) && _currentStep != -1)
+                        else if (_stepContentAreaRect.Contains(Event.current.mousePosition) && _currentStep != -1)
                         {
                             GUI.FocusControl(null);
 
@@ -1108,23 +1137,27 @@ namespace HT.Framework
                             }
                             else if (Event.current.button == 2)
                             {
-                                _stepContentDragging = true;
-                            }
-                        }
-                        else if (_stepListRect.Contains(Event.current.mousePosition))
-                        {
-                            GUI.FocusControl(null);
-
-                            if (Event.current.button == 1)
-                            {
-                                CopyOrPasteStep();
+                                _stepContentAreaDragging = true;
                             }
                         }
                         #endregion
                         break;
                     case EventType.MouseDrag:
                         #region MouseDrag
-                        if (_enterDragging)
+                        if (_splitterDragging)
+                        {
+                            _stepListGUIWidth += Event.current.delta.x;
+                            if (_stepListGUIWidth > 500)
+                            {
+                                _stepListGUIWidth = 500;
+                            }
+                            if (_stepListGUIWidth < 340)
+                            {
+                                _stepListGUIWidth = 340;
+                            }
+                            GUI.changed = true;
+                        }
+                        else if(_enterDragging)
                         {
                             _currentStepObj.EnterAnchor += Event.current.delta;
                             GUI.changed = true;
@@ -1138,20 +1171,7 @@ namespace HT.Framework
                         {
                             GUI.changed = true;
                         }
-                        else if (_splitterDragging)
-                        {
-                            _stepListGUIWidth += Event.current.delta.x;
-                            if (_stepListGUIWidth > 500)
-                            {
-                                _stepListGUIWidth = 500;
-                            }
-                            if (_stepListGUIWidth < 340)
-                            {
-                                _stepListGUIWidth = 340;
-                            }
-                            GUI.changed = true;
-                        }
-                        else if (_stepContentDragging)
+                        else if (_stepContentAreaDragging)
                         {
                             for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                             {
@@ -1190,6 +1210,7 @@ namespace HT.Framework
                             }
                         }
 
+                        _splitterDragging = false;
                         _enterDragging = false;
                         _stepOperationDragging = false;
                         if (_isWired)
@@ -1197,8 +1218,7 @@ namespace HT.Framework
                             _isWired = false;
                             GUI.changed = true;
                         }
-                        _splitterDragging = false;
-                        _stepContentDragging = false;
+                        _stepContentAreaDragging = false;
                         #endregion
                         break;
                     case EventType.KeyDown:
