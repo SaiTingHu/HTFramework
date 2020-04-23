@@ -38,6 +38,7 @@ namespace HT.Framework
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
         private bool _isShowAncillary = true;
+        private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
@@ -277,6 +278,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
             _stepListShowType = (StepListShowType)EditorGUILayout.EnumPopup(_stepListShowType, EditorStyles.toolbarPopup, GUILayout.Width(100));
             _isShowAncillary = GUILayout.Toggle(_isShowAncillary, "Ancillary", EditorStyles.toolbarButton);
+            _isShowTrigger = GUILayout.Toggle(_isShowTrigger, "Trigger", EditorStyles.toolbarButton);
             _isShowHelper = GUILayout.Toggle(_isShowHelper, "Helper", EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -295,7 +297,8 @@ namespace HT.Framework
             _stepListScroll = GUILayout.BeginScrollView(_stepListScroll);
             for (int i = 0; i < _contentAsset.Content.Count; i++)
             {
-                if (StepFilter(_contentAsset.Content[i]))
+                string showName = StepShowName(_contentAsset.Content[i]);
+                if (showName.Contains(_stepListFilter))
                 {
                     if (_isShowAncillary && _contentAsset.Content[i].Ancillary != "")
                     {
@@ -310,7 +313,7 @@ namespace HT.Framework
                     GUI.color = _contentAsset.Content[i].TargetGUID != "<None>" ? Color.white : Color.gray;
                     string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
                     GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
-                    content.text = i + "." + StepShowName(_contentAsset.Content[i]);
+                    content.text = i + "." + showName;
                     content.tooltip = _contentAsset.Content[i].Prompt;
                     if (GUILayout.Button(content, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
                     {
@@ -1543,22 +1546,6 @@ namespace HT.Framework
             _currentStepObj.EnterAnchor += direction;
         }
         /// <summary>
-        /// 步骤筛选
-        /// </summary>
-        private bool StepFilter(StepContent content)
-        {
-            switch (_stepListShowType)
-            {
-                case StepListShowType.ID:
-                    return content.GUID.Contains(_stepListFilter);
-                case StepListShowType.Name:
-                    return content.Name.Contains(_stepListFilter);
-                case StepListShowType.IDAndName:
-                    return content.GUID.Contains(_stepListFilter) || content.Name.Contains(_stepListFilter);
-            }
-            return false;
-        }
-        /// <summary>
         /// 步骤在列表的显示名
         /// </summary>
         private string StepShowName(StepContent content)
@@ -1578,6 +1565,10 @@ namespace HT.Framework
                 default:
                     showName = "<None>";
                     break;
+            }
+            if (_isShowTrigger)
+            {
+                showName += " [" + content.Trigger.ToString() + "]";
             }
             if (_isShowHelper && content.Helper != "<None>")
             {
