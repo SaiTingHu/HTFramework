@@ -37,7 +37,8 @@ namespace HT.Framework
         private Rect _recordedPosition;
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
-        private bool _showAncillary = true;
+        private bool _isShowAncillary = true;
+        private bool _isShowHelper = false;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
@@ -275,7 +276,8 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
             _stepListShowType = (StepListShowType)EditorGUILayout.EnumPopup(_stepListShowType, EditorStyles.toolbarPopup, GUILayout.Width(100));
-            _showAncillary = GUILayout.Toggle(_showAncillary, "Ancillary", EditorStyles.toolbarButton);
+            _isShowAncillary = GUILayout.Toggle(_isShowAncillary, "Ancillary", EditorStyles.toolbarButton);
+            _isShowHelper = GUILayout.Toggle(_isShowHelper, "Helper", EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -295,7 +297,7 @@ namespace HT.Framework
             {
                 if (StepFilter(_contentAsset.Content[i]))
                 {
-                    if (_showAncillary && _contentAsset.Content[i].Ancillary != "")
+                    if (_isShowAncillary && _contentAsset.Content[i].Ancillary != "")
                     {
                         GUILayout.BeginHorizontal();
                         GUI.color = Color.yellow;
@@ -686,8 +688,8 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Parameter:", GUILayout.Width(80));
-                    if (GUILayout.Button("Edit Parameter", EditorStyles.miniButton))
+                    GUILayout.Label("Parameter:", GUILayout.Width(70));
+                    if (GUILayout.Button("Edit Parameter " + _currentStepObj.Parameters.Count, EditorStyles.miniButton))
                     {
                         StepParameterWindow.ShowWindow(this, _contentAsset, _currentStepObj);
                     }
@@ -1561,16 +1563,27 @@ namespace HT.Framework
         /// </summary>
         private string StepShowName(StepContent content)
         {
+            string showName;
             switch (_stepListShowType)
             {
                 case StepListShowType.ID:
-                    return content.GUID;
+                    showName = content.GUID;
+                    break;
                 case StepListShowType.Name:
-                    return content.Name;
+                    showName = content.Name;
+                    break;
                 case StepListShowType.IDAndName:
-                    return content.GUID + " " + content.Name;
+                    showName = content.GUID + " " + content.Name;
+                    break;
+                default:
+                    showName = "<None>";
+                    break;
             }
-            return "<None>";
+            if (_isShowHelper && content.Helper != "<None>")
+            {
+                showName += " [" + content.Helper + "]";
+            }
+            return showName;
         }
         /// <summary>
         /// 复制、粘贴步骤

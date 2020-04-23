@@ -452,6 +452,7 @@ namespace HT.Framework
         }
         private void Paralyze()
         {
+            m_Controller.MainCamera.clearFlags = CameraClearFlags.SolidColor;
             m_Controller.MainCamera.cullingMask = 0;
             m_Audio.Mute = true;
             m_UI.IsHideAll = true;
