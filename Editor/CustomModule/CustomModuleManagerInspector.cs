@@ -42,6 +42,26 @@ namespace HT.Framework
                 GUILayout.Space(20);
                 GUILayout.Label(item.Key + "[" + item.Value.GetType().FullName + "]");
                 GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(40);
+                if (item.Value.IsRunning)
+                {
+                    GUILayout.Label("[Running]");
+                    if (GUILayout.Button("Stop", EditorStyles.miniButton, GUILayout.Width(40)))
+                    {
+                        item.Value.IsRunning = false;
+                    }
+                }
+                else
+                {
+                    GUILayout.Label("[Stopped]");
+                    if (GUILayout.Button("Run", EditorStyles.miniButton, GUILayout.Width(40)))
+                    {
+                        item.Value.IsRunning = true;
+                    }
+                }
+                GUILayout.EndHorizontal();
             }
         }
     }

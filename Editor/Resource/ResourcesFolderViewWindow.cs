@@ -7,7 +7,8 @@ namespace HT.Framework
 {
     internal sealed class ResourcesFolderViewWindow : HTFEditorWindow
     {
-        private List<ResourceFolder> _resourcesFolders;
+        private List<ResourceFolder> _resourcesFolders = new List<ResourceFolder>();
+        private Vector2 _scroll;
 
         protected override bool IsEnableTitleGUI
         {
@@ -19,13 +20,13 @@ namespace HT.Framework
 
         public void Init()
         {
-            _resourcesFolders = new List<ResourceFolder>();
             SearchResourcesFolder(Application.dataPath);
         }
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
 
+            _scroll = GUILayout.BeginScrollView(_scroll);
             for (int i = 0; i < _resourcesFolders.Count; i++)
             {
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -48,7 +49,7 @@ namespace HT.Framework
                             Selection.activeObject = resource;
                             EditorGUIUtility.PingObject(resource);
                         }
-                        if (resource.GetType() == typeof(GameObject))
+                        if (resource is GameObject)
                         {
                             GUILayout.FlexibleSpace();
                             if (GUILayout.Button("Load to Scene", EditorStyles.miniButton))
@@ -64,6 +65,7 @@ namespace HT.Framework
 
                 GUILayout.EndVertical();
             }
+            GUILayout.EndScrollView();
         }
         private void Update()
         {
@@ -124,8 +126,7 @@ namespace HT.Framework
                 IsExpanding = false;
                 Resources = new List<Object>();
 
-                DirectoryInfo directory = new DirectoryInfo(FullName);
-                FileSystemInfo[] fis = directory.GetFileSystemInfos();
+                FileSystemInfo[] fis = directoryInfo.GetFileSystemInfos();
                 for (int i = 0; i < fis.Length; i++)
                 {
                     if (fis[i].Extension != ".meta")

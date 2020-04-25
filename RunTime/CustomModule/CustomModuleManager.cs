@@ -53,7 +53,10 @@ namespace HT.Framework
 
             foreach (var module in _customModules)
             {
-                module.Value.OnRefresh();
+                if (module.Value.IsRunning)
+                {
+                    module.Value.OnRefresh();
+                }
             }
         }
 

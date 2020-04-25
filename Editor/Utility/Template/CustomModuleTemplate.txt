@@ -10,6 +10,21 @@ using DG.Tweening;
 public class #SCRIPTNAME# : CustomModuleBase
 {
     /// <summary>
+    /// 是否运行中
+    /// </summary>
+    public override bool IsRunning
+    {
+        get
+        {
+            return base.IsRunning;
+        }
+        set
+        {
+            base.IsRunning = value;
+        }
+    }
+
+    /// <summary>
     /// 初始化模块
     /// </summary>
     public override void OnInitialization()
@@ -23,6 +38,9 @@ public class #SCRIPTNAME# : CustomModuleBase
     public override void OnPreparatory()
     {
         base.OnPreparatory();
+
+		//自动启动
+        IsRunning = true;
     }
 
     /// <summary>
