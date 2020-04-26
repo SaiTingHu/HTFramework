@@ -85,7 +85,11 @@ namespace HT.Framework
             if (IsHandler)
             {
                 Application.logMessageReceived += Handler;
-                _sender = new EmailSender(SendMailbox, SendMailboxPassword, ReceiveMailbox, Host, Port);
+
+                if (IsEnableMailReport)
+                {
+                    _sender = new EmailSender(SendMailbox, SendMailboxPassword, ReceiveMailbox, Host, Port);
+                }
             }
         }
 
@@ -140,7 +144,10 @@ namespace HT.Framework
 
             if (IsHandler)
             {
-                _sender.Send(subject, body);
+                if (_sender != null)
+                {
+                    _sender.Send(subject, body);
+                }
             }
         }
 
