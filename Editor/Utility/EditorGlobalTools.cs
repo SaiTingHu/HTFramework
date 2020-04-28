@@ -1130,7 +1130,7 @@ namespace HT.Framework
         {
             if (Directory.Exists(folderPath))
             {
-                DirectoryInfo directory = Directory.CreateDirectory(folderPath);
+                DirectoryInfo directory = new DirectoryInfo(folderPath);
 
                 FileInfo[] files = directory.GetFiles();
                 foreach (var file in files)
@@ -1292,14 +1292,15 @@ namespace HT.Framework
             Handles.BeginGUI();
 
             Rect rect = Rect.zero;
+            int h = sceneView.in2DMode ? 5 : 120;
 
             if (IsExpansionLnkTools)
             {
-                rect.Set(sceneView.position.width - 115, 120, 110, (LnkToolss.Count + 1) * 22 + 8);
+                rect.Set(sceneView.position.width - 115, h, 110, (LnkToolss.Count + 1) * 22 + 8);
                 GUI.Box(rect, "");
             }
 
-            rect.Set(sceneView.position.width - 110, 125, 100, 20);
+            rect.Set(sceneView.position.width - 110, h + 5, 100, 20);
             bool expansion = GUI.Toggle(rect, IsExpansionLnkTools, "LnkTools", "Prebutton");
             if (expansion != IsExpansionLnkTools)
             {
