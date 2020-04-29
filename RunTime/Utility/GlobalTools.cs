@@ -1884,15 +1884,21 @@ namespace HT.Framework
             return value;
         }
         /// <summary>
-        /// 获取输入框的float类型值，若不是该类型值，则返回-1f
+        /// 获取输入框的float类型值，若不是该类型值，则返回float.NaN
         /// </summary>
         /// <param name="input">输入框</param>
         /// <returns>值</returns>
         public static float FloatText(this InputField input)
         {
             float value = -1f;
-            float.TryParse(input.text, out value);
-            return value;
+            if (float.TryParse(input.text, out value))
+            {
+                return value;
+            }
+            else
+            {
+                return float.NaN;
+            }
         }
         /// <summary>
         /// 设置下拉框值，若该下拉框不存在该值，则无效
