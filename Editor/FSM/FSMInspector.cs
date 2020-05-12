@@ -11,30 +11,9 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86073351")]
     internal sealed class FSMInspector : HTFEditor<FSM>
     {
-        private Dictionary<string, string> _stateTypes;
-
         private Dictionary<string, Type> _stateInstances;
         private string _currentStateName;
-
-        protected override void OnDefaultEnable()
-        {
-            base.OnDefaultEnable();
-
-            _stateTypes = new Dictionary<string, string>();
-            string[] statePaths = AssetDatabase.GetAllAssetPaths();
-            for (int i = 0; i < statePaths.Length; i++)
-            {
-                if (statePaths[i].EndsWith(".cs"))
-                {
-                    string className = statePaths[i].Substring(statePaths[i].LastIndexOf("/") + 1).Replace(".cs", "");
-                    if (!_stateTypes.ContainsKey(className))
-                    {
-                        _stateTypes.Add(className, statePaths[i]);
-                    }
-                }
-            }
-        }
-
+        
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
@@ -162,19 +141,7 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Edit", EditorStyles.miniButtonLeft))
                 {
-                    string[] names = Target.States[i].Split('.');
-                    if (_stateTypes.ContainsKey(names[names.Length - 1]))
-                    {
-                        UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_stateTypes[names[names.Length - 1]], typeof(TextAsset));
-                        if (classFile)
-                            AssetDatabase.OpenAsset(classFile);
-                        else
-                            GlobalTools.LogError("没有找到 " + Target.States[i] + " 脚本文件！");
-                    }
-                    else
-                    {
-                        GlobalTools.LogError("没有找到 " + Target.States[i] + " 脚本文件！");
-                    }
+                    MonoScriptToolkit.OpenMonoScript(Target.States[i]);
                 }
                 if (GUILayout.Button("Delete", EditorStyles.miniButtonRight))
                 {

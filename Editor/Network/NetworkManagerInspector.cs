@@ -56,7 +56,11 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label((i + 1) + "." + Target.ChannelTypes[i]);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Delete", EditorStyles.miniButton))
+                if (GUILayout.Button("Edit", EditorStyles.miniButtonLeft))
+                {
+                    MonoScriptToolkit.OpenMonoScript(Target.ChannelTypes[i]);
+                }
+                if (GUILayout.Button("Delete", EditorStyles.miniButtonRight))
                 {
                     Undo.RecordObject(target, "Delete Channel");
                     Target.ChannelTypes.RemoveAt(i);

@@ -72,7 +72,6 @@ namespace HT.Framework
         private MouseRotation _mr;
         private Transform _player;
         private Type _baseType = typeof(StepHelper);
-        private Dictionary<string, string> _helpers = new Dictionary<string, string>();
         private HashSet<int> _operationIndexs = new HashSet<int>();
 
         private string _stepListBGStyle;
@@ -95,20 +94,6 @@ namespace HT.Framework
             _mp = FindObjectOfType<MousePosition>();
             _mr = FindObjectOfType<MouseRotation>();
             _player = null;
-
-            _helpers.Clear();
-            string[] helpers = AssetDatabase.GetAllAssetPaths();
-            for (int i = 0; i < helpers.Length; i++)
-            {
-                if (helpers[i].EndsWith(".cs"))
-                {
-                    string className = helpers[i].Substring(helpers[i].LastIndexOf("/") + 1).Replace(".cs", "");
-                    if (!_helpers.ContainsKey(className))
-                    {
-                        _helpers.Add(className, helpers[i]);
-                    }
-                }
-            }
         }
         private void Update()
         {
@@ -1673,18 +1658,7 @@ namespace HT.Framework
         /// </summary>
         public void OpenHelperScript(string helper)
         {
-            if (_helpers.ContainsKey(helper))
-            {
-                UnityEngine.Object classFile = AssetDatabase.LoadAssetAtPath(_helpers[helper], typeof(TextAsset));
-                if (classFile)
-                    AssetDatabase.OpenAsset(classFile);
-                else
-                    GlobalTools.LogError("没有找到 " + helper + " 脚本文件！");
-            }
-            else
-            {
-                GlobalTools.LogError("没有找到 " + helper + " 脚本文件！");
-            }
+            MonoScriptToolkit.OpenMonoScript(helper);
         }
         /// <summary>
         /// 新建助手脚本
@@ -1696,7 +1670,7 @@ namespace HT.Framework
             if (path != "")
             {
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!_helpers.ContainsKey(className))
+                if (!MonoScriptToolkit.IsExistMonoScriptName(className))
                 {
                     TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/StepHelperTemplate.txt", typeof(TextAsset)) as TextAsset;
                     if (asset)
