@@ -252,6 +252,10 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 是否锁住当前打开的非常驻UI（World类型UI无效），锁住后打开其他非常驻UI将无法顶掉当前打开的UI，使其显示于绝对顶端
+        /// </summary>
+        public bool IsLockTemporaryUI { get; set; } = false;
+        /// <summary>
         /// 是否隐藏所有UI实体
         /// </summary>
         public bool IsHideAll
@@ -519,6 +523,10 @@ namespace HT.Framework
 
                             if (_currentOverlayTemporaryUI != null && _currentOverlayTemporaryUI.IsOpened)
                             {
+                                if (IsLockTemporaryUI)
+                                {
+                                    return null;
+                                }
                                 _currentOverlayTemporaryUI.UIEntity.SetActive(false);
                                 _currentOverlayTemporaryUI.OnClose();
                                 _currentOverlayTemporaryUI = null;
@@ -553,6 +561,10 @@ namespace HT.Framework
 
                             if (_currentCameraTemporaryUI != null && _currentCameraTemporaryUI.IsOpened)
                             {
+                                if (IsLockTemporaryUI)
+                                {
+                                    return null;
+                                }
                                 _currentCameraTemporaryUI.UIEntity.SetActive(false);
                                 _currentCameraTemporaryUI.OnClose();
                                 _currentCameraTemporaryUI = null;
