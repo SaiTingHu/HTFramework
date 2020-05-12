@@ -240,6 +240,21 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 清除所有输入状态
+        /// </summary>
+        public void ResetAll()
+        {
+            foreach (var item in _virtualAxes)
+            {
+                item.Value.Update(0);
+            }
+            foreach (var item in _virtualButtons)
+            {
+                item.Value.Released();
+            }
+        }
+
+        /// <summary>
         /// 虚拟按钮
         /// </summary>
         public sealed class VirtualButton

@@ -17,11 +17,26 @@ namespace HT.Framework
 
         private VirtualInput _inputModule;
         private InputDeviceBase _inputDevice;
+        private bool _isEnableInputDevice = true;
 
         /// <summary>
         /// 是否启用输入设备
         /// </summary>
-        public bool IsEnableInputDevice { get; set; } = true;
+        public bool IsEnableInputDevice
+        {
+            get
+            {
+                return _isEnableInputDevice;
+            }
+            set
+            {
+                _isEnableInputDevice = value;
+                if (!_isEnableInputDevice)
+                {
+                    _inputModule.ResetAll();
+                }
+            }
+        }
 
         public override void OnInitialization()
         {
