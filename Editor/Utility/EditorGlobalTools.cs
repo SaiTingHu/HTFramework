@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -142,7 +141,7 @@ namespace HT.Framework
         [@MenuItem("HTFramework/Console/Clear &1", false, 102)]
         private static void ClearConsole()
         {
-            Type logEntries = GetTypeInEditorAssemblies("UnityEditor.LogEntries");
+            Type logEntries = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
             MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
             clearMethod.Invoke(null, null);
         }
@@ -299,7 +298,7 @@ namespace HT.Framework
         private static void ExecuteCustomTool()
         {
             CustomTools.Clear();
-            List<Type> types = GetTypesInEditorAssemblies();
+            List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
                 MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
@@ -903,128 +902,7 @@ namespace HT.Framework
             Selection.activeObject = plugin;
         }
         #endregion
-
-        #region 反射工具
-        /// <summary>
-        /// 当前的热更新程序集
-        /// </summary>
-        private static readonly HashSet<string> HotfixAssemblies = new HashSet<string>() { "Hotfix", "ILHotfix" };
-        /// <summary>
-        /// 当前的编辑器程序集
-        /// </summary>
-        private static readonly HashSet<string> EditorAssemblies = new HashSet<string>() { "Assembly-CSharp-Editor", "UnityEditor" };
         
-        /// <summary>
-        /// 从当前程序域的热更新程序集中获取所有类型
-        /// </summary>
-        public static List<Type> GetTypesInHotfixAssemblies()
-        {
-            List<Type> types = new List<Type>();
-            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
-            for (int i = 0; i < assemblys.Length; i++)
-            {
-                if (HotfixAssemblies.Contains(assemblys[i].GetName().Name))
-                {
-                    types.AddRange(assemblys[i].GetTypes());
-                }
-            }
-            return types;
-        }
-        /// <summary>
-        /// 从当前程序域的热更新程序集中获取指定类型
-        /// </summary>
-        public static Type GetTypeInHotfixAssemblies(string typeName)
-        {
-            Type type = null;
-            foreach (string assembly in HotfixAssemblies)
-            {
-                type = Type.GetType(typeName + "," + assembly);
-                if (type != null)
-                {
-                    return type;
-                }
-            }
-            GlobalTools.LogError("获取类型 " + typeName + " 失败！当前热更新程序集中不存在此类型！");
-            return null;
-        }
-        
-        /// <summary>
-        /// 从当前程序域的编辑器程序集中获取所有类型
-        /// </summary>
-        public static List<Type> GetTypesInEditorAssemblies()
-        {
-            List<Type> types = new List<Type>();
-            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
-            for (int i = 0; i < assemblys.Length; i++)
-            {
-                if (EditorAssemblies.Contains(assemblys[i].GetName().Name))
-                {
-                    types.AddRange(assemblys[i].GetTypes());
-                }
-            }
-            return types;
-        }
-        /// <summary>
-        /// 从当前程序域的编辑器程序集中获取指定类型
-        /// </summary>
-        public static Type GetTypeInEditorAssemblies(string typeName)
-        {
-            Type type = null;
-            foreach (string assembly in EditorAssemblies)
-            {
-                type = Type.GetType(typeName + "," + assembly);
-                if (type != null)
-                {
-                    return type;
-                }
-            }
-            GlobalTools.LogError("获取类型 " + typeName + " 失败！当前编辑器程序集中不存在此类型！");
-            return null;
-        }
-        #endregion
-
-        #region 序列化工具
-        /// <summary>
-        /// 将对象序列化为字节数组
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns>序列化后的字节数组</returns>
-        public static byte[] Serialize(this object obj)
-        {
-            if (obj == null)
-            {
-                return null;
-            }
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
-            {
-                bf.Serialize(ms, obj);
-                return ms.ToArray();
-            }
-        }
-        /// <summary>
-        /// 将字节数组反序列化为对象
-        /// </summary>
-        /// <typeparam name="T">对象类型</typeparam>
-        /// <param name="byteArray">字节数组</param>
-        /// <returns>反序列化后的对象</returns>
-        public static T Deserialize<T>(this byte[] byteArray) where T : class
-        {
-            if (byteArray == null)
-            {
-                return null;
-            }
-            using (MemoryStream ms = new MemoryStream())
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-                ms.Write(byteArray, 0, byteArray.Length);
-                ms.Seek(0, SeekOrigin.Begin);
-                T obj = bf.Deserialize(ms) as T;
-                return obj;
-            }
-        }
-        #endregion
-
         #region 数学工具
         /// <summary>
         /// Vector2转换为标准Copy字符串
@@ -1034,7 +912,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector2 value, string format)
         {
-            return GlobalTools.StringConcat(value.x.ToString(format), "f,", value.y.ToString(format), "f");
+            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f");
         }
         /// <summary>
         /// 标准Paste字符串转换为Vector2
@@ -1064,7 +942,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector3 value, string format)
         {
-            return GlobalTools.StringConcat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f");
+            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f");
         }
         /// <summary>
         /// 标准Paste字符串转换为Vector3
@@ -1095,7 +973,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Quaternion value, string format)
         {
-            return GlobalTools.StringConcat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
+            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
         }
         /// <summary>
         /// 标准Paste字符串转换为Quaternion
@@ -1145,44 +1023,6 @@ namespace HT.Framework
                 }
 
                 directory.Delete();
-            }
-        }
-        #endregion
-
-        #region GUI工具
-        private static HashSet<string> _noRepeatNames = new HashSet<string>();
-
-        /// <summary>
-        /// 开始不重复命名
-        /// </summary>
-        public static void BeginNoRepeatNaming()
-        {
-            _noRepeatNames.Clear();
-        }
-        /// <summary>
-        /// 获取不重复命名（自动加工原名，以防止重复）
-        /// </summary>
-        /// <param name="rawName">原名</param>
-        /// <returns>不重复命名</returns>
-        public static string GetNoRepeatName(string rawName)
-        {
-            if (_noRepeatNames.Contains(rawName))
-            {
-                int index = 0;
-                string noRepeatName = rawName + " " + index.ToString();
-                while (_noRepeatNames.Contains(noRepeatName))
-                {
-                    index += 1;
-                    noRepeatName = rawName + " " + index.ToString();
-                }
-
-                _noRepeatNames.Add(noRepeatName);
-                return noRepeatName;
-            }
-            else
-            {
-                _noRepeatNames.Add(rawName);
-                return rawName;
             }
         }
         #endregion
@@ -1258,7 +1098,7 @@ namespace HT.Framework
         private static void OnInitLnkTools()
         {
             LnkToolss.Clear();
-            List<Type> types = GetTypesInEditorAssemblies();
+            List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
                 MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);

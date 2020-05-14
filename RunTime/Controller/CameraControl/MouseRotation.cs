@@ -237,7 +237,7 @@ namespace HT.Framework
             //摄像机位置限制
             if (NeedLimit)
             {
-                transform.position = GlobalTools.Clamp(transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
+                transform.position = MathfToolkit.Clamp(transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
             }
         }
 

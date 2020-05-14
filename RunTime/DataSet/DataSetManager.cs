@@ -18,7 +18,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             //注册所有数据集
-            List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
                 if (types[i].IsSubclassOf(typeof(DataSetBase)))

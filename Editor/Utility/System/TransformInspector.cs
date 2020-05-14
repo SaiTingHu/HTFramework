@@ -161,7 +161,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Expand Children", "MinibuttonLeft"))
                 {
-                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
                     MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
                     int id = Target.gameObject.GetInstanceID();
@@ -169,7 +169,7 @@ namespace HT.Framework
                 }
                 if (GUILayout.Button("Retract Children", "MinibuttonRight"))
                 {
-                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
                     MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
                     int id = Target.gameObject.GetInstanceID();
@@ -180,7 +180,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Retract All", "Minibutton"))
                 {
-                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
                     object hierarchy = window.GetType().GetProperty("sceneHierarchy", BindingFlags.Public | BindingFlags.Instance).GetValue(window);
                     int[] expandedIDs = hierarchy.GetType().GetMethod("GetExpandedIDs", BindingFlags.Public | BindingFlags.Instance).Invoke(hierarchy, null) as int[];

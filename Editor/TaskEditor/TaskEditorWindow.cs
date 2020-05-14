@@ -210,7 +210,7 @@ namespace HT.Framework
                             {
                                 NewTaskPointScript();
                             });
-                            List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                             for (int i = 0; i < types.Count; i++)
                             {
                                 Type type = types[i];
@@ -228,11 +228,11 @@ namespace HT.Framework
                                     });
                                 }
                             }
-                            EditorGlobalTools.BeginNoRepeatNaming();
+                            StringToolkit.BeginNoRepeatNaming();
                             for (int i = 0; i < _currentContent.Points.Count; i++)
                             {
                                 TaskPointBase point = _currentContent.Points[i];
-                                gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Find Task Point/" + point.Name)), false, () =>
+                                gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Find Task Point/" + point.Name)), false, () =>
                                 {
                                     FindPoint(point);
                                 });
@@ -348,7 +348,7 @@ namespace HT.Framework
                         {
                             NewTaskContentScript();
                         });
-                        List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                         for (int i = 0; i < types.Count; i++)
                         {
                             Type type = types[i];

@@ -25,7 +25,7 @@ namespace HT.Framework
             _showHierarchy = EditorPrefs.GetBool(EditorPrefsTable.RectTransform_Hierarchy, false);
             _showCopy = EditorPrefs.GetBool(EditorPrefsTable.RectTransform_Copy, false);
 
-            Type rectTransformEditor = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.RectTransformEditor");
+            Type rectTransformEditor = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.RectTransformEditor");
             if (rectTransformEditor != null && targets != null && targets.Length > 0)
             {
                 _originalEditor = CreateEditor(targets, rectTransformEditor);
@@ -112,7 +112,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Expand Children", "MinibuttonLeft"))
                 {
-                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
                     MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
                     int id = Target.gameObject.GetInstanceID();
@@ -120,7 +120,7 @@ namespace HT.Framework
                 }
                 if (GUILayout.Button("Retract Children", "MinibuttonRight"))
                 {
-                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
                     MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
                     int id = Target.gameObject.GetInstanceID();
@@ -131,7 +131,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Retract All", "Minibutton"))
                 {
-                    Type type = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
                     object hierarchy = window.GetType().GetProperty("sceneHierarchy", BindingFlags.Public | BindingFlags.Instance).GetValue(window);
                     int[] expandedIDs = hierarchy.GetType().GetMethod("GetExpandedIDs", BindingFlags.Public | BindingFlags.Instance).Invoke(hierarchy, null) as int[];

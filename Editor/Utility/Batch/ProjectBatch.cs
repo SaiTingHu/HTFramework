@@ -26,7 +26,7 @@ namespace HT.Framework
         {
             if (_selectionAddMethod == null)
             {
-                MethodInfo[] methods = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.Selection").GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
+                MethodInfo[] methods = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.Selection").GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
                 for (int i = 0; i < methods.Length; i++)
                 {
                     if (methods[i].Name == "Add")
@@ -65,7 +65,7 @@ namespace HT.Framework
             if (GUILayout.Button(_objectType != null ? _objectType.FullName : "<None>", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = GlobalTools.GetTypesInAllAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies();
                 gm.AddItem(new GUIContent("<None>"), _objectType == null, () =>
                 {
                     _objectType = null;

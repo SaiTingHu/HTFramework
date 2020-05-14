@@ -37,7 +37,7 @@ namespace HT.Framework
             //创建所有已激活的流程对象
             for (int i = 0; i < ActivatedProcedures.Count; i++)
             {
-                Type type = GlobalTools.GetTypeInRunTimeAssemblies(ActivatedProcedures[i]);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(ActivatedProcedures[i]);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(ProcedureBase)))
@@ -73,7 +73,7 @@ namespace HT.Framework
             //进入默认流程
             if (DefaultProcedure != "")
             {
-                Type type = GlobalTools.GetTypeInRunTimeAssemblies(DefaultProcedure);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(DefaultProcedure);
                 if (type != null)
                 {
                     if (_procedureInstances.ContainsKey(type))

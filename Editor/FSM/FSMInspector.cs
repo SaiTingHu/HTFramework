@@ -58,7 +58,7 @@ namespace HT.Framework
                     Target.Data = "<None>";
                     HasChanged();
                 });
-                List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
                     if (types[i].IsSubclassOf(typeof(FSMDataBase)))
@@ -181,7 +181,7 @@ namespace HT.Framework
             if (GUILayout.Button("Add State", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
                     if (types[i].IsSubclassOf(typeof(FiniteStateBase)))

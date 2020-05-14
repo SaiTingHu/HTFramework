@@ -45,7 +45,7 @@ namespace HT.Framework
             _inputModule = new VirtualInput();
 
             //加载输入设备
-            Type type = GlobalTools.GetTypeInRunTimeAssemblies(InputDeviceType);
+            Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(InputDeviceType);
             if (type != null)
             {
                 if (type.IsSubclassOf(typeof(InputDeviceBase)))

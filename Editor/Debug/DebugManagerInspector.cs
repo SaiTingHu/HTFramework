@@ -29,7 +29,7 @@ namespace HT.Framework
                 if (GUILayout.Button(Target.DebuggerType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
-                    List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                     for (int i = 0; i < types.Count; i++)
                     {
                         if (types[i] == typeof(Debugger) || types[i].IsSubclassOf(typeof(Debugger)))

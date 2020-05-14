@@ -91,7 +91,7 @@ namespace HT.Framework
             _worldUIRoot.gameObject.SetActive(IsEnableWorldUI);
 
             //创建所有UI的逻辑对象
-            List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
                 if (types[i].IsSubclassOf(typeof(UILogicResident)) || types[i].IsSubclassOf(typeof(UILogicTemporary)))

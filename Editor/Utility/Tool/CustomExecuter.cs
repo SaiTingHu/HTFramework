@@ -244,7 +244,7 @@ namespace HT.Framework
                 }
                 if (GUILayout.Button("Clear Console", EditorStyles.miniButtonRight))
                 {
-                    Type logEntries = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
+                    Type logEntries = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
                     MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
                     clearMethod.Invoke(null, null);
                     GUI.FocusControl(null);

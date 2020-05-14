@@ -640,7 +640,7 @@ namespace HT.Framework
                     //创建步骤助手
                     if (_currentHelper == null && _currentContent.Helper != "<None>")
                     {
-                        Type type = GlobalTools.GetTypeInRunTimeAssemblies(_currentContent.Helper);
+                        Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
                         if (type != null)
                         {
                             _currentHelper = Activator.CreateInstance(type) as StepHelper;
@@ -811,7 +811,7 @@ namespace HT.Framework
             //创建步骤助手
             if (_currentContent.Helper != "<None>")
             {
-                Type type = GlobalTools.GetTypeInRunTimeAssemblies(_currentContent.Helper);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
                 if (type != null)
                 {
                     _currentHelper = Activator.CreateInstance(type) as StepHelper;
@@ -907,7 +907,7 @@ namespace HT.Framework
             //创建步骤助手
             if (_currentHelper == null && _currentContent.Helper != "<None>")
             {
-                Type type = GlobalTools.GetTypeInRunTimeAssemblies(_currentContent.Helper);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
                 if (type != null)
                 {
                     _currentHelper = Activator.CreateInstance(type) as StepHelper;
@@ -987,7 +987,7 @@ namespace HT.Framework
                 //创建步骤助手
                 if (_currentHelper == null && _currentContent.Helper != "<None>")
                 {
-                    Type type = GlobalTools.GetTypeInRunTimeAssemblies(_currentContent.Helper);
+                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
                     if (type != null)
                     {
                         _currentHelper = Activator.CreateInstance(type) as StepHelper;

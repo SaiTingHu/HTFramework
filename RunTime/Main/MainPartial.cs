@@ -393,7 +393,7 @@ namespace HT.Framework
             {
                 if (LicenserType != "<None>")
                 {
-                    Type type = GlobalTools.GetTypeInRunTimeAssemblies(LicenserType);
+                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(LicenserType);
                     if (type != null)
                     {
                         if (type.IsSubclassOf(typeof(LicenserBase)))
@@ -473,7 +473,7 @@ namespace HT.Framework
         {
             if (MainDataType != "<None>")
             {
-                Type type = GlobalTools.GetTypeInRunTimeAssemblies(MainDataType);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(MainDataType);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(MainDataBase)))

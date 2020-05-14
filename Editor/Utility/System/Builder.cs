@@ -67,7 +67,7 @@ namespace HT.Framework
             _onDisableMethod = _buildPlayerWindow.GetType().GetMethod("OnDisable", BindingFlags.Instance | BindingFlags.NonPublic);
             _onGUIMethod = _buildPlayerWindow.GetType().GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
             _updateMethod = _buildPlayerWindow.GetType().GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic);
-            _calculateSelectedBuildTarget = EditorGlobalTools.GetTypeInEditorAssemblies("UnityEditor.EditorUserBuildSettingsUtils").GetMethod("CalculateSelectedBuildTarget", BindingFlags.Static | BindingFlags.Public);
+            _calculateSelectedBuildTarget = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.EditorUserBuildSettingsUtils").GetMethod("CalculateSelectedBuildTarget", BindingFlags.Static | BindingFlags.Public);
             _activeBuildTargetGroup = typeof(EditorUserBuildSettings).GetProperty("activeBuildTargetGroup", BindingFlags.Static | BindingFlags.NonPublic);
 
             CheckResourceMode();

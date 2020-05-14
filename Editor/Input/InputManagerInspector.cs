@@ -23,7 +23,7 @@ namespace HT.Framework
             if (GUILayout.Button(Target.InputDeviceType, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                 for (int i = 0; i < types.Count; i++)
                 {
                     if (types[i].IsSubclassOf(typeof(InputDeviceBase)))

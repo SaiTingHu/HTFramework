@@ -59,7 +59,7 @@ namespace HT.Framework
                 if (GUILayout.Button(Target.DefineUINames[i], EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
-                    List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                     for (int m = 0; m < types.Count; m++)
                     {
                         if (types[m].IsSubclassOf(typeof(UILogicBase)) && types[m] != typeof(UILogicResident) && types[m] != typeof(UILogicTemporary))

@@ -70,7 +70,7 @@ namespace HT.Framework
             //加载通信协议通道
             for (int i = 0; i < ChannelTypes.Count; i++)
             {
-                Type type = GlobalTools.GetTypeInRunTimeAssemblies(ChannelTypes[i]);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(ChannelTypes[i]);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(ProtocolChannelBase)))

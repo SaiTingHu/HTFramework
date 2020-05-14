@@ -32,7 +32,7 @@ namespace HT.Framework
             if (IsEnableDebugger)
             {
                 //创建调试器
-                Type type = GlobalTools.GetTypeInRunTimeAssemblies(DebuggerType);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(DebuggerType);
                 if (type != null)
                 {
                     if (type == typeof(Debugger) || type.IsSubclassOf(typeof(Debugger)))

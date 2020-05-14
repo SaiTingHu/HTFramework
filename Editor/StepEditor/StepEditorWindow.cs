@@ -561,8 +561,8 @@ namespace HT.Framework
                     {
                         GUI.FocusControl(null);
                         GenericMenu gm = new GenericMenu();
-                        EditorGlobalTools.BeginNoRepeatNaming();
-                        gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Enter")), false, () =>
+                        StringToolkit.BeginNoRepeatNaming();
+                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Enter")), false, () =>
                         {
                             FindStepOperation(_currentStepObj.EnterAnchor);
                         });
@@ -570,7 +570,7 @@ namespace HT.Framework
                         for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                         {
                             int j = i;
-                            gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName(_currentStepObj.Operations[j].Name)), _currentOperation == j, () =>
+                            gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(_currentStepObj.Operations[j].Name)), _currentOperation == j, () =>
                             {
                                 SelectStepOperation(j);
 
@@ -640,9 +640,9 @@ namespace HT.Framework
                     GUILayout.Label("Helper:", GUILayout.Width(50));
                     if (GUILayout.Button(_currentStepObj.Helper, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(100)))
                     {
-                        List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                         GenericMenu gm = new GenericMenu();
-                        EditorGlobalTools.BeginNoRepeatNaming();
+                        StringToolkit.BeginNoRepeatNaming();
                         gm.AddItem(new GUIContent("<None>"), _currentStepObj.Helper == "<None>", () =>
                         {
                             _currentStepObj.Helper = "<None>";
@@ -658,7 +658,7 @@ namespace HT.Framework
                                 CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
                                 if (helper != null)
                                 {
-                                    gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName(helper.Name)), _currentStepObj.Helper == type.FullName, () =>
+                                    gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(helper.Name)), _currentStepObj.Helper == type.FullName, () =>
                                     {
                                         _currentStepObj.Helper = type.FullName;
                                     });
@@ -1063,11 +1063,11 @@ namespace HT.Framework
                                     ComputeTotalTime(_currentStepObj);
                                 });
                                 gm.AddSeparator("");
-                                EditorGlobalTools.BeginNoRepeatNaming();
+                                StringToolkit.BeginNoRepeatNaming();
                                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                                 {
                                     int j = i;
-                                    gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
+                                    gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
                                     {
                                         ConnectOrBreakWired(_currentStepObj, -1, j);
                                     });
@@ -1093,13 +1093,13 @@ namespace HT.Framework
                             else if (Event.current.button == 1)
                             {
                                 GenericMenu gm = new GenericMenu();
-                                EditorGlobalTools.BeginNoRepeatNaming();
+                                StringToolkit.BeginNoRepeatNaming();
                                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                                 {
                                     if (i != downIndex)
                                     {
                                         int j = i;
-                                        gm.AddItem(new GUIContent(EditorGlobalTools.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(downIndex, j), () =>
+                                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(downIndex, j), () =>
                                         {
                                             ConnectOrBreakWired(_currentStepObj, downIndex, j);
                                         });

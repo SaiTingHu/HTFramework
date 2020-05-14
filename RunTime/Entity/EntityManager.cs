@@ -48,7 +48,7 @@ namespace HT.Framework
             _entityRoot = transform.Find("EntityRoot");
 
             //创建所有实体的逻辑对象
-            List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
                 if (types[i].IsSubclassOf(typeof(EntityLogicBase)))

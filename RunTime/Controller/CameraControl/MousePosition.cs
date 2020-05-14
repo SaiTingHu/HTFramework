@@ -98,7 +98,7 @@ namespace HT.Framework
 
             if (NeedLimit)
             {
-                position = GlobalTools.Clamp(position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
+                position = MathfToolkit.Clamp(position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
             }
 
             if (_moveTweener != null)
@@ -205,7 +205,7 @@ namespace HT.Framework
         {
             if (NeedLimit)
             {
-                Target.transform.position = GlobalTools.Clamp(Target.transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
+                Target.transform.position = MathfToolkit.Clamp(Target.transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
             }
         }
     }

@@ -247,7 +247,7 @@ namespace HT.Framework
                 if (GUILayout.Button(Target.MainDataType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
-                    List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                     gm.AddItem(new GUIContent("<None>"), Target.MainDataType == "<None>", () =>
                     {
                         Undo.RecordObject(target, "Set Main Data");
@@ -299,7 +299,7 @@ namespace HT.Framework
                     if (GUILayout.Button(Target.LicenserType, EditorGlobalTools.Styles.MiniPopup))
                     {
                         GenericMenu gm = new GenericMenu();
-                        List<Type> types = GlobalTools.GetTypesInRunTimeAssemblies();
+                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
                         gm.AddItem(new GUIContent("<None>"), Target.LicenserType == "<None>", () =>
                         {
                             Undo.RecordObject(target, "Set Licenser");
