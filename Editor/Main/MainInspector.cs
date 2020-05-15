@@ -247,7 +247,10 @@ namespace HT.Framework
                 if (GUILayout.Button(Target.MainDataType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
-                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                    {
+                        return type.IsSubclassOf(typeof(MainDataBase));
+                    });
                     gm.AddItem(new GUIContent("<None>"), Target.MainDataType == "<None>", () =>
                     {
                         Undo.RecordObject(target, "Set Main Data");
@@ -256,16 +259,13 @@ namespace HT.Framework
                     });
                     for (int i = 0; i < types.Count; i++)
                     {
-                        if (types[i].IsSubclassOf(typeof(MainDataBase)))
+                        int j = i;
+                        gm.AddItem(new GUIContent(types[j].FullName), Target.MainDataType == types[j].FullName, () =>
                         {
-                            int j = i;
-                            gm.AddItem(new GUIContent(types[j].FullName), Target.MainDataType == types[j].FullName, () =>
-                            {
-                                Undo.RecordObject(target, "Set Main Data");
-                                Target.MainDataType = types[j].FullName;
-                                HasChanged();
-                            });
-                        }
+                            Undo.RecordObject(target, "Set Main Data");
+                            Target.MainDataType = types[j].FullName;
+                            HasChanged();
+                        });
                     }
                     gm.ShowAsContext();
                 }
@@ -299,7 +299,10 @@ namespace HT.Framework
                     if (GUILayout.Button(Target.LicenserType, EditorGlobalTools.Styles.MiniPopup))
                     {
                         GenericMenu gm = new GenericMenu();
-                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                        {
+                            return type.IsSubclassOf(typeof(LicenserBase));
+                        });
                         gm.AddItem(new GUIContent("<None>"), Target.LicenserType == "<None>", () =>
                         {
                             Undo.RecordObject(target, "Set Licenser");
@@ -308,16 +311,13 @@ namespace HT.Framework
                         });
                         for (int i = 0; i < types.Count; i++)
                         {
-                            if (types[i].IsSubclassOf(typeof(LicenserBase)))
+                            int j = i;
+                            gm.AddItem(new GUIContent(types[j].FullName), Target.LicenserType == types[j].FullName, () =>
                             {
-                                int j = i;
-                                gm.AddItem(new GUIContent(types[j].FullName), Target.LicenserType == types[j].FullName, () =>
-                                {
-                                    Undo.RecordObject(target, "Set Licenser");
-                                    Target.LicenserType = types[j].FullName;
-                                    HasChanged();
-                                });
-                            }
+                                Undo.RecordObject(target, "Set Licenser");
+                                Target.LicenserType = types[j].FullName;
+                                HasChanged();
+                            });
                         }
                         gm.ShowAsContext();
                     }

@@ -210,23 +210,23 @@ namespace HT.Framework
                             {
                                 NewTaskPointScript();
                             });
-                            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                            {
+                                return type.IsSubclassOf(typeof(TaskPointBase));
+                            });
                             for (int i = 0; i < types.Count; i++)
                             {
                                 Type type = types[i];
-                                if (type.IsSubclassOf(typeof(TaskPointBase)))
+                                string contentName = type.FullName;
+                                TaskPointAttribute attri = type.GetCustomAttribute<TaskPointAttribute>();
+                                if (attri != null)
                                 {
-                                    string contentName = type.FullName;
-                                    TaskPointAttribute attri = type.GetCustomAttribute<TaskPointAttribute>();
-                                    if (attri != null)
-                                    {
-                                        contentName = attri.Name;
-                                    }
-                                    gm.AddItem(new GUIContent("Add Task Point/" + contentName), false, () =>
-                                    {
-                                        AddPoint(type, mousePosition);
-                                    });
+                                    contentName = attri.Name;
                                 }
+                                gm.AddItem(new GUIContent("Add Task Point/" + contentName), false, () =>
+                                {
+                                    AddPoint(type, mousePosition);
+                                });
                             }
                             StringToolkit.BeginNoRepeatNaming();
                             for (int i = 0; i < _currentContent.Points.Count; i++)
@@ -348,23 +348,23 @@ namespace HT.Framework
                         {
                             NewTaskContentScript();
                         });
-                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                        {
+                            return type.IsSubclassOf(typeof(TaskContentBase));
+                        });
                         for (int i = 0; i < types.Count; i++)
                         {
                             Type type = types[i];
-                            if (type.IsSubclassOf(typeof(TaskContentBase)))
+                            string contentName = type.FullName;
+                            TaskContentAttribute attri = type.GetCustomAttribute<TaskContentAttribute>();
+                            if (attri != null)
                             {
-                                string contentName = type.FullName;
-                                TaskContentAttribute attri = type.GetCustomAttribute<TaskContentAttribute>();
-                                if (attri != null)
-                                {
-                                    contentName = attri.Name;
-                                }
-                                gm.AddItem(new GUIContent(contentName), false, () =>
-                                {
-                                    AddContent(type);
-                                });
+                                contentName = attri.Name;
                             }
+                            gm.AddItem(new GUIContent(contentName), false, () =>
+                            {
+                                AddContent(type);
+                            });
                         }
                         gm.ShowAsContext();
                     }

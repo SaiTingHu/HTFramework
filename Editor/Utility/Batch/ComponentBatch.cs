@@ -66,7 +66,10 @@ namespace HT.Framework
             if (GUILayout.Button(_componentType != null ? _componentType.FullName : "<None>", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
+                {
+                    return type.IsSubclassOf(typeof(Component)) && type.FullName.ToLower().Contains(_componentTypeFilter.ToLower());
+                });
                 gm.AddItem(new GUIContent("<None>"), _componentType == null, () =>
                 {
                     _componentType = null;
@@ -74,13 +77,10 @@ namespace HT.Framework
                 for (int i = 0; i < types.Count; i++)
                 {
                     Type type = types[i];
-                    if (type.IsSubclassOf(typeof(Component)) && type.FullName.ToLower().Contains(_componentTypeFilter.ToLower()))
+                    gm.AddItem(new GUIContent(type.FullName), type == _componentType, () =>
                     {
-                        gm.AddItem(new GUIContent(type.FullName), type == _componentType, () =>
-                        {
-                            _componentType = type;
-                        });
-                    }
+                        _componentType = type;
+                    });
                 }
                 gm.ShowAsContext();
             }

@@ -29,19 +29,19 @@ namespace HT.Framework
                 if (GUILayout.Button(Target.DebuggerType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
-                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                    {
+                        return type == typeof(Debugger) || type.IsSubclassOf(typeof(Debugger));
+                    });
                     for (int i = 0; i < types.Count; i++)
                     {
-                        if (types[i] == typeof(Debugger) || types[i].IsSubclassOf(typeof(Debugger)))
+                        int j = i;
+                        gm.AddItem(new GUIContent(types[j].FullName), Target.DebuggerType == types[j].FullName, () =>
                         {
-                            int j = i;
-                            gm.AddItem(new GUIContent(types[j].FullName), Target.DebuggerType == types[j].FullName, () =>
-                            {
-                                Undo.RecordObject(target, "Set Debugger");
-                                Target.DebuggerType = types[j].FullName;
-                                HasChanged();
-                            });
-                        }
+                            Undo.RecordObject(target, "Set Debugger");
+                            Target.DebuggerType = types[j].FullName;
+                            HasChanged();
+                        });
                     }
                     gm.ShowAsContext();
                 }

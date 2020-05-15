@@ -73,25 +73,25 @@ namespace HT.Framework
             if (GUILayout.Button("Add Channel", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                {
+                    return type.IsSubclassOf(typeof(ProtocolChannelBase));
+                });
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(ProtocolChannelBase)))
+                    int j = i;
+                    if (Target.ChannelTypes.Contains(types[j].FullName))
                     {
-                        int j = i;
-                        if (Target.ChannelTypes.Contains(types[j].FullName))
+                        gm.AddDisabledItem(new GUIContent(types[j].FullName));
+                    }
+                    else
+                    {
+                        gm.AddItem(new GUIContent(types[j].FullName), false, () =>
                         {
-                            gm.AddDisabledItem(new GUIContent(types[j].FullName));
-                        }
-                        else
-                        {
-                            gm.AddItem(new GUIContent(types[j].FullName), false, () =>
-                            {
-                                Undo.RecordObject(target, "Add Channel");
-                                Target.ChannelTypes.Add(types[j].FullName);
-                                HasChanged();
-                            });
-                        }
+                            Undo.RecordObject(target, "Add Channel");
+                            Target.ChannelTypes.Add(types[j].FullName);
+                            HasChanged();
+                        });
                     }
                 }
                 gm.ShowAsContext();

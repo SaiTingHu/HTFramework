@@ -117,31 +117,31 @@ namespace HT.Framework
             if (GUILayout.Button("Add Procedure", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                {
+                    return type.IsSubclassOf(typeof(ProcedureBase));
+                });
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(ProcedureBase)))
+                    int j = i;
+                    if (Target.ActivatedProcedures.Contains(types[j].FullName))
                     {
-                        int j = i;
-                        if (Target.ActivatedProcedures.Contains(types[j].FullName))
+                        gm.AddDisabledItem(new GUIContent(types[j].FullName));
+                    }
+                    else
+                    {
+                        gm.AddItem(new GUIContent(types[j].FullName), false, () =>
                         {
-                            gm.AddDisabledItem(new GUIContent(types[j].FullName));
-                        }
-                        else
-                        {
-                            gm.AddItem(new GUIContent(types[j].FullName), false, () =>
+                            Undo.RecordObject(target, "Add Procedure");
+
+                            Target.ActivatedProcedures.Add(types[j].FullName);
+                            if (Target.DefaultProcedure == "")
                             {
-                                Undo.RecordObject(target, "Add Procedure");
+                                Target.DefaultProcedure = Target.ActivatedProcedures[0];
+                            }
 
-                                Target.ActivatedProcedures.Add(types[j].FullName);
-                                if (Target.DefaultProcedure == "")
-                                {
-                                    Target.DefaultProcedure = Target.ActivatedProcedures[0];
-                                }
-
-                                HasChanged();
-                            });
-                        }
+                            HasChanged();
+                        });
                     }
                 }
                 gm.ShowAsContext();

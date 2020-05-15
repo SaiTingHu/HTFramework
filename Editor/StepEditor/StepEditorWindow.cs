@@ -640,7 +640,10 @@ namespace HT.Framework
                     GUILayout.Label("Helper:", GUILayout.Width(50));
                     if (GUILayout.Button(_currentStepObj.Helper, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(100)))
                     {
-                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                        {
+                            return type.IsSubclassOf(_baseType);
+                        });
                         GenericMenu gm = new GenericMenu();
                         StringToolkit.BeginNoRepeatNaming();
                         gm.AddItem(new GUIContent("<None>"), _currentStepObj.Helper == "<None>", () =>
@@ -653,16 +656,13 @@ namespace HT.Framework
                         });
                         foreach (Type type in types)
                         {
-                            if (type.IsSubclassOf(_baseType))
+                            CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
+                            if (helper != null)
                             {
-                                CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
-                                if (helper != null)
+                                gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(helper.Name)), _currentStepObj.Helper == type.FullName, () =>
                                 {
-                                    gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(helper.Name)), _currentStepObj.Helper == type.FullName, () =>
-                                    {
-                                        _currentStepObj.Helper = type.FullName;
-                                    });
-                                }
+                                    _currentStepObj.Helper = type.FullName;
+                                });
                             }
                         }
                         gm.ShowAsContext();

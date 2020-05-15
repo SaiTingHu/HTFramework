@@ -53,6 +53,31 @@ namespace HT.Framework
             return types;
         }
         /// <summary>
+        /// 从当前程序域的运行时程序集中获取所有类型
+        /// </summary>
+        /// <param name="filter">类型筛选器</param>
+        /// <returns>所有类型集合</returns>
+        public static List<Type> GetTypesInRunTimeAssemblies(HTFFunc<Type, bool> filter)
+        {
+            List<Type> types = new List<Type>();
+            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblys.Length; i++)
+            {
+                if (RunTimeAssemblies.Contains(assemblys[i].GetName().Name))
+                {
+                    Type[] ts = assemblys[i].GetTypes();
+                    foreach (var t in ts)
+                    {
+                        if (filter(t))
+                        {
+                            types.Add(t);
+                        }
+                    }
+                }
+            }
+            return types;
+        }
+        /// <summary>
         /// 从当前程序域的运行时程序集中获取指定类型
         /// </summary>
         /// <param name="typeName">类型名称</param>
@@ -82,6 +107,28 @@ namespace HT.Framework
             for (int i = 0; i < assemblys.Length; i++)
             {
                 types.AddRange(assemblys[i].GetTypes());
+            }
+            return types;
+        }
+        /// <summary>
+        /// 从当前程序域的所有程序集中获取所有类型
+        /// </summary>
+        /// <param name="filter">类型筛选器</param>
+        /// <returns>所有类型集合</returns>
+        public static List<Type> GetTypesInAllAssemblies(HTFFunc<Type, bool> filter)
+        {
+            List<Type> types = new List<Type>();
+            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblys.Length; i++)
+            {
+                Type[] ts = assemblys[i].GetTypes();
+                foreach (var t in ts)
+                {
+                    if (filter(t))
+                    {
+                        types.Add(t);
+                    }
+                }
             }
             return types;
         }

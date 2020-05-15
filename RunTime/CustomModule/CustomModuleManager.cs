@@ -18,16 +18,16 @@ namespace HT.Framework
         {
             base.OnInitialization();
 
-            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+            {
+                return type.IsSubclassOf(typeof(CustomModuleBase));
+            });
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].IsSubclassOf(typeof(CustomModuleBase)))
+                CustomModuleAttribute att = types[i].GetCustomAttribute<CustomModuleAttribute>();
+                if (att != null && att.IsEnable && !_customModules.ContainsKey(att.ModuleName))
                 {
-                    CustomModuleAttribute att = types[i].GetCustomAttribute<CustomModuleAttribute>();
-                    if (att != null && att.IsEnable && !_customModules.ContainsKey(att.ModuleName))
-                    {
-                        _customModules.Add(att.ModuleName, Activator.CreateInstance(types[i]) as CustomModuleBase);
-                    }
+                    _customModules.Add(att.ModuleName, Activator.CreateInstance(types[i]) as CustomModuleBase);
                 }
             }
 

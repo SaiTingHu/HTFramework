@@ -54,26 +54,26 @@ namespace HT.Framework
                 if (GUILayout.Button(Target.DefineEntityNames[i], EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
-                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                    {
+                        return type.IsSubclassOf(typeof(EntityLogicBase));
+                    });
                     for (int m = 0; m < types.Count; m++)
                     {
-                        if (types[m].IsSubclassOf(typeof(EntityLogicBase)))
+                        int j = i;
+                        int n = m;
+                        if (Target.DefineEntityNames.Contains(types[n].FullName))
                         {
-                            int j = i;
-                            int n = m;
-                            if (Target.DefineEntityNames.Contains(types[n].FullName))
+                            gm.AddDisabledItem(new GUIContent(types[n].FullName));
+                        }
+                        else
+                        {
+                            gm.AddItem(new GUIContent(types[n].FullName), Target.DefineEntityNames[j] == types[n].FullName, () =>
                             {
-                                gm.AddDisabledItem(new GUIContent(types[n].FullName));
-                            }
-                            else
-                            {
-                                gm.AddItem(new GUIContent(types[n].FullName), Target.DefineEntityNames[j] == types[n].FullName, () =>
-                                {
-                                    Undo.RecordObject(target, "Set Define Entity Name");
-                                    Target.DefineEntityNames[j] = types[n].FullName;
-                                    HasChanged();
-                                });
-                            }
+                                Undo.RecordObject(target, "Set Define Entity Name");
+                                Target.DefineEntityNames[j] = types[n].FullName;
+                                HasChanged();
+                            });
                         }
                     }
                     gm.ShowAsContext();

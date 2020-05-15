@@ -34,14 +34,14 @@ namespace HT.Framework
             _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
 
-            List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
+            List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies(type =>
+            {
+                return type.IsSubclassOf(typeof(SettingItemBase)) && type.GetCustomAttribute<InternalSettingItemAttribute>() == null;
+            });
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].IsSubclassOf(typeof(SettingItemBase)) && types[i].GetCustomAttribute<InternalSettingItemAttribute>() == null)
-                {
-                    _settingItems.Add(Activator.CreateInstance(types[i]) as SettingItemBase);
-                    _settingItemSigns.Add(false);
-                }
+                _settingItems.Add(Activator.CreateInstance(types[i]) as SettingItemBase);
+                _settingItemSigns.Add(false);
             }
 
             for (int i = 0; i < _settingItems.Count; i++)

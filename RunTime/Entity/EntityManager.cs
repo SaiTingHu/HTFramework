@@ -48,30 +48,30 @@ namespace HT.Framework
             _entityRoot = transform.Find("EntityRoot");
 
             //创建所有实体的逻辑对象
-            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+            {
+                return type.IsSubclassOf(typeof(EntityLogicBase));
+            });
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].IsSubclassOf(typeof(EntityLogicBase)))
+                EntityResourceAttribute attribute = types[i].GetCustomAttribute<EntityResourceAttribute>();
+                if (attribute != null)
                 {
-                    EntityResourceAttribute attribute = types[i].GetCustomAttribute<EntityResourceAttribute>();
-                    if (attribute != null)
-                    {
-                        _entities.Add(types[i], new List<EntityLogicBase>());
+                    _entities.Add(types[i], new List<EntityLogicBase>());
 
-                        GameObject group = new GameObject(types[i].Name + "[Group]");
-                        group.transform.SetParent(_entityRoot);
-                        group.transform.localPosition = Vector3.zero;
-                        group.transform.localRotation = Quaternion.identity;
-                        group.transform.localScale = Vector3.one;
-                        group.SetActive(true);
-                        _entitiesGroup.Add(types[i], group);
+                    GameObject group = new GameObject(types[i].Name + "[Group]");
+                    group.transform.SetParent(_entityRoot);
+                    group.transform.localPosition = Vector3.zero;
+                    group.transform.localRotation = Quaternion.identity;
+                    group.transform.localScale = Vector3.one;
+                    group.SetActive(true);
+                    _entitiesGroup.Add(types[i], group);
 
-                        _objectPool.Add(types[i], new Queue<GameObject>());
-                    }
-                    else
-                    {
-                        throw new HTFrameworkException(HTFrameworkModule.Entity, "创建实体逻辑对象失败：实体逻辑类 " + types[i].Name + " 丢失 EntityResourceAttribute 标记！");
-                    }
+                    _objectPool.Add(types[i], new Queue<GameObject>());
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, "创建实体逻辑对象失败：实体逻辑类 " + types[i].Name + " 丢失 EntityResourceAttribute 标记！");
                 }
             }
         }

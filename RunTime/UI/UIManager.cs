@@ -91,44 +91,44 @@ namespace HT.Framework
             _worldUIRoot.gameObject.SetActive(IsEnableWorldUI);
 
             //创建所有UI的逻辑对象
-            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+            {
+                return type.IsSubclassOf(typeof(UILogicResident)) || type.IsSubclassOf(typeof(UILogicTemporary));
+            });
             for (int i = 0; i < types.Count; i++)
             {
-                if (types[i].IsSubclassOf(typeof(UILogicResident)) || types[i].IsSubclassOf(typeof(UILogicTemporary)))
+                UIResourceAttribute attribute = types[i].GetCustomAttribute<UIResourceAttribute>();
+                if (attribute != null)
                 {
-                    UIResourceAttribute attribute = types[i].GetCustomAttribute<UIResourceAttribute>();
-                    if (attribute != null)
+                    switch (attribute.EntityType)
                     {
-                        switch (attribute.EntityType)
-                        {
-                            case UIType.Overlay:
-                                if (IsEnableOverlayUI)
+                        case UIType.Overlay:
+                            if (IsEnableOverlayUI)
+                            {
+                                _overlayUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
+                            }
+                            break;
+                        case UIType.Camera:
+                            if (IsEnableCameraUI)
+                            {
+                                _cameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
+                            }
+                            break;
+                        case UIType.World:
+                            if (IsEnableWorldUI)
+                            {
+                                if (!_worldUIs.ContainsKey(attribute.WorldUIDomainName))
                                 {
-                                    _overlayUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
+                                    _worldUIs.Add(attribute.WorldUIDomainName, new WorldUIDomain(attribute.WorldUIDomainName, _worldUIRoot.FindChildren("CanvasTem")));
                                 }
-                                break;
-                            case UIType.Camera:
-                                if (IsEnableCameraUI)
-                                {
-                                    _cameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
-                                }
-                                break;
-                            case UIType.World:
-                                if (IsEnableWorldUI)
-                                {
-                                    if (!_worldUIs.ContainsKey(attribute.WorldUIDomainName))
-                                    {
-                                        _worldUIs.Add(attribute.WorldUIDomainName, new WorldUIDomain(attribute.WorldUIDomainName, _worldUIRoot.FindChildren("CanvasTem")));
-                                    }
-                                    _worldUIs[attribute.WorldUIDomainName].Injection(types[i]);
-                                }
-                                break;
-                        }
+                                _worldUIs[attribute.WorldUIDomainName].Injection(types[i]);
+                            }
+                            break;
                     }
-                    else
-                    {
-                        throw new HTFrameworkException(HTFrameworkModule.UI, "创建UI逻辑对象失败：UI逻辑类 " + types[i].Name + " 丢失 UIResourceAttribute 标记！");
-                    }
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.UI, "创建UI逻辑对象失败：UI逻辑类 " + types[i].Name + " 丢失 UIResourceAttribute 标记！");
                 }
             }
         }

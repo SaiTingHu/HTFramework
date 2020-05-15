@@ -58,19 +58,19 @@ namespace HT.Framework
                     Target.Data = "<None>";
                     HasChanged();
                 });
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                {
+                    return type.IsSubclassOf(typeof(FSMDataBase));
+                });
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(FSMDataBase)))
+                    int j = i;
+                    gm.AddItem(new GUIContent(types[j].FullName), Target.Data == types[j].FullName, () =>
                     {
-                        int j = i;
-                        gm.AddItem(new GUIContent(types[j].FullName), Target.Data == types[j].FullName, () =>
-                        {
-                            Undo.RecordObject(target, "Set FSM Data Class");
-                            Target.Data = types[j].FullName;
-                            HasChanged();
-                        });
-                    }
+                        Undo.RecordObject(target, "Set FSM Data Class");
+                        Target.Data = types[j].FullName;
+                        HasChanged();
+                    });
                 }
                 gm.ShowAsContext();
             }
@@ -181,44 +181,44 @@ namespace HT.Framework
             if (GUILayout.Button("Add State", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                {
+                    return type.IsSubclassOf(typeof(FiniteStateBase));
+                });
                 for (int i = 0; i < types.Count; i++)
                 {
-                    if (types[i].IsSubclassOf(typeof(FiniteStateBase)))
+                    int j = i;
+                    string stateName = types[j].FullName;
+                    FiniteStateNameAttribute fsmAtt = types[j].GetCustomAttribute<FiniteStateNameAttribute>();
+                    if (fsmAtt != null)
                     {
-                        int j = i;
-                        string stateName = types[j].FullName;
-                        FiniteStateNameAttribute fsmAtt = types[j].GetCustomAttribute<FiniteStateNameAttribute>();
-                        if (fsmAtt != null)
-                        {
-                            stateName = fsmAtt.Name;
-                        }
+                        stateName = fsmAtt.Name;
+                    }
 
-                        if (Target.States.Contains(types[j].FullName))
+                    if (Target.States.Contains(types[j].FullName))
+                    {
+                        gm.AddDisabledItem(new GUIContent(stateName));
+                    }
+                    else
+                    {
+                        gm.AddItem(new GUIContent(stateName), false, () =>
                         {
-                            gm.AddDisabledItem(new GUIContent(stateName));
-                        }
-                        else
-                        {
-                            gm.AddItem(new GUIContent(stateName), false, () =>
+                            Undo.RecordObject(target, "Add FSM State");
+                            Target.States.Add(types[j].FullName);
+                            Target.StateNames.Add(stateName);
+
+                            if (Target.DefaultStateName == "")
                             {
-                                Undo.RecordObject(target, "Add FSM State");
-                                Target.States.Add(types[j].FullName);
-                                Target.StateNames.Add(stateName);
-
-                                if (Target.DefaultStateName == "")
-                                {
-                                    Target.DefaultState = Target.States[0];
-                                    Target.DefaultStateName = Target.StateNames[0];
-                                }
-                                if (Target.FinalStateName == "")
-                                {
-                                    Target.FinalState = Target.States[0];
-                                    Target.FinalStateName = Target.StateNames[0];
-                                }
-                                HasChanged();
-                            });
-                        }
+                                Target.DefaultState = Target.States[0];
+                                Target.DefaultStateName = Target.StateNames[0];
+                            }
+                            if (Target.FinalStateName == "")
+                            {
+                                Target.FinalState = Target.States[0];
+                                Target.FinalStateName = Target.StateNames[0];
+                            }
+                            HasChanged();
+                        });
                     }
                 }
                 gm.ShowAsContext();
