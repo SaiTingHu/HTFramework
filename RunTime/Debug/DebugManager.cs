@@ -25,7 +25,7 @@ namespace HT.Framework
 
         private Debugger _debugger;
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -51,8 +51,8 @@ namespace HT.Framework
                 }
             }
         }
-        
-        public override void OnTermination()
+
+        internal override void OnTermination()
         {
             base.OnTermination();
 

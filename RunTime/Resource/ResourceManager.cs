@@ -58,7 +58,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -66,7 +66,7 @@ namespace HT.Framework
             _loadWait = new WaitUntil(() => { return !_isLoading; });
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

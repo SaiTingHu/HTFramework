@@ -28,7 +28,7 @@ namespace HT.Framework
         //任务控制者运行中
         private bool _running = false;
 
-        public override void OnRefresh()
+        internal override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -46,7 +46,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

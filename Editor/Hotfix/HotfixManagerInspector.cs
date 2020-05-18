@@ -8,7 +8,7 @@ namespace HT.Framework
     [CustomEditor(typeof(HotfixManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/90479971")]
-    internal sealed class HotfixManagerInspector : HTFEditor<HotfixManager>
+    internal sealed class HotfixManagerInspector : InternalModuleInspector<HotfixManager>
     {
         private static readonly string SourceDllPath = "/Library/ScriptAssemblies/Hotfix.dll";
         private static readonly string AssetsDllPath = "/Assets/Hotfix/Hotfix.dll.bytes";
@@ -17,6 +17,14 @@ namespace HT.Framework
         private string _hotfixDirectory = "/Hotfix/";
         private string _hotfixEnvironmentPath = "/Hotfix/Environment/HotfixEnvironment.cs";
         private string _hotfixAssemblyDefinitionPath = "/Hotfix/Hotfix.asmdef";
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Hotfix manager, the hot update in this game!";
+            }
+        }
 
         protected override void OnDefaultEnable()
         {
@@ -41,10 +49,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Hotfix manager, the hot update in this game!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             Toggle(Target.IsEnableHotfix, out Target.IsEnableHotfix, "Is Enable Hotfix");

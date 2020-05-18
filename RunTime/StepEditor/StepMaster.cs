@@ -97,14 +97,14 @@ namespace HT.Framework
         //暂停时等待
         private WaitUntil _pauseWait;
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
             _pauseWait = new WaitUntil(() => { return !_pause; });
         }
 
-        public override void OnRefresh()
+        internal override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -222,7 +222,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 
@@ -234,14 +234,14 @@ namespace HT.Framework
             ClearCustomOrder();
         }
 
-        public override void OnPause()
+        internal override void OnPause()
         {
             base.OnPause();
 
             Pause = true;
         }
 
-        public override void OnUnPause()
+        internal override void OnUnPause()
         {
             base.OnUnPause();
 

@@ -8,11 +8,19 @@ namespace HT.Framework
     [CustomEditor(typeof(ResourceManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88852698")]
-    internal sealed class ResourceManagerInspector : HTFEditor<ResourceManager>
+    internal sealed class ResourceManagerInspector : InternalModuleInspector<ResourceManager>
     {
         private string _assetBundleRootPath;
         private Dictionary<string, AssetBundle> _assetBundles;
         private AssetBundleManifest _assetBundleManifest;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Resource Manager, Manage all resource loading and unloading!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -26,10 +34,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Resource Manager, Manage all resource loading and unloading!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             EnumPopup(Target.Mode, out Target.Mode, "Load Mode");

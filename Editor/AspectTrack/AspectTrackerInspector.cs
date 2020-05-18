@@ -6,16 +6,20 @@ namespace HT.Framework
     [CustomEditor(typeof(AspectTracker))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/85617377")]
-    internal sealed class AspectTrackerInspector : HTFEditor<AspectTracker>
+    internal sealed class AspectTrackerInspector : InternalModuleInspector<AspectTracker>
     {
+        protected override string Intro
+        {
+            get
+            {
+                return "Aspect Tracker, you can track code calls anywhere in the program, or intercept him.";
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Aspect Tracker, you can track code calls anywhere in the program!", MessageType.Info);
-            GUILayout.EndHorizontal();
-
+            
             GUILayout.BeginHorizontal();
             Toggle(Target.IsEnableAspectTrack, out Target.IsEnableAspectTrack, "Is Enable Track");
             GUILayout.EndHorizontal();

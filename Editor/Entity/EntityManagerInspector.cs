@@ -9,12 +9,20 @@ namespace HT.Framework
     [CustomEditor(typeof(EntityManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/101541066")]
-    internal sealed class EntityManagerInspector : HTFEditor<EntityManager>
+    internal sealed class EntityManagerInspector : InternalModuleInspector<EntityManager>
     {
         private Dictionary<Type, List<EntityLogicBase>> _entities;
         private Dictionary<Type, Queue<GameObject>> _objectPool;
         private Dictionary<Type, bool> _entityFoldouts;
         private Dictionary<Type, bool> _objectPoolFoldouts;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Entity Manager, Control all EntityLogic!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -34,10 +42,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Entity Manager, Control all EntityLogic!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 

@@ -21,7 +21,7 @@ namespace HT.Framework
         /// </summary>
         internal Dictionary<Type, ReferenceSpawnPool> SpawnPools { get; private set; } = new Dictionary<Type, ReferenceSpawnPool>();
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

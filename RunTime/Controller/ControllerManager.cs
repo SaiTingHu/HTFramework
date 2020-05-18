@@ -54,7 +54,7 @@ namespace HT.Framework
         private Dictionary<MouseRayTargetBase, HTFAction> _mouseClickTargets = new Dictionary<MouseRayTargetBase, HTFAction>();
         private ControlMode _controlMode;
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -76,14 +76,14 @@ namespace HT.Framework
             _mouseRay.RayEvent += OnRay;
         }
 
-        public override void OnPreparatory()
+        internal override void OnPreparatory()
         {
             base.OnPreparatory();
 
             TheControlMode = DefaultControlMode;
         }
 
-        public override void OnRefresh()
+        internal override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -108,7 +108,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

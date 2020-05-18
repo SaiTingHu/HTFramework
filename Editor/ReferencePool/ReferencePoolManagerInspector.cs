@@ -6,15 +6,19 @@ namespace HT.Framework
     [CustomEditor(typeof(ReferencePoolManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/87191712")]
-    internal sealed class ReferencePoolManagerInspector : HTFEditor<ReferencePoolManager>
+    internal sealed class ReferencePoolManagerInspector : InternalModuleInspector<ReferencePoolManager>
     {
+        protected override string Intro
+        {
+            get
+            {
+                return "Reference pool manager, it manages all reference pools and can register new reference pools!";
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Reference pool manager, it manages all reference pools and can register new reference pools!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             IntField(Target.Limit, out Target.Limit, "Limit");

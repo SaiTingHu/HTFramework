@@ -8,15 +8,19 @@ namespace HT.Framework
     [CustomEditor(typeof(DebugManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102570194")]
-    internal sealed class DebugManagerInspector : HTFEditor<DebugManager>
+    internal sealed class DebugManagerInspector : InternalModuleInspector<DebugManager>
     {
+        protected override string Intro
+        {
+            get
+            {
+                return "Debug Manager, Runtime debugger for games!";
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Debug Manager, Runtime debugger for games!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             Toggle(Target.IsEnableDebugger, out Target.IsEnableDebugger, "Is Enable Debugger");

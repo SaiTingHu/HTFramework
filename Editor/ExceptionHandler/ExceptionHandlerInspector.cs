@@ -6,15 +6,19 @@ namespace HT.Framework
     [CustomEditor(typeof(ExceptionHandler))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102894933")]
-    internal sealed class ExceptionHandlerInspector : HTFEditor<ExceptionHandler>
+    internal sealed class ExceptionHandlerInspector : InternalModuleInspector<ExceptionHandler>
     {
+        protected override string Intro
+        {
+            get
+            {
+                return "Exception handler, When an exception occurs, he catches it!";
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Exception handler, When an exception occurs, he catches it!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             Toggle(Target.IsHandler, out Target.IsHandler, "Is Handler");

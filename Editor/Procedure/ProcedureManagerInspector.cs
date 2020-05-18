@@ -9,10 +9,18 @@ namespace HT.Framework
     [CustomEditor(typeof(ProcedureManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86998412")]
-    internal sealed class ProcedureManagerInspector : HTFEditor<ProcedureManager>
+    internal sealed class ProcedureManagerInspector : InternalModuleInspector<ProcedureManager>
     {
         private Dictionary<Type, ProcedureBase> _procedureInstances;
-        
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Procedure Manager, this is the beginning and the end of everything!";
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
@@ -23,10 +31,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Procedure Manager, this is the beginning and the end of everything!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUI.enabled = Target.DefaultProcedure != "";

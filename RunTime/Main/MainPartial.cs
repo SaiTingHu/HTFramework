@@ -273,14 +273,14 @@ namespace HT.Framework
             m_UI = GetInternalModule(HTFrameworkModule.UI) as UIManager;
             m_WebRequest = GetInternalModule(HTFrameworkModule.WebRequest) as WebRequestManager;
 
-            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            foreach (var internalModule in _internalModules)
             {
                 internalModule.Value.OnInitialization();
             }
         }
         private void ModulePreparatory()
         {
-            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            foreach (var internalModule in _internalModules)
             {
                 internalModule.Value.OnPreparatory();
             }
@@ -292,28 +292,28 @@ namespace HT.Framework
                 return;
             }
 
-            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            foreach (var internalModule in _internalModules)
             {
                 internalModule.Value.OnRefresh();
             }
         }
         private void ModuleTermination()
         {
-            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            foreach (var internalModule in _internalModules)
             {
                 internalModule.Value.OnTermination();
             }
         }
         private void ModulePause()
         {
-            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            foreach (var internalModule in _internalModules)
             {
                 internalModule.Value.OnPause();
             }
         }
         private void ModuleUnPause()
         {
-            foreach (KeyValuePair<HTFrameworkModule, InternalModuleBase> internalModule in _internalModules)
+            foreach (var internalModule in _internalModules)
             {
                 internalModule.Value.OnUnPause();
             }

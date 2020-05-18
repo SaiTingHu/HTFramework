@@ -18,7 +18,7 @@ namespace HT.Framework
         //III型事件
         private Dictionary<Type, HTFAction<EventHandlerBase>> _eventHandlerList3 = new Dictionary<Type, HTFAction<EventHandlerBase>>();
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -35,7 +35,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

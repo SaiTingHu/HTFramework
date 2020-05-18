@@ -20,7 +20,7 @@ namespace HT.Framework
         /// </summary>
         internal Dictionary<string, ObjectSpawnPool> SpawnPools { get; private set; } = new Dictionary<string, ObjectSpawnPool>();
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

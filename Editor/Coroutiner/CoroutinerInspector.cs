@@ -6,16 +6,20 @@ namespace HT.Framework
     [CustomEditor(typeof(Coroutiner))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/91492838")]
-    internal sealed class CoroutinerInspector : HTFEditor<Coroutiner>
+    internal sealed class CoroutinerInspector : InternalModuleInspector<Coroutiner>
     {
+        protected override string Intro
+        {
+            get
+            {
+                return "Coroutiner, Execution and destruction of unified scheduling Coroutine!";
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Coroutiner, Execution and destruction of unified scheduling Coroutine!", MessageType.Info);
-            GUILayout.EndHorizontal();
-
+            
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Coroutiner Tracker", EditorGlobalTools.Styles.LargeButton))
             {

@@ -9,11 +9,19 @@ namespace HT.Framework
     [CustomEditor(typeof(EventManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/85689865")]
-    internal sealed class EventManagerInspector : HTFEditor<EventManager>
+    internal sealed class EventManagerInspector : InternalModuleInspector<EventManager>
     {
         private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList1;
         private Dictionary<Type, HTFAction> _eventHandlerList2;
         private Dictionary<Type, HTFAction<EventHandlerBase>> _eventHandlerList3;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Event Manager, you can subscribe any events, also custom events!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -23,16 +31,7 @@ namespace HT.Framework
             _eventHandlerList2 = Target.GetType().GetField("_eventHandlerList2", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, HTFAction>;
             _eventHandlerList3 = Target.GetType().GetField("_eventHandlerList3", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, HTFAction<EventHandlerBase>>;
         }
-
-        protected override void OnInspectorDefaultGUI()
-        {
-            base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Event Manager, you can subscribe any events, also custom events!", MessageType.Info);
-            GUILayout.EndHorizontal();
-        }
-
+        
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

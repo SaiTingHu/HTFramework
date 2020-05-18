@@ -61,7 +61,7 @@ namespace HT.Framework
         //World类型的UI根节点
         private Transform _worldUIRoot;
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -133,7 +133,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnRefresh()
+        internal override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -168,7 +168,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

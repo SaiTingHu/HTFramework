@@ -33,7 +33,7 @@ namespace HT.Framework
         //实体根节点
         private Transform _entityRoot;
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -76,7 +76,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnRefresh()
+        internal override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -92,7 +92,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 切面代理追踪者
+    /// 切面代理追踪器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.AspectTrack)]
@@ -29,7 +29,7 @@ namespace HT.Framework
         //所有的代理者 <真实对象，代理者>
         private Dictionary<IAspectTrackObject, object> _proxys = new Dictionary<IAspectTrackObject, object>();
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

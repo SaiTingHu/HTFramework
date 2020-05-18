@@ -63,7 +63,7 @@ namespace HT.Framework
         private IPEndPoint _serverEndPoint;
         private IPEndPoint _clientEndPoint;
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -108,7 +108,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

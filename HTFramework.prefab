@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f622d3445a22af4abb75d3b291863d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   ActivatedProcedures: []
   DefaultProcedure: 
 --- !u!1 &1160658927014220
@@ -88,6 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8cda504f3e23747b84eb071881ea29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   Limit: 100
 --- !u!1 &1235528306769112
 GameObject:
@@ -176,6 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8505b674be39d1e43a1a0413c78bd1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   IsEnableOverlayUI: 1
   IsEnableCameraUI: 0
   IsEnableWorldUI: 0
@@ -224,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3280247986cd76e4d95eb0e31bc5abc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   IsEnableAspectTrack: 0
   IsEnableIntercept: 0
 --- !u!1 &1516840720097650
@@ -269,6 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3adeff5ee5e2c654293425bf7098e6eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   IsHandler: 0
   IsEnableFeedback: 0
   IsEnableMailReport: 0
@@ -322,6 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6483381f1b1600c42b48f994f282e74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
 --- !u!1 &1608368270948612
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,6 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c69272abac4883489e86bf144711afb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   Limit: 100
 --- !u!1 &1679441640883288
 GameObject:
@@ -432,10 +439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsPermanentLicense: 1
-  EndingPrompt: "\u6388\u6743\u5DF2\u5230\u671F\uFF01"
-  Year: 5000
-  Month: 5
-  Day: 5
+  LicenserType: <None>
   MainDataType: <None>
   MainParameters: []
   IsEnabledLogInfo: 1
@@ -484,6 +488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba7208f8b7780e4ea66ae94097ab4b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
 --- !u!1 &1751997651256702
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,6 +532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270533982dfa487489a289392bf59019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   IsOfflineState: 1
   DownloadAudioType: 20
 --- !u!1 &1754517609766808
@@ -672,6 +678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c04a882177535bf4ca21b517195618ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   ContentAsset: {fileID: 0}
   GuideHighlighting: 1
 --- !u!1 &1784314892031968
@@ -907,6 +914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f225c8f05c84b84bb22577ad1cf67ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   ChannelTypes: []
   ServerIP: 127.0.0.1
   ServerPort: 10000
@@ -1043,6 +1051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf561afc4c58e624c987d779c7f13145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   Mode: 0
   IsEditorMode: 1
   IsCacheAssetBundle: 1
@@ -1091,6 +1100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82afe7ee29d7056409afc0aaa063ca9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   DefineEntityNames: []
   DefineEntityTargets: []
 --- !u!1 &1297091591969824496
@@ -1314,6 +1324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dbae30572bc7234485bd93b5d37ee4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   InputDeviceType: HT.Framework.StandardInputDevice
 --- !u!1 &2556977920105108005
 GameObject:
@@ -1358,6 +1369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4089525f2bbad2d44b680fd6cfd56c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   IsEnableHotfix: 0
   HotfixDllAssetBundleName: hotfix
   HotfixDllAssetsPath: Assets/Hotfix/Hotfix.dll.bytes
@@ -1450,6 +1462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91317bfab64dc1349877b3ff2df91e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   DefaultControlMode: 0
   DefaultEase: 1
   DefaultAutoPlay: 3
@@ -1532,6 +1545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68767d21ea0d235408aba8ad9c921b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
 --- !u!1 &4158756062363482405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1575,6 +1589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03df4ebb814a8c94b89cbd8cb60379bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
 --- !u!1 &4547706495370186365
 GameObject:
   m_ObjectHideFlags: 0
@@ -1662,6 +1677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63d6dd408eee7bf46a88b88c4e0c4dfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: HT.Framework.DefaultAudioHelper
   MuteDefault: 0
   BackgroundPriorityDefault: 0
   SinglePriorityDefault: 10
@@ -1744,6 +1760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d776555d242dd244bd27653b1bcb053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
 --- !u!1 &6662556912778346832
 GameObject:
   m_ObjectHideFlags: 0
@@ -1984,6 +2001,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b2c8edb29b4804d847a23be84607c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
+  ContentAsset: {fileID: 0}
 --- !u!1 &8775430792589470182
 GameObject:
   m_ObjectHideFlags: 0
@@ -2071,6 +2090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3ca6f67138f8144897c16510fbc93c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   DebuggerType: HT.Framework.Debugger
   DebuggerSkin: {fileID: 11400000, guid: 61a6dbb4fcfdbd844a1f117f7b22e1e8, type: 2}
   IsEnableDebugger: 0

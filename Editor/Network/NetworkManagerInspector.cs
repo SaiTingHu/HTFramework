@@ -9,9 +9,17 @@ namespace HT.Framework
     [CustomEditor(typeof(NetworkManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103575999")]
-    internal sealed class NetworkManagerInspector : HTFEditor<NetworkManager>
+    internal sealed class NetworkManagerInspector : InternalModuleInspector<NetworkManager>
     {
         private Dictionary<Type, ProtocolChannelBase> _protocolChannels;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Network Manager, implementing basic network client with socket!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -23,10 +31,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Network Manager, implementing basic network client with socket!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             TextField(Target.ServerIP, out Target.ServerIP, "Server IP");

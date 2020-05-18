@@ -66,7 +66,7 @@ namespace HT.Framework
         //回发邮件缓冲计时器
         private float _reportBufferTimer = 0;
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -93,7 +93,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 
@@ -108,7 +108,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnRefresh()
+        internal override void OnRefresh()
         {
             base.OnRefresh();
 

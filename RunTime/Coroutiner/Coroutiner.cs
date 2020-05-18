@@ -22,7 +22,7 @@ namespace HT.Framework
         /// </summary>
         internal Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 

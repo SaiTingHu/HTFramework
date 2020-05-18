@@ -7,7 +7,7 @@ namespace HT.Framework
     [CustomEditor(typeof(ControllerManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89416110")]
-    internal sealed class ControllerManagerInspector : HTFEditor<ControllerManager>
+    internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager>
     {
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
@@ -15,6 +15,14 @@ namespace HT.Framework
         private Vector3 _positionLimitSize;
         private Vector3 _limitMin;
         private Vector3 _limitMax;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Controller Manager, It includes free control, first person control, third person control, etc!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -35,11 +43,7 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Controller Manager, It includes free control, first person control, third person control, etc!", MessageType.Info);
-            GUILayout.EndHorizontal();
-
+            
             GUILayout.BeginHorizontal();
             EnumPopup(Target.DefaultControlMode, out Target.DefaultControlMode, "Default ControlMode");
             GUILayout.EndHorizontal();

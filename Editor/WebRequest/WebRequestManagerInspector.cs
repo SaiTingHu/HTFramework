@@ -8,9 +8,17 @@ namespace HT.Framework
     [CustomEditor(typeof(WebRequestManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89886124")]
-    internal sealed class WebRequestManagerInspector : HTFEditor<WebRequestManager>
+    internal sealed class WebRequestManagerInspector : InternalModuleInspector<WebRequestManager>
     {
         private Dictionary<string, WebInterfaceBase> _interfaces;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Web request manager, it manages all Web request! you can submit forms, upload files, download files!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -22,10 +30,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Web request manager, it manages all Web request! you can submit forms, upload files, download files!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             Toggle(Target.IsOfflineState, out Target.IsOfflineState, "Is OfflineState");

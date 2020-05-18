@@ -9,12 +9,20 @@ namespace HT.Framework
     [CustomEditor(typeof(UIManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88125982")]
-    internal sealed class UIManagerInspector : HTFEditor<UIManager>
+    internal sealed class UIManagerInspector : InternalModuleInspector<UIManager>
     {
         private Dictionary<Type, UILogicBase> _overlayUIs;
         private Dictionary<Type, UILogicBase> _cameraUIs;
         private bool _overlayUIFoldout = true;
         private bool _cameraUIFoldout = true;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "UI Manager, Control all UILogic Entity!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -27,10 +35,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("UI Manager, Control all UILogic Entity!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             Toggle(Target.IsEnableOverlayUI, out Target.IsEnableOverlayUI, "Is Enable Overlay UI");

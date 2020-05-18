@@ -8,15 +8,19 @@ namespace HT.Framework
     [CustomEditor(typeof(InputManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89001848")]
-    internal sealed class InputManagerInspector : HTFEditor<InputManager>
+    internal sealed class InputManagerInspector : InternalModuleInspector<InputManager>
     {
+        protected override string Intro
+        {
+            get
+            {
+                return "Input manager, managing cross platform input!";
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Input manager, managing cross platform input!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("InputDevice ");

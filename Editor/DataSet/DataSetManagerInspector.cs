@@ -9,24 +9,23 @@ namespace HT.Framework
     [CustomEditor(typeof(DataSetManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89395574")]
-    internal sealed class DataSetManagerInspector : HTFEditor<DataSetManager>
+    internal sealed class DataSetManagerInspector : InternalModuleInspector<DataSetManager>
     {
         private Dictionary<Type, List<DataSetBase>> _dataSets;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "DataSet Manager, create, modify, delete all data sets!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
             _dataSets = Target.GetType().GetField("_dataSets", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, List<DataSetBase>>;
-        }
-
-        protected override void OnInspectorDefaultGUI()
-        {
-            base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("DataSet Manager, create, modify, delete all data sets!", MessageType.Info);
-            GUILayout.EndHorizontal();
         }
 
         protected override void OnInspectorRuntimeGUI()

@@ -14,7 +14,7 @@ namespace HT.Framework
     {
         private Dictionary<string, CustomModuleBase> _customModules = new Dictionary<string, CustomModuleBase>();
 
-        public override void OnInitialization()
+        internal override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -37,7 +37,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnPreparatory()
+        internal override void OnPreparatory()
         {
             base.OnPreparatory();
 
@@ -47,7 +47,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnRefresh()
+        internal override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -60,7 +60,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnTermination()
+        internal override void OnTermination()
         {
             base.OnTermination();
 
@@ -72,7 +72,7 @@ namespace HT.Framework
             _customModules.Clear();
         }
 
-        public override void OnPause()
+        internal override void OnPause()
         {
             base.OnPause();
 
@@ -82,7 +82,7 @@ namespace HT.Framework
             }
         }
 
-        public override void OnUnPause()
+        internal override void OnUnPause()
         {
             base.OnUnPause();
 

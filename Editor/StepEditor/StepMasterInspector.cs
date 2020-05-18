@@ -8,12 +8,20 @@ namespace HT.Framework
     [CustomEditor(typeof(StepMaster))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/87712995")]
-    internal sealed class StepMasterInspector : HTFEditor<StepMaster>
+    internal sealed class StepMasterInspector : InternalModuleInspector<StepMaster>
     {
         private Dictionary<string, StepContent> _stepContentIDs;
         private Dictionary<string, bool> _stepContentEnables;
         private Dictionary<string, string> _customOrder;
-        
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Step Master, the stepflow controller!";
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
@@ -26,10 +34,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Step Master, the stepflow controller!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             ObjectField(Target.ContentAsset, out Target.ContentAsset, false, "Asset");

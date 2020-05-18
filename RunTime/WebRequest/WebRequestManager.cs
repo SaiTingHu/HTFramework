@@ -24,8 +24,8 @@ namespace HT.Framework
         public AudioType DownloadAudioType = AudioType.WAV;
 
         private Dictionary<string, WebInterfaceBase> _interfaces = new Dictionary<string, WebInterfaceBase>();
-        
-        public override void OnTermination()
+
+        internal override void OnTermination()
         {
             base.OnTermination();
 

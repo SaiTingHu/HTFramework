@@ -6,15 +6,19 @@ namespace HT.Framework
     [CustomEditor(typeof(ObjectPoolManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86610600")]
-    internal sealed class ObjectPoolManagerInspector : HTFEditor<ObjectPoolManager>
+    internal sealed class ObjectPoolManagerInspector : InternalModuleInspector<ObjectPoolManager>
     {
+        protected override string Intro
+        {
+            get
+            {
+                return "Object pool manager, it manages all object pools and can register new object pools!";
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Object pool manager, it manages all object pools and can register new object pools!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             IntField(Target.Limit, out Target.Limit, "Limit");

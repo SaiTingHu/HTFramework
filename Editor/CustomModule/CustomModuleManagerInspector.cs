@@ -8,9 +8,17 @@ namespace HT.Framework
     [CustomEditor(typeof(CustomModuleManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103390089")]
-    internal sealed class CustomModuleManagerInspector : HTFEditor<CustomModuleManager>
+    internal sealed class CustomModuleManagerInspector : InternalModuleInspector<CustomModuleManager>
     {
         private Dictionary<string, CustomModuleBase> _customModules;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "Custom Module Manager, Manager of all custom modules!";
+            }
+        }
 
         protected override void OnRuntimeEnable()
         {
@@ -18,16 +26,7 @@ namespace HT.Framework
 
             _customModules = Target.GetType().GetField("_customModules", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, CustomModuleBase>;
         }
-
-        protected override void OnInspectorDefaultGUI()
-        {
-            base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Custom Module Manager, Manager of all custom modules!", MessageType.Info);
-            GUILayout.EndHorizontal();
-        }
-
+        
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
