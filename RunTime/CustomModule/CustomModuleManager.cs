@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 自定义模块管理者
+    /// 自定义模块管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.CustomModule)]
@@ -36,7 +36,6 @@ namespace HT.Framework
                 module.Value.OnInitialization();
             }
         }
-
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
@@ -46,7 +45,6 @@ namespace HT.Framework
                 module.Value.OnPreparatory();
             }
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -59,7 +57,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();
@@ -71,7 +68,6 @@ namespace HT.Framework
 
             _customModules.Clear();
         }
-
         internal override void OnPause()
         {
             base.OnPause();
@@ -81,7 +77,6 @@ namespace HT.Framework
                 module.Value.OnPause();
             }
         }
-
         internal override void OnUnPause()
         {
             base.OnUnPause();
@@ -111,7 +106,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 终止指定的自定义模块
         /// </summary>

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 有限状态机管理者
+    /// 有限状态机管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.FSM)]

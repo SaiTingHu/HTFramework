@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 引用池管理者
+    /// 引用池管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.ReferencePool)]

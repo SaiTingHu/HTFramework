@@ -75,7 +75,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -91,7 +90,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

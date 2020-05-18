@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 对象池管理者
+    /// 对象池管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.ObjectPool)]

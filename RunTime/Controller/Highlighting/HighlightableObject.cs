@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,75 +9,75 @@ namespace HT.Framework
     internal sealed class HighlightableObject : MonoBehaviour
     {
         #region Static Fields
-        //¸ßÁÁÎïÌåËùÔÚµÄ²ã
+        //é«˜äº®ç‰©ä½“æ‰€åœ¨çš„å±‚
         public static int HighlightingLayer = 7;
-        //¸ßÁÁ¿ªÆôËÙ¶È
+        //é«˜äº®å¼€å¯é€Ÿåº¦
         private static float ConstantOnSpeed = 4.5f;
-        //¸ßÁÁ¹Ø±ÕËÙ¶È
+        //é«˜äº®å…³é—­é€Ÿåº¦
         private static float ConstantOffSpeed = 4f;
-        //Ä¬ÈÏ¼ôÇĞÖµÓÃÓÚÃ»ÓĞ¼ôÇĞÊôĞÔµÄ×ÅÉ«Æ÷
+        //é»˜è®¤å‰ªåˆ‡å€¼ç”¨äºæ²¡æœ‰å‰ªåˆ‡å±æ€§çš„ç€è‰²å™¨
         private static float TransparentCutoff = 0.5f;
         #endregion
 
         #region Private Fields
-        //2±¶µÄPIÖµ
+        //2å€çš„PIå€¼
         private const float DoublePI = 2f * Mathf.PI;
 
-        //ËùÓĞµÄ»º´æ²ÄÖÊ
+        //æ‰€æœ‰çš„ç¼“å­˜æè´¨
         private List<HighlightingRendererCache> _highlightableRenderers;
 
-        //ËùÓĞµÄ»º´æ²ãÊı¾İ
+        //æ‰€æœ‰çš„ç¼“å­˜å±‚æ•°æ®
         private int[] _layersCache;
 
-        //²ÄÖÊÊÇ·ñÒÑĞŞ¸Ä
+        //æè´¨æ˜¯å¦å·²ä¿®æ”¹
         private bool _materialsIsDirty = true;
 
-        //µ±Ç°ÊÇ·ñÊÇ¸ßÁÁ×´Ì¬
+        //å½“å‰æ˜¯å¦æ˜¯é«˜äº®çŠ¶æ€
         private bool _currentHighlightingState = false;
 
-        //µ±Ç°¸ßÁÁÑÕÉ«
+        //å½“å‰é«˜äº®é¢œè‰²
         private Color _currentHighlightingColor;
 
-        //ÊÇ·ñÆôÓÃ×ª»»
+        //æ˜¯å¦å¯ç”¨è½¬æ¢
         private bool _transitionActive = false;
 
-        //×ª»»Öµ
+        //è½¬æ¢å€¼
         private float _transitionValue = 0f;
         
-        //ÊÇ·ñÖ»¸ßÁÁÒ»Ö¡
+        //æ˜¯å¦åªé«˜äº®ä¸€å¸§
         private bool _isOnce = false;
 
-        //¸ßÁÁÒ»Ö¡µÄÑÕÉ«
+        //é«˜äº®ä¸€å¸§çš„é¢œè‰²
         private Color _onceColor = Color.red;
 
-        //ÊÇ·ñÆôÓÃÉÁ¹â
+        //æ˜¯å¦å¯ç”¨é—ªå…‰
         private bool _isFlashing = false;
 
-        //ÉÁ¹âÆµÂÊ
+        //é—ªå…‰é¢‘ç‡
         private float _flashingFrequency = 2f;
 
-        //ÉÁ¹â¿ªÊ¼ÑÕÉ«
+        //é—ªå…‰å¼€å§‹é¢œè‰²
         private Color _flashingColorMin = new Color(0.0f, 1.0f, 1.0f, 0.0f);
 
-        //ÉÁ¹â½áÊøÑÕÉ«
+        //é—ªå…‰ç»“æŸé¢œè‰²
         private Color _flashingColorMax = new Color(0.0f, 1.0f, 1.0f, 1.0f);
 
-        //ÊÇ·ñÊÇ³ÖĞøÉÁ¹â
+        //æ˜¯å¦æ˜¯æŒç»­é—ªå…‰
         private bool _isConstantly = false;
 
-        //³ÖĞøÉÁ¹âÑÕÉ«
+        //æŒç»­é—ªå…‰é¢œè‰²
         private Color _constantColor = Color.yellow;
 
-        //ÊÇ·ñÆôÓÃÕÚ¹â°å
+        //æ˜¯å¦å¯ç”¨é®å…‰æ¿
         private bool _isOccluder = false;
 
-        //ÊÇ·ñÆôÓÃÉî¶È»º³å
+        //æ˜¯å¦å¯ç”¨æ·±åº¦ç¼“å†²
         private bool _isZWrite = false;
 
-        //ÕÚ¹â°åÑÕÉ«
+        //é®å…‰æ¿é¢œè‰²
         private readonly Color _occluderColor = new Color(0.0f, 0.0f, 0.0f, 0.005f);
 
-        //¸ßÁÁ²ÄÖÊ
+        //é«˜äº®æè´¨
         private Material _highlightingMaterial
         {
             get
@@ -245,7 +245,7 @@ namespace HT.Framework
                 _highlightableRenderers.Clear();
             }
 
-            //ÖØÖÃ¸ßÁÁ²ÎÊı
+            //é‡ç½®é«˜äº®å‚æ•°
             _layersCache = null;
             _materialsIsDirty = true;
             _currentHighlightingState = false;
@@ -272,7 +272,7 @@ namespace HT.Framework
 
         #region public Methods
         /// <summary>
-        /// ÖØĞÂ³õÊ¼»¯²ÄÖÊ
+        /// é‡æ–°åˆå§‹åŒ–æè´¨
         /// </summary>
         public void ReinitMaterials()
         {
@@ -280,16 +280,16 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÉèÖÃÖ»¸ßÁÁÒ»Ö¡µÄ²ÎÊı
+        /// è®¾ç½®åªé«˜äº®ä¸€å¸§çš„å‚æ•°
         /// </summary>
-        /// <param name="color">ÑÕÉ«</param>
+        /// <param name="color">é¢œè‰²</param>
         public void SetOnceParams(Color color)
         {
             _onceColor = color;
         }
 
         /// <summary>
-        /// ¿ªÆô¸ßÁÁÒ»Ö¡
+        /// å¼€å¯é«˜äº®ä¸€å¸§
         /// </summary>
         public void OpenOnce()
         {
@@ -297,9 +297,9 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¿ªÆô¸ßÁÁÒ»Ö¡
+        /// å¼€å¯é«˜äº®ä¸€å¸§
         /// </summary>
-        /// <param name="color">ÑÕÉ«</param>
+        /// <param name="color">é¢œè‰²</param>
         public void OpenOnce(Color color)
         {
             _onceColor = color;
@@ -307,11 +307,11 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÉèÖÃÉÁ¹â²ÎÊı
+        /// è®¾ç½®é—ªå…‰å‚æ•°
         /// </summary>
-        /// <param name="color1">ÉÁ¹â¿ªÊ¼ÑÕÉ«</param>
-        /// <param name="color2">ÉÁ¹â½áÊøÑÕÉ«</param>
-        /// <param name="freq">ÉÁ¹âÆµÂÊ</param>
+        /// <param name="color1">é—ªå…‰å¼€å§‹é¢œè‰²</param>
+        /// <param name="color2">é—ªå…‰ç»“æŸé¢œè‰²</param>
+        /// <param name="freq">é—ªå…‰é¢‘ç‡</param>
         public void SetFlashingParams(Color color1, Color color2, float freq)
         {
             _flashingColorMin = color1;
@@ -320,7 +320,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¿ªÆôÉÁ¹â
+        /// å¼€å¯é—ªå…‰
         /// </summary>
         public void OpenFlashing()
         {
@@ -328,10 +328,10 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¿ªÆôÉÁ¹â
+        /// å¼€å¯é—ªå…‰
         /// </summary>
-        /// <param name="color1">ÉÁ¹â¿ªÊ¼ÑÕÉ«</param>
-        /// <param name="color2">ÉÁ¹â½áÊøÑÕÉ«</param>
+        /// <param name="color1">é—ªå…‰å¼€å§‹é¢œè‰²</param>
+        /// <param name="color2">é—ªå…‰ç»“æŸé¢œè‰²</param>
         public void OpenFlashing(Color color1, Color color2)
         {
             _flashingColorMin = color1;
@@ -340,11 +340,11 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¿ªÆôÉÁ¹â
+        /// å¼€å¯é—ªå…‰
         /// </summary>
-        /// <param name="color1">ÉÁ¹â¿ªÊ¼ÑÕÉ«</param>
-        /// <param name="color2">ÉÁ¹â½áÊøÑÕÉ«</param>
-        /// <param name="freq">ÉÁ¹âÆµÂÊ</param>
+        /// <param name="color1">é—ªå…‰å¼€å§‹é¢œè‰²</param>
+        /// <param name="color2">é—ªå…‰ç»“æŸé¢œè‰²</param>
+        /// <param name="freq">é—ªå…‰é¢‘ç‡</param>
         public void OpenFlashing(Color color1, Color color2, float freq)
         {
             _flashingColorMin = color1;
@@ -354,9 +354,9 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¿ªÆôÉÁ¹â
+        /// å¼€å¯é—ªå…‰
         /// </summary>
-        /// <param name="freq">ÉÁ¹âÆµÂÊ</param>
+        /// <param name="freq">é—ªå…‰é¢‘ç‡</param>
         public void OpenFlashing(float freq)
         {
             _flashingFrequency = freq;
@@ -364,7 +364,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¹Ø±ÕÉÁ¹â
+        /// å…³é—­é—ªå…‰
         /// </summary>
         public void CloseFlashing()
         {
@@ -372,7 +372,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÉÁ¹âÄ£Ê½ÇĞ»»
+        /// é—ªå…‰æ¨¡å¼åˆ‡æ¢
         /// </summary>
         public void FlashingSwitch()
         {
@@ -380,16 +380,16 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÉèÖÃ³ÖĞø¸ßÁÁ²ÎÊı
+        /// è®¾ç½®æŒç»­é«˜äº®å‚æ•°
         /// </summary>
-        /// <param name="color">ÑÕÉ«</param>
+        /// <param name="color">é¢œè‰²</param>
         public void SetConstantParams(Color color)
         {
             _constantColor = color;
         }
 
         /// <summary>
-        /// ¿ªÆô³ÖĞø¸ßÁÁ
+        /// å¼€å¯æŒç»­é«˜äº®
         /// </summary>
         public void OpenConstant()
         {
@@ -398,9 +398,9 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¿ªÆô³ÖĞø¸ßÁÁ
+        /// å¼€å¯æŒç»­é«˜äº®
         /// </summary>
-        /// <param name="color">ÑÕÉ«</param>
+        /// <param name="color">é¢œè‰²</param>
         public void OpenConstant(Color color)
         {
             _constantColor = color;
@@ -409,7 +409,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¹Ø±Õ³ÖĞø¸ßÁÁ
+        /// å…³é—­æŒç»­é«˜äº®
         /// </summary>
         public void CloseConstant()
         {
@@ -418,7 +418,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ³ÖĞø¸ßÁÁÄ£Ê½ÇĞ»»
+        /// æŒç»­é«˜äº®æ¨¡å¼åˆ‡æ¢
         /// </summary>
         public void ConstantSwitch()
         {
@@ -427,7 +427,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// Á¢¼´¿ªÆô³ÖĞø¸ßÁÁ
+        /// ç«‹å³å¼€å¯æŒç»­é«˜äº®
         /// </summary>
         public void OpenConstantImmediate()
         {
@@ -437,9 +437,9 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// Á¢¼´¿ªÆô³ÖĞø¸ßÁÁ
+        /// ç«‹å³å¼€å¯æŒç»­é«˜äº®
         /// </summary>
-        /// <param name="color">ÑÕÉ«</param>
+        /// <param name="color">é¢œè‰²</param>
         public void OpenConstantImmediate(Color color)
         {
             _constantColor = color;
@@ -449,7 +449,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// Á¢¼´¹Ø±Õ³ÖĞø¸ßÁÁ
+        /// ç«‹å³å…³é—­æŒç»­é«˜äº®
         /// </summary>
         public void CloseConstantImmediate()
         {
@@ -459,7 +459,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ³ÖĞø¸ßÁÁÄ£Ê½Á¢¼´ÇĞ»»
+        /// æŒç»­é«˜äº®æ¨¡å¼ç«‹å³åˆ‡æ¢
         /// </summary>
         public void ConstantSwitchImmediate()
         {
@@ -469,7 +469,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¿ªÆôÕÚ¹â°å
+        /// å¼€å¯é®å…‰æ¿
         /// </summary>
         public void OpenOccluder()
         {
@@ -477,7 +477,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¹Ø±ÕÕÚ¹â°å
+        /// å…³é—­é®å…‰æ¿
         /// </summary>
         public void CloseOccluder()
         {
@@ -485,7 +485,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ÕÚ¹â°åÄ£Ê½ÇĞ»»
+        /// é®å…‰æ¿æ¨¡å¼åˆ‡æ¢
         /// </summary>
         public void OccluderSwitch()
         {
@@ -493,7 +493,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ¹Ø±ÕËùÓĞ¸ßÁÁÄ£Ê½
+        /// å…³é—­æ‰€æœ‰é«˜äº®æ¨¡å¼
         /// </summary>
         public void CloseAll()
         {
@@ -506,7 +506,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ËÀÍö
+        /// æ­»äº¡
         /// </summary>
         public void Die()
         {

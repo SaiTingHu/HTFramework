@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 数据集管理者
+    /// 数据集管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.DataSet)]
@@ -27,7 +27,6 @@ namespace HT.Framework
                 _dataSets.Add(types[i], new List<DataSetBase>());
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

@@ -132,14 +132,13 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
 
             if (IsEnableOverlayUI)
             {
-                foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
+                foreach (var ui in _overlayUIs)
                 {
                     if (ui.Value.IsOpened)
                     {
@@ -150,7 +149,7 @@ namespace HT.Framework
 
             if (IsEnableCameraUI)
             {
-                foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
+                foreach (var ui in _cameraUIs)
                 {
                     if (ui.Value.IsOpened)
                     {
@@ -161,20 +160,19 @@ namespace HT.Framework
 
             if (IsEnableWorldUI)
             {
-                foreach (KeyValuePair<string, WorldUIDomain> ui in _worldUIs)
+                foreach (var ui in _worldUIs)
                 {
                     ui.Value.Refresh();
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();
 
             _defineUIAndEntitys.Clear();
 
-            foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
+            foreach (var ui in _overlayUIs)
             {
                 UILogicBase uiLogic = ui.Value;
 
@@ -189,7 +187,7 @@ namespace HT.Framework
             }
             _overlayUIs.Clear();
 
-            foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
+            foreach (var ui in _cameraUIs)
             {
                 UILogicBase uiLogic = ui.Value;
 
@@ -204,7 +202,7 @@ namespace HT.Framework
             }
             _cameraUIs.Clear();
 
-            foreach (KeyValuePair<string, WorldUIDomain> ui in _worldUIs)
+            foreach (var ui in _worldUIs)
             {
                 ui.Value.Termination();
             }

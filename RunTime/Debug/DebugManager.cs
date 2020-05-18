@@ -51,7 +51,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

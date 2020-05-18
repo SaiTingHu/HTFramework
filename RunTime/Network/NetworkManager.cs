@@ -7,7 +7,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 网络管理者
+    /// 网络管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Network)]
@@ -107,7 +107,6 @@ namespace HT.Framework
                 };
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 namespace HT.Framework
 {
     /// <summary>
-    /// Web请求管理者
+    /// Web请求管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.WebRequest)]

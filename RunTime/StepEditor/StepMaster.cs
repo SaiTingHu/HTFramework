@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     /// <summary>
-    /// 步骤控制者
+    /// 步骤控制器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.StepEditor)]
@@ -103,7 +103,6 @@ namespace HT.Framework
 
             _pauseWait = new WaitUntil(() => { return !_pause; });
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -221,7 +220,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();
@@ -233,14 +231,12 @@ namespace HT.Framework
             _stepContentIndexs.Clear();
             ClearCustomOrder();
         }
-
         internal override void OnPause()
         {
             base.OnPause();
 
             Pause = true;
         }
-
         internal override void OnUnPause()
         {
             base.OnUnPause();

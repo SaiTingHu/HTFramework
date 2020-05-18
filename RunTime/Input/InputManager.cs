@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 输入管理者
+    /// 输入管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Input)]
@@ -62,14 +62,12 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：丢失输入设备类 " + InputDeviceType + "！");
             }
         }
-
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
 
             _inputDevice.OnStartUp();
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -79,7 +77,6 @@ namespace HT.Framework
                 _inputDevice.OnRun();
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

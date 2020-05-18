@@ -6,7 +6,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 热更新模块管理者
+    /// 热更新管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Hotfix)]
@@ -69,7 +69,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
@@ -85,7 +84,6 @@ namespace HT.Framework
                 Main.m_Resource.LoadAsset<TextAsset>(info, null, HotfixDllLoadDone);
             }
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -95,7 +93,6 @@ namespace HT.Framework
                 UpdateHotfixLogicEvent?.Invoke();
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

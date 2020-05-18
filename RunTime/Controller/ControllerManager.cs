@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     /// <summary>
-    /// 操作控制者
+    /// 操作控制器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Controller)]
@@ -75,14 +75,12 @@ namespace HT.Framework
             _mouseRay.RayCamera = MainCamera;
             _mouseRay.RayEvent += OnRay;
         }
-
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
 
             TheControlMode = DefaultControlMode;
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -107,7 +105,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

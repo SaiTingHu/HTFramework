@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 流程管理者
+    /// 流程管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Procedure)]
@@ -59,7 +59,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
@@ -92,7 +91,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -112,7 +110,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 协程调度者
+    /// 协程调度器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Coroutiner)]

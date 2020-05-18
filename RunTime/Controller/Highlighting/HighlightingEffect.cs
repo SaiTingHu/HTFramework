@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace HT.Framework
 {
@@ -9,13 +9,13 @@ namespace HT.Framework
     {
         #region Static Fields
         /// <summary>
-        /// ¸ßÁÁäÖÈ¾ÊÂ¼ş
+        /// é«˜äº®æ¸²æŸ“äº‹ä»¶
         /// </summary>
         public static event HTFAction<bool, bool> HighlightingEvent;
         
         private static Shader _blurShader;
         /// <summary>
-        /// Ä£ºı Shader
+        /// æ¨¡ç³Š Shader
         /// </summary>
         private static Shader BlurShader
         {
@@ -31,7 +31,7 @@ namespace HT.Framework
 
         private static Shader _compositeShader;
         /// <summary>
-        /// ºÏ³É Shader
+        /// åˆæˆ Shader
         /// </summary>
         private static Shader CompositeShader
         {
@@ -47,7 +47,7 @@ namespace HT.Framework
 
         private static Material _blurMaterial = null;
         /// <summary>
-        /// Ä£ºı Material
+        /// æ¨¡ç³Š Material
         /// </summary>
         private static Material BlurMaterial
         {
@@ -64,7 +64,7 @@ namespace HT.Framework
 
         private static Material _compositeMaterial = null;
         /// <summary>
-        /// ºÏ³É Material
+        /// åˆæˆ Material
         /// </summary>
         private static Material CompositeMaterial
         {
@@ -81,22 +81,22 @@ namespace HT.Framework
         #endregion
 
         #region Public Fields
-        //Z»º³åÉî¶È
+        //Zç¼“å†²æ·±åº¦
         public int StencilZBufferDepth = 0;
-        //²ÉÑùÒò×Ó
+        //é‡‡æ ·å› å­
         public int DownSampleFactor = 4;
-        //Ä£ºıµü´ú´ÎÊı
+        //æ¨¡ç³Šè¿­ä»£æ¬¡æ•°
         public int BlurIterations = 2;
-        //Ä£ºı×îĞ¡À©É¢Öµ
+        //æ¨¡ç³Šæœ€å°æ‰©æ•£å€¼
         public float BlurMinSpread = 0.65f;
-        //Ä£ºıÀ©É¢Öµ
+        //æ¨¡ç³Šæ‰©æ•£å€¼
         public float BlurSpread = 0.25f;
-        //²ÄÖÊµÄÄ£ºıÇ¿¶È
+        //æè´¨çš„æ¨¡ç³Šå¼ºåº¦
         public float BlurIntensity = 0.3f;
 
 #if UNITY_EDITOR
         /// <summary>
-        /// ÊÇ·ñÆôÓÃZ»º³åÉî¶È
+        /// æ˜¯å¦å¯ç”¨Zç¼“å†²æ·±åº¦
         /// </summary>
         public bool StencilZBufferEnabled
         {
@@ -114,7 +114,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ²ÉÑùÒò×Ó
+        /// é‡‡æ ·å› å­
         /// </summary>
         public int DownSampleFactorProperty
         {
@@ -151,7 +151,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// ²ÄÖÊµÄÄ£ºıÇ¿¶È
+        /// æè´¨çš„æ¨¡ç³Šå¼ºåº¦
         /// </summary>
         public float BlurIntensityProperty
         {
@@ -176,15 +176,15 @@ namespace HT.Framework
         #endregion
 
         #region Private Fields
-        //¸ßÁÁÉãÏñ»ú²ãÕÚÕÖ
+        //é«˜äº®æ‘„åƒæœºå±‚é®ç½©
         private int _layerMask = 1 << HighlightableObject.HighlightingLayer;
-        //¸ßÁÁäÖÈ¾µÄ»º³åÉãÏñ»ú¶ÔÏó
+        //é«˜äº®æ¸²æŸ“çš„ç¼“å†²æ‘„åƒæœºå¯¹è±¡
         private GameObject _shaderCameraObject = null;
-        //¸ßÁÁäÖÈ¾µÄ»º³åÉãÏñ»ú
+        //é«˜äº®æ¸²æŸ“çš„ç¼“å†²æ‘„åƒæœº
         private Camera _shaderCamera = null;
-        //Ä£°å»º³åµÄäÖÈ¾ÎÆÀí
+        //æ¨¡æ¿ç¼“å†²çš„æ¸²æŸ“çº¹ç†
         private RenderTexture _stencilBuffer = null;
-        //¸ßÁÁäÖÈ¾ÉãÏñ»ú
+        //é«˜äº®æ¸²æŸ“æ‘„åƒæœº
         private Camera _camera = null;
         #endregion
         
@@ -195,7 +195,7 @@ namespace HT.Framework
 
         private void Start()
         {
-            //²»Ö§³ÖºóÆÚÌØĞ§
+            //ä¸æ”¯æŒåæœŸç‰¹æ•ˆ
             if (!SystemInfo.supportsImageEffects)
             {
                 GlobalTools.LogWarning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
@@ -203,7 +203,7 @@ namespace HT.Framework
                 return;
             }
 
-            //²»Ö§³ÖäÖÈ¾ÎÆÀí¸ñÊ½
+            //ä¸æ”¯æŒæ¸²æŸ“çº¹ç†æ ¼å¼
             if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
             {
                 GlobalTools.LogWarning("HighlightingSystem : RenderTextureFormat.ARGB32 is not supported on this platform! Disabling.");
@@ -211,7 +211,7 @@ namespace HT.Framework
                 return;
             }
 
-            //²»Ö§³ÖHighlighting Stencil×ÅÉ«Æ÷
+            //ä¸æ”¯æŒHighlighting Stencilç€è‰²å™¨
             if (!Shader.Find("Hidden/Highlighted/StencilOpaque").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaque shader is not supported on this platform! Disabling.");
@@ -219,7 +219,7 @@ namespace HT.Framework
                 return;
             }
 
-            //²»Ö§³ÖHighlighting StencilTransparent×ÅÉ«Æ÷
+            //ä¸æ”¯æŒHighlighting StencilTransparentç€è‰²å™¨
             if (!Shader.Find("Hidden/Highlighted/StencilTransparent").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparent shader is not supported on this platform! Disabling.");
@@ -227,7 +227,7 @@ namespace HT.Framework
                 return;
             }
 
-            //²»Ö§³ÖHighlighting StencilZ×ÅÉ«Æ÷
+            //ä¸æ”¯æŒHighlighting StencilZç€è‰²å™¨
             if (!Shader.Find("Hidden/Highlighted/StencilOpaqueZ").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaqueZ shader is not supported on this platform! Disabling.");
@@ -235,7 +235,7 @@ namespace HT.Framework
                 return;
             }
 
-            //²»Ö§³ÖHighlighting StencilTransparentZ×ÅÉ«Æ÷
+            //ä¸æ”¯æŒHighlighting StencilTransparentZç€è‰²å™¨
             if (!Shader.Find("Hidden/Highlighted/StencilTransparentZ").isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparentZ shader is not supported on this platform! Disabling.");
@@ -243,7 +243,7 @@ namespace HT.Framework
                 return;
             }
 
-            //²»Ö§³ÖHighlightingBlur×ÅÉ«Æ÷
+            //ä¸æ”¯æŒHighlightingBlurç€è‰²å™¨
             if (!BlurShader.isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingBlur shader is not supported on this platform! Disabling.");
@@ -251,7 +251,7 @@ namespace HT.Framework
                 return;
             }
 
-            //²»Ö§³ÖHighlightingComposite×ÅÉ«Æ÷
+            //ä¸æ”¯æŒHighlightingCompositeç€è‰²å™¨
             if (!CompositeShader.isSupported)
             {
                 GlobalTools.LogWarning("HighlightingSystem : HighlightingComposite shader is not supported on this platform! Disabling.");
@@ -325,7 +325,7 @@ namespace HT.Framework
                 _stencilBuffer = null;
             }
 
-            //ÆôÓÃäÖÈ¾
+            //å¯ç”¨æ¸²æŸ“
             if (HighlightingEvent != null)
             {
                 HighlightingEvent(true, StencilZBufferDepth > 0);
@@ -361,7 +361,7 @@ namespace HT.Framework
             _shaderCamera.targetTexture = _stencilBuffer;
             _shaderCamera.Render();
 
-            //¹Ø±ÕäÖÈ¾
+            //å…³é—­æ¸²æŸ“
             HighlightingEvent?.Invoke(false, false);
         }
 
@@ -373,16 +373,16 @@ namespace HT.Framework
                 return;
             }
 
-            //´´½¨Á½¸öÎÆÀíÀ´Ä£ºıÍ¼Ïñ
+            //åˆ›å»ºä¸¤ä¸ªçº¹ç†æ¥æ¨¡ç³Šå›¾åƒ
             int width = source.width / DownSampleFactor;
             int height = source.height / DownSampleFactor;
             RenderTexture buffer1 = RenderTexture.GetTemporary(width, height, StencilZBufferDepth, RenderTextureFormat.ARGB32);
             RenderTexture buffer2 = RenderTexture.GetTemporary(width, height, StencilZBufferDepth, RenderTextureFormat.ARGB32);
 
-            //¸´ÖÆÎÆÀíµ½4x4µÄĞ¡ÎÆÀí
+            //å¤åˆ¶çº¹ç†åˆ°4x4çš„å°çº¹ç†
             DownSample4x(_stencilBuffer, buffer1);
 
-            //Ä£ºıĞ¡ÎÆÀí
+            //æ¨¡ç³Šå°çº¹ç†
             bool oddEven = true;
             for (int i = 0; i < BlurIterations; i++)
             {
@@ -398,12 +398,12 @@ namespace HT.Framework
                 oddEven = !oddEven;
             }
 
-            //ºÏ³É
+            //åˆæˆ
             CompositeMaterial.SetTexture("_StencilTex", _stencilBuffer);
             CompositeMaterial.SetTexture("_BlurTex", oddEven ? buffer1 : buffer2);
             Graphics.Blit(source, destination, CompositeMaterial);
 
-            //ÇåÀí
+            //æ¸…ç†
             RenderTexture.ReleaseTemporary(buffer1);
             RenderTexture.ReleaseTemporary(buffer2);
             if (_stencilBuffer != null)

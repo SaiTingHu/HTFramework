@@ -46,6 +46,21 @@ namespace HT.Framework
         private bool _isLoading = false;
         //单线下载等待
         private WaitUntil _loadWait;
+        
+        internal override void OnInitialization()
+        {
+            base.OnInitialization();
+
+            _assetBundleRootPath = Application.streamingAssetsPath + "/";
+            _loadWait = new WaitUntil(() => { return !_isLoading; });
+        }
+        internal override void OnTermination()
+        {
+            base.OnTermination();
+
+            UnLoadAllAsset(true);
+            ClearMemory();
+        }
 
         /// <summary>
         /// 当前的资源加载模式
@@ -57,23 +72,6 @@ namespace HT.Framework
                 return Mode;
             }
         }
-
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _assetBundleRootPath = Application.streamingAssetsPath + "/";
-            _loadWait = new WaitUntil(() => { return !_isLoading; });
-        }
-
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            UnLoadAllAsset(true);
-            ClearMemory();
-        }
-
         /// <summary>
         /// 通过名称获取指定的AssetBundle
         /// </summary>

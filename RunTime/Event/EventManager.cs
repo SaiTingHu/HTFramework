@@ -5,7 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 事件管理者
+    /// 事件管理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Event)]
@@ -34,7 +34,6 @@ namespace HT.Framework
                 _eventHandlerList3.Add(types[i], null);
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();

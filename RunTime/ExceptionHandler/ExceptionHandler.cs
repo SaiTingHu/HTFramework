@@ -8,7 +8,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 异常处理模块
+    /// 异常处理器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.ExceptionHandler)]
@@ -92,7 +92,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();
@@ -107,7 +106,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnRefresh()
         {
             base.OnRefresh();
@@ -128,7 +126,6 @@ namespace HT.Framework
                 return _exceptionInfos;
             }
         }
-
         /// <summary>
         /// 回发邮件
         /// </summary>
@@ -150,7 +147,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 清理所有异常信息
         /// </summary>
@@ -201,7 +197,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void OnException(string logString, string stackTrace, LogType type)
         {
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventException>().Fill(logString, stackTrace, type));

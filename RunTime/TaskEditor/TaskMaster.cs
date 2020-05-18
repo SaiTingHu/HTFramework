@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 任务控制者
+    /// 任务控制器
     /// </summary>
     [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.TaskEditor)]
@@ -45,7 +45,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal override void OnTermination()
         {
             base.OnTermination();
