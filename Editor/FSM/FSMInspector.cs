@@ -47,6 +47,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            TextField(Target.Group, out Target.Group, "Group");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUI.color = Target.Data == "<None>" ? Color.gray : Color.white;
             GUILayout.Label("Data", GUILayout.Width(60));
             if (GUILayout.Button(Target.Data, EditorGlobalTools.Styles.MiniPopup))

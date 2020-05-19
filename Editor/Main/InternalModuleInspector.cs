@@ -46,7 +46,7 @@ namespace HT.Framework
             
             GUILayout.BeginHorizontal();
             GUI.enabled = HelperInterface != null;
-            GUILayout.Label("Helper");
+            GUILayout.Label("Helper", GUILayout.Width(50));
             Button(ChangeHelper, _module.HelperType, EditorGlobalTools.Styles.MiniPopup);
             GUI.enabled = true;
             GUILayout.EndHorizontal();

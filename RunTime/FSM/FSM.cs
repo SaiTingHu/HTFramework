@@ -50,6 +50,10 @@ namespace HT.Framework
         /// </summary>
         public string Name = "New Finite State Machine";
         /// <summary>
+        /// 有限状态机所属的组名称
+        /// </summary>
+        public string Group = "Default";
+        /// <summary>
         /// 任意状态切换事件（上一个离开的状态、下一个进入的状态）
         /// </summary>
         public event HTFAction<FiniteStateBase, FiniteStateBase> AnyStateSwitchEvent;

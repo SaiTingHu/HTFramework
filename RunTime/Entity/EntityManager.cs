@@ -23,7 +23,6 @@ namespace HT.Framework
 
         //当前定义的实体与对象对应关系
         private Dictionary<string, GameObject> _defineEntities = new Dictionary<string, GameObject>();
-
         //所有实体列表
         private Dictionary<Type, List<EntityLogicBase>> _entities = new Dictionary<Type, List<EntityLogicBase>>();
         //所有实体组
@@ -79,7 +78,7 @@ namespace HT.Framework
         {
             base.OnRefresh();
 
-            foreach (KeyValuePair<Type, List<EntityLogicBase>> entities in _entities)
+            foreach (var entities in _entities)
             {
                 for (int i = 0; i < entities.Value.Count; i++)
                 {
@@ -96,11 +95,11 @@ namespace HT.Framework
 
             _defineEntities.Clear();
 
-            foreach (KeyValuePair<Type, GameObject> group in _entitiesGroup)
+            foreach (var group in _entitiesGroup)
             {
                 Destroy(group.Value);
             }
-            foreach (KeyValuePair<Type, Queue<GameObject>> objectPool in _objectPool)
+            foreach (var objectPool in _objectPool)
             {
                 while (objectPool.Value.Count > 0)
                 {

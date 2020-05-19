@@ -50,7 +50,7 @@
 
 - [Input](https://wanderer.blog.csdn.net/article/details/89001848) - 将任意输入都定义为虚拟输入，再由Input模块统一调用，将是跨平台输入的最优解决方案。
 
-- [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口。
+- [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口，还支持快捷设置脚本定义、指定全局主要数据类、设置项目授权、以及配置全局参数等。
 
 - [Network](https://wanderer.blog.csdn.net/article/details/103575999) - 网络客户端模块，以单个通信管道为单位，每个管道均支持TCP/UDP等协议，可以为每个管道定义通信消息格式，基本能胜任一些常见的通信环境。
 
