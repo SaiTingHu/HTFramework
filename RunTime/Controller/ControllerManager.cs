@@ -45,35 +45,20 @@ namespace HT.Framework
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
-
-        private CameraTarget _cameraTarget;
-        private MousePosition _mousePosition;
-        private MouseRotation _mouseRotation;
-        private MouseRay _mouseRay;
-        private HighlightingEffect _highlightingEffect;
+        
         private Dictionary<MouseRayTargetBase, HTFAction> _mouseClickTargets = new Dictionary<MouseRayTargetBase, HTFAction>();
-        private ControlMode _controlMode;
+        private IControllerHelper _helper;
 
         internal override void OnInitialization()
         {
             base.OnInitialization();
-
+            
             DOTween.defaultEaseType = DefaultEase;
             DOTween.defaultAutoPlay = DefaultAutoPlay;
             DOTween.defaultAutoKill = IsAutoKill;
-
-            MainCamera = transform.GetComponentByChild<Camera>("MainCamera");
-            _cameraTarget = transform.GetComponentByChild<CameraTarget>("CameraTarget");
-            _mousePosition = MainCamera.GetComponent<MousePosition>();
-            _mouseRotation = MainCamera.GetComponent<MouseRotation>();
-            _mouseRay = MainCamera.GetComponent<MouseRay>();
-            _highlightingEffect = MainCamera.GetComponent<HighlightingEffect>();
-
-            _mousePosition.Target = _cameraTarget;
-            _mousePosition.MR = _mouseRotation;
-            _mouseRotation.Target = _cameraTarget;
-            _mouseRay.RayCamera = MainCamera;
-            _mouseRay.RayEvent += OnRay;
+            
+            _helper = Helper as IControllerHelper;
+            _helper.OnInitialization(OnRay);
         }
         internal override void OnPreparatory()
         {
@@ -85,15 +70,8 @@ namespace HT.Framework
         {
             base.OnRefresh();
 
-            _mouseRay.OnRefresh();
-            switch (TheControlMode)
-            {
-                case ControlMode.FreeControl:
-                    _mousePosition.OnRefresh();
-                    _mouseRotation.OnRefresh();
-                    break;
-            }
-
+            _helper.OnRefresh();
+            
             if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
             {
                 if (RayTarget != null)
@@ -109,13 +87,21 @@ namespace HT.Framework
         {
             base.OnTermination();
 
+            _helper.OnTermination();
+
             ClearClickListener();
         }
 
         /// <summary>
         /// 主摄像机
         /// </summary>
-        public Camera MainCamera { get; private set; }
+        public Camera MainCamera
+        {
+            get
+            {
+                return _helper.MainCamera;
+            }
+        }
         /// <summary>
         /// 控制模式
         /// </summary>
@@ -123,10 +109,10 @@ namespace HT.Framework
         {
             set
             {
-                if (_controlMode != value)
+                if (_helper.TheControlMode != value)
                 {
-                    _controlMode = value;
-                    switch (_controlMode)
+                    _helper.TheControlMode = value;
+                    switch (_helper.TheControlMode)
                     {
                         case ControlMode.FreeControl:
                             SwitchToFreeControlEvent?.Invoke();
@@ -142,7 +128,7 @@ namespace HT.Framework
             }
             get
             {
-                return _controlMode;
+                return _helper.TheControlMode;
             }
         }
         /// <summary>
@@ -152,12 +138,11 @@ namespace HT.Framework
         {
             set
             {
-                _mousePosition.NeedLimit = value;
-                _mouseRotation.NeedLimit = value;
+                _helper.NeedLimit = value;
             }
             get
             {
-                return _mousePosition.NeedLimit;
+                return _helper.NeedLimit;
             }
         }
         /// <summary>
@@ -167,7 +152,7 @@ namespace HT.Framework
         {
             get
             {
-                return _cameraTarget.transform.position;
+                return _helper.LookPoint;
             }
         }
         /// <summary>
@@ -177,7 +162,7 @@ namespace HT.Framework
         {
             get
             {
-                return new Vector3(_mouseRotation.X, _mouseRotation.Y, _mouseRotation.Distance);
+                return _helper.LookAngle;
             }
         }
         /// <summary>
@@ -187,11 +172,11 @@ namespace HT.Framework
         {
             get
             {
-                return _mousePosition.CanControl;
+                return _helper.EnablePositionControl;
             }
             set
             {
-                _mousePosition.CanControl = value;
+                _helper.EnablePositionControl = value;
             }
         }
         /// <summary>
@@ -201,11 +186,11 @@ namespace HT.Framework
         {
             get
             {
-                return _mouseRotation.CanControl;
+                return _helper.EnableRotationControl;
             }
             set
             {
-                _mouseRotation.CanControl = value;
+                _helper.EnableRotationControl = value;
             }
         }
         /// <summary>
@@ -215,11 +200,11 @@ namespace HT.Framework
         {
             get
             {
-                return _mousePosition.IsCanOnUGUI || _mouseRotation.IsCanOnUGUI;
+                return _helper.IsCanControlOnUGUI;
             }
             set
             {
-                _mousePosition.IsCanOnUGUI = _mouseRotation.IsCanOnUGUI = value;
+                _helper.IsCanControlOnUGUI = value;
             }
         }
         /// <summary>
@@ -229,11 +214,11 @@ namespace HT.Framework
         {
             get
             {
-                return _mouseRotation.AllowOverstepDistance;
+                return _helper.AllowOverstepDistance;
             }
             set
             {
-                _mouseRotation.AllowOverstepDistance = value;
+                _helper.AllowOverstepDistance = value;
             }
         }
         /// <summary>
@@ -243,11 +228,11 @@ namespace HT.Framework
         {
             get
             {
-                return _mouseRotation.IsLookAtTarget;
+                return _helper.IsLookAtTarget;
             }
             set
             {
-                _mouseRotation.IsLookAtTarget = value;
+                _helper.IsLookAtTarget = value;
             }
         }
         /// <summary>
@@ -257,7 +242,7 @@ namespace HT.Framework
         {
             get
             {
-                return _mouseRay.Target;
+                return _helper.RayTarget;
             }
         }
         /// <summary>
@@ -267,10 +252,7 @@ namespace HT.Framework
         {
             get
             {
-                if (_mouseRay.Target)
-                    return _mouseRay.Target.gameObject;
-                else
-                    return null;
+                return _helper.RayTargetObj;
             }
         }
         /// <summary>
@@ -280,7 +262,7 @@ namespace HT.Framework
         {
             get
             {
-                return _mouseRay.HitPoint;
+                return _helper.RayHitPoint;
             }
         }
         /// <summary>
@@ -290,11 +272,11 @@ namespace HT.Framework
         {
             get
             {
-                return _highlightingEffect.enabled;
+                return _helper.EnableHighlightingEffect;
             }
             set
             {
-                _highlightingEffect.enabled = value;
+                _helper.EnableHighlightingEffect = value;
             }
         }
         /// <summary>
@@ -304,11 +286,11 @@ namespace HT.Framework
         {
             get
             {
-                return _mouseRay.IsOpenRay;
+                return _helper.EnableMouseRay;
             }
             set
             {
-                _mouseRay.IsOpenRay = value;
+                _helper.EnableMouseRay = value;
             }
         }
         /// <summary>
@@ -318,11 +300,11 @@ namespace HT.Framework
         {
             get
             {
-                return _mouseRay.IsOpenPrompt;
+                return _helper.EnableMouseRayHitPrompt;
             }
             set
             {
-                _mouseRay.IsOpenPrompt = value;
+                _helper.EnableMouseRayHitPrompt = value;
             }
         }
 
@@ -332,8 +314,7 @@ namespace HT.Framework
         /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最小值</param>
         public void SetMinLimit(Vector3 value)
         {
-            _mousePosition.SetMinLimit(value);
-            _mouseRotation.SetMinLimit(value);
+            _helper.SetMinLimit(value);
         }
         /// <summary>
         /// 自由控制：设置控制外围限定最大值
@@ -341,10 +322,8 @@ namespace HT.Framework
         /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最大值</param>
         public void SetMaxLimit(Vector3 value)
         {
-            _mousePosition.SetMaxLimit(value);
-            _mouseRotation.SetMaxLimit(value);
+            _helper.SetMaxLimit(value);
         }
-
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>
@@ -352,7 +331,7 @@ namespace HT.Framework
         /// <param name="damping">阻尼缓动模式</param>
         public void SetLookPoint(Vector3 point, bool damping = true)
         {
-            _mousePosition.SetPosition(point, damping);
+            _helper.SetLookPoint(point, damping);
         }
         /// <summary>
         /// 自由控制：设置摄像机注视角度
@@ -361,7 +340,7 @@ namespace HT.Framework
         /// <param name="damping">阻尼缓动模式</param>
         public void SetLookAngle(Vector3 angle, bool damping = true)
         {
-            _mouseRotation.SetAngle(angle, damping);
+            _helper.SetLookAngle(angle.x, angle.y, angle.z, damping);
         }
         /// <summary>
         /// 自由控制：设置摄像机注视角度
@@ -371,23 +350,32 @@ namespace HT.Framework
         /// <param name="damping">阻尼缓动模式</param>
         public void SetLookAngle(Vector2 angle, float distance, bool damping = true)
         {
-            _mouseRotation.SetAngle(angle, distance, damping);
+            _helper.SetLookAngle(angle.x, angle.y, distance, damping);
         }
-
         /// <summary>
         /// 自由控制：进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>
         public void EnterKeepTrack(Transform target)
         {
-            _mousePosition.EnterKeepTrack(target);
+            _helper.EnterKeepTrack(target);
         }
         /// <summary>
         /// 自由控制：退出保持追踪模式
         /// </summary>
         public void LeaveKeepTrack()
         {
-            _mousePosition.LeaveKeepTrack();
+            _helper.LeaveKeepTrack();
+        }
+        /// <summary>
+        /// 设置射线发射器的焦点提示框
+        /// </summary>
+        /// <param name="background">提示框背景</param>
+        /// <param name="content">提示文字框</param>
+        /// <param name="uIType">提示框UI类型</param>
+        public void SetMouseRayFocusImage(Image background, Text content, UIType uIType = UIType.Overlay)
+        {
+            _helper.SetMouseRayFocusImage(background, content, uIType);
         }
 
         /// <summary>
@@ -427,33 +415,6 @@ namespace HT.Framework
         public void ClearClickListener()
         {
             _mouseClickTargets.Clear();
-        }
-
-        /// <summary>
-        /// 设置射线发射器的焦点提示框
-        /// </summary>
-        /// <param name="background">提示框背景</param>
-        /// <param name="content">提示文字框</param>
-        /// <param name="uIType">提示框UI类型</param>
-        public void SetMouseRayFocusImage(Image background, Text content, UIType uIType = UIType.Overlay)
-        {
-            if (background == null || content == null)
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Controller, "焦点提示框的背景和文字框均不能为空！");
-            }
-
-            content.transform.SetParent(background.transform);
-            content.raycastTarget = false;
-            background.raycastTarget = false;
-
-            ContentSizeFitter contentSizeFitter = content.gameObject.GetComponent<ContentSizeFitter>();
-            if (contentSizeFitter == null) contentSizeFitter = content.gameObject.AddComponent<ContentSizeFitter>();
-            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-
-            _mouseRay.RayHitBG = background;
-            _mouseRay.RayHitText = content;
-            _mouseRay.RayHitImageType = uIType;
         }
         
         private void OnRay(MouseRayTargetBase mouseRayTargetBase, Vector3 point, Vector2 pos)

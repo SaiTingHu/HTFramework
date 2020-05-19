@@ -117,31 +117,14 @@ namespace HT.Framework
         /// <summary>
         /// 旋转注视视野
         /// </summary>
-        /// <param name="angle">目标角度</param>
+        /// <param name="x">视角x值</param>
+        /// <param name="y">视角y值</param>
+        /// <param name="distance">视角距离</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetAngle(Vector3 angle, bool damping = true)
+        public void SetAngle(float x, float y, float distance, bool damping = true)
         {
-            X = angle.x;
-            Y = angle.y;
-            Distance = angle.z;
-
-            if (!damping)
-            {
-                CalculateAngle();
-                SwitchAngle(damping);
-            }
-        }
-
-        /// <summary>
-        /// 旋转注视视野
-        /// </summary>
-        /// <param name="angle">目标角度</param>
-        /// <param name="distance">距离</param>
-        /// <param name="damping">阻尼缓动模式</param>
-        public void SetAngle(Vector2 angle, float distance, bool damping = true)
-        {
-            X = angle.x;
-            Y = angle.y;
+            X = x;
+            Y = y;
             Distance = distance;
 
             if (!damping)

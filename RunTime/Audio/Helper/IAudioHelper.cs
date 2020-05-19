@@ -60,6 +60,10 @@ namespace HT.Framework
         /// 世界音效音量
         /// </summary>
         float WorldVolume { get; set; }
+        /// <summary>
+        /// 单通道音效播放标记
+        /// </summary>
+        bool SingleSoundPlayDetector { get; set; }
 
         /// <summary>
         /// 播放背景音乐

@@ -1462,7 +1462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91317bfab64dc1349877b3ff2df91e80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultControllerHelper
   DefaultControlMode: 0
   DefaultEase: 1
   DefaultAutoPlay: 3

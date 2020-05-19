@@ -21,77 +21,65 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();
-
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            FloatField(Target.XSpeed, out Target.XSpeed, "X");
+            FloatField(Target.XSpeed, out Target.XSpeed, "      X");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.YSpeed, out Target.YSpeed, "Y");
+            FloatField(Target.YSpeed, out Target.YSpeed, "      Y");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.ZSpeed, out Target.ZSpeed, "Z");
+            FloatField(Target.ZSpeed, out Target.ZSpeed, "      Z");
             GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.DampingTime, out Target.DampingTime, "Damping Time");
+            FloatField(Target.DampingTime, out Target.DampingTime, "      Damping Time");
             GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label("Target Position Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.NeedLimit, out Target.NeedLimit, "Need Limit");
+            Toggle(Target.NeedLimit, out Target.NeedLimit, "      Need Limit");
             GUILayout.EndHorizontal();
             
             if (Target.NeedLimit)
             {
                 GUILayout.BeginHorizontal();
-                FloatField(Target.XMinLimit, out Target.XMinLimit, "X Min");
+                FloatField(Target.XMinLimit, out Target.XMinLimit, "      X Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.YMinLimit, out Target.YMinLimit, "Y Min");
+                FloatField(Target.YMinLimit, out Target.YMinLimit, "      Y Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.ZMinLimit, out Target.ZMinLimit, "Z Min");
+                FloatField(Target.ZMinLimit, out Target.ZMinLimit, "      Z Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.XMaxLimit, out Target.XMaxLimit, "X Max");
+                FloatField(Target.XMaxLimit, out Target.XMaxLimit, "      X Max");
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.YMaxLimit, out Target.YMaxLimit, "Y Max");
+                FloatField(Target.YMaxLimit, out Target.YMaxLimit, "      Y Max");
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit, "Z Max");
+                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit, "      Z Max");
                 GUILayout.EndHorizontal();
             }
-
-            GUILayout.EndVertical();
         }
     }
 }

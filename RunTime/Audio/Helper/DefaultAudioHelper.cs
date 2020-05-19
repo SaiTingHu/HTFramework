@@ -222,7 +222,11 @@ namespace HT.Framework
                 }
             }
         }
-        
+        /// <summary>
+        /// 单通道音效播放标记
+        /// </summary>
+        public bool SingleSoundPlayDetector { get; set; } = false;
+
         /// <summary>
         /// 播放背景音乐
         /// </summary>
@@ -305,6 +309,7 @@ namespace HT.Framework
             SingleAudio.loop = isLoop;
             SingleAudio.pitch = speed;
             SingleAudio.Play();
+            SingleSoundPlayDetector = true;
         }
         /// <summary>
         /// 暂停播放单通道音效

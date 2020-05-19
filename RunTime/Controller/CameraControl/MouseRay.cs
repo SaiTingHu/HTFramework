@@ -100,7 +100,7 @@ namespace HT.Framework
         /// 当前被射线击中的点
         /// </summary>
         public Vector3 HitPoint { get; private set; }
-
+        
         /// <summary>
         /// 刷新
         /// </summary>
@@ -130,13 +130,19 @@ namespace HT.Framework
                 RaycastHitBGFlow(pos);
                 RayEvent(Target, HitPoint, pos);
             }
-            else
+        }
+
+        /// <summary>
+        /// 关闭射线投射
+        /// </summary>
+        public void CloseRay()
+        {
+            IsOpenRay = false;
+            RaycastHiting(null);
+            RayEvent(null, Vector3.zero, Vector2.zero);
+            if (RayHitBG && RayHitBG.gameObject.activeSelf)
             {
-                if (Target != null)
-                {
-                    RaycastHiting(null);
-                    RayEvent(null, Vector3.zero, Vector2.zero);
-                }
+                RayHitBG.gameObject.SetActive(false);
             }
         }
 

@@ -27,6 +27,9 @@ namespace HT.Framework
         /// <param name="intensity">强度</param>
         public static void OpenMeshOutline(this GameObject target, Color color, float intensity = 1)
         {
+            if (!Main.m_Controller.EnableHighlightingEffect)
+                return;
+
             MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
             if (mo == null) mo = target.AddComponent<MeshOutlineObject>();
 

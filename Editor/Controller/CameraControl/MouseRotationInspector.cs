@@ -29,129 +29,105 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             Toggle(Target.IsLookAtTarget, out Target.IsLookAtTarget, "LookAt Target");
             GUILayout.EndHorizontal();
-
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.XSpeed, out Target.XSpeed, "X");
+            FloatField(Target.XSpeed, out Target.XSpeed, "      X");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.YSpeed, out Target.YSpeed, "Y");
+            FloatField(Target.YSpeed, out Target.YSpeed, "      Y");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.MSpeed, out Target.MSpeed, "M");
+            FloatField(Target.MSpeed, out Target.MSpeed, "      M");
             GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
             
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.YMinAngleLimit, out Target.YMinAngleLimit, "Y min");
+            FloatField(Target.YMinAngleLimit, out Target.YMinAngleLimit, "      Y min");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.YMaxAngleLimit, out Target.YMaxAngleLimit, "Y max");
+            FloatField(Target.YMaxAngleLimit, out Target.YMaxAngleLimit, "      Y max");
             GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label("Distance", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.Distance, out Target.Distance, "Distance");
+            FloatField(Target.Distance, out Target.Distance, "      Distance");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.MinDistance, out Target.MinDistance, "Min");
+            FloatField(Target.MinDistance, out Target.MinDistance, "      Min");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.MaxDistance, out Target.MaxDistance, "Max");
+            FloatField(Target.MaxDistance, out Target.MaxDistance, "      Max");
             GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
             
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
             GUILayout.BeginHorizontal();
             GUILayout.Label("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.NeedDamping, out Target.NeedDamping, "Need Damping");
+            Toggle(Target.NeedDamping, out Target.NeedDamping, "      Need Damping");
             GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
             
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
             GUILayout.BeginHorizontal();
             GUILayout.Label("Camera Position Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            Toggle(Target.NeedLimit, out Target.NeedLimit, "Need Limit");
+            Toggle(Target.NeedLimit, out Target.NeedLimit, "      Need Limit");
             GUILayout.EndHorizontal();
 
             if (Target.NeedLimit)
             {
                 GUILayout.BeginHorizontal();
-                FloatField(Target.XMinLimit, out Target.XMinLimit, "X Min");
+                FloatField(Target.XMinLimit, out Target.XMinLimit, "      X Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.YMinLimit, out Target.YMinLimit, "Y Min");
+                FloatField(Target.YMinLimit, out Target.YMinLimit, "      Y Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.ZMinLimit, out Target.ZMinLimit, "Z Min");
+                FloatField(Target.ZMinLimit, out Target.ZMinLimit, "      Z Min");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.XMaxLimit, out Target.XMaxLimit, "X Max");
+                FloatField(Target.XMaxLimit, out Target.XMaxLimit, "      X Max");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.YMaxLimit, out Target.YMaxLimit, "Y Max");
+                FloatField(Target.YMaxLimit, out Target.YMaxLimit, "      Y Max");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit, "Z Max");
+                FloatField(Target.ZMaxLimit, out Target.ZMaxLimit, "      Z Max");
                 GUILayout.EndHorizontal();
             }
-
-            GUILayout.EndVertical();
             
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.X, out Target.X, "X");
+            FloatField(Target.X, out Target.X, "      X");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatField(Target.Y, out Target.Y, "Y");
+            FloatField(Target.Y, out Target.Y, "      Y");
             GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
         }
     }
 }

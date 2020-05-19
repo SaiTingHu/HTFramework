@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,13 +10,14 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89416110")]
     internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager>
     {
+        private IControllerHelper _controllerHelper;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
         private Vector3 _positionLimitCenter;
         private Vector3 _positionLimitSize;
         private Vector3 _limitMin;
         private Vector3 _limitMax;
-
+        
         protected override string Intro
         {
             get
@@ -24,20 +26,32 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IControllerHelper);
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _mousePosition = Target.GetType().GetField("_mousePosition", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as MousePosition;
-            _mouseRotation = Target.GetType().GetField("_mouseRotation", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as MouseRotation;
-            _positionLimitCenter.Set((_mousePosition.XMaxLimit - _mousePosition.XMinLimit) / 2 + _mousePosition.XMinLimit
-                , (_mousePosition.YMaxLimit - _mousePosition.YMinLimit) / 2 + _mousePosition.YMinLimit
-                , (_mousePosition.ZMaxLimit - _mousePosition.ZMinLimit) / 2 + _mousePosition.ZMinLimit);
-            _positionLimitSize.Set(_mousePosition.XMaxLimit - _mousePosition.XMinLimit
-                , _mousePosition.YMaxLimit - _mousePosition.YMinLimit
-                , _mousePosition.ZMaxLimit - _mousePosition.ZMinLimit);
-            _limitMin.Set(_mousePosition.XMinLimit, _mousePosition.YMinLimit, _mousePosition.ZMinLimit);
-            _limitMax.Set(_mousePosition.XMaxLimit, _mousePosition.YMaxLimit, _mousePosition.ZMaxLimit);
+            _controllerHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IControllerHelper;
+            _mousePosition = _controllerHelper.GetType().GetField("_mousePosition", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_controllerHelper) as MousePosition;
+            _mouseRotation = _controllerHelper.GetType().GetField("_mouseRotation", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_controllerHelper) as MouseRotation;
+            if (_mousePosition && _mouseRotation)
+            {
+                _positionLimitCenter.Set((_mousePosition.XMaxLimit - _mousePosition.XMinLimit) / 2 + _mousePosition.XMinLimit
+                    , (_mousePosition.YMaxLimit - _mousePosition.YMinLimit) / 2 + _mousePosition.YMinLimit
+                    , (_mousePosition.ZMaxLimit - _mousePosition.ZMinLimit) / 2 + _mousePosition.ZMinLimit);
+                _positionLimitSize.Set(_mousePosition.XMaxLimit - _mousePosition.XMinLimit
+                    , _mousePosition.YMaxLimit - _mousePosition.YMinLimit
+                    , _mousePosition.ZMaxLimit - _mousePosition.ZMinLimit);
+                _limitMin.Set(_mousePosition.XMinLimit, _mousePosition.YMinLimit, _mousePosition.ZMinLimit);
+                _limitMax.Set(_mousePosition.XMaxLimit, _mousePosition.YMaxLimit, _mousePosition.ZMaxLimit);
+            }
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -61,7 +75,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
         }
 
-        public void OnSceneGUI()
+        private void OnSceneGUI()
         {
             if (EditorApplication.isPlaying)
             {

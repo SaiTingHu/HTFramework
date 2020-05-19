@@ -178,7 +178,6 @@ namespace HT.Framework
         }
 
         private IAudioHelper _helper;
-        private bool _singleSoundPlayDetector = false;
 
         internal override void OnInitialization()
         {
@@ -202,11 +201,11 @@ namespace HT.Framework
         {
             base.OnRefresh();
 
-            if (_singleSoundPlayDetector)
+            if (_helper.SingleSoundPlayDetector)
             {
                 if (!_helper.SingleAudio.isPlaying)
                 {
-                    _singleSoundPlayDetector = false;
+                    _helper.SingleSoundPlayDetector = false;
                     SingleSoundEndOfPlayEvent?.Invoke();
                 }
             }
@@ -264,7 +263,6 @@ namespace HT.Framework
         public void PlaySingleSound(AudioClip clip, bool isLoop = false, float speed = 1)
         {
             _helper.PlaySingleSound(clip, isLoop, speed);
-            _singleSoundPlayDetector = true;
         }
         /// <summary>
         /// 暂停播放单通道音效

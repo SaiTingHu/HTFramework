@@ -28,6 +28,9 @@ namespace HT.Framework
         /// <param name="color">发光颜色</param>
         public static void OpenOnceHighLight(this GameObject target, Color color)
         {
+            if (!Main.m_Controller.EnableHighlightingEffect)
+                return;
+
             target.ClearHighLightInChildren();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
@@ -52,6 +55,9 @@ namespace HT.Framework
         /// <param name="isImmediate">是否立即模式</param>
         public static void OpenHighLight(this GameObject target, Color color, bool isImmediate = true)
         {
+            if (!Main.m_Controller.EnableHighlightingEffect)
+                return;
+
             target.ClearHighLightInChildren();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
@@ -127,6 +133,9 @@ namespace HT.Framework
         /// <param name="freq">频率</param>
         public static void OpenFlashHighLight(this GameObject target, Color color1, Color color2, float freq)
         {
+            if (!Main.m_Controller.EnableHighlightingEffect)
+                return;
+
             target.ClearHighLightInChildren();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
@@ -180,6 +189,9 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenOccluder(this GameObject target)
         {
+            if (!Main.m_Controller.EnableHighlightingEffect)
+                return;
+
             target.ClearHighLightInChildren();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
