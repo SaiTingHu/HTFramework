@@ -132,7 +132,11 @@ namespace HT.Framework
             }
             else
             {
-                RaycastHiting(null);
+                if (Target != null)
+                {
+                    RaycastHiting(null);
+                    RayEvent(null, Vector3.zero, Vector2.zero);
+                }
             }
         }
 
