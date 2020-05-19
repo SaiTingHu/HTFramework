@@ -535,10 +535,14 @@ namespace HT.Framework
         /// </summary>
         public void End()
         {
+            if (_currentHelper != null)
+            {
+                _currentHelper.OnTermination();
+                _currentHelper = null;
+            }
             _currentStepIndex = 0;
             _currentContent = null;
             _currentTarget = null;
-            _currentHelper = null;
             _running = false;
             _pause = false;
             _executing = false;

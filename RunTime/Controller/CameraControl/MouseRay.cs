@@ -130,6 +130,10 @@ namespace HT.Framework
                 RaycastHitBGFlow(pos);
                 RayEvent(Target, HitPoint, pos);
             }
+            else
+            {
+                RaycastHiting(null);
+            }
         }
 
         /// <summary>
