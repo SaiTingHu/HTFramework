@@ -35,7 +35,6 @@ namespace HT.Framework
 
         //当前定义的UI与实体对应关系
         private Dictionary<string, GameObject> _defineUIAndEntitys = new Dictionary<string, GameObject>();
-
         //当前打开的Overlay类型的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentOverlayTemporaryUI;
         //所有Overlay类型的UI
