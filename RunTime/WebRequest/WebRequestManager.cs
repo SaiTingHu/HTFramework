@@ -166,7 +166,7 @@ namespace HT.Framework
         /// </summary>
         public void ClearInterface()
         {
-            foreach (KeyValuePair<string, WebInterfaceBase> inter in _interfaces)
+            foreach (var inter in _interfaces)
             {
                 Main.m_ReferencePool.Despawn(inter.Value);
             }
@@ -225,14 +225,14 @@ namespace HT.Framework
 
                 if (!request.isNetworkError && !request.isHttpError)
                 {
-                    GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                    Log.Info(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
                         , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
 
                     _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
+                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
 
                     _interfaces[interfaceName].OnRequestFinished(null);
                 }
@@ -278,14 +278,14 @@ namespace HT.Framework
 
                 if (!request.isNetworkError && !request.isHttpError)
                 {
-                    GlobalTools.LogInfo(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
+                    Log.Info(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
                         , begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, _interfaces[interfaceName].OnGetDownloadString(request.downloadHandler)));
 
                     _interfaces[interfaceName].OnRequestFinished(request.downloadHandler);
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
+                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), interfaceName, url, end.ToString("mm:ss:fff"), request.error));
 
                     _interfaces[interfaceName].OnRequestFinished(null);
                 }

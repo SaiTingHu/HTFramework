@@ -322,7 +322,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建TaskContent失败，已存在类型 " + className);
+                    Log.Error("新建TaskContent失败，已存在类型 " + className);
                 }
             }
         }
@@ -480,7 +480,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建TaskPoint失败，已存在类型 " + className);
+                    Log.Error("新建TaskPoint失败，已存在类型 " + className);
                 }
             }
         }

@@ -59,12 +59,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("没有找到 " + scriptFileName + " 脚本文件！");
+                    Log.Error("没有找到 " + scriptFileName + " 脚本文件！");
                 }
             }
             else
             {
-                GlobalTools.LogError("没有找到 " + scriptFileName + " 脚本文件！");
+                Log.Error("没有找到 " + scriptFileName + " 脚本文件！");
             }
         }
     }

@@ -17,21 +17,21 @@ namespace HT.Framework
         {
             base.OnStart();
 
-            GlobalTools.LogInfo("任务内容：[" + Name + "]开始!");
+            Log.Info("任务内容：[" + Name + "]开始!");
         }
 
         public override void OnUpdate()
         {
             base.OnUpdate();
 
-            GlobalTools.LogInfo("任务内容：[" + Name + "]监控中......");
+            Log.Info("任务内容：[" + Name + "]监控中......");
         }
 
         public override void OnExecute()
         {
             base.OnExecute();
 
-            GlobalTools.LogInfo("任务内容：[" + Name + "]完成!");
+            Log.Info("任务内容：[" + Name + "]完成!");
         }
         
 #if UNITY_EDITOR

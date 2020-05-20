@@ -78,7 +78,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogWarning("切面追踪：方法 " + callMsg.MethodBase.Name + " 经过修改后传入的实参与形参数量不匹配！");
+                        Log.Warning("切面追踪：方法 " + callMsg.MethodBase.Name + " 经过修改后传入的实参与形参数量不匹配！");
                         returnValue = callMsg.MethodBase.Invoke(_realObject, callMsg.Args);
                         return new ReturnMessage(returnValue, callMsg.Args, callMsg.ArgCount - callMsg.InArgCount, callMsg.LogicalCallContext, callMsg);
                     }

@@ -204,12 +204,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogWarning("连接服务器出错：" + _protocolChannels[channelType].ToString() + " 不需要与服务器保持连接！");
+                    Log.Warning("连接服务器出错：" + _protocolChannels[channelType].ToString() + " 不需要与服务器保持连接！");
                 }
             }
             else
             {
-                GlobalTools.LogWarning("连接服务器出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
+                Log.Warning("连接服务器出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
             }
         }
         private IEnumerator ConnectServerCoroutine(ProtocolChannelBase protocolChannel)
@@ -223,7 +223,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                GlobalTools.LogError("连接服务器出错：" + e.ToString());
+                Log.Error("连接服务器出错：" + e.ToString());
             }
             finally
             {
@@ -269,17 +269,17 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogWarning("与服务器断开连接出错：发送的消息并不是断开连接的请求！");
+                        Log.Warning("与服务器断开连接出错：发送的消息并不是断开连接的请求！");
                     }
                 }
                 else
                 {
-                    GlobalTools.LogWarning("与服务器断开连接出错：" + _protocolChannels[channelType].ToString() + " 不需要与服务器保持连接！");
+                    Log.Warning("与服务器断开连接出错：" + _protocolChannels[channelType].ToString() + " 不需要与服务器保持连接！");
                 }
             }
             else
             {
-                GlobalTools.LogWarning("与服务器断开连接出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
+                Log.Warning("与服务器断开连接出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
             }
         }
 
@@ -312,7 +312,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError("发送消息出错：客户端已断开连接！");
+                        Log.Error("发送消息出错：客户端已断开连接！");
                         return false;
                     }
                 }
@@ -324,7 +324,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning("发送消息出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
+                Log.Warning("发送消息出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
                 return true;
             }
         }

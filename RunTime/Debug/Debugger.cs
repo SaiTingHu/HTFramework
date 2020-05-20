@@ -817,7 +817,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning("当前平台不支持截屏！");
+                Log.Warning("当前平台不支持截屏！");
                 yield return 0;
             }
         }

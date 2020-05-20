@@ -226,7 +226,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建SettingItem失败，已存在类型 " + className);
+                    Log.Error("新建SettingItem失败，已存在类型 " + className);
                 }
             }
         }
@@ -260,7 +260,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogWarning("未找到该设置项相关联的模块！");
+                Log.Warning("未找到该设置项相关联的模块！");
             }
         }
     }

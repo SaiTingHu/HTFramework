@@ -319,7 +319,7 @@ namespace HT.Framework
 
             DateTime endTime = DateTime.Now;
 
-            GlobalTools.LogInfo(string.Format("异步加载资源{0}[{1}模式]：\r\n{2}\r\n等待耗时：{3}秒  加载耗时：{4}秒"
+            Log.Info(string.Format("异步加载资源{0}[{1}模式]：\r\n{2}\r\n等待耗时：{3}秒  加载耗时：{4}秒"
                 , asset ? "成功" : "失败"
                 , LoadMode.ToString()
                 , LoadMode == ResourceLoadMode.Resource ? info.GetResourceFullPath() : info.GetAssetBundleFullPath(AssetBundleRootPath)

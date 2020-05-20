@@ -198,7 +198,7 @@ namespace HT.Framework
             //不支持后期特效
             if (!SystemInfo.supportsImageEffects)
             {
-                GlobalTools.LogWarning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
@@ -206,7 +206,7 @@ namespace HT.Framework
             //不支持渲染纹理格式
             if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
             {
-                GlobalTools.LogWarning("HighlightingSystem : RenderTextureFormat.ARGB32 is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : RenderTextureFormat.ARGB32 is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
@@ -214,7 +214,7 @@ namespace HT.Framework
             //不支持Highlighting Stencil着色器
             if (!Shader.Find("Hidden/Highlighted/StencilOpaque").isSupported)
             {
-                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaque shader is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : HighlightingStencilOpaque shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
@@ -222,7 +222,7 @@ namespace HT.Framework
             //不支持Highlighting StencilTransparent着色器
             if (!Shader.Find("Hidden/Highlighted/StencilTransparent").isSupported)
             {
-                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparent shader is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : HighlightingStencilTransparent shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
@@ -230,7 +230,7 @@ namespace HT.Framework
             //不支持Highlighting StencilZ着色器
             if (!Shader.Find("Hidden/Highlighted/StencilOpaqueZ").isSupported)
             {
-                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilOpaqueZ shader is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : HighlightingStencilOpaqueZ shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
@@ -238,7 +238,7 @@ namespace HT.Framework
             //不支持Highlighting StencilTransparentZ着色器
             if (!Shader.Find("Hidden/Highlighted/StencilTransparentZ").isSupported)
             {
-                GlobalTools.LogWarning("HighlightingSystem : HighlightingStencilTransparentZ shader is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : HighlightingStencilTransparentZ shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
@@ -246,7 +246,7 @@ namespace HT.Framework
             //不支持HighlightingBlur着色器
             if (!BlurShader.isSupported)
             {
-                GlobalTools.LogWarning("HighlightingSystem : HighlightingBlur shader is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : HighlightingBlur shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }
@@ -254,7 +254,7 @@ namespace HT.Framework
             //不支持HighlightingComposite着色器
             if (!CompositeShader.isSupported)
             {
-                GlobalTools.LogWarning("HighlightingSystem : HighlightingComposite shader is not supported on this platform! Disabling.");
+                Log.Warning("HighlightingSystem : HighlightingComposite shader is not supported on this platform! Disabling.");
                 enabled = false;
                 return;
             }

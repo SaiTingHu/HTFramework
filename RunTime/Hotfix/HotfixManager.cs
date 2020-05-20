@@ -257,7 +257,7 @@ namespace HT.Framework
             {
                 foreach (var item in _fixedMethods[HotfixMethodType.Invalid])
                 {
-                    GlobalTools.LogError("发现无效的热修复方法：" + item.Value.Name);
+                    Log.Error("发现无效的热修复方法：" + item.Value.Name);
                 }
                 _fixedMethods[HotfixMethodType.Invalid].Clear();
             }

@@ -38,7 +38,7 @@ namespace HT.Framework
         [PostProcessBuild(0)]
         private static void OnPostProcessBuild(BuildTarget target, string pathToBuildProject)
         {
-            GlobalTools.LogInfo("项目发布成功！发布平台：" + target.ToString() + "！发布路径：" + pathToBuildProject + "！");
+            Log.Info("项目发布成功！发布平台：" + target.ToString() + "！发布路径：" + pathToBuildProject + "！");
 
             PostProcessBuildEvent?.Invoke(target, pathToBuildProject);
         }
@@ -86,7 +86,7 @@ namespace HT.Framework
             if (EditorBuildSettings.scenes != null && EditorBuildSettings.scenes.Length > 0)
             {
                 EditorBuildSettings.scenes = null;
-                GlobalTools.LogWarning("只允许构建包含框架主体的场景！如有多场景切换的需求，请将其他场景打入AB包！");
+                Log.Warning("只允许构建包含框架主体的场景！如有多场景切换的需求，请将其他场景打入AB包！");
             }
 
             if (!_isCanBuild)
@@ -180,7 +180,7 @@ namespace HT.Framework
                 if (!CheckBuildPreconditions[i]())
                 {
                     _isCanBuild = false;
-                    GlobalTools.LogError("当前无法构建项目：未满足允许项目构建的前置条件！");
+                    Log.Error("当前无法构建项目：未满足允许项目构建的前置条件！");
                     return;
                 }
             }
@@ -189,7 +189,7 @@ namespace HT.Framework
             if (main == null)
             {
                 _isCanBuild = false;
-                GlobalTools.LogError("当前无法构建项目：请先打开包含框架主体的场景！");
+                Log.Error("当前无法构建项目：请先打开包含框架主体的场景！");
                 return;
             }
 
@@ -197,7 +197,7 @@ namespace HT.Framework
             if (procedure != null && procedure.ActivatedProcedures.Count <= 0)
             {
                 _isCanBuild = false;
-                GlobalTools.LogError("当前无法构建项目：请添加至少一个流程！");
+                Log.Error("当前无法构建项目：请添加至少一个流程！");
                 return;
             }
 
@@ -209,7 +209,7 @@ namespace HT.Framework
                     if (entity.DefineEntityTargets[i] == null)
                     {
                         _isCanBuild = false;
-                        GlobalTools.LogError("当前无法构建项目：实体管理器丢失了至少一个预定义对象！");
+                        Log.Error("当前无法构建项目：实体管理器丢失了至少一个预定义对象！");
                         return;
                     }
                 }
@@ -223,7 +223,7 @@ namespace HT.Framework
                     if (ui.DefineUIEntitys[i] == null)
                     {
                         _isCanBuild = false;
-                        GlobalTools.LogError("当前无法构建项目：UI管理器丢失了至少一个预定义对象！");
+                        Log.Error("当前无法构建项目：UI管理器丢失了至少一个预定义对象！");
                         return;
                     }
                 }

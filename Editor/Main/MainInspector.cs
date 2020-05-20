@@ -110,7 +110,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError("输入的宏定义不能为空！");
+                            Log.Error("输入的宏定义不能为空！");
                         }
                     }
                     if (GUILayout.Button("NO", EditorStyles.miniButtonRight, GUILayout.Width(30)))

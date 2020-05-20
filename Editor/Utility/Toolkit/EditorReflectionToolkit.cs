@@ -75,7 +75,7 @@ namespace HT.Framework
                     return type;
                 }
             }
-            GlobalTools.LogError("获取类型 " + typeName + " 失败！当前热更新程序集中不存在此类型！");
+            Log.Error("获取类型 " + typeName + " 失败！当前热更新程序集中不存在此类型！");
             return null;
         }
         /// <summary>
@@ -136,7 +136,7 @@ namespace HT.Framework
                     return type;
                 }
             }
-            GlobalTools.LogError("获取类型 " + typeName + " 失败！当前编辑器程序集中不存在此类型！");
+            Log.Error("获取类型 " + typeName + " 失败！当前编辑器程序集中不存在此类型！");
             return null;
         }
     }

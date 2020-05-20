@@ -403,17 +403,17 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogError(string.Format("创建授权者失败：授权者类 {0} 必须继承至基类：LicenserBase！", LicenserType));
+                            Log.Error(string.Format("创建授权者失败：授权者类 {0} 必须继承至基类：LicenserBase！", LicenserType));
                         }
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("创建授权者失败：丢失授权者类 {0}！", LicenserType));
+                        Log.Error(string.Format("创建授权者失败：丢失授权者类 {0}！", LicenserType));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError("已启用授权验证，但授权者类型不能为 <None>！");
+                    Log.Error("已启用授权验证，但授权者类型不能为 <None>！");
                 }
 
                 _promptStyle = new GUIStyle();
@@ -483,12 +483,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError(string.Format("创建全局数据类失败：数据类 {0} 必须继承至基类：MainDataBase！", MainDataType));
+                        Log.Error(string.Format("创建全局数据类失败：数据类 {0} 必须继承至基类：MainDataBase！", MainDataType));
                     }
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("创建全局数据类失败：丢失数据类 {0}！", MainDataType));
+                    Log.Error(string.Format("创建全局数据类失败：丢失数据类 {0}！", MainDataType));
                 }
             }
         }

@@ -144,7 +144,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogWarning(string.Format("任务控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
+                        Log.Warning(string.Format("任务控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
                     }
                 }
                 //搜寻场景中所有任务目标
@@ -161,7 +161,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            GlobalTools.LogWarning(string.Format("任务控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
+                            Log.Warning(string.Format("任务控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
                         }
                     }
                 }
@@ -175,7 +175,7 @@ namespace HT.Framework
                     TaskContentBase content = ContentAsset.Content[i];
                     if (_taskContents.ContainsKey(content.GUID))
                     {
-                        GlobalTools.LogError(string.Format("任务控制者：发现相同GUID的任务内容！GUID：{0}\r\n任务内容：{1} 和 {2}", content.GUID, _taskContents[content.GUID].Name, content.Name));
+                        Log.Error(string.Format("任务控制者：发现相同GUID的任务内容！GUID：{0}\r\n任务内容：{1} 和 {2}", content.GUID, _taskContents[content.GUID].Name, content.Name));
                     }
                     else
                     {
@@ -187,7 +187,7 @@ namespace HT.Framework
                         TaskPointBase point = content.Points[j];
                         if (_taskPoints.ContainsKey(point.GUID))
                         {
-                            GlobalTools.LogError(string.Format("任务控制者：发现相同GUID的任务点！GUID：{0}\r\n任务点：{1} 和 {2}", point.GUID, _taskPoints[point.GUID].Name, point.Name));
+                            Log.Error(string.Format("任务控制者：发现相同GUID的任务点！GUID：{0}\r\n任务点：{1} 和 {2}", point.GUID, _taskPoints[point.GUID].Name, point.Name));
                         }
                         else
                         {
@@ -196,7 +196,7 @@ namespace HT.Framework
 
                         if (_taskContents.ContainsKey(point.GUID))
                         {
-                            GlobalTools.LogError(string.Format("任务控制者：发现相同GUID的任务内容和任务点！GUID：{0}\r\n任务内容：{1} 任务点：{2}", point.GUID, _taskContents[point.GUID].Name, point.Name));
+                            Log.Error(string.Format("任务控制者：发现相同GUID的任务内容和任务点！GUID：{0}\r\n任务内容：{1} 任务点：{2}", point.GUID, _taskContents[point.GUID].Name, point.Name));
                         }
                     }
                 }

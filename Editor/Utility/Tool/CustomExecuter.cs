@@ -396,10 +396,10 @@ namespace HT.Framework
             CompilerResults results = _csharpCodeProvider.CompileAssemblyFromSource(GenerateParameters(), GenerateCode());
             if (results.Errors.HasErrors)
             {
-                GlobalTools.LogError("执行动态工具失败：工具代码存在如下编译错误！");
+                Log.Error("执行动态工具失败：工具代码存在如下编译错误！");
                 for (int i = 0; i < results.Errors.Count; i++)
                 {
-                    GlobalTools.LogError(results.Errors[i].ToString());
+                    Log.Error(results.Errors[i].ToString());
                 }
             }
             else
@@ -440,7 +440,7 @@ namespace HT.Framework
                 object returnValue = Method.Invoke(null, parameters);
                 if (Method.ReturnType.Name != "Void")
                 {
-                    GlobalTools.LogInfo("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
+                    Log.Info("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
                 }
             }
             else
@@ -448,7 +448,7 @@ namespace HT.Framework
                 object returnValue = Method.Invoke(Target, parameters);
                 if (Method.ReturnType.Name != "Void")
                 {
-                    GlobalTools.LogInfo("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
+                    Log.Info("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
                 }
             }
         }

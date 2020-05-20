@@ -338,7 +338,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GlobalTools.LogError("当前要移动到的索引不存在！");
+                        Log.Error("当前要移动到的索引不存在！");
                     }
                     _isMoveTo = false;
                 }
@@ -1693,7 +1693,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建Helper失败，已存在类型 " + className);
+                    Log.Error("新建Helper失败，已存在类型 " + className);
                 }
             }
         }
@@ -1706,7 +1706,7 @@ namespace HT.Framework
             content.GetExecuteTwice(_operationIndexs);
             foreach (var item in _operationIndexs)
             {
-                GlobalTools.LogWarning("注意：操作节点【" + content.Operations[item].Name + "】有两次或以上连线接入，可能会被多次执行！");
+                Log.Warning("注意：操作节点【" + content.Operations[item].Name + "】有两次或以上连线接入，可能会被多次执行！");
             }
             _operationIndexs.Clear();
 

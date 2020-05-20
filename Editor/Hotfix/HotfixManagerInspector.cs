@@ -208,7 +208,7 @@ namespace HT.Framework
                 {
                     File.Copy(sourcePath, GlobalTools.GetDirectorySameLevelOfAssets(AssetsDllPath), true);
                     AssetDatabase.Refresh();
-                    GlobalTools.LogInfo("更新：Assets/Hotfix/Hotfix.dll");
+                    Log.Info("更新：Assets/Hotfix/Hotfix.dll");
                 }
             }
         }

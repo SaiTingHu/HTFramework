@@ -121,7 +121,7 @@ namespace HT.Framework
             {
                 if (!objs[i].GetComponent<Graphic>())
                 {
-                    GlobalTools.LogWarning("对象 " + objs[i].name + " 没有Graphic组件，无法做为可捕获UI目标！");
+                    Log.Warning("对象 " + objs[i].name + " 没有Graphic组件，无法做为可捕获UI目标！");
                     continue;
                 }
                 objs[i].GetComponent<Graphic>().raycastTarget = true;
@@ -152,7 +152,7 @@ namespace HT.Framework
         [@MenuItem("HTFramework/Console/Debug Log", false, 103)]
         private static void ConsoleDebugLog()
         {
-            GlobalTools.LogInfo("Debug.Log!");
+            Log.Info("Debug.Log!");
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace HT.Framework
         [@MenuItem("HTFramework/Console/Debug LogWarning", false, 104)]
         private static void ConsoleDebugLogWarning()
         {
-            GlobalTools.LogWarning("Debug.LogWarning!");
+            Log.Warning("Debug.LogWarning!");
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace HT.Framework
         [@MenuItem("HTFramework/Console/Debug LogError", false, 105)]
         private static void ConsoleDebugLogError()
         {
-            GlobalTools.LogError("Debug.LogError!");
+            Log.Error("Debug.LogError!");
         }
         #endregion
 
@@ -205,7 +205,7 @@ namespace HT.Framework
         {
             if (Selection.gameObjects.Length <= 1)
             {
-                GlobalTools.LogWarning("请先选中至少2个以上的待合并网格！");
+                Log.Warning("请先选中至少2个以上的待合并网格！");
                 return;
             }
 
@@ -258,7 +258,7 @@ namespace HT.Framework
                 MeshFilter filter = Selection.gameObjects[i].GetComponent<MeshFilter>();
                 if (filter)
                 {
-                    GlobalTools.LogInfo("Mesh [" + filter.name + "] : vertices " + filter.sharedMesh.vertexCount + ", triangles " + filter.sharedMesh.triangles.Length);
+                    Log.Info("Mesh [" + filter.name + "] : vertices " + filter.sharedMesh.vertexCount + ", triangles " + filter.sharedMesh.triangles.Length);
                 }
             }
         }
@@ -312,7 +312,7 @@ namespace HT.Framework
             }
             if (CustomTools.Count <= 0)
             {
-                GlobalTools.LogWarning("当前不存在至少一个自定义工具！为任何处于 Editor 文件夹中的类的无参静态函数添加 CustomTool 特性，可将该函数附加至自定义工具菜单！");
+                Log.Warning("当前不存在至少一个自定义工具！为任何处于 Editor 文件夹中的类的无参静态函数添加 CustomTool 特性，可将该函数附加至自定义工具菜单！");
             }
             else
             {
@@ -320,7 +320,7 @@ namespace HT.Framework
                 {
                     CustomTools[i].Invoke(null, null);
                 }
-                GlobalTools.LogInfo("已执行 " + CustomTools.Count + " 个自定义工具！");
+                Log.Info("已执行 " + CustomTools.Count + " 个自定义工具！");
                 CustomTools.Clear();
             }
         }
@@ -369,7 +369,7 @@ namespace HT.Framework
             }
             else
             {
-                GlobalTools.LogError("新建框架主环境失败，丢失主预制体：Assets/HTFramework/HTFramework.prefab");
+                Log.Error("新建框架主环境失败，丢失主预制体：Assets/HTFramework/HTFramework.prefab");
             }
         }
 
@@ -423,7 +423,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建AspectProxy失败，已存在类型 " + className);
+                    Log.Error("新建AspectProxy失败，已存在类型 " + className);
                 }
             }
         }
@@ -461,7 +461,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建CustomModule失败，已存在类型 " + className);
+                    Log.Error("新建CustomModule失败，已存在类型 " + className);
                 }
             }
         }
@@ -498,7 +498,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建DataSet失败，已存在类型 " + className);
+                    Log.Error("新建DataSet失败，已存在类型 " + className);
                 }
             }
         }
@@ -535,7 +535,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建EntityLogic失败，已存在类型 " + className);
+                    Log.Error("新建EntityLogic失败，已存在类型 " + className);
                 }
             }
         }
@@ -572,7 +572,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建EventHandler失败，已存在类型 " + className);
+                    Log.Error("新建EventHandler失败，已存在类型 " + className);
                 }
             }
         }
@@ -610,7 +610,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建FiniteState失败，已存在类型 " + className);
+                    Log.Error("新建FiniteState失败，已存在类型 " + className);
                 }
             }
         }
@@ -647,7 +647,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建Procedure失败，已存在类型 " + className);
+                    Log.Error("新建Procedure失败，已存在类型 " + className);
                 }
             }
         }
@@ -684,7 +684,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建ProtocolChannel失败，已存在类型 " + className);
+                    Log.Error("新建ProtocolChannel失败，已存在类型 " + className);
                 }
             }
         }
@@ -721,7 +721,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建UILogicResident失败，已存在类型 " + className);
+                    Log.Error("新建UILogicResident失败，已存在类型 " + className);
                 }
             }
         }
@@ -758,7 +758,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建UILogicTemporary失败，已存在类型 " + className);
+                    Log.Error("新建UILogicTemporary失败，已存在类型 " + className);
                 }
             }
         }
@@ -802,7 +802,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建HotfixProcedure失败，已存在类型 " + className);
+                    Log.Error("新建HotfixProcedure失败，已存在类型 " + className);
                 }
             }
         }
@@ -846,7 +846,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError("新建HotfixObject失败，已存在类型 " + className);
+                    Log.Error("新建HotfixObject失败，已存在类型 " + className);
                 }
             }
         }
@@ -1178,12 +1178,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogWarning("请选中一个LookAt的目标！");
+                    Log.Warning("请选中一个LookAt的目标！");
                 }
             }
             else
             {
-                GlobalTools.LogWarning("仅在运行时才能调用框架的Controller模块LookAt至选中目标！");
+                Log.Warning("仅在运行时才能调用框架的Controller模块LookAt至选中目标！");
             }
         }
 

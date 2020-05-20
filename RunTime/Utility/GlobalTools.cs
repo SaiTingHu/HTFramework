@@ -115,7 +115,7 @@ namespace HT.Framework
             }
             else
             {
-                LogInfo(target.name + " 丢失了组件 Button！");
+                Log.Info(target.name + " 丢失了组件 Button！");
             }
         }
         /// <summary>
@@ -131,7 +131,7 @@ namespace HT.Framework
             }
             else
             {
-                LogInfo(target.name + " 丢失了组件 Button！");
+                Log.Info(target.name + " 丢失了组件 Button！");
             }
         }
         /// <summary>
@@ -163,7 +163,7 @@ namespace HT.Framework
         {
             if (json == null)
             {
-                LogError("Json数据为空！");
+                Log.Error("Json数据为空！");
                 return "";
             }
             return json.ToJson();
@@ -1129,55 +1129,28 @@ namespace HT.Framework
         /// 打印普通日志
         /// </summary>
         /// <param name="value">日志</param>
+        [Obsolete("Use 'Log.Info(string)' instead. It will be removed in the future.")]
         public static void LogInfo(string value)
         {
-            if (Main.Current)
-            {
-                if (Main.Current.IsEnabledLogInfo)
-                {
-                    Debug.Log("<b><color=cyan>[HTFramework.Info]</color></b> " + value);
-                }
-            }
-            else
-            {
-                Debug.Log("<b><color=cyan>[HTFramework.Info]</color></b> " + value);
-            }
+            value.Info();
         }
         /// <summary>
         /// 打印警告日志
         /// </summary>
         /// <param name="value">日志</param>
+        [Obsolete("Use 'Log.Warning(string)' instead. It will be removed in the future.")]
         public static void LogWarning(string value)
         {
-            if (Main.Current)
-            {
-                if (Main.Current.IsEnabledLogWarning)
-                {
-                    Debug.LogWarning("<b><color=yellow>[HTFramework.Warning]</color></b> " + value);
-                }
-            }
-            else
-            {
-                Debug.LogWarning("<b><color=yellow>[HTFramework.Warning]</color></b> " + value);
-            }
+            value.Warning();
         }
         /// <summary>
         /// 打印错误日志
         /// </summary>
         /// <param name="value">日志</param>
+        [Obsolete("Use 'Log.Error(string)' instead. It will be removed in the future.")]
         public static void LogError(string value)
         {
-            if (Main.Current)
-            {
-                if (Main.Current.IsEnabledLogError)
-                {
-                    Debug.LogError("<b><color=red>[HTFramework.Error]</color></b> " + value);
-                }
-            }
-            else
-            {
-                Debug.LogError("<b><color=red>[HTFramework.Error]</color></b> " + value);
-            }
+            value.Error();
         }
         #endregion
 

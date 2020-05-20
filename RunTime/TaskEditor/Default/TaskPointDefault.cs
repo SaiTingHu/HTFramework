@@ -17,7 +17,7 @@ namespace HT.Framework
         {
             base.OnStart();
 
-            GlobalTools.LogInfo("任务点：[" + Name + "]开始!");
+            Log.Info("任务点：[" + Name + "]开始!");
         }
 
         public override void OnUpdate()
@@ -26,14 +26,14 @@ namespace HT.Framework
 
             IsDone = true;
 
-            GlobalTools.LogInfo("任务点：[" + Name + "]监控中......");
+            Log.Info("任务点：[" + Name + "]监控中......");
         }
 
         public override void OnExecute()
         {
             base.OnExecute();
 
-            GlobalTools.LogInfo("任务点：[" + Name + "]完成!");
+            Log.Info("任务点：[" + Name + "]完成!");
         }
         
 #if UNITY_EDITOR

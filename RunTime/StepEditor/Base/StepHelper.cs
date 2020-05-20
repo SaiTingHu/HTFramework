@@ -182,7 +182,7 @@ namespace HT.Framework
         {
             if (Parameters == null)
             {
-                GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
                 return null;
             }
             else
@@ -194,7 +194,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                    Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
                     return null;
                 }
             }
@@ -208,7 +208,7 @@ namespace HT.Framework
         {
             if (Parameters == null)
             {
-                GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
                 return null;
             }
             else
@@ -220,7 +220,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GlobalTools.LogError(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                    Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
                     return null;
                 }
             }
