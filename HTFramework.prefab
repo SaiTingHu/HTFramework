@@ -1051,7 +1051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf561afc4c58e624c987d779c7f13145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultResourceHelper
   Mode: 0
   IsEditorMode: 1
   IsCacheAssetBundle: 1

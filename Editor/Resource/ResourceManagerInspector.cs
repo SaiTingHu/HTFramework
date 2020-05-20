@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -19,6 +20,14 @@ namespace HT.Framework
             get
             {
                 return "Resource Manager, Manage all resource loading and unloading!";
+            }
+        }
+
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IResourceHelper);
             }
         }
 
