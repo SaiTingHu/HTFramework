@@ -121,7 +121,7 @@ namespace HT.Framework
             _assemblies.Add(GlobalTools.GetDirectorySameLevelOfAssets("/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll"));
 
             _namespace = "using System;\r\nusing System.Collections;\r\nusing System.Collections.Generic;\r\nusing UnityEngine;\r\nusing UnityEngine.UI;\r\nusing UnityEditor;\r\nusing HT.Framework;\r\nusing DG.Tweening;\r\n";
-            _code = "GlobalTools.LogInfo(\"Hello world!\");";
+            _code = "Log.Info(\"Hello world!\");";
 
             TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/DynamicExecuterTemplate.txt", typeof(TextAsset)) as TextAsset;
             if (asset)
