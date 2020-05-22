@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace HT.Framework
@@ -62,6 +63,16 @@ namespace HT.Framework
             get
             {
                 return _running;
+            }
+        }
+        /// <summary>
+        /// 当前所有的任务内容
+        /// </summary>
+        public List<TaskContentBase> AllTaskContent
+        {
+            get
+            {
+                return _taskContents.Values.ToList();
             }
         }
         /// <summary>

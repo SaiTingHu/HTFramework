@@ -166,10 +166,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
             
             height += 20;
-
-            GUILayout.BeginHorizontal();
+            
             TaskGameObjectField(ref Target, "Target:", 50);
-            GUILayout.EndHorizontal();
 
             height += 20;
 
@@ -211,6 +209,8 @@ namespace HT.Framework
             {
                 taskGameObject = new TaskGameObject();
             }
+
+            GUILayout.BeginHorizontal();
 
             GUIContent gUIContent = new GUIContent(name);
             gUIContent.tooltip = "GUID: " + taskGameObject.GUID;
@@ -275,6 +275,8 @@ namespace HT.Framework
                 taskGameObject.Path = "";
             }
             GUI.enabled = true;
+
+            GUILayout.EndHorizontal();
         }
 
         internal static void GenerateSerializeSubObject(UnityEngine.Object obj, UnityEngine.Object mainAsset)

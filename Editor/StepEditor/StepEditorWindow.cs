@@ -239,6 +239,10 @@ namespace HT.Framework
                 {
                     Application.OpenURL(@"http://robertpenner.com/easing/easing_demo.html");
                 });
+                gm.AddItem(new GUIContent("CSDN Blog"), false, () =>
+                {
+                    Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/87712995");
+                });
                 gm.ShowAsContext();
             }
             if (GUILayout.Button("Minimize", EditorStyles.toolbarPopup))

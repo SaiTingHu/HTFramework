@@ -429,6 +429,8 @@ namespace HT.Framework
                 taskGameObject = new TaskGameObject();
             }
 
+            GUILayout.BeginHorizontal();
+
             GUIContent gUIContent = new GUIContent(name);
             gUIContent.tooltip = "GUID: " + taskGameObject.GUID;
             GUILayout.Label(gUIContent, GUILayout.Width(nameWidth));
@@ -492,6 +494,8 @@ namespace HT.Framework
                 taskGameObject.Path = "";
             }
             GUI.enabled = true;
+
+            GUILayout.EndHorizontal();
         }
 #endif
     }

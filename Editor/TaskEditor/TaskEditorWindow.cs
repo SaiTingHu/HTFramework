@@ -61,6 +61,8 @@ namespace HT.Framework
             _deleteGUIContent = new GUIContent();
             _deleteGUIContent.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _deleteGUIContent.tooltip = "Delete";
+
+            EditorApplication.playModeStateChanged += OnPlayModeStateChange;
         }
         private void Update()
         {
@@ -68,6 +70,10 @@ namespace HT.Framework
             {
                 Close();
             }
+        }
+        private void OnDisable()
+        {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChange;
         }
         protected override void OnBodyGUI()
         {
@@ -110,19 +116,11 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("ReSet", EditorStyles.toolbarButton))
             {
-                for (int i = 0; i < _asset.Content.Count; i++)
-                {
-                    TaskContentBase taskContent = _asset.Content[i];
-                    taskContent.ReSet();
-                    for (int j = 0; j < taskContent.Points.Count; j++)
-                    {
-                        taskContent.Points[j].ReSet();
-                    }
-                }
+                ReSet();
             }
             if (GUILayout.Button("About", EditorStyles.toolbarButton))
             {
-                
+                Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/104317219");
             }
             GUILayout.EndHorizontal();
         }
@@ -481,6 +479,32 @@ namespace HT.Framework
                 else
                 {
                     Log.Error("新建TaskPoint失败，已存在类型 " + className);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 当编辑器播放状态改变
+        /// </summary>
+        private void OnPlayModeStateChange(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.ExitingPlayMode)
+            {
+                ReSet();
+            }
+        }
+        /// <summary>
+        /// 重置状态
+        /// </summary>
+        private void ReSet()
+        {
+            for (int i = 0; i < _asset.Content.Count; i++)
+            {
+                TaskContentBase taskContent = _asset.Content[i];
+                taskContent.ReSet();
+                for (int j = 0; j < taskContent.Points.Count; j++)
+                {
+                    taskContent.Points[j].ReSet();
                 }
             }
         }
