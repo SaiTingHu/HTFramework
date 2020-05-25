@@ -999,6 +999,18 @@ namespace HT.Framework
         }
         #endregion
 
+        #region 编辑器工具
+        /// <summary>
+        /// 强制编辑器进行编译
+        /// </summary>
+        public static void CoerciveCompile()
+        {
+            MonoScript monoScript = MonoImporter.GetAllRuntimeMonoScripts()[0];
+            int order = MonoImporter.GetExecutionOrder(monoScript);
+            MonoImporter.SetExecutionOrder(monoScript, order);
+        }
+        #endregion
+
         #region IO工具
         /// <summary>
         /// 删除文件夹及以下的所有文件夹、文件
@@ -1089,40 +1101,45 @@ namespace HT.Framework
         #endregion
 
         #region LnkTools
-        private static List<LnkTools> LnkToolss = new List<LnkTools>();
+        private static bool IsEnableLnkTools = false;
         private static bool IsExpansionLnkTools = false;
+        private static List<LnkTools> LnkToolss = new List<LnkTools>();
 
         /// <summary>
         /// LnkTools初始化
         /// </summary>
         private static void OnInitLnkTools()
         {
-            LnkToolss.Clear();
-            List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
-            for (int i = 0; i < types.Count; i++)
-            {
-                MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                for (int j = 0; j < methods.Length; j++)
-                {
-                    if (methods[j].IsDefined(typeof(LnkToolsAttribute), false))
-                    {
-                        LnkToolsAttribute attribute = methods[j].GetCustomAttribute<LnkToolsAttribute>();
-                        LnkTools lnkTools = new LnkTools(attribute.Tooltip, attribute.Priority, methods[j]);
-                        LnkToolss.Add(lnkTools);
-                    }
-                }
-            }
-
-            LnkToolss.Sort((x, y) =>
-            {
-                if (x.Priority < y.Priority) return -1;
-                else if (x.Priority == y.Priority) return 0;
-                else return 1;
-            });
-
+            IsEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, false);
             IsExpansionLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Expansion, false);
 
-            SceneView.onSceneGUIDelegate += OnLnkToolsGUI;
+            if (IsEnableLnkTools)
+            {
+                LnkToolss.Clear();
+                List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
+                for (int i = 0; i < types.Count; i++)
+                {
+                    MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    for (int j = 0; j < methods.Length; j++)
+                    {
+                        if (methods[j].IsDefined(typeof(LnkToolsAttribute), false))
+                        {
+                            LnkToolsAttribute attribute = methods[j].GetCustomAttribute<LnkToolsAttribute>();
+                            LnkTools lnkTools = new LnkTools(attribute.Tooltip, attribute.Priority, methods[j]);
+                            LnkToolss.Add(lnkTools);
+                        }
+                    }
+                }
+
+                LnkToolss.Sort((x, y) =>
+                {
+                    if (x.Priority < y.Priority) return -1;
+                    else if (x.Priority == y.Priority) return 0;
+                    else return 1;
+                });
+
+                SceneView.onSceneGUIDelegate += OnLnkToolsGUI;
+            }
         }
         /// <summary>
         /// LnkTools界面

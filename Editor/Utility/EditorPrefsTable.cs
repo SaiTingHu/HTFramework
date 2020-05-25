@@ -149,6 +149,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 快捷工具是否启用
+        /// </summary>
+        public static string LnkTools_Enable
+        {
+            get
+            {
+                return "LnkTools.Enable";
+            }
+        }
+        /// <summary>
         /// 快捷工具是否展开
         /// </summary>
         public static string LnkTools_Expansion

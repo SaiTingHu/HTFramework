@@ -8,6 +8,7 @@ namespace HT.Framework
     {
         private Main _main;
         private bool _isDeveloperMode = false;
+        private bool _isEnableLnkTools = false;
 
         public override string Name
         {
@@ -28,6 +29,7 @@ namespace HT.Framework
             }
 
             _isDeveloperMode = Unsupported.IsDeveloperMode();
+            _isEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, false);
         }
         
         public override void OnSettingGUI()
@@ -40,6 +42,19 @@ namespace HT.Framework
             {
                 _isDeveloperMode = isDeveloperMode;
                 EditorPrefs.SetBool("DeveloperMode", _isDeveloperMode);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            bool isEnableLnkTools = EditorGUILayout.Toggle("Is Enable LnkTools", _isEnableLnkTools);
+            if (isEnableLnkTools != _isEnableLnkTools)
+            {
+                if (!EditorApplication.isCompiling)
+                {
+                    _isEnableLnkTools = isEnableLnkTools;
+                    EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Enable, _isEnableLnkTools);
+                    EditorApplication.delayCall += EditorGlobalTools.CoerciveCompile;
+                }
             }
             GUILayout.EndHorizontal();
         }
