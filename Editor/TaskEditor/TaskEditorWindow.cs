@@ -111,6 +111,10 @@ namespace HT.Framework
                 Selection.activeObject = _asset;
                 EditorGUIUtility.PingObject(_asset);
             }
+            if (GUILayout.Button("Regen Task ID", EditorStyles.toolbarPopup))
+            {
+                TaskRegenIDWindow.ShowWindow(this, _asset);
+            }
             _isShowContent = GUILayout.Toggle(_isShowContent, "Task Content", EditorStyles.toolbarButton);
             _isShowProperty = GUILayout.Toggle(_isShowProperty, "Property", EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();

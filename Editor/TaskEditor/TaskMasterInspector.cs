@@ -23,6 +23,10 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             ObjectField(Target.ContentAsset, out Target.ContentAsset, false, "Asset");
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsAutoChangeNext, out Target.IsAutoChangeNext, "Auto Change Next");
+            GUILayout.EndHorizontal();
         }
 
         protected override void OnInspectorRuntimeGUI()

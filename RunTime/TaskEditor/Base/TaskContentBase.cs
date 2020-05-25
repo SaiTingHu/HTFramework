@@ -80,7 +80,7 @@ namespace HT.Framework
             bool isDone = true;
             for (int i = 0; i < Points.Count; i++)
             {
-                if (Points[i].IsEnable && !Points[i].IsDone)
+                if (Points[i].IsEnable && !Points[i].IsExecute)
                 {
                     isDone = false;
 
