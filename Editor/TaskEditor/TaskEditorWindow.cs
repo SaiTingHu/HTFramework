@@ -30,6 +30,7 @@ namespace HT.Framework
         private bool _isShowProperty = true;
         private Vector2 _contentScroll;
         private int _contentGUIWidth = 250;
+        private bool _isBreakDepend = false;
         private GUIContent _addGUIContent;
         private GUIContent _editGUIContent;
         private GUIContent _deleteGUIContent;
@@ -190,6 +191,18 @@ namespace HT.Framework
                     TaskDepend depend = _currentContent.Depends[i];
                     Handles.DrawBezier(_currentContent.Points[depend.OriginalPoint].LeftPosition, _currentContent.Points[depend.DependPoint].RightPosition
                         , _currentContent.Points[depend.OriginalPoint].LeftTangent, _currentContent.Points[depend.DependPoint].RightTangent, Color.white, null, 3);
+
+                    if (_isBreakDepend)
+                    {
+                        Vector2 center = (_currentContent.Points[depend.OriginalPoint].LeftPosition + _currentContent.Points[depend.DependPoint].RightPosition) / 2;
+                        Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
+                        if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
+                        {
+                            _currentContent.Depends.RemoveAt(i);
+                            break;
+                        }
+                        EditorGUIUtility.AddCursorRect(centerRect, MouseCursor.ArrowMinus);
+                    }
                 }
             }
         }
@@ -250,6 +263,26 @@ namespace HT.Framework
                                 _currentContent.Points[i].OnDrag(Event.current.delta);
                             }
                             GUI.changed = true;
+                        }
+                        break;
+                    case EventType.KeyDown:
+                        switch (Event.current.keyCode)
+                        {
+                            case KeyCode.LeftAlt:
+                            case KeyCode.RightAlt:
+                                _isBreakDepend = true;
+                                GUI.changed = true;
+                                break;
+                        }
+                        break;
+                    case EventType.KeyUp:
+                        switch (Event.current.keyCode)
+                        {
+                            case KeyCode.LeftAlt:
+                            case KeyCode.RightAlt:
+                                _isBreakDepend = false;
+                                GUI.changed = true;
+                                break;
                         }
                         break;
                 }

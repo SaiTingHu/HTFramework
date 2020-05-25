@@ -156,6 +156,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 当前是否是自动切换状态
+        /// </summary>
+        public bool IsAutoChangeState
+        {
+            get
+            {
+                return IsAutoChangeNext;
+            }
+        }
+        /// <summary>
         /// 通过ID设置当前激活的任务内容
         /// </summary>
         /// <param name="id">任务内容ID</param>
@@ -314,7 +324,10 @@ namespace HT.Framework
 
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskBegin>());
 
-            BeginCurrentTask();
+            if (IsAutoChangeNext)
+            {
+                BeginCurrentTask();
+            }
         }
         /// <summary>
         /// 结束任务流程

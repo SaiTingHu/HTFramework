@@ -114,9 +114,13 @@ namespace HT.Framework
         private bool _isEditID = false;
         private bool _isEditName = false;
         private bool _isEditDetails = false;
+        private bool _isWired = false;
+        private bool _isWiredRight = false;
+        private Rect _leftWiredOrigin;
+        private Rect _rightWiredOrigin;
         private int _height = 0;
 
-        public Vector2 LeftPosition
+        internal Vector2 LeftPosition
         {
             get
             {
@@ -124,7 +128,7 @@ namespace HT.Framework
             }
         }
 
-        public Vector2 RightPosition
+        internal Vector2 RightPosition
         {
             get
             {
@@ -132,7 +136,7 @@ namespace HT.Framework
             }
         }
 
-        public Vector2 LeftTangent
+        internal Vector2 LeftTangent
         {
             get
             {
@@ -140,7 +144,7 @@ namespace HT.Framework
             }
         }
 
-        public Vector2 RightTangent
+        internal Vector2 RightTangent
         {
             get
             {
@@ -174,13 +178,30 @@ namespace HT.Framework
             _height += OnPropertyGUI();
             
             Anchor.height = _height;
-
+            
             GUILayout.EndArea();
+
+            OnWired();
         }
 
         internal void OnDrag(Vector2 delta)
         {
             Anchor.position += delta;
+        }
+
+        private void OnWired()
+        {
+            if (_isWired)
+            {
+                if (_isWiredRight)
+                {
+                    Handles.DrawBezier(RightPosition, Event.current.mousePosition, RightTangent, Event.current.mousePosition, Color.white, null, 3);
+                }
+                else
+                {
+                    Handles.DrawBezier(LeftPosition, Event.current.mousePosition, LeftTangent, Event.current.mousePosition, Color.white, null, 3);
+                }
+            }
         }
 
         internal void OnPointEventHandle(Event e, TaskContentBase content)
@@ -190,7 +211,22 @@ namespace HT.Framework
                 case EventType.MouseDown:
                     if (e.button == 0)
                     {
-                        if (Anchor.Contains(e.mousePosition))
+                        _leftWiredOrigin.x += Anchor.x;
+                        _leftWiredOrigin.y += Anchor.y;
+                        _rightWiredOrigin.x += Anchor.x;
+                        _rightWiredOrigin.y += Anchor.y;
+
+                        if (_leftWiredOrigin.Contains(e.mousePosition))
+                        {
+                            _isWired = true;
+                            _isWiredRight = false;
+                        }
+                        else if (_rightWiredOrigin.Contains(e.mousePosition))
+                        {
+                            _isWired = true;
+                            _isWiredRight = true;
+                        }
+                        else if (Anchor.Contains(e.mousePosition))
                         {
                             _isDraging = true;
                             _isSelected = true;
@@ -208,18 +244,111 @@ namespace HT.Framework
                     }
                     else if (e.button == 1)
                     {
-                        if (_isSelected && Anchor.Contains(e.mousePosition))
+                        if (_isSelected)
                         {
-                            RightClickMenu(content);
-                            e.Use();
+                            _leftWiredOrigin.x += Anchor.x;
+                            _leftWiredOrigin.y += Anchor.y;
+                            _rightWiredOrigin.x += Anchor.x;
+                            _rightWiredOrigin.y += Anchor.y;
+
+                            if (_leftWiredOrigin.Contains(e.mousePosition))
+                            {
+                                GenericMenu gm = new GenericMenu();
+                                int index = content.Points.IndexOf(this);
+                                for (int i = 0; i < content.Points.Count; i++)
+                                {
+                                    if (i != index)
+                                    {
+                                        int m = i;
+                                        bool isExist = content.IsExistDepend(index, m);
+                                        gm.AddItem(new GUIContent(content.Points[m].Name), isExist, () =>
+                                        {
+                                            if (isExist)
+                                            {
+                                                content.DisconnectDepend(index, m);
+                                            }
+                                            else
+                                            {
+                                                content.ConnectDepend(index, m);
+                                            }
+                                        });
+                                    }
+                                }
+                                gm.ShowAsContext();
+                            }
+                            else if (_rightWiredOrigin.Contains(e.mousePosition))
+                            {
+                                GenericMenu gm = new GenericMenu();
+                                int index = content.Points.IndexOf(this);
+                                for (int i = 0; i < content.Points.Count; i++)
+                                {
+                                    if (i != index)
+                                    {
+                                        int m = i;
+                                        bool isExist = content.IsExistDepend(m, index);
+                                        gm.AddItem(new GUIContent(content.Points[m].Name), isExist, () =>
+                                        {
+                                            if (isExist)
+                                            {
+                                                content.DisconnectDepend(m, index);
+                                            }
+                                            else
+                                            {
+                                                content.ConnectDepend(m, index);
+                                            }
+                                        });
+                                    }
+                                }
+                                gm.ShowAsContext();
+                            }
+                            else if (Anchor.Contains(e.mousePosition))
+                            {
+                                RightClickMenu(content);
+                                e.Use();
+                            }
                         }
                     }
                     break;
                 case EventType.MouseUp:
+                    int upIndex;
+                    if (ChoosePoint(Event.current.mousePosition, content, out upIndex))
+                    {
+                        if (_isWired)
+                        {
+                            int originIndex = content.Points.IndexOf(this);
+                            if (originIndex != upIndex)
+                            {
+                                if (_isWiredRight)
+                                {
+                                    if (content.IsExistDepend(upIndex, originIndex))
+                                        content.DisconnectDepend(upIndex, originIndex);
+                                    else
+                                        content.ConnectDepend(upIndex, originIndex);
+                                }
+                                else
+                                {
+                                    if (content.IsExistDepend(originIndex, upIndex))
+                                        content.DisconnectDepend(originIndex, upIndex);
+                                    else
+                                        content.ConnectDepend(originIndex, upIndex);
+                                }
+                            }
+                        }
+                    }
+
                     _isDraging = false;
+                    if (_isWired)
+                    {
+                        _isWired = false;
+                        GUI.changed = true;
+                    }
                     break;
                 case EventType.MouseDrag:
-                    if (e.button == 0 && _isDraging)
+                    if (_isWired)
+                    {
+                        GUI.changed = true;
+                    }
+                    else if (_isDraging)
                     {
                         OnDrag(e.delta);
                         e.Use();
@@ -228,66 +357,38 @@ namespace HT.Framework
                     break;
             }
         }
+        
+        private bool ChoosePoint(Vector2 mousePosition, TaskContentBase content, out int index)
+        {
+            for (int i = 0; i < content.Points.Count; i++)
+            {
+                if (content.Points[i].Anchor.Contains(mousePosition))
+                {
+                    index = i;
+                    return true;
+                }
+            }
+            index = -1;
+            return false;
+        }
 
         internal int OnDependGUI(TaskContentBase taskContent)
         {
             int height = 0;
 
             GUILayout.BeginHorizontal();
+
             GUIContent gUIContent = EditorGUIUtility.IconContent("DotFrameDotted");
             gUIContent.tooltip = "Dependent task point";
-            if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
-            {
-                GenericMenu gm = new GenericMenu();
-                int index = taskContent.Points.IndexOf(this);
-                for (int i = 0; i < taskContent.Points.Count; i++)
-                {
-                    if (i != index)
-                    {
-                        int m = i;
-                        bool isExist = taskContent.IsExistDepend(index, m);
-                        gm.AddItem(new GUIContent(taskContent.Points[m].Name), isExist, () =>
-                        {
-                            if (isExist)
-                            {
-                                taskContent.DisconnectDepend(index, m);
-                            }
-                            else
-                            {
-                                taskContent.ConnectDepend(index, m);
-                            }
-                        });
-                    }
-                }
-                gm.ShowAsContext();
-            }
+            GUILayout.Box(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20));
+            _leftWiredOrigin = GUILayoutUtility.GetLastRect();
+
             GUILayout.FlexibleSpace();
+
             gUIContent.tooltip = "Be dependent task point";
-            if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
-            {
-                GenericMenu gm = new GenericMenu();
-                int index = taskContent.Points.IndexOf(this);
-                for (int i = 0; i < taskContent.Points.Count; i++)
-                {
-                    if (i != index)
-                    {
-                        int m = i;
-                        bool isExist = taskContent.IsExistDepend(m, index);
-                        gm.AddItem(new GUIContent(taskContent.Points[m].Name), isExist, () =>
-                        {
-                            if (isExist)
-                            {
-                                taskContent.DisconnectDepend(m, index);
-                            }
-                            else
-                            {
-                                taskContent.ConnectDepend(m, index);
-                            }
-                        });
-                    }
-                }
-                gm.ShowAsContext();
-            }
+            GUILayout.Box(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20));
+            _rightWiredOrigin = GUILayoutUtility.GetLastRect();
+
             GUILayout.EndHorizontal();
 
             height += 20;
