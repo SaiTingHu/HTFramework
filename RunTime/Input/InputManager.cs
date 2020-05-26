@@ -83,6 +83,12 @@ namespace HT.Framework
 
             _inputDevice.OnShutdown();
         }
+        internal override void OnPause()
+        {
+            base.OnPause();
+
+            _inputModule.ResetAll();
+        }
 
         /// <summary>
         /// 是否存在虚拟轴线
