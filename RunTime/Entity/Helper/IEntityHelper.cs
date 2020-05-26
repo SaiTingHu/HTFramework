@@ -17,6 +17,8 @@ namespace HT.Framework
         /// <summary>
         /// 初始化
         /// </summary>
+        /// <param name="defineEntityNames">预定义的实体名称</param>
+        /// <param name="defineEntityTargets">预定义的实体对象</param>
         void OnInitialization(List<string> defineEntityNames, List<GameObject> defineEntityTargets);
         /// <summary>
         /// 逻辑刷新

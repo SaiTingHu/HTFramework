@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8505b674be39d1e43a1a0413c78bd1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultUIHelper
   IsEnableOverlayUI: 1
   IsEnableCameraUI: 0
   IsEnableWorldUI: 0

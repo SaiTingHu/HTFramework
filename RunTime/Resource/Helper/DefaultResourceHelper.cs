@@ -40,7 +40,7 @@ namespace HT.Framework
         /// </summary>
         public string AssetBundleManifestName { get; set; }
         /// <summary>
-        /// 缓存的所有AssetBundle包 <AB包名称、AB包>
+        /// 缓存的所有AssetBundle包【AB包名称、AB包】
         /// </summary>
         public Dictionary<string, AssetBundle> AssetBundles { get; set; } = new Dictionary<string, AssetBundle>();
         /// <summary>
@@ -48,7 +48,7 @@ namespace HT.Framework
         /// </summary>
         public AssetBundleManifest AssetBundleManifest { get; set; }
         /// <summary>
-        /// 所有AssetBundle的Hash128值 <AB包名称、Hash128值>
+        /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
         public Dictionary<string, Hash128> AssetBundleHashs { get; set; } = new Dictionary<string, Hash128>();
 

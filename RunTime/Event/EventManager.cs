@@ -21,8 +21,7 @@ namespace HT.Framework
         internal override void OnInitialization()
         {
             base.OnInitialization();
-
-            //注册所有存在的事件
+            
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
                 return type.IsSubclassOf(typeof(EventHandlerBase));

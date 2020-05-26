@@ -43,6 +43,8 @@ namespace HT.Framework
         /// <summary>
         /// 初始化
         /// </summary>
+        /// <param name="defineEntityNames">预定义的实体名称</param>
+        /// <param name="defineEntityTargets">预定义的实体对象</param>
         public void OnInitialization(List<string> defineEntityNames, List<GameObject> defineEntityTargets)
         {
             for (int i = 0; i < defineEntityNames.Count; i++)
