@@ -28,11 +28,7 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("HTFramework Main Module!", MessageType.Info);
-            GUILayout.EndHorizontal();
-
+            
             ScriptingDefineGUI();
             MainDataGUI();
             LicenseGUI();

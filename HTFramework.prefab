@@ -1545,7 +1545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68767d21ea0d235408aba8ad9c921b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultDataSetHelper
 --- !u!1 &4158756062363482405
 GameObject:
   m_ObjectHideFlags: 0
@@ -2003,6 +2003,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HelperType: <None>
   ContentAsset: {fileID: 0}
+  IsAutoChangeNext: 1
 --- !u!1 &8775430792589470182
 GameObject:
   m_ObjectHideFlags: 0

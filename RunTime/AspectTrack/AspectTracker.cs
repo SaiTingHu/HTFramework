@@ -48,6 +48,10 @@ namespace HT.Framework
             {
                 InterceptConditions.Add(conditionName, interceptCondition);
             }
+            else
+            {
+                Log.Warning("新增拦截条件失败：已存在同名拦截条件 " + conditionName + " ！");
+            }
         }
         /// <summary>
         /// 是否存在拦截条件

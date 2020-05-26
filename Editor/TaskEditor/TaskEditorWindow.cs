@@ -16,6 +16,7 @@ namespace HT.Framework
             window.titleContent.image = EditorGUIUtility.IconContent("AnimatorStateMachine Icon").image;
             window.titleContent.text = "Task Editor";
             window._asset = contentAsset;
+            window.ReSet();
             window.minSize = new Vector2(800, 600);
             window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
             window.Show();

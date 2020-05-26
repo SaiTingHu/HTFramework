@@ -21,6 +21,14 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IDataSetHelper);
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
