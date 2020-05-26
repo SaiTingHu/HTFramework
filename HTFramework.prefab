@@ -1100,7 +1100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82afe7ee29d7056409afc0aaa063ca9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultEntityHelper
   DefineEntityNames: []
   DefineEntityTargets: []
 --- !u!1 &1297091591969824496
