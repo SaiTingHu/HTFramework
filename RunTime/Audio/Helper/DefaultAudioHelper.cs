@@ -255,8 +255,8 @@ namespace HT.Framework
             {
                 BackgroundAudio.DOFade(0, 2).OnComplete(() =>
                 {
-                    BackgroundAudio.volume = BackgroundVolume;
                     BackgroundAudio.Pause();
+                    BackgroundAudio.volume = BackgroundVolume;
                 });
             }
             else
@@ -272,8 +272,8 @@ namespace HT.Framework
         {
             if (isGradual)
             {
-                BackgroundAudio.UnPause();
                 BackgroundAudio.volume = 0;
+                BackgroundAudio.UnPause();
                 BackgroundAudio.DOFade(BackgroundVolume, 2);
             }
             else
@@ -321,8 +321,8 @@ namespace HT.Framework
             {
                 SingleAudio.DOFade(0, 2).OnComplete(() =>
                 {
-                    SingleAudio.volume = SingleVolume;
                     SingleAudio.Pause();
+                    SingleAudio.volume = SingleVolume;
                 });
             }
             else
@@ -338,8 +338,8 @@ namespace HT.Framework
         {
             if (isGradual)
             {
-                SingleAudio.UnPause();
                 SingleAudio.volume = 0;
+                SingleAudio.UnPause();
                 SingleAudio.DOFade(SingleVolume, 2);
             }
             else
@@ -464,8 +464,8 @@ namespace HT.Framework
                 {
                     audio.DOFade(0, 2).OnComplete(() =>
                     {
-                        audio.volume = WorldVolume;
                         audio.Pause();
+                        audio.volume = WorldVolume;
                     });
                 }
                 else
@@ -486,8 +486,8 @@ namespace HT.Framework
                 AudioSource audio = WorldAudios[attachTarget];
                 if (isGradual)
                 {
-                    audio.UnPause();
                     audio.volume = 0;
+                    audio.UnPause();
                     audio.DOFade(WorldVolume, 2);
                 }
                 else

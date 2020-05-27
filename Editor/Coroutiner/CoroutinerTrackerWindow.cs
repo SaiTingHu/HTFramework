@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace HT.Framework
     internal sealed class CoroutinerTrackerWindow : HTFEditorWindow
     {
         private Coroutiner _coroutiner;
+        private ICoroutinerHelper _helper;
         private Dictionary<Delegate, bool> _enumerators = new Dictionary<Delegate, bool>();
         private Coroutiner.CoroutineEnumerator _currentEnumerator;
         private string _currentStackTrace;
@@ -28,10 +30,11 @@ namespace HT.Framework
         public void Init(Coroutiner coroutiner)
         {
             _coroutiner = coroutiner;
+            _helper = _coroutiner.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_coroutiner) as ICoroutinerHelper;
         }
         private void Update()
         {
-            if (!_coroutiner)
+            if (_coroutiner == null || _helper == null)
             {
                 Close();
             }
@@ -67,7 +70,7 @@ namespace HT.Framework
             int index1 = 1;
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _scrollContent = GUILayout.BeginScrollView(_scrollContent);
-            foreach (KeyValuePair<Delegate, List<Coroutiner.CoroutineEnumerator>> executor in _coroutiner.Warehouse)
+            foreach (var executor in _helper.Warehouse)
             {
                 if (!_enumerators.ContainsKey(executor.Key))
                 {
@@ -84,7 +87,7 @@ namespace HT.Framework
                 if (_enumerators[executor.Key])
                 {
                     int index2 = 1;
-                    foreach (Coroutiner.CoroutineEnumerator enumerator in executor.Value)
+                    foreach (var enumerator in executor.Value)
                     {
                         GUI.color = _currentEnumerator == enumerator ? Color.cyan : Color.white;
                         GUILayout.BeginHorizontal("Badge");

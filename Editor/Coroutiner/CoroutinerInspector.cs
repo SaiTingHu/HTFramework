@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -16,11 +17,20 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(ICoroutinerHelper);
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
             
             GUILayout.BeginHorizontal();
+            GUI.enabled = EditorApplication.isPlaying;
             if (GUILayout.Button("Coroutiner Tracker", EditorGlobalTools.Styles.LargeButton))
             {
                 CoroutinerTrackerWindow tracker = EditorWindow.GetWindow<CoroutinerTrackerWindow>();
@@ -31,6 +41,7 @@ namespace HT.Framework
                 tracker.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
                 tracker.Show();
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
         }
 

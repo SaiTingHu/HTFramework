@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
@@ -13,21 +12,13 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.Coroutiner)]
     public sealed class Coroutiner : InternalModuleBase
     {
-        /// <summary>
-        /// 所有协程迭代器
-        /// </summary>
-        internal Dictionary<string, CoroutineEnumerator> CoroutineEnumerators { get; } = new Dictionary<string, CoroutineEnumerator>();
-        /// <summary>
-        /// 迭代器仓库
-        /// </summary>
-        internal Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
+        private ICoroutinerHelper _helper;
 
-        internal override void OnTermination()
+        internal override void OnInitialization()
         {
-            base.OnTermination();
+            base.OnInitialization();
 
-            CoroutineEnumerators.Clear();
-            Warehouse.Clear();
+            _helper = Helper as ICoroutinerHelper;
         }
 
         /// <summary>
@@ -37,11 +28,7 @@ namespace HT.Framework
         /// <returns>协程迭代器ID</returns>
         public string Run(CoroutineAction action)
         {
-            CoroutineEnumerator coroutineEnumerator = Main.m_ReferencePool.Spawn<CoroutineEnumerator>().Fill(action, null);
-            coroutineEnumerator.Run();
-            CoroutineEnumerators.Add(coroutineEnumerator.ID, coroutineEnumerator);
-            DepositWarehouse(coroutineEnumerator);
-            return coroutineEnumerator.ID;
+            return _helper.Run(action);
         }
         /// <summary>
         /// 运行协程
@@ -52,11 +39,7 @@ namespace HT.Framework
         /// <returns>协程迭代器ID</returns>
         public string Run<T>(CoroutineAction<T> action, T arg)
         {
-            CoroutineEnumerator coroutineEnumerator = Main.m_ReferencePool.Spawn<CoroutineEnumerator>().Fill(action, new object[] { arg });
-            coroutineEnumerator.Run();
-            CoroutineEnumerators.Add(coroutineEnumerator.ID, coroutineEnumerator);
-            DepositWarehouse(coroutineEnumerator);
-            return coroutineEnumerator.ID;
+            return _helper.Run(action, arg);
         }
         /// <summary>
         /// 运行协程
@@ -69,11 +52,7 @@ namespace HT.Framework
         /// <returns>协程迭代器ID</returns>
         public string Run<T1, T2>(CoroutineAction<T1, T2> action, T1 arg1, T2 arg2)
         {
-            CoroutineEnumerator coroutineEnumerator = Main.m_ReferencePool.Spawn<CoroutineEnumerator>().Fill(action, new object[] { arg1, arg2 });
-            coroutineEnumerator.Run();
-            CoroutineEnumerators.Add(coroutineEnumerator.ID, coroutineEnumerator);
-            DepositWarehouse(coroutineEnumerator);
-            return coroutineEnumerator.ID;
+            return _helper.Run(action, arg1, arg2);
         }
         /// <summary>
         /// 重启协程
@@ -81,11 +60,7 @@ namespace HT.Framework
         /// <param name="id">协程迭代器ID</param>
         public void Rerun(string id)
         {
-            if (!CoroutineEnumerators.ContainsKey(id))
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Coroutiner, "重启协程失败：不存在ID为 " + id + " 的协程！");
-            }
-            CoroutineEnumerators[id].Rerun();
+            _helper.Rerun(id);
         }
         /// <summary>
         /// 终止指定ID的协程
@@ -93,11 +68,7 @@ namespace HT.Framework
         /// <param name="id">协程迭代器ID</param>
         public void Stop(string id)
         {
-            if (!CoroutineEnumerators.ContainsKey(id))
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Coroutiner, "终止协程失败：不存在ID为 " + id + " 的协程！");
-            }
-            CoroutineEnumerators[id].Stop();
+            _helper.Stop(id);
         }
         /// <summary>
         /// 终止指定类型的所有协程
@@ -105,13 +76,7 @@ namespace HT.Framework
         /// <param name="action">协程方法</param>
         public void Stop(Delegate action)
         {
-            if (Warehouse.ContainsKey(action))
-            {
-                for (int i = 0; i < Warehouse[action].Count; i++)
-                {
-                    Warehouse[action][i].Stop();
-                }
-            }
+            _helper.Stop(action);
         }
         /// <summary>
         /// 是否存在
@@ -120,7 +85,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExist(string id)
         {
-            return CoroutineEnumerators.ContainsKey(id);
+            return _helper.IsExist(id);
         }
         /// <summary>
         /// 是否运行中
@@ -129,58 +94,20 @@ namespace HT.Framework
         /// <returns>是否运行中</returns>
         public bool IsRunning(string id)
         {
-            if (!CoroutineEnumerators.ContainsKey(id))
-            {
-                return false;
-            }
-            return CoroutineEnumerators[id].IsRunning();
+            return _helper.IsRunning(id);
         }
         /// <summary>
         /// 清理所有未运行的协程
         /// </summary>
         public void ClearNotRunning()
         {
-            Dictionary<string, CoroutineEnumerator> notRunnings = new Dictionary<string, CoroutineEnumerator>();
-            foreach (KeyValuePair<string, CoroutineEnumerator> enumerator in CoroutineEnumerators)
-            {
-                if (!enumerator.Value.IsRunning())
-                {
-                    notRunnings.Add(enumerator.Key, enumerator.Value);
-                }
-            }
-            foreach (KeyValuePair<string, CoroutineEnumerator> enumerator in notRunnings)
-            {
-                CoroutineEnumerators.Remove(enumerator.Key);
-                RemoveWarehouse(enumerator.Value);
-                Main.m_ReferencePool.Despawn(enumerator.Value);
-            }
-            notRunnings = null;
-        }
-
-        private void DepositWarehouse(CoroutineEnumerator enumerator)
-        {
-            if (!Warehouse.ContainsKey(enumerator.TargetAction))
-            {
-                Warehouse.Add(enumerator.TargetAction, new List<CoroutineEnumerator>());
-            }
-            Warehouse[enumerator.TargetAction].Add(enumerator);
-        }
-        private void RemoveWarehouse(CoroutineEnumerator enumerator)
-        {
-            if (Warehouse.ContainsKey(enumerator.TargetAction))
-            {
-                Warehouse[enumerator.TargetAction].Remove(enumerator);
-                if (Warehouse[enumerator.TargetAction].Count <= 0)
-                {
-                    Warehouse.Remove(enumerator.TargetAction);
-                }
-            }
+            _helper.ClearNotRunning();
         }
 
         /// <summary>
         /// 协程迭代器
         /// </summary>
-        internal sealed class CoroutineEnumerator : IEnumerator, IReference
+        public sealed class CoroutineEnumerator : IEnumerator, IReference
         {
             public string ID { get; private set; }
             public object TargetObject { get; private set; }

@@ -1589,7 +1589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03df4ebb814a8c94b89cbd8cb60379bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultCoroutinerHelper
 --- !u!1 &4547706495370186365
 GameObject:
   m_ObjectHideFlags: 0
