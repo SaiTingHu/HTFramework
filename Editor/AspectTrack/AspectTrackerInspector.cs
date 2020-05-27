@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -13,6 +14,14 @@ namespace HT.Framework
             get
             {
                 return "Aspect Tracker, you can track code calls anywhere in the program, or intercept him.";
+            }
+        }
+
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IAspectTrackHelper);
             }
         }
 

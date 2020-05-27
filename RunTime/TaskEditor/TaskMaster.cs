@@ -228,32 +228,9 @@ namespace HT.Framework
         {
             if (_running)
             {
-                if (_currentContent != null && !_currentContent.IsComplete)
+                if (_currentContent != null)
                 {
-                    List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
-                    List<int> uncompletePointIndexs = new List<int>();
-                    for (int i = 0; i < _currentContent.Points.Count; i++)
-                    {
-                        if (!_currentContent.Points[i].IsComplete)
-                        {
-                            uncompletePoints.Add(_currentContent.Points[i]);
-                            uncompletePointIndexs.Add(i);
-                        }
-                    }
-
-                    while (uncompletePoints.Count > 0)
-                    {
-                        for (int i = 0; i < uncompletePoints.Count; i++)
-                        {
-                            if (_currentContent.IsDependComplete(uncompletePointIndexs[i]))
-                            {
-                                uncompletePoints[i].OnAutoComplete();
-                                uncompletePoints.RemoveAt(i);
-                                uncompletePointIndexs.RemoveAt(i);
-                                i -= 1;
-                            }
-                        }
-                    }
+                    _currentContent.OnAutoComplete();
                 }
             }
         }
@@ -265,32 +242,9 @@ namespace HT.Framework
             if (_running)
             {
                 TaskContentBase taskContent = GetTaskContent(id);
-                if (taskContent != null && !taskContent.IsComplete)
+                if (taskContent != null)
                 {
-                    List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
-                    List<int> uncompletePointIndexs = new List<int>();
-                    for (int i = 0; i < taskContent.Points.Count; i++)
-                    {
-                        if (!taskContent.Points[i].IsComplete)
-                        {
-                            uncompletePoints.Add(taskContent.Points[i]);
-                            uncompletePointIndexs.Add(i);
-                        }
-                    }
-
-                    while (uncompletePoints.Count > 0)
-                    {
-                        for (int i = 0; i < uncompletePoints.Count; i++)
-                        {
-                            if (taskContent.IsDependComplete(uncompletePointIndexs[i]))
-                            {
-                                uncompletePoints[i].OnAutoComplete();
-                                uncompletePoints.RemoveAt(i);
-                                uncompletePointIndexs.RemoveAt(i);
-                                i -= 1;
-                            }
-                        }
-                    }
+                    taskContent.OnAutoComplete();
                 }
             }
         }

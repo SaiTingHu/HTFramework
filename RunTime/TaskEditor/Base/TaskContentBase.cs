@@ -91,6 +91,37 @@ namespace HT.Framework
             
         }
         
+        internal void OnAutoComplete()
+        {
+            if (!IsComplete)
+            {
+                List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
+                List<int> uncompletePointIndexs = new List<int>();
+                for (int i = 0; i < Points.Count; i++)
+                {
+                    if (!Points[i].IsComplete)
+                    {
+                        uncompletePoints.Add(Points[i]);
+                        uncompletePointIndexs.Add(i);
+                    }
+                }
+                while (uncompletePoints.Count > 0)
+                {
+                    for (int i = 0; i < uncompletePoints.Count; i++)
+                    {
+                        if (IsDependComplete(uncompletePointIndexs[i]))
+                        {
+                            uncompletePoints[i].OnAutoComplete();
+                            uncompletePoints.RemoveAt(i);
+                            uncompletePointIndexs.RemoveAt(i);
+                            i -= 1;
+                        }
+                    }
+                }
+                IsComplete = true;
+            }
+        }
+
         internal void OnMonitor()
         {
             OnUpdate();

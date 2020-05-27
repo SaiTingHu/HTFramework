@@ -94,7 +94,7 @@ namespace HT.Framework
             yield return OnBeforeComplete();
             IsComplete = true;
             completeAction?.Invoke();
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, false));
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace HT.Framework
         {
             IsComplete = true;
             _isCompleting = true;
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, true));
         }
 
         internal void OnMonitor()

@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3280247986cd76e4d95eb0e31bc5abc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultAspectTrackHelper
   IsEnableAspectTrack: 0
   IsEnableIntercept: 0
 --- !u!1 &1516840720097650
@@ -2003,7 +2003,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HelperType: <None>
   ContentAsset: {fileID: 0}
-  IsAutoChangeNext: 1
+  IsAutoChange: 1
 --- !u!1 &8775430792589470182
 GameObject:
   m_ObjectHideFlags: 0
