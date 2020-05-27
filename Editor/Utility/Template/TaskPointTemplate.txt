@@ -18,19 +18,19 @@ public class #SCRIPTNAME# : TaskPointBase
         
     }
 
-	public override void OnStart()
+	protected override void OnStart()
     {
         base.OnStart();
     }
 
-    public override void OnUpdate()
+    protected override void OnUpdate()
     {
         base.OnUpdate();
     }
 
-    public override void OnExecute()
+    protected override IEnumerator OnBeforeComplete()
     {
-        base.OnExecute();
+        yield return base.OnBeforeComplete();
     }
 
 #if UNITY_EDITOR

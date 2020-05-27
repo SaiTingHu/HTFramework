@@ -1,21 +1,21 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 任务点执行事件
+    /// 任务内容完成事件
     /// </summary>
-    public sealed class EventTaskPointExecute : EventHandlerBase
+    public sealed class EventTaskContentComplete : EventHandlerBase
     {
         /// <summary>
-        /// 任务点对象
+        /// 任务内容对象
         /// </summary>
-        public TaskPointBase TaskPoint;
+        public TaskContentBase TaskContent;
 
         /// <summary>
         /// 填充数据，所有属性、字段的初始化工作可以在这里完成
         /// </summary>
-        public EventTaskPointExecute Fill(TaskPointBase taskPoint)
+        public EventTaskContentComplete Fill(TaskContentBase taskContent)
         {
-            TaskPoint = taskPoint;
+            TaskContent = taskContent;
             return this;
         }
 
@@ -24,7 +24,7 @@
         /// </summary>
         public override void Reset()
         {
-            TaskPoint = null;
+            TaskContent = null;
         }
     }
 }

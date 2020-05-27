@@ -219,7 +219,19 @@ namespace HT.Framework
             StopAllMultipleSound();
             StopAllWorldSound();
         }
-        
+        internal override void OnPause()
+        {
+            base.OnPause();
+
+            Mute = true;
+        }
+        internal override void OnUnPause()
+        {
+            base.OnUnPause();
+
+            Mute = false;
+        }
+
         /// <summary>
         /// 播放背景音乐
         /// </summary>

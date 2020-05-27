@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -13,25 +14,25 @@ namespace HT.Framework
 
         }
 
-        public override void OnStart()
+        protected override void OnStart()
         {
             base.OnStart();
 
             Log.Info("任务点：[" + Name + "]开始!");
         }
 
-        public override void OnUpdate()
+        protected override void OnUpdate()
         {
             base.OnUpdate();
 
-            IsDone = true;
+            Complete();
 
             Log.Info("任务点：[" + Name + "]监控中......");
         }
 
-        public override void OnExecute()
+        protected override IEnumerator OnBeforeComplete()
         {
-            base.OnExecute();
+            yield return base.OnBeforeComplete();
 
             Log.Info("任务点：[" + Name + "]完成!");
         }

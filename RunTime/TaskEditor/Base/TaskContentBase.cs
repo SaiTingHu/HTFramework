@@ -40,8 +40,26 @@ namespace HT.Framework
         /// <summary>
         /// 是否完成
         /// </summary>
-        public bool IsDone { get; private set; } = false;
-
+        public bool IsComplete { get; private set; } = false;
+        /// <summary>
+        /// 当前所有未完成的任务点数量
+        /// </summary>
+        public int AllUncompletePointCount
+        {
+            get
+            {
+                int count = 0;
+                for (int i = 0; i < Points.Count; i++)
+                {
+                    if (!Points[i].IsComplete)
+                    {
+                        count += 1;
+                    }
+                }
+                return count;
+            }
+        }
+        
         public TaskContentBase()
         {
             GUID = "";
@@ -58,54 +76,54 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 任务开始后，帧刷新
+        /// 任务内容开始后，帧刷新
         /// </summary>
-        public virtual void OnUpdate()
+        protected virtual void OnUpdate()
         {
 
         }
 
         /// <summary>
-        /// 任务内容执行
+        /// 任务内容完成
         /// </summary>
-        public virtual void OnExecute()
+        public virtual void OnComplete()
         {
             
         }
-
+        
         internal void OnMonitor()
         {
             OnUpdate();
 
-            bool isDone = true;
+            bool isComplete = true;
             for (int i = 0; i < Points.Count; i++)
             {
-                if (Points[i].IsEnable && !Points[i].IsExecute)
+                if (Points[i].IsEnable && !Points[i].IsComplete)
                 {
-                    isDone = false;
+                    isComplete = false;
 
-                    if (IsDependDone(i))
+                    if (IsDependComplete(i))
                     {
                         Points[i].OnMonitor();
                     }
                 }
             }
-            IsDone = isDone;
+            IsComplete = isComplete;
         }
 
         internal void ReSet()
         {
-            IsDone = false;
+            IsComplete = false;
         }
 
-        private bool IsDependDone(int taskPointIndex)
+        internal bool IsDependComplete(int taskPointIndex)
         {
             for (int i = 0; i < Depends.Count; i++)
             {
                 if (Depends[i].OriginalPoint == taskPointIndex)
                 {
                     int depend = Depends[i].DependPoint;
-                    if (Points[depend].IsEnable && !Points[depend].IsDone)
+                    if (Points[depend].IsEnable && !Points[depend].IsComplete)
                     {
                         return false;
                     }

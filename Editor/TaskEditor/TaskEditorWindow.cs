@@ -452,7 +452,7 @@ namespace HT.Framework
                             gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
                             gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
 
-                            if (_asset.Content[index].IsDone)
+                            if (_asset.Content[index].IsComplete)
                             {
                                 GUI.backgroundColor = Color.green;
                                 GUI.Box(rect, "");

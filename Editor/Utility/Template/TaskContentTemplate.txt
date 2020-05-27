@@ -23,14 +23,14 @@ public class #SCRIPTNAME# : TaskContentBase
         base.OnStart();
     }
 
-    public override void OnUpdate()
+    protected override void OnUpdate()
     {
         base.OnUpdate();
     }
 
-    public override void OnExecute()
+    public override void OnComplete()
     {
-        base.OnExecute();
+        base.OnComplete();
     }
 
 #if UNITY_EDITOR

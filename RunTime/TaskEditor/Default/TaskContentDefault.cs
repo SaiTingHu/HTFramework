@@ -20,16 +20,16 @@ namespace HT.Framework
             Log.Info("任务内容：[" + Name + "]开始!");
         }
 
-        public override void OnUpdate()
+        protected override void OnUpdate()
         {
             base.OnUpdate();
 
             Log.Info("任务内容：[" + Name + "]监控中......");
         }
 
-        public override void OnExecute()
+        public override void OnComplete()
         {
-            base.OnExecute();
+            base.OnComplete();
 
             Log.Info("任务内容：[" + Name + "]完成!");
         }

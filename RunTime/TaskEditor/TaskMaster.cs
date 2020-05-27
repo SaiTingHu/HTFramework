@@ -43,9 +43,9 @@ namespace HT.Framework
                 {
                     _currentContent.OnMonitor();
 
-                    if (_currentContent.IsDone)
+                    if (_currentContent.IsComplete)
                     {
-                        ExecuteCurrentTask();
+                        CompleteCurrentTask();
                     }
                 }
             }
@@ -70,6 +70,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 当前是否是自动切换状态
+        /// </summary>
+        public bool IsAutoChangeState
+        {
+            get
+            {
+                return IsAutoChangeNext;
+            }
+        }
+        /// <summary>
         /// 当前所有的任务内容
         /// </summary>
         public List<TaskContentBase> AllTaskContent
@@ -82,14 +92,14 @@ namespace HT.Framework
         /// <summary>
         /// 当前所有未完成的任务内容数量
         /// </summary>
-        public int AllUndoneTaskContentCount
+        public int AllUncompleteTaskCount
         {
             get
             {
                 int count = 0;
                 foreach (var task in _taskContents)
                 {
-                    if (!task.Value.IsDone)
+                    if (!task.Value.IsComplete)
                     {
                         count += 1;
                     }
@@ -156,16 +166,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 当前是否是自动切换状态
-        /// </summary>
-        public bool IsAutoChangeState
-        {
-            get
-            {
-                return IsAutoChangeNext;
-            }
-        }
-        /// <summary>
         /// 通过ID设置当前激活的任务内容
         /// </summary>
         /// <param name="id">任务内容ID</param>
@@ -195,6 +195,58 @@ namespace HT.Framework
             else
             {
                 Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在索引为 " + index + " 的任务内容！");
+            }
+        }
+        /// <summary>
+        /// 完成当前任务内容，当前任务内容未完成的任务点会根据依赖关系依次调用自动完成
+        /// </summary>
+        public void CompleteCurrentTaskContent()
+        {
+            if (_running)
+            {
+                if (_currentContent != null && !_currentContent.IsComplete)
+                {
+                    List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
+                    List<int> uncompletePointIndexs = new List<int>();
+                    for (int i = 0; i < _currentContent.Points.Count; i++)
+                    {
+                        if (!_currentContent.Points[i].IsComplete)
+                        {
+                            uncompletePoints.Add(_currentContent.Points[i]);
+                            uncompletePointIndexs.Add(i);
+                        }
+                    }
+
+                    while (uncompletePoints.Count > 0)
+                    {
+                        for (int i = 0; i < uncompletePoints.Count; i++)
+                        {
+                            if (_currentContent.IsDependComplete(uncompletePointIndexs[i]))
+                            {
+                                uncompletePoints[i].OnAutoComplete();
+                                uncompletePoints.RemoveAt(i);
+                                uncompletePointIndexs.RemoveAt(i);
+                                i -= 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 完成指定的任务点
+        /// </summary>
+        /// <param name="id">任务点ID</param>
+        /// <param name="completeAction">完成后执行的操作</param>
+        public void CompleteTaskPoint(string id, HTFAction completeAction = null)
+        {
+            if (_running)
+            {
+                TaskPointBase taskPoint = GetTaskPoint(id);
+                if (taskPoint != null)
+                {
+                    taskPoint.Complete(completeAction);
+                }
             }
         }
 
@@ -349,15 +401,15 @@ namespace HT.Framework
 
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(_currentContent));
         }
-        //当前任务执行
-        private void ExecuteCurrentTask()
+        //当前任务完成
+        private void CompleteCurrentTask()
         {
-            _currentContent.OnExecute();
+            _currentContent.OnComplete();
 
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskContentExecute>().Fill(_currentContent));
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(_currentContent));
             _currentContent = null;
 
-            if (AllUndoneTaskContentCount > 0)
+            if (AllUncompleteTaskCount > 0)
             {
                 if (IsAutoChangeNext)
                 {

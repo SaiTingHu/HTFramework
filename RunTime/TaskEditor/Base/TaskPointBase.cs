@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,17 +34,17 @@ namespace HT.Framework
         /// </summary>
         public bool IsEnable { get; set; } = true;
         /// <summary>
-        /// 是否完成
-        /// </summary>
-        public bool IsDone { get; protected set; } = false;
-        /// <summary>
         /// 是否开始
         /// </summary>
-        internal bool IsStart { get; private set; } = false;
+        public bool IsStart { get; private set; } = false;
         /// <summary>
-        /// 是否执行
+        /// 是否完成
         /// </summary>
-        internal bool IsExecute { get; private set; } = false;
+        public bool IsComplete { get; private set; } = false;
+        /// <summary>
+        /// 是否完成中
+        /// </summary>
+        private bool _isCompleting { get; set; } = false;
 
         public TaskPointBase()
         {
@@ -56,7 +57,7 @@ namespace HT.Framework
         /// <summary>
         /// 任务点开始
         /// </summary>
-        public virtual void OnStart()
+        protected virtual void OnStart()
         {
             
         }
@@ -64,17 +65,53 @@ namespace HT.Framework
         /// <summary>
         /// 任务点开始后，帧刷新
         /// </summary>
-        public virtual void OnUpdate()
+        protected virtual void OnUpdate()
         {
 
         }
 
         /// <summary>
-        /// 任务点执行
+        /// 完成任务点
         /// </summary>
-        public virtual void OnExecute()
+        /// <param name="completeAction">完成后执行的操作</param>
+        public void Complete(HTFAction completeAction = null)
         {
+            if (_isCompleting)
+            {
+                return;
+            }
 
+            _isCompleting = true;
+            Main.Current.StartCoroutine(CompleteCoroutine(completeAction));
+        }
+
+        /// <summary>
+        /// 完成任务点协程
+        /// </summary>
+        /// <param name="completeAction">完成后执行的操作</param>
+        private IEnumerator CompleteCoroutine(HTFAction completeAction)
+        {
+            yield return OnBeforeComplete();
+            IsComplete = true;
+            completeAction?.Invoke();
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
+        }
+
+        /// <summary>
+        /// 任务点触发完成之前
+        /// </summary>
+        protected virtual IEnumerator OnBeforeComplete()
+        {
+            yield return null;
+        }
+
+        /// <summary>
+        /// 自动完成任务点
+        /// </summary>
+        public virtual void OnAutoComplete()
+        {
+            IsComplete = true;
+            _isCompleting = true;
         }
 
         internal void OnMonitor()
@@ -89,23 +126,14 @@ namespace HT.Framework
             }
 
             OnUpdate();
-
-            if (!IsExecute && IsDone)
-            {
-                IsExecute = true;
-
-                OnExecute();
-
-                Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointExecute>().Fill(this));
-            }
         }
 
         internal void ReSet()
         {
             IsEnable = true;
-            IsDone = false;
             IsStart = false;
-            IsExecute = false;
+            IsComplete = false;
+            _isCompleting = false;
         }
 
 #if UNITY_EDITOR
@@ -158,7 +186,7 @@ namespace HT.Framework
             {
                 GUI.backgroundColor = Color.gray;
             }
-            else if (IsDone)
+            else if (IsComplete)
             {
                 GUI.backgroundColor = Color.green;
             }
