@@ -15,9 +15,9 @@ namespace HT.Framework
         /// </summary>
         public TaskContentAsset ContentAsset;
         /// <summary>
-        /// 是否自动切换任务内容，当完成当前任务内容时，自动根据列表顺序切换到下一个任务内容【请勿在代码中修改】
+        /// 是否是自动切换状态，当完成当前任务内容时，自动根据列表顺序切换到下一个任务内容【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal bool IsAutoChangeNext = true;
+        [SerializeField] internal bool IsAutoChange = true;
 
         //所有的 TaskTarget <任务目标ID、任务目标>
         private Dictionary<string, TaskTarget> _targets = new Dictionary<string, TaskTarget>();
@@ -75,7 +75,7 @@ namespace HT.Framework
         {
             get
             {
-                return IsAutoChangeNext;
+                return IsAutoChange;
             }
         }
         /// <summary>
@@ -164,20 +164,24 @@ namespace HT.Framework
                 return null;
             }
         }
+
         /// <summary>
         /// 通过ID设置当前激活的任务内容
         /// </summary>
         /// <param name="id">任务内容ID</param>
         public void SetCurrentTaskContent(string id)
         {
-            if (_taskContents.ContainsKey(id))
+            if (_running)
             {
-                _currentContentIndex = ContentAsset.Content.IndexOf(_taskContents[id]);
-                BeginCurrentTask();
-            }
-            else
-            {
-                Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在ID为 " + id + " 的任务内容！");
+                if (_taskContents.ContainsKey(id))
+                {
+                    _currentContentIndex = ContentAsset.Content.IndexOf(_taskContents[id]);
+                    BeginCurrentTask();
+                }
+                else
+                {
+                    Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在ID为 " + id + " 的任务内容！");
+                }
             }
         }
         /// <summary>
@@ -186,14 +190,35 @@ namespace HT.Framework
         /// <param name="index">任务内容索引</param>
         public void SetCurrentTaskContent(int index)
         {
-            if (index >= 0 && index < ContentAsset.Content.Count)
+            if (_running)
             {
-                _currentContentIndex = index;
-                BeginCurrentTask();
+                if (index >= 0 && index < ContentAsset.Content.Count)
+                {
+                    _currentContentIndex = index;
+                    BeginCurrentTask();
+                }
+                else
+                {
+                    Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在索引为 " + index + " 的任务内容！");
+                }
             }
-            else
+        }
+        /// <summary>
+        /// 切换到下一个任务内容，根据任务内容列表顺序
+        /// </summary>
+        public void ChangeNextTaskContent()
+        {
+            if (_running)
             {
-                Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在索引为 " + index + " 的任务内容！");
+                if (_currentContentIndex < ContentAsset.Content.Count - 1)
+                {
+                    _currentContentIndex += 1;
+                }
+                else
+                {
+                    _currentContentIndex = 0;
+                }
+                BeginCurrentTask();
             }
         }
         /// <summary>
@@ -412,7 +437,7 @@ namespace HT.Framework
 
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskBegin>());
 
-            if (IsAutoChangeNext)
+            if (IsAutoChangeState)
             {
                 BeginCurrentTask();
             }
@@ -447,7 +472,7 @@ namespace HT.Framework
 
             if (AllUncompleteTaskCount > 0)
             {
-                if (IsAutoChangeNext)
+                if (IsAutoChangeState)
                 {
                     if (_currentContentIndex < ContentAsset.Content.Count - 1)
                     {

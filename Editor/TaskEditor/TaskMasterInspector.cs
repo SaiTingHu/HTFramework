@@ -25,7 +25,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsAutoChangeNext, out Target.IsAutoChangeNext, "Auto Change Next");
+            Toggle(Target.IsAutoChange, out Target.IsAutoChange, "Auto Change");
             GUILayout.EndHorizontal();
         }
 

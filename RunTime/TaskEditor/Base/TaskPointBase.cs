@@ -112,6 +112,7 @@ namespace HT.Framework
         {
             IsComplete = true;
             _isCompleting = true;
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
         }
 
         internal void OnMonitor()
