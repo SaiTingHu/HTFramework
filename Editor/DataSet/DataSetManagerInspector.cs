@@ -11,6 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89395574")]
     internal sealed class DataSetManagerInspector : InternalModuleInspector<DataSetManager>
     {
+        private IDataSetHelper _dataSetHelper;
         private Dictionary<Type, List<DataSetBase>> _dataSets;
 
         protected override string Intro
@@ -33,7 +34,8 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _dataSets = Target.GetType().GetField("_dataSets", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, List<DataSetBase>>;
+            _dataSetHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IDataSetHelper;
+            _dataSets = _dataSetHelper.GetType().GetField("_dataSets", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_dataSetHelper) as Dictionary<Type, List<DataSetBase>>;
         }
 
         protected override void OnInspectorRuntimeGUI()

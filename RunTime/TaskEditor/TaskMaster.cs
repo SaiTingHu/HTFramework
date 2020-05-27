@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace HT.Framework
@@ -86,7 +85,7 @@ namespace HT.Framework
         {
             get
             {
-                return _taskContents.Values.ToList();
+                return ContentAsset.Content;
             }
         }
         /// <summary>
@@ -198,7 +197,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 完成当前任务内容，当前任务内容未完成的任务点会根据依赖关系依次调用自动完成
+        /// 完成当前任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
         /// </summary>
         public void CompleteCurrentTaskContent()
         {
@@ -222,6 +221,43 @@ namespace HT.Framework
                         for (int i = 0; i < uncompletePoints.Count; i++)
                         {
                             if (_currentContent.IsDependComplete(uncompletePointIndexs[i]))
+                            {
+                                uncompletePoints[i].OnAutoComplete();
+                                uncompletePoints.RemoveAt(i);
+                                uncompletePointIndexs.RemoveAt(i);
+                                i -= 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 完成指定的任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
+        /// </summary>
+        public void CompleteTaskContent(string id)
+        {
+            if (_running)
+            {
+                TaskContentBase taskContent = GetTaskContent(id);
+                if (taskContent != null && !taskContent.IsComplete)
+                {
+                    List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
+                    List<int> uncompletePointIndexs = new List<int>();
+                    for (int i = 0; i < taskContent.Points.Count; i++)
+                    {
+                        if (!taskContent.Points[i].IsComplete)
+                        {
+                            uncompletePoints.Add(taskContent.Points[i]);
+                            uncompletePointIndexs.Add(i);
+                        }
+                    }
+
+                    while (uncompletePoints.Count > 0)
+                    {
+                        for (int i = 0; i < uncompletePoints.Count; i++)
+                        {
+                            if (taskContent.IsDependComplete(uncompletePointIndexs[i]))
                             {
                                 uncompletePoints[i].OnAutoComplete();
                                 uncompletePoints.RemoveAt(i);

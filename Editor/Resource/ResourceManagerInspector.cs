@@ -11,6 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88852698")]
     internal sealed class ResourceManagerInspector : InternalModuleInspector<ResourceManager>
     {
+        private IResourceHelper _resourceHelper;
         private string _assetBundleRootPath;
         private Dictionary<string, AssetBundle> _assetBundles;
         private AssetBundleManifest _assetBundleManifest;
@@ -35,9 +36,10 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _assetBundleRootPath = (string)Target.GetType().GetField("_assetBundleRootPath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target);
-            _assetBundles = Target.GetType().GetField("_assetBundles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, AssetBundle>;
-            _assetBundleManifest = Target.GetType().GetField("_assetBundleManifest", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as AssetBundleManifest;
+            _resourceHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IResourceHelper;
+            _assetBundleRootPath = (string)_resourceHelper.GetType().GetProperty("AssetBundleRootPath", BindingFlags.Instance | BindingFlags.Public).GetValue(_resourceHelper);
+            _assetBundles = _resourceHelper.GetType().GetProperty("AssetBundles", BindingFlags.Instance | BindingFlags.Public).GetValue(_resourceHelper) as Dictionary<string, AssetBundle>;
+            _assetBundleManifest = _resourceHelper.GetType().GetProperty("AssetBundleManifest", BindingFlags.Instance | BindingFlags.Public).GetValue(_resourceHelper) as AssetBundleManifest;
         }
 
         protected override void OnInspectorDefaultGUI()

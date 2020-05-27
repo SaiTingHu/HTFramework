@@ -11,6 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88125982")]
     internal sealed class UIManagerInspector : InternalModuleInspector<UIManager>
     {
+        private IUIHelper _UIHelper;
         private Dictionary<Type, UILogicBase> _overlayUIs;
         private Dictionary<Type, UILogicBase> _cameraUIs;
         private bool _overlayUIFoldout = true;
@@ -36,8 +37,9 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _overlayUIs = Target.GetType().GetField("_overlayUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogicBase>;
-            _cameraUIs = Target.GetType().GetField("_cameraUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, UILogicBase>;
+            _UIHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IUIHelper;
+            _overlayUIs = _UIHelper.GetType().GetField("_overlayUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_UIHelper) as Dictionary<Type, UILogicBase>;
+            _cameraUIs = _UIHelper.GetType().GetField("_cameraUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_UIHelper) as Dictionary<Type, UILogicBase>;
         }
 
         protected override void OnInspectorDefaultGUI()

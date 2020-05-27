@@ -11,6 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/101541066")]
     internal sealed class EntityManagerInspector : InternalModuleInspector<EntityManager>
     {
+        private IEntityHelper _entityHelper;
         private Dictionary<Type, List<EntityLogicBase>> _entities;
         private Dictionary<Type, Queue<GameObject>> _objectPool;
         private Dictionary<Type, bool> _entityFoldouts;
@@ -36,11 +37,12 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _entities = Target.GetType().GetField("_entities", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, List<EntityLogicBase>>;
-            _objectPool = Target.GetType().GetField("_objectPool", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, Queue<GameObject>>;
+            _entityHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IEntityHelper;
+            _entities = _entityHelper.GetType().GetField("_entities", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_entityHelper) as Dictionary<Type, List<EntityLogicBase>>;
+            _objectPool = _entityHelper.GetType().GetField("_objectPool", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_entityHelper) as Dictionary<Type, Queue<GameObject>>;
             _entityFoldouts = new Dictionary<Type, bool>();
             _objectPoolFoldouts = new Dictionary<Type, bool>();
-            foreach (KeyValuePair<Type, List<EntityLogicBase>> entity in _entities)
+            foreach (var entity in _entities)
             {
                 _entityFoldouts.Add(entity.Key, true);
                 _objectPoolFoldouts.Add(entity.Key, true);
