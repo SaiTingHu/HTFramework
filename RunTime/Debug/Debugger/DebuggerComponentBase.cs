@@ -87,10 +87,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="value">旧的值</param>
         /// <returns>新的值</returns>
-        protected float FloatField(float value)
+        protected float FloatField(float value, params GUILayoutOption[] options)
         {
             string valueF = value.ToString();
-            string newF = GUILayout.TextField(valueF);
+            string newF = GUILayout.TextField(valueF, options);
             if (newF != valueF)
             {
                 float f;
@@ -114,10 +114,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="value">旧的值</param>
         /// <returns>新的值</returns>
-        protected int IntField(int value)
+        protected int IntField(int value, params GUILayoutOption[] options)
         {
             string valueI = value.ToString();
-            string newI = GUILayout.TextField(valueI);
+            string newI = GUILayout.TextField(valueI, options);
             if (newI != valueI)
             {
                 int f;
@@ -141,11 +141,11 @@ namespace HT.Framework
         /// </summary>
         /// <param name="value">旧的值</param>
         /// <returns>新的值</returns>
-        protected Enum EnumField(Enum value)
+        protected Enum EnumField(Enum value, params GUILayoutOption[] options)
         {
             foreach (Enum e in Enum.GetValues(value.GetType()))
             {
-                if (GUILayout.Toggle(value.Equals(e), e.ToString()))
+                if (GUILayout.Toggle(value.Equals(e), e.ToString(), options))
                 {
                     value = e;
                 }

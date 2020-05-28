@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -11,8 +10,14 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.FSM)]
     public sealed class FSMManager : InternalModuleBase
     {
-        private Dictionary<string, FSM> _fsms = new Dictionary<string, FSM>();
-        private Dictionary<string, List<FSM>> _fsmGroups = new Dictionary<string, List<FSM>>();
+        private IFSMHelper _helper;
+
+        internal override void OnInitialization()
+        {
+            base.OnInitialization();
+
+            _helper = Helper as IFSMHelper;
+        }
 
         /// <summary>
         /// 注册状态机
@@ -20,24 +25,7 @@ namespace HT.Framework
         /// <param name="fsm">状态机</param>
         public void RegisterFSM(FSM fsm)
         {
-            if (!_fsms.ContainsKey(fsm.Name))
-            {
-                _fsms.Add(fsm.Name, fsm);
-
-                if (_fsmGroups.ContainsKey(fsm.Group))
-                {
-                    _fsmGroups[fsm.Group].Add(fsm);
-                }
-                else
-                {
-                    _fsmGroups.Add(fsm.Group, new List<FSM>());
-                    _fsmGroups[fsm.Group].Add(fsm);
-                }
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "注册状态机失败：已存在状态机 " + fsm.Name + " ！");
-            }
+            _helper.RegisterFSM(fsm);
         }
         /// <summary>
         /// 移除已注册的状态机
@@ -45,19 +33,7 @@ namespace HT.Framework
         /// <param name="fsm">状态机</param>
         public void UnRegisterFSM(FSM fsm)
         {
-            if (_fsms.ContainsKey(fsm.Name))
-            {
-                _fsms.Remove(fsm.Name);
-
-                if (_fsmGroups.ContainsKey(fsm.Group))
-                {
-                    _fsmGroups[fsm.Group].Remove(fsm);
-                }
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "移除已注册的状态机失败：不存在状态机 " + fsm.Name + " ！");
-            }
+            _helper.UnRegisterFSM(fsm);
         }
 
         /// <summary>
@@ -67,14 +43,7 @@ namespace HT.Framework
         /// <returns>状态机</returns>
         public FSM GetFSMByName(string name)
         {
-            if (_fsms.ContainsKey(name))
-            {
-                return _fsms[name];
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "获取状态机失败：不存在状态机 " + name + " ！");
-            }
+            return _helper.GetFSMByName(name);
         }
         /// <summary>
         /// 是否存在指定的状态机
@@ -83,7 +52,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistFSM(string name)
         {
-            return _fsms.ContainsKey(name);
+            return _helper.IsExistFSM(name);
         }
 
         /// <summary>
@@ -93,7 +62,7 @@ namespace HT.Framework
         /// <param name="group">组名称</param>
         public void SwitchStateOfGroup<T>(string group) where T : FiniteStateBase
         {
-            SwitchStateOfGroup(group, typeof(T));
+            _helper.SwitchStateOfGroup(group, typeof(T));
         }
         /// <summary>
         /// 群体切换状态
@@ -102,14 +71,7 @@ namespace HT.Framework
         /// <param name="type">状态类型</param>
         public void SwitchStateOfGroup(string group, Type type)
         {
-            if (_fsmGroups.ContainsKey(group))
-            {
-                List<FSM> fsms = _fsmGroups[group];
-                for (int i = 0; i < fsms.Count; i++)
-                {
-                    fsms[i].SwitchState(type);
-                }
-            }
+            _helper.SwitchStateOfGroup(group, type);
         }
 
         /// <summary>
@@ -118,14 +80,7 @@ namespace HT.Framework
         /// <param name="group">组名称</param>
         public void RenewalOfGroup(string group)
         {
-            if (_fsmGroups.ContainsKey(group))
-            {
-                List<FSM> fsms = _fsmGroups[group];
-                for (int i = 0; i < fsms.Count; i++)
-                {
-                    fsms[i].Renewal();
-                }
-            }
+            _helper.RenewalOfGroup(group);
         }
         /// <summary>
         /// 群体完结
@@ -133,14 +88,7 @@ namespace HT.Framework
         /// <param name="group">组名称</param>
         public void FinalOfGroup(string group)
         {
-            if (_fsmGroups.ContainsKey(group))
-            {
-                List<FSM> fsms = _fsmGroups[group];
-                for (int i = 0; i < fsms.Count; i++)
-                {
-                    fsms[i].Final();
-                }
-            }
+            _helper.FinalOfGroup(group);
         }
     }
 }

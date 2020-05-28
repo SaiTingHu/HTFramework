@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -13,6 +14,14 @@ namespace HT.Framework
             get
             {
                 return "Exception handler, When an exception occurs, he catches it!";
+            }
+        }
+
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IExceptionHandlerHelper);
             }
         }
 

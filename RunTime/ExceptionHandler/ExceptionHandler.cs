@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -54,68 +50,29 @@ namespace HT.Framework
         /// 回发邮件缓冲时间【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal float ReportBufferTime = 5;
-
-        //异常信息
-        private List<ExceptionInfo> _exceptionInfos = new List<ExceptionInfo>();
-        //异常日志Builder
-        private StringBuilder _logInfoBuilder = new StringBuilder();
-        //异常日志保存路径
-        private string _logPath;
-        //邮件发送者
-        private EmailSender _sender;
-        //回发邮件缓冲计时器
-        private float _reportBufferTimer = 0;
+        
+        private IExceptionHandlerHelper _helper;
 
         internal override void OnInitialization()
         {
             base.OnInitialization();
 
-#if UNITY_EDITOR
-            IsHandler = false;
-#endif
-
-#if UNITY_STANDALONE_WIN
-            FeedbackProgramPath = GlobalTools.GetDirectorySameLevelOfAssets(FeedbackProgramPath);
-            _logPath = GlobalTools.GetDirectorySameLevelOfAssets("/Log");
-            if (!Directory.Exists(_logPath))
-            {
-                Directory.CreateDirectory(_logPath);
-            }
-#endif
-            if (IsHandler)
-            {
-                Application.logMessageReceived += Handler;
-
-                if (IsEnableMailReport)
-                {
-                    _sender = new EmailSender(SendMailbox, SendMailboxPassword, ReceiveMailbox, Host, Port);
-                }
-            }
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            if (IsHandler)
-            {
-                Application.logMessageReceived -= Handler;
-                if (_sender != null)
-                {
-                    _sender.Dispose();
-                    _sender = null;
-                }
-            }
+            _helper = Helper as IExceptionHandlerHelper;
+            _helper.OnInitialization();
         }
         internal override void OnRefresh()
         {
             base.OnRefresh();
 
-            if (_reportBufferTimer > 0)
-            {
-                _reportBufferTimer -= Time.deltaTime;
-            }
+            _helper.OnRefresh();
         }
+        internal override void OnTermination()
+        {
+            base.OnTermination();
 
+            _helper.OnTermination();
+        }
+        
         /// <summary>
         /// 当前捕获的所有异常信息
         /// </summary>
@@ -123,7 +80,7 @@ namespace HT.Framework
         {
             get
             {
-                return _exceptionInfos;
+                return _helper.ExceptionInfos;
             }
         }
         /// <summary>
@@ -133,73 +90,14 @@ namespace HT.Framework
         /// <param name="body">邮件内容</param>
         public void ReportMail(string subject, string body)
         {
-            if (_reportBufferTimer > 0)
-            {
-                return;
-            }
-            _reportBufferTimer = ReportBufferTime;
-
-            if (IsHandler)
-            {
-                if (_sender != null)
-                {
-                    _sender.Send(subject, body);
-                }
-            }
+            _helper.ReportMail(subject, body);
         }
         /// <summary>
         /// 清理所有异常信息
         /// </summary>
         public void ClearExceptionInfos()
         {
-            Main.m_ReferencePool.Despawns(_exceptionInfos);
-        }
-
-        private void Handler(string logString, string stackTrace, LogType type)
-        {
-            if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
-            {
-                _exceptionInfos.Add(Main.m_ReferencePool.Spawn<ExceptionInfo>().Fill(logString, stackTrace, type));
-
-                OnException(logString, stackTrace, type);
-
-                _logInfoBuilder.Clear();
-                _logInfoBuilder.Append("[time]:" + DateTime.Now.ToString() + "\r\n\r\n");
-                _logInfoBuilder.Append("[type]:" + type.ToString() + "\r\n\r\n");
-                _logInfoBuilder.Append("[message]:" + logString + "\r\n\r\n");
-                _logInfoBuilder.Append("[stack trace]:" + stackTrace + "\r\n\r\n");
-
-#if UNITY_STANDALONE_WIN
-                string logPath = _logPath + "/" + DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff") + ".log";
-                File.AppendAllText(logPath, _logInfoBuilder.ToString());
-
-                if (IsEnableFeedback)
-                {
-                    if (File.Exists(FeedbackProgramPath))
-                    {
-                        ProcessStartInfo process = new ProcessStartInfo();
-                        process.FileName = FeedbackProgramPath;
-                        process.Arguments = "\"" + logPath + "\"";
-                        Process pro = new Process();
-                        pro.StartInfo = process;
-                        pro.Start();
-                    }
-                    else
-                    {
-                        File.AppendAllText(logPath, "[feedback]:Doesn't find feedback program!path: " + FeedbackProgramPath + "\r\n");
-                    }
-                    Application.Quit();
-                }
-#endif
-                if (IsEnableMailReport)
-                {
-                    ReportMail(Application.productName + ".Exception." + DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), _logInfoBuilder.ToString());
-                }
-            }
-        }
-        private void OnException(string logString, string stackTrace, LogType type)
-        {
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventException>().Fill(logString, stackTrace, type));
+            _helper.ClearExceptionInfos();
         }
     }
 }

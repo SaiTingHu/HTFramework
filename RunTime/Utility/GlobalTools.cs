@@ -734,7 +734,7 @@ namespace HT.Framework
         /// <typeparam name="TInput">原类型</typeparam>
         public static List<TOutput> ConvertAllAS<TOutput, TInput>(this List<TInput> array) where TOutput : class where TInput : class
         {
-            if (array == null || array.Count == 0)
+            if (array == null)
             {
                 return null;
             }
