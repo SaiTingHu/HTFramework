@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 调试器游戏对象
     /// </summary>
-    public sealed class DebuggerGameObject : IReference
+    internal sealed class DebuggerGameObject : IReference
     {
         /// <summary>
         /// 游戏对象

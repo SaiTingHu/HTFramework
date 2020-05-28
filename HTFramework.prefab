@@ -1760,7 +1760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d776555d242dd244bd27653b1bcb053, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultCustomModuleHelper
 --- !u!1 &6662556912778346832
 GameObject:
   m_ObjectHideFlags: 0
@@ -2091,8 +2091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3ca6f67138f8144897c16510fbc93c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
-  DebuggerType: HT.Framework.Debugger
+  HelperType: HT.Framework.DefaultDebugHelper
   DebuggerSkin: {fileID: 11400000, guid: 61a6dbb4fcfdbd844a1f117f7b22e1e8, type: 2}
   IsEnableDebugger: 0
 --- !u!1 &9096913144627347778

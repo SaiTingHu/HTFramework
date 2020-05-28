@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,6 +17,14 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IDebugHelper);
+            }
+        }
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -28,29 +35,6 @@ namespace HT.Framework
 
             if (Target.IsEnableDebugger)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Debugger", GUILayout.Width(100));
-                if (GUILayout.Button(Target.DebuggerType, EditorGlobalTools.Styles.MiniPopup))
-                {
-                    GenericMenu gm = new GenericMenu();
-                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
-                    {
-                        return type == typeof(Debugger) || type.IsSubclassOf(typeof(Debugger));
-                    });
-                    for (int i = 0; i < types.Count; i++)
-                    {
-                        int j = i;
-                        gm.AddItem(new GUIContent(types[j].FullName), Target.DebuggerType == types[j].FullName, () =>
-                        {
-                            Undo.RecordObject(target, "Set Debugger");
-                            Target.DebuggerType = types[j].FullName;
-                            HasChanged();
-                        });
-                    }
-                    gm.ShowAsContext();
-                }
-                GUILayout.EndHorizontal();
-
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Debugger Skin", GUILayout.Width(100));
                 ObjectField(Target.DebuggerSkin, out Target.DebuggerSkin, false, "");

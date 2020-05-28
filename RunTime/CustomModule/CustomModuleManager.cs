@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace HT.Framework
 {
@@ -12,79 +9,44 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.CustomModule)]
     public sealed class CustomModuleManager : InternalModuleBase
     {
-        private Dictionary<string, CustomModuleBase> _customModules = new Dictionary<string, CustomModuleBase>();
+        private ICustomModuleHelper _helper;
 
         internal override void OnInitialization()
         {
             base.OnInitialization();
 
-            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
-            {
-                return type.IsSubclassOf(typeof(CustomModuleBase));
-            });
-            for (int i = 0; i < types.Count; i++)
-            {
-                CustomModuleAttribute att = types[i].GetCustomAttribute<CustomModuleAttribute>();
-                if (att != null && att.IsEnable && !_customModules.ContainsKey(att.ModuleName))
-                {
-                    _customModules.Add(att.ModuleName, Activator.CreateInstance(types[i]) as CustomModuleBase);
-                }
-            }
-
-            foreach (var module in _customModules)
-            {
-                module.Value.OnInitialization();
-            }
+            _helper = Helper as ICustomModuleHelper;
+            _helper.OnInitialization();
         }
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
 
-            foreach (var module in _customModules)
-            {
-                module.Value.OnPreparatory();
-            }
+            _helper.OnPreparatory();
         }
         internal override void OnRefresh()
         {
             base.OnRefresh();
 
-            foreach (var module in _customModules)
-            {
-                if (module.Value.IsRunning)
-                {
-                    module.Value.OnRefresh();
-                }
-            }
+            _helper.OnRefresh();
         }
         internal override void OnTermination()
         {
             base.OnTermination();
 
-            foreach (var module in _customModules)
-            {
-                module.Value.OnTermination();
-            }
-
-            _customModules.Clear();
+            _helper.OnTermination();
         }
         internal override void OnPause()
         {
             base.OnPause();
 
-            foreach (var module in _customModules)
-            {
-                module.Value.OnPause();
-            }
+            _helper.OnPause();
         }
         internal override void OnUnPause()
         {
             base.OnUnPause();
 
-            foreach (var module in _customModules)
-            {
-                module.Value.OnUnPause();
-            }
+            _helper.OnUnPause();
         }
 
         /// <summary>
@@ -96,9 +58,9 @@ namespace HT.Framework
         {
             get
             {
-                if (_customModules.ContainsKey(moduleName))
+                if (_helper.CustomModules.ContainsKey(moduleName))
                 {
-                    return _customModules[moduleName];
+                    return _helper.CustomModules[moduleName];
                 }
                 else
                 {
@@ -112,10 +74,10 @@ namespace HT.Framework
         /// <param name="moduleName">模块名称</param>
         public void TerminationModule(string moduleName)
         {
-            if (_customModules.ContainsKey(moduleName))
+            if (_helper.CustomModules.ContainsKey(moduleName))
             {
-                _customModules[moduleName].OnTermination();
-                _customModules.Remove(moduleName);
+                _helper.CustomModules[moduleName].OnTermination();
+                _helper.CustomModules.Remove(moduleName);
             }
         }
     }

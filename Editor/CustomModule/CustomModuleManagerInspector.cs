@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -10,7 +10,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103390089")]
     internal sealed class CustomModuleManagerInspector : InternalModuleInspector<CustomModuleManager>
     {
-        private Dictionary<string, CustomModuleBase> _customModules;
+        private ICustomModuleHelper _customModuleHelper;
 
         protected override string Intro
         {
@@ -20,11 +20,19 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(ICustomModuleHelper);
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _customModules = Target.GetType().GetField("_customModules", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, CustomModuleBase>;
+            _customModuleHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as ICustomModuleHelper;
         }
         
         protected override void OnInspectorRuntimeGUI()
@@ -32,10 +40,10 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("CustomModules: " + _customModules.Count);
+            GUILayout.Label("CustomModules: " + _customModuleHelper.CustomModules.Count);
             GUILayout.EndHorizontal();
 
-            foreach (var item in _customModules)
+            foreach (var item in _customModuleHelper.CustomModules)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);

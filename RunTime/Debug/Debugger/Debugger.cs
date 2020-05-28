@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 调试器
     /// </summary>
-    public class Debugger
+    public sealed class Debugger
     {
         #region Public Property
         /// <summary>
@@ -22,7 +22,7 @@ namespace HT.Framework
             {
                 return _module;
             }
-            protected set
+            private set
             {
                 if (_module != value)
                 {
@@ -90,7 +90,7 @@ namespace HT.Framework
         #endregion
 
         #region Lifecycle Function
-        public virtual void OnInit(GUISkin skin)
+        public void OnInitialization(GUISkin skin)
         {
             Application.logMessageReceived += OnLogMessageReceived;
 
@@ -103,7 +103,7 @@ namespace HT.Framework
             _expandTexture = Resources.Load<Texture>("Texture/Debug/Expand");
             _retractTexture = Resources.Load<Texture>("Texture/Debug/Retract");
         }
-        public virtual void OnDestory()
+        public void OnTermination()
         {
             Application.logMessageReceived -= OnLogMessageReceived;
         }
@@ -138,7 +138,13 @@ namespace HT.Framework
 
             FPSUpdate();
         }
-        protected virtual void OnExpandGUIWindow(int windowId)
+        #endregion
+
+        #region Additional Function
+        /// <summary>
+        /// 展开的窗口
+        /// </summary>
+        private void OnExpandGUIWindow(int windowId)
         {
             GUI.DragWindow(_dragWindowRect);
 
@@ -285,7 +291,7 @@ namespace HT.Framework
                         return;
                     }
                     GUILayout.EndHorizontal();
-                    
+
                     GUILayout.BeginHorizontal();
 
                     {
@@ -714,7 +720,10 @@ namespace HT.Framework
                     break;
             }
         }
-        protected virtual void OnRetractGUIWindow(int windowId)
+        /// <summary>
+        /// 收起的窗口
+        /// </summary>
+        private void OnRetractGUIWindow(int windowId)
         {
             GUI.DragWindow(_dragWindowRect);
 
@@ -725,9 +734,6 @@ namespace HT.Framework
             }
             GUI.contentColor = Color.white;
         }
-        #endregion
-
-        #region Additional Function
         /// <summary>
         /// 接收系统日志
         /// </summary>
