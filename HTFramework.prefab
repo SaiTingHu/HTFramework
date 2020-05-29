@@ -533,7 +533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270533982dfa487489a289392bf59019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultWebRequestHelper
   IsOfflineState: 1
   DownloadAudioType: 20
 --- !u!1 &1754517609766808

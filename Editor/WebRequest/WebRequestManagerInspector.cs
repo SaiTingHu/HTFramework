@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -10,7 +10,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89886124")]
     internal sealed class WebRequestManagerInspector : InternalModuleInspector<WebRequestManager>
     {
-        private Dictionary<string, WebInterfaceBase> _interfaces;
+        private IWebRequestHelper _webRequestHelper;
 
         protected override string Intro
         {
@@ -20,11 +20,19 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IWebRequestHelper);
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _interfaces = Target.GetType().GetField("_interfaces", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, WebInterfaceBase>;
+            _webRequestHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IWebRequestHelper;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -45,10 +53,10 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Web Interfaces:" + _interfaces.Count);
+            GUILayout.Label("Web Interfaces:" + _webRequestHelper.WebInterfaces.Count);
             GUILayout.EndHorizontal();
 
-            foreach (var inter in _interfaces)
+            foreach (var inter in _webRequestHelper.WebInterfaces)
             {
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -12,9 +11,6 @@ namespace HT.Framework
     internal sealed class ResourceManagerInspector : InternalModuleInspector<ResourceManager>
     {
         private IResourceHelper _resourceHelper;
-        private string _assetBundleRootPath;
-        private Dictionary<string, AssetBundle> _assetBundles;
-        private AssetBundleManifest _assetBundleManifest;
 
         protected override string Intro
         {
@@ -37,9 +33,6 @@ namespace HT.Framework
             base.OnRuntimeEnable();
 
             _resourceHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IResourceHelper;
-            _assetBundleRootPath = (string)_resourceHelper.GetType().GetProperty("AssetBundleRootPath", BindingFlags.Instance | BindingFlags.Public).GetValue(_resourceHelper);
-            _assetBundles = _resourceHelper.GetType().GetProperty("AssetBundles", BindingFlags.Instance | BindingFlags.Public).GetValue(_resourceHelper) as Dictionary<string, AssetBundle>;
-            _assetBundleManifest = _resourceHelper.GetType().GetProperty("AssetBundleManifest", BindingFlags.Instance | BindingFlags.Public).GetValue(_resourceHelper) as AssetBundleManifest;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -90,20 +83,20 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Root Path: ", GUILayout.Width(100));
-                    EditorGUILayout.TextField(_assetBundleRootPath);
+                    EditorGUILayout.TextField(_resourceHelper.AssetBundleRootPath);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Manifest: ", GUILayout.Width(100));
-                    EditorGUILayout.ObjectField(_assetBundleManifest, typeof(AssetBundleManifest), false);
+                    EditorGUILayout.ObjectField(_resourceHelper.AssetBundleManifest, typeof(AssetBundleManifest), false);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("AssetBundles: ", GUILayout.Width(100));
-                    GUILayout.Label(_assetBundles.Count.ToString());
+                    GUILayout.Label(_resourceHelper.AssetBundles.Count.ToString());
                     GUILayout.EndHorizontal();
 
-                    foreach (KeyValuePair<string, AssetBundle> item in _assetBundles)
+                    foreach (var item in _resourceHelper.AssetBundles)
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
