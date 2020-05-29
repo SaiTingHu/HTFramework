@@ -92,6 +92,12 @@
 
 - 框架中的Procedure（流程）必须包含至少一个流程才能正确构建项目，而其他模块，如无需要，均可以不使用。
 
+## 演示代码
+
+- [入门级Demo](https://github.com/SaiTingHu/HTFrameworkDemo)。
+
+- 应用级Demo。
+
 ## 使用方法
 
 - 1.拉取框架到项目中的Assets文件夹下（Assets/HTFramework/），或以添加子模块的形式。
