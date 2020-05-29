@@ -47,6 +47,26 @@ namespace HT.Framework
                 return _helper.MousePosition;
             }
         }
+        /// <summary>
+        /// 任意键按住
+        /// </summary>
+        public bool AnyKey
+        {
+            get
+            {
+                return IsEnableInputDevice ? Input.anyKey : false;
+            }
+        }
+        /// <summary>
+        /// 任意键按下
+        /// </summary>
+        public bool AnyKeyDown
+        {
+            get
+            {
+                return IsEnableInputDevice ? Input.anyKeyDown : false;
+            }
+        }
 
         internal override void OnInitialization()
         {
