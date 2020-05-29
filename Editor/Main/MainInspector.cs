@@ -9,13 +9,21 @@ namespace HT.Framework
     [CustomEditor(typeof(Main))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102956756")]
-    internal sealed class MainInspector : HTFEditor<Main>
+    internal sealed class MainInspector : InternalModuleInspector<Main>
     {
         private static bool _showScriptingDefine = false;
         private static bool _showMainData = false;
         private static bool _showLicense = false;
         private static bool _showParameter = false;
         private static bool _showSetting = false;
+
+        protected override string Intro
+        {
+            get
+            {
+                return "HTFramework Main Module!";
+            }
+        }
 
         protected override void OnDefaultEnable()
         {

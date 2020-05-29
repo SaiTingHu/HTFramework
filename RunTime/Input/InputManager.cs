@@ -14,8 +14,8 @@ namespace HT.Framework
         /// 输入设备类型【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string InputDeviceType = "";
-
-        private VirtualInput _inputModule;
+        
+        private IInputHelper _helper;
         private InputDeviceBase _inputDevice;
         private bool _isEnableInputDevice = true;
 
@@ -33,8 +33,18 @@ namespace HT.Framework
                 _isEnableInputDevice = value;
                 if (!_isEnableInputDevice)
                 {
-                    _inputModule.ResetAll();
+                    _helper.ResetAll();
                 }
+            }
+        }
+        /// <summary>
+        /// 鼠标位置
+        /// </summary>
+        public Vector3 MousePosition
+        {
+            get
+            {
+                return _helper.MousePosition;
             }
         }
 
@@ -42,7 +52,7 @@ namespace HT.Framework
         {
             base.OnInitialization();
 
-            _inputModule = new VirtualInput();
+            _helper = Helper as IInputHelper;
 
             //加载输入设备
             Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(InputDeviceType);
@@ -87,7 +97,7 @@ namespace HT.Framework
         {
             base.OnPause();
 
-            _inputModule.ResetAll();
+            _helper.ResetAll();
         }
 
         /// <summary>
@@ -97,7 +107,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistVirtualAxis(string name)
         {
-            return _inputModule.IsExistVirtualAxis(name);
+            return _helper.IsExistVirtualAxis(name);
         }
         /// <summary>
         /// 是否存在虚拟按钮
@@ -106,7 +116,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistVirtualButton(string name)
         {
-            return _inputModule.IsExistVirtualButton(name);
+            return _helper.IsExistVirtualButton(name);
         }
         /// <summary>
         /// 注册虚拟轴线
@@ -114,7 +124,7 @@ namespace HT.Framework
         /// <param name="name">轴线名称</param>
         public void RegisterVirtualAxis(string name)
         {
-            _inputModule.RegisterVirtualAxis(name);
+            _helper.RegisterVirtualAxis(name);
         }
         /// <summary>
         /// 注册虚拟按钮
@@ -122,7 +132,7 @@ namespace HT.Framework
         /// <param name="name">按钮名称</param>
         public void RegisterVirtualButton(string name)
         {
-            _inputModule.RegisterVirtualButton(name);
+            _helper.RegisterVirtualButton(name);
         }
         /// <summary>
         /// 取消注册虚拟轴线
@@ -130,7 +140,7 @@ namespace HT.Framework
         /// <param name="name">轴线名称</param>
         public void UnRegisterVirtualAxis(string name)
         {
-            _inputModule.UnRegisterVirtualAxis(name);
+            _helper.UnRegisterVirtualAxis(name);
         }
         /// <summary>
         /// 取消注册虚拟按钮
@@ -138,19 +148,9 @@ namespace HT.Framework
         /// <param name="name">按钮名称</param>
         public void UnRegisterVirtualButton(string name)
         {
-            _inputModule.UnRegisterVirtualButton(name);
+            _helper.UnRegisterVirtualButton(name);
         }
         
-        /// <summary>
-        /// 鼠标位置
-        /// </summary>
-        public Vector3 MousePosition
-        {
-            get
-            {
-                return _inputModule.MousePosition;
-            }
-        }
         /// <summary>
         /// 获取轴线值
         /// </summary>
@@ -158,7 +158,7 @@ namespace HT.Framework
         /// <returns>值</returns>
         public float GetAxis(string name)
         {
-            return _inputModule.GetAxis(name, false);
+            return _helper.GetAxis(name, false);
         }
         /// <summary>
         /// 获取轴线值（值为-1，0，1）
@@ -167,7 +167,7 @@ namespace HT.Framework
         /// <returns>值</returns>
         public float GetAxisRaw(string name)
         {
-            return _inputModule.GetAxis(name, true);
+            return _helper.GetAxis(name, true);
         }
         /// <summary>
         /// 按钮按住
@@ -176,7 +176,7 @@ namespace HT.Framework
         /// <returns>是否按住</returns>
         public bool GetButton(string name)
         {
-            return _inputModule.GetButton(name);
+            return _helper.GetButton(name);
         }
         /// <summary>
         /// 按钮按下
@@ -185,7 +185,7 @@ namespace HT.Framework
         /// <returns>是否按下</returns>
         public bool GetButtonDown(string name)
         {
-            return _inputModule.GetButtonDown(name);
+            return _helper.GetButtonDown(name);
         }
         /// <summary>
         /// 按钮抬起
@@ -194,7 +194,126 @@ namespace HT.Framework
         /// <returns>是否抬起</returns>
         public bool GetButtonUp(string name)
         {
-            return _inputModule.GetButtonUp(name);
+            return _helper.GetButtonUp(name);
+        }
+
+        /// <summary>
+        /// 键盘按键按住
+        /// </summary>
+        /// <param name="keyCode">按键代码</param>
+        /// <returns>是否按住</returns>
+        public bool GetKey(KeyCode keyCode)
+        {
+            return IsEnableInputDevice ? Input.GetKey(keyCode) : false;
+        }
+        /// <summary>
+        /// 键盘按键按下
+        /// </summary>
+        /// <param name="keyCode">按键代码</param>
+        /// <returns>是否按下</returns>
+        public bool GetKeyDown(KeyCode keyCode)
+        {
+            return IsEnableInputDevice ? Input.GetKeyDown(keyCode) : false;
+        }
+        /// <summary>
+        /// 键盘按键抬起
+        /// </summary>
+        /// <param name="keyCode">按键代码</param>
+        /// <returns>是否抬起</returns>
+        public bool GetKeyUp(KeyCode keyCode)
+        {
+            return IsEnableInputDevice ? Input.GetKeyUp(keyCode) : false;
+        }
+        /// <summary>
+        /// 键盘组合按键按住（两个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <returns>是否按住</returns>
+        public bool GetKey(KeyCode keyCode1, KeyCode keyCode2)
+        {
+            return IsEnableInputDevice ? (Input.GetKey(keyCode1) && Input.GetKey(keyCode2)) : false;
+        }
+        /// <summary>
+        /// 键盘组合按键按下（两个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <returns>是否按下</returns>
+        public bool GetKeyDown(KeyCode keyCode1, KeyCode keyCode2)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyDown(keyCode2) && Input.GetKey(keyCode1))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 键盘组合按键抬起（两个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <returns>是否抬起</returns>
+        public bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyUp(keyCode2) && Input.GetKey(keyCode1))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 键盘组合按键按住（三个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <param name="keyCode3">按键3代码</param>
+        /// <returns>是否按住</returns>
+        public bool GetKey(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
+        {
+            return IsEnableInputDevice ? (Input.GetKey(keyCode1) && Input.GetKey(keyCode2) && Input.GetKey(keyCode3)) : false;
+        }
+        /// <summary>
+        /// 键盘组合按键按下（三个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <param name="keyCode3">按键3代码</param>
+        /// <returns>是否按下</returns>
+        public bool GetKeyDown(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyDown(keyCode3) && Input.GetKey(keyCode1) && Input.GetKey(keyCode2))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 键盘组合按键抬起（三个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <param name="keyCode3">按键3代码</param>
+        /// <returns>是否抬起</returns>
+        public bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyUp(keyCode3) && Input.GetKey(keyCode1) && Input.GetKey(keyCode2))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -205,7 +324,7 @@ namespace HT.Framework
         /// <param name="z">z值</param>
         public void SetVirtualMousePosition(float x, float y, float z)
         {
-            _inputModule.SetVirtualMousePosition(x, y, z);
+            _helper.MousePosition = new Vector3(x, y, z);
         }
         /// <summary>
         /// 设置虚拟鼠标位置
@@ -213,7 +332,7 @@ namespace HT.Framework
         /// <param name="value">鼠标位置</param>
         public void SetVirtualMousePosition(Vector3 value)
         {
-            _inputModule.SetVirtualMousePosition(value);
+            _helper.MousePosition = value;
         }
         /// <summary>
         /// 设置按钮按下
@@ -221,7 +340,7 @@ namespace HT.Framework
         /// <param name="name">按钮名称</param>
         public void SetButtonDown(string name)
         {
-            _inputModule.SetButtonDown(name);
+            _helper.SetButtonDown(name);
         }
         /// <summary>
         /// 设置按钮抬起
@@ -229,7 +348,7 @@ namespace HT.Framework
         /// <param name="name">按钮名称</param>
         public void SetButtonUp(string name)
         {
-            _inputModule.SetButtonUp(name);
+            _helper.SetButtonUp(name);
         }
         /// <summary>
         /// 设置轴线值为正方向1
@@ -237,7 +356,7 @@ namespace HT.Framework
         /// <param name="name">轴线名称</param>
         public void SetAxisPositive(string name)
         {
-            _inputModule.SetAxisPositive(name);
+            _helper.SetAxisPositive(name);
         }
         /// <summary>
         /// 设置轴线值为负方向-1
@@ -245,7 +364,7 @@ namespace HT.Framework
         /// <param name="name">轴线名称</param>
         public void SetAxisNegative(string name)
         {
-            _inputModule.SetAxisNegative(name);
+            _helper.SetAxisNegative(name);
         }
         /// <summary>
         /// 设置轴线值为0
@@ -253,7 +372,7 @@ namespace HT.Framework
         /// <param name="name">轴线名称</param>
         public void SetAxisZero(string name)
         {
-            _inputModule.SetAxisZero(name);
+            _helper.SetAxisZero(name);
         }
         /// <summary>
         /// 设置轴线值
@@ -262,7 +381,7 @@ namespace HT.Framework
         /// <param name="value">值</param>
         public void SetAxis(string name, float value)
         {
-            _inputModule.SetAxis(name, value);
+            _helper.SetAxis(name, value);
         }
     }
 }

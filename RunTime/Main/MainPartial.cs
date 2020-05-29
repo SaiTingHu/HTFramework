@@ -14,9 +14,12 @@ using Object = UnityEngine.Object;
 namespace HT.Framework
 {
     /// <summary>
-    /// HTFramework 主程序
+    /// HTFramework 主模块
     /// </summary>
-    public sealed partial class Main : MonoBehaviour
+    [DisallowMultipleComponent]
+    [DefaultExecutionOrder(-1000)]
+    [InternalModule(HTFrameworkModule.Main)]
+    public sealed partial class Main : InternalModuleBase
     {
         #region Static Method
         /// <summary>
@@ -133,7 +136,38 @@ namespace HT.Framework
             objs.Clear();
         }
         #endregion
-        
+
+        #region Lifecycle
+        private void Awake()
+        {
+            OnInitialization();
+        }
+        private void Start()
+        {
+            OnPreparatory();
+        }
+        private void Update()
+        {
+            OnRefresh();
+        }
+        private void FixedUpdate()
+        {
+            OnFixedRefresh();
+        }
+        private void OnGUI()
+        {
+            OnMainGUI();
+        }
+        private void OnDestroy()
+        {
+            OnTermination();
+        }
+        private void OnApplicationQuit()
+        {
+            OnMainQuit();
+        }
+        #endregion
+
         #region Module
         /// <summary>
         /// 切面调试模块
@@ -188,6 +222,10 @@ namespace HT.Framework
         /// </summary>
         public static InputManager m_Input { get; private set; }
         /// <summary>
+        /// 主模块
+        /// </summary>
+        public static Main m_Main { get; private set; }
+        /// <summary>
         /// 网络模块
         /// </summary>
         public static NetworkManager m_Network { get; private set; }
@@ -237,7 +275,10 @@ namespace HT.Framework
                 {
                     if (!_internalModules.ContainsKey(attribute.ModuleName))
                     {
-                        _internalModules.Add(attribute.ModuleName, internalModules[i]);
+                        if (attribute.ModuleName != HTFrameworkModule.Main)
+                        {
+                            _internalModules.Add(attribute.ModuleName, internalModules[i]);
+                        }
                     }
                     else
                     {
@@ -263,6 +304,7 @@ namespace HT.Framework
             m_FSM = GetInternalModule(HTFrameworkModule.FSM) as FSMManager;
             m_Hotfix = GetInternalModule(HTFrameworkModule.Hotfix) as HotfixManager;
             m_Input = GetInternalModule(HTFrameworkModule.Input) as InputManager;
+            m_Main = GetInternalModule(HTFrameworkModule.Main) as Main;
             m_Network = GetInternalModule(HTFrameworkModule.Network) as NetworkManager;
             m_ObjectPool = GetInternalModule(HTFrameworkModule.ObjectPool) as ObjectPoolManager;
             m_Procedure = GetInternalModule(HTFrameworkModule.Procedure) as ProcedureManager;
@@ -326,6 +368,11 @@ namespace HT.Framework
         /// <returns>内置模块对象</returns>
         public InternalModuleBase GetInternalModule(HTFrameworkModule moduleName)
         {
+            if (moduleName == HTFrameworkModule.Main)
+            {
+                return Current;
+            }
+
             if (_internalModules.ContainsKey(moduleName))
             {
                 return _internalModules[moduleName];
@@ -354,12 +401,12 @@ namespace HT.Framework
                 _isPause = value;
                 if (_isPause)
                 {
-                    ModulePause();
+                    OnPause();
                     m_Event.Throw(this, m_ReferencePool.Spawn<EventPauseGame>());
                 }
                 else
                 {
-                    ModuleUnPause();
+                    OnUnPause();
                     m_Event.Throw(this, m_ReferencePool.Spawn<EventUnPauseGame>());
                 }
             }

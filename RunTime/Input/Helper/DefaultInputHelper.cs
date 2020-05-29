@@ -4,14 +4,22 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 虚拟输入模块
+    /// 默认的输入管理器助手
     /// </summary>
-    internal sealed class VirtualInput
+    public sealed class DefaultInputHelper : IInputHelper
     {
         private Dictionary<string, VirtualAxis> _virtualAxes = new Dictionary<string, VirtualAxis>();
         private Dictionary<string, VirtualButton> _virtualButtons = new Dictionary<string, VirtualButton>();
-        private Vector3 _virtualMousePosition;
-        
+
+        /// <summary>
+        /// 输入管理器
+        /// </summary>
+        public InternalModuleBase Module { get; set; }
+        /// <summary>
+        /// 鼠标位置
+        /// </summary>
+        public Vector3 MousePosition { get; set; }
+
         /// <summary>
         /// 是否存在虚拟轴线
         /// </summary>
@@ -210,35 +218,7 @@ namespace HT.Framework
             }
             _virtualAxes[name].Update(value);
         }
-        /// <summary>
-        /// 设置虚拟鼠标位置
-        /// </summary>
-        /// <param name="x">x值</param>
-        /// <param name="y">y值</param>
-        /// <param name="z">z值</param>
-        public void SetVirtualMousePosition(float x, float y, float z)
-        {
-            _virtualMousePosition.Set(x, y, z);
-        }
-        /// <summary>
-        /// 设置虚拟鼠标位置
-        /// </summary>
-        /// <param name="value">鼠标位置</param>
-        public void SetVirtualMousePosition(Vector3 value)
-        {
-            _virtualMousePosition = value;
-        }
-        /// <summary>
-        /// 鼠标位置
-        /// </summary>
-        public Vector3 MousePosition
-        {
-            get
-            {
-                return _virtualMousePosition;
-            }
-        }
-
+        
         /// <summary>
         /// 清除所有输入状态
         /// </summary>
@@ -257,23 +237,20 @@ namespace HT.Framework
         /// <summary>
         /// 虚拟按钮
         /// </summary>
-        public sealed class VirtualButton
+        private sealed class VirtualButton
         {
-            internal string Name { get; private set; }
+            public string Name { get; private set; }
 
             private int _lastPressedFrame = -5;
             private int _releasedFrame = -5;
             private bool _pressed = false;
 
-            internal VirtualButton(string name)
+            public VirtualButton(string name)
             {
                 Name = name;
             }
-
-            /// <summary>
-            /// 按钮按住
-            /// </summary>
-            internal void Pressed()
+            
+            public void Pressed()
             {
                 if (_pressed)
                 {
@@ -282,17 +259,14 @@ namespace HT.Framework
                 _pressed = true;
                 _lastPressedFrame = Time.frameCount;
             }
-
-            /// <summary>
-            /// 按钮释放
-            /// </summary>
-            internal void Released()
+            
+            public void Released()
             {
                 _pressed = false;
                 _releasedFrame = Time.frameCount;
             }
 
-            internal bool GetButton
+            public bool GetButton
             {
                 get
                 {
@@ -300,42 +274,42 @@ namespace HT.Framework
                 }
             }
 
-            internal bool GetButtonDown
+            public bool GetButtonDown
             {
                 get
                 {
-                    return (_lastPressedFrame - Time.frameCount == -1);
+                    return _lastPressedFrame - Time.frameCount == -1;
                 }
             }
 
-            internal bool GetButtonUp
+            public bool GetButtonUp
             {
                 get
                 {
-                    return (_releasedFrame == Time.frameCount - 1);
+                    return _releasedFrame == Time.frameCount - 1;
                 }
             }
         }
         /// <summary>
         /// 虚拟轴线
         /// </summary>
-        public sealed class VirtualAxis
+        private sealed class VirtualAxis
         {
-            internal string Name { get; private set; }
+            public string Name { get; private set; }
 
             private float _value;
 
-            internal VirtualAxis(string name)
+            public VirtualAxis(string name)
             {
                 Name = name;
             }
 
-            internal void Update(float value)
+            public void Update(float value)
             {
                 _value = value;
             }
 
-            internal float GetValue
+            public float GetValue
             {
                 get
                 {
@@ -343,7 +317,7 @@ namespace HT.Framework
                 }
             }
 
-            internal float GetValueRaw
+            public float GetValueRaw
             {
                 get
                 {

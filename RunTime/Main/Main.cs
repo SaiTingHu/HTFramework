@@ -1,60 +1,85 @@
-﻿using UnityEngine;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
-    /// HTFramework 主程序
+    /// HTFramework 主模块
     /// </summary>
-    [DisallowMultipleComponent]
-    [DefaultExecutionOrder(-1000)]
-    public sealed partial class Main : MonoBehaviour
+    public sealed partial class Main : InternalModuleBase
     {
         /// <summary>
         /// 当前主程序
         /// </summary>
         public static Main Current { get; private set; }
         
-        private void Awake()
+        internal override void OnInitialization()
         {
+            base.OnInitialization();
+
             DontDestroyOnLoad(gameObject);
 
-            Current = this;
+            if (Current == null)
+            {
+                Current = this;
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Main, "框架致命错误：不能存在两个及以上Main主模块！");
+            }
 
             LicenseInitialization();
             MainDataInitialization();
             ModuleInitialization();
         }
 
-        private void Start()
+        internal override void OnPreparatory()
         {
+            base.OnPreparatory();
+
             LicensePreparatory();
             MainDataPreparatory();
             ModulePreparatory();
         }
 
-        private void Update()
+        internal override void OnRefresh()
         {
+            base.OnRefresh();
+
             LogicLoopRefresh();
             UtilityRefresh();
             ModuleRefresh();
         }
 
-        private void FixedUpdate()
+        internal void OnFixedRefresh()
         {
             LogicFixedLoopRefresh();
         }
 
-        private void OnGUI()
+        internal void OnMainGUI()
         {
             LicenseOnGUI();
         }
 
-        private void OnDestroy()
+        internal override void OnTermination()
         {
+            base.OnTermination();
+
             ModuleTermination();
         }
 
-        private void OnApplicationQuit()
+        internal override void OnPause()
+        {
+            base.OnPause();
+
+            ModulePause();
+        }
+
+        internal override void OnUnPause()
+        {
+            base.OnUnPause();
+
+            ModuleUnPause();
+        }
+
+        internal void OnMainQuit()
         {
             ApplicationQuitEvent?.Invoke();
         }

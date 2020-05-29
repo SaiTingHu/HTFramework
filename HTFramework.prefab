@@ -1324,7 +1324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dbae30572bc7234485bd93b5d37ee4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultInputHelper
   InputDeviceType: HT.Framework.StandardInputDevice
 --- !u!1 &2556977920105108005
 GameObject:
