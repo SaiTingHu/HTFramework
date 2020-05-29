@@ -9,11 +9,6 @@ namespace HT.Framework
     public sealed class DefaultObjectPoolHelper : IObjectPoolHelper
     {
         /// <summary>
-        /// 对象池默认上限
-        /// </summary>
-        internal int Limit;
-        
-        /// <summary>
         /// 对象池管理器
         /// </summary>
         public InternalModuleBase Module { get; set; }
@@ -23,11 +18,17 @@ namespace HT.Framework
         public Dictionary<string, ObjectSpawnPool> SpawnPools { get; set; } = new Dictionary<string, ObjectSpawnPool>();
 
         /// <summary>
+        /// 对象池默认上限
+        /// </summary>
+        private int _limit;
+
+        /// <summary>
         /// 初始化
         /// </summary>
-        public void OnInitialization()
+        /// <param name="limit">对象池上限</param>
+        public void OnInitialization(int limit)
         {
-            Limit = (Module as ObjectPoolManager).Limit;
+            _limit = limit;
         }
         /// <summary>
         /// 终结
@@ -49,7 +50,7 @@ namespace HT.Framework
         {
             if (!SpawnPools.ContainsKey(name))
             {
-                SpawnPools.Add(name, new ObjectSpawnPool(spawnTem, limit <= 0 ? Limit : limit, onSpawn, onDespawn));
+                SpawnPools.Add(name, new ObjectSpawnPool(spawnTem, limit <= 0 ? _limit : limit, onSpawn, onDespawn));
             }
             else
             {

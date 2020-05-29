@@ -22,7 +22,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IObjectPoolHelper;
-            _helper.OnInitialization();
+            _helper.OnInitialization(Limit);
         }
         internal override void OnTermination()
         {

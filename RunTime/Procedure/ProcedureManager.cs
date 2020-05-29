@@ -24,98 +24,37 @@ namespace HT.Framework
         /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
         /// </summary>
         public event HTFAction<ProcedureBase, ProcedureBase> AnyProcedureSwitchEvent;
-
-        private Dictionary<Type, ProcedureBase> _procedureInstances = new Dictionary<Type, ProcedureBase>();
-        private List<Type> _procedureTypes = new List<Type>();
-        private ProcedureBase _currentProcedure;
-        private float _timer = 0;
+        
+        private IProcedureHelper _helper;
 
         internal override void OnInitialization()
         {
             base.OnInitialization();
 
-            //创建所有已激活的流程对象
-            for (int i = 0; i < ActivatedProcedures.Count; i++)
+            _helper = Helper as IProcedureHelper;
+            _helper.OnInitialization(ActivatedProcedures, DefaultProcedure);
+            _helper.AnyProcedureSwitchEvent += (last, next) =>
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(ActivatedProcedures[i]);
-                if (type != null)
-                {
-                    if (type.IsSubclassOf(typeof(ProcedureBase)))
-                    {
-                        if (!_procedureInstances.ContainsKey(type))
-                        {
-                            _procedureInstances.Add(type, Activator.CreateInstance(type) as ProcedureBase);
-                            _procedureTypes.Add(type);
-                        }
-                    }
-                    else
-                    {
-                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：流程 " + ActivatedProcedures[i] + " 必须继承至流程基类：ProcedureBase！");
-                    }
-                }
-                else
-                {
-                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：丢失流程 " + ActivatedProcedures[i] + "！");
-                }
-            }
+                AnyProcedureSwitchEvent?.Invoke(last, next);
+            };
         }
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
 
-            //流程初始化
-            foreach (var procedureInstance in _procedureInstances)
-            {
-                procedureInstance.Value.OnInit();
-            }
-
-            //进入默认流程
-            if (DefaultProcedure != "")
-            {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(DefaultProcedure);
-                if (type != null)
-                {
-                    if (_procedureInstances.ContainsKey(type))
-                    {
-                        _currentProcedure = _procedureInstances[type];
-                        _currentProcedure.OnEnter(null);
-                    }
-                    else
-                    {
-                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "进入流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
-                    }
-                }
-                else
-                {
-                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "进入流程失败：丢失流程 " + DefaultProcedure + " ！");
-                }
-            }
+            _helper.OnPreparatory();
         }
         internal override void OnRefresh()
         {
             base.OnRefresh();
 
-            if (_currentProcedure != null)
-            {
-                _currentProcedure.OnUpdate();
-
-                if (_timer < 1)
-                {
-                    _timer += Time.deltaTime;
-                }
-                else
-                {
-                    _timer = 0;
-                    _currentProcedure.OnUpdateSecond();
-                }
-            }
+            _helper.OnRefresh();
         }
         internal override void OnTermination()
         {
             base.OnTermination();
 
-            _procedureInstances.Clear();
-            _procedureTypes.Clear();
+            _helper.OnTermination();
         }
 
         /// <summary>
@@ -125,7 +64,7 @@ namespace HT.Framework
         {
             get
             {
-                return _currentProcedure;
+                return _helper.CurrentProcedure;
             }
         }
 
@@ -136,7 +75,7 @@ namespace HT.Framework
         /// <returns>流程对象</returns>
         public T GetProcedure<T>() where T : ProcedureBase
         {
-            return GetProcedure(typeof(T)) as T;
+            return _helper.GetProcedure(typeof(T)) as T;
         }
         /// <summary>
         /// 获取流程
@@ -145,14 +84,7 @@ namespace HT.Framework
         /// <returns>流程对象</returns>
         public ProcedureBase GetProcedure(Type type)
         {
-            if (_procedureInstances.ContainsKey(type))
-            {
-                return _procedureInstances[type];
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Procedure, "获取流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
-            }
+            return _helper.GetProcedure(type);
         }
 
         /// <summary>
@@ -162,7 +94,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistProcedure<T>() where T : ProcedureBase
         {
-            return IsExistProcedure(typeof(T));
+            return _helper.IsExistProcedure(typeof(T));
         }
         /// <summary>
         /// 是否存在流程
@@ -171,7 +103,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistProcedure(Type type)
         {
-            return _procedureInstances.ContainsKey(type);
+            return _helper.IsExistProcedure(type);
         }
 
         /// <summary>
@@ -180,7 +112,7 @@ namespace HT.Framework
         /// <typeparam name="T">目标流程</typeparam>
         public void SwitchProcedure<T>() where T : ProcedureBase
         {
-            SwitchProcedure(typeof(T));
+            _helper.SwitchProcedure(typeof(T));
         }
         /// <summary>
         /// 切换流程
@@ -188,58 +120,21 @@ namespace HT.Framework
         /// <param name="type">目标流程</param>
         public void SwitchProcedure(Type type)
         {
-            if (_procedureInstances.ContainsKey(type))
-            {
-                if (_currentProcedure == _procedureInstances[type])
-                {
-                    return;
-                }
-
-                ProcedureBase lastProcedure = _currentProcedure;
-                ProcedureBase nextProcedure = _procedureInstances[type];
-                if (lastProcedure != null)
-                {
-                    lastProcedure.OnLeave(nextProcedure);
-                }
-                nextProcedure.OnEnter(lastProcedure);
-                _currentProcedure = nextProcedure;
-
-                AnyProcedureSwitchEvent?.Invoke(lastProcedure, nextProcedure);
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Procedure, "切换流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
-            }
+            _helper.SwitchProcedure(type);
         }
         /// <summary>
         /// 切换至下一流程
         /// </summary>
         public void SwitchNextProcedure()
         {
-            int index = _procedureTypes.IndexOf(_currentProcedure.GetType());
-            if (index >= _procedureTypes.Count - 1)
-            {
-                SwitchProcedure(_procedureTypes[0]);
-            }
-            else
-            {
-                SwitchProcedure(_procedureTypes[index + 1]);
-            }
+            _helper.SwitchNextProcedure();
         }
         /// <summary>
         /// 切换至上一流程
         /// </summary>
         public void SwitchLastProcedure()
         {
-            int index = _procedureTypes.IndexOf(_currentProcedure.GetType());
-            if (index <= 0)
-            {
-                SwitchProcedure(_procedureTypes[_procedureTypes.Count - 1]);
-            }
-            else
-            {
-                SwitchProcedure(_procedureTypes[index - 1]);
-            }
+            _helper.SwitchLastProcedure();
         }
         /// <summary>
         /// 切换至指定序号的流程（依据编辑器面板的序号）
@@ -247,15 +142,7 @@ namespace HT.Framework
         /// <param name="index">流程序号</param>
         public void SwitchTargetProcedure(int index)
         {
-            index = index - 1;
-            if (index >= 0 && index < _procedureTypes.Count)
-            {
-                SwitchProcedure(_procedureTypes[index]);
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Procedure, "切换流程失败：不存在序号为 " + (index + 1).ToString() + " 的流程或者流程未激活！");
-            }
+            _helper.SwitchTargetProcedure(index);
         }
     }
 }

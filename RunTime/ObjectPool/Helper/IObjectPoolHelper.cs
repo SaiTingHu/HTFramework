@@ -16,7 +16,8 @@ namespace HT.Framework
         /// <summary>
         /// 初始化
         /// </summary>
-        void OnInitialization();
+        /// <param name="limit">对象池上限</param>
+        void OnInitialization(int limit);
         /// <summary>
         /// 终结
         /// </summary>

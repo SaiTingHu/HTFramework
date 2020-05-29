@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 引用池
     /// </summary>
-    internal sealed class ReferenceSpawnPool
+    public sealed class ReferenceSpawnPool
     {
         private int _limit = 100;
         private Queue<IReference> _referenceQueue = new Queue<IReference>();

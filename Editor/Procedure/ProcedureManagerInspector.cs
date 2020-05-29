@@ -11,7 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86998412")]
     internal sealed class ProcedureManagerInspector : InternalModuleInspector<ProcedureManager>
     {
-        private Dictionary<Type, ProcedureBase> _procedureInstances;
+        private IProcedureHelper _procedureHelper;
 
         protected override string Intro
         {
@@ -21,11 +21,19 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IProcedureHelper);
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _procedureInstances = Target.GetType().GetField("_procedureInstances", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, ProcedureBase>;
+            _procedureHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IProcedureHelper;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -164,10 +172,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Procedures: " + _procedureInstances.Count);
+            GUILayout.Label("Procedures: " + _procedureHelper.Procedures.Count);
             GUILayout.EndHorizontal();
 
-            foreach (var procedure in _procedureInstances)
+            foreach (var procedure in _procedureHelper.Procedures)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);

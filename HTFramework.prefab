@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f622d3445a22af4abb75d3b291863d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultProcedureHelper
   ActivatedProcedures: []
   DefaultProcedure: 
 --- !u!1 &1160658927014220
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8cda504f3e23747b84eb071881ea29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultReferencePoolHelper
   Limit: 100
 --- !u!1 &1235528306769112
 GameObject:
