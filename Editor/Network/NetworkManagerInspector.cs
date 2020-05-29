@@ -11,7 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103575999")]
     internal sealed class NetworkManagerInspector : InternalModuleInspector<NetworkManager>
     {
-        private Dictionary<Type, ProtocolChannelBase> _protocolChannels;
+        private INetworkHelper _networkHelper;
 
         protected override string Intro
         {
@@ -21,11 +21,19 @@ namespace HT.Framework
             }
         }
 
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(INetworkHelper);
+            }
+        }
+
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _protocolChannels = Target.GetType().GetField("_protocolChannels", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<Type, ProtocolChannelBase>;
+            _networkHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as INetworkHelper;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -114,7 +122,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            foreach (var channel in _protocolChannels)
+            foreach (var channel in _networkHelper.ProtocolChannels)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(channel.Key.FullName + " [" + channel.Value.Protocol.ToString() + "]");

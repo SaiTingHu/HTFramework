@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 对象池
     /// </summary>
-    internal sealed class ObjectSpawnPool
+    public sealed class ObjectSpawnPool
     {
         private GameObject _spawnTem;
         private int _limit = 100;

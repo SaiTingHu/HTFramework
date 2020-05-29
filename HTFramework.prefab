@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c69272abac4883489e86bf144711afb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultObjectPoolHelper
   Limit: 100
 --- !u!1 &1679441640883288
 GameObject:
@@ -438,6 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca69abad7fa812549af117e5df406473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HelperType: <None>
   IsPermanentLicense: 1
   LicenserType: <None>
   MainDataType: <None>
@@ -914,7 +915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f225c8f05c84b84bb22577ad1cf67ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: <None>
+  HelperType: HT.Framework.DefaultNetworkHelper
   ChannelTypes: []
   ServerIP: 127.0.0.1
   ServerPort: 10000
