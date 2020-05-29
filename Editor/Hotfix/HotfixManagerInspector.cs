@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -23,6 +24,14 @@ namespace HT.Framework
             get
             {
                 return "Hotfix manager, the hot update in this game!";
+            }
+        }
+
+        protected override Type HelperInterface
+        {
+            get
+            {
+                return typeof(IHotfixHelper);
             }
         }
 
