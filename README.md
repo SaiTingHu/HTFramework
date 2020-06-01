@@ -78,7 +78,7 @@
 
 - [XLua](https://github.com/SaiTingHu/HTFrameworkXLua)【可选模块】 - 本模块旨在结合XLua与框架的资源加载策略，快速实现热更流程，并优化了开发环境，使得开发人员可以最低成本的投入到Lua业务开发。
 
-- [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于新手引导系统、交互系统、背包系统、昼夜时间系统、文件系统、信息提醒系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
+- [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于ECMS系统、文件系统、本地化系统、新手引导系统、时间系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
 
 ## 内置工具
 

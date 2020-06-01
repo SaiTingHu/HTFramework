@@ -148,26 +148,6 @@ namespace HT.Framework
                 return Application.productName + ".HT.Framework.Script.SettingItem";
             }
         }
-        /// <summary>
-        /// 快捷工具是否启用
-        /// </summary>
-        public static string LnkTools_Enable
-        {
-            get
-            {
-                return "LnkTools.Enable";
-            }
-        }
-        /// <summary>
-        /// 快捷工具是否展开
-        /// </summary>
-        public static string LnkTools_Expansion
-        {
-            get
-            {
-                return "LnkTools.Expansion";
-            }
-        }
         #endregion
 
         #region Utility
@@ -229,6 +209,37 @@ namespace HT.Framework
             get
             {
                 return Application.productName + ".HT.Framework.RectTransform.Copy";
+            }
+        }
+
+        /// <summary>
+        /// 快捷工具是否启用
+        /// </summary>
+        public static string LnkTools_Enable
+        {
+            get
+            {
+                return "LnkTools.Enable";
+            }
+        }
+        /// <summary>
+        /// 快捷工具是否展开
+        /// </summary>
+        public static string LnkTools_Expansion
+        {
+            get
+            {
+                return "LnkTools.Expansion";
+            }
+        }
+        /// <summary>
+        /// About窗口：是否在启动时自动打开
+        /// </summary>
+        public static string AboutIsShowOnStart
+        {
+            get
+            {
+                return "About.IsShowOnStart";
             }
         }
         #endregion

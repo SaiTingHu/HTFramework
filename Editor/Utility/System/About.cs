@@ -10,7 +10,7 @@ namespace HT.Framework
         {
             if (EditorApplication.timeSinceStartup < 30)
             {
-                if (INIParser.ReadIniData("HTFrameworkEditor", "IsShowOnStart", "0", Application.dataPath + "/HTFramework/Editor/Utility/Config/Config.ini") == "1")
+                if (EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true))
                 {
                     EditorApplication.delayCall += () =>
                     {
@@ -81,7 +81,7 @@ namespace HT.Framework
             _supported = ini.ReadValue("HTFrameworkEditor", "Supported", "<None>");
             _scripting = ini.ReadValue("HTFrameworkEditor", "Scripting", "<None>");
             _api = ini.ReadValue("HTFrameworkEditor", "Api", "<None>");
-            _isShowOnStart = ini.ReadValue("HTFrameworkEditor", "IsShowOnStart", "0") == "1";
+            _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true);
             ini.Close();
         }
 
@@ -170,7 +170,7 @@ namespace HT.Framework
             if (isShowOnStart != _isShowOnStart)
             {
                 _isShowOnStart = isShowOnStart;
-                INIParser.WriteIniData("HTFrameworkEditor", "IsShowOnStart", _isShowOnStart ? "1" : "0", _configPath);
+                EditorPrefs.SetBool(EditorPrefsTable.AboutIsShowOnStart, _isShowOnStart);
             }
             GUILayout.EndHorizontal();
 
