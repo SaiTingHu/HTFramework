@@ -1,0 +1,14 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using HT.Framework;
+using DG.Tweening;
+
+/// <summary>
+/// 新建指令
+/// </summary>
+public sealed class #SCRIPTNAME# : ECS_Order
+{
+	
+}

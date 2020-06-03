@@ -148,6 +148,36 @@ namespace HT.Framework
                 return Application.productName + ".HT.Framework.Script.SettingItem";
             }
         }
+        /// <summary>
+        /// 新建ECS组件的文件夹
+        /// </summary>
+        public static string Script_ECSComponent_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.ECSComponent";
+            }
+        }
+        /// <summary>
+        /// 新建ECS系统的文件夹
+        /// </summary>
+        public static string Script_ECSSystem_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.ECSSystem";
+            }
+        }
+        /// <summary>
+        /// 新建ECS指令的文件夹
+        /// </summary>
+        public static string Script_ECSOrder_Directory
+        {
+            get
+            {
+                return Application.productName + ".HT.Framework.Script.ECSOrder";
+            }
+        }
         #endregion
 
         #region Utility

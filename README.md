@@ -38,6 +38,8 @@
 
 - [Debug](https://wanderer.blog.csdn.net/article/details/102570194) - Debug模块自带Debugger运行时调试器，可以监控一些常规数据与软件运行环境，或是进行一些高级的操作，比如检索场景所有游戏对象（等效于编辑器内Hierarchy窗口的功能），检索游戏对象的所有组件（等效于编辑器内Inspector窗口的功能）。
 
+- [ECS] - 实体-组件-系统，此ECS非Unity的ECS，并不一定会带来性能的提升，只是基于ECS的思想，建立在Unity现有的组件模式之上，以ECS模式进行开发可以避开项目后期繁重的继承链，提升开发速度和质量。
+
 - [Entity](https://wanderer.blog.csdn.net/article/details/101541066) - 实体管理器，除去UI以外，场景中的其余可见物体都应该抽象为Entity，在Entity之上配合FSM一起管理逻辑，将是一个不错的搭配。
 
 - [Event](https://wanderer.blog.csdn.net/article/details/85689865) - 可以将一切操作定义为具体的全局事件，通过订阅事件、抛出事件以驱动整个业务逻辑。

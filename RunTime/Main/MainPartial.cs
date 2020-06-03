@@ -198,6 +198,10 @@ namespace HT.Framework
         /// </summary>
         public static DebugManager m_Debug { get; private set; }
         /// <summary>
+        /// ECS模块
+        /// </summary>
+        public static ECSManager m_ECS { get; private set; }
+        /// <summary>
         /// 实体模块
         /// </summary>
         public static EntityManager m_Entity { get; private set; }
@@ -298,6 +302,7 @@ namespace HT.Framework
             m_CustomModule = GetInternalModule(HTFrameworkModule.CustomModule) as CustomModuleManager;
             m_DataSet = GetInternalModule(HTFrameworkModule.DataSet) as DataSetManager;
             m_Debug = GetInternalModule(HTFrameworkModule.Debug) as DebugManager;
+            m_ECS = GetInternalModule(HTFrameworkModule.ECS) as ECSManager;
             m_Entity = GetInternalModule(HTFrameworkModule.Entity) as EntityManager;
             m_Event = GetInternalModule(HTFrameworkModule.Event) as EventManager;
             m_ExceptionHandler = GetInternalModule(HTFrameworkModule.ExceptionHandler) as ExceptionHandler;
@@ -1037,6 +1042,7 @@ namespace HT.Framework
         CustomModule,
         DataSet,
         Debug,
+        ECS,
         Entity,
         Event,
         ExceptionHandler,

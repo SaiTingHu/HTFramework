@@ -196,11 +196,32 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Tools 【优先级109-113】
+        #region ECS 【优先级108-109】
+        [@MenuItem("HTFramework/ECS/Mark As To Entity", false, 108)]
+        private static void MarkAsToEntity()
+        {
+            int index = 0;
+            for (int i = 0; i < Selection.gameObjects.Length; i++)
+            {
+                ECS_Entity.CreateEntity(Selection.gameObjects[i]);
+                index += 1;
+            }
+            Log.Info("已完成ECS实体标记 " + index + " 个！");
+        }
+        [@MenuItem("HTFramework/ECS/Inspector", false, 109)]
+        private static void OpenECSInspector()
+        {
+            ECS_Inspector inspector = EditorWindow.GetWindow<ECS_Inspector>();
+            inspector.titleContent.text = "ECS Inspector";
+            inspector.Show();
+        }
+        #endregion
+
+        #region Tools 【优先级111-115】
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 109)]
+        [@MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 111)]
         private static void MeshCombines()
         {
             if (Selection.gameObjects.Length <= 1)
@@ -250,7 +271,7 @@ namespace HT.Framework
         /// <summary>
         /// 展示模型信息
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 110)]
+        [@MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 112)]
         private static void ShowMeshInfo()
         {
             for (int i = 0; i < Selection.gameObjects.Length; i++)
@@ -266,7 +287,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Assembly Viewer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 111)]
+        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 113)]
         private static void OpenAssemblyViewer()
         {
             AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
@@ -278,7 +299,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Custom Executer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Executer", false, 112)]
+        [@MenuItem("HTFramework/Tools/Custom Executer", false, 114)]
         private static void OpenCustomExecuter()
         {
             CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
@@ -294,7 +315,7 @@ namespace HT.Framework
         /// <summary>
         /// 执行 Custom Tool
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Tool", false, 113)]
+        [@MenuItem("HTFramework/Tools/Custom Tool", false, 115)]
         private static void ExecuteCustomTool()
         {
             CustomTools.Clear();
@@ -764,6 +785,117 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 新建ECS的组件类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/[ECS] C# Component Script", false, 1000)]
+        private static void CreateECSComponent()
+        {
+            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ECSComponent_Directory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 ECS Component 类", directory, "NewComponent", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ECSComponentTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_ECSComponent_Directory, path.Substring(0, path.LastIndexOf("/")));
+                    }
+                }
+                else
+                {
+                    Log.Error("新建 ECS Component 失败，已存在类型 " + className);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 新建ECS的系统类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/[ECS] C# System Script", false, 1001)]
+        private static void CreateECSSystem()
+        {
+            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ECSSystem_Directory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 ECS System 类", directory, "NewSystem", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ECSSystemTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_ECSSystem_Directory, path.Substring(0, path.LastIndexOf("/")));
+                    }
+                }
+                else
+                {
+                    Log.Error("新建 ECS System 失败，已存在类型 " + className);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 新建ECS的指令类
+        /// </summary>
+        [@MenuItem("Assets/Create/HTFramework/[ECS] C# Order Script", false, 1002)]
+        private static void CreateECSOrder()
+        {
+            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ECSOrder_Directory, Application.dataPath);
+            string path = EditorUtility.SaveFilePanel("新建 ECS Order 类", directory, "NewOrder", "cs");
+            if (path != "")
+            {
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ECSOrderTemplate.txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(cs);
+                        Selection.activeObject = cs;
+                        AssetDatabase.OpenAsset(cs);
+                        EditorPrefs.SetString(EditorPrefsTable.Script_ECSOrder_Directory, path.Substring(0, path.LastIndexOf("/")));
+                    }
+                }
+                else
+                {
+                    Log.Error("新建 ECS Order 失败，已存在类型 " + className);
+                }
+            }
+        }
+
+        /// <summary>
         /// 【验证函数】新建HotfixProcedure类
         /// </summary>
         [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", true)]
@@ -771,11 +903,11 @@ namespace HT.Framework
         {
             return AssetDatabase.IsValidFolder("Assets/Hotfix");
         }
-
+        
         /// <summary>
         /// 新建HotfixProcedure类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 100)]
+        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 2000)]
         private static void CreateHotfixProcedure()
         {
             string path = EditorUtility.SaveFilePanel("新建 HotfixProcedure 类", Application.dataPath + "/Hotfix", "NewHotfixProcedure", "cs");
@@ -819,7 +951,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建HotfixObject类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 101)]
+        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 2001)]
         private static void CreateHotfixObject()
         {
             string path = EditorUtility.SaveFilePanel("新建 HotfixObject 类", Application.dataPath + "/Hotfix", "NewHotfixObject", "cs");
@@ -867,7 +999,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建WebGL插件
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 200)]
+        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 3000)]
         private static void CreateWebGLPlugin()
         {
             string pluginsDirectory = Application.dataPath + "/Plugins";
