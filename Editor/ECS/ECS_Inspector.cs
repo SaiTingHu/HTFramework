@@ -119,6 +119,7 @@ namespace HT.Framework
                 {
                     Entity.gameObject.AddComponent(_components[i]);
                     SetDirty();
+                    HasChanged(Entity);
                 }
                 GUI.enabled = Entity && info.IsExist;
                 if (GUILayout.Button("Remove", EditorStyles.miniButtonRight))
@@ -128,6 +129,7 @@ namespace HT.Framework
                     {
                         DestroyImmediate(component);
                         SetDirty();
+                        HasChanged(Entity);
                     }
                 }
                 GUI.enabled = true;
@@ -172,6 +174,7 @@ namespace HT.Framework
                         }
                     }
                     SetDirty();
+                    HasChanged(Entity);
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
