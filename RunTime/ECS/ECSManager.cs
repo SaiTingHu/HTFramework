@@ -62,7 +62,7 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">系统类型</typeparam>
         /// <param name="isEnable">是否激活</param>
-        public void SetSystemEnable<T>(bool isEnable)
+        public void SetSystemEnable<T>(bool isEnable) where T : ECS_System
         {
             _helper.SetSystemEnable(typeof(T), isEnable);
         }
@@ -74,6 +74,24 @@ namespace HT.Framework
         public void SetSystemEnable(Type type, bool isEnable)
         {
             _helper.SetSystemEnable(type, isEnable);
+        }
+        /// <summary>
+        /// 获取系统
+        /// </summary>
+        /// <typeparam name="T">系统类型</typeparam>
+        /// <returns>系统对象</returns>
+        public T GetSystem<T>() where T : ECS_System
+        {
+            return _helper.GetSystem(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 获取系统
+        /// </summary>
+        /// <param name="type">系统类型</param>
+        /// <returns>系统对象</returns>
+        public ECS_System GetSystem(Type type)
+        {
+            return _helper.GetSystem(type);
         }
         /// <summary>
         /// 添加实体

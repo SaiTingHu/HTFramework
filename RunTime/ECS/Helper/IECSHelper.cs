@@ -45,6 +45,12 @@ namespace HT.Framework
         /// <param name="isEnable">是否激活</param>
         void SetSystemEnable(Type type, bool isEnable);
         /// <summary>
+        /// 获取系统
+        /// </summary>
+        /// <param name="type">系统类型</param>
+        /// <returns>系统对象</returns>
+        ECS_System GetSystem(Type type);
+        /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>

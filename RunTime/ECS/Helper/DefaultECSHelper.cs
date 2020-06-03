@@ -113,6 +113,22 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 获取系统
+        /// </summary>
+        /// <param name="type">系统类型</param>
+        /// <returns>系统对象</returns>
+        public ECS_System GetSystem(Type type)
+        {
+            if (Systems.ContainsKey(type))
+            {
+                return Systems[type];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
         /// 添加实体
         /// </summary>
         /// <param name="entity">实体</param>
