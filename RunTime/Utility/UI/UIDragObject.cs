@@ -11,13 +11,13 @@ namespace HT.Framework
     public sealed class UIDragObject : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         /// <summary>
-        /// 拖动模式
-        /// </summary>
-        public UIType Mode = UIType.Overlay;
-        /// <summary>
         /// 被拖动目标
         /// </summary>
         public GameObject DragTarget;
+        /// <summary>
+        /// 拖动模式
+        /// </summary>
+        public UIType Mode = UIType.Overlay;
         /// <summary>
         /// 水平拖动
         /// </summary>
