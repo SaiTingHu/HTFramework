@@ -19,5 +19,9 @@ namespace HT.Framework
         /// 是否开启提示，当目标被射线捕获时
         /// </summary>
         public bool IsOpenPrompt = true;
+        /// <summary>
+        /// 是否开启高亮，当目标被射线捕获时
+        /// </summary>
+        public bool IsOpenHighlight = true;
     }
 }

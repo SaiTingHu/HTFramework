@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     /// <summary>
-    /// 鼠标位置发射射线捕获目标
+    /// 鼠标位置射线发射器
     /// </summary>
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
@@ -20,6 +20,10 @@ namespace HT.Framework
         /// 是否开启射中提示
         /// </summary>
         public bool IsOpenPrompt = true;
+        /// <summary>
+        /// 是否开启射中高亮
+        /// </summary>
+        public bool IsOpenHighlight = true;
         /// <summary>
         /// 射线投射的有效层
         /// </summary>
@@ -190,6 +194,17 @@ namespace HT.Framework
                         RayHitBG.gameObject.SetActive(true);
                         RayHitText.text = Target.Name;
                     }
+                }
+                else
+                {
+                    if (RayHitBG && RayHitBG.gameObject.activeSelf)
+                    {
+                        RayHitBG.gameObject.SetActive(false);
+                    }
+                }
+
+                if (IsOpenHighlight && Target.IsOpenHighlight)
+                {
                     if (_rayTargetType == TargetType.GameObject)
                     {
                         switch (TriggerHighlighting)
@@ -204,13 +219,6 @@ namespace HT.Framework
                                 _rayTarget.OpenMeshOutline(NormalColor, OutlineIntensity);
                                 break;
                         }
-                    }
-                }
-                else
-                {
-                    if (RayHitBG && RayHitBG.gameObject.activeSelf)
-                    {
-                        RayHitBG.gameObject.SetActive(false);
                     }
                 }
             }
