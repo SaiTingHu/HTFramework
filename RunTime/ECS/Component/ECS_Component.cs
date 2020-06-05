@@ -21,7 +21,7 @@ namespace HT.Framework
         internal string Name;
 #endif
 
-        private void Awake()
+        protected virtual void Awake()
         {
             Entity = GetComponent<ECS_Entity>();
             Entity.AppendComponent(this);
@@ -31,7 +31,7 @@ namespace HT.Framework
             Name = string.Format("{0} ({1})", cna != null ? cna.Name : "未命名", GetType().FullName);
 #endif
         }
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (Entity) Entity.RemoveComponent(this);
         }
