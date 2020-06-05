@@ -33,7 +33,7 @@ namespace HT.Framework
         }
         private void OnDestroy()
         {
-            Entity.RemoveComponent(this);
+            if (Entity) Entity.RemoveComponent(this);
         }
     }
 }

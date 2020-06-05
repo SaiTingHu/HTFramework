@@ -54,25 +54,6 @@ namespace HT.Framework
                 return _id;
             }
         }
-        /// <summary>
-        /// 获取组件
-        /// </summary>
-        /// <param name="type">组件类型</param>
-        /// <returns>组件对象</returns>
-        public ECS_Component this[Type type]
-        {
-            get
-            {
-                if (_components.ContainsKey(type))
-                {
-                    return _components[type];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
 
         [SerializeField] private string _name = "";
         [SerializeField] private string _id = "";
@@ -159,6 +140,32 @@ namespace HT.Framework
         internal void GenerateID()
         {
             _id = Guid.NewGuid().ToString();
+        }
+
+        /// <summary>
+        /// 获取组件
+        /// </summary>
+        /// <typeparam name="T">组件类型</typeparam>
+        /// <returns>组件</returns>
+        public T Component<T>() where T : ECS_Component
+        {
+            return Component(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 获取组件
+        /// </summary>
+        /// <param name="type">组件类型</param>
+        /// <returns>组件</returns>
+        public ECS_Component Component(Type type)
+        {
+            if (_components.ContainsKey(type))
+            {
+                return _components[type];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
