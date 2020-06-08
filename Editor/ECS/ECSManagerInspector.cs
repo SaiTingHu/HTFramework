@@ -8,7 +8,7 @@ namespace HT.Framework
 {
     [CustomEditor(typeof(ECSManager))]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
-    [CSDNBlogURL("")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/106619485")]
     internal sealed class ECSManagerInspector : InternalModuleInspector<ECSManager>
     {
         private IECSHelper _ECSHelper;
