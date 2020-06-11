@@ -44,7 +44,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否完成中
         /// </summary>
-        private bool _isCompleting { get; set; } = false;
+        protected bool _isCompleting { get; private set; } = false;
 
         public TaskPointBase()
         {
@@ -66,6 +66,14 @@ namespace HT.Framework
         /// 任务点开始后，帧刷新
         /// </summary>
         protected virtual void OnUpdate()
+        {
+
+        }
+
+        /// <summary>
+        /// 任务点指引
+        /// </summary>
+        public virtual void OnGuide()
         {
 
         }
@@ -94,6 +102,7 @@ namespace HT.Framework
             yield return OnBeforeComplete();
             IsComplete = true;
             completeAction?.Invoke();
+            OnEnd();
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, false));
         }
 
@@ -110,9 +119,23 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnAutoComplete()
         {
+            if (_isCompleting)
+            {
+                return;
+            }
+
             IsComplete = true;
             _isCompleting = true;
+            OnEnd();
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, true));
+        }
+
+        /// <summary>
+        /// 任务点结束
+        /// </summary>
+        protected virtual void OnEnd()
+        {
+
         }
 
         internal void OnMonitor()

@@ -264,6 +264,16 @@ namespace HT.Framework
                 }
             }
         }
+        /// <summary>
+        /// 指引任务点
+        /// </summary>
+        public void Guide(string id)
+        {
+            if (_taskPoints.ContainsKey(id))
+            {
+                _taskPoints[id].OnGuide();
+            }
+        }
 
         /// <summary>
         /// 重新编译任务内容，在更改任务资源 ContentAsset 后，必须重新编译一次才可以开始任务流程

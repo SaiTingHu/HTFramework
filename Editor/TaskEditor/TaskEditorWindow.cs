@@ -300,9 +300,10 @@ namespace HT.Framework
         /// </summary>
         private void AddContent(Type type)
         {
+            TaskContentAttribute tca = type.GetCustomAttribute<TaskContentAttribute>();
             TaskContentBase taskContent = CreateInstance(type) as TaskContentBase;
             taskContent.GUID = _asset.TaskIDName + _asset.TaskIDSign.ToString();
-            taskContent.Details = taskContent.Name = "New Task " + _asset.TaskIDSign.ToString();
+            taskContent.Details = taskContent.Name = (tca != null ? tca.Name : "New Task  ") + _asset.TaskIDSign.ToString();
             _asset.TaskIDSign += 1;
             _asset.Content.Add(taskContent);
             _taskContentList.index = _asset.Content.Count - 1;
@@ -469,10 +470,11 @@ namespace HT.Framework
         /// </summary>
         private void AddPoint(Type type, Vector2 position)
         {
+            TaskPointAttribute tpa = type.GetCustomAttribute<TaskPointAttribute>();
             TaskPointBase taskPoint = CreateInstance(type) as TaskPointBase;
             taskPoint.Anchor = new Rect(position.x, position.y, 200, 85);
             taskPoint.GUID = _asset.TaskPointIDName + _asset.TaskPointIDSign.ToString();
-            taskPoint.Details = taskPoint.Name = "New Task Point " + _asset.TaskPointIDSign.ToString();
+            taskPoint.Details = taskPoint.Name = (tpa != null ? tpa.Name : "New Task Point ") + _asset.TaskPointIDSign.ToString();
             _asset.TaskPointIDSign += 1;
             _currentContent.Points.Add(taskPoint);
 
