@@ -103,7 +103,7 @@ namespace HT.Framework
             IsComplete = true;
             completeAction?.Invoke();
             OnEnd();
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, false));
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace HT.Framework
             IsComplete = true;
             _isCompleting = true;
             OnEnd();
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, true));
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
         }
 
         /// <summary>

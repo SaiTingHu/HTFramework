@@ -9,18 +9,13 @@
         /// 任务点对象
         /// </summary>
         public TaskPointBase TaskPoint;
-        /// <summary>
-        /// 是否是自动完成
-        /// </summary>
-        public bool IsAutoComplete;
 
         /// <summary>
         /// 填充数据，所有属性、字段的初始化工作可以在这里完成
         /// </summary>
-        public EventTaskPointComplete Fill(TaskPointBase taskPoint, bool isAutoComplete)
+        public EventTaskPointComplete Fill(TaskPointBase taskPoint)
         {
             TaskPoint = taskPoint;
-            IsAutoComplete = isAutoComplete;
             return this;
         }
 
