@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
+using System.Reflection;
 #endif
 
 namespace HT.Framework
@@ -49,8 +50,8 @@ namespace HT.Framework
         public TaskPointBase()
         {
             GUID = "";
-            Name = "New Task Point";
-            Details = "New Task Point";
+            Name = "";
+            Details = "";
             Anchor = Rect.zero;
         }
         
@@ -161,6 +162,7 @@ namespace HT.Framework
         }
 
 #if UNITY_EDITOR
+        private string _showName = "";
         private bool _isDraging = false;
         private bool _isSelected = false;
         private bool _isEditID = false;
@@ -171,6 +173,19 @@ namespace HT.Framework
         private Rect _leftWiredOrigin;
         private Rect _rightWiredOrigin;
         private int _height = 0;
+
+        internal string ShowName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_showName) || _showName == "")
+                {
+                    TaskPointAttribute tpa = GetType().GetCustomAttribute<TaskPointAttribute>();
+                    _showName = tpa != null ? tpa.Name : "未定义名称";
+                }
+                return _showName;
+            }
+        }
 
         internal Vector2 LeftPosition
         {
@@ -219,7 +234,7 @@ namespace HT.Framework
                 GUI.backgroundColor = _isSelected ? Color.yellow : Color.white;
             }
 
-            GUILayout.BeginArea(Anchor, Name, "Window");
+            GUILayout.BeginArea(Anchor, ShowName, "Window");
 
             GUI.backgroundColor = Color.white;
 

@@ -267,6 +267,7 @@ namespace HT.Framework
         /// <summary>
         /// 指引任务点
         /// </summary>
+        /// <param name="id">任务点ID</param>
         public void Guide(string id)
         {
             if (_taskPoints.ContainsKey(id))

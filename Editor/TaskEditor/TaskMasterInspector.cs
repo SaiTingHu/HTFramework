@@ -33,9 +33,29 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("No Runtime Data!");
-            GUILayout.EndHorizontal();
+            if (Target.ContentAsset != null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Task Content Count: " + Target.AllTaskContent.Count);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Current Task: " + (Target.CurrentTaskContent != null ? Target.CurrentTaskContent.Name : "<None>"));
+                GUILayout.FlexibleSpace();
+                GUI.enabled = Target.CurrentTaskContent != null;
+                if (GUILayout.Button("Complete", EditorStyles.miniButton))
+                {
+                    Target.CompleteCurrentTaskContent();
+                }
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
+            }
+            else
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("TaskMaster Asset is null!");
+                GUILayout.EndHorizontal();
+            }
         }
     }
 }

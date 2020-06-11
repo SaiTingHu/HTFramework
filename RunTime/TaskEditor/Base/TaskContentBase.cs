@@ -63,8 +63,8 @@ namespace HT.Framework
         public TaskContentBase()
         {
             GUID = "";
-            Name = "New Task";
-            Details = "New Task";
+            Name = "";
+            Details = "";
         }
         
         /// <summary>

@@ -14,5 +14,18 @@ namespace HT.Framework
         {
             Name = name;
         }
+
+        public string GetLastName()
+        {
+            int index = Name.LastIndexOf("/");
+            if (index >= 0)
+            {
+                return Name.Substring(index + 1);
+            }
+            else
+            {
+                return Name;
+            }
+        }
     }
 }
