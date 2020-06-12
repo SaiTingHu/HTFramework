@@ -49,6 +49,10 @@ namespace HT.Framework
         /// </summary>
         public float OutlineIntensity = 1;
         /// <summary>
+        /// 高亮组件是否自动销毁
+        /// </summary>
+        public bool IsAutoDie = true;
+        /// <summary>
         /// 提示框背景
         /// </summary>
         public Image RayHitBG;
@@ -167,13 +171,13 @@ namespace HT.Framework
                     switch (TriggerHighlighting)
                     {
                         case HighlightingType.Normal:
-                            _rayTarget.CloseHighLight(true);
+                            _rayTarget.CloseHighLight(IsAutoDie);
                             break;
                         case HighlightingType.Flash:
-                            _rayTarget.CloseFlashHighLight(true);
+                            _rayTarget.CloseFlashHighLight(IsAutoDie);
                             break;
                         case HighlightingType.Outline:
-                            _rayTarget.CloseMeshOutline(true);
+                            _rayTarget.CloseMeshOutline(IsAutoDie);
                             break;
                     }
                 }

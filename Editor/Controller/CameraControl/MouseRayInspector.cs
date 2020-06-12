@@ -42,6 +42,10 @@ namespace HT.Framework
                 EnumPopup(Target.TriggerHighlighting, out Target.TriggerHighlighting, "Trigger Highlighting");
                 GUILayout.EndHorizontal();
 
+                GUILayout.BeginHorizontal();
+                Toggle(Target.IsAutoDie, out Target.IsAutoDie, "Auto Die");
+                GUILayout.EndHorizontal();
+
                 switch (Target.TriggerHighlighting)
                 {
                     case MouseRay.HighlightingType.Normal:
