@@ -32,13 +32,11 @@ namespace HT.Framework
         private GUIContent _pcGUIContent;
         private GUIContent _androidGUIContent;
         private GUIContent _webglGUIContent;
+        private VersionInfo _versionInfo;
         private string _version;
-        private string _supported;
-        private string _scripting;
-        private string _api;
         private bool _isShowOnStart;
-        private string _configPath;
-        
+        private Vector2 _scroll;
+
         protected override bool IsEnableTitleGUI
         {
             get
@@ -68,21 +66,14 @@ namespace HT.Framework
             _webglGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.WebGL.Small").image;
             _webglGUIContent.text = "WebGL";
 
-            ReadConfig();
+            ReadCurrentVersion();
         }
 
-        private void ReadConfig()
+        private void ReadCurrentVersion()
         {
-            _configPath = Application.dataPath + "/HTFramework/Editor/Utility/Config/Config.ini";
-
-            INIParser ini = new INIParser();
-            ini.Open(_configPath);
-            _version = ini.ReadValue("HTFrameworkEditor", "Version", "<None>");
-            _supported = ini.ReadValue("HTFrameworkEditor", "Supported", "<None>");
-            _scripting = ini.ReadValue("HTFrameworkEditor", "Scripting", "<None>");
-            _api = ini.ReadValue("HTFrameworkEditor", "Api", "<None>");
+            _versionInfo = AssetDatabase.LoadAssetAtPath<VersionInfo>("Assets/HTFramework/Editor/Utility/Version/Version.asset");
+            _version = _versionInfo.CurrentVersion.GetFullNumber();
             _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true);
-            ini.Close();
         }
 
         protected override void OnBodyGUI()
@@ -97,7 +88,11 @@ namespace HT.Framework
         private void LOGOGUI()
         {
             GUI.DrawTexture(new Rect(10, 0, 400, 100), _frameworkLogo);
-            GUI.Label(new Rect(80, 100, 200, 20), "Version: " + _version);
+            GUI.Label(new Rect(80, 100, 100, 20), "Version: " + _version);
+            if (GUI.Button(new Rect(200, 100, 120, 16), "Previous Versions", EditorGlobalTools.Styles.MiniPopup))
+            {
+                VersionViewer.OpenWindow(_versionInfo);
+            }
         }
 
         private void AboutGUI()
@@ -121,44 +116,58 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Unity HTFramework, A framework of client to the unity.");
+            GUILayout.Label("Release Notes:");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical(GUILayout.Height(100));
+            _scroll = GUILayout.BeginScrollView(_scroll);
+            GUILayout.Label(_versionInfo.CurrentVersion.ReleaseNotes);
+            GUILayout.EndScrollView();
+            GUILayout.EndVertical();
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Supported Runtime Platforms: ");
+            for (int i = 0; i < _versionInfo.CurrentVersion.Platforms.Count; i++)
+            {
+                switch (_versionInfo.CurrentVersion.Platforms[i])
+                {
+                    case Platform.PC:
+                        GUILayout.Label(_pcGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+                        break;
+                    case Platform.Android:
+                        GUILayout.Label(_androidGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+                        break;
+                    case Platform.WebGL:
+                        GUILayout.Label(_webglGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+                        break;
+                }
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Supported Unity Versions: " + _versionInfo.CurrentVersion.UnityVersions);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Scripting Runtime Versions: " + _versionInfo.CurrentVersion.ScriptingVersions);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Api Compatibility Level: " + _versionInfo.CurrentVersion.APIVersions);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUI.color = Color.yellow;
             if (GUILayout.Button("Check for the latest updates", EditorGlobalTools.Styles.Label))
             {
                 Application.OpenURL("https://github.com/SaiTingHu/HTFramework/commits/master");
             }
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
-            GUI.color = Color.white;
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(60);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Supported Runtime Platforms: ");
-            GUILayout.Label(_pcGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
-            GUILayout.Label(_androidGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
-            GUILayout.Label(_webglGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Supported Unity versions: " + _supported);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Scripting Runtime Versions: " + _scripting);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Api Compatibility Level: " + _api);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUI.color = Color.yellow;
+            GUILayout.Space(10);
             if (GUILayout.Button("Copyright (c) 2019 HuTao", EditorGlobalTools.Styles.Label))
             {
                 Application.OpenURL("https://github.com/SaiTingHu/HTFramework/blob/master/LICENSE");
