@@ -33,7 +33,7 @@ namespace HT.Framework
         private GUIContent _androidGUIContent;
         private GUIContent _webglGUIContent;
         private VersionInfo _versionInfo;
-        private string _version;
+        private string _versionNumber;
         private bool _isShowOnStart;
         private Vector2 _scroll;
 
@@ -72,7 +72,7 @@ namespace HT.Framework
         private void ReadCurrentVersion()
         {
             _versionInfo = AssetDatabase.LoadAssetAtPath<VersionInfo>("Assets/HTFramework/Editor/Utility/Version/Version.asset");
-            _version = _versionInfo.CurrentVersion.GetFullNumber();
+            _versionNumber = _versionInfo.CurrentVersion.GetFullNumber();
             _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true);
         }
 
@@ -88,7 +88,7 @@ namespace HT.Framework
         private void LOGOGUI()
         {
             GUI.DrawTexture(new Rect(10, 0, 400, 100), _frameworkLogo);
-            GUI.Label(new Rect(80, 100, 100, 20), "Version: " + _version);
+            GUI.Label(new Rect(80, 100, 100, 20), "Version: " + _versionNumber);
             if (GUI.Button(new Rect(200, 100, 120, 16), "Previous Versions", EditorGlobalTools.Styles.MiniPopup))
             {
                 VersionViewer.OpenWindow(_versionInfo);
@@ -127,21 +127,9 @@ namespace HT.Framework
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Supported Runtime Platforms: ");
-            for (int i = 0; i < _versionInfo.CurrentVersion.Platforms.Count; i++)
-            {
-                switch (_versionInfo.CurrentVersion.Platforms[i])
-                {
-                    case Platform.PC:
-                        GUILayout.Label(_pcGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
-                        break;
-                    case Platform.Android:
-                        GUILayout.Label(_androidGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
-                        break;
-                    case Platform.WebGL:
-                        GUILayout.Label(_webglGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
-                        break;
-                }
-            }
+            GUILayout.Label(_pcGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+            GUILayout.Label(_androidGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
+            GUILayout.Label(_webglGUIContent, EditorGlobalTools.Styles.Wordwrapminibutton);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -162,12 +150,6 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUI.color = Color.yellow;
-            if (GUILayout.Button("Check for the latest updates", EditorGlobalTools.Styles.Label))
-            {
-                Application.OpenURL("https://github.com/SaiTingHu/HTFramework/commits/master");
-            }
-            EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
-            GUILayout.Space(10);
             if (GUILayout.Button("Copyright (c) 2019 HuTao", EditorGlobalTools.Styles.Label))
             {
                 Application.OpenURL("https://github.com/SaiTingHu/HTFramework/blob/master/LICENSE");

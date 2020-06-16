@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 管理员身份登录窗口
     /// </summary>
-    public sealed class AdminLoginWindow : HTFEditorWindow
+    internal sealed class AdminLoginWindow : HTFEditorWindow
     {
         public static void OpenWindow(IAdminLoginWindow parent)
         {

@@ -11,6 +11,7 @@ namespace HT.Framework
         public static void OpenWindow(VersionInfo info)
         {
             VersionViewer window = GetWindow<VersionViewer>();
+            window.titleContent.image = EditorGUIUtility.IconContent("d_ViewToolZoom On").image;
             window.titleContent.text = "Version Viewer";
             window._versionInfo = info;
             window._version = info.PreviousVersions.Count > 0 ? info.PreviousVersions[0] : null;
@@ -22,6 +23,8 @@ namespace HT.Framework
         private VersionInfo _versionInfo;
         private Version _version;
         private string _versionNumber;
+        private bool _isRelease = false;
+        private Version _releaseVersion;
         private Vector2 _scroll;
 
         public bool IsAdminMode { get; set; } = false;
@@ -110,6 +113,24 @@ namespace HT.Framework
                 gm.ShowAsContext();
                 GUI.FocusControl(null);
             }
+            if (IsAdminMode)
+            {
+                GUI.backgroundColor = _adminModeColor;
+                if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
+                {
+                    if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to delete this version？", "Yes", "No"))
+                    {
+                        if (_version != null)
+                        {
+                            _versionInfo.PreviousVersions.Remove(_version);
+                            _version = _versionInfo.PreviousVersions.Count > 0 ? _versionInfo.PreviousVersions[0] : null;
+                            _versionNumber = _version != null ? _version.GetFullNumber() : "<None>";
+                            HasChanged(_versionInfo);
+                        }
+                    }
+                }
+                GUI.backgroundColor = Color.white;
+            }
             GUI.enabled = true;
             GUILayout.EndHorizontal();
 
@@ -121,15 +142,93 @@ namespace HT.Framework
 
                 GUILayout.BeginVertical();
                 _scroll = GUILayout.BeginScrollView(_scroll);
-                EditorGUILayout.TextArea(_version.ReleaseNotes);
+                GUILayout.Label(_version.ReleaseNotes);
                 GUILayout.EndScrollView();
                 GUILayout.EndVertical();
             }
+
+            if (IsAdminMode)
+            {
+                GUI.backgroundColor = _adminModeColor;
+
+                GUILayout.BeginHorizontal();
+                GUI.enabled = !_isRelease;
+                if (GUILayout.Button("Version Release"))
+                {
+                    _isRelease = true;
+                }
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
+
+                if (_isRelease)
+                {
+                    ReleaseGUI();
+                }
+
+                GUI.backgroundColor = Color.white;
+            }
+        }
+
+        private void ReleaseGUI()
+        {
+            if (_releaseVersion == null)
+            {
+                _releaseVersion = new Version();
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Version Number: ", GUILayout.Width(180));
+            _releaseVersion.MajorNumber = EditorGUILayout.IntField(_releaseVersion.MajorNumber);
+            _releaseVersion.MinorNumber = EditorGUILayout.IntField(_releaseVersion.MinorNumber);
+            _releaseVersion.ReviseNumber = EditorGUILayout.IntField(_releaseVersion.ReviseNumber);
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Supported Unity Versions: ", GUILayout.Width(180));
+            _releaseVersion.UnityVersions = EditorGUILayout.TextField(_releaseVersion.UnityVersions);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Scripting Runtime Versions: ", GUILayout.Width(180));
+            _releaseVersion.ScriptingVersions = EditorGUILayout.TextField(_releaseVersion.ScriptingVersions);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Api Compatibility Level: ", GUILayout.Width(180));
+            _releaseVersion.APIVersions = EditorGUILayout.TextField(_releaseVersion.APIVersions);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Release Notes:");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical();
+            _releaseVersion.ReleaseNotes = EditorGUILayout.TextArea(_releaseVersion.ReleaseNotes);
+            GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Release", EditorStyles.miniButtonLeft))
+            {
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to release new version？Current version will be changed to [" + _releaseVersion.GetFullNumber() + "]!", "Yes", "No"))
+                {
+                    _versionInfo.PreviousVersions.Add(_versionInfo.CurrentVersion);
+                    _versionInfo.CurrentVersion = _releaseVersion;
+                    _releaseVersion = null;
+                    _isRelease = false;
+                    HasChanged(_versionInfo);
+                }
+            }
+            if (GUILayout.Button("Cancel", EditorStyles.miniButtonRight))
+            {
+                _isRelease = false;
+            }
+            GUILayout.EndHorizontal();
         }
 
         public void AdminCheck(string password)
         {
             IsAdminMode = MathfToolkit.MD5Encrypt(password) == Password;
+            _isRelease = false;
             GUI.changed = true;
 
             if (!IsAdminMode)
