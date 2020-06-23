@@ -1,7 +1,7 @@
 ![image](Editor/Main/Texture/HTFrameworkLOGOTitle.png)
 
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/SaiTingHu/HTFramework/blob/master/LICENSE)
-![version](https://img.shields.io/badge/version-Unstable-green.svg)
+[![version](https://img.shields.io/github/v/release/SaiTingHu/HTFramework?color=green&label=version)](https://github.com/SaiTingHu/HTFramework/releases)
 [![supported](https://img.shields.io/badge/supported-Unity-success.svg)](https://unity.com/)
 
 # Unity HTFramework
