@@ -48,7 +48,7 @@ namespace HT.Framework
         /// <returns>对象</returns>
         public T Spawn<T>() where T : class, IReference, new()
         {
-            return _helper.Spawn(typeof(T)) as T;
+            return _helper.Spawn<T>();
         }
         /// <summary>
         /// 生成引用

@@ -30,6 +30,26 @@ namespace HT.Framework
         /// <summary>
         /// 生成引用
         /// </summary>
+        /// <typeparam name="T">引用类型</typeparam>
+        /// <returns>对象</returns>
+        public T Spawn<T>() where T : class, IReference, new()
+        {
+            T refe;
+            if (_referenceQueue.Count > 0)
+            {
+                refe = _referenceQueue.Dequeue() as T;
+            }
+            else
+            {
+                refe = new T();
+            }
+
+            return refe;
+        }
+
+        /// <summary>
+        /// 生成引用
+        /// </summary>
         /// <param name="type">引用类型</param>
         /// <returns>对象</returns>
         public IReference Spawn(Type type)

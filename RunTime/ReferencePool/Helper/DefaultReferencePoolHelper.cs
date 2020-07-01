@@ -57,6 +57,20 @@ namespace HT.Framework
         /// <summary>
         /// 生成引用
         /// </summary>
+        /// <typeparam name="T">引用类型</typeparam>
+        /// <returns>对象</returns>
+        public T Spawn<T>() where T : class, IReference, new()
+        {
+            Type type = typeof(T);
+            if (!SpawnPools.ContainsKey(type))
+            {
+                SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+            }
+            return SpawnPools[type].Spawn<T>();
+        }
+        /// <summary>
+        /// 生成引用
+        /// </summary>
         /// <param name="type">引用类型</param>
         /// <returns>对象</returns>
         public IReference Spawn(Type type)
