@@ -703,7 +703,8 @@ namespace HT.Framework
             if (_currentContent != null)
             {
                 GameObject target = _currentContent.Target;
-                if (target.GetComponent<Collider>())
+                Collider collider = target.GetComponent<Collider>();
+                if (collider && collider.enabled)
                 {
                     switch (GuideHighlighting)
                     {

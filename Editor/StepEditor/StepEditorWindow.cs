@@ -706,7 +706,7 @@ namespace HT.Framework
                 #region 摄像机组件
                 if (_isShowCamControl)
                 {
-                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(120));
+                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(130));
 
                     GUILayout.BeginHorizontal("Icon.OutlineBorder");
                     GUILayout.Label("Camera Control", EditorStyles.boldLabel);
@@ -715,7 +715,7 @@ namespace HT.Framework
                     GUILayout.Space(5);
 
                     GUILayout.BeginVertical("Tooltip");
-
+                    
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("CT:", GUILayout.Width(30));
                     GUI.color = _ct ? Color.white : Color.gray;
@@ -742,6 +742,16 @@ namespace HT.Framework
                     GUI.color = _player ? Color.white : Color.gray;
                     _player = EditorGUILayout.ObjectField(_player, typeof(Transform), true, GUILayout.Width(150)) as Transform;
                     GUI.color = Color.white;
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("ReFind", EditorStyles.miniButton))
+                    {
+                        _ct = FindObjectOfType<CameraTarget>();
+                        _mp = FindObjectOfType<MousePosition>();
+                        _mr = FindObjectOfType<MouseRotation>();
+                    }
                     GUILayout.EndHorizontal();
 
                     GUILayout.EndVertical();
