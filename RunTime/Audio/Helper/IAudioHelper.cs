@@ -29,6 +29,14 @@ namespace HT.Framework
         /// </summary>
         bool Mute { get; set; }
         /// <summary>
+        /// 背景音乐是否播放中
+        /// </summary>
+        bool IsBackgroundPlaying { get; }
+        /// <summary>
+        /// 单通道音效是否播放中
+        /// </summary>
+        bool IsSinglePlaying { get; }
+        /// <summary>
         /// 背景音乐优先级
         /// </summary>
         int BackgroundPriority { get; set; }

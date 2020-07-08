@@ -65,6 +65,26 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 背景音乐是否播放中
+        /// </summary>
+        public bool IsBackgroundPlaying
+        {
+            get
+            {
+                return _helper.IsBackgroundPlaying;
+            }
+        }
+        /// <summary>
+        /// 单通道音效是否播放中
+        /// </summary>
+        public bool IsSinglePlaying
+        {
+            get
+            {
+                return _helper.IsSinglePlaying;
+            }
+        }
+        /// <summary>
         /// 背景音乐优先级
         /// </summary>
         public int BackgroundPriority
