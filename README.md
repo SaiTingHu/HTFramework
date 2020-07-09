@@ -98,7 +98,7 @@
 
 - [入门级Demo](https://github.com/SaiTingHu/HTFrameworkDemo)。
 
-- 应用级Demo。
+- [应用级Demo - 超级坦克大战](https://blog.csdn.net/qq992817263/category_10133279.html)。
 
 ## 使用方法
 
