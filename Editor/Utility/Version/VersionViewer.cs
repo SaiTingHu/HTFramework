@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -137,6 +138,10 @@ namespace HT.Framework
             if (_version != null)
             {
                 GUILayout.BeginHorizontal();
+                GUILayout.Label("Release Date: " + _version.ReleaseDate);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
                 GUILayout.Label("Release Notes:");
                 GUILayout.EndHorizontal();
 
@@ -174,6 +179,7 @@ namespace HT.Framework
             if (_releaseVersion == null)
             {
                 _releaseVersion = new Version();
+                _releaseVersion.ReleaseDate = DateTime.Now.ToString("yyyy.MM.dd");
             }
 
             GUILayout.BeginHorizontal();
@@ -196,6 +202,11 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Api Compatibility Level: ", GUILayout.Width(180));
             _releaseVersion.APIVersions = EditorGUILayout.TextField(_releaseVersion.APIVersions);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Release Date: ", GUILayout.Width(180));
+            _releaseVersion.ReleaseDate = EditorGUILayout.TextField(_releaseVersion.ReleaseDate);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

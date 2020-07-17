@@ -31,6 +31,10 @@ namespace HT.Framework
             GUILayout.Label("Version: " + _versionNumber);
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Release Date: " + Target.CurrentVersion.ReleaseDate);
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();

@@ -21,6 +21,10 @@ namespace HT.Framework
         /// </summary>
         public int ReviseNumber = 0;
         /// <summary>
+        /// 发行日期
+        /// </summary>
+        public string ReleaseDate = null;
+        /// <summary>
         /// 发行说明
         /// </summary>
         public string ReleaseNotes = "";
