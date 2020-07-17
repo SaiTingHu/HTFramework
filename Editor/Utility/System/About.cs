@@ -23,7 +23,7 @@ namespace HT.Framework
                 }
             }
         }
-
+        
         private Texture _frameworkLogo;
         private Texture _csdnLogo;
         private Texture _githubLogo;
@@ -36,6 +36,11 @@ namespace HT.Framework
         private string _versionNumber;
         private bool _isShowOnStart;
         private Vector2 _scroll;
+        private Color[] _LOGOColors;
+        private Color _lastColor;
+        private Color _currentColor;
+        private int _colorIndex;
+        private float _colorPos;
 
         protected override bool IsEnableTitleGUI
         {
@@ -65,8 +70,37 @@ namespace HT.Framework
             _webglGUIContent = new GUIContent();
             _webglGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.WebGL.Small").image;
             _webglGUIContent.text = "WebGL";
+            _LOGOColors = new Color[] { new Color(1, 1, 1, 0.2f), Color.white };
+            _lastColor = Color.white;
+            _currentColor = _LOGOColors[0];
+            _colorIndex = 0;
+            _colorPos = 0;
 
             ReadCurrentVersion();
+
+            EditorApplication.update += RefreshLOGOColor;
+        }
+
+        private void OnDestroy()
+        {
+            EditorApplication.update -= RefreshLOGOColor;
+        }
+
+        private void RefreshLOGOColor()
+        {
+            if (_colorPos <= 1)
+            {
+                _colorPos += 0.01f;
+            }
+            else
+            {
+                _colorPos = 0;
+                _colorIndex += 1;
+                if (_colorIndex > _LOGOColors.Length - 1) _colorIndex = 0;
+                _lastColor = _currentColor;
+                _currentColor = _LOGOColors[_colorIndex];
+            }
+            Repaint();
         }
 
         private void ReadCurrentVersion()
@@ -87,7 +121,10 @@ namespace HT.Framework
 
         private void LOGOGUI()
         {
+            GUI.color = Color.Lerp(_lastColor, _currentColor, _colorPos);
             GUI.DrawTexture(new Rect(10, 0, 400, 100), _frameworkLogo);
+            GUI.color = Color.white;
+
             GUI.Label(new Rect(80, 100, 100, 20), "Version: " + _versionNumber);
             if (GUI.Button(new Rect(200, 100, 120, 16), "Previous Versions", EditorGlobalTools.Styles.MiniPopup))
             {
@@ -116,7 +153,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Release Notes:");
+            GUILayout.Label("Release Notes: [Date " + _versionInfo.CurrentVersion.ReleaseDate + "]");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(GUILayout.Height(100));
