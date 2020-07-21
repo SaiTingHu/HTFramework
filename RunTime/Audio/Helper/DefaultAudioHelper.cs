@@ -18,6 +18,8 @@ namespace HT.Framework
         private float _singleVolume = 1;
         private float _multipleVolume = 1;
         private float _worldVolume = 1;
+        private Tweener _bgPauseTweener;
+        private Tweener _singlePauseTweener;
 
         /// <summary>
         /// 音频管理器
@@ -271,10 +273,17 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void PauseBackgroundMusic(bool isGradual = true)
         {
+            if (_bgPauseTweener != null)
+            {
+                _bgPauseTweener.Kill();
+                _bgPauseTweener = null;
+            }
+
             if (isGradual)
             {
-                BackgroundAudio.DOFade(0, 2).OnComplete(() =>
+                _bgPauseTweener = BackgroundAudio.DOFade(0, 2).OnComplete(() =>
                 {
+                    _bgPauseTweener = null;
                     BackgroundAudio.Pause();
                     BackgroundAudio.volume = BackgroundVolume;
                 });
@@ -282,6 +291,7 @@ namespace HT.Framework
             else
             {
                 BackgroundAudio.Pause();
+                BackgroundAudio.volume = BackgroundVolume;
             }
         }
         /// <summary>
@@ -290,15 +300,25 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void UnPauseBackgroundMusic(bool isGradual = true)
         {
+            if (_bgPauseTweener != null)
+            {
+                _bgPauseTweener.Kill();
+                _bgPauseTweener = null;
+            }
+
             if (isGradual)
             {
                 BackgroundAudio.volume = 0;
                 BackgroundAudio.UnPause();
-                BackgroundAudio.DOFade(BackgroundVolume, 2);
+                _bgPauseTweener = BackgroundAudio.DOFade(BackgroundVolume, 2).OnComplete(() =>
+                {
+                    _bgPauseTweener = null;
+                });
             }
             else
             {
                 BackgroundAudio.UnPause();
+                BackgroundAudio.volume = BackgroundVolume;
             }
         }
         /// <summary>
@@ -337,10 +357,17 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void PauseSingleSound(bool isGradual = true)
         {
+            if (_singlePauseTweener != null)
+            {
+                _singlePauseTweener.Kill();
+                _singlePauseTweener = null;
+            }
+
             if (isGradual)
             {
-                SingleAudio.DOFade(0, 2).OnComplete(() =>
+                _singlePauseTweener = SingleAudio.DOFade(0, 2).OnComplete(() =>
                 {
+                    _singlePauseTweener = null;
                     SingleAudio.Pause();
                     SingleAudio.volume = SingleVolume;
                 });
@@ -348,6 +375,7 @@ namespace HT.Framework
             else
             {
                 SingleAudio.Pause();
+                SingleAudio.volume = SingleVolume;
             }
         }
         /// <summary>
@@ -356,15 +384,25 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void UnPauseSingleSound(bool isGradual = true)
         {
+            if (_singlePauseTweener != null)
+            {
+                _singlePauseTweener.Kill();
+                _singlePauseTweener = null;
+            }
+
             if (isGradual)
             {
                 SingleAudio.volume = 0;
                 SingleAudio.UnPause();
-                SingleAudio.DOFade(SingleVolume, 2);
+                _singlePauseTweener = SingleAudio.DOFade(SingleVolume, 2).OnComplete(() =>
+                {
+                    _singlePauseTweener = null;
+                });
             }
             else
             {
                 SingleAudio.UnPause();
+                SingleAudio.volume = SingleVolume;
             }
         }
         /// <summary>
