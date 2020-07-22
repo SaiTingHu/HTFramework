@@ -130,6 +130,23 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 设置服务器IP地址及端口号
+        /// </summary>
+        /// <param name="ip">IP地址</param>
+        /// <param name="port">端口号</param>
+        public void SetServerIP(string ip, int port)
+        {
+            ServerIP = ip;
+            ServerPort = port;
+
+            if (_serverEndPoint != null)
+            {
+                _serverEndPoint.Address = IPAddress.Parse(ServerIP);
+                _serverEndPoint.Port = ServerPort;
+            }
+        }
+
+        /// <summary>
         /// 通道是否已连接
         /// </summary>
         /// <typeparam name="T">通信协议通道类型</typeparam>
