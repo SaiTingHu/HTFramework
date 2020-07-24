@@ -24,32 +24,6 @@ namespace HT.Framework
         public Texture TextureValue = null;
         public AudioClip AudioClipValue = null;
         public Material MaterialValue = null;
-
-        /// <summary>
-        /// 克隆
-        /// </summary>
-        /// <returns>新的对象</returns>
-        internal StepParameter Clone()
-        {
-            StepParameter parameter = new StepParameter();
-            parameter.Type = Type;
-            parameter.Name = Name;
-            parameter.StringValue = StringValue;
-            parameter.IntegerValue = IntegerValue;
-            parameter.FloatValue = FloatValue;
-            parameter.BooleanValue = BooleanValue;
-            parameter.Vector2Value = Vector2Value;
-            parameter.Vector3Value = Vector3Value;
-            parameter.ColorValue = ColorValue;
-            parameter.GameObjectValue = GameObjectValue;
-            parameter.GameObjectGUID = GameObjectGUID;
-            parameter.GameObjectPath = GameObjectPath;
-            parameter.TextureValue = TextureValue;
-            parameter.AudioClipValue = AudioClipValue;
-            parameter.MaterialValue = MaterialValue;
-
-            return parameter;
-        }
         
         /// <summary>
         /// 参数类型
@@ -101,5 +75,33 @@ namespace HT.Framework
             /// </summary>
             Material
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        /// <returns>新的对象</returns>
+        internal StepParameter Clone()
+        {
+            StepParameter parameter = new StepParameter();
+            parameter.Type = Type;
+            parameter.Name = Name;
+            parameter.StringValue = StringValue;
+            parameter.IntegerValue = IntegerValue;
+            parameter.FloatValue = FloatValue;
+            parameter.BooleanValue = BooleanValue;
+            parameter.Vector2Value = Vector2Value;
+            parameter.Vector3Value = Vector3Value;
+            parameter.ColorValue = ColorValue;
+            parameter.GameObjectValue = GameObjectValue;
+            parameter.GameObjectGUID = GameObjectGUID;
+            parameter.GameObjectPath = GameObjectPath;
+            parameter.TextureValue = TextureValue;
+            parameter.AudioClipValue = AudioClipValue;
+            parameter.MaterialValue = MaterialValue;
+
+            return parameter;
+        }
+#endif
     }
 }

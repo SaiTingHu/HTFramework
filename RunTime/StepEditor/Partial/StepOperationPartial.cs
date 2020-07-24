@@ -23,40 +23,7 @@ namespace HT.Framework
         public Vector3 Vector3Value2 = Vector3.zero;
         public string StringValue2 = "<None>";
         public bool BoolValue2 = false;
-
-        /// <summary>
-        /// 克隆
-        /// </summary>
-        /// <returns>新的对象</returns>
-        internal StepOperation Clone()
-        {
-            StepOperation operation = new StepOperation();
-            operation.GUID = Guid.NewGuid().ToString();
-            operation.Anchor = Anchor;
-            operation.ElapseTime = ElapseTime;
-            operation.Instant = Instant;
-            operation.Target = Target;
-            operation.TargetGUID = TargetGUID;
-            operation.TargetPath = TargetPath;
-            operation.Name = Name;
-            operation.OperationType = OperationType;
-
-            operation.Vector3Value = Vector3Value;
-            operation.Vector2Value = Vector2Value;
-            operation.ColorValue = ColorValue;
-            operation.IntValue = IntValue;
-            operation.FloatValue = FloatValue;
-            operation.StringValue = StringValue;
-            operation.BoolValue = BoolValue;
-            operation.AnimationEase = AnimationEase;
-
-            operation.Vector3Value2 = Vector3Value2;
-            operation.StringValue2 = StringValue2;
-            operation.BoolValue2 = BoolValue2;
-
-            return operation;
-        }
-
+        
         internal void Execute()
         {
             switch (OperationType)
@@ -406,6 +373,39 @@ namespace HT.Framework
         }
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        /// <returns>新的对象</returns>
+        internal StepOperation Clone()
+        {
+            StepOperation operation = new StepOperation();
+            operation.GUID = Guid.NewGuid().ToString();
+            operation.Anchor = Anchor;
+            operation.ElapseTime = ElapseTime;
+            operation.Instant = Instant;
+            operation.Target = Target;
+            operation.TargetGUID = TargetGUID;
+            operation.TargetPath = TargetPath;
+            operation.Name = Name;
+            operation.OperationType = OperationType;
+
+            operation.Vector3Value = Vector3Value;
+            operation.Vector2Value = Vector2Value;
+            operation.ColorValue = ColorValue;
+            operation.IntValue = IntValue;
+            operation.FloatValue = FloatValue;
+            operation.StringValue = StringValue;
+            operation.BoolValue = BoolValue;
+            operation.AnimationEase = AnimationEase;
+
+            operation.Vector3Value2 = Vector3Value2;
+            operation.StringValue2 = StringValue2;
+            operation.BoolValue2 = BoolValue2;
+
+            return operation;
+        }
+
         internal void OnEditorGUI()
         {
             switch (OperationType)

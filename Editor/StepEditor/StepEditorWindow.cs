@@ -41,7 +41,7 @@ namespace HT.Framework
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
         private Rect _stepListRect;
-        private Vector2 _stepListScroll = Vector3.zero;
+        private static Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
         private float _stepListGUIWidth = 340;
         private bool _isMoveTo = false;
@@ -339,6 +339,7 @@ namespace HT.Framework
                         _contentAsset.Content.RemoveAt(_currentStep);
                         _currentStep = _moveToIndex;
                         _contentAsset.Content.Insert(_currentStep, _currentStepObj);
+                        SetStepListScroll((float)_currentStep / (_contentAsset.Content.Count - 1));
                     }
                     else
                     {
@@ -364,21 +365,11 @@ namespace HT.Framework
             GUI.enabled = (_currentStep != -1);
             if (GUILayout.Button("Move Up", EditorGlobalTools.Styles.ButtonMid))
             {
-                if (_currentStep > 0)
-                {
-                    _contentAsset.Content.RemoveAt(_currentStep);
-                    _currentStep -= 1;
-                    _contentAsset.Content.Insert(_currentStep, _currentStepObj);
-                }
+                MoveUpStepContent();
             }
             if (GUILayout.Button("Move Down", EditorGlobalTools.Styles.ButtonMid))
             {
-                if (_currentStep < _contentAsset.Content.Count - 1)
-                {
-                    _contentAsset.Content.RemoveAt(_currentStep);
-                    _currentStep += 1;
-                    _contentAsset.Content.Insert(_currentStep, _currentStepObj);
-                }
+                MoveDownStepContent();
             }
             if (GUILayout.Button("Move To", EditorGlobalTools.Styles.ButtonMid))
             {
@@ -386,12 +377,7 @@ namespace HT.Framework
             }
             if (GUILayout.Button("Clone", EditorGlobalTools.Styles.ButtonMid))
             {
-                StepContent content = _currentStepObj.Clone();
-                content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
-                _contentAsset.StepIDSign += 1;
-                _contentAsset.Content.Add(content);
-                SelectStepContent(_contentAsset.Content.Count - 1);
-                SelectStepOperation(-1);
+                CloneStepContent();
             }
             GUI.backgroundColor = Color.red;
             if (GUILayout.Button("Delete", EditorGlobalTools.Styles.ButtonRight))
@@ -1248,6 +1234,7 @@ namespace HT.Framework
                                     if (0 < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(0);
+                                        SetStepListScroll(0);
                                         GUI.changed = true;
                                     }
                                 }
@@ -1257,6 +1244,7 @@ namespace HT.Framework
                                     if (stepIndex < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(stepIndex);
+                                        SetStepListScroll((float)stepIndex / (_contentAsset.Content.Count - 1));
                                         GUI.changed = true;
                                     }
                                 }
@@ -1267,6 +1255,7 @@ namespace HT.Framework
                                     if (0 < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(_contentAsset.Content.Count - 1);
+                                        SetStepListScroll(1);
                                         GUI.changed = true;
                                     }
                                 }
@@ -1276,6 +1265,7 @@ namespace HT.Framework
                                     if (stepIndex >= 0 && stepIndex < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(stepIndex);
+                                        SetStepListScroll((float)stepIndex / (_contentAsset.Content.Count - 1));
                                         GUI.changed = true;
                                     }
                                 }
@@ -1391,13 +1381,52 @@ namespace HT.Framework
         private void AddStepContent()
         {
             StepContent content = new StepContent();
-            content.GUID = Guid.NewGuid().ToString();
             content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
             _contentAsset.StepIDSign += 1;
             content.EnterAnchor = new Vector2(position.width / 2, position.height / 2);
             _contentAsset.Content.Add(content);
             SelectStepContent(_contentAsset.Content.Count - 1);
             SelectStepOperation(-1);
+            SetStepListScroll(1);
+        }
+        /// <summary>
+        /// 上移步骤内容
+        /// </summary>
+        private void MoveUpStepContent()
+        {
+            if (_currentStep > 0)
+            {
+                _contentAsset.Content.RemoveAt(_currentStep);
+                _currentStep -= 1;
+                _contentAsset.Content.Insert(_currentStep, _currentStepObj);
+                SetStepListScroll((float)_currentStep / (_contentAsset.Content.Count - 1));
+            }
+        }
+        /// <summary>
+        /// 下移步骤内容
+        /// </summary>
+        private void MoveDownStepContent()
+        {
+            if (_currentStep < _contentAsset.Content.Count - 1)
+            {
+                _contentAsset.Content.RemoveAt(_currentStep);
+                _currentStep += 1;
+                _contentAsset.Content.Insert(_currentStep, _currentStepObj);
+                SetStepListScroll((float)_currentStep / (_contentAsset.Content.Count - 1));
+            }
+        }
+        /// <summary>
+        /// 克隆步骤内容
+        /// </summary>
+        private void CloneStepContent()
+        {
+            StepContent content = _currentStepObj.Clone();
+            content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
+            _contentAsset.StepIDSign += 1;
+            _contentAsset.Content.Add(content);
+            SelectStepContent(_contentAsset.Content.Count - 1);
+            SelectStepOperation(-1);
+            SetStepListScroll(1);
         }
         /// <summary>
         /// 删除步骤内容
@@ -1581,6 +1610,7 @@ namespace HT.Framework
         private void CopyOrPasteStep()
         {
             GenericMenu gm = new GenericMenu();
+            string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
 
             if (_currentStep == -1)
             {
@@ -1590,7 +1620,7 @@ namespace HT.Framework
             {
                 gm.AddItem(new GUIContent("Copy " + _currentStepObj.Name), false, () =>
                 {
-                    GUIUtility.systemCopyBuffer = string.Format("{0}|{1}", AssetDatabase.GetAssetPath(_contentAsset), _currentStepObj.GUID);
+                    GUIUtility.systemCopyBuffer = string.Format("{0}|{1}", assetPath, _currentStepObj.GUID);
                 });
             }
 
@@ -1598,7 +1628,7 @@ namespace HT.Framework
             string[] buffers = GUIUtility.systemCopyBuffer.Split('|');
             if (buffers.Length == 2)
             {
-                if (buffers[0] == AssetDatabase.GetAssetPath(_contentAsset))
+                if (buffers[0] == assetPath)
                 {
                     stepContent = _contentAsset.Content.Find((s) => { return s.GUID == buffers[1]; });
                 }
@@ -1626,6 +1656,7 @@ namespace HT.Framework
                     _contentAsset.Content.Add(content);
                     SelectStepContent(_contentAsset.Content.Count - 1);
                     SelectStepOperation(-1);
+                    SetStepListScroll(1);
                 });
             }
 
@@ -1737,6 +1768,13 @@ namespace HT.Framework
             _operationIndexs.Clear();
 
             content.Totaltime = totalTime;
+        }
+        /// <summary>
+        /// 设置步骤内容列表的滚动值
+        /// </summary>
+        private void SetStepListScroll(float scroll)
+        {
+            _stepListScroll.Set(0, scroll * (_contentAsset.Content.Count * 20 - position.height));
         }
 
         /// <summary>

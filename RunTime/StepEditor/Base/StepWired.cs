@@ -10,7 +10,8 @@ namespace HT.Framework
     {
         public int Left = 0;
         public int Right = 0;
-
+        
+#if UNITY_EDITOR
         /// <summary>
         /// 克隆
         /// </summary>
@@ -22,5 +23,6 @@ namespace HT.Framework
             wired.Right = Right;
             return wired;
         }
+#endif
     }
 }

@@ -84,44 +84,6 @@ namespace HT.Framework
         /// 步骤连线列表
         /// </summary>
         [SerializeField] internal List<StepWired> Wireds = new List<StepWired>();
-
-        /// <summary>
-        /// 克隆
-        /// </summary>
-        /// <returns>新的对象</returns>
-        internal StepContent Clone()
-        {
-            StepContent content = new StepContent();
-            content.GUID = Guid.NewGuid().ToString();
-            content.EnterAnchor = EnterAnchor;
-            content.ElapseTime = ElapseTime;
-            content.Instant = Instant;
-            content.Target = Target;
-            content.TargetGUID = TargetGUID;
-            content.TargetPath = TargetPath;
-            content.Name = Name;
-            content.Trigger = Trigger;
-            content.Prompt = Prompt;
-            content.Ancillary = Ancillary;
-            content.BestView = BestView;
-            content.ViewOffset = ViewOffset;
-            content.BestPos = BestPos;
-            content.InitialMode = InitialMode;
-            content.Helper = Helper;
-            for (int i = 0; i < Parameters.Count; i++)
-            {
-                content.Parameters.Add(Parameters[i].Clone());
-            }
-            for (int i = 0; i < Operations.Count; i++)
-            {
-                content.Operations.Add(Operations[i].Clone());
-            }
-            for (int i = 0; i < Wireds.Count; i++)
-            {
-                content.Wireds.Add(Wireds[i].Clone());
-            }
-            return content;
-        }
         
         /// <summary>
         /// 执行步骤内容
@@ -219,6 +181,44 @@ namespace HT.Framework
             {
                 return new Rect(EnterAnchor.x - Width / 2, EnterAnchor.y - Height / 2, Width, Height);
             }
+        }
+
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        /// <returns>新的对象</returns>
+        internal StepContent Clone()
+        {
+            StepContent content = new StepContent();
+            content.GUID = Guid.NewGuid().ToString();
+            content.EnterAnchor = EnterAnchor;
+            content.ElapseTime = ElapseTime;
+            content.Instant = Instant;
+            content.Target = Target;
+            content.TargetGUID = TargetGUID;
+            content.TargetPath = TargetPath;
+            content.Name = Name;
+            content.Trigger = Trigger;
+            content.Prompt = Prompt;
+            content.Ancillary = Ancillary;
+            content.BestView = BestView;
+            content.ViewOffset = ViewOffset;
+            content.BestPos = BestPos;
+            content.InitialMode = InitialMode;
+            content.Helper = Helper;
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                content.Parameters.Add(Parameters[i].Clone());
+            }
+            for (int i = 0; i < Operations.Count; i++)
+            {
+                content.Operations.Add(Operations[i].Clone());
+            }
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                content.Wireds.Add(Wireds[i].Clone());
+            }
+            return content;
         }
 
         /// <summary>
