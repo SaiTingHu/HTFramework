@@ -217,7 +217,10 @@ namespace HT.Framework
 
             public void SetState(bool highlightingState)
             {
-                RendererCached.sharedMaterials = highlightingState ? _replacementMaterials : _sourceMaterials;
+                if (RendererCached)
+                {
+                    RendererCached.sharedMaterials = highlightingState ? _replacementMaterials : _sourceMaterials;
+                }
             }
 
             public void SetColorForTransparent(Color color)
@@ -665,9 +668,17 @@ namespace HT.Framework
                         for (int i = 0; i < _highlightableRenderers.Count; i++)
                         {
                             GameObject go = _highlightableRenderers[i].GameObjectCached;
-                            _layersCache[i] = go.layer;
-                            go.layer = HighlightingLayer;
-                            _highlightableRenderers[i].SetState(true);
+                            if (go)
+                            {
+                                _layersCache[i] = go.layer;
+                                go.layer = HighlightingLayer;
+                                _highlightableRenderers[i].SetState(true);
+                            }
+                            else
+                            {
+                                _layersCache[i] = -1;
+                                _highlightableRenderers[i].SetState(false);
+                            }
                         }
                     }
                 }
@@ -678,7 +689,11 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < _highlightableRenderers.Count; i++)
                     {
-                        _highlightableRenderers[i].GameObjectCached.layer = _layersCache[i];
+                        GameObject go = _highlightableRenderers[i].GameObjectCached;
+                        if (go)
+                        {
+                            go.layer = _layersCache[i];
+                        }
                         _highlightableRenderers[i].SetState(false);
                     }
                 }
