@@ -197,6 +197,9 @@ namespace HT.Framework
         #endregion
 
         #region ECS 【优先级108-109】
+        /// <summary>
+        /// 标记目标为ECS系统的实体
+        /// </summary>
         [@MenuItem("HTFramework/ECS/Mark As To Entity", false, 108)]
         private static void MarkAsToEntity()
         {
@@ -208,10 +211,15 @@ namespace HT.Framework
             }
             Log.Info("已完成ECS实体标记 " + index + " 个！");
         }
+
+        /// <summary>
+        /// 打开ECS系统检视器
+        /// </summary>
         [@MenuItem("HTFramework/ECS/Inspector", false, 109)]
         private static void OpenECSInspector()
         {
             ECS_Inspector inspector = EditorWindow.GetWindow<ECS_Inspector>();
+            inspector.titleContent.image = EditorGUIUtility.IconContent("Grid.BoxTool").image;
             inspector.titleContent.text = "ECS Inspector";
             inspector.Show();
         }
@@ -344,6 +352,21 @@ namespace HT.Framework
                 Log.Info("已执行 " + CustomTools.Count + " 个自定义工具！");
                 CustomTools.Clear();
             }
+        }
+        #endregion
+
+        #region ProjectWizard 【优先级116】
+        /// <summary>
+        /// ProjectWizard
+        /// </summary>
+        [@MenuItem("HTFramework/Project Wizard", false, 116)]
+        private static void ProjectWizard()
+        {
+            ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
+            wizard.titleContent.image = EditorGUIUtility.IconContent("SocialNetworks.UDNLogo").image;
+            wizard.titleContent.text = "Project Wizard";
+            wizard.position = new Rect(200, 200, 600, 350);
+            wizard.Show();
         }
         #endregion
 
