@@ -82,6 +82,17 @@ namespace HT.Framework
                     }
                 }
             }
+            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeftDoubleClick))
+            {
+                if (RayTarget != null)
+                {
+                    MouseRayTarget target = RayTarget as MouseRayTarget;
+                    if (target && target.IsDoubleClickFocus)
+                    {
+                        SetLookPoint(target.transform.position);
+                    }
+                }
+            }
         }
         internal override void OnTermination()
         {
