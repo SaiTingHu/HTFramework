@@ -225,7 +225,7 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Tools 【优先级111-115】
+        #region Tools 【优先级111-116】
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
@@ -293,9 +293,23 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 打开 Assets Master
+        /// </summary>
+        [@MenuItem("HTFramework/Tools/Assets Master", false, 113)]
+        private static void OpenAssetsMaster()
+        {
+            AssetsMaster master = EditorWindow.GetWindow<AssetsMaster>();
+            master.titleContent.image = EditorGUIUtility.IconContent("d_WelcomeScreen.AssetStoreLogo").image;
+            master.titleContent.text = "Assets Master";
+            master.minSize = new Vector2(1000, 600);
+            master.SearchAssetsInOpenedScene();
+            master.Show();
+        }
+
+        /// <summary>
         /// 打开 Assembly Viewer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 113)]
+        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 114)]
         private static void OpenAssemblyViewer()
         {
             AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
@@ -307,7 +321,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Custom Executer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Executer", false, 114)]
+        [@MenuItem("HTFramework/Tools/Custom Executer", false, 115)]
         private static void OpenCustomExecuter()
         {
             CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
@@ -323,7 +337,7 @@ namespace HT.Framework
         /// <summary>
         /// 执行 Custom Tool
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Tool", false, 115)]
+        [@MenuItem("HTFramework/Tools/Custom Tool", false, 116)]
         private static void ExecuteCustomTool()
         {
             CustomTools.Clear();
@@ -355,11 +369,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region ProjectWizard 【优先级116】
+        #region ProjectWizard 【优先级117】
         /// <summary>
         /// ProjectWizard
         /// </summary>
-        [@MenuItem("HTFramework/Project Wizard", false, 116)]
+        [@MenuItem("HTFramework/Project Wizard", false, 117)]
         private static void ProjectWizard()
         {
             ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
