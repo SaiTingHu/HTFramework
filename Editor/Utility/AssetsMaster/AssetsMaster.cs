@@ -113,6 +113,10 @@ namespace HT.Framework
             {
                 SearchAssetsInOpenedScene();
             }
+            if (GUILayout.Button("About", EditorStyles.toolbarButton))
+            {
+                Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/107974865");
+            }
         }
         protected override void OnBodyGUI()
         {
