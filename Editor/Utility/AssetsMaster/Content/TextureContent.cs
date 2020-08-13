@@ -15,6 +15,9 @@ namespace HT.Framework
         public bool IsCrunched { get; private set; }
         public int MipMapCount { get; private set; }
         public string Detail { get; private set; }
+        public int Size { get; private set; }
+        public int AlarmLevel { get; private set; }
+        public string AlarmMessage { get; private set; }
         public HashSet<Material> InMaterials { get; private set; } = new HashSet<Material>();
 
         public TextureContent(Texture tex)
@@ -42,6 +45,40 @@ namespace HT.Framework
 
             IsCrunched = Format.ToString().Contains("Crunched");
             Detail = GetDetail();
+            Size = GetSize();
+            AlarmLevel = 0;
+            AlarmMessage = "";
+        }
+
+        public void RaiseAlarmLevel(string message)
+        {
+            AlarmLevel += 1;
+            AlarmMessage += string.Format("{0}.{1}\r\n", AlarmLevel, message);
+        }
+
+        public void ClearAlarmLevel()
+        {
+            AlarmLevel = 0;
+            AlarmMessage = "";
+        }
+
+        private int GetSize()
+        {
+            if (Tex != null)
+            {
+                if (Tex is Cubemap)
+                {
+                    return Tex.width * Tex.height * 6;
+                }
+                else
+                {
+                    return Tex.width * Tex.height;
+                }
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         private string GetDetail()

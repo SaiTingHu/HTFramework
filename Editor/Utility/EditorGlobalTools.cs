@@ -1395,6 +1395,7 @@ namespace HT.Framework
             public static readonly string IconButton = "IconButton";
             public static readonly string LargeButton = "LargeButton";
             public static readonly string LargeButtonLeft = "LargeButtonLeft";
+            public static readonly string LargeButtonMid = "LargeButtonMid";
             public static readonly string LargeButtonRight = "LargeButtonRight";
             public static readonly string ButtonLeft = "ButtonLeft";
             public static readonly string ButtonMid = "ButtonMid";

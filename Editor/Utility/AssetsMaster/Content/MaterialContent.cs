@@ -10,12 +10,19 @@ namespace HT.Framework
         public Material Mat { get; private set; }
         public string ShaderName { get; private set; }
         public int RenderQueue { get; private set; }
+        public int TextureCount { get; private set; }
 
         public MaterialContent(Material mat)
         {
             Mat = mat;
             ShaderName = Mat.shader != null ? Mat.shader.name : "<None>";
             RenderQueue = Mat.renderQueue;
+            TextureCount = 0;
+        }
+
+        public void AddTextureDependence()
+        {
+            TextureCount += 1;
         }
     }
 }
