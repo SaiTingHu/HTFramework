@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -9,7 +10,10 @@ namespace HT.Framework
     {
         private List<Folder> _rootFolders = new List<Folder>();
         private Folder _mainSceneFolder;
-        private string _mainSceneName;
+        private Folder _procedureFolder;
+        private string _mainSceneName = "Main";
+        private bool _isCreateInitialProcedure = true;
+        private string _initialProcedure = "InitialProcedure";
         private Vector2 _scrollFolderGUI;
 
         protected override bool IsEnableTitleGUI => false;
@@ -17,20 +21,25 @@ namespace HT.Framework
         private void OnEnable()
         {
             InitFolder();
-
-            _mainSceneName = "Main";
         }
         private void InitFolder()
         {
             Folder pluginsfolder = new Folder(null, "Plugins");
             Folder sourcefolder = new Folder(null, "Source", "Animations", "Fonts", "Images", "Materials", "Models", "Prefabs", "Shaders", "Sounds");
-            Folder scriptsfolder = new Folder(sourcefolder, "Scripts", "Entity", "Event", "FSM", "UI", "Procedure");
+            Folder scriptsfolder = new Folder(sourcefolder, "Scripts", "Entity", "Event", "FSM", "UI");
+            Folder procedureFolder = new Folder(scriptsfolder, "Procedure");
 
             _rootFolders.Clear();
             _rootFolders.Add(pluginsfolder);
             _rootFolders.Add(sourcefolder);
 
             _mainSceneFolder = sourcefolder;
+            _procedureFolder = procedureFolder;
+
+            for (int i = 0; i < _rootFolders.Count; i++)
+            {
+                SetDefaultGuide(_rootFolders[i]);
+            }
         }
         
         protected override void OnBodyGUI()
@@ -38,15 +47,18 @@ namespace HT.Framework
             base.OnBodyGUI();
 
             FolderGUI();
+
+            GUILayout.Space(10);
+
             SetupGUI();
+
+            GUILayout.Space(10);
+
+            GenerateGUI();
         }
         private void FolderGUI()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Generate Project Folder", EditorStyles.boldLabel);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginVertical("TextField");
+            GUILayout.BeginVertical("Generate Project Folder", "Window");
             _scrollFolderGUI = GUILayout.BeginScrollView(_scrollFolderGUI);
 
             for (int i = 0; i < _rootFolders.Count; i++)
@@ -64,6 +76,14 @@ namespace HT.Framework
             GUIContent content = EditorGUIUtility.IconContent("Folder Icon");
             content.text = folder.Name;
             folder.IsExpansion = EditorGUILayout.Foldout(folder.IsExpansion, content, true);
+            GUILayout.Space(60);
+            GUI.color = folder.IsCreateGuide ? Color.white : Color.gray;
+            folder.IsCreateGuide = GUILayout.Toggle(folder.IsCreateGuide, "Guide");
+            if (folder.IsCreateGuide)
+            {
+                folder.GuideContent = EditorGUILayout.TextField(folder.GuideContent, GUILayout.Width(120));
+            }
+            GUI.color = Color.white;
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -77,14 +97,8 @@ namespace HT.Framework
         }
         private void SetupGUI()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Original Setup", EditorStyles.boldLabel);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginVertical("TextField");
-
-            GUI.color = _mainSceneFolder != null ? Color.white : Color.gray;
-
+            GUILayout.BeginVertical("Original Setup", "Window");
+            
             GUILayout.BeginHorizontal();
             GUIContent content = EditorGUIUtility.IconContent("SceneAsset Icon");
             content.text = "Main Scene";
@@ -101,27 +115,38 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < _rootFolders.Count; i++)
                 {
-                    ChooseFolderMenu(gm, _rootFolders[i]);
+                    ChooseMainSceneFolderMenu(gm, _rootFolders[i]);
                 }
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
             
+            GUILayout.BeginHorizontal();
+            GUI.color = _isCreateInitialProcedure ? Color.white : Color.gray;
+            _isCreateInitialProcedure = GUILayout.Toggle(_isCreateInitialProcedure, "Initial Procedure", GUILayout.Width(120));
             GUI.color = Color.white;
-
-            GUILayout.EndVertical();
+            GUI.enabled = _isCreateInitialProcedure;
+            _initialProcedure = EditorGUILayout.TextField(_initialProcedure);
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Generate", EditorGlobalTools.Styles.LargeButton))
+            GUILayout.Space(125);
+            content.text = _procedureFolder != null ? _procedureFolder.Path : "<None>";
+            if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
             {
-                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to generate by project wizard？", "Yes", "No"))
+                GenericMenu gm = new GenericMenu();
+                for (int i = 0; i < _rootFolders.Count; i++)
                 {
-                    Generate();
+                    ChooseProcedureFolderMenu(gm, _rootFolders[i]);
                 }
+                gm.ShowAsContext();
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
+
+            GUILayout.EndVertical();
         }
-        private void ChooseFolderMenu(GenericMenu gm, Folder folder)
+        private void ChooseMainSceneFolderMenu(GenericMenu gm, Folder folder)
         {
             gm.AddItem(new GUIContent(folder.Path.Replace("/", "\\")), _mainSceneFolder == folder, () =>
             {
@@ -130,10 +155,50 @@ namespace HT.Framework
 
             for (int i = 0; i < folder.SubFolders.Count; i++)
             {
-                ChooseFolderMenu(gm, folder.SubFolders[i]);
+                ChooseMainSceneFolderMenu(gm, folder.SubFolders[i]);
             }
         }
+        private void ChooseProcedureFolderMenu(GenericMenu gm, Folder folder)
+        {
+            gm.AddItem(new GUIContent(folder.Path.Replace("/", "\\")), _procedureFolder == folder, () =>
+            {
+                _procedureFolder = folder;
+            });
 
+            for (int i = 0; i < folder.SubFolders.Count; i++)
+            {
+                ChooseProcedureFolderMenu(gm, folder.SubFolders[i]);
+            }
+        }
+        private void GenerateGUI()
+        {
+            GUILayout.BeginHorizontal();
+            GUI.enabled = _mainSceneFolder != null && _mainSceneName != "";
+            if (GUILayout.Button("Generate", EditorGlobalTools.Styles.LargeButton))
+            {
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to generate by project wizard？", "Yes", "No"))
+                {
+                    Generate();
+                }
+            }
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+        }
+
+        private void SetDefaultGuide(Folder folder)
+        {
+            if (folder.SubFolders.Count > 0)
+            {
+                for (int i = 0; i < folder.SubFolders.Count; i++)
+                {
+                    SetDefaultGuide(folder.SubFolders[i]);
+                }
+            }
+            else
+            {
+                folder.SetGuide(true, "Hold " + folder.Name);
+            }
+        }
         private void Generate()
         {
             for (int i = 0; i < _rootFolders.Count; i++)
@@ -143,6 +208,7 @@ namespace HT.Framework
 
             if (CreateMainScene())
             {
+                CreateInitialProcedure();
                 SaveScene();
             }
         }
@@ -151,6 +217,11 @@ namespace HT.Framework
             if (!AssetDatabase.IsValidFolder(folder.Path))
             {
                 AssetDatabase.CreateFolder(folder.Parent != null ? folder.Parent.Path : "Assets", folder.Name);
+
+                if (folder.IsCreateGuide)
+                {
+                    File.AppendAllText(folder.FullPath + "/Guide.txt", folder.GuideContent);
+                }
             }
 
             for (int i = 0; i < folder.SubFolders.Count; i++)
@@ -180,8 +251,43 @@ namespace HT.Framework
                         Log.Error("新建框架主环境失败，丢失主预制体：Assets/HTFramework/HTFramework.prefab");
                     }
                 }
+                else
+                {
+                    Log.Error("已存在框架主环境，项目生成向导将不会再自动创建主场景！");
+                }
             }
             return false;
+        }
+        private void CreateInitialProcedure()
+        {
+            if (_isCreateInitialProcedure)
+            {
+                if (_procedureFolder != null && _initialProcedure != "")
+                {
+                    string path = _procedureFolder.FullPath + "/" + _initialProcedure + ".cs";
+                    if (!File.Exists(path))
+                    {
+                        TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
+                        if (asset)
+                        {
+                            string code = asset.text;
+                            code = code.Replace("新建流程", "初始流程（运行 " + _mainSceneName + " 场景会首先进入此流程）");
+                            code = code.Replace("#SCRIPTNAME#", _initialProcedure);
+                            File.AppendAllText(path, code);
+                            asset = null;
+
+                            Main main = FindObjectOfType<Main>();
+                            ProcedureManager procedure = main.GetComponentByChild<ProcedureManager>("Procedure");
+                            procedure.ActivatedProcedures.Add(_initialProcedure);
+                            procedure.DefaultProcedure = _initialProcedure;
+                        }
+                    }
+                    else
+                    {
+                        Log.Error("新建初始流程失败，已存在脚本 " + path);
+                    }
+                }
+            }
         }
         private void SaveScene()
         {
@@ -189,21 +295,27 @@ namespace HT.Framework
             EditorSceneManager.MarkSceneDirty(main.gameObject.scene);
             EditorSceneManager.SaveScene(main.gameObject.scene, _mainSceneFolder.Path + "/" + _mainSceneName + ".unity");
             AssetDatabase.Refresh();
+            Close();
         }
-
-        public class Folder
+        
+        private class Folder
         {
             public Folder Parent;
-            public List<Folder> SubFolders = new List<Folder>();
+            public List<Folder> SubFolders;
             public string Name;
             public string Path;
+            public string FullPath;
+            public bool IsCreateGuide = false;
+            public string GuideContent;
             public bool IsExpansion = true;
             
             public Folder(Folder parent, string name, params string[] subs)
             {
                 Parent = parent;
+                SubFolders = new List<Folder>();
                 Name = name;
                 Path = Parent == null ? ("Assets/" + Name) : (Parent.Path + "/" + Name);
+                FullPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + "/" + Path;
 
                 if (Parent != null)
                 {
@@ -213,6 +325,12 @@ namespace HT.Framework
                 {
                     Folder folder = new Folder(this, subs[i]);
                 }
+            }
+
+            public void SetGuide(bool isCreate, string content)
+            {
+                IsCreateGuide = isCreate;
+                GuideContent = content;
             }
         }
     }
