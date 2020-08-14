@@ -312,11 +312,7 @@ namespace HT.Framework
 
         private void OnPreRender()
         {
-#if UNITY_4_0
-            if (enabled == false || gameObject.activeInHierarchy == false)
-#else
             if (enabled == false || gameObject.activeSelf == false)
-#endif
                 return;
 
             if (_stencilBuffer != null)
