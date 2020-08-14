@@ -12,7 +12,7 @@ namespace HT.Framework
     internal sealed class FSMInspector : HTFEditor<FSM>
     {
         private Dictionary<string, Type> _stateInstances;
-        private string _currentStateName;
+        private string _currentStateName = "<None>";
         
         protected override void OnRuntimeEnable()
         {
@@ -25,9 +25,12 @@ namespace HT.Framework
                 FiniteStateNameAttribute attribute = state.Key.GetCustomAttribute<FiniteStateNameAttribute>();
                 _stateInstances.Add(attribute != null ? attribute.Name : state.Key.Name, state.Key);
             }
-            
-            FiniteStateNameAttribute nameAttribute = Target.CurrentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
-            _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
+
+            if (Target.CurrentState != null)
+            {
+                FiniteStateNameAttribute nameAttribute = Target.CurrentState.GetType().GetCustomAttribute<FiniteStateNameAttribute>();
+                _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
+            }
         }
 
         protected override void OnInspectorDefaultGUI()
