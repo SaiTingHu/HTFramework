@@ -140,6 +140,21 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Release Date: " + _version.ReleaseDate);
                 GUILayout.EndHorizontal();
+                
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Supported Unity Versions: " + _versionInfo.CurrentVersion.UnityVersions);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Scripting Runtime Versions: " + _versionInfo.CurrentVersion.ScriptingVersions);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Api Compatibility Level: " + _versionInfo.CurrentVersion.APIVersions);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Release Notes:");
