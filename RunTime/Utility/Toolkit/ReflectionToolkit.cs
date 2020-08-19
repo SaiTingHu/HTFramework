@@ -132,5 +132,44 @@ namespace HT.Framework
             }
             return types;
         }
+
+        /// <summary>
+        /// 从当前类型中获取所有方法
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="filter">方法筛选器</param>
+        /// <returns>所有方法集合</returns>
+        public static List<MethodInfo> GetMethods(this Type type, HTFFunc<MethodInfo, bool> filter)
+        {
+            List<MethodInfo> methods = new List<MethodInfo>();
+            MethodInfo[] infos = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            for (int i = 0; i < infos.Length; i++)
+            {
+                if (filter(infos[i]))
+                {
+                    methods.Add(infos[i]);
+                }
+            }
+            return methods;
+        }
+        /// <summary>
+        /// 从当前类型中获取所有字段
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="filter">字段筛选器</param>
+        /// <returns>所有字段集合</returns>
+        public static List<FieldInfo> GetFields(this Type type, HTFFunc<FieldInfo, bool> filter)
+        {
+            List<FieldInfo> fields = new List<FieldInfo>();
+            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            for (int i = 0; i < infos.Length; i++)
+            {
+                if (filter(infos[i]))
+                {
+                    fields.Add(infos[i]);
+                }
+            }
+            return fields;
+        }
     }
 }

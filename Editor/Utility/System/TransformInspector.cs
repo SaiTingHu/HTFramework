@@ -159,7 +159,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Expand Children", "MinibuttonLeft"))
+                if (GUILayout.Button("Unfold Children", "MinibuttonLeft"))
                 {
                     Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
@@ -167,7 +167,7 @@ namespace HT.Framework
                     int id = Target.gameObject.GetInstanceID();
                     method.Invoke(window, new object[] { id, true });
                 }
-                if (GUILayout.Button("Retract Children", "MinibuttonRight"))
+                if (GUILayout.Button("Fold Children", "MinibuttonRight"))
                 {
                     Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
@@ -178,7 +178,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Retract All", "Minibutton"))
+                if (GUILayout.Button("Fold All", "Minibutton"))
                 {
                     Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
