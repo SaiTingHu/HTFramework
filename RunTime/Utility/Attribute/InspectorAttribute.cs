@@ -98,10 +98,28 @@ namespace HT.Framework
     }
 
     /// <summary>
+    /// 层级检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class LayerAttribute : InspectorAttribute
+    {
+
+    }
+
+    /// <summary>
     /// 可排序列表检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public sealed class ReorderableListAttribute : InspectorAttribute
+    {
+
+    }
+
+    /// <summary>
+    /// 密码检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class PasswordAttribute : InspectorAttribute
     {
 
     }

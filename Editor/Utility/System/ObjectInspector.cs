@@ -52,6 +52,9 @@ namespace HT.Framework
 
             serializedObject.ApplyModifiedProperties();
         }
+        /// <summary>
+        /// 绘制字段
+        /// </summary>
         private void FieldGUI()
         {
             for (int i = 0; i < _fields.Count; i++)
@@ -59,6 +62,9 @@ namespace HT.Framework
                 _fields[i].Draw(this);
             }
         }
+        /// <summary>
+        /// 绘制方法
+        /// </summary>
         private void MethodGUI()
         {
             for (int i = 0; i < _methods.Count; i++)
@@ -66,7 +72,6 @@ namespace HT.Framework
                 _methods[i].Draw(this);
             }
         }
-        
         /// <summary>
         /// 标记目标已改变
         /// </summary>
@@ -152,9 +157,17 @@ namespace HT.Framework
                         {
                             Drawers.Add(new DropdownDrawer(attributes[i]));
                         }
+                        else if (attributes[i] is LayerAttribute)
+                        {
+                            Drawers.Add(new LayerDrawer(attributes[i]));
+                        }
                         else if (attributes[i] is ReorderableListAttribute)
                         {
                             Drawers.Add(new ReorderableList(attributes[i]));
+                        }
+                        else if (attributes[i] is PasswordAttribute)
+                        {
+                            Drawers.Add(new PasswordDrawer(attributes[i]));
                         }
                         else if (attributes[i] is EnableAttribute)
                         {
@@ -276,6 +289,63 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 字段绘制器 - 层级检视
+        /// </summary>
+        private sealed class LayerDrawer : FieldDrawer
+        {
+            public LayerAttribute LAttribute;
+
+            public LayerDrawer(InspectorAttribute attribute) : base(attribute)
+            {
+                LAttribute = attribute as LayerAttribute;
+            }
+
+            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(string))
+                {
+                    string value = (string)fieldInspector.Field.GetValue(inspector.target);
+                    int layer = LayerMask.NameToLayer(value);
+                    if (layer < 0) layer = 0;
+                    if (layer > 31) layer = 31;
+
+                    GUILayout.BeginHorizontal();
+                    EditorGUI.BeginChangeCheck();
+                    int newLayer = EditorGUILayout.LayerField(fieldInspector.Label, layer);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(inspector.target, "Layer");
+                        fieldInspector.Field.SetValue(inspector.target, LayerMask.LayerToName(newLayer));
+                        inspector.HasChanged();
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                else if (fieldInspector.Field.FieldType == typeof(int))
+                {
+                    int layer = (int)fieldInspector.Field.GetValue(inspector.target);
+                    if (layer < 0) layer = 0;
+                    if (layer > 31) layer = 31;
+
+                    GUILayout.BeginHorizontal();
+                    EditorGUI.BeginChangeCheck();
+                    int newLayer = EditorGUILayout.LayerField(fieldInspector.Label, layer);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(inspector.target, "Layer");
+                        fieldInspector.Field.SetValue(inspector.target, newLayer);
+                        inspector.HasChanged();
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                else
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Layer! because the types don't match!", MessageType.Error);
+                    GUILayout.EndHorizontal();
+                }
+            }
+        }
+        /// <summary>
         /// 字段绘制器 - 可排序列表
         /// </summary>
         private sealed class ReorderableList : FieldDrawer
@@ -337,6 +407,44 @@ namespace HT.Framework
                 {
                     return EditorGUI.GetPropertyHeight(fieldInspector.Property.GetArrayElementAtIndex(index)) + 6;
                 };
+            }
+        }
+        /// <summary>
+        /// 字段绘制器 - 密码
+        /// </summary>
+        private sealed class PasswordDrawer : FieldDrawer
+        {
+            public PasswordAttribute PAttribute;
+
+            public PasswordDrawer(InspectorAttribute attribute) : base(attribute)
+            {
+                PAttribute = attribute as PasswordAttribute;
+            }
+
+            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(string))
+                {
+                    string value = (string)fieldInspector.Field.GetValue(inspector.target);
+                    if (value == null) value = "";
+
+                    GUILayout.BeginHorizontal();
+                    EditorGUI.BeginChangeCheck();
+                    string newValue = EditorGUILayout.PasswordField(fieldInspector.Label, value);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(inspector.target, "Password");
+                        fieldInspector.Field.SetValue(inspector.target, newValue);
+                        inspector.HasChanged();
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                else
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Password! because the types don't match!", MessageType.Error);
+                    GUILayout.EndHorizontal();
+                }
             }
         }
         /// <summary>

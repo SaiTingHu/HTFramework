@@ -225,7 +225,7 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Tools 【优先级111-116】
+        #region Tools 【优先级111-117】
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
@@ -367,13 +367,25 @@ namespace HT.Framework
                 CustomTools.Clear();
             }
         }
+
+        /// <summary>
+        /// 打开 Extended Inspector
+        /// </summary>
+        [@MenuItem("HTFramework/Tools/Extended Inspector", false, 117)]
+        private static void OpenExtendedInspector()
+        {
+            ExtendedInspectorWindow window = EditorWindow.GetWindow<ExtendedInspectorWindow>();
+            window.titleContent.image = EditorGUIUtility.IconContent("d_UnityEditor.InspectorWindow").image;
+            window.titleContent.text = "Extended Inspector";
+            window.Show();
+        }
         #endregion
 
-        #region ProjectWizard 【优先级117】
+        #region ProjectWizard 【优先级118】
         /// <summary>
         /// ProjectWizard
         /// </summary>
-        [@MenuItem("HTFramework/Project Wizard", false, 117)]
+        [@MenuItem("HTFramework/Project Wizard", false, 118)]
         private static void ProjectWizard()
         {
             ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
