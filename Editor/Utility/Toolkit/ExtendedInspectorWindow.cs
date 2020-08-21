@@ -25,6 +25,7 @@ namespace HT.Framework
         private List<Editor> _editors = new List<Editor>();
         private List<bool> _foldouts = new List<bool>();
         private Vector2 _scroll;
+        private GUIContent _prefabGC;
         private GUIContent _removeGC;
         
         private void OnEnable()
@@ -44,6 +45,8 @@ namespace HT.Framework
                 }
             }
 
+            _prefabGC = new GUIContent();
+            _prefabGC.image = EditorGUIUtility.IconContent("Prefab Icon").image;
             _removeGC = new GUIContent();
             _removeGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _removeGC.tooltip = "Remove";
@@ -100,7 +103,15 @@ namespace HT.Framework
                         GUI.color = Color.white;
 
                         GUI.enabled = false;
-                        EditorGUILayout.ObjectField("Target", _components[i], _components[i].GetType(), true);
+
+                        GUILayout.BeginHorizontal();
+                        EditorGUILayout.ObjectField("GameObject", _components[i].gameObject, typeof(GameObject), true);
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.BeginHorizontal();
+                        EditorGUILayout.ObjectField("Component", _components[i], _components[i].GetType(), true);
+                        GUILayout.EndHorizontal();
+
                         GUI.enabled = true;
 
                         _editors[i].OnInspectorGUI();

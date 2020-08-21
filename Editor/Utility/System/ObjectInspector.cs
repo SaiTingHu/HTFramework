@@ -17,37 +17,52 @@ namespace HT.Framework
     public sealed class ObjectInspector : Editor
     {
         private List<FieldInspector> _fields = new List<FieldInspector>();
+        private List<EventInspector> _events = new List<EventInspector>();
         private List<MethodInspector> _methods = new List<MethodInspector>();
 
         private void OnEnable()
         {
-            using (SerializedProperty iterator = serializedObject.GetIterator())
+            try
             {
-                while (iterator.NextVisible(true))
+                using (SerializedProperty iterator = serializedObject.GetIterator())
                 {
-                    SerializedProperty property = serializedObject.FindProperty(iterator.name);
-                    if (property != null)
+                    while (iterator.NextVisible(true))
                     {
-                        _fields.Add(new FieldInspector(property));
+                        SerializedProperty property = serializedObject.FindProperty(iterator.name);
+                        if (property != null)
+                        {
+                            _fields.Add(new FieldInspector(property));
+                        }
                     }
                 }
-            }
+                
+                List<FieldInfo> events = target.GetType().GetFields((field) =>
+                {
+                    return field.FieldType.IsSubclassOf(typeof(MulticastDelegate)) && field.IsDefined(typeof(EventAttribute), true);
+                });
+                for (int i = 0; i < events.Count; i++)
+                {
+                    _events.Add(new EventInspector(events[i]));
+                }
 
-            List<MethodInfo> methods = target.GetType().GetMethods((method) =>
-            {
-                return method.IsDefined(typeof(ButtonAttribute), true);
-            });
-            for (int i = 0; i < methods.Count; i++)
-            {
-                _methods.Add(new MethodInspector(methods[i]));
+                List<MethodInfo> methods = target.GetType().GetMethods((method) =>
+                {
+                    return method.IsDefined(typeof(ButtonAttribute), true);
+                });
+                for (int i = 0; i < methods.Count; i++)
+                {
+                    _methods.Add(new MethodInspector(methods[i]));
+                }
+                _methods.Sort((a, b) => { return a.Attribute.Order - b.Attribute.Order; });
             }
-            _methods.Sort((a, b) => { return a.Attribute.Order - b.Attribute.Order; });
+            catch { }
         }
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
             FieldGUI();
+            EventGUI();
             MethodGUI();
 
             serializedObject.ApplyModifiedProperties();
@@ -60,6 +75,16 @@ namespace HT.Framework
             for (int i = 0; i < _fields.Count; i++)
             {
                 _fields[i].Draw(this);
+            }
+        }
+        /// <summary>
+        /// 绘制事件
+        /// </summary>
+        private void EventGUI()
+        {
+            for (int i = 0; i < _events.Count; i++)
+            {
+                _events[i].Draw(this);
             }
         }
         /// <summary>
@@ -87,7 +112,7 @@ namespace HT.Framework
                 }
             }
         }
-
+        
         /// <summary>
         /// 字段检视器
         /// </summary>
@@ -168,6 +193,10 @@ namespace HT.Framework
                         else if (attributes[i] is PasswordAttribute)
                         {
                             Drawers.Add(new PasswordDrawer(attributes[i]));
+                        }
+                        else if (attributes[i] is HyperlinkAttribute)
+                        {
+                            Drawers.Add(new HyperlinkDrawer(attributes[i]));
                         }
                         else if (attributes[i] is EnableAttribute)
                         {
@@ -444,6 +473,94 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Password! because the types don't match!", MessageType.Error);
                     GUILayout.EndHorizontal();
+                }
+            }
+        }
+        /// <summary>
+        /// 字段绘制器 - 超链接
+        /// </summary>
+        private sealed class HyperlinkDrawer : FieldDrawer
+        {
+            public HyperlinkAttribute HAttribute;
+            public MethodInfo LinkLabel;
+            public object[] Parameter;
+
+            public HyperlinkDrawer(InspectorAttribute attribute) : base(attribute)
+            {
+                HAttribute = attribute as HyperlinkAttribute;
+                MethodInfo[] methods = typeof(EditorGUILayout).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
+                foreach (var method in methods)
+                {
+                    if (method.Name == "LinkLabel")
+                    {
+                        ParameterInfo[] parameters = method.GetParameters();
+                        if (parameters != null && parameters.Length > 0 && parameters[0].ParameterType == typeof(string))
+                        {
+                            LinkLabel = method;
+                            break;
+                        }
+                    }
+                }
+                Parameter = new object[] { HAttribute.Name, new GUILayoutOption[0] };
+            }
+
+            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(string))
+                {
+                    GUILayout.BeginHorizontal();
+                    bool isClick = (bool)LinkLabel.Invoke(null, Parameter);
+                    if (isClick)
+                    {
+                        Application.OpenURL((string)fieldInspector.Field.GetValue(inspector.target));
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                else
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Hyperlink! because the types don't match!", MessageType.Error);
+                    GUILayout.EndHorizontal();
+                }
+            }
+        }
+        /// <summary>
+        /// 事件检视器
+        /// </summary>
+        private sealed class EventInspector
+        {
+            public FieldInfo Field;
+            public EventAttribute Attribute;
+            public string Name;
+            public bool IsFoldout;
+
+            public EventInspector(FieldInfo field)
+            {
+                Field = field;
+                Attribute = field.GetCustomAttribute<EventAttribute>(true);
+                Name = string.IsNullOrEmpty(Attribute.Text) ? field.Name : Attribute.Text;
+                IsFoldout = true;
+            }
+
+            public void Draw(ObjectInspector inspector)
+            {
+                MulticastDelegate multicast = Field.GetValue(inspector.target) as MulticastDelegate;
+                Delegate[] delegates = multicast != null ? multicast.GetInvocationList() : null;
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(10);
+                IsFoldout = EditorGUILayout.Foldout(IsFoldout, string.Format("{0} [{1}]", Name, delegates != null ? delegates.Length : 0));
+                GUILayout.EndHorizontal();
+
+                if (IsFoldout && delegates != null)
+                {
+                    for (int i = 0; i < delegates.Length; i++)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(30);
+                        GUILayout.Label(string.Format("{0}->{1}", delegates[i].Target, delegates[i].Method), "Textfield");
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
         }

@@ -186,13 +186,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.color = Color.yellow;
-            if (GUILayout.Button("Copyright (c) 2019 HuTao", EditorGlobalTools.Styles.Label))
-            {
-                Application.OpenURL("https://github.com/SaiTingHu/HTFramework/blob/master/LICENSE");
-            }
-            EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
-            GUI.color = Color.white;
+            LinkLabel("Copyright (c) 2019 HuTao", "https://github.com/SaiTingHu/HTFramework/blob/master/LICENSE");
             GUILayout.FlexibleSpace();
             bool isShowOnStart = GUILayout.Toggle(_isShowOnStart, "Show On Start");
             if (isShowOnStart != _isShowOnStart)

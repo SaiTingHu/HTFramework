@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Reflection;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -32,6 +34,7 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnInit()
         {
+            ApplyObjectPath();
         }
         
         /// <summary>
@@ -67,6 +70,31 @@ namespace HT.Framework
         /// </summary>
         public virtual void Reset()
         {
+        }
+
+        /// <summary>
+        /// 应用对象路径定义
+        /// </summary>
+        private void ApplyObjectPath()
+        {
+            FieldInfo[] infos = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            for (int i = 0; i < infos.Length; i++)
+            {
+                if (infos[i].IsDefined(typeof(ObjectPathAttribute), true))
+                {
+                    string path = infos[i].GetCustomAttribute<ObjectPathAttribute>().Path;
+                    Type type = infos[i].FieldType;
+                    if (type == typeof(GameObject))
+                    {
+                        infos[i].SetValue(this, Entity.FindChildren(path));
+                    }
+                    else if (type.IsSubclassOf(typeof(Component)))
+                    {
+                        GameObject obj = Entity.FindChildren(path);
+                        infos[i].SetValue(this, obj != null ? obj.GetComponent(type) : null);
+                    }
+                }
+            }
         }
     }
 }

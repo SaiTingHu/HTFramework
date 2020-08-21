@@ -9,46 +9,7 @@ namespace HT.Framework
     {
         
     }
-
-    /// <summary>
-    /// 按钮检视器
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public sealed class ButtonAttribute : InspectorAttribute
-    {
-        public string Text { get; private set; }
-        public EnableMode Mode { get; private set; }
-        public string Style { get; private set; }
-        public int Order { get; private set; }
-
-        public ButtonAttribute(string text = null, EnableMode mode = EnableMode.Always, string style = "Button", int order = 0)
-        {
-            Text = text;
-            Mode = mode;
-            Style = style;
-            Order = order;
-        }
-
-        /// <summary>
-        /// 按钮激活模式
-        /// </summary>
-        public enum EnableMode
-        {
-            /// <summary>
-            /// 总是激活
-            /// </summary>
-            Always,
-            /// <summary>
-            /// 只在编辑模式激活
-            /// </summary>
-            Editor,
-            /// <summary>
-            /// 只在运行模式激活
-            /// </summary>
-            Playmode
-        }
-    }
-
+    
     /// <summary>
     /// 下拉框检视器
     /// </summary>
@@ -125,6 +86,20 @@ namespace HT.Framework
     }
 
     /// <summary>
+    /// 超链接检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class HyperlinkAttribute : InspectorAttribute
+    {
+        public string Name { get; private set; }
+
+        public HyperlinkAttribute(string name)
+        {
+            Name = name;
+        }
+    }
+
+    /// <summary>
     /// 激活状态检视器 - 参数condition为激活条件判断方法的名称，返回值必须为bool
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
@@ -193,5 +168,58 @@ namespace HT.Framework
     public sealed class ReadOnlyAttribute : InspectorAttribute
     {
         
+    }
+
+    /// <summary>
+    /// 事件、委托检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    public sealed class EventAttribute : InspectorAttribute
+    {
+        public string Text { get; private set; }
+
+        public EventAttribute(string text = null)
+        {
+            Text = text;
+        }
+    }
+
+    /// <summary>
+    /// 按钮检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    public sealed class ButtonAttribute : InspectorAttribute
+    {
+        public string Text { get; private set; }
+        public EnableMode Mode { get; private set; }
+        public string Style { get; private set; }
+        public int Order { get; private set; }
+
+        public ButtonAttribute(string text = null, EnableMode mode = EnableMode.Always, string style = "Button", int order = 0)
+        {
+            Text = text;
+            Mode = mode;
+            Style = style;
+            Order = order;
+        }
+
+        /// <summary>
+        /// 按钮激活模式
+        /// </summary>
+        public enum EnableMode
+        {
+            /// <summary>
+            /// 总是激活
+            /// </summary>
+            Always,
+            /// <summary>
+            /// 只在编辑模式激活
+            /// </summary>
+            Editor,
+            /// <summary>
+            /// 只在运行模式激活
+            /// </summary>
+            Playmode
+        }
     }
 }
