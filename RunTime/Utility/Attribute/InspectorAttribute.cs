@@ -107,6 +107,31 @@ namespace HT.Framework
     }
 
     /// <summary>
+    /// 文件路径检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public sealed class FilePathAttribute : InspectorAttribute
+    {
+        public string Extension { get; private set; }
+
+        public FilePathAttribute(string extension = "*.*")
+        {
+            Extension = extension;
+        }
+    }
+
+    /// <summary>
+    /// 文件夹路径检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public sealed class FolderPathAttribute : InspectorAttribute
+    {
+        
+    }
+
+    /// <summary>
     /// 激活状态检视器 - 参数condition为激活条件判断方法的名称，返回值必须为bool
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
@@ -181,7 +206,7 @@ namespace HT.Framework
     {
         
     }
-
+    
     /// <summary>
     /// 事件、委托检视器
     /// </summary>
