@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace HT.Framework
 {
@@ -6,6 +7,7 @@ namespace HT.Framework
     /// 任务内容标记
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class TaskContentAttribute : Attribute
     {
         public string Name;

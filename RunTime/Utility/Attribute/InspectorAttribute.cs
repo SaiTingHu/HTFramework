@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 类成员检视器特性
     /// </summary>
+    [Conditional("UNITY_EDITOR")]
     public abstract class InspectorAttribute : Attribute
     {
         
@@ -14,6 +16,7 @@ namespace HT.Framework
     /// 下拉框检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class DropdownAttribute : InspectorAttribute
     {
 #if UNITY_EDITOR
@@ -62,6 +65,7 @@ namespace HT.Framework
     /// 层级检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class LayerAttribute : InspectorAttribute
     {
 
@@ -71,6 +75,7 @@ namespace HT.Framework
     /// 可排序列表检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ReorderableListAttribute : InspectorAttribute
     {
 
@@ -80,6 +85,7 @@ namespace HT.Framework
     /// 密码检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class PasswordAttribute : InspectorAttribute
     {
 
@@ -89,6 +95,7 @@ namespace HT.Framework
     /// 超链接检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class HyperlinkAttribute : InspectorAttribute
     {
         public string Name { get; private set; }
@@ -103,6 +110,7 @@ namespace HT.Framework
     /// 激活状态检视器 - 参数condition为激活条件判断方法的名称，返回值必须为bool
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class EnableAttribute : InspectorAttribute
     {
         public string Condition { get; private set; }
@@ -117,6 +125,7 @@ namespace HT.Framework
     /// 显示状态检视器 - 参数condition为显示条件判断方法的名称，返回值必须为bool
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class DisplayAttribute : InspectorAttribute
     {
         public string Condition { get; private set; }
@@ -131,6 +140,7 @@ namespace HT.Framework
     /// 标签检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class LabelAttribute : InspectorAttribute
     {
         public string Name { get; private set; }
@@ -145,6 +155,7 @@ namespace HT.Framework
     /// 颜色检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ColorAttribute : InspectorAttribute
     {
         public float R { get; private set; }
@@ -165,6 +176,7 @@ namespace HT.Framework
     /// 只读检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ReadOnlyAttribute : InspectorAttribute
     {
         
@@ -174,6 +186,7 @@ namespace HT.Framework
     /// 事件、委托检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class EventAttribute : InspectorAttribute
     {
         public string Text { get; private set; }
@@ -188,6 +201,7 @@ namespace HT.Framework
     /// 按钮检视器
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public sealed class ButtonAttribute : InspectorAttribute
     {
         public string Text { get; private set; }

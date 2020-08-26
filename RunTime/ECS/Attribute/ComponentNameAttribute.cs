@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace HT.Framework
 {
     /// <summary>
-    /// 有限状态的名称
+    /// ECS的组件名称
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class FiniteStateNameAttribute : Attribute
+    [Conditional("UNITY_EDITOR")]
+    public sealed class ComponentNameAttribute : Attribute
     {
         public string Name;
 
-        public FiniteStateNameAttribute(string name)
+        public ComponentNameAttribute(string name)
         {
             Name = name;
         }

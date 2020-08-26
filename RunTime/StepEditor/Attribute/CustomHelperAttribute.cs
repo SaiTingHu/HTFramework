@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace HT.Framework
 {
     /// <summary>
-    /// ECS的系统名称
+    /// 自定义步骤助手的名称
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class SystemNameAttribute : Attribute
+    [Conditional("UNITY_EDITOR")]
+    public sealed class CustomHelperAttribute : Attribute
     {
         public string Name;
 
-        public SystemNameAttribute(string name)
+        public CustomHelperAttribute(string name)
         {
             Name = name;
         }
