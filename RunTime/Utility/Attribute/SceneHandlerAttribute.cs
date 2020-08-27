@@ -49,12 +49,10 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class BoundsHandlerAttribute : SceneHandlerAttribute
     {
-        public bool IsCanEdit { get; private set; }
         public string Display { get; private set; }
 
-        public BoundsHandlerAttribute(bool isCanEdit = false, string display = null)
+        public BoundsHandlerAttribute(string display = null)
         {
-            IsCanEdit = isCanEdit;
             Display = display;
         }
     }

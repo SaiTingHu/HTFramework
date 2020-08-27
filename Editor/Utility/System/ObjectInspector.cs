@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UObject = UnityEngine.Object;
@@ -815,11 +816,12 @@ namespace HT.Framework
         private sealed class BoundsHandler : FieldSceneHandler
         {
             public BoundsHandlerAttribute BAttribute;
-            public Transform Target;
+            public BoxBoundsHandle BoundsHandle;
 
             public BoundsHandler(SceneHandlerAttribute attribute) : base(attribute)
             {
                 BAttribute = attribute as BoundsHandlerAttribute;
+                BoundsHandle = new BoxBoundsHandle();
             }
 
             public override void SceneHandle(ObjectInspector inspector, FieldInspector fieldInspector)
@@ -827,57 +829,27 @@ namespace HT.Framework
                 if (fieldInspector.Field.FieldType == typeof(Bounds))
                 {
                     Bounds value = (Bounds)fieldInspector.Field.GetValue(inspector.target);
-                    
+                    BoundsHandle.center = value.center;
+                    BoundsHandle.size = value.size;
+
                     using (new Handles.DrawingScope(fieldInspector.UseColor))
                     {
-                        Handles.DrawWireCube(value.center, value.size);
-                        if (BAttribute.IsCanEdit)
+                        EditorGUI.BeginChangeCheck();
+                        BoundsHandle.DrawHandle();
+                        if (EditorGUI.EndChangeCheck())
                         {
-                            Vector3 center = value.center;
-                            Vector3 min = value.min;
-                            Vector3 max = value.max;
-                            Vector3 left = new Vector3(min.x, center.y, center.z);
-                            Vector3 right = new Vector3(max.x, center.y, center.z);
-                            Vector3 up = new Vector3(center.x, max.y, center.z);
-                            Vector3 down = new Vector3(center.x, min.y, center.z);
-                            Vector3 forward = new Vector3(center.x, center.y, max.z);
-                            Vector3 back = new Vector3(center.x, center.y, min.z);
-
-                            EditorGUI.BeginChangeCheck();
-                            Vector3 newLeft = Handles.Slider(left, Vector3.left, GetSize(inspector.target, left), Handles.DotHandleCap, 0);
-                            Vector3 newRight = Handles.Slider(right, Vector3.right, GetSize(inspector.target, right), Handles.DotHandleCap, 0);
-                            Vector3 newUp = Handles.Slider(up, Vector3.up, GetSize(inspector.target, up), Handles.DotHandleCap, 0);
-                            Vector3 newDown = Handles.Slider(down, Vector3.down, GetSize(inspector.target, down), Handles.DotHandleCap, 0);
-                            Vector3 newForward = Handles.Slider(forward, Vector3.forward, GetSize(inspector.target, forward), Handles.DotHandleCap, 0);
-                            Vector3 newBack = Handles.Slider(back, Vector3.back, GetSize(inspector.target, back), Handles.DotHandleCap, 0);
-                            if (EditorGUI.EndChangeCheck())
-                            {
-                                Undo.RecordObject(inspector.target, "Bounds Handler");
-                                value.SetMinMax(new Vector3(newLeft.x, newDown.y, newBack.z), new Vector3(newRight.x, newUp.y, newForward.z));
-                                fieldInspector.Field.SetValue(inspector.target, value);
-                                inspector.HasChanged();
-                            }
+                            Undo.RecordObject(inspector.target, "Bounds Handler");
+                            value.center = BoundsHandle.center;
+                            value.size = BoundsHandle.size;
+                            fieldInspector.Field.SetValue(inspector.target, value);
+                            inspector.HasChanged();
                         }
                         if (BAttribute.Display != null)
                         {
-                            Handles.Label(value.center, BAttribute.Display);
+                            Handles.Label(BoundsHandle.center, BAttribute.Display);
                         }
                     }
                 }
-            }
-
-            public float GetSize(UObject target, Vector3 point)
-            {
-                if (Target == null)
-                {
-                    Component component = target as Component;
-                    if (component != null)
-                    {
-                        Target = component.transform;
-                    }
-                }
-
-                return Target != null ? (HandleUtility.GetHandleSize(Target.TransformPoint(point)) * 0.03f) : 1;
             }
         }
         #endregion
