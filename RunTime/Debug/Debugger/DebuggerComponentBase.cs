@@ -33,7 +33,7 @@ namespace HT.Framework
             string newX = GUILayout.TextField(valueX);
             string newY = GUILayout.TextField(valueY);
             string newZ = GUILayout.TextField(valueZ);
-            if (string.Equals(newX, valueX) || string.Equals(newY, valueY) || string.Equals(newZ, valueZ))
+            if (!string.Equals(newX, valueX) || !string.Equals(newY, valueY) || !string.Equals(newZ, valueZ))
             {
                 float x, y, z;
                 if (float.TryParse(newX, out x) && float.TryParse(newY, out y) && float.TryParse(newZ, out z))
@@ -63,7 +63,7 @@ namespace HT.Framework
             string valueY = value.y.ToString();
             string newX = GUILayout.TextField(valueX);
             string newY = GUILayout.TextField(valueY);
-            if (string.Equals(newX, valueX) || string.Equals(newY, valueY))
+            if (!string.Equals(newX, valueX) || !string.Equals(newY, valueY))
             {
                 float x, y;
                 if (float.TryParse(newX, out x) && float.TryParse(newY, out y))

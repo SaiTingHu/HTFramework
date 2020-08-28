@@ -25,10 +25,7 @@ namespace HT.Framework
 
         //所有的缓存材质
         private List<HighlightingRendererCache> _highlightableRenderers;
-
-        //所有的缓存层数据
-        private int[] _layersCache;
-
+        
         //材质是否已修改
         private bool _materialsIsDirty = true;
 
@@ -170,17 +167,26 @@ namespace HT.Framework
         #region Common
         private class HighlightingRendererCache
         {
-            public Renderer RendererCached;
-            public GameObject GameObjectCached;
-
+            private GameObject _gameObjectCached;
+            private Renderer _rendererCached;
+            private int _layerCached;
             private Material[] _sourceMaterials;
             private Material[] _replacementMaterials;
             private List<int> _transparentMaterialIndexes;
+            
+            public bool IsValid
+            {
+                get
+                {
+                    return _gameObjectCached && _rendererCached;
+                }
+            }
 
             public HighlightingRendererCache(Renderer renderer, Material[] sourceMaterials, Material sharedOpaqueMaterial, bool writeDepth)
             {
-                RendererCached = renderer;
-                GameObjectCached = renderer.gameObject;
+                _gameObjectCached = renderer.gameObject;
+                _rendererCached = renderer;
+                _layerCached = _gameObjectCached.layer;
                 _sourceMaterials = sourceMaterials;
                 _replacementMaterials = new Material[sourceMaterials.Length];
                 _transparentMaterialIndexes = new List<int>();
@@ -192,6 +198,7 @@ namespace HT.Framework
                     {
                         continue;
                     }
+
                     string tag = sourceMaterial.GetTag("RenderType", true);
                     if (tag == "Transparent" || tag == "TransparentCutout")
                     {
@@ -215,11 +222,35 @@ namespace HT.Framework
                 }
             }
 
+            public void CacheLayer()
+            {
+                if (_gameObjectCached)
+                {
+                    _layerCached = _gameObjectCached.layer;
+                }
+            }
+
+            public void SetLayer(int layer)
+            {
+                if (_gameObjectCached)
+                {
+                    _gameObjectCached.layer = layer;
+                }
+            }
+
+            public void ResetLayer()
+            {
+                if (_gameObjectCached)
+                {
+                    _gameObjectCached.layer = _layerCached;
+                }
+            }
+
             public void SetState(bool highlightingState)
             {
-                if (RendererCached)
+                if (_rendererCached)
                 {
-                    RendererCached.sharedMaterials = highlightingState ? _replacementMaterials : _sourceMaterials;
+                    _rendererCached.sharedMaterials = highlightingState ? _replacementMaterials : _sourceMaterials;
                 }
             }
 
@@ -249,7 +280,6 @@ namespace HT.Framework
             }
 
             //重置高亮参数
-            _layersCache = null;
             _materialsIsDirty = true;
             _currentHighlightingState = false;
             _currentHighlightingColor = Color.clear;
@@ -664,19 +694,17 @@ namespace HT.Framework
 
                     if (_highlightableRenderers != null)
                     {
-                        _layersCache = new int[_highlightableRenderers.Count];
                         for (int i = 0; i < _highlightableRenderers.Count; i++)
                         {
-                            GameObject go = _highlightableRenderers[i].GameObjectCached;
-                            if (go)
+                            if (_highlightableRenderers[i].IsValid)
                             {
-                                _layersCache[i] = go.layer;
-                                go.layer = HighlightingLayer;
+                                _highlightableRenderers[i].CacheLayer();
+                                _highlightableRenderers[i].SetLayer(HighlightingLayer);
                                 _highlightableRenderers[i].SetState(true);
                             }
                             else
                             {
-                                _layersCache[i] = -1;
+                                _highlightableRenderers[i].ResetLayer();
                                 _highlightableRenderers[i].SetState(false);
                             }
                         }
@@ -689,11 +717,7 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < _highlightableRenderers.Count; i++)
                     {
-                        GameObject go = _highlightableRenderers[i].GameObjectCached;
-                        if (go)
-                        {
-                            go.layer = _layersCache[i];
-                        }
+                        _highlightableRenderers[i].ResetLayer();
                         _highlightableRenderers[i].SetState(false);
                     }
                 }

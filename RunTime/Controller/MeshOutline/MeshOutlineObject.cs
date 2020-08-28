@@ -194,7 +194,9 @@ namespace HT.Framework
             public void SetOutlineState(bool isOutline)
             {
                 if (RendererCached)
+                {
                     RendererCached.sharedMaterials = isOutline ? ReplacementMaterials : SourceMaterials;
+                }
             }
 
             public void SetOutlineColor(Color color)

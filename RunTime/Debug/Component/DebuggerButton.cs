@@ -18,7 +18,7 @@ namespace HT.Framework
             _onClickEvents.Clear();
             for (int i = 0; i < _onClickEventCount; i++)
             {
-                _onClickEvents.Add((i + 1).ToString() + ": " + _target.onClick.GetPersistentTarget(i).name + " / " + _target.onClick.GetPersistentMethodName(i) + "()");
+                _onClickEvents.Add(string.Format("{0}: {1} / {2}()", (i + 1).ToString(), _target.onClick.GetPersistentTarget(i).name, _target.onClick.GetPersistentMethodName(i)));
             }
         }
 

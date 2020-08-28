@@ -18,7 +18,7 @@ namespace HT.Framework
             _onValueChangedEvents.Clear();
             for (int i = 0; i < _onValueChangedEventCount; i++)
             {
-                _onValueChangedEvents.Add((i + 1).ToString() + ": " + _target.onValueChanged.GetPersistentTarget(i).name + " / " + _target.onValueChanged.GetPersistentMethodName(i) + "()");
+                _onValueChangedEvents.Add(string.Format("{0}: {1} / {2}()", (i + 1).ToString(), _target.onValueChanged.GetPersistentTarget(i).name, _target.onValueChanged.GetPersistentMethodName(i)));
             }
         }
 
