@@ -269,6 +269,14 @@ namespace HT.Framework
                         {
                             SceneHandlers.Add(new BoundsHandler(sattributes[i]));
                         }
+                        else if (sattributes[i] is DirectionHandlerAttribute)
+                        {
+                            SceneHandlers.Add(new DirectionHandler(sattributes[i]));
+                        }
+                        else if (sattributes[i] is CircleAreaHandlerAttribute)
+                        {
+                            SceneHandlers.Add(new CircleAreaHandler(sattributes[i]));
+                        }
                     }
                 }
             }
@@ -850,6 +858,203 @@ namespace HT.Framework
                         }
                     }
                 }
+            }
+        }
+        /// <summary>
+        /// 字段场景处理器 - 方向
+        /// </summary>
+        private sealed class DirectionHandler : FieldSceneHandler
+        {
+            public DirectionHandlerAttribute DAttribute;
+            public Transform Target;
+            public Vector3 Position;
+            public float ExternalSize;
+            public float InternalSize;
+            public float DynamicMultiple;
+
+            public DirectionHandler(SceneHandlerAttribute attribute) : base(attribute)
+            {
+                DAttribute = attribute as DirectionHandlerAttribute;
+                DynamicMultiple = 1;
+            }
+
+            public override void SceneHandle(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(Vector3))
+                {
+                    Vector3 value = (Vector3)fieldInspector.Field.GetValue(inspector.target);
+
+                    if (value != Vector3.zero)
+                    {
+                        using (new Handles.DrawingScope(fieldInspector.UseColor))
+                        {
+                            ExternalSize = GetExternalSize(inspector.target);
+                            InternalSize = GetInternalSize(inspector.target);
+                            Handles.CircleHandleCap(0, Position, Quaternion.FromToRotation(Vector3.forward, value), ExternalSize, EventType.Repaint);
+                            Handles.CircleHandleCap(0, Position, Quaternion.FromToRotation(Vector3.forward, value), InternalSize, EventType.Repaint);
+                            Handles.Slider(Position, value);
+                        }
+                    }
+                }
+                else if (fieldInspector.Field.FieldType == typeof(Vector2))
+                {
+                    Vector2 value = (Vector2)fieldInspector.Field.GetValue(inspector.target);
+
+                    if (value != Vector2.zero)
+                    {
+                        using (new Handles.DrawingScope(fieldInspector.UseColor))
+                        {
+                            ExternalSize = GetExternalSize(inspector.target);
+                            InternalSize = GetInternalSize(inspector.target);
+                            Handles.CircleHandleCap(0, Position, Quaternion.FromToRotation(Vector3.forward, value), ExternalSize, EventType.Repaint);
+                            Handles.CircleHandleCap(0, Position, Quaternion.FromToRotation(Vector3.forward, value), InternalSize, EventType.Repaint);
+                            Handles.Slider(Position, value);
+                        }
+                    }
+                }
+            }
+
+            public float GetExternalSize(UObject target)
+            {
+                if (Target == null)
+                {
+                    Component component = target as Component;
+                    if (component)
+                    {
+                        Target = component.transform;
+                    }
+                }
+
+                if (Target != null)
+                {
+                    Position = Target.position;
+                    return HandleUtility.GetHandleSize(Target.TransformPoint(Target.position)) * 1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+
+            public float GetInternalSize(UObject target)
+            {
+                if (Target == null)
+                {
+                    Component component = target as Component;
+                    if (component)
+                    {
+                        Target = component.transform;
+                    }
+                }
+
+                if (DAttribute.IsDynamic)
+                {
+                    if (DynamicMultiple < 2)
+                    {
+                        DynamicMultiple += 0.005f;
+                    }
+                    else
+                    {
+                        DynamicMultiple = 0;
+                    }
+                    GUI.changed = true;
+                }
+
+                if (Target != null)
+                {
+                    Position = Target.position;
+                    return HandleUtility.GetHandleSize(Target.TransformPoint(Target.position)) * 0.5f * DynamicMultiple;
+                }
+                else
+                {
+                    return 0.5f * DynamicMultiple;
+                }
+            }
+        }
+        /// <summary>
+        /// 字段场景处理器 - 圆形区域
+        /// </summary>
+        private sealed class CircleAreaHandler : FieldSceneHandler
+        {
+            public CircleAreaHandlerAttribute CAttribute;
+            public Transform Target;
+            public Vector3 Position;
+            public Quaternion Rotation;
+            public float Size;
+            public float DynamicMultiple;
+
+            public CircleAreaHandler(SceneHandlerAttribute attribute) : base(attribute)
+            {
+                CAttribute = attribute as CircleAreaHandlerAttribute;
+                Rotation = GetRotation();
+                DynamicMultiple = 1;
+            }
+
+            public override void SceneHandle(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(float))
+                {
+                    float value = (float)fieldInspector.Field.GetValue(inspector.target);
+
+                    using (new Handles.DrawingScope(fieldInspector.UseColor))
+                    {
+                        Position = GetPosition(inspector.target);
+                        Size = GetSize(inspector.target, value);
+                        Handles.CircleHandleCap(0, Position, Rotation, Size, EventType.Repaint);
+                        if (Target)
+                        {
+                            Handles.Slider(Position, Target.forward);
+                        }
+                    }
+                }
+            }
+
+            public Vector3 GetPosition(UObject target)
+            {
+                if (Target == null)
+                {
+                    Component component = target as Component;
+                    if (component)
+                    {
+                        Target = component.transform;
+                    }
+                }
+
+                return Target != null ? Target.position : Vector3.zero;
+            }
+
+            public Quaternion GetRotation()
+            {
+                if (CAttribute.Direction == CircleAreaHandlerAttribute.Axis.X)
+                {
+                    return Quaternion.FromToRotation(Vector3.forward, Vector3.right);
+                }
+                else if (CAttribute.Direction == CircleAreaHandlerAttribute.Axis.Y)
+                {
+                    return Quaternion.FromToRotation(Vector3.forward, Vector3.up);
+                }
+                else
+                {
+                    return Quaternion.identity;
+                }
+            }
+
+            public float GetSize(UObject target, float value)
+            {
+                if (CAttribute.IsDynamic)
+                {
+                    if (DynamicMultiple < 1)
+                    {
+                        DynamicMultiple += 0.0025f;
+                    }
+                    else
+                    {
+                        DynamicMultiple = 0;
+                    }
+                    GUI.changed = true;
+                }
+                
+                return value * DynamicMultiple;
             }
         }
         #endregion

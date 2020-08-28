@@ -27,7 +27,7 @@ namespace HT.Framework
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="values">值数组</param>
         /// <returns>随机获取的值</returns>
-        public static T RandomValue<T>(T[] values)
+        public static T RandomValue<T>(this T[] values)
         {
             int index = UnityEngine.Random.Range(0, values.Length);
             return values[index];
@@ -38,7 +38,7 @@ namespace HT.Framework
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="values">值数组</param>
         /// <returns>随机获取的值</returns>
-        public static T RandomValue<T>(List<T> values)
+        public static T RandomValue<T>(this List<T> values)
         {
             int index = UnityEngine.Random.Range(0, values.Count);
             return values[index];
@@ -57,7 +57,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="value">字符串</param>
         /// <returns>加密后的字符串</returns>
-        public static string MD5Encrypt(string value)
+        public static string MD5Encrypt(this string value)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
             byte[] fromData = Encoding.UTF8.GetBytes(value);
@@ -80,7 +80,7 @@ namespace HT.Framework
         /// <param name="min">最小值</param>
         /// <param name="max">最大值</param>
         /// <returns>目标值</returns>
-        public static Vector2 Clamp(Vector2 value, Vector2 min, Vector2 max)
+        public static Vector2 Clamp(this Vector2 value, Vector2 min, Vector2 max)
         {
             value.x = Mathf.Clamp(value.x, min.x, max.x);
             value.y = Mathf.Clamp(value.y, min.y, max.y);
@@ -95,7 +95,7 @@ namespace HT.Framework
         /// <param name="maxX">X最大值</param>
         /// <param name="maxY">Y最大值</param>
         /// <returns>目标值</returns>
-        public static Vector2 Clamp(Vector2 value, float minX, float minY, float maxX, float maxY)
+        public static Vector2 Clamp(this Vector2 value, float minX, float minY, float maxX, float maxY)
         {
             value.x = Mathf.Clamp(value.x, minX, maxX);
             value.y = Mathf.Clamp(value.y, minY, maxY);
@@ -108,7 +108,7 @@ namespace HT.Framework
         /// <param name="min">最小值</param>
         /// <param name="max">最大值</param>
         /// <returns>目标值</returns>
-        public static Vector3 Clamp(Vector3 value, Vector3 min, Vector3 max)
+        public static Vector3 Clamp(this Vector3 value, Vector3 min, Vector3 max)
         {
             value.x = Mathf.Clamp(value.x, min.x, max.x);
             value.y = Mathf.Clamp(value.y, min.y, max.y);
@@ -126,7 +126,7 @@ namespace HT.Framework
         /// <param name="maxY">Y最大值</param>
         /// <param name="maxZ">Z最大值</param>
         /// <returns>目标值</returns>
-        public static Vector3 Clamp(Vector3 value, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+        public static Vector3 Clamp(this Vector3 value, float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
         {
             value.x = Mathf.Clamp(value.x, minX, maxX);
             value.y = Mathf.Clamp(value.y, minY, maxY);

@@ -56,4 +56,43 @@ namespace HT.Framework
             Display = display;
         }
     }
+
+    /// <summary>
+    /// 方向处理器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public sealed class DirectionHandlerAttribute : SceneHandlerAttribute
+    {
+        public bool IsDynamic { get; private set; }
+
+        public DirectionHandlerAttribute(bool isDynamic = false)
+        {
+            IsDynamic = isDynamic;
+        }
+    }
+
+    /// <summary>
+    /// 圆形区域处理器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public sealed class CircleAreaHandlerAttribute : SceneHandlerAttribute
+    {
+        public Axis Direction { get; private set; }
+        public bool IsDynamic { get; private set; }
+
+        public CircleAreaHandlerAttribute(Axis direction = Axis.Y, bool isDynamic = false)
+        {
+            Direction = direction;
+            IsDynamic = isDynamic;
+        }
+
+        public enum Axis
+        {
+            X,
+            Y,
+            Z
+        }
+    }
 }
