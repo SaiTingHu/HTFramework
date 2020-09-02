@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Reflection;
+using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace HT.Framework
@@ -10,13 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89416110")]
     internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager>
     {
-        private IControllerHelper _controllerHelper;
-        private MousePosition _mousePosition;
-        private MouseRotation _mouseRotation;
-        private Vector3 _positionLimitCenter;
-        private Vector3 _positionLimitSize;
-        private Vector3 _limitMin;
-        private Vector3 _limitMax;
+        private List<BoxBoundsHandle> _handles = new List<BoxBoundsHandle>();
         
         protected override string Intro
         {
@@ -34,29 +29,11 @@ namespace HT.Framework
             }
         }
 
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _controllerHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IControllerHelper;
-            _mousePosition = _controllerHelper.GetType().GetField("_mousePosition", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_controllerHelper) as MousePosition;
-            _mouseRotation = _controllerHelper.GetType().GetField("_mouseRotation", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_controllerHelper) as MouseRotation;
-            if (_mousePosition && _mouseRotation)
-            {
-                _positionLimitCenter.Set((_mousePosition.XMaxLimit - _mousePosition.XMinLimit) / 2 + _mousePosition.XMinLimit
-                    , (_mousePosition.YMaxLimit - _mousePosition.YMinLimit) / 2 + _mousePosition.YMinLimit
-                    , (_mousePosition.ZMaxLimit - _mousePosition.ZMinLimit) / 2 + _mousePosition.ZMinLimit);
-                _positionLimitSize.Set(_mousePosition.XMaxLimit - _mousePosition.XMinLimit
-                    , _mousePosition.YMaxLimit - _mousePosition.YMinLimit
-                    , _mousePosition.ZMaxLimit - _mousePosition.ZMinLimit);
-                _limitMin.Set(_mousePosition.XMinLimit, _mousePosition.YMinLimit, _mousePosition.ZMinLimit);
-                _limitMax.Set(_mousePosition.XMaxLimit, _mousePosition.YMaxLimit, _mousePosition.ZMaxLimit);
-            }
-        }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
+
+            GUI.enabled = !EditorApplication.isPlaying;
             
             GUILayout.BeginHorizontal();
             EnumPopup(Target.DefaultControlMode, out Target.DefaultControlMode, "Default ControlMode");
@@ -73,16 +50,59 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             Toggle(Target.IsAutoKill, out Target.IsAutoKill, "Tweener Auto Kill");
             GUILayout.EndHorizontal();
+
+            GUI.enabled = true;
+
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsEnableBounds, out Target.IsEnableBounds, "Enable Bounds");
+            GUILayout.EndHorizontal();
+
+            if (Target.IsEnableBounds)
+            {
+                PropertyField("FreeControlBounds");
+            }
         }
 
         private void OnSceneGUI()
         {
-            if (EditorApplication.isPlaying)
+            if (Target.IsEnableBounds)
             {
-                if (Target.NeedLimit)
+                if (_handles.Count != Target.FreeControlBounds.Count)
                 {
-                    Handles.color = Color.red;
-                    Handles.DrawWireCube(_positionLimitCenter, _positionLimitSize);
+                    while (_handles.Count < Target.FreeControlBounds.Count)
+                    {
+                        _handles.Add(new BoxBoundsHandle());
+                    }
+                    while (_handles.Count > Target.FreeControlBounds.Count)
+                    {
+                        _handles.RemoveAt(0);
+                    }
+                }
+
+                if (_handles.Count > 0)
+                {
+                    using (new Handles.DrawingScope(Color.cyan))
+                    {
+                        EditorGUI.BeginChangeCheck();
+                        for (int i = 0; i < _handles.Count; i++)
+                        {
+                            _handles[i].center = Target.FreeControlBounds[i].center;
+                            _handles[i].size = Target.FreeControlBounds[i].size;
+                            _handles[i].DrawHandle();
+                        }
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            Undo.RecordObject(Target, "Change FreeControl Bounds");
+                            for (int i = 0; i < _handles.Count; i++)
+                            {
+                                Bounds bounds = Target.FreeControlBounds[i];
+                                bounds.center = _handles[i].center;
+                                bounds.size = _handles[i].size;
+                                Target.FreeControlBounds[i] = bounds;
+                            }
+                            HasChanged();
+                        }
+                    }
                 }
             }
         }
@@ -108,46 +128,6 @@ namespace HT.Framework
 
             if (Target.TheControlMode == ControlMode.FreeControl)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Need Limit: ", GUILayout.Width(100));
-                Target.NeedLimit = EditorGUILayout.Toggle(Target.NeedLimit);
-                GUILayout.EndHorizontal();
-
-                if (Target.NeedLimit)
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Min Limit: ", GUILayout.Width(60));
-                    Vector3 vec = EditorGUILayout.Vector3Field("", _limitMin);
-                    if (vec != _limitMin)
-                    {
-                        _limitMin = vec;
-                        Target.SetMinLimit(_limitMin);
-                        _positionLimitCenter.Set((_mousePosition.XMaxLimit - _mousePosition.XMinLimit) / 2 + _mousePosition.XMinLimit
-                            , (_mousePosition.YMaxLimit - _mousePosition.YMinLimit) / 2 + _mousePosition.YMinLimit
-                            , (_mousePosition.ZMaxLimit - _mousePosition.ZMinLimit) / 2 + _mousePosition.ZMinLimit);
-                        _positionLimitSize.Set(_mousePosition.XMaxLimit - _mousePosition.XMinLimit
-                            , _mousePosition.YMaxLimit - _mousePosition.YMinLimit
-                            , _mousePosition.ZMaxLimit - _mousePosition.ZMinLimit);
-                    }
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Max Limit: ", GUILayout.Width(60));
-                    vec = EditorGUILayout.Vector3Field("", _limitMax);
-                    if (vec != _limitMax)
-                    {
-                        _limitMax = vec;
-                        Target.SetMaxLimit(_limitMax);
-                        _positionLimitCenter.Set((_mousePosition.XMaxLimit - _mousePosition.XMinLimit) / 2 + _mousePosition.XMinLimit
-                            , (_mousePosition.YMaxLimit - _mousePosition.YMinLimit) / 2 + _mousePosition.YMinLimit
-                            , (_mousePosition.ZMaxLimit - _mousePosition.ZMinLimit) / 2 + _mousePosition.ZMinLimit);
-                        _positionLimitSize.Set(_mousePosition.XMaxLimit - _mousePosition.XMinLimit
-                            , _mousePosition.YMaxLimit - _mousePosition.YMinLimit
-                            , _mousePosition.ZMaxLimit - _mousePosition.ZMinLimit);
-                    }
-                    GUILayout.EndHorizontal();
-                }
-
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Position Control: ", GUILayout.Width(100));
                 Target.EnablePositionControl = EditorGUILayout.Toggle(Target.EnablePositionControl);

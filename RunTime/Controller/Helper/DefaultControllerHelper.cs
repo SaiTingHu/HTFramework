@@ -28,21 +28,6 @@ namespace HT.Framework
         /// </summary>
         public Camera MainCamera { get; set; }
         /// <summary>
-        /// 自由控制：是否限制控制外围
-        /// </summary>
-        public bool NeedLimit
-        {
-            set
-            {
-                _mousePosition.NeedLimit = value;
-                _mouseRotation.NeedLimit = value;
-            }
-            get
-            {
-                return _mousePosition.NeedLimit;
-            }
-        }
-        /// <summary>
         /// 自由控制：当前摄像机注视点
         /// </summary>
         public Vector3 LookPoint
@@ -235,7 +220,9 @@ namespace HT.Framework
 
             _mousePosition.Target = _cameraTarget;
             _mousePosition.MR = _mouseRotation;
+            _mousePosition.Manager = _module;
             _mouseRotation.Target = _cameraTarget;
+            _mouseRotation.Manager = _module;
             _mouseRay.RayCamera = MainCamera;
             _mouseRay.RayEvent += rayAction;
         }
@@ -260,25 +247,7 @@ namespace HT.Framework
         {
 
         }
-
-        /// <summary>
-        /// 自由控制：设置控制外围限定最小值
-        /// </summary>
-        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最小值</param>
-        public void SetMinLimit(Vector3 value)
-        {
-            _mousePosition.SetMinLimit(value);
-            _mouseRotation.SetMinLimit(value);
-        }
-        /// <summary>
-        /// 自由控制：设置控制外围限定最大值
-        /// </summary>
-        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最大值</param>
-        public void SetMaxLimit(Vector3 value)
-        {
-            _mousePosition.SetMaxLimit(value);
-            _mouseRotation.SetMaxLimit(value);
-        }
+        
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>

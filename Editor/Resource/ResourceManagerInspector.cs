@@ -39,6 +39,8 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            GUI.enabled = !EditorApplication.isPlaying;
+
             GUILayout.BeginHorizontal();
             EnumPopup(Target.Mode, out Target.Mode, "Load Mode");
             GUILayout.EndHorizontal();
@@ -71,6 +73,8 @@ namespace HT.Framework
                 Toggle(Target.IsCacheAssetBundle, out Target.IsCacheAssetBundle, "Cache AssetBundle");
                 GUILayout.EndHorizontal();
             }
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

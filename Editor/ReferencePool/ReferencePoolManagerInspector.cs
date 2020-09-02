@@ -39,9 +39,13 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            GUI.enabled = !EditorApplication.isPlaying;
+
             GUILayout.BeginHorizontal();
             IntField(Target.Limit, out Target.Limit, "Limit");
             GUILayout.EndHorizontal();
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

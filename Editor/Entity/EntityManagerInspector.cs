@@ -53,6 +53,8 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            GUI.enabled = !EditorApplication.isPlaying;
+
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
@@ -129,6 +131,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

@@ -17,10 +17,6 @@ namespace HT.Framework
         /// </summary>
         Camera MainCamera { get; set; }
         /// <summary>
-        /// 自由控制：是否限制控制外围
-        /// </summary>
-        bool NeedLimit { get; set; }
-        /// <summary>
         /// 自由控制：当前摄像机注视点
         /// </summary>
         Vector3 LookPoint { get; }
@@ -86,17 +82,7 @@ namespace HT.Framework
         /// 终结
         /// </summary>
         void OnTermination();
-
-        /// <summary>
-        /// 自由控制：设置控制外围限定最小值
-        /// </summary>
-        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最小值</param>
-        void SetMinLimit(Vector3 value);
-        /// <summary>
-        /// 自由控制：设置控制外围限定最大值
-        /// </summary>
-        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最大值</param>
-        void SetMaxLimit(Vector3 value);
+        
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>

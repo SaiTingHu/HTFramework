@@ -40,6 +40,7 @@ namespace HT.Framework
         private bool _isShowAncillary = true;
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
+        private GUIContent _stepGC;
         private Rect _stepListRect;
         private static Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
@@ -88,6 +89,7 @@ namespace HT.Framework
             SelectStepContent(_currentStep);
             SelectStepOperation(_currentOperation);
 
+            _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
 
             _ct = FindObjectOfType<CameraTarget>();
@@ -289,22 +291,17 @@ namespace HT.Framework
                 string showName = StepShowName(_contentAsset.Content[i]);
                 if (showName.Contains(_stepListFilter))
                 {
+                    GUILayout.BeginHorizontal();
                     if (_isShowAncillary && _contentAsset.Content[i].Ancillary != "")
                     {
-                        GUILayout.BeginHorizontal();
                         GUI.color = Color.yellow;
-                        GUILayout.Label("【" + _contentAsset.Content[i].Ancillary + "】", GUILayout.Height(16));
-                        GUI.color = Color.white;
-                        GUILayout.EndHorizontal();
+                        GUILayout.Label("[" + _contentAsset.Content[i].Ancillary + "]", GUILayout.Height(16));
                     }
-
-                    GUILayout.BeginHorizontal();
                     GUI.color = _contentAsset.Content[i].TargetGUID != "<None>" ? Color.white : Color.gray;
                     string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
-                    GUIContent content = EditorGUIUtility.IconContent("Avatar Icon");
-                    content.text = i + "." + showName;
-                    content.tooltip = _contentAsset.Content[i].Prompt;
-                    if (GUILayout.Button(content, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
+                    _stepGC.text = i + "." + showName;
+                    _stepGC.tooltip = _contentAsset.Content[i].Prompt;
+                    if (GUILayout.Button(_stepGC, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
                     {
                         SelectStepContent(i);
                         SelectStepOperation(-1);
@@ -316,6 +313,7 @@ namespace HT.Framework
                             EditorGUIUtility.PingObject(_currentStepObj.Target);
                         }
                     }
+                    GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 }
             }

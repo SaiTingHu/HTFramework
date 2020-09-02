@@ -46,6 +46,8 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            GUI.enabled = !EditorApplication.isPlaying;
+
             GUILayout.BeginHorizontal();
             Toggle(Target.IsEnableOverlayUI, out Target.IsEnableOverlayUI, "Is Enable Overlay UI");
             GUILayout.EndHorizontal();
@@ -134,6 +136,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

@@ -14,6 +14,8 @@ namespace HT.Framework
         private bool _showCopy = false;
         private Transform _parent;
 
+        protected override bool IsEnableRuntimeData => false;
+
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
@@ -293,16 +295,7 @@ namespace HT.Framework
             }
             #endregion
         }
-
-        protected override void OnInspectorRuntimeGUI()
-        {
-            base.OnInspectorRuntimeGUI();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("No Runtime Data!");
-            GUILayout.EndHorizontal();
-        }
-
+        
         private int ClampAngle(float angle)
         {
             if (angle > 180) angle -= 360;

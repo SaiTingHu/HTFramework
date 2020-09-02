@@ -39,6 +39,8 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            GUI.enabled = !EditorApplication.isPlaying;
+
             GUILayout.BeginHorizontal();
             Toggle(Target.IsOfflineState, out Target.IsOfflineState, "Is OfflineState");
             GUILayout.EndHorizontal();
@@ -46,6 +48,8 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             EnumPopup(Target.DownloadAudioType, out Target.DownloadAudioType, "Audio Type");
             GUILayout.EndHorizontal();
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

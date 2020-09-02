@@ -41,11 +41,11 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = Target.DefaultProcedure != "";
+            GUI.enabled = !EditorApplication.isPlaying && Target.DefaultProcedure != "";
             GUILayout.Label("Default: " + Target.DefaultProcedure);
-            GUI.enabled = true;
+            GUI.enabled = !EditorApplication.isPlaying;
             GUILayout.FlexibleSpace();
-            GUI.enabled = Target.ActivatedProcedures.Count > 0;
+            GUI.enabled = !EditorApplication.isPlaying && Target.ActivatedProcedures.Count > 0;
             if (GUILayout.Button("Set Default", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
@@ -61,7 +61,7 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
-            GUI.enabled = true;
+            GUI.enabled = !EditorApplication.isPlaying;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -161,6 +161,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

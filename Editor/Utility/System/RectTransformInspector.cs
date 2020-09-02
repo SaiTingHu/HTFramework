@@ -17,6 +17,8 @@ namespace HT.Framework
         private MethodInfo _originalOnSceneGUI;
         private MethodInfo _originalOnHeaderGUI;
 
+        protected override bool IsEnableRuntimeData => false;
+
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
@@ -52,9 +54,7 @@ namespace HT.Framework
             if (_showProperty)
             {
                 GUILayout.BeginVertical();
-
                 _originalEditor.OnInspectorGUI();
-
                 GUILayout.EndVertical();
             }
             #endregion
@@ -110,7 +110,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Expand Children", "MinibuttonLeft"))
+                if (GUILayout.Button("Unfold Children", "MinibuttonLeft"))
                 {
                     Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
@@ -118,7 +118,7 @@ namespace HT.Framework
                     int id = Target.gameObject.GetInstanceID();
                     method.Invoke(window, new object[] { id, true });
                 }
-                if (GUILayout.Button("Retract Children", "MinibuttonRight"))
+                if (GUILayout.Button("Fold Children", "MinibuttonRight"))
                 {
                     Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
@@ -129,7 +129,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Retract All", "Minibutton"))
+                if (GUILayout.Button("Fold All", "Minibutton"))
                 {
                     Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
                     EditorWindow window = EditorWindow.GetWindow(type);
@@ -252,16 +252,7 @@ namespace HT.Framework
             }
             #endregion
         }
-
-        protected override void OnInspectorRuntimeGUI()
-        {
-            base.OnInspectorRuntimeGUI();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("No Runtime Data!");
-            GUILayout.EndHorizontal();
-        }
-
+        
         private int ClampAngle(float angle)
         {
             if (angle > 180) angle -= 360;

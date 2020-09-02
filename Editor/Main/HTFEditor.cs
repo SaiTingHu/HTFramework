@@ -212,8 +212,9 @@ namespace HT.Framework
         protected void Toggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
         {
             GUI.color = value ? Color.white : Color.gray;
+            EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set bool value");
                 outValue = newValue;
@@ -231,8 +232,9 @@ namespace HT.Framework
         protected void Toggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
         {
             GUI.color = value ? Color.white : Color.gray;
+            EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, style, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set bool value");
                 outValue = newValue;
@@ -250,8 +252,9 @@ namespace HT.Framework
         protected void GUILayoutToggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
         {
             GUI.color = value ? Color.white : Color.gray;
+            EditorGUI.BeginChangeCheck();
             bool newValue = GUILayout.Toggle(value, name, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set bool value");
                 outValue = newValue;
@@ -269,8 +272,9 @@ namespace HT.Framework
         protected void GUILayoutToggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
         {
             GUI.color = value ? Color.white : Color.gray;
+            EditorGUI.BeginChangeCheck();
             bool newValue = GUILayout.Toggle(value, name, style, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set bool value");
                 outValue = newValue;
@@ -287,8 +291,9 @@ namespace HT.Framework
         /// </summary>
         protected void IntSlider(int value, out int outValue, int leftValue, int rightValue, string name, params GUILayoutOption[] options)
         {
+            EditorGUI.BeginChangeCheck();
             int newValue = EditorGUILayout.IntSlider(name, value, leftValue, rightValue, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set int value");
                 outValue = newValue;
@@ -304,8 +309,9 @@ namespace HT.Framework
         /// </summary>
         protected void FloatSlider(float value, out float outValue, float leftValue, float rightValue, string name, params GUILayoutOption[] options)
         {
+            EditorGUI.BeginChangeCheck();
             float newValue = EditorGUILayout.Slider(name, value, leftValue, rightValue, options);
-            if (!Mathf.Approximately(value, newValue))
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set float value");
                 outValue = newValue;
@@ -321,8 +327,9 @@ namespace HT.Framework
         /// </summary>
         protected void IntField(int value, out int outValue, string name, params GUILayoutOption[] options)
         {
+            EditorGUI.BeginChangeCheck();
             int newValue = EditorGUILayout.IntField(name, value, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set int value");
                 outValue = newValue;
@@ -338,8 +345,9 @@ namespace HT.Framework
         /// </summary>
         protected void FloatField(float value, out float outValue, string name, params GUILayoutOption[] options)
         {
+            EditorGUI.BeginChangeCheck();
             float newValue = EditorGUILayout.FloatField(name, value, options);
-            if (!Mathf.Approximately(value, newValue))
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set float value");
                 outValue = newValue;
@@ -355,9 +363,10 @@ namespace HT.Framework
         /// </summary>
         protected void TextField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = value != "" ? Color.white : Color.gray;
+            GUI.color = !string.IsNullOrEmpty(value) ? Color.white : Color.gray;
+            EditorGUI.BeginChangeCheck();
             string newValue = EditorGUILayout.TextField(name, value, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set string value");
                 outValue = newValue;
@@ -374,9 +383,10 @@ namespace HT.Framework
         /// </summary>
         protected void PasswordField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = value != "" ? Color.white : Color.gray;
+            GUI.color = !string.IsNullOrEmpty(value) ? Color.white : Color.gray;
+            EditorGUI.BeginChangeCheck();
             string newValue = EditorGUILayout.PasswordField(name, value, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set string value");
                 outValue = newValue;
@@ -394,8 +404,9 @@ namespace HT.Framework
         protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UnityEngine.Object
         {
             GUI.color = value ? Color.white : Color.gray;
+            EditorGUI.BeginChangeCheck();
             T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects, options) as T;
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set object value");
                 outValue = newValue;
@@ -412,8 +423,9 @@ namespace HT.Framework
         /// </summary>
         protected void Vector2Field(Vector2 value, out Vector2 outValue, string name, params GUILayoutOption[] options)
         {
+            EditorGUI.BeginChangeCheck();
             Vector2 newValue = EditorGUILayout.Vector2Field(name, value, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set vector2 value");
                 outValue = newValue;
@@ -429,8 +441,9 @@ namespace HT.Framework
         /// </summary>
         protected void Vector3Field(Vector3 value, out Vector3 outValue, string name, params GUILayoutOption[] options)
         {
+            EditorGUI.BeginChangeCheck();
             Vector3 newValue = EditorGUILayout.Vector3Field(name, value, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set vector3 value");
                 outValue = newValue;
@@ -446,8 +459,9 @@ namespace HT.Framework
         /// </summary>
         protected void EnumPopup<T>(Enum value, out T outValue, string name, params GUILayoutOption[] options) where T : Enum
         {
+            EditorGUI.BeginChangeCheck();
             Enum newValue = EditorGUILayout.EnumPopup(name, value, options);
-            if (!Equals(value, newValue))
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set enum value");
                 outValue = (T)newValue;
@@ -463,8 +477,9 @@ namespace HT.Framework
         /// </summary>
         protected void ColorField(Color value, out Color outValue, string name, params GUILayoutOption[] options)
         {
+            EditorGUI.BeginChangeCheck();
             Color newValue = EditorGUILayout.ColorField(name, value, options);
-            if (value != newValue)
+            if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set color value");
                 outValue = newValue;
@@ -481,7 +496,6 @@ namespace HT.Framework
         protected void PropertyField(string propertyName, string name, params GUILayoutOption[] options)
         {
             SerializedProperty serializedProperty = GetProperty(propertyName);
-
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), true, options);
@@ -497,7 +511,6 @@ namespace HT.Framework
         protected void PropertyField(string propertyName, params GUILayoutOption[] options)
         {
             SerializedProperty serializedProperty = GetProperty(propertyName);
-
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, true, options);
@@ -513,7 +526,6 @@ namespace HT.Framework
         protected void PropertyField(string propertyName, string name, bool includeChildren, params GUILayoutOption[] options)
         {
             SerializedProperty serializedProperty = GetProperty(propertyName);
-
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), includeChildren, options);
@@ -529,7 +541,6 @@ namespace HT.Framework
         protected void PropertyField(string propertyName, bool includeChildren, params GUILayoutOption[] options)
         {
             SerializedProperty serializedProperty = GetProperty(propertyName);
-
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, includeChildren, options);

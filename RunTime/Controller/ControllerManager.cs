@@ -28,6 +28,14 @@ namespace HT.Framework
         /// Dotween动画是否自动销毁【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal bool IsAutoKill = true;
+        /// <summary>
+        /// 自由控制：边界盒【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal List<Bounds> FreeControlBounds = new List<Bounds>();
+        /// <summary>
+        /// 自由控制：是否启用边界盒
+        /// </summary>
+        public bool IsEnableBounds = false;
 
         /// <summary>
         /// 切换至自由控制事件
@@ -140,20 +148,6 @@ namespace HT.Framework
             get
             {
                 return _helper.TheControlMode;
-            }
-        }
-        /// <summary>
-        /// 自由控制：是否限制控制外围
-        /// </summary>
-        public bool NeedLimit
-        {
-            set
-            {
-                _helper.NeedLimit = value;
-            }
-            get
-            {
-                return _helper.NeedLimit;
             }
         }
         /// <summary>
@@ -320,20 +314,30 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 自由控制：设置控制外围限定最小值
+        /// 自由控制：添加边界盒
         /// </summary>
-        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最小值</param>
-        public void SetMinLimit(Vector3 value)
+        /// <param name="bounds">边界盒</param>
+        public void AddBounds(Bounds bounds)
         {
-            _helper.SetMinLimit(value);
+            FreeControlBounds.Add(bounds);
         }
         /// <summary>
-        /// 自由控制：设置控制外围限定最大值
+        /// 自由控制：添加边界盒
         /// </summary>
-        /// <param name="value">视野平移、旋转时，视角在x,y,z三个轴的最大值</param>
-        public void SetMaxLimit(Vector3 value)
+        /// <param name="min">边界盒最小值</param>
+        /// <param name="max">边界盒最大值</param>
+        public void AddBounds(Vector3 min, Vector3 max)
         {
-            _helper.SetMaxLimit(value);
+            Bounds bounds = new Bounds();
+            bounds.SetMinMax(min, max);
+            FreeControlBounds.Add(bounds);
+        }
+        /// <summary>
+        /// 自由控制：清空边界盒
+        /// </summary>
+        public void ClearBounds()
+        {
+            FreeControlBounds.Clear();
         }
         /// <summary>
         /// 自由控制：设置摄像机注视点

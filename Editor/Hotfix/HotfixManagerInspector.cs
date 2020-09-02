@@ -59,6 +59,8 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            GUI.enabled = !EditorApplication.isPlaying;
+
             GUILayout.BeginHorizontal();
             Toggle(Target.IsEnableHotfix, out Target.IsEnableHotfix, "Is Enable Hotfix");
             GUILayout.EndHorizontal();
@@ -125,6 +127,8 @@ namespace HT.Framework
                 }
                 #endregion
             }
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

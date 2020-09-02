@@ -30,6 +30,8 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            GUI.enabled = !EditorApplication.isPlaying;
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("InputDevice ");
             if (GUILayout.Button(Target.InputDeviceType, EditorGlobalTools.Styles.MiniPopup))
@@ -52,6 +54,8 @@ namespace HT.Framework
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()

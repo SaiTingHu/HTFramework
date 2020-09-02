@@ -41,22 +41,6 @@ namespace HT.Framework
         /// </summary>
         public float Y = 30.0f;
         /// <summary>
-        /// 是否限定旋转位置
-        /// </summary>
-        public bool NeedLimit = false;
-        /// <summary>
-        /// x轴旋转最低值，x轴旋转最高值
-        /// </summary>
-        public float XMinLimit = -5, XMaxLimit = 5;
-        /// <summary>
-        /// y轴旋转最低值，y轴旋转最高值
-        /// </summary>
-        public float YMinLimit = 0.1f, YMaxLimit = 5;
-        /// <summary>
-        /// z轴旋转最低值，z轴旋转最高值
-        /// </summary>
-        public float ZMinLimit = -5, ZMaxLimit = 5;
-        /// <summary>
         /// 在UGUI目标上是否可以控制
         /// </summary>
         public bool IsCanOnUGUI = false;
@@ -93,27 +77,10 @@ namespace HT.Framework
         public CameraTarget Target { get; set; }
 
         /// <summary>
-        /// 设置旋转限定最小值
+        /// 操作控制器
         /// </summary>
-        /// <param name="value">视野旋转时，视角在x,y,z三个轴的最小值</param>
-        public void SetMinLimit(Vector3 value)
-        {
-            XMinLimit = value.x;
-            YMinLimit = value.y;
-            ZMinLimit = value.z;
-        }
-
-        /// <summary>
-        /// 设置旋转限定最大值
-        /// </summary>
-        /// <param name="value">视野旋转时，视角在x,y,z三个轴的最大值</param>
-        public void SetMaxLimit(Vector3 value)
-        {
-            XMaxLimit = value.x;
-            YMaxLimit = value.y;
-            ZMaxLimit = value.z;
-        }
-
+        public ControllerManager Manager { get; set; }
+        
         /// <summary>
         /// 旋转注视视野
         /// </summary>
@@ -218,9 +185,10 @@ namespace HT.Framework
             }
 
             //摄像机位置限制
-            if (NeedLimit)
+            if (Manager.IsEnableBounds)
             {
-                transform.position = MathfToolkit.Clamp(transform.position, XMinLimit, YMinLimit, ZMinLimit, XMaxLimit, YMaxLimit, ZMaxLimit);
+                //应用边界盒
+                transform.position = ApplyBounds(transform.position);
             }
         }
 
@@ -232,6 +200,64 @@ namespace HT.Framework
                 angle -= 360;
 
             return Mathf.Clamp(angle, min, max);
+        }
+
+        private Vector3 ApplyBounds(Vector3 position)
+        {
+            if (InTheBounds(position))
+            {
+                return position;
+            }
+            else
+            {
+                return ClosestPoint(position);
+            }
+        }
+
+        private bool InTheBounds(Vector3 position)
+        {
+            if (Manager.FreeControlBounds.Count == 0)
+            {
+                return true;
+            }
+            else if (Manager.FreeControlBounds.Count == 1)
+            {
+                return Manager.FreeControlBounds[0].Contains(position);
+            }
+            else
+            {
+                for (int i = 0; i < Manager.FreeControlBounds.Count; i++)
+                {
+                    if (Manager.FreeControlBounds[i].Contains(position))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        private Vector3 ClosestPoint(Vector3 position)
+        {
+            if (Manager.FreeControlBounds.Count == 1)
+            {
+                return Manager.FreeControlBounds[0].ClosestPoint(position);
+            }
+            else
+            {
+                Bounds bounds = Manager.FreeControlBounds[0];
+                float dis = Vector3.Distance(bounds.center, position);
+                for (int i = 1; i < Manager.FreeControlBounds.Count; i++)
+                {
+                    float newdis = Vector3.Distance(Manager.FreeControlBounds[i].center, position);
+                    if (newdis < dis)
+                    {
+                        bounds = Manager.FreeControlBounds[i];
+                        dis = newdis;
+                    }
+                }
+                return bounds.ClosestPoint(position);
+            }
         }
     }
 }

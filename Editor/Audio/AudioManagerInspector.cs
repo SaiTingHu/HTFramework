@@ -43,6 +43,8 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
+
+            GUI.enabled = !EditorApplication.isPlaying;
             
             GUILayout.BeginHorizontal();
             Toggle(Target.MuteDefault, out Target.MuteDefault, "Mute");
@@ -79,6 +81,8 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             FloatSlider(Target.WorldVolumeDefault, out Target.WorldVolumeDefault, 0f, 1f, "WorldSound Volume");
             GUILayout.EndHorizontal();
+
+            GUI.enabled = true;
         }
 
         protected override void OnInspectorRuntimeGUI()
