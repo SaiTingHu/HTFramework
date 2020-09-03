@@ -41,6 +41,7 @@ namespace HT.Framework
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
         private GUIContent _stepGC;
+        private GUIContent _previewGC;
         private Rect _stepListRect;
         private static Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
@@ -90,6 +91,7 @@ namespace HT.Framework
             SelectStepOperation(_currentOperation);
 
             _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
+            _previewGC = EditorGUIUtility.IconContent("AudioMixerView Icon");
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
 
             _ct = FindObjectOfType<CameraTarget>();
@@ -103,6 +105,10 @@ namespace HT.Framework
             {
                 Close();
             }
+        }
+        private void OnDestroy()
+        {
+            StopPreviewInAllStep();
         }
         protected override void OnBodyGUI()
         {
@@ -222,15 +228,23 @@ namespace HT.Framework
             if (GUILayout.Button("Setting", EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("Style/StepList Background/Dark"), _stepListBGStyle == "PreBackground", () =>
+                gm.AddItem(new GUIContent("Style/StepContentList [BG]/Dark"), _stepListBGStyle == "PreBackground", () =>
                 {
                     _stepListBGStyle = "PreBackground";
                     ApplyEditorStyle();
                 });
-                gm.AddItem(new GUIContent("Style/StepList Background/Gray Transparent"), _stepListBGStyle == "HelpBox", () =>
+                gm.AddItem(new GUIContent("Style/StepContentList [BG]/Gray"), _stepListBGStyle == "HelpBox", () =>
                 {
                     _stepListBGStyle = "HelpBox";
                     ApplyEditorStyle();
+                });
+                gm.AddItem(new GUIContent("Preview/Stop Preview Current Step"), false, () =>
+                {
+                    StopPreviewInStep(_currentStep);
+                });
+                gm.AddItem(new GUIContent("Preview/Stop Preview All Step"), false, () =>
+                {
+                    StopPreviewInAllStep();
                 });
                 gm.ShowAsContext();
             }
@@ -306,12 +320,6 @@ namespace HT.Framework
                         SelectStepContent(i);
                         SelectStepOperation(-1);
                         GUI.FocusControl(null);
-
-                        if (_currentStepObj.Target && Selection.activeGameObject != _currentStepObj.Target)
-                        {
-                            Selection.activeGameObject = _currentStepObj.Target;
-                            EditorGUIUtility.PingObject(_currentStepObj.Target);
-                        }
                     }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
@@ -870,11 +878,25 @@ namespace HT.Framework
 
                     GUILayout.EndScrollView();
 
+                    GUILayout.BeginHorizontal();
+                    GUI.enabled = _currentOperationObj.Target && !_currentOperationObj.PreviewTarget;
+                    if (GUILayout.Button("Preview", EditorGlobalTools.Styles.ButtonLeft))
+                    {
+                        _currentOperationObj.CreatePreviewTarget();
+                    }
+                    GUI.enabled = _currentOperationObj.PreviewTarget;
+                    if (GUILayout.Button("Stop", EditorGlobalTools.Styles.ButtonRight))
+                    {
+                        _currentOperationObj.DeletePreviewTarget();
+                    }
+                    GUI.enabled = true;
+                    GUILayout.EndHorizontal();
+
                     if (GUILayout.Button("Clone"))
                     {
                         StepOperation operationClone = _currentOperationObj.Clone();
                         operationClone.Anchor = _currentOperationObj.Anchor + new Vector2(StepOperation.Width + 20, 0);
-                        operationClone.Name += "(Clone)";
+                        operationClone.Name += _currentStepObj.Operations.Count.ToString();
                         _currentStepObj.Operations.Add(operationClone);
                         SelectStepOperation(_currentStepObj.Operations.Count - 1);
                         GUI.changed = true;
@@ -992,6 +1014,11 @@ namespace HT.Framework
                     GUI.Box(leftRect, "", style);
                     GUI.Box(rightRect, "", style);
                     GUI.Box(operationRect, showName, style);
+                    if (operation.PreviewTarget)
+                    {
+                        leftRect.Set(leftRect.x + 20, leftRect.y + 10, 20, 20);
+                        GUI.Label(leftRect, _previewGC);
+                    }
                     EditorGUIUtility.AddCursorRect(leftRect, MouseCursor.ArrowPlus);
                     EditorGUIUtility.AddCursorRect(rightRect, MouseCursor.ArrowPlus);
                     EditorGUIUtility.AddCursorRect(operationRect, MouseCursor.MoveArrow);
@@ -1080,11 +1107,6 @@ namespace HT.Framework
                             if (Event.current.button == 0)
                             {
                                 SelectStepOperation(downIndex);
-                                if (_currentOperationObj.Target && Selection.activeGameObject != _currentOperationObj.Target)
-                                {
-                                    Selection.activeGameObject = _currentOperationObj.Target;
-                                    EditorGUIUtility.PingObject(_currentOperationObj.Target);
-                                }
                                 _stepOperationDragging = true;
                                 GUI.changed = true;
                             }
@@ -1433,6 +1455,7 @@ namespace HT.Framework
         {
             if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete step " + _contentAsset.Content[contentIndex].Name + "？", "Yes", "No"))
             {
+                StopPreviewInStep(contentIndex);
                 _contentAsset.Content.RemoveAt(contentIndex);
                 SelectStepContent(-1);
                 SelectStepOperation(-1);
@@ -1452,62 +1475,24 @@ namespace HT.Framework
                     operation.GUID = Guid.NewGuid().ToString();
                     operation.OperationType = type;
                     operation.Anchor = position - new Vector2(340, 0);
-                    operation.Instant = false;
-                    string showName = "";
                     switch (type)
                     {
-                        case StepOperationType.Move:
-                            showName = "移动";
-                            break;
-                        case StepOperationType.Rotate:
-                            showName = "旋转";
-                            break;
-                        case StepOperationType.Scale:
-                            showName = "缩放";
-                            break;
-                        case StepOperationType.Color:
-                            showName = "颜色改变";
-                            break;
-                        case StepOperationType.Delay:
-                            showName = "延时";
-                            break;
                         case StepOperationType.Active:
-                            operation.Instant = true;
-                            showName = "激活";
-                            break;
                         case StepOperationType.Action:
-                            operation.Instant = true;
-                            showName = "呼叫方法";
-                            break;
                         case StepOperationType.ActionArgs:
-                            operation.Instant = true;
-                            showName = "呼叫方法";
-                            break;
                         case StepOperationType.FSM:
-                            operation.Instant = true;
-                            showName = "切换状态";
-                            break;
                         case StepOperationType.TextMesh:
-                            operation.Instant = true;
-                            showName = "3D文本";
-                            break;
                         case StepOperationType.Prompt:
-                            operation.Instant = true;
-                            showName = "提示";
-                            break;
                         case StepOperationType.CameraFollow:
-                            operation.Instant = true;
-                            showName = "摄像机跟随";
-                            break;
                         case StepOperationType.ActiveComponent:
+                        case StepOperationType.ChangeParent:
                             operation.Instant = true;
-                            showName = "激活组件";
                             break;
                         default:
-                            showName = "未知节点";
+                            operation.Instant = false;
                             break;
                     }
-                    operation.Name = showName + content.GetOperationsCout(type);
+                    operation.Name = type.GetRemark() + content.GetOperationsCout(type);
                     content.Operations.Add(operation);
                     GUI.changed = true;
                 });
@@ -1539,6 +1524,7 @@ namespace HT.Framework
                 }
             }
 
+            content.Operations[operationIndex].DeletePreviewTarget();
             content.Operations.RemoveAt(operationIndex);
             SelectStepOperation(-1);
             GUI.FocusControl(null);
@@ -1550,6 +1536,7 @@ namespace HT.Framework
         {
             _currentStep = currentStep;
             _currentStepObj = (_currentStep != -1 ? _contentAsset.Content[_currentStep] : null);
+            if (_currentStepObj != null) _currentStepObj.FocusTarget();
         }
         /// <summary>
         /// 选中步骤操作
@@ -1558,6 +1545,7 @@ namespace HT.Framework
         {
             _currentOperation = currentOperation;
             _currentOperationObj = ((_currentOperation != -1 && _currentStep != -1) ? _currentStepObj.Operations[_currentOperation] : null);
+            if (_currentOperationObj != null) _currentOperationObj.FocusTarget();
         }
         /// <summary>
         /// 查找步骤操作
@@ -1694,6 +1682,34 @@ namespace HT.Framework
         private void ApplyEditorStyle()
         {
             EditorPrefs.SetString(EditorPrefsTable.Style_StepEditor_StepListBG, _stepListBGStyle);
+        }
+        /// <summary>
+        /// 停止指定步骤的所有操作预览
+        /// </summary>
+        private void StopPreviewInStep(int stepIndex)
+        {
+            StepContent content = stepIndex != -1 ? _contentAsset.Content[stepIndex] : null;
+            if (content != null)
+            {
+                for (int i = 0; i < content.Operations.Count; i++)
+                {
+                    content.Operations[i].DeletePreviewTarget();
+                }
+            }
+        }
+        /// <summary>
+        /// 停止所有步骤的所有操作预览
+        /// </summary>
+        private void StopPreviewInAllStep()
+        {
+            for (int i = 0; i < _contentAsset.Content.Count; i++)
+            {
+                StepContent content = _contentAsset.Content[i];
+                for (int j = 0; j < content.Operations.Count; j++)
+                {
+                    content.Operations[j].DeletePreviewTarget();
+                }
+            }
         }
 
         /// <summary>

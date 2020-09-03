@@ -126,7 +126,7 @@ namespace HT.Framework
                         stepParameter.ColorValue = EditorGUILayout.ColorField(stepParameter.ColorValue);
                         break;
                     case StepParameter.ParameterType.GameObject:
-                        #region 步骤目标物体丢失，根据目标GUID重新搜寻
+                        #region 目标物体丢失，根据目标GUID重新搜寻
                         if (!stepParameter.GameObjectValue)
                         {
                             if (stepParameter.GameObjectGUID != "<None>")
@@ -162,7 +162,7 @@ namespace HT.Framework
                         GameObject objValue = EditorGUILayout.ObjectField(stepParameter.GameObjectValue, typeof(GameObject), true) as GameObject;
                         GUI.color = Color.white;
 
-                        #region 步骤目标改变
+                        #region 目标改变
                         if (objValue != stepParameter.GameObjectValue)
                         {
                             if (objValue)

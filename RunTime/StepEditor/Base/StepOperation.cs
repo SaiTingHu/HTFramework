@@ -1,5 +1,8 @@
 ﻿using System;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace HT.Framework
 {
@@ -9,6 +12,7 @@ namespace HT.Framework
     [Serializable]
     public sealed partial class StepOperation
     {
+        #region Base Property
         /// <summary>
         /// 操作ID
         /// </summary>
@@ -39,11 +43,20 @@ namespace HT.Framework
         /// 操作类型
         /// </summary>
         public StepOperationType OperationType = StepOperationType.Move;
+        #endregion
 
+        #region EditorOnly
 #if UNITY_EDITOR
         internal static float Width = 150;
         internal static float Height = 40;
-        
+        /// <summary>
+        /// 预览的目标
+        /// </summary>
+        internal GameObject PreviewTarget = null;
+
+        /// <summary>
+        /// 节点的位置
+        /// </summary>
         internal Rect Position
         {
             get
@@ -51,6 +64,9 @@ namespace HT.Framework
                 return new Rect(Anchor.x - Width / 2, Anchor.y - Height / 2, Width, Height);
             }
         }
+        /// <summary>
+        /// 左侧锚点位置
+        /// </summary>
         internal Rect LeftPosition
         {
             get
@@ -58,6 +74,9 @@ namespace HT.Framework
                 return new Rect(Anchor.x - Width / 2 - 10, Anchor.y - 10, 20, 20);
             }
         }
+        /// <summary>
+        /// 右侧锚点位置
+        /// </summary>
         internal Rect RightPosition
         {
             get
@@ -65,6 +84,54 @@ namespace HT.Framework
                 return new Rect(Anchor.x + Width / 2 - 10, Anchor.y - 10, 20, 20);
             }
         }
+        /// <summary>
+        /// 生成预览目标
+        /// </summary>
+        internal void CreatePreviewTarget()
+        {
+            if (!PreviewTarget)
+            {
+                PreviewTarget = Main.CloneGameObject(Target, Target.rectTransform());
+                PreviewTarget.name = "[Preview]" + Target.name + " - " + Name;
+                PreviewTarget.AddComponent<StepPreview>();
+                InitPreviewTarget();
+                FocusTarget();
+            }
+        }
+        /// <summary>
+        /// 删除预览目标
+        /// </summary>
+        internal void DeletePreviewTarget()
+        {
+            if (PreviewTarget)
+            {
+                UnityEngine.Object.DestroyImmediate(PreviewTarget);
+                PreviewTarget = null;
+            }
+        }
+        /// <summary>
+        /// 焦点到操作目标
+        /// </summary>
+        internal void FocusTarget()
+        {
+            if (PreviewTarget)
+            {
+                if (Selection.activeGameObject != PreviewTarget)
+                {
+                    Selection.activeGameObject = PreviewTarget;
+                    EditorGUIUtility.PingObject(PreviewTarget);
+                }
+            }
+            else if (Target)
+            {
+                if (Selection.activeGameObject != Target)
+                {
+                    Selection.activeGameObject = Target;
+                    EditorGUIUtility.PingObject(Target);
+                }
+            }
+        }
 #endif
+        #endregion
     }
 }

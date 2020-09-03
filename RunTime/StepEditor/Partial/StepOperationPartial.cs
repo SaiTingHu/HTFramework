@@ -11,6 +11,7 @@ namespace HT.Framework
 {
     public sealed partial class StepOperation
     {
+        #region Value
         public Vector3 Vector3Value = Vector3.zero;
         public Vector2 Vector2Value = Vector2.zero;
         public Color ColorValue = Color.white;
@@ -19,11 +20,19 @@ namespace HT.Framework
         public string StringValue = "<None>";
         public bool BoolValue = false;
         public Ease AnimationEase = Ease.Linear;
+        #endregion
 
+        #region Value2
         public Vector3 Vector3Value2 = Vector3.zero;
         public string StringValue2 = "<None>";
         public bool BoolValue2 = false;
-        
+        #endregion
+
+        #region Value3
+        public Vector3 Vector3Value3 = Vector3.zero;
+        #endregion
+
+        #region Execute
         internal void Execute()
         {
             switch (OperationType)
@@ -66,6 +75,12 @@ namespace HT.Framework
                     break;
                 case StepOperationType.ActiveComponent:
                     ActiveComponentExecute();
+                    break;
+                case StepOperationType.Transform:
+                    TransformExecute();
+                    break;
+                case StepOperationType.ChangeParent:
+                    ChangeParentExecute();
                     break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 Execute 定义！");
@@ -116,21 +131,23 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
-                if (!Target.GetComponent<Renderer>())
+                Renderer renderer = Target.GetComponent<Renderer>();
+                if (!renderer)
                 {
                     Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
-                Target.GetComponent<Renderer>().material.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
+                renderer.material.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
             }
             if (BoolValue2)
             {
-                if (!Target.GetComponent<Graphic>())
+                Graphic graphic = Target.GetComponent<Graphic>();
+                if (!graphic)
                 {
                     Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Graphic！无法播放颜色改变动画！");
                     return;
                 }
-                Target.GetComponent<Graphic>().DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
+                graphic.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void ActiveExecute()
@@ -198,7 +215,32 @@ namespace HT.Framework
                 Log.Error("步骤控制者：未获取到组件类型 " + StringValue + " ！");
             }
         }
+        private void TransformExecute()
+        {
+            if (BoolValue)
+            {
+                Target.transform.localPosition = Vector3Value;
+                Target.transform.localRotation = Vector3Value2.ToQuaternion();
+                Target.transform.localScale = Vector3Value3;
+            }
+            else
+            {
+                Target.transform.DOLocalMove(Vector3Value, ElapseTime).SetEase(AnimationEase);
+                Target.transform.DOLocalRotate(Vector3Value2, ElapseTime).SetEase(AnimationEase);
+                Target.transform.DOScale(Vector3Value3, ElapseTime).SetEase(AnimationEase);
+            }
+        }
+        private void ChangeParentExecute()
+        {
+            StepTarget parent = Main.m_StepMaster.GetTarget(StringValue);
+            if (parent != null && parent.gameObject != Target)
+            {
+                Target.transform.SetParent(parent.transform);
+            }
+        }
+        #endregion
 
+        #region Skip
         internal void Skip()
         {
             switch (OperationType)
@@ -241,6 +283,12 @@ namespace HT.Framework
                     break;
                 case StepOperationType.ActiveComponent:
                     ActiveComponentSkip();
+                    break;
+                case StepOperationType.Transform:
+                    TransformSkip();
+                    break;
+                case StepOperationType.ChangeParent:
+                    ChangeParentSkip();
                     break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 Skip 定义！");
@@ -291,20 +339,23 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
-                if (!Target.GetComponent<Renderer>())
+                Renderer renderer = Target.GetComponent<Renderer>();
+                if (!renderer)
                 {
                     Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
-                Target.GetComponent<Renderer>().material.DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                renderer.material.DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
             }
             if (BoolValue2)
             {
-                if (!Target.GetComponent<Graphic>())
+                Graphic graphic = Target.GetComponent<Graphic>();
+                if (!graphic)
                 {
                     Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Graphic！无法播放颜色改变动画！");
+                    return;
                 }
-                Target.GetComponent<Graphic>().DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                graphic.DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
             }
         }
         private void ActiveSkip()
@@ -371,8 +422,36 @@ namespace HT.Framework
                 Log.Error("步骤控制者：未获取到组件类型 " + StringValue + " ！");
             }
         }
+        private void TransformSkip()
+        {
+            if (BoolValue)
+            {
+                Target.transform.localPosition = Vector3Value;
+                Target.transform.localRotation = Vector3Value2.ToQuaternion();
+                Target.transform.localScale = Vector3Value3;
+            }
+            else
+            {
+                float time = ElapseTime / StepMaster.SkipMultiple;
+                Target.transform.DOLocalMove(Vector3Value, time).SetEase(AnimationEase);
+                Target.transform.DOLocalRotate(Vector3Value2, time).SetEase(AnimationEase);
+                Target.transform.DOScale(Vector3Value3, time).SetEase(AnimationEase);
+            }
+        }
+        private void ChangeParentSkip()
+        {
+            StepTarget parent = Main.m_StepMaster.GetTarget(StringValue);
+            if (parent != null && parent.gameObject != Target)
+            {
+                Target.transform.SetParent(parent.transform);
+            }
+        }
+        #endregion
 
+        #region EditorOnly
 #if UNITY_EDITOR
+        internal GameObject GameObjectValue;
+
         /// <summary>
         /// 克隆
         /// </summary>
@@ -402,6 +481,8 @@ namespace HT.Framework
             operation.Vector3Value2 = Vector3Value2;
             operation.StringValue2 = StringValue2;
             operation.BoolValue2 = BoolValue2;
+
+            operation.Vector3Value3 = Vector3Value3;
 
             return operation;
         }
@@ -449,6 +530,12 @@ namespace HT.Framework
                 case StepOperationType.ActiveComponent:
                     ActiveComponentGUI();
                     break;
+                case StepOperationType.Transform:
+                    TransformGUI();
+                    break;
+                case StepOperationType.ChangeParent:
+                    ChangeParentGUI();
+                    break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 OnEditorGUI 定义！");
                     break;
@@ -468,7 +555,9 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            if (PreviewTarget) Vector3Value = PreviewTarget.transform.localPosition;
             Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
+            if (PreviewTarget) PreviewTarget.transform.localPosition = Vector3Value;
             GUILayout.EndHorizontal();
 
             GUI.enabled = !BoolValue;
@@ -496,7 +585,9 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            if (PreviewTarget) Vector3Value = PreviewTarget.transform.localRotation.eulerAngles;
             Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
+            if (PreviewTarget) PreviewTarget.transform.localRotation = Vector3Value.ToQuaternion();
             GUILayout.EndHorizontal();
 
             GUI.enabled = !BoolValue2;
@@ -528,7 +619,9 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            if (PreviewTarget) Vector3Value = PreviewTarget.transform.localScale;
             Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
+            if (PreviewTarget) PreviewTarget.transform.localScale = Vector3Value;
             GUILayout.EndHorizontal();
 
             GUI.enabled = !BoolValue;
@@ -549,7 +642,45 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            if (PreviewTarget)
+            {
+                if (BoolValue)
+                {
+                    Renderer renderer = PreviewTarget.GetComponent<Renderer>();
+                    if (renderer)
+                    {
+                        ColorValue = renderer.sharedMaterial.color;
+                    }
+                }
+                if (BoolValue2)
+                {
+                    Graphic graphic = PreviewTarget.GetComponent<Graphic>();
+                    if (graphic)
+                    {
+                        ColorValue = graphic.color;
+                    }
+                }
+            }
             ColorValue = EditorGUILayout.ColorField(ColorValue, GUILayout.Width(180));
+            if (PreviewTarget)
+            {
+                if (BoolValue)
+                {
+                    Renderer renderer = PreviewTarget.GetComponent<Renderer>();
+                    if (renderer)
+                    {
+                        renderer.sharedMaterial.color = ColorValue;
+                    }
+                }
+                if (BoolValue2)
+                {
+                    Graphic graphic = PreviewTarget.GetComponent<Graphic>();
+                    if (graphic)
+                    {
+                        graphic.color = ColorValue;
+                    }
+                }
+            }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -721,11 +852,8 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Look distance:");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatValue = EditorGUILayout.FloatField("", FloatValue, GUILayout.Width(180));
+            GUILayout.Label("Look distance:", GUILayout.Width(100));
+            FloatValue = EditorGUILayout.FloatField("", FloatValue, GUILayout.Width(80));
             GUILayout.EndHorizontal();
         }
         private void TextMeshGUI()
@@ -838,7 +966,215 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
             GUI.enabled = true;
         }
+        private void TransformGUI()
+        {
+            if (PreviewTarget)
+            {
+                Vector3Value = PreviewTarget.transform.localPosition;
+                Vector3Value2 = PreviewTarget.transform.localRotation.eulerAngles;
+                Vector3Value3 = PreviewTarget.transform.localScale;
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("P:", GUILayout.Width(20));
+            Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(160));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("R:", GUILayout.Width(20));
+            Vector3Value2 = EditorGUILayout.Vector3Field("", Vector3Value2, GUILayout.Width(160));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("S:", GUILayout.Width(20));
+            Vector3Value3 = EditorGUILayout.Vector3Field("", Vector3Value3, GUILayout.Width(160));
+            GUILayout.EndHorizontal();
+
+            if (PreviewTarget)
+            {
+                PreviewTarget.transform.localPosition = Vector3Value;
+                PreviewTarget.transform.localRotation = Vector3Value2.ToQuaternion();
+                PreviewTarget.transform.localScale = Vector3Value3;
+            }
+
+            GUI.enabled = !BoolValue;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Ease:", GUILayout.Width(60));
+            AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
+            GUILayout.EndHorizontal();
+            GUI.enabled = true;
+
+            GUILayout.BeginHorizontal();
+            BoolValue = GUILayout.Toggle(BoolValue, "Transformation");
+            GUILayout.FlexibleSpace();
+            GUI.enabled = Target;
+            if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
+            {
+                Vector3Value = Target.transform.localPosition;
+                Vector3Value2 = Target.transform.localRotation.eulerAngles;
+                Vector3Value3 = Target.transform.localScale;
+            }
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+        }
+        private void ChangeParentGUI()
+        {
+            #region 父级目标物体丢失，根据目标GUID重新搜寻
+            if (!GameObjectValue)
+            {
+                if (StringValue != "<None>")
+                {
+                    GameObjectValue = GameObject.Find(StringValue2);
+                    if (!GameObjectValue)
+                    {
+                        StepTarget[] targets = UnityEngine.Object.FindObjectsOfType<StepTarget>();
+                        foreach (StepTarget target in targets)
+                        {
+                            if (target.GUID == StringValue)
+                            {
+                                GameObjectValue = target.gameObject;
+                                StringValue2 = target.transform.FullName();
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        StepTarget target = GameObjectValue.GetComponent<StepTarget>();
+                        if (!target)
+                        {
+                            target = GameObjectValue.AddComponent<StepTarget>();
+                            target.GUID = StringValue;
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Parent:", GUILayout.Width(50));
+            GUI.color = GameObjectValue ? Color.white : Color.gray;
+            GameObject parent = EditorGUILayout.ObjectField(GameObjectValue, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
+            GUI.color = Color.white;
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("GUID: " + StringValue, GUILayout.Width(140));
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
+            {
+                parent = GameObjectValue = null;
+                StringValue = "<None>";
+                StringValue2 = "<None>";
+                GUI.FocusControl(null);
+            }
+            GUILayout.EndHorizontal();
+
+            #region 父级目标改变
+            if (parent != GameObjectValue)
+            {
+                if (parent)
+                {
+                    StepTarget target = parent.GetComponent<StepTarget>();
+                    if (!target)
+                    {
+                        target = parent.AddComponent<StepTarget>();
+                    }
+                    if (target.GUID == "<None>")
+                    {
+                        target.GUID = Guid.NewGuid().ToString();
+                    }
+                    GameObjectValue = parent;
+                    StringValue = target.GUID;
+                    StringValue2 = parent.transform.FullName();
+                }
+            }
+            #endregion
+        }
+
+        internal void InitPreviewTarget()
+        {
+            switch (OperationType)
+            {
+                case StepOperationType.Move:
+                    MovePreviewTarget();
+                    break;
+                case StepOperationType.Rotate:
+                    RotatePreviewTarget();
+                    break;
+                case StepOperationType.Scale:
+                    ScalePreviewTarget();
+                    break;
+                case StepOperationType.Color:
+                    ColorPreviewTarget();
+                    break;
+                case StepOperationType.Active:
+                case StepOperationType.Action:
+                case StepOperationType.ActionArgs:
+                case StepOperationType.CameraFollow:
+                case StepOperationType.TextMesh:
+                case StepOperationType.Prompt:
+                case StepOperationType.FSM:
+                case StepOperationType.Delay:
+                case StepOperationType.ActiveComponent:
+                    break;
+                case StepOperationType.Transform:
+                    TransformPreviewTarget();
+                    break;
+                case StepOperationType.ChangeParent:
+                    ChangeParentPreviewTarget();
+                    break;
+                default:
+                    Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 InitPreviewTarget 定义！");
+                    break;
+            }
+        }
+        private void MovePreviewTarget()
+        {
+            PreviewTarget.transform.localPosition = Vector3Value;
+        }
+        private void RotatePreviewTarget()
+        {
+            PreviewTarget.transform.localRotation = Vector3Value.ToQuaternion();
+        }
+        private void ScalePreviewTarget()
+        {
+            PreviewTarget.transform.localScale = Vector3Value;
+        }
+        private void ColorPreviewTarget()
+        {
+            if (BoolValue)
+            {
+                Renderer renderer = PreviewTarget.GetComponent<Renderer>();
+                if (renderer)
+                {
+                    renderer.sharedMaterial.color = ColorValue;
+                }
+            }
+            if (BoolValue2)
+            {
+                Graphic graphic = PreviewTarget.GetComponent<Graphic>();
+                if (graphic)
+                {
+                    graphic.color = ColorValue;
+                }
+            }
+        }
+        private void TransformPreviewTarget()
+        {
+            PreviewTarget.transform.localPosition = Vector3Value;
+            PreviewTarget.transform.localRotation = Vector3Value2.ToQuaternion();
+            PreviewTarget.transform.localScale = Vector3Value3;
+        }
+        private void ChangeParentPreviewTarget()
+        {
+            if (GameObjectValue)
+            {
+                PreviewTarget.transform.SetParent(GameObjectValue.transform);
+            }
+        }
 #endif
+        #endregion
     }
 
     /// <summary>
@@ -849,54 +1185,77 @@ namespace HT.Framework
         /// <summary>
         /// 移动
         /// </summary>
+        [Remark("移动")]
         Move,
         /// <summary>
         /// 旋转
         /// </summary>
+        [Remark("旋转")]
         Rotate,
         /// <summary>
         /// 缩放
         /// </summary>
+        [Remark("缩放")]
         Scale,
         /// <summary>
         /// 颜色改变
         /// </summary>
+        [Remark("颜色改变")]
         Color,
         /// <summary>
         /// 延时
         /// </summary>
+        [Remark("延时")]
         Delay,
         /// <summary>
-        /// 激活与隐藏
+        /// 激活或隐藏
         /// </summary>
+        [Remark("激活或隐藏")]
         Active,
         /// <summary>
-        /// 执行自定义方法 void Action()
+        /// 呼叫方法 void Action()
         /// </summary>
+        [Remark("呼叫方法")]
         Action,
         /// <summary>
-        /// 执行自定义方法 void Action(string args)
+        /// 呼叫方法 void Action(string args)
         /// </summary>
+        [Remark("呼叫方法")]
         ActionArgs,
         /// <summary>
-        /// FSM切换状态
+        /// 切换状态
         /// </summary>
+        [Remark("切换状态")]
         FSM,
         /// <summary>
-        /// TextMesh文本改变
+        /// 设置文本
         /// </summary>
+        [Remark("设置文本")]
         TextMesh,
         /// <summary>
         /// 提示
         /// </summary>
+        [Remark("提示")]
         Prompt,
         /// <summary>
         /// 摄像机跟随
         /// </summary>
+        [Remark("摄像机跟随")]
         CameraFollow,
         /// <summary>
-        /// 激活与隐藏组件
+        /// 激活或隐藏组件
         /// </summary>
-        ActiveComponent
+        [Remark("激活或隐藏组件")]
+        ActiveComponent,
+        /// <summary>
+        /// 变换（移动、旋转、缩放）
+        /// </summary>
+        [Remark("变换")]
+        Transform,
+        /// <summary>
+        /// 改变父级
+        /// </summary>
+        [Remark("改变父级")]
+        ChangeParent,
     }
 }

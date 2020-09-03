@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace HT.Framework
 {
@@ -175,6 +178,9 @@ namespace HT.Framework
         internal static float Width = 150;
         internal static float Height = 40;
 
+        /// <summary>
+        /// Enter节点的位置
+        /// </summary>
         internal Rect EnterPosition
         {
             get
@@ -182,7 +188,6 @@ namespace HT.Framework
                 return new Rect(EnterAnchor.x - Width / 2, EnterAnchor.y - Height / 2, Width, Height);
             }
         }
-
         /// <summary>
         /// 克隆
         /// </summary>
@@ -220,7 +225,6 @@ namespace HT.Framework
             }
             return content;
         }
-
         /// <summary>
         /// 是否存在指定连线
         /// </summary>
@@ -238,7 +242,6 @@ namespace HT.Framework
             }
             return false;
         }
-        
         /// <summary>
         /// 当前步骤包含指定类型的操作数量
         /// </summary>
@@ -256,7 +259,6 @@ namespace HT.Framework
             }
             return cout;
         }
-
         /// <summary>
         /// 获取可能会被执行两次或以上的节点
         /// </summary>
@@ -276,7 +278,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 获取所有执行终点
         /// </summary>
@@ -297,7 +298,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 计算节点到Enter节点的执行总时间
         /// </summary>
@@ -323,7 +323,6 @@ namespace HT.Framework
                 return 0;
             }
         }
-
         /// <summary>
         /// 获取连线的左侧节点
         /// </summary>
@@ -339,6 +338,20 @@ namespace HT.Framework
                 }
             }
             return -2;
+        }
+        /// <summary>
+        /// 焦点到步骤目标
+        /// </summary>
+        internal void FocusTarget()
+        {
+            if (Target)
+            {
+                if (Selection.activeGameObject != Target)
+                {
+                    Selection.activeGameObject = Target;
+                    EditorGUIUtility.PingObject(Target);
+                }
+            }
         }
 #endif
     }

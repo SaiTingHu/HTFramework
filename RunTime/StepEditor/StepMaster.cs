@@ -354,6 +354,22 @@ namespace HT.Framework
                 return -1;
             }
         }
+        /// <summary>
+        /// 通过ID获取步骤目标
+        /// </summary>
+        /// <param name="id">步骤目标ID</param>
+        /// <returns>步骤目标</returns>
+        public StepTarget GetTarget(string id)
+        {
+            if (_targets.ContainsKey(id))
+            {
+                return _targets[id];
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// 重新编译步骤内容，在更改步骤资源 ContentAsset 后，必须重新编译一次才可以开始步骤流程
