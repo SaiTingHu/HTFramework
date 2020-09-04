@@ -118,7 +118,7 @@ namespace HT.Framework
             }
             else
             {
-                Main.Current.DelayExecute(() =>
+                Main.m_StepMaster.DelayExecute(() =>
                 {
                     for (int i = 0; i < Wireds.Count; i++)
                     {
@@ -161,7 +161,7 @@ namespace HT.Framework
             }
             else
             {
-                Main.Current.DelayExecute(() =>
+                Main.m_StepMaster.DelayExecute(() =>
                 {
                     for (int i = 0; i < Wireds.Count; i++)
                     {
@@ -338,6 +338,29 @@ namespace HT.Framework
                 }
             }
             return -2;
+        }
+        /// <summary>
+        /// 获取节点的左侧相连节点
+        /// </summary>
+        /// <param name="rightIndex">右侧节点</param>
+        /// <returns>左侧节点</returns>
+        internal StepOperation GetLeftOperation(int rightIndex)
+        {
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                if (Wireds[i].Right == rightIndex)
+                {
+                    if (Wireds[i].Left == -1)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return Operations[Wireds[i].Left];
+                    }
+                }
+            }
+            return null;
         }
         /// <summary>
         /// 焦点到步骤目标

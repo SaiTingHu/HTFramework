@@ -882,7 +882,7 @@ namespace HT.Framework
                     GUI.enabled = _currentOperationObj.Target && !_currentOperationObj.PreviewTarget;
                     if (GUILayout.Button("Preview", EditorGlobalTools.Styles.ButtonLeft))
                     {
-                        _currentOperationObj.CreatePreviewTarget();
+                        _currentOperationObj.CreatePreviewTarget(_currentStepObj, _currentOperation);
                     }
                     GUI.enabled = _currentOperationObj.PreviewTarget;
                     if (GUILayout.Button("Stop", EditorGlobalTools.Styles.ButtonRight))
@@ -1382,14 +1382,24 @@ namespace HT.Framework
         /// </summary>
         private void ConnectOrBreakWired(StepContent content, int left, int right)
         {
+            //查找是否存在此连线
             StepWired wiredOld = content.Wireds.Find((w) => { return w.Left == left && w.Right == right; });
+            //不存在则连接
             if (wiredOld == null)
             {
+                //是否有其他节点连入右侧节点，有则移除（一个节点的左侧只允许接入一条线，逻辑只能分流，不能合并）
+                StepWired wiredOther = content.Wireds.Find((w) => { return w.Right == right; });
+                if (wiredOther != null)
+                {
+                    content.Wireds.Remove(wiredOther);
+                }
+
                 StepWired wired = new StepWired();
                 wired.Left = left;
                 wired.Right = right;
                 content.Wireds.Add(wired);
             }
+            //存在则断开
             else
             {
                 content.Wireds.Remove(wiredOld);

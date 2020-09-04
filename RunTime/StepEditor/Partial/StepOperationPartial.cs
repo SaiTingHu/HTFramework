@@ -1092,7 +1092,7 @@ namespace HT.Framework
             #endregion
         }
 
-        internal void InitPreviewTarget()
+        internal void InitPreviewTarget(StepContent stepContent)
         {
             switch (OperationType)
             {
@@ -1146,9 +1146,12 @@ namespace HT.Framework
             if (BoolValue)
             {
                 Renderer renderer = PreviewTarget.GetComponent<Renderer>();
-                if (renderer)
+                if (renderer && renderer.sharedMaterial)
                 {
-                    renderer.sharedMaterial.color = ColorValue;
+                    Material material = Main.Clone(renderer.sharedMaterial);
+                    material.hideFlags = HideFlags.HideAndDontSave;
+                    material.color = ColorValue;
+                    renderer.sharedMaterial = material;
                 }
             }
             if (BoolValue2)

@@ -30,6 +30,10 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal int WorldPriorityDefault = 30;
         /// <summary>
+        /// OneShoot音效优先级初始值【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal int OneShootPriorityDefault = 40;
+        /// <summary>
         /// 背景音乐音量初始值【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal float BackgroundVolumeDefault = 0.6f;
@@ -45,11 +49,15 @@ namespace HT.Framework
         /// 世界音效音量初始值【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal float WorldVolumeDefault = 1;
+        /// <summary>
+        /// OneShoot音效音量初始值【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal float OneShootVolumeDefault = 1;
 
         /// <summary>
-        /// 单通道音效播放结束事件
+        /// 单通道音效播放结束事件，参数为播放结束时的音频剪辑名称
         /// </summary>
-        public event HTFAction SingleSoundEndOfPlayEvent;
+        public event HTFAction<string> SingleSoundEndOfPlayEvent;
         /// <summary>
         /// 静音
         /// </summary>
@@ -141,6 +149,20 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// OneShoot音效优先级
+        /// </summary>
+        public int OneShootPriority
+        {
+            get
+            {
+                return _helper.OneShootPriority;
+            }
+            set
+            {
+                _helper.OneShootPriority = value;
+            }
+        }
+        /// <summary>
         /// 背景音乐音量
         /// </summary>
         public float BackgroundVolume
@@ -196,6 +218,20 @@ namespace HT.Framework
                 _helper.WorldVolume = value;
             }
         }
+        /// <summary>
+        /// OneShoot音效音量
+        /// </summary>
+        public float OneShootVolume
+        {
+            get
+            {
+                return _helper.OneShootVolume;
+            }
+            set
+            {
+                _helper.OneShootVolume = value;
+            }
+        }
 
         private IAudioHelper _helper;
 
@@ -204,8 +240,9 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IAudioHelper;
-            _helper.BackgroundAudio = AudioToolkit.CreateAudioSource("BackgroundAudio", BackgroundPriorityDefault, BackgroundVolumeDefault, 1, 0, MuteDefault, transform);
-            _helper.SingleAudio = AudioToolkit.CreateAudioSource("SingleAudio", SinglePriorityDefault, SingleVolumeDefault, 1, 0, MuteDefault, transform);
+            _helper.BackgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", BackgroundPriorityDefault, BackgroundVolumeDefault, 1, 0, MuteDefault, transform);
+            _helper.SingleSource = AudioToolkit.CreateAudioSource("SingleSource", SinglePriorityDefault, SingleVolumeDefault, 1, 0, MuteDefault, transform);
+            _helper.OneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", OneShootPriorityDefault, OneShootVolumeDefault, 1, 0, MuteDefault, transform);
 
             Mute = MuteDefault;
             BackgroundPriority = BackgroundPriorityDefault;
@@ -223,10 +260,10 @@ namespace HT.Framework
 
             if (_helper.SingleSoundPlayDetector)
             {
-                if (!_helper.SingleAudio.isPlaying)
+                if (!_helper.SingleSource.isPlaying)
                 {
                     _helper.SingleSoundPlayDetector = false;
-                    SingleSoundEndOfPlayEvent?.Invoke();
+                    SingleSoundEndOfPlayEvent?.Invoke(_helper.SingleSource.clip.name);
                 }
             }
         }
@@ -263,6 +300,14 @@ namespace HT.Framework
             _helper.PlayBackgroundMusic(clip, isLoop, speed);
         }
         /// <summary>
+        /// 播放背景音乐
+        /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        public void PlayBackgroundMusic(AudioClip clip)
+        {
+            _helper.PlayBackgroundMusic(clip);
+        }
+        /// <summary>
         /// 暂停播放背景音乐
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
@@ -295,6 +340,14 @@ namespace HT.Framework
         public void PlaySingleSound(AudioClip clip, bool isLoop = false, float speed = 1)
         {
             _helper.PlaySingleSound(clip, isLoop, speed);
+        }
+        /// <summary>
+        /// 播放单通道音效
+        /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        public void PlaySingleSound(AudioClip clip)
+        {
+            _helper.PlaySingleSound(clip);
         }
         /// <summary>
         /// 暂停播放单通道音效
@@ -331,6 +384,14 @@ namespace HT.Framework
             _helper.PlayMultipleSound(clip, isLoop, speed);
         }
         /// <summary>
+        /// 播放多通道音效
+        /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        public void PlayMultipleSound(AudioClip clip)
+        {
+            _helper.PlayMultipleSound(clip);
+        }
+        /// <summary>
         /// 停止播放指定的多通道音效
         /// </summary>
         /// <param name="clip">音乐剪辑</param>
@@ -363,6 +424,15 @@ namespace HT.Framework
         public void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool isLoop = false, float speed = 1)
         {
             _helper.PlayWorldSound(attachTarget, clip, isLoop, speed);
+        }
+        /// <summary>
+        /// 播放世界音效
+        /// </summary>
+        /// <param name="attachTarget">附加目标</param>
+        /// <param name="clip">音乐剪辑</param>
+        public void PlayWorldSound(GameObject attachTarget, AudioClip clip)
+        {
+            _helper.PlayWorldSound(attachTarget, clip);
         }
         /// <summary>
         /// 暂停播放指定的世界音效
@@ -403,6 +473,24 @@ namespace HT.Framework
         public void ClearIdleWorldAudioSource()
         {
             _helper.ClearIdleWorldAudioSource();
+        }
+
+        /// <summary>
+        /// 播放OneShoot音效
+        /// </summary>
+        /// <param name="clip">音效剪辑</param>
+        /// <param name="volumeScale">音量缩放比</param>
+        public void PlayOneShoot(AudioClip clip, float volumeScale = 1)
+        {
+            _helper.PlayOneShoot(clip, volumeScale);
+        }
+        /// <summary>
+        /// 播放OneShoot音效
+        /// </summary>
+        /// <param name="clip">音效剪辑</param>
+        public void PlayOneShoot(AudioClip clip)
+        {
+            _helper.PlayOneShoot(clip);
         }
     }
 }

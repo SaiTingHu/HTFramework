@@ -11,19 +11,23 @@ namespace HT.Framework
         /// <summary>
         /// 背景音乐音源
         /// </summary>
-        AudioSource BackgroundAudio { get; set; }
+        AudioSource BackgroundSource { get; set; }
         /// <summary>
         /// 单通道音效音源
         /// </summary>
-        AudioSource SingleAudio { get; set; }
+        AudioSource SingleSource { get; set; }
         /// <summary>
         /// 多通道音效音源
         /// </summary>
-        List<AudioSource> MultipleAudios { get; set; }
+        List<AudioSource> MultipleSources { get; set; }
         /// <summary>
         /// 世界音效音源
         /// </summary>
-        Dictionary<GameObject, AudioSource> WorldAudios { get; set; }
+        Dictionary<GameObject, AudioSource> WorldSources { get; set; }
+        /// <summary>
+        /// OneShoot音源
+        /// </summary>
+        AudioSource OneShootSource { get; set; }
         /// <summary>
         /// 静音
         /// </summary>
@@ -53,6 +57,10 @@ namespace HT.Framework
         /// </summary>
         int WorldPriority { get; set; }
         /// <summary>
+        /// OneShoot音效优先级
+        /// </summary>
+        int OneShootPriority { get; set; }
+        /// <summary>
         /// 背景音乐音量
         /// </summary>
         float BackgroundVolume { get; set; }
@@ -69,6 +77,10 @@ namespace HT.Framework
         /// </summary>
         float WorldVolume { get; set; }
         /// <summary>
+        /// OneShoot音效音量
+        /// </summary>
+        float OneShootVolume { get; set; }
+        /// <summary>
         /// 单通道音效播放标记
         /// </summary>
         bool SingleSoundPlayDetector { get; set; }
@@ -80,6 +92,11 @@ namespace HT.Framework
         /// <param name="isLoop">是否循环</param>
         /// <param name="speed">播放速度</param>
         void PlayBackgroundMusic(AudioClip clip, bool isLoop = true, float speed = 1);
+        /// <summary>
+        /// 播放背景音乐
+        /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        void PlayBackgroundMusic(AudioClip clip);
         /// <summary>
         /// 暂停播放背景音乐
         /// </summary>
@@ -103,6 +120,11 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         void PlaySingleSound(AudioClip clip, bool isLoop = false, float speed = 1);
         /// <summary>
+        /// 播放单通道音效
+        /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        void PlaySingleSound(AudioClip clip);
+        /// <summary>
         /// 暂停播放单通道音效
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
@@ -125,6 +147,11 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         void PlayMultipleSound(AudioClip clip, bool isLoop = false, float speed = 1);
         /// <summary>
+        /// 播放多通道音效
+        /// </summary>
+        /// <param name="clip">音乐剪辑</param>
+        void PlayMultipleSound(AudioClip clip);
+        /// <summary>
         /// 停止播放指定的多通道音效
         /// </summary>
         /// <param name="clip">音乐剪辑</param>
@@ -146,6 +173,12 @@ namespace HT.Framework
         /// <param name="isLoop">是否循环</param>
         /// <param name="speed">播放速度</param>
         void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool isLoop = false, float speed = 1);
+        /// <summary>
+        /// 播放世界音效
+        /// </summary>
+        /// <param name="attachTarget">附加目标</param>
+        /// <param name="clip">音乐剪辑</param>
+        void PlayWorldSound(GameObject attachTarget, AudioClip clip);
         /// <summary>
         /// 暂停播放指定的世界音效
         /// </summary>
@@ -171,5 +204,17 @@ namespace HT.Framework
         /// 销毁所有闲置中的世界音效的音源
         /// </summary>
         void ClearIdleWorldAudioSource();
+
+        /// <summary>
+        /// 播放OneShoot音效
+        /// </summary>
+        /// <param name="clip">音效剪辑</param>
+        /// <param name="volumeScale">音量缩放比</param>
+        void PlayOneShoot(AudioClip clip, float volumeScale = 1);
+        /// <summary>
+        /// 播放OneShoot音效
+        /// </summary>
+        /// <param name="clip">音效剪辑</param>
+        void PlayOneShoot(AudioClip clip);
     }
 }
