@@ -468,7 +468,7 @@ namespace HT.Framework
                                 StepTarget[] targets = FindObjectsOfType<StepTarget>();
                                 foreach (StepTarget target in targets)
                                 {
-                                    if (target.GUID == _currentStepObj.TargetGUID)
+                                    if (target.GUID == _currentStepObj.TargetGUID && !target.GetComponent<StepPreview>())
                                     {
                                         _currentStepObj.Target = target.gameObject;
                                         _currentStepObj.TargetPath = target.transform.FullName();
@@ -798,7 +798,7 @@ namespace HT.Framework
                                 StepTarget[] targets = FindObjectsOfType<StepTarget>();
                                 foreach (StepTarget target in targets)
                                 {
-                                    if (target.GUID == _currentOperationObj.TargetGUID)
+                                    if (target.GUID == _currentOperationObj.TargetGUID && !target.GetComponent<StepPreview>())
                                     {
                                         _currentOperationObj.Target = target.gameObject;
                                         _currentOperationObj.TargetPath = target.transform.FullName();

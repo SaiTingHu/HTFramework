@@ -137,7 +137,7 @@ namespace HT.Framework
                                     StepTarget[] targets = FindObjectsOfType<StepTarget>();
                                     foreach (StepTarget target in targets)
                                     {
-                                        if (target.GUID == stepParameter.GameObjectGUID)
+                                        if (target.GUID == stepParameter.GameObjectGUID && !target.GetComponent<StepPreview>())
                                         {
                                             stepParameter.GameObjectValue = target.gameObject;
                                             stepParameter.GameObjectPath = target.transform.FullName();

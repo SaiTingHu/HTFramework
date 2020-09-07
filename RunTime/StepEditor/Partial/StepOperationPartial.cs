@@ -1030,7 +1030,7 @@ namespace HT.Framework
                         StepTarget[] targets = UnityEngine.Object.FindObjectsOfType<StepTarget>();
                         foreach (StepTarget target in targets)
                         {
-                            if (target.GUID == StringValue)
+                            if (target.GUID == StringValue && !target.GetComponent<StepPreview>())
                             {
                                 GameObjectValue = target.gameObject;
                                 StringValue2 = target.transform.FullName();
