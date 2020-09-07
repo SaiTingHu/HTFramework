@@ -227,7 +227,10 @@ namespace HT.Framework
             _mouseRotation.Target = _cameraTarget;
             _mouseRotation.Manager = Module as ControllerManager;
             _mouseRay.RayCamera = MainCamera;
-            _mouseRay.RayEvent += RayEvent;
+            _mouseRay.RayEvent += (target, point, point2D) =>
+            {
+                RayEvent?.Invoke(target, point, point2D);
+            };
         }
         /// <summary>
         /// 助手准备工作

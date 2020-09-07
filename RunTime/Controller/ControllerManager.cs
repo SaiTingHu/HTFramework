@@ -65,7 +65,10 @@ namespace HT.Framework
             DOTween.defaultAutoKill = IsAutoKill;
             
             _helper = Helper as IControllerHelper;
-            _helper.RayEvent += RayEvent;
+            _helper.RayEvent += (target, point, point2D) =>
+            {
+                RayEvent?.Invoke(target, point, point2D);
+            };
         }
         internal override void OnPreparatory()
         {
