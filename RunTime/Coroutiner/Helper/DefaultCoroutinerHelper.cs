@@ -23,6 +23,49 @@ namespace HT.Framework
         public Dictionary<Delegate, List<CoroutineEnumerator>> Warehouse { get; } = new Dictionary<Delegate, List<CoroutineEnumerator>>();
 
         /// <summary>
+        /// 初始化助手
+        /// </summary>
+        public void OnInitialization()
+        {
+            
+        }
+        /// <summary>
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+           
+        }
+        /// <summary>
+        /// 终结助手
+        /// </summary>
+        public void OnTermination()
+        {
+
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+            
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+           
+        }
+
+        /// <summary>
         /// 运行协程
         /// </summary>
         /// <param name="action">协程方法</param>

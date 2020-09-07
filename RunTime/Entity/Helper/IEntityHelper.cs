@@ -10,24 +10,24 @@ namespace HT.Framework
     public interface IEntityHelper : IInternalModuleHelper
     {
         /// <summary>
+        /// 所有实体列表
+        /// </summary>
+        Dictionary<Type, List<EntityLogicBase>> Entities { get; }
+        /// <summary>
+        /// 所有实体对象池
+        /// </summary>
+        Dictionary<Type, Queue<GameObject>> ObjectPools { get; }
+        /// <summary>
         /// 是否隐藏所有实体
         /// </summary>
         bool IsHideAll { get; set; }
 
         /// <summary>
-        /// 初始化
+        /// 设置预定义
         /// </summary>
         /// <param name="defineEntityNames">预定义的实体名称</param>
         /// <param name="defineEntityTargets">预定义的实体对象</param>
-        void OnInitialization(List<string> defineEntityNames, List<GameObject> defineEntityTargets);
-        /// <summary>
-        /// 逻辑刷新
-        /// </summary>
-        void OnRefresh();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
+        void SetDefine(List<string> defineEntityNames, List<GameObject> defineEntityTargets);
 
         /// <summary>
         /// 创建实体

@@ -54,7 +54,6 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
         
-        private Dictionary<MouseRayTargetBase, HTFAction> _mouseClickTargets = new Dictionary<MouseRayTargetBase, HTFAction>();
         private IControllerHelper _helper;
 
         internal override void OnInitialization()
@@ -66,49 +65,13 @@ namespace HT.Framework
             DOTween.defaultAutoKill = IsAutoKill;
             
             _helper = Helper as IControllerHelper;
-            _helper.OnInitialization(OnRay);
+            _helper.RayEvent += RayEvent;
         }
         internal override void OnPreparatory()
         {
             base.OnPreparatory();
 
             TheControlMode = DefaultControlMode;
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            _helper.OnRefresh();
-            
-            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
-            {
-                if (RayTarget != null)
-                {
-                    if (_mouseClickTargets.ContainsKey(RayTarget))
-                    {
-                        _mouseClickTargets[RayTarget]?.Invoke();
-                    }
-                }
-            }
-            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeftDoubleClick))
-            {
-                if (RayTarget != null)
-                {
-                    MouseRayTarget target = RayTarget as MouseRayTarget;
-                    if (target && target.IsDoubleClickFocus)
-                    {
-                        SetLookPoint(target.transform.position);
-                    }
-                }
-            }
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
-
-            ClearClickListener();
         }
 
         /// <summary>
@@ -400,14 +363,7 @@ namespace HT.Framework
         /// <param name="callback">点击事件回调</param>
         public void AddClickListener(GameObject target, HTFAction callback)
         {
-            MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
-            if (mouseRayTargetBase)
-            {
-                if (!_mouseClickTargets.ContainsKey(mouseRayTargetBase))
-                {
-                    _mouseClickTargets.Add(mouseRayTargetBase, callback);
-                }
-            }
+            _helper.AddClickListener(target, callback);
         }
         /// <summary>
         /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
@@ -415,26 +371,14 @@ namespace HT.Framework
         /// <param name="target">目标</param>
         public void RemoveClickListener(GameObject target)
         {
-            MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
-            if (mouseRayTargetBase)
-            {
-                if (_mouseClickTargets.ContainsKey(mouseRayTargetBase))
-                {
-                    _mouseClickTargets.Remove(mouseRayTargetBase);
-                }
-            }
+            _helper.RemoveClickListener(target);
         }
         /// <summary>
         /// 清空所有点击事件
         /// </summary>
         public void ClearClickListener()
         {
-            _mouseClickTargets.Clear();
-        }
-        
-        private void OnRay(MouseRayTargetBase mouseRayTargetBase, Vector3 point, Vector2 pos)
-        {
-            RayEvent?.Invoke(mouseRayTargetBase, point, pos);
+            _helper.ClearClickListener();
         }
     }
 

@@ -58,19 +58,6 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IExceptionHandlerHelper;
-            _helper.OnInitialization();
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            _helper.OnRefresh();
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
         }
         
         /// <summary>

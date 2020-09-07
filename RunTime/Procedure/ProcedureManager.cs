@@ -27,36 +27,6 @@ namespace HT.Framework
         
         private IProcedureHelper _helper;
 
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IProcedureHelper;
-            _helper.OnInitialization(ActivatedProcedures, DefaultProcedure);
-            _helper.AnyProcedureSwitchEvent += (last, next) =>
-            {
-                AnyProcedureSwitchEvent?.Invoke(last, next);
-            };
-        }
-        internal override void OnPreparatory()
-        {
-            base.OnPreparatory();
-
-            _helper.OnPreparatory();
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            _helper.OnRefresh();
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
-        }
-
         /// <summary>
         /// 当前流程
         /// </summary>
@@ -68,6 +38,17 @@ namespace HT.Framework
             }
         }
 
+        internal override void OnInitialization()
+        {
+            base.OnInitialization();
+
+            _helper = Helper as IProcedureHelper;
+            _helper.AnyProcedureSwitchEvent += (last, next) =>
+            {
+                AnyProcedureSwitchEvent?.Invoke(last, next);
+            };
+        }
+        
         /// <summary>
         /// 获取流程
         /// </summary>
@@ -86,7 +67,6 @@ namespace HT.Framework
         {
             return _helper.GetProcedure(type);
         }
-
         /// <summary>
         /// 是否存在流程
         /// </summary>

@@ -10,21 +10,8 @@ namespace HT.Framework
         /// <summary>
         /// 当前捕获的所有异常信息
         /// </summary>
-        List<ExceptionInfo> ExceptionInfos { get; set; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        void OnInitialization();
-        /// <summary>
-        /// 刷新
-        /// </summary>
-        void OnRefresh();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        List<ExceptionInfo> ExceptionInfos { get; }
+        
         /// <summary>
         /// 回发邮件
         /// </summary>

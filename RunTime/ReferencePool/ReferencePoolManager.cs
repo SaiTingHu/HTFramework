@@ -23,13 +23,6 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IReferencePoolHelper;
-            _helper.OnInitialization(Limit);
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
         }
 
         /// <summary>

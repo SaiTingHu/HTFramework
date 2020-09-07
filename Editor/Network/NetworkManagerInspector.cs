@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,7 +32,7 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _networkHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as INetworkHelper;
+            _networkHelper = _helper as INetworkHelper;
         }
 
         protected override void OnInspectorDefaultGUI()

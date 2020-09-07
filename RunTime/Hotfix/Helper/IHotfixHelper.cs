@@ -14,37 +14,24 @@ namespace HT.Framework
         /// <summary>
         /// 热更新DLL
         /// </summary>
-        TextAsset HotfixDll { get; set; }
+        TextAsset HotfixDll { get; }
         /// <summary>
         /// 热更新程序集
         /// </summary>
-        Assembly HotfixAssembly { get; set; }
+        Assembly HotfixAssembly { get; }
         /// <summary>
         /// 热更新环境
         /// </summary>
-        object HotfixEnvironment { get; set; }
+        object HotfixEnvironment { get; }
         /// <summary>
         /// 热修复目标方法
         /// </summary>
-        Dictionary<HotfixMethodType, Dictionary<string, MethodInfo>> FixedMethods { get; set; }
+        Dictionary<HotfixMethodType, Dictionary<string, MethodInfo>> FixedMethods { get; }
         /// <summary>
         /// 热修复后的方法
         /// </summary>
-        Dictionary<HotfixMethodType, Dictionary<string, Delegate>> FixedDelegates { get; set; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        void OnInitialization();
-        /// <summary>
-        /// 准备工作
-        /// </summary>
-        void OnPreparatory();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        Dictionary<HotfixMethodType, Dictionary<string, Delegate>> FixedDelegates { get; }
+        
         /// <summary>
         /// 热修复目标方法
         /// </summary>

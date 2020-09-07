@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace HT.Framework
 {
@@ -16,9 +15,7 @@ namespace HT.Framework
         [SerializeField] internal string InputDeviceType = "";
         
         private IInputHelper _helper;
-        private InputDeviceBase _inputDevice;
-        private bool _isEnableInputDevice = true;
-
+        
         /// <summary>
         /// 是否启用输入设备
         /// </summary>
@@ -26,15 +23,11 @@ namespace HT.Framework
         {
             get
             {
-                return _isEnableInputDevice;
+                return _helper.IsEnableInputDevice;
             }
             set
             {
-                _isEnableInputDevice = value;
-                if (!_isEnableInputDevice)
-                {
-                    _helper.ResetAll();
-                }
+                _helper.IsEnableInputDevice = value;
             }
         }
         /// <summary>
@@ -54,7 +47,7 @@ namespace HT.Framework
         {
             get
             {
-                return IsEnableInputDevice ? Input.anyKey : false;
+                return _helper.AnyKey;
             }
         }
         /// <summary>
@@ -64,7 +57,7 @@ namespace HT.Framework
         {
             get
             {
-                return IsEnableInputDevice ? Input.anyKeyDown : false;
+                return _helper.AnyKeyDown;
             }
         }
 
@@ -73,51 +66,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IInputHelper;
-
-            //加载输入设备
-            Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(InputDeviceType);
-            if (type != null)
-            {
-                if (type.IsSubclassOf(typeof(InputDeviceBase)))
-                {
-                    _inputDevice = Activator.CreateInstance(type) as InputDeviceBase;
-                }
-                else
-                {
-                    throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：输入设备类 " + InputDeviceType + " 必须继承至输入设备基类：InputDeviceBase！");
-                }
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：丢失输入设备类 " + InputDeviceType + "！");
-            }
-        }
-        internal override void OnPreparatory()
-        {
-            base.OnPreparatory();
-
-            _inputDevice.OnStartUp();
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            if (IsEnableInputDevice)
-            {
-                _inputDevice.OnRun();
-            }
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _inputDevice.OnShutdown();
-        }
-        internal override void OnPause()
-        {
-            base.OnPause();
-
-            _helper.ResetAll();
+            _helper.LoadDevice(InputDeviceType);
         }
 
         /// <summary>
@@ -172,24 +121,6 @@ namespace HT.Framework
         }
         
         /// <summary>
-        /// 获取轴线值
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        /// <returns>值</returns>
-        public float GetAxis(string name)
-        {
-            return _helper.GetAxis(name, false);
-        }
-        /// <summary>
-        /// 获取轴线值（值为-1，0，1）
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        /// <returns>值</returns>
-        public float GetAxisRaw(string name)
-        {
-            return _helper.GetAxis(name, true);
-        }
-        /// <summary>
         /// 按钮按住
         /// </summary>
         /// <param name="name">按钮名称</param>
@@ -216,6 +147,24 @@ namespace HT.Framework
         {
             return _helper.GetButtonUp(name);
         }
+        /// <summary>
+        /// 获取轴线值
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        /// <returns>值</returns>
+        public float GetAxis(string name)
+        {
+            return _helper.GetAxis(name, false);
+        }
+        /// <summary>
+        /// 获取轴线值（值为-1，0，1）
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        /// <returns>值</returns>
+        public float GetAxisRaw(string name)
+        {
+            return _helper.GetAxis(name, true);
+        }
 
         /// <summary>
         /// 键盘按键按住
@@ -224,7 +173,7 @@ namespace HT.Framework
         /// <returns>是否按住</returns>
         public bool GetKey(KeyCode keyCode)
         {
-            return IsEnableInputDevice ? Input.GetKey(keyCode) : false;
+            return _helper.GetKey(keyCode);
         }
         /// <summary>
         /// 键盘按键按下
@@ -233,7 +182,7 @@ namespace HT.Framework
         /// <returns>是否按下</returns>
         public bool GetKeyDown(KeyCode keyCode)
         {
-            return IsEnableInputDevice ? Input.GetKeyDown(keyCode) : false;
+            return _helper.GetKeyDown(keyCode);
         }
         /// <summary>
         /// 键盘按键抬起
@@ -242,7 +191,7 @@ namespace HT.Framework
         /// <returns>是否抬起</returns>
         public bool GetKeyUp(KeyCode keyCode)
         {
-            return IsEnableInputDevice ? Input.GetKeyUp(keyCode) : false;
+            return _helper.GetKeyUp(keyCode);
         }
         /// <summary>
         /// 键盘组合按键按住（两个组合键）
@@ -252,7 +201,7 @@ namespace HT.Framework
         /// <returns>是否按住</returns>
         public bool GetKey(KeyCode keyCode1, KeyCode keyCode2)
         {
-            return IsEnableInputDevice ? (Input.GetKey(keyCode1) && Input.GetKey(keyCode2)) : false;
+            return _helper.GetKey(keyCode1, keyCode2);
         }
         /// <summary>
         /// 键盘组合按键按下（两个组合键）
@@ -262,14 +211,7 @@ namespace HT.Framework
         /// <returns>是否按下</returns>
         public bool GetKeyDown(KeyCode keyCode1, KeyCode keyCode2)
         {
-            if (IsEnableInputDevice)
-            {
-                if (Input.GetKeyDown(keyCode2) && Input.GetKey(keyCode1))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _helper.GetKeyDown(keyCode1, keyCode2);
         }
         /// <summary>
         /// 键盘组合按键抬起（两个组合键）
@@ -279,14 +221,7 @@ namespace HT.Framework
         /// <returns>是否抬起</returns>
         public bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2)
         {
-            if (IsEnableInputDevice)
-            {
-                if (Input.GetKeyUp(keyCode2) && Input.GetKey(keyCode1))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _helper.GetKeyUp(keyCode1, keyCode2);
         }
         /// <summary>
         /// 键盘组合按键按住（三个组合键）
@@ -297,7 +232,7 @@ namespace HT.Framework
         /// <returns>是否按住</returns>
         public bool GetKey(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
         {
-            return IsEnableInputDevice ? (Input.GetKey(keyCode1) && Input.GetKey(keyCode2) && Input.GetKey(keyCode3)) : false;
+            return _helper.GetKey(keyCode1, keyCode2, keyCode3);
         }
         /// <summary>
         /// 键盘组合按键按下（三个组合键）
@@ -308,14 +243,7 @@ namespace HT.Framework
         /// <returns>是否按下</returns>
         public bool GetKeyDown(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
         {
-            if (IsEnableInputDevice)
-            {
-                if (Input.GetKeyDown(keyCode3) && Input.GetKey(keyCode1) && Input.GetKey(keyCode2))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _helper.GetKeyDown(keyCode1, keyCode2, keyCode3);
         }
         /// <summary>
         /// 键盘组合按键抬起（三个组合键）
@@ -326,14 +254,7 @@ namespace HT.Framework
         /// <returns>是否抬起</returns>
         public bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
         {
-            if (IsEnableInputDevice)
-            {
-                if (Input.GetKeyUp(keyCode3) && Input.GetKey(keyCode1) && Input.GetKey(keyCode2))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _helper.GetKeyUp(keyCode1, keyCode2, keyCode3);
         }
 
         /// <summary>

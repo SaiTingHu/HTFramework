@@ -16,7 +16,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有的通信管道
         /// </summary>
-        public Dictionary<Type, ProtocolChannelBase> ProtocolChannels { get; set; } = new Dictionary<Type, ProtocolChannelBase>();
+        public Dictionary<Type, ProtocolChannelBase> ProtocolChannels { get; private set; } = new Dictionary<Type, ProtocolChannelBase>();
         /// <summary>
         /// 开始连接服务器事件
         /// </summary>
@@ -41,12 +41,60 @@ namespace HT.Framework
         /// 接收消息成功事件
         /// </summary>
         public event HTFAction<ProtocolChannelBase, INetworkMessage> ReceiveMessageEvent;
+        
+        /// <summary>
+        /// 初始化助手
+        /// </summary>
+        public void OnInitialization()
+        {
+
+        }
+        /// <summary>
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+
+        }
+        /// <summary>
+        /// 终结助手
+        /// </summary>
+        public void OnTermination()
+        {
+            foreach (var channel in ProtocolChannels)
+            {
+                channel.Value.OnTermination();
+            }
+
+            ProtocolChannels.Clear();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
 
         /// <summary>
-        /// 初始化
+        /// 加载通信管道
         /// </summary>
         /// <param name="channelTypes">启用的通信协议通道类型</param>
-        public void OnInitialization(List<string> channelTypes)
+        public void LoadProtocolChannels(List<string> channelTypes)
         {
             for (int i = 0; i < channelTypes.Count; i++)
             {
@@ -86,19 +134,6 @@ namespace HT.Framework
                 };
             }
         }
-        /// <summary>
-        /// 终结
-        /// </summary>
-        public void OnTermination()
-        {
-            foreach (var channel in ProtocolChannels)
-            {
-                channel.Value.OnTermination();
-            }
-
-            ProtocolChannels.Clear();
-        }
-        
         /// <summary>
         /// 通道是否已连接
         /// </summary>

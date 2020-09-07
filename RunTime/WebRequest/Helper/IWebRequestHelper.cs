@@ -11,17 +11,8 @@ namespace HT.Framework
         /// <summary>
         /// 所有网络接口
         /// </summary>
-        Dictionary<string, WebInterfaceBase> WebInterfaces { get; set; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        void OnInitialization();
-        /// <summary>
-        /// 销毁
-        /// </summary>
-        void OnTermination();
-
+        Dictionary<string, WebInterfaceBase> WebInterfaces { get; }
+        
         /// <summary>
         /// 注册接口（获取 string）
         /// </summary>

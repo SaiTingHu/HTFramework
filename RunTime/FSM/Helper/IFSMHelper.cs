@@ -11,11 +11,11 @@ namespace HT.Framework
         /// <summary>
         /// 已注册的状态机
         /// </summary>
-        Dictionary<string, FSM> FSMs { get; set; }
+        Dictionary<string, FSM> FSMs { get; }
         /// <summary>
         /// 已注册的状态机组
         /// </summary>
-        Dictionary<string, List<FSM>> FSMGroups { get; set; }
+        Dictionary<string, List<FSM>> FSMGroups { get; }
 
         /// <summary>
         /// 注册状态机

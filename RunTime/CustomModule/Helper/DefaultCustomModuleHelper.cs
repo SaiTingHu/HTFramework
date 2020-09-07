@@ -16,10 +16,10 @@ namespace HT.Framework
         /// <summary>
         /// 所有自定义模块
         /// </summary>
-        public Dictionary<string, CustomModuleBase> CustomModules { get; set; } = new Dictionary<string, CustomModuleBase>();
+        public Dictionary<string, CustomModuleBase> CustomModules { get; private set; } = new Dictionary<string, CustomModuleBase>();
 
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
         public void OnInitialization()
         {
@@ -42,7 +42,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 准备工作
+        /// 助手准备工作
         /// </summary>
         public void OnPreparatory()
         {
@@ -52,7 +52,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 刷新
+        /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
@@ -65,7 +65,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 终结
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
@@ -77,7 +77,7 @@ namespace HT.Framework
             CustomModules.Clear();
         }
         /// <summary>
-        /// 暂停
+        /// 暂停助手
         /// </summary>
         public void OnPause()
         {
@@ -87,7 +87,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 恢复
+        /// 恢复助手
         /// </summary>
         public void OnUnPause()
         {

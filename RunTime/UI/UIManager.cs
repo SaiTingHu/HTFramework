@@ -40,19 +40,6 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IUIHelper;
-            _helper.OnInitialization(DefineUINames, DefineUIEntitys);
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            _helper.OnRefresh();
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -8,6 +9,7 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultInputHelper : IInputHelper
     {
+        private bool _isEnableInputDevice = true;
         private Dictionary<string, VirtualAxis> _virtualAxes = new Dictionary<string, VirtualAxis>();
         private Dictionary<string, VirtualButton> _virtualButtons = new Dictionary<string, VirtualButton>();
 
@@ -16,9 +18,97 @@ namespace HT.Framework
         /// </summary>
         public InternalModuleBase Module { get; set; }
         /// <summary>
+        /// 输入设备
+        /// </summary>
+        public InputDeviceBase Device { get; private set; }
+        /// <summary>
+        /// 是否启用输入设备
+        /// </summary>
+        public bool IsEnableInputDevice
+        {
+            get
+            {
+                return _isEnableInputDevice;
+            }
+            set
+            {
+                _isEnableInputDevice = value;
+                if (!_isEnableInputDevice)
+                {
+                    ResetAll();
+                }
+            }
+        }
+        /// <summary>
         /// 鼠标位置
         /// </summary>
         public Vector3 MousePosition { get; set; }
+        /// <summary>
+        /// 任意键按住
+        /// </summary>
+        public bool AnyKey
+        {
+            get
+            {
+                return IsEnableInputDevice ? Input.anyKey : false;
+            }
+        }
+        /// <summary>
+        /// 任意键按下
+        /// </summary>
+        public bool AnyKeyDown
+        {
+            get
+            {
+                return IsEnableInputDevice ? Input.anyKeyDown : false;
+            }
+        }
+
+        /// <summary>
+        /// 初始化助手
+        /// </summary>
+        public void OnInitialization()
+        {
+            
+        }
+        /// <summary>
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+            Device.OnStartUp();
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+            if (IsEnableInputDevice)
+            {
+                Device.OnRun();
+            }
+        }
+        /// <summary>
+        /// 终结助手
+        /// </summary>
+        public void OnTermination()
+        {
+            Device.OnShutdown();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+            ResetAll();
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
 
         /// <summary>
         /// 是否存在虚拟轴线
@@ -146,6 +236,125 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 键盘按键按住
+        /// </summary>
+        /// <param name="keyCode">按键代码</param>
+        /// <returns>是否按住</returns>
+        public bool GetKey(KeyCode keyCode)
+        {
+            return IsEnableInputDevice ? Input.GetKey(keyCode) : false;
+        }
+        /// <summary>
+        /// 键盘按键按下
+        /// </summary>
+        /// <param name="keyCode">按键代码</param>
+        /// <returns>是否按下</returns>
+        public bool GetKeyDown(KeyCode keyCode)
+        {
+            return IsEnableInputDevice ? Input.GetKeyDown(keyCode) : false;
+        }
+        /// <summary>
+        /// 键盘按键抬起
+        /// </summary>
+        /// <param name="keyCode">按键代码</param>
+        /// <returns>是否抬起</returns>
+        public bool GetKeyUp(KeyCode keyCode)
+        {
+            return IsEnableInputDevice ? Input.GetKeyUp(keyCode) : false;
+        }
+        /// <summary>
+        /// 键盘组合按键按住（两个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <returns>是否按住</returns>
+        public bool GetKey(KeyCode keyCode1, KeyCode keyCode2)
+        {
+            return IsEnableInputDevice ? (Input.GetKey(keyCode1) && Input.GetKey(keyCode2)) : false;
+        }
+        /// <summary>
+        /// 键盘组合按键按下（两个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <returns>是否按下</returns>
+        public bool GetKeyDown(KeyCode keyCode1, KeyCode keyCode2)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyDown(keyCode2) && Input.GetKey(keyCode1))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 键盘组合按键抬起（两个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <returns>是否抬起</returns>
+        public bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyUp(keyCode2) && Input.GetKey(keyCode1))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 键盘组合按键按住（三个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <param name="keyCode3">按键3代码</param>
+        /// <returns>是否按住</returns>
+        public bool GetKey(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
+        {
+            return IsEnableInputDevice ? (Input.GetKey(keyCode1) && Input.GetKey(keyCode2) && Input.GetKey(keyCode3)) : false;
+        }
+        /// <summary>
+        /// 键盘组合按键按下（三个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <param name="keyCode3">按键3代码</param>
+        /// <returns>是否按下</returns>
+        public bool GetKeyDown(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyDown(keyCode3) && Input.GetKey(keyCode1) && Input.GetKey(keyCode2))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 键盘组合按键抬起（三个组合键）
+        /// </summary>
+        /// <param name="keyCode1">按键1代码</param>
+        /// <param name="keyCode2">按键2代码</param>
+        /// <param name="keyCode3">按键3代码</param>
+        /// <returns>是否抬起</returns>
+        public bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
+        {
+            if (IsEnableInputDevice)
+            {
+                if (Input.GetKeyUp(keyCode3) && Input.GetKey(keyCode1) && Input.GetKey(keyCode2))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 设置按钮按下
         /// </summary>
         /// <param name="name">按钮名称</param>
@@ -218,7 +427,30 @@ namespace HT.Framework
             }
             _virtualAxes[name].Update(value);
         }
-        
+
+        /// <summary>
+        /// 加载输入设备
+        /// </summary>
+        /// <param name="deviceType">输入设备类型</param>
+        public void LoadDevice(string deviceType)
+        {
+            Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(deviceType);
+            if (type != null)
+            {
+                if (type.IsSubclassOf(typeof(InputDeviceBase)))
+                {
+                    Device = Activator.CreateInstance(type) as InputDeviceBase;
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：输入设备类 " + deviceType + " 必须继承至输入设备基类：InputDeviceBase！");
+                }
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：丢失输入设备类 " + deviceType + "！");
+            }
+        }
         /// <summary>
         /// 清除所有输入状态
         /// </summary>

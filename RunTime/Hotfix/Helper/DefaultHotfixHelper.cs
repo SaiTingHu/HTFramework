@@ -20,26 +20,26 @@ namespace HT.Framework
         /// <summary>
         /// 热更新DLL
         /// </summary>
-        public TextAsset HotfixDll { get; set; }
+        public TextAsset HotfixDll { get; private set; }
         /// <summary>
         /// 热更新程序集
         /// </summary>
-        public Assembly HotfixAssembly { get; set; }
+        public Assembly HotfixAssembly { get; private set; }
         /// <summary>
         /// 热更新环境
         /// </summary>
-        public object HotfixEnvironment { get; set; }
+        public object HotfixEnvironment { get; private set; }
         /// <summary>
         /// 热修复目标方法
         /// </summary>
-        public Dictionary<HotfixMethodType, Dictionary<string, MethodInfo>> FixedMethods { get; set; } = new Dictionary<HotfixMethodType, Dictionary<string, MethodInfo>>();
+        public Dictionary<HotfixMethodType, Dictionary<string, MethodInfo>> FixedMethods { get; private set; } = new Dictionary<HotfixMethodType, Dictionary<string, MethodInfo>>();
         /// <summary>
         /// 热修复后的方法
         /// </summary>
-        public Dictionary<HotfixMethodType, Dictionary<string, Delegate>> FixedDelegates { get; set; } = new Dictionary<HotfixMethodType, Dictionary<string, Delegate>>();
-
+        public Dictionary<HotfixMethodType, Dictionary<string, Delegate>> FixedDelegates { get; private set; } = new Dictionary<HotfixMethodType, Dictionary<string, Delegate>>();
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
         public void OnInitialization()
         {
@@ -55,7 +55,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 准备工作
+        /// 助手准备工作
         /// </summary>
         public void OnPreparatory()
         {
@@ -71,7 +71,14 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 终结
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+
+        }
+        /// <summary>
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
@@ -80,6 +87,20 @@ namespace HT.Framework
             HotfixEnvironment = null;
             FixedMethods.Clear();
             FixedDelegates.Clear();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
         }
 
         /// <summary>

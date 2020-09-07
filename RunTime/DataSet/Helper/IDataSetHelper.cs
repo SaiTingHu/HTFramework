@@ -9,13 +9,9 @@ namespace HT.Framework
     public interface IDataSetHelper : IInternalModuleHelper
     {
         /// <summary>
-        /// 初始化
+        /// 所有数据集
         /// </summary>
-        void OnInitialization();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
+        Dictionary<Type, List<DataSetBase>> DataSets { get; }
 
         /// <summary>
         /// 添加数据集至数据集仓库

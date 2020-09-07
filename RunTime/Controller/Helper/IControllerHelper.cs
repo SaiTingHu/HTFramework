@@ -15,7 +15,7 @@ namespace HT.Framework
         /// <summary>
         /// 主摄像机
         /// </summary>
-        Camera MainCamera { get; set; }
+        Camera MainCamera { get; }
         /// <summary>
         /// 自由控制：当前摄像机注视点
         /// </summary>
@@ -68,20 +68,10 @@ namespace HT.Framework
         /// 是否启用鼠标射线击中提示框
         /// </summary>
         bool EnableMouseRayHitPrompt { get; set; }
-
         /// <summary>
-        /// 初始化
+        /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
-        /// <param name="rayAction">射线击中事件</param>
-        void OnInitialization(HTFAction<MouseRayTargetBase, Vector3, Vector2> rayAction);
-        /// <summary>
-        /// 刷新
-        /// </summary>
-        void OnRefresh();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
+        event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
         
         /// <summary>
         /// 自由控制：设置摄像机注视点
@@ -113,5 +103,21 @@ namespace HT.Framework
         /// <param name="content">提示文字框</param>
         /// <param name="uIType">提示框UI类型</param>
         void SetMouseRayFocusImage(Image background, Text content, UIType uIType = UIType.Overlay);
+
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="callback">点击事件回调</param>
+        void AddClickListener(GameObject target, HTFAction callback);
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        void RemoveClickListener(GameObject target);
+        /// <summary>
+        /// 清空所有点击事件
+        /// </summary>
+        void ClearClickListener();
     }
 }

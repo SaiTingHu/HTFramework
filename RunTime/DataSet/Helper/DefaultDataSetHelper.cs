@@ -9,15 +9,17 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultDataSetHelper : IDataSetHelper
     {
-        private Dictionary<Type, List<DataSetBase>> _dataSets = new Dictionary<Type, List<DataSetBase>>();
-
         /// <summary>
         /// 数据集管理器
         /// </summary>
         public InternalModuleBase Module { get; set; }
-
         /// <summary>
-        /// 初始化
+        /// 所有数据集
+        /// </summary>
+        public Dictionary<Type, List<DataSetBase>> DataSets { get; private set; } = new Dictionary<Type, List<DataSetBase>>();
+        
+        /// <summary>
+        /// 初始化助手
         /// </summary>
         public void OnInitialization()
         {
@@ -27,19 +29,47 @@ namespace HT.Framework
             });
             for (int i = 0; i < types.Count; i++)
             {
-                _dataSets.Add(types[i], new List<DataSetBase>());
+                DataSets.Add(types[i], new List<DataSetBase>());
             }
         }
         /// <summary>
-        /// 终结
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+            
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+            
+        }
+        /// <summary>
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
-            foreach (var dataset in _dataSets)
+            foreach (var dataset in DataSets)
             {
                 dataset.Value.Clear();
             }
-            _dataSets.Clear();
+            DataSets.Clear();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+            
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+            
         }
 
         /// <summary>
@@ -54,11 +84,11 @@ namespace HT.Framework
             }
 
             Type type = dataSet.GetType();
-            if (!_dataSets.ContainsKey(type))
+            if (!DataSets.ContainsKey(type))
             {
-                _dataSets.Add(type, new List<DataSetBase>());
+                DataSets.Add(type, new List<DataSetBase>());
             }
-            _dataSets[type].Add(dataSet);
+            DataSets[type].Add(dataSet);
         }
         /// <summary>
         /// 从数据集仓库中移除数据集
@@ -72,13 +102,13 @@ namespace HT.Framework
             }
 
             Type type = dataSet.GetType();
-            if (!_dataSets.ContainsKey(type))
+            if (!DataSets.ContainsKey(type))
             {
-                _dataSets.Add(type, new List<DataSetBase>());
+                DataSets.Add(type, new List<DataSetBase>());
             }
-            if (_dataSets[type].Contains(dataSet))
+            if (DataSets[type].Contains(dataSet))
             {
-                _dataSets[type].Remove(dataSet);
+                DataSets[type].Remove(dataSet);
             }
         }
         /// <summary>
@@ -89,14 +119,14 @@ namespace HT.Framework
         /// <returns>新建的数据集</returns>
         public DataSetBase CreateDataSet(Type type, JsonData data = null)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
                 DataSetBase dataSet = ScriptableObject.CreateInstance(type) as DataSetBase;
                 if (data != null)
                 {
                     dataSet.Fill(data);
                 }
-                _dataSets[type].Add(dataSet);
+                DataSets[type].Add(dataSet);
                 return dataSet;
             }
             else
@@ -112,9 +142,9 @@ namespace HT.Framework
         /// <returns>数据集列表</returns>
         public List<DataSetBase> GetAllDataSets(Type type)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
-                return _dataSets[type];
+                return DataSets[type];
             }
             else
             {
@@ -129,9 +159,9 @@ namespace HT.Framework
         /// <returns>数据集列表</returns>
         public List<DataSetBase> GetAllDataSets(Type type, Predicate<DataSetBase> match)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
-                return _dataSets[type].FindAll(match);
+                return DataSets[type].FindAll(match);
             }
             else
             {
@@ -147,9 +177,9 @@ namespace HT.Framework
         /// <returns>数据集</returns>
         public DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
-                return _dataSets[type].Find(match);
+                return DataSets[type].Find(match);
             }
             else
             {
@@ -164,14 +194,14 @@ namespace HT.Framework
         /// <returns>数据集</returns>
         public DataSetBase GetDataSet(Type type, bool isCut = false)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
-                if (_dataSets[type].Count > 0)
+                if (DataSets[type].Count > 0)
                 {
-                    DataSetBase dataset = _dataSets[type][0];
+                    DataSetBase dataset = DataSets[type][0];
                     if (isCut)
                     {
-                        _dataSets[type].RemoveAt(0);
+                        DataSets[type].RemoveAt(0);
                     }
                     return dataset;
                 }
@@ -194,14 +224,14 @@ namespace HT.Framework
         /// <returns>数据集</returns>
         public DataSetBase GetDataSet(Type type, int index, bool isCut = false)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
-                if (index >= 0 && index < _dataSets[type].Count)
+                if (index >= 0 && index < DataSets[type].Count)
                 {
-                    DataSetBase dataset = _dataSets[type][index];
+                    DataSetBase dataset = DataSets[type][index];
                     if (isCut)
                     {
-                        _dataSets[type].RemoveAt(index);
+                        DataSets[type].RemoveAt(index);
                     }
                     return dataset;
                 }
@@ -223,9 +253,9 @@ namespace HT.Framework
         /// <returns>数据集数量</returns>
         public int GetCount(Type type)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
-                return _dataSets[type].Count;
+                return DataSets[type].Count;
             }
             else
             {
@@ -239,9 +269,9 @@ namespace HT.Framework
         /// <param name="type">数据集类型</param>
         public void ClearDataSet(Type type)
         {
-            if (_dataSets.ContainsKey(type))
+            if (DataSets.ContainsKey(type))
             {
-                _dataSets[type].Clear();
+                DataSets[type].Clear();
             }
             else
             {

@@ -15,11 +15,54 @@ namespace HT.Framework
         /// <summary>
         /// 已注册的状态机
         /// </summary>
-        public Dictionary<string, FSM> FSMs { get; set; } = new Dictionary<string, FSM>();
+        public Dictionary<string, FSM> FSMs { get; private set; } = new Dictionary<string, FSM>();
         /// <summary>
         /// 已注册的状态机组
         /// </summary>
-        public Dictionary<string, List<FSM>> FSMGroups { get; set; } = new Dictionary<string, List<FSM>>();
+        public Dictionary<string, List<FSM>> FSMGroups { get; private set; } = new Dictionary<string, List<FSM>>();
+
+        /// <summary>
+        /// 初始化助手
+        /// </summary>
+        public void OnInitialization()
+        {
+            
+        }
+        /// <summary>
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+            
+        }
+        /// <summary>
+        /// 终结助手
+        /// </summary>
+        public void OnTermination()
+        {
+            
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
 
         /// <summary>
         /// 注册状态机

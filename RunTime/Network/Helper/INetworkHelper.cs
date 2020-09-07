@@ -11,7 +11,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有的通信管道
         /// </summary>
-        Dictionary<Type, ProtocolChannelBase> ProtocolChannels { get; set; }
+        Dictionary<Type, ProtocolChannelBase> ProtocolChannels { get; }
         /// <summary>
         /// 开始连接服务器事件
         /// </summary>
@@ -38,15 +38,10 @@ namespace HT.Framework
         event HTFAction<ProtocolChannelBase, INetworkMessage> ReceiveMessageEvent;
 
         /// <summary>
-        /// 初始化
+        /// 加载通信管道
         /// </summary>
         /// <param name="channelTypes">启用的通信协议通道类型</param>
-        void OnInitialization(List<string> channelTypes);
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        void LoadProtocolChannels(List<string> channelTypes);
         /// <summary>
         /// 通道是否已连接
         /// </summary>

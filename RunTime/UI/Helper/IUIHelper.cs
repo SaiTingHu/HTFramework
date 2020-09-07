@@ -10,9 +10,21 @@ namespace HT.Framework
     public interface IUIHelper : IInternalModuleHelper
     {
         /// <summary>
+        /// 所有Overlay类型的UI
+        /// </summary>
+        Dictionary<Type, UILogicBase> OverlayUIs { get; }
+        /// <summary>
+        /// 所有Camera类型的UI
+        /// </summary>
+        Dictionary<Type, UILogicBase> CameraUIs { get; }
+        /// <summary>
+        /// 所有World类型的UI
+        /// </summary>
+        Dictionary<string, UIManager.WorldUIDomain> WorldUIs { get; }
+        /// <summary>
         /// Camera类型UI的摄像机
         /// </summary>
-        Camera UICamera { get; set; }
+        Camera UICamera { get; }
         /// <summary>
         /// Overlay类型的UI根节点
         /// </summary>
@@ -35,21 +47,6 @@ namespace HT.Framework
         /// 是否隐藏所有UI实体
         /// </summary>
         bool IsHideAll { get; set; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="defineUINames">预定义的UI名称</param>
-        /// <param name="defineUIEntitys">预定义的UI对象</param>
-        void OnInitialization(List<string> defineUINames, List<GameObject> defineUIEntitys);
-        /// <summary>
-        /// 逻辑刷新
-        /// </summary>
-        void OnRefresh();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
 
         /// <summary>
         /// 预加载常驻UI

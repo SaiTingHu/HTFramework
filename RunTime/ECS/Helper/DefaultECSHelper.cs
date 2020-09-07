@@ -15,19 +15,19 @@ namespace HT.Framework
         /// <summary>
         /// 所有系统【系统类型，系统对象】
         /// </summary>
-        public Dictionary<Type, ECS_System> Systems { get; set; } = new Dictionary<Type, ECS_System>();
+        public Dictionary<Type, ECS_System> Systems { get; private set; } = new Dictionary<Type, ECS_System>();
         /// <summary>
         /// 所有实体【实体ID，实体对象】
         /// </summary>
-        public Dictionary<string, ECS_Entity> Entities { get; set; } = new Dictionary<string, ECS_Entity>();
+        public Dictionary<string, ECS_Entity> Entities { get; private set; } = new Dictionary<string, ECS_Entity>();
 
         /// <summary>
         /// 当前ECS环境是否是脏的
         /// </summary>
         private bool _isDirty = false;
-
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
         public void OnInitialization()
         {
@@ -41,7 +41,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 准备工作
+        /// 助手准备工作
         /// </summary>
         public void OnPreparatory()
         {
@@ -51,7 +51,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 刷新
+        /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
@@ -84,14 +84,28 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 终结
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
             Systems.Clear();
             Entities.Clear();
         }
-        
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
+
         /// <summary>
         /// 设置ECS环境为脏的，触发ECS环境重新刷新
         /// </summary>

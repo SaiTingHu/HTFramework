@@ -22,6 +22,7 @@ namespace HT.Framework
         private float _oneShootVolume = 1;
         private Tweener _bgPauseTweener;
         private Tweener _singlePauseTweener;
+        private bool _singlePlayDetector = false;
 
         /// <summary>
         /// 音频管理器
@@ -30,23 +31,23 @@ namespace HT.Framework
         /// <summary>
         /// 背景音乐音源
         /// </summary>
-        public AudioSource BackgroundSource { get; set; }
+        public AudioSource BackgroundSource { get; private set; }
         /// <summary>
         /// 单通道音效音源
         /// </summary>
-        public AudioSource SingleSource { get; set; }
+        public AudioSource SingleSource { get; private set; }
         /// <summary>
         /// 多通道音效音源
         /// </summary>
-        public List<AudioSource> MultipleSources { get; set; } = new List<AudioSource>();
+        public List<AudioSource> MultipleSources { get; private set; } = new List<AudioSource>();
         /// <summary>
         /// 世界音效音源
         /// </summary>
-        public Dictionary<GameObject, AudioSource> WorldSources { get; set; } = new Dictionary<GameObject, AudioSource>();
+        public Dictionary<GameObject, AudioSource> WorldSources { get; private set; } = new Dictionary<GameObject, AudioSource>();
         /// <summary>
         /// OneShoot音源
         /// </summary>
-        public AudioSource OneShootSource { get; set; }
+        public AudioSource OneShootSource { get; private set; }
         /// <summary>
         /// 静音
         /// </summary>
@@ -288,9 +289,57 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 单通道音效播放标记
+        /// 单通道音效播放结束事件，参数为播放结束时的音频剪辑名称
         /// </summary>
-        public bool SingleSoundPlayDetector { get; set; } = false;
+        public event HTFAction<string> SingleSoundEndOfPlayEvent;
+
+        /// <summary>
+        /// 初始化助手
+        /// </summary>
+        public void OnInitialization()
+        {
+            BackgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", Module.transform);
+            SingleSource = AudioToolkit.CreateAudioSource("SingleSource", Module.transform);
+            OneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", Module.transform);
+        }
+        /// <summary>
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        { }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+            if (_singlePlayDetector)
+            {
+                if (!SingleSource.isPlaying)
+                {
+                    _singlePlayDetector = false;
+                    SingleSoundEndOfPlayEvent?.Invoke(SingleSource.clip.name);
+                }
+            }
+        }
+        /// <summary>
+        /// 终结助手
+        /// </summary>
+        public void OnTermination()
+        { }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+            Mute = true;
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+            Mute = false;
+        }
 
         /// <summary>
         /// 播放背景音乐
@@ -406,7 +455,7 @@ namespace HT.Framework
             SingleSource.loop = isLoop;
             SingleSource.pitch = speed;
             SingleSource.Play();
-            SingleSoundPlayDetector = true;
+            _singlePlayDetector = true;
         }
         /// <summary>
         /// 播放单通道音效
@@ -421,7 +470,7 @@ namespace HT.Framework
 
             SingleSource.clip = clip;
             SingleSource.Play();
-            SingleSoundPlayDetector = true;
+            _singlePlayDetector = true;
         }
         /// <summary>
         /// 暂停播放单通道音效

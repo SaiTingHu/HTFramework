@@ -67,7 +67,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as INetworkHelper;
-            _helper.OnInitialization(ChannelTypes);
+            _helper.LoadProtocolChannels(ChannelTypes);
             _helper.BeginConnectServerEvent += (cha) =>
             {
                 BeginConnectServerEvent?.Invoke(cha);
@@ -92,12 +92,6 @@ namespace HT.Framework
             {
                 ReceiveMessageEvent?.Invoke(cha, mes);
             };
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
         }
 
         /// <summary>

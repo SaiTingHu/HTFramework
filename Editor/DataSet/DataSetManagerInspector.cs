@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +10,6 @@ namespace HT.Framework
     internal sealed class DataSetManagerInspector : InternalModuleInspector<DataSetManager>
     {
         private IDataSetHelper _dataSetHelper;
-        private Dictionary<Type, List<DataSetBase>> _dataSets;
 
         protected override string Intro
         {
@@ -34,22 +31,21 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _dataSetHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IDataSetHelper;
-            _dataSets = _dataSetHelper.GetType().GetField("_dataSets", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_dataSetHelper) as Dictionary<Type, List<DataSetBase>>;
+            _dataSetHelper = _helper as IDataSetHelper;
         }
 
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
 
-            if (_dataSets.Count == 0)
+            if (_dataSetHelper.DataSets.Count == 0)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("No Runtime Data!");
                 GUILayout.EndHorizontal();
             }
 
-            foreach (var item in _dataSets)
+            foreach (var item in _dataSetHelper.DataSets)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("DataSet Type: " + item.Key.Name);

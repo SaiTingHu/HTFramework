@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,7 +33,7 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _ECSHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IECSHelper;
+            _ECSHelper = _helper as IECSHelper;
             _systemFoldouts = new Dictionary<string, bool>();
 
             foreach (var system in _ECSHelper.Systems)

@@ -11,23 +11,23 @@ namespace HT.Framework
         /// <summary>
         /// 背景音乐音源
         /// </summary>
-        AudioSource BackgroundSource { get; set; }
+        AudioSource BackgroundSource { get; }
         /// <summary>
         /// 单通道音效音源
         /// </summary>
-        AudioSource SingleSource { get; set; }
+        AudioSource SingleSource { get; }
         /// <summary>
         /// 多通道音效音源
         /// </summary>
-        List<AudioSource> MultipleSources { get; set; }
+        List<AudioSource> MultipleSources { get; }
         /// <summary>
         /// 世界音效音源
         /// </summary>
-        Dictionary<GameObject, AudioSource> WorldSources { get; set; }
+        Dictionary<GameObject, AudioSource> WorldSources { get; }
         /// <summary>
         /// OneShoot音源
         /// </summary>
-        AudioSource OneShootSource { get; set; }
+        AudioSource OneShootSource { get; }
         /// <summary>
         /// 静音
         /// </summary>
@@ -81,9 +81,9 @@ namespace HT.Framework
         /// </summary>
         float OneShootVolume { get; set; }
         /// <summary>
-        /// 单通道音效播放标记
+        /// 单通道音效播放结束事件，参数为播放结束时的音频剪辑名称
         /// </summary>
-        bool SingleSoundPlayDetector { get; set; }
+        event HTFAction<string> SingleSoundEndOfPlayEvent;
 
         /// <summary>
         /// 播放背景音乐

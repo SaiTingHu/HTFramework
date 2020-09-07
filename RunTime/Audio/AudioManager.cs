@@ -53,11 +53,7 @@ namespace HT.Framework
         /// OneShoot音效音量初始值【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal float OneShootVolumeDefault = 1;
-
-        /// <summary>
-        /// 单通道音效播放结束事件，参数为播放结束时的音频剪辑名称
-        /// </summary>
-        public event HTFAction<string> SingleSoundEndOfPlayEvent;
+        
         /// <summary>
         /// 静音
         /// </summary>
@@ -232,6 +228,10 @@ namespace HT.Framework
                 _helper.OneShootVolume = value;
             }
         }
+        /// <summary>
+        /// 单通道音效播放结束事件，参数为播放结束时的音频剪辑名称
+        /// </summary>
+        public event HTFAction<string> SingleSoundEndOfPlayEvent;
 
         private IAudioHelper _helper;
 
@@ -240,53 +240,19 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IAudioHelper;
-            _helper.BackgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", BackgroundPriorityDefault, BackgroundVolumeDefault, 1, 0, MuteDefault, transform);
-            _helper.SingleSource = AudioToolkit.CreateAudioSource("SingleSource", SinglePriorityDefault, SingleVolumeDefault, 1, 0, MuteDefault, transform);
-            _helper.OneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", OneShootPriorityDefault, OneShootVolumeDefault, 1, 0, MuteDefault, transform);
+            _helper.SingleSoundEndOfPlayEvent += SingleSoundEndOfPlayEvent;
 
             Mute = MuteDefault;
             BackgroundPriority = BackgroundPriorityDefault;
             SinglePriority = SinglePriorityDefault;
             MultiplePriority = MultiplePriorityDefault;
             WorldPriority = WorldPriorityDefault;
+            OneShootPriority= OneShootPriorityDefault;
             BackgroundVolume = BackgroundVolumeDefault;
             SingleVolume = SingleVolumeDefault;
             MultipleVolume = MultipleVolumeDefault;
             WorldVolume = WorldVolumeDefault;
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            if (_helper.SingleSoundPlayDetector)
-            {
-                if (!_helper.SingleSource.isPlaying)
-                {
-                    _helper.SingleSoundPlayDetector = false;
-                    SingleSoundEndOfPlayEvent?.Invoke(_helper.SingleSource.clip.name);
-                }
-            }
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            StopBackgroundMusic();
-            StopSingleSound();
-            StopAllMultipleSound();
-            StopAllWorldSound();
-        }
-        internal override void OnPause()
-        {
-            base.OnPause();
-
-            Mute = true;
-        }
-        internal override void OnUnPause()
-        {
-            base.OnUnPause();
-
-            Mute = false;
+            OneShootVolume= OneShootVolumeDefault;
         }
 
         /// <summary>

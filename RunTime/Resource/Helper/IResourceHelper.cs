@@ -12,45 +12,44 @@ namespace HT.Framework
         /// <summary>
         /// 当前的资源加载模式
         /// </summary>
-        ResourceLoadMode LoadMode { get; set; }
+        ResourceLoadMode LoadMode { get; }
         /// <summary>
         /// 是否是编辑器模式
         /// </summary>
-        bool IsEditorMode { get; set; }
+        bool IsEditorMode { get; }
         /// <summary>
         /// AssetBundle资源加载根路径
         /// </summary>
-        string AssetBundleRootPath { get; set; }
+        string AssetBundleRootPath { get; }
         /// <summary>
         /// 是否缓存AB包
         /// </summary>
-        bool IsCacheAssetBundle { get; set; }
+        bool IsCacheAssetBundle { get; }
         /// <summary>
         /// 所有AssetBundle资源包清单的名称
         /// </summary>
-        string AssetBundleManifestName { get; set; }
+        string AssetBundleManifestName { get; }
         /// <summary>
         /// 缓存的所有AssetBundle包【AB包名称、AB包】
         /// </summary>
-        Dictionary<string, AssetBundle> AssetBundles { get; set; }
+        Dictionary<string, AssetBundle> AssetBundles { get; }
         /// <summary>
         /// 所有AssetBundle资源包清单
         /// </summary>
-        AssetBundleManifest AssetBundleManifest { get; set; }
+        AssetBundleManifest AssetBundleManifest { get; }
         /// <summary>
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
-        Dictionary<string, Hash128> AssetBundleHashs { get; set; }
+        Dictionary<string, Hash128> AssetBundleHashs { get; }
 
         /// <summary>
-        /// 初始化
+        /// 设置加载器
         /// </summary>
-        void OnInitialization(ResourceLoadMode loadMode, bool isEditorMode, bool isCacheAssetBundle, string manifestName);
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        /// <param name="loadMode">加载模式</param>
+        /// <param name="isEditorMode">是否是编辑器模式</param>
+        /// <param name="isCacheAssetBundle">是否缓存AB包</param>
+        /// <param name="manifestName">AB包清单名称</param>
+        void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, bool isCacheAssetBundle, string manifestName);
         /// <summary>
         /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
         /// </summary>

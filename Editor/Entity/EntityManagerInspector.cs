@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,8 +11,6 @@ namespace HT.Framework
     internal sealed class EntityManagerInspector : InternalModuleInspector<EntityManager>
     {
         private IEntityHelper _entityHelper;
-        private Dictionary<Type, List<EntityLogicBase>> _entities;
-        private Dictionary<Type, Queue<GameObject>> _objectPool;
         private Dictionary<Type, bool> _entityFoldouts;
         private Dictionary<Type, bool> _objectPoolFoldouts;
 
@@ -37,12 +34,10 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _entityHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IEntityHelper;
-            _entities = _entityHelper.GetType().GetField("_entities", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_entityHelper) as Dictionary<Type, List<EntityLogicBase>>;
-            _objectPool = _entityHelper.GetType().GetField("_objectPool", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_entityHelper) as Dictionary<Type, Queue<GameObject>>;
+            _entityHelper = _helper as IEntityHelper;
             _entityFoldouts = new Dictionary<Type, bool>();
             _objectPoolFoldouts = new Dictionary<Type, bool>();
-            foreach (var entity in _entities)
+            foreach (var entity in _entityHelper.Entities)
             {
                 _entityFoldouts.Add(entity.Key, true);
                 _objectPoolFoldouts.Add(entity.Key, true);
@@ -139,14 +134,14 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
-            if (_entities.Count == 0 && _objectPool.Count == 0)
+            if (_entityHelper.Entities.Count == 0 && _entityHelper.ObjectPools.Count == 0)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("No Runtime Data!");
                 GUILayout.EndHorizontal();
             }
 
-            foreach (var entity in _entities)
+            foreach (var entity in _entityHelper.Entities)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);
@@ -164,12 +159,12 @@ namespace HT.Framework
                         GUI.enabled = !entity.Value[i].IsShowed;
                         if (GUILayout.Button("Show", EditorStyles.miniButtonLeft, GUILayout.Width(40)))
                         {
-                            Main.m_Entity.ShowEntity(entity.Value[i]);
+                            Target.ShowEntity(entity.Value[i]);
                         }
                         GUI.enabled = entity.Value[i].IsShowed;
                         if (GUILayout.Button("Hide", EditorStyles.miniButtonRight, GUILayout.Width(40)))
                         {
-                            Main.m_Entity.HideEntity(entity.Value[i]);
+                            Target.HideEntity(entity.Value[i]);
                         }
                         GUI.enabled = true;
                         GUILayout.EndHorizontal();
@@ -177,7 +172,7 @@ namespace HT.Framework
                 }
             }
 
-            foreach (var pool in _objectPool)
+            foreach (var pool in _entityHelper.ObjectPools)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);

@@ -16,15 +16,15 @@ namespace HT.Framework
         /// <summary>
         /// 当前流程
         /// </summary>
-        public ProcedureBase CurrentProcedure { get; set; }
+        public ProcedureBase CurrentProcedure { get; private set; }
         /// <summary>
         /// 所有流程
         /// </summary>
-        public Dictionary<Type, ProcedureBase> Procedures { get; set; } = new Dictionary<Type, ProcedureBase>();
+        public Dictionary<Type, ProcedureBase> Procedures { get; private set; } = new Dictionary<Type, ProcedureBase>();
         /// <summary>
         /// 所有流程的类型
         /// </summary>
-        public List<Type> ProcedureTypes { get; set; } = new List<Type>();
+        public List<Type> ProcedureTypes { get; private set; } = new List<Type>();
         /// <summary>
         /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
         /// </summary>
@@ -32,18 +32,18 @@ namespace HT.Framework
 
         private float _timer = 0;
         private string _defaultProcedure;
-
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
-        /// <param name="activatedProcedures">激活的流程列表</param>
-        /// <param name="defaultProcedure">默认流程名称</param>
-        public void OnInitialization(List<string> activatedProcedures, string defaultProcedure)
+        public void OnInitialization()
         {
+            ProcedureManager manager = Module as ProcedureManager;
+
             //创建所有已激活的流程对象
-            for (int i = 0; i < activatedProcedures.Count; i++)
+            for (int i = 0; i < manager.ActivatedProcedures.Count; i++)
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(activatedProcedures[i]);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(manager.ActivatedProcedures[i]);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(ProcedureBase)))
@@ -56,18 +56,18 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：流程 " + activatedProcedures[i] + " 必须继承至流程基类：ProcedureBase！");
+                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：流程 " + manager.ActivatedProcedures[i] + " 必须继承至流程基类：ProcedureBase！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：丢失流程 " + activatedProcedures[i] + "！");
+                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：丢失流程 " + manager.ActivatedProcedures[i] + "！");
                 }
             }
-            _defaultProcedure = defaultProcedure;
+            _defaultProcedure = manager.DefaultProcedure;
         }
         /// <summary>
-        /// 准备工作
+        /// 助手准备工作
         /// </summary>
         public void OnPreparatory()
         {
@@ -100,7 +100,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 刷新
+        /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
@@ -120,14 +120,28 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 终结
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
             Procedures.Clear();
             ProcedureTypes.Clear();
         }
-        
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
+
         /// <summary>
         /// 获取流程
         /// </summary>

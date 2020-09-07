@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -8,12 +9,12 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultControllerHelper : IControllerHelper
     {
-        private ControllerManager _module;
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
         private MouseRay _mouseRay;
         private HighlightingEffect _highlightingEffect;
+        private Dictionary<MouseRayTargetBase, HTFAction> _mouseClickTargets = new Dictionary<MouseRayTargetBase, HTFAction>();
 
         /// <summary>
         /// 操作控制器
@@ -26,7 +27,7 @@ namespace HT.Framework
         /// <summary>
         /// 主摄像机
         /// </summary>
-        public Camera MainCamera { get; set; }
+        public Camera MainCamera { get; private set; }
         /// <summary>
         /// 自由控制：当前摄像机注视点
         /// </summary>
@@ -203,16 +204,18 @@ namespace HT.Framework
                 _mouseRay.IsOpenPrompt = value;
             }
         }
+        /// <summary>
+        /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
+        /// </summary>
+        public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
 
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
-        /// <param name="rayAction">射线击中事件</param>
-        public void OnInitialization(HTFAction<MouseRayTargetBase, Vector3, Vector2> rayAction)
+        public void OnInitialization()
         {
-            _module = Module as ControllerManager;
-            MainCamera = _module.transform.GetComponentByChild<Camera>("MainCamera");
-            _cameraTarget = _module.transform.GetComponentByChild<CameraTarget>("CameraTarget");
+            MainCamera = Module.GetComponentByChild<Camera>("MainCamera");
+            _cameraTarget = Module.GetComponentByChild<CameraTarget>("CameraTarget");
             _mousePosition = MainCamera.GetComponent<MousePosition>();
             _mouseRotation = MainCamera.GetComponent<MouseRotation>();
             _mouseRay = MainCamera.GetComponent<MouseRay>();
@@ -220,14 +223,19 @@ namespace HT.Framework
 
             _mousePosition.Target = _cameraTarget;
             _mousePosition.MR = _mouseRotation;
-            _mousePosition.Manager = _module;
+            _mousePosition.Manager = Module as ControllerManager;
             _mouseRotation.Target = _cameraTarget;
-            _mouseRotation.Manager = _module;
+            _mouseRotation.Manager = Module as ControllerManager;
             _mouseRay.RayCamera = MainCamera;
-            _mouseRay.RayEvent += rayAction;
+            _mouseRay.RayEvent += RayEvent;
         }
         /// <summary>
-        /// 刷新
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        { }
+        /// <summary>
+        /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
@@ -239,13 +247,49 @@ namespace HT.Framework
                     _mouseRotation.OnRefresh();
                     break;
             }
+
+            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
+            {
+                if (RayTarget != null)
+                {
+                    if (_mouseClickTargets.ContainsKey(RayTarget))
+                    {
+                        _mouseClickTargets[RayTarget]?.Invoke();
+                    }
+                }
+            }
+            if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeftDoubleClick))
+            {
+                if (RayTarget != null)
+                {
+                    MouseRayTarget target = RayTarget as MouseRayTarget;
+                    if (target && target.IsDoubleClickFocus)
+                    {
+                        SetLookPoint(target.transform.position);
+                    }
+                }
+            }
         }
         /// <summary>
-        /// 终结
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
-
+            ClearClickListener();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+            
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+            
         }
         
         /// <summary>
@@ -308,6 +352,45 @@ namespace HT.Framework
             _mouseRay.RayHitBG = background;
             _mouseRay.RayHitText = content;
             _mouseRay.RayHitImageType = uIType;
+        }
+
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="callback">点击事件回调</param>
+        public void AddClickListener(GameObject target, HTFAction callback)
+        {
+            MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
+            if (mouseRayTargetBase)
+            {
+                if (!_mouseClickTargets.ContainsKey(mouseRayTargetBase))
+                {
+                    _mouseClickTargets.Add(mouseRayTargetBase, callback);
+                }
+            }
+        }
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        public void RemoveClickListener(GameObject target)
+        {
+            MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
+            if (mouseRayTargetBase)
+            {
+                if (_mouseClickTargets.ContainsKey(mouseRayTargetBase))
+                {
+                    _mouseClickTargets.Remove(mouseRayTargetBase);
+                }
+            }
+        }
+        /// <summary>
+        /// 清空所有点击事件
+        /// </summary>
+        public void ClearClickListener()
+        {
+            _mouseClickTargets.Clear();
         }
     }
 }

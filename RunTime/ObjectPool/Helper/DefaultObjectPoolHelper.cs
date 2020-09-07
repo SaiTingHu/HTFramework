@@ -15,27 +15,54 @@ namespace HT.Framework
         /// <summary>
         /// 所有对象池
         /// </summary>
-        public Dictionary<string, ObjectSpawnPool> SpawnPools { get; set; } = new Dictionary<string, ObjectSpawnPool>();
+        public Dictionary<string, ObjectSpawnPool> SpawnPools { get; private set; } = new Dictionary<string, ObjectSpawnPool>();
 
         /// <summary>
         /// 对象池默认上限
         /// </summary>
         private int _limit;
-
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
-        /// <param name="limit">对象池上限</param>
-        public void OnInitialization(int limit)
+        public void OnInitialization()
         {
-            _limit = limit;
+            _limit = Module.Cast<ObjectPoolManager>().Limit;
         }
         /// <summary>
-        /// 终结
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+
+        }
+        /// <summary>
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
             ClearAll();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
         }
 
         /// <summary>

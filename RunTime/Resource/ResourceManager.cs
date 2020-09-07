@@ -33,13 +33,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IResourceHelper;
-            _helper.OnInitialization(Mode, IsEditorMode, IsCacheAssetBundle, AssetBundleManifestName);
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
+            _helper.SetLoader(Mode, IsEditorMode, IsCacheAssetBundle, AssetBundleManifestName);
         }
 
         /// <summary>

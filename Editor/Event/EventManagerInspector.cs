@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,9 +10,6 @@ namespace HT.Framework
     internal sealed class EventManagerInspector : InternalModuleInspector<EventManager>
     {
         private IEventHelper _eventHelper;
-        private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList1;
-        private Dictionary<Type, HTFAction> _eventHandlerList2;
-        private Dictionary<Type, HTFAction<EventHandlerBase>> _eventHandlerList3;
         private bool _isShowEvent1 = false;
         private bool _isShowEvent2 = false;
         private bool _isShowEvent3 = false;
@@ -39,10 +34,7 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _eventHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IEventHelper;
-            _eventHandlerList1 = _eventHelper.GetType().GetField("_eventHandlerList1", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_eventHelper) as Dictionary<Type, HTFAction<object, EventHandlerBase>>;
-            _eventHandlerList2 = _eventHelper.GetType().GetField("_eventHandlerList2", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_eventHelper) as Dictionary<Type, HTFAction>;
-            _eventHandlerList3 = _eventHelper.GetType().GetField("_eventHandlerList3", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_eventHelper) as Dictionary<Type, HTFAction<EventHandlerBase>>;
+            _eventHelper = _helper as IEventHelper;
         }
         
         protected override void OnInspectorRuntimeGUI()
@@ -51,12 +43,12 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _isShowEvent1 = EditorGUILayout.Foldout(_isShowEvent1, "Event List: <object, EventHandlerBase> " + _eventHandlerList1.Count, true);
+            _isShowEvent1 = EditorGUILayout.Foldout(_isShowEvent1, "Event List: <object, EventHandlerBase> " + _eventHelper.EventHandlerList1.Count, true);
             GUILayout.EndHorizontal();
 
             if (_isShowEvent1)
             {
-                foreach (var item in _eventHandlerList1)
+                foreach (var item in _eventHelper.EventHandlerList1)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -65,7 +57,7 @@ namespace HT.Framework
                     GUI.enabled = item.Value != null;
                     if (GUILayout.Button("Throw", EditorStyles.miniButton, GUILayout.Width(50)))
                     {
-                        Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn(item.Key) as EventHandlerBase);
+                        Target.Throw(this, Main.m_ReferencePool.Spawn(item.Key) as EventHandlerBase);
                     }
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
@@ -74,12 +66,12 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _isShowEvent2 = EditorGUILayout.Foldout(_isShowEvent2, "Event List: <> " + _eventHandlerList2.Count, true);
+            _isShowEvent2 = EditorGUILayout.Foldout(_isShowEvent2, "Event List: <> " + _eventHelper.EventHandlerList2.Count, true);
             GUILayout.EndHorizontal();
 
             if (_isShowEvent2)
             {
-                foreach (var item in _eventHandlerList2)
+                foreach (var item in _eventHelper.EventHandlerList2)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -88,7 +80,7 @@ namespace HT.Framework
                     GUI.enabled = item.Value != null;
                     if (GUILayout.Button("Throw", EditorStyles.miniButton, GUILayout.Width(50)))
                     {
-                        Main.m_Event.Throw(item.Key);
+                        Target.Throw(item.Key);
                     }
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
@@ -97,12 +89,12 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _isShowEvent3 = EditorGUILayout.Foldout(_isShowEvent3, "Event List: <EventHandlerBase> " + _eventHandlerList3.Count, true);
+            _isShowEvent3 = EditorGUILayout.Foldout(_isShowEvent3, "Event List: <EventHandlerBase> " + _eventHelper.EventHandlerList3.Count, true);
             GUILayout.EndHorizontal();
 
             if (_isShowEvent3)
             {
-                foreach (var item in _eventHandlerList3)
+                foreach (var item in _eventHelper.EventHandlerList3)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -111,7 +103,7 @@ namespace HT.Framework
                     GUI.enabled = item.Value != null;
                     if (GUILayout.Button("Throw", EditorStyles.miniButton, GUILayout.Width(50)))
                     {
-                        Main.m_Event.Throw(Main.m_ReferencePool.Spawn(item.Key) as EventHandlerBase);
+                        Target.Throw(Main.m_ReferencePool.Spawn(item.Key) as EventHandlerBase);
                     }
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,7 +33,7 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _FSMHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IFSMHelper;
+            _FSMHelper = _helper as IFSMHelper;
             _fsmGroupsShow = new Dictionary<string, bool>();
 
             foreach (var fsm in _FSMHelper.FSMGroups)

@@ -11,18 +11,8 @@ namespace HT.Framework
         /// <summary>
         /// 所有对象池
         /// </summary>
-        Dictionary<string, ObjectSpawnPool> SpawnPools { get; set; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="limit">对象池上限</param>
-        void OnInitialization(int limit);
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        Dictionary<string, ObjectSpawnPool> SpawnPools { get; }
+        
         /// <summary>
         /// 注册对象池
         /// </summary>

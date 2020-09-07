@@ -11,39 +11,20 @@ namespace HT.Framework
         /// <summary>
         /// 当前流程
         /// </summary>
-        ProcedureBase CurrentProcedure { get; set; }
+        ProcedureBase CurrentProcedure { get; }
         /// <summary>
         /// 所有流程
         /// </summary>
-        Dictionary<Type, ProcedureBase> Procedures { get; set; }
+        Dictionary<Type, ProcedureBase> Procedures { get; }
         /// <summary>
         /// 所有流程的类型
         /// </summary>
-        List<Type> ProcedureTypes { get; set; }
+        List<Type> ProcedureTypes { get; }
         /// <summary>
         /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
         /// </summary>
         event HTFAction<ProcedureBase, ProcedureBase> AnyProcedureSwitchEvent;
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="activatedProcedures">激活的流程列表</param>
-        /// <param name="defaultProcedure">默认流程名称</param>
-        void OnInitialization(List<string> activatedProcedures, string defaultProcedure);
-        /// <summary>
-        /// 准备工作
-        /// </summary>
-        void OnPreparatory();
-        /// <summary>
-        /// 刷新
-        /// </summary>
-        void OnRefresh();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        
         /// <summary>
         /// 获取流程
         /// </summary>

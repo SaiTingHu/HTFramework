@@ -22,35 +22,35 @@ namespace HT.Framework
         /// <summary>
         /// 当前的资源加载模式
         /// </summary>
-        public ResourceLoadMode LoadMode { get; set; }
+        public ResourceLoadMode LoadMode { get; private set; }
         /// <summary>
         /// 是否是编辑器模式
         /// </summary>
-        public bool IsEditorMode { get; set; }
+        public bool IsEditorMode { get; private set; }
         /// <summary>
         /// AssetBundle资源加载根路径
         /// </summary>
-        public string AssetBundleRootPath { get; set; }
+        public string AssetBundleRootPath { get; private set; }
         /// <summary>
         /// 是否缓存AB包
         /// </summary>
-        public bool IsCacheAssetBundle { get; set; }
+        public bool IsCacheAssetBundle { get; private set; }
         /// <summary>
         /// 所有AssetBundle资源包清单的名称
         /// </summary>
-        public string AssetBundleManifestName { get; set; }
+        public string AssetBundleManifestName { get; private set; }
         /// <summary>
         /// 缓存的所有AssetBundle包【AB包名称、AB包】
         /// </summary>
-        public Dictionary<string, AssetBundle> AssetBundles { get; set; } = new Dictionary<string, AssetBundle>();
+        public Dictionary<string, AssetBundle> AssetBundles { get; private set; } = new Dictionary<string, AssetBundle>();
         /// <summary>
         /// 所有AssetBundle资源包清单
         /// </summary>
-        public AssetBundleManifest AssetBundleManifest { get; set; }
+        public AssetBundleManifest AssetBundleManifest { get; private set; }
         /// <summary>
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
-        public Dictionary<string, Hash128> AssetBundleHashs { get; set; } = new Dictionary<string, Hash128>();
+        public Dictionary<string, Hash128> AssetBundleHashs { get; private set; } = new Dictionary<string, Hash128>();
 
         /// <summary>
         /// 单线下载中
@@ -60,11 +60,59 @@ namespace HT.Framework
         /// 单线下载等待
         /// </summary>
         private WaitUntil _loadWait;
+        
+        /// <summary>
+        /// 初始化助手
+        /// </summary>
+        public void OnInitialization()
+        {
+
+        }
+        /// <summary>
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+
+        }
+        /// <summary>
+        /// 终结助手
+        /// </summary>
+        public void OnTermination()
+        {
+            UnLoadAllAsset(true);
+            ClearMemory();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
 
         /// <summary>
-        /// 初始化
+        /// 设置加载器
         /// </summary>
-        public void OnInitialization(ResourceLoadMode loadMode, bool isEditorMode, bool isCacheAssetBundle, string manifestName)
+        /// <param name="loadMode">加载模式</param>
+        /// <param name="isEditorMode">是否是编辑器模式</param>
+        /// <param name="isCacheAssetBundle">是否缓存AB包</param>
+        /// <param name="manifestName">AB包清单名称</param>
+        public void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, bool isCacheAssetBundle, string manifestName)
         {
             LoadMode = loadMode;
             IsEditorMode = isEditorMode;
@@ -73,15 +121,6 @@ namespace HT.Framework
             AssetBundleManifestName = manifestName;
             _loadWait = new WaitUntil(() => { return !_isLoading; });
         }
-        /// <summary>
-        /// 终结
-        /// </summary>
-        public void OnTermination()
-        {
-            UnLoadAllAsset(true);
-            ClearMemory();
-        }
-
         /// <summary>
         /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
         /// </summary>

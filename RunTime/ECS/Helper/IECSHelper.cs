@@ -11,29 +11,12 @@ namespace HT.Framework
         /// <summary>
         /// 所有系统【系统类型，系统对象】
         /// </summary>
-        Dictionary<Type, ECS_System> Systems { get; set; }
+        Dictionary<Type, ECS_System> Systems { get; }
         /// <summary>
         /// 所有实体【实体ID，实体对象】
         /// </summary>
-        Dictionary<string, ECS_Entity> Entities { get; set; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        void OnInitialization();
-        /// <summary>
-        /// 准备工作
-        /// </summary>
-        void OnPreparatory();
-        /// <summary>
-        /// 刷新
-        /// </summary>
-        void OnRefresh();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        Dictionary<string, ECS_Entity> Entities { get; }
+        
         /// <summary>
         /// 设置ECS环境为脏的，触发ECS环境重新刷新
         /// </summary>

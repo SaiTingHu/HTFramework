@@ -27,19 +27,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IEntityHelper;
-            _helper.OnInitialization(DefineEntityNames, DefineEntityTargets);
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            _helper.OnRefresh();
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
+            _helper.SetDefine(DefineEntityNames, DefineEntityTargets);
         }
 
         /// <summary>

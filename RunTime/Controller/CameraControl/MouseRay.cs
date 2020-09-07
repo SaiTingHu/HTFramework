@@ -136,7 +136,7 @@ namespace HT.Framework
 
                 Vector2 pos = Main.m_Input.MousePosition.ScreenToUGUIPosition(null, RayHitImageType);
                 RaycastHitBGFlow(pos);
-                RayEvent(Target, HitPoint, pos);
+                RayEvent?.Invoke(Target, HitPoint, pos);
             }
         }
 
@@ -147,7 +147,7 @@ namespace HT.Framework
         {
             IsOpenRay = false;
             RaycastHiting(null);
-            RayEvent(null, Vector3.zero, Vector2.zero);
+            RayEvent?.Invoke(null, Vector3.zero, Vector2.zero);
             if (RayHitBG && RayHitBG.gameObject.activeSelf)
             {
                 RayHitBG.gameObject.SetActive(false);

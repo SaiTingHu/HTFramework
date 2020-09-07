@@ -30,10 +30,10 @@ namespace HT.Framework
         /// <summary>
         /// 当前捕获的所有异常信息
         /// </summary>
-        public List<ExceptionInfo> ExceptionInfos { get; set; } = new List<ExceptionInfo>();
-
+        public List<ExceptionInfo> ExceptionInfos { get; private set; } = new List<ExceptionInfo>();
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
         public void OnInitialization()
         {
@@ -62,7 +62,14 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 刷新
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
@@ -72,7 +79,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 终结
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
@@ -87,7 +94,21 @@ namespace HT.Framework
                 }
             }
         }
-        
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
+
         /// <summary>
         /// 回发邮件
         /// </summary>

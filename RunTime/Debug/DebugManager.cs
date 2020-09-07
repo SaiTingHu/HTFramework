@@ -25,13 +25,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IDebugHelper;
-            _helper.OnInitialization(DebuggerSkin);
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
+            _helper.OnInitDebugger(DebuggerSkin);
         }
         private void OnGUI()
         {

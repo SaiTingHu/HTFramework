@@ -16,28 +16,28 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsEnableAspectTrack = false;
         /// <summary>
-        /// 是否启用全局拦截（注意：只拦截无返回值的方法的调用）
+        /// 是否启用全局拦截（注意：只拦截无返回值方法的调用）
         /// </summary>
         public bool IsEnableIntercept = false;
+        
+        private IAspectTrackHelper _helper;
+
         /// <summary>
         /// 全局拦截条件
         /// </summary>
-        internal Dictionary<string, HTFFunc<MethodBase, object[], bool>> InterceptConditions { get; private set; } = new Dictionary<string, HTFFunc<MethodBase, object[], bool>>();
-        
-        private IAspectTrackHelper _helper;
+        internal Dictionary<string, HTFFunc<MethodBase, object[], bool>> InterceptConditions
+        {
+            get
+            {
+                return _helper.InterceptConditions;
+            }
+        }
 
         internal override void OnInitialization()
         {
             base.OnInitialization();
 
             _helper = Helper as IAspectTrackHelper;
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            ClearInterceptCondition();
-            ClearProxyer();
         }
 
         /// <summary>
@@ -47,14 +47,7 @@ namespace HT.Framework
         /// <param name="interceptCondition">拦截规则</param>
         public void AddInterceptCondition(string conditionName, HTFFunc<MethodBase, object[], bool> interceptCondition)
         {
-            if (!InterceptConditions.ContainsKey(conditionName))
-            {
-                InterceptConditions.Add(conditionName, interceptCondition);
-            }
-            else
-            {
-                Log.Warning("新增拦截条件失败：已存在同名拦截条件 " + conditionName + " ！");
-            }
+            _helper.AddInterceptCondition(conditionName, interceptCondition);
         }
         /// <summary>
         /// 是否存在拦截条件
@@ -63,7 +56,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistCondition(string conditionName)
         {
-            return InterceptConditions.ContainsKey(conditionName);
+            return _helper.IsExistCondition(conditionName);
         }
         /// <summary>
         /// 移除拦截条件
@@ -71,17 +64,14 @@ namespace HT.Framework
         /// <param name="conditionName">条件名称</param>
         public void RemoveInterceptCondition(string conditionName)
         {
-            if (InterceptConditions.ContainsKey(conditionName))
-            {
-                InterceptConditions.Remove(conditionName);
-            }
+            _helper.RemoveInterceptCondition(conditionName);
         }
         /// <summary>
         /// 清空所有拦截条件
         /// </summary>
         public void ClearInterceptCondition()
         {
-            InterceptConditions.Clear();
+            _helper.ClearInterceptCondition();
         }
 
         /// <summary>

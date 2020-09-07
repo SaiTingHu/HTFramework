@@ -12,12 +12,8 @@ namespace HT.Framework
     {
         //当前定义的实体与对象对应关系
         private Dictionary<string, GameObject> _defineEntities = new Dictionary<string, GameObject>();
-        //所有实体列表
-        private Dictionary<Type, List<EntityLogicBase>> _entities = new Dictionary<Type, List<EntityLogicBase>>();
         //所有实体组
         private Dictionary<Type, GameObject> _entitiesGroup = new Dictionary<Type, GameObject>();
-        //所有实体对象池
-        private Dictionary<Type, Queue<GameObject>> _objectPool = new Dictionary<Type, Queue<GameObject>>();
         //实体根节点
         private Transform _entityRoot;
 
@@ -25,6 +21,14 @@ namespace HT.Framework
         /// 实体管理器
         /// </summary>
         public InternalModuleBase Module { get; set; }
+        /// <summary>
+        /// 所有实体列表
+        /// </summary>
+        public Dictionary<Type, List<EntityLogicBase>> Entities { get; private set; } = new Dictionary<Type, List<EntityLogicBase>>();
+        /// <summary>
+        /// 所有实体对象池
+        /// </summary>
+        public Dictionary<Type, Queue<GameObject>> ObjectPools { get; private set; } = new Dictionary<Type, Queue<GameObject>>();
         /// <summary>
         /// 是否隐藏所有实体
         /// </summary>
@@ -39,22 +43,12 @@ namespace HT.Framework
                 return !_entityRoot.gameObject.activeSelf;
             }
         }
-
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
-        /// <param name="defineEntityNames">预定义的实体名称</param>
-        /// <param name="defineEntityTargets">预定义的实体对象</param>
-        public void OnInitialization(List<string> defineEntityNames, List<GameObject> defineEntityTargets)
+        public void OnInitialization()
         {
-            for (int i = 0; i < defineEntityNames.Count; i++)
-            {
-                if (!_defineEntities.ContainsKey(defineEntityNames[i]))
-                {
-                    _defineEntities.Add(defineEntityNames[i], defineEntityTargets[i]);
-                }
-            }
-
             _entityRoot = Module.transform.Find("EntityRoot");
 
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
@@ -66,7 +60,7 @@ namespace HT.Framework
                 EntityResourceAttribute attribute = types[i].GetCustomAttribute<EntityResourceAttribute>();
                 if (attribute != null)
                 {
-                    _entities.Add(types[i], new List<EntityLogicBase>());
+                    Entities.Add(types[i], new List<EntityLogicBase>());
 
                     GameObject group = new GameObject(types[i].Name + "[Group]");
                     group.transform.SetParent(_entityRoot);
@@ -76,7 +70,7 @@ namespace HT.Framework
                     group.SetActive(true);
                     _entitiesGroup.Add(types[i], group);
 
-                    _objectPool.Add(types[i], new Queue<GameObject>());
+                    ObjectPools.Add(types[i], new Queue<GameObject>());
                 }
                 else
                 {
@@ -85,11 +79,18 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 逻辑刷新
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+            
+        }
+        /// <summary>
+        /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
-            foreach (var entities in _entities)
+            foreach (var entities in Entities)
             {
                 for (int i = 0; i < entities.Value.Count; i++)
                 {
@@ -101,7 +102,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 终结
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
@@ -111,16 +112,39 @@ namespace HT.Framework
             {
                 Main.Kill(group.Value);
             }
-            foreach (var objectPool in _objectPool)
+            _entitiesGroup.Clear();
+            Entities.Clear();
+            ObjectPools.Clear();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
+
+        /// <summary>
+        /// 设置预定义
+        /// </summary>
+        /// <param name="defineEntityNames">预定义的实体名称</param>
+        /// <param name="defineEntityTargets">预定义的实体对象</param>
+        public void SetDefine(List<string> defineEntityNames, List<GameObject> defineEntityTargets)
+        {
+            for (int i = 0; i < defineEntityNames.Count; i++)
             {
-                while (objectPool.Value.Count > 0)
+                if (!_defineEntities.ContainsKey(defineEntityNames[i]))
                 {
-                    Main.Kill(objectPool.Value.Dequeue());
+                    _defineEntities.Add(defineEntityNames[i], defineEntityTargets[i]);
                 }
             }
-            _entities.Clear();
-            _entitiesGroup.Clear();
-            _objectPool.Clear();
         }
 
         /// <summary>
@@ -136,11 +160,11 @@ namespace HT.Framework
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
             {
-                if (_entities.ContainsKey(type))
+                if (Entities.ContainsKey(type))
                 {
-                    if (attribute.IsUseObjectPool && _objectPool[type].Count > 0)
+                    if (attribute.IsUseObjectPool && ObjectPools[type].Count > 0)
                     {
-                        EntityLogicBase entityLogic = GenerateEntity(type, _objectPool[type].Dequeue(), entityName == "<None>" ? type.Name : entityName);
+                        EntityLogicBase entityLogic = GenerateEntity(type, ObjectPools[type].Dequeue(), entityName == "<None>" ? type.Name : entityName);
 
                         loadingAction?.Invoke(1);
                         loadDoneAction?.Invoke(entityLogic);
@@ -202,9 +226,9 @@ namespace HT.Framework
         /// <returns>实体</returns>
         public EntityLogicBase GetEntity(Type type, string entityName)
         {
-            if (_entities.ContainsKey(type))
+            if (Entities.ContainsKey(type))
             {
-                EntityLogicBase entityLogic = _entities[type].Find((entity) => { return entity.Name == entityName; });
+                EntityLogicBase entityLogic = Entities[type].Find((entity) => { return entity.Name == entityName; });
                 return entityLogic;
             }
             else
@@ -219,9 +243,9 @@ namespace HT.Framework
         /// <returns>实体组</returns>
         public List<EntityLogicBase> GetEntities(Type type)
         {
-            if (_entities.ContainsKey(type))
+            if (Entities.ContainsKey(type))
             {
-                return _entities[type];
+                return Entities[type];
             }
             else
             {
@@ -263,17 +287,17 @@ namespace HT.Framework
         /// <param name="type">实体逻辑类</param>
         public void ShowEntities(Type type)
         {
-            if (_entities.ContainsKey(type))
+            if (Entities.ContainsKey(type))
             {
-                for (int i = 0; i < _entities[type].Count; i++)
+                for (int i = 0; i < Entities[type].Count; i++)
                 {
-                    if (_entities[type][i].IsShowed)
+                    if (Entities[type][i].IsShowed)
                     {
                         continue;
                     }
 
-                    _entities[type][i].Entity.SetActive(true);
-                    _entities[type][i].OnShow();
+                    Entities[type][i].Entity.SetActive(true);
+                    Entities[type][i].OnShow();
                 }
             }
             else
@@ -287,17 +311,17 @@ namespace HT.Framework
         /// <param name="type">实体逻辑类</param>
         public void HideEntities(Type type)
         {
-            if (_entities.ContainsKey(type))
+            if (Entities.ContainsKey(type))
             {
-                for (int i = 0; i < _entities[type].Count; i++)
+                for (int i = 0; i < Entities[type].Count; i++)
                 {
-                    if (!_entities[type][i].IsShowed)
+                    if (!Entities[type][i].IsShowed)
                     {
                         continue;
                     }
 
-                    _entities[type][i].Entity.SetActive(false);
-                    _entities[type][i].OnHide();
+                    Entities[type][i].Entity.SetActive(false);
+                    Entities[type][i].OnHide();
                 }
             }
             else
@@ -310,7 +334,7 @@ namespace HT.Framework
         private EntityLogicBase GenerateEntity(Type type, GameObject entity, string entityName)
         {
             EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
-            _entities[type].Add(entityLogic);
+            Entities[type].Add(entityLogic);
             entityLogic.Entity = entity;
             entityLogic.Entity.name = entityLogic.Name = entityName;
             entityLogic.Entity.SetActive(true);
@@ -325,21 +349,21 @@ namespace HT.Framework
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
             {
-                if (_entities.ContainsKey(type))
+                if (Entities.ContainsKey(type))
                 {
                     if (attribute.IsUseObjectPool)
                     {
-                        _entities[type].Remove(entityLogic);
+                        Entities[type].Remove(entityLogic);
                         entityLogic.OnDestroy();
                         Main.m_ReferencePool.Despawn(entityLogic);
-                        _objectPool[type].Enqueue(entityLogic.Entity);
+                        ObjectPools[type].Enqueue(entityLogic.Entity);
                         entityLogic.Entity.SetActive(false);
                         entityLogic.Entity = null;
                         entityLogic = null;
                     }
                     else
                     {
-                        _entities[type].Remove(entityLogic);
+                        Entities[type].Remove(entityLogic);
                         entityLogic.OnDestroy();
                         Main.m_ReferencePool.Despawn(entityLogic);
                         Main.Kill(entityLogic.Entity);
@@ -359,32 +383,32 @@ namespace HT.Framework
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
             {
-                if (_entities.ContainsKey(type))
+                if (Entities.ContainsKey(type))
                 {
                     if (attribute.IsUseObjectPool)
                     {
-                        for (int i = 0; i < _entities[type].Count; i++)
+                        for (int i = 0; i < Entities[type].Count; i++)
                         {
-                            EntityLogicBase entityLogic = _entities[type][i];
+                            EntityLogicBase entityLogic = Entities[type][i];
                             entityLogic.OnDestroy();
                             Main.m_ReferencePool.Despawn(entityLogic);
-                            _objectPool[type].Enqueue(entityLogic.Entity);
+                            ObjectPools[type].Enqueue(entityLogic.Entity);
                             entityLogic.Entity.SetActive(false);
                             entityLogic.Entity = null;
                         }
-                        _entities[type].Clear();
+                        Entities[type].Clear();
                     }
                     else
                     {
-                        for (int i = 0; i < _entities[type].Count; i++)
+                        for (int i = 0; i < Entities[type].Count; i++)
                         {
-                            EntityLogicBase entityLogic = _entities[type][i];
+                            EntityLogicBase entityLogic = Entities[type][i];
                             entityLogic.OnDestroy();
                             Main.m_ReferencePool.Despawn(entityLogic);
                             Main.Kill(entityLogic.Entity);
                             entityLogic.Entity = null;
                         }
-                        _entities[type].Clear();
+                        Entities[type].Clear();
                     }
                 }
                 else

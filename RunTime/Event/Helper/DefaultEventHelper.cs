@@ -9,25 +9,24 @@ namespace HT.Framework
     public sealed class DefaultEventHelper : IEventHelper
     {
         /// <summary>
-        /// I型事件
-        /// </summary>
-        private Dictionary<Type, HTFAction<object, EventHandlerBase>> _eventHandlerList1 = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
-        /// <summary>
-        /// II型事件
-        /// </summary>
-        private Dictionary<Type, HTFAction> _eventHandlerList2 = new Dictionary<Type, HTFAction>();
-        /// <summary>
-        /// III型事件
-        /// </summary>
-        private Dictionary<Type, HTFAction<EventHandlerBase>> _eventHandlerList3 = new Dictionary<Type, HTFAction<EventHandlerBase>>();
-
-        /// <summary>
         /// 事件管理器
         /// </summary>
         public InternalModuleBase Module { get; set; }
+        /// <summary>
+        /// I型事件
+        /// </summary>
+        public Dictionary<Type, HTFAction<object, EventHandlerBase>> EventHandlerList1 { get; private set; } = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
+        /// <summary>
+        /// II型事件
+        /// </summary>
+        public Dictionary<Type, HTFAction> EventHandlerList2 { get; private set; } = new Dictionary<Type, HTFAction>();
+        /// <summary>
+        /// III型事件
+        /// </summary>
+        public Dictionary<Type, HTFAction<EventHandlerBase>> EventHandlerList3 { get; private set; } = new Dictionary<Type, HTFAction<EventHandlerBase>>();
 
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
         public void OnInitialization()
         {
@@ -37,21 +36,49 @@ namespace HT.Framework
             });
             for (int i = 0; i < types.Count; i++)
             {
-                _eventHandlerList1.Add(types[i], null);
-                _eventHandlerList2.Add(types[i], null);
-                _eventHandlerList3.Add(types[i], null);
+                EventHandlerList1.Add(types[i], null);
+                EventHandlerList2.Add(types[i], null);
+                EventHandlerList3.Add(types[i], null);
             }
         }
         /// <summary>
-        /// 终结
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+            
+        }
+        /// <summary>
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
-            _eventHandlerList1.Clear();
-            _eventHandlerList2.Clear();
-            _eventHandlerList3.Clear();
+            EventHandlerList1.Clear();
+            EventHandlerList2.Clear();
+            EventHandlerList3.Clear();
         }
-        
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
+        }
+
         /// <summary>
         /// 订阅I型事件 ------ HTFAction(object, EventHandlerBase)
         /// </summary>
@@ -59,9 +86,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Subscribe(Type type, HTFAction<object, EventHandlerBase> handler)
         {
-            if (_eventHandlerList1.ContainsKey(type))
+            if (EventHandlerList1.ContainsKey(type))
             {
-                _eventHandlerList1[type] += handler;
+                EventHandlerList1[type] += handler;
             }
             else
             {
@@ -75,9 +102,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Subscribe(Type type, HTFAction handler)
         {
-            if (_eventHandlerList2.ContainsKey(type))
+            if (EventHandlerList2.ContainsKey(type))
             {
-                _eventHandlerList2[type] += handler;
+                EventHandlerList2[type] += handler;
             }
             else
             {
@@ -91,9 +118,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Subscribe(Type type, HTFAction<EventHandlerBase> handler)
         {
-            if (_eventHandlerList3.ContainsKey(type))
+            if (EventHandlerList3.ContainsKey(type))
             {
-                _eventHandlerList3[type] += handler;
+                EventHandlerList3[type] += handler;
             }
             else
             {
@@ -107,9 +134,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Unsubscribe(Type type, HTFAction<object, EventHandlerBase> handler)
         {
-            if (_eventHandlerList1.ContainsKey(type))
+            if (EventHandlerList1.ContainsKey(type))
             {
-                _eventHandlerList1[type] -= handler;
+                EventHandlerList1[type] -= handler;
             }
         }
         /// <summary>
@@ -119,9 +146,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Unsubscribe(Type type, HTFAction handler)
         {
-            if (_eventHandlerList2.ContainsKey(type))
+            if (EventHandlerList2.ContainsKey(type))
             {
-                _eventHandlerList2[type] -= handler;
+                EventHandlerList2[type] -= handler;
             }
         }
         /// <summary>
@@ -131,9 +158,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理者</param>
         public void Unsubscribe(Type type, HTFAction<EventHandlerBase> handler)
         {
-            if (_eventHandlerList3.ContainsKey(type))
+            if (EventHandlerList3.ContainsKey(type))
             {
-                _eventHandlerList3[type] -= handler;
+                EventHandlerList3[type] -= handler;
             }
         }
         /// <summary>
@@ -142,17 +169,17 @@ namespace HT.Framework
         /// <param name="type">事件处理类</param>
         public void ClearSubscribe(Type type)
         {
-            if (_eventHandlerList1.ContainsKey(type))
+            if (EventHandlerList1.ContainsKey(type))
             {
-                _eventHandlerList1[type] = null;
+                EventHandlerList1[type] = null;
             }
-            if (_eventHandlerList2.ContainsKey(type))
+            if (EventHandlerList2.ContainsKey(type))
             {
-                _eventHandlerList2[type] = null;
+                EventHandlerList2[type] = null;
             }
-            if (_eventHandlerList3.ContainsKey(type))
+            if (EventHandlerList3.ContainsKey(type))
             {
-                _eventHandlerList3[type] = null;
+                EventHandlerList3[type] = null;
             }
         }
 
@@ -164,11 +191,11 @@ namespace HT.Framework
         public void Throw(object sender, EventHandlerBase handler)
         {
             Type type = handler.GetType();
-            if (_eventHandlerList1.ContainsKey(type))
+            if (EventHandlerList1.ContainsKey(type))
             {
-                if (_eventHandlerList1[type] != null)
+                if (EventHandlerList1[type] != null)
                 {
-                    _eventHandlerList1[type](sender, handler);
+                    EventHandlerList1[type](sender, handler);
                     Main.m_ReferencePool.Despawn(handler);
                 }
             }
@@ -183,9 +210,9 @@ namespace HT.Framework
         /// <param name="type">事件处理类</param>
         public void Throw(Type type)
         {
-            if (_eventHandlerList2.ContainsKey(type))
+            if (EventHandlerList2.ContainsKey(type))
             {
-                _eventHandlerList2[type]?.Invoke();
+                EventHandlerList2[type]?.Invoke();
             }
             else
             {
@@ -199,11 +226,11 @@ namespace HT.Framework
         public void Throw(EventHandlerBase handler)
         {
             Type type = handler.GetType();
-            if (_eventHandlerList3.ContainsKey(type))
+            if (EventHandlerList3.ContainsKey(type))
             {
-                if (_eventHandlerList3[type] != null)
+                if (EventHandlerList3[type] != null)
                 {
-                    _eventHandlerList3[type](handler);
+                    EventHandlerList3[type](handler);
                     Main.m_ReferencePool.Despawn(handler);
                 }
             }

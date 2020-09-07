@@ -16,37 +16,6 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as ICustomModuleHelper;
-            _helper.OnInitialization();
-        }
-        internal override void OnPreparatory()
-        {
-            base.OnPreparatory();
-
-            _helper.OnPreparatory();
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            _helper.OnRefresh();
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
-        }
-        internal override void OnPause()
-        {
-            base.OnPause();
-
-            _helper.OnPause();
-        }
-        internal override void OnUnPause()
-        {
-            base.OnUnPause();
-
-            _helper.OnUnPause();
         }
 
         /// <summary>

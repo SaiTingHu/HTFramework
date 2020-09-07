@@ -8,17 +8,13 @@ namespace HT.Framework
     public interface IDebugHelper : IInternalModuleHelper
     {
         /// <summary>
-        /// 初始化
+        /// 初始化调试器
         /// </summary>
         /// <param name="debuggerSkin">调试器皮肤</param>
-        void OnInitialization(GUISkin debuggerSkin);
+        void OnInitDebugger(GUISkin debuggerSkin);
         /// <summary>
         /// 调试器UI刷新
         /// </summary>
         void OnDebuggerGUI();
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
     }
 }

@@ -19,22 +19,51 @@ namespace HT.Framework
         /// <summary>
         /// 所有网络接口
         /// </summary>
-        public Dictionary<string, WebInterfaceBase> WebInterfaces { get; set; } = new Dictionary<string, WebInterfaceBase>();
+        public Dictionary<string, WebInterfaceBase> WebInterfaces { get; private set; } = new Dictionary<string, WebInterfaceBase>();
 
         private WebRequestManager _module;
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
         public void OnInitialization()
         {
             _module = Module as WebRequestManager;
         }
         /// <summary>
-        /// 销毁
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
+        /// </summary>
+        public void OnRefresh()
+        {
+
+        }
+        /// <summary>
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
             ClearInterface();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
         }
 
         /// <summary>

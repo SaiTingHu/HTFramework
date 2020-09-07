@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,7 +36,7 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _audioHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IAudioHelper;
+            _audioHelper = _helper as IAudioHelper;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -115,19 +113,19 @@ namespace HT.Framework
                 GUI.enabled = _audioHelper.BackgroundSource.clip;
                 if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
-                    Main.m_Audio.PlayBackgroundMusic(_audioHelper.BackgroundSource.clip);
+                    Target.PlayBackgroundMusic(_audioHelper.BackgroundSource.clip);
                 }
                 if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
-                    Main.m_Audio.PauseBackgroundMusic();
+                    Target.PauseBackgroundMusic();
                 }
                 if (GUILayout.Button("UnPause", EditorStyles.miniButtonMid))
                 {
-                    Main.m_Audio.UnPauseBackgroundMusic();
+                    Target.UnPauseBackgroundMusic();
                 }
                 if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
                 {
-                    Main.m_Audio.StopBackgroundMusic();
+                    Target.StopBackgroundMusic();
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
@@ -172,19 +170,19 @@ namespace HT.Framework
                 GUI.enabled = _audioHelper.SingleSource.clip;
                 if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
-                    Main.m_Audio.PlaySingleSound(_audioHelper.SingleSource.clip);
+                    Target.PlaySingleSound(_audioHelper.SingleSource.clip);
                 }
                 if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
-                    Main.m_Audio.PauseSingleSound();
+                    Target.PauseSingleSound();
                 }
                 if (GUILayout.Button("UnPause", EditorStyles.miniButtonMid))
                 {
-                    Main.m_Audio.UnPauseSingleSound();
+                    Target.UnPauseSingleSound();
                 }
                 if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
                 {
-                    Main.m_Audio.StopSingleSound();
+                    Target.StopSingleSound();
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
@@ -228,11 +226,11 @@ namespace HT.Framework
                 GUILayout.Space(20);
                 if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
                 {
-                    Main.m_Audio.ClearIdleMultipleAudioSource();
+                    Target.ClearIdleMultipleAudioSource();
                 }
                 if (GUILayout.Button("Stop All", EditorStyles.miniButtonRight))
                 {
-                    Main.m_Audio.StopAllMultipleSound();
+                    Target.StopAllMultipleSound();
                 }
                 GUILayout.EndHorizontal();
 
@@ -289,17 +287,17 @@ namespace HT.Framework
                 GUILayout.Space(20);
                 if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
                 {
-                    Main.m_Audio.ClearIdleWorldAudioSource();
+                    Target.ClearIdleWorldAudioSource();
                 }
                 if (GUILayout.Button("Stop All", EditorStyles.miniButtonRight))
                 {
-                    Main.m_Audio.StopAllWorldSound();
+                    Target.StopAllWorldSound();
                 }
                 GUILayout.EndHorizontal();
 
                 int wplayingCount = 0;
                 int wstopedCount = 0;
-                foreach (KeyValuePair<GameObject, AudioSource> audio in _audioHelper.WorldSources)
+                foreach (var audio in _audioHelper.WorldSources)
                 {
                     if (audio.Value.isPlaying)
                     {

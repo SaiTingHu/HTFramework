@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,8 +11,6 @@ namespace HT.Framework
     internal sealed class UIManagerInspector : InternalModuleInspector<UIManager>
     {
         private IUIHelper _UIHelper;
-        private Dictionary<Type, UILogicBase> _overlayUIs;
-        private Dictionary<Type, UILogicBase> _cameraUIs;
         private bool _overlayUIFoldout = true;
         private bool _cameraUIFoldout = true;
 
@@ -37,9 +34,7 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _UIHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IUIHelper;
-            _overlayUIs = _UIHelper.GetType().GetField("_overlayUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_UIHelper) as Dictionary<Type, UILogicBase>;
-            _cameraUIs = _UIHelper.GetType().GetField("_cameraUIs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_UIHelper) as Dictionary<Type, UILogicBase>;
+            _UIHelper = _helper as IUIHelper;
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -155,7 +150,7 @@ namespace HT.Framework
 
             if (_overlayUIFoldout)
             {
-                foreach (KeyValuePair<Type, UILogicBase> ui in _overlayUIs)
+                foreach (var ui in _UIHelper.OverlayUIs)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -175,17 +170,17 @@ namespace HT.Framework
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
-                                Main.m_UI.OpenResidentUI(ui.Key);
+                                Target.OpenResidentUI(ui.Key);
                             }
                             else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
                             {
-                                Main.m_UI.OpenTemporaryUI(ui.Key);
+                                Target.OpenTemporaryUI(ui.Key);
                             }
                         }
                         GUI.enabled = ui.Value.IsOpened;
                         if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
                         {
-                            Main.m_UI.CloseUI(ui.Key);
+                            Target.CloseUI(ui.Key);
                         }
                         GUI.enabled = true;
                     }
@@ -200,7 +195,7 @@ namespace HT.Framework
 
             if (_cameraUIFoldout)
             {
-                foreach (KeyValuePair<Type, UILogicBase> ui in _cameraUIs)
+                foreach (var ui in _UIHelper.CameraUIs)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -220,17 +215,17 @@ namespace HT.Framework
                         {
                             if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
                             {
-                                Main.m_UI.OpenResidentUI(ui.Key);
+                                Target.OpenResidentUI(ui.Key);
                             }
                             else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
                             {
-                                Main.m_UI.OpenTemporaryUI(ui.Key);
+                                Target.OpenTemporaryUI(ui.Key);
                             }
                         }
                         GUI.enabled = ui.Value.IsOpened;
                         if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
                         {
-                            Main.m_UI.CloseUI(ui.Key);
+                            Target.CloseUI(ui.Key);
                         }
                         GUI.enabled = true;
                     }

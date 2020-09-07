@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HT.Framework
 {
@@ -8,13 +9,17 @@ namespace HT.Framework
     public interface IEventHelper : IInternalModuleHelper
     {
         /// <summary>
-        /// 初始化
+        /// I型事件
         /// </summary>
-        void OnInitialization();
+        Dictionary<Type, HTFAction<object, EventHandlerBase>> EventHandlerList1 { get; }
         /// <summary>
-        /// 终结
+        /// II型事件
         /// </summary>
-        void OnTermination();
+        Dictionary<Type, HTFAction> EventHandlerList2 { get; }
+        /// <summary>
+        /// III型事件
+        /// </summary>
+        Dictionary<Type, HTFAction<EventHandlerBase>> EventHandlerList3 { get; }
 
         /// <summary>
         /// 订阅I型事件 ------ HTFAction(object, EventHandlerBase)

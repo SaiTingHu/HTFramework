@@ -31,6 +31,7 @@ namespace HT.Framework
                     {
                         Helper = Activator.CreateInstance(type) as IInternalModuleHelper;
                         Helper.Module = this;
+                        Helper.OnInitialization();
                     }
                     else
                     {
@@ -48,35 +49,50 @@ namespace HT.Framework
         /// </summary>
         internal virtual void OnPreparatory()
         {
-
+            if (Helper != null)
+            {
+                Helper.OnPreparatory();
+            }
         }
         /// <summary>
         /// 刷新模块
         /// </summary>
         internal virtual void OnRefresh()
         {
-
+            if (Helper != null)
+            {
+                Helper.OnRefresh();
+            }
         }
         /// <summary>
         /// 终结模块
         /// </summary>
         internal virtual void OnTermination()
         {
-
+            if (Helper != null)
+            {
+                Helper.OnTermination();
+            }
         }
         /// <summary>
         /// 暂停模块
         /// </summary>
         internal virtual void OnPause()
         {
-
+            if (Helper != null)
+            {
+                Helper.OnPause();
+            }
         }
         /// <summary>
         /// 恢复模块
         /// </summary>
         internal virtual void OnUnPause()
         {
-
+            if (Helper != null)
+            {
+                Helper.OnUnPause();
+            }
         }
     }
 }

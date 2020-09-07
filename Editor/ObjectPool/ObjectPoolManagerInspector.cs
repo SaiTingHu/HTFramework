@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,7 +31,7 @@ namespace HT.Framework
         {
             base.OnRuntimeEnable();
 
-            _objectPoolHelper = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as IObjectPoolHelper;
+            _objectPoolHelper = _helper as IObjectPoolHelper;
         }
 
         protected override void OnInspectorDefaultGUI()

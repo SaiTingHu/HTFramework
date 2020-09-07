@@ -11,18 +11,8 @@ namespace HT.Framework
         /// <summary>
         /// 所有引用池
         /// </summary>
-        Dictionary<Type, ReferenceSpawnPool> SpawnPools { get; set; }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="limit">对象池上限</param>
-        void OnInitialization(int limit);
-        /// <summary>
-        /// 终结
-        /// </summary>
-        void OnTermination();
-
+        Dictionary<Type, ReferenceSpawnPool> SpawnPools { get; }
+        
         /// <summary>
         /// 获取引用池中引用数量
         /// </summary>

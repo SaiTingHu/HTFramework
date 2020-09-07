@@ -16,15 +16,9 @@ namespace HT.Framework
         private Dictionary<string, GameObject> _defineUIAndEntitys = new Dictionary<string, GameObject>();
         //当前打开的Overlay类型的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentOverlayTemporaryUI;
-        //所有Overlay类型的UI
-        private Dictionary<Type, UILogicBase> _overlayUIs = new Dictionary<Type, UILogicBase>();
         //当前打开的Camera类型的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentCameraTemporaryUI;
-        //所有Camera类型的UI
-        private Dictionary<Type, UILogicBase> _cameraUIs = new Dictionary<Type, UILogicBase>();
-        //所有World类型的UI
-        private Dictionary<string, UIManager.WorldUIDomain> _worldUIs = new Dictionary<string, UIManager.WorldUIDomain>();
-
+        //所有UI根节点
         private GameObject _UIEntity;
         //Overlay类型的UI根节点
         private Transform _overlayUIRoot;
@@ -44,9 +38,21 @@ namespace HT.Framework
         /// </summary>
         public InternalModuleBase Module { get; set; }
         /// <summary>
+        /// 所有Overlay类型的UI
+        /// </summary>
+        public Dictionary<Type, UILogicBase> OverlayUIs { get; private set; } = new Dictionary<Type, UILogicBase>();
+        /// <summary>
+        /// 所有Camera类型的UI
+        /// </summary>
+        public Dictionary<Type, UILogicBase> CameraUIs { get; private set; } = new Dictionary<Type, UILogicBase>();
+        /// <summary>
+        /// 所有World类型的UI
+        /// </summary>
+        public Dictionary<string, UIManager.WorldUIDomain> WorldUIs { get; private set; } = new Dictionary<string, UIManager.WorldUIDomain>();
+        /// <summary>
         /// Camera类型UI的摄像机
         /// </summary>
-        public Camera UICamera { get; set; }
+        public Camera UICamera { get; private set; }
         /// <summary>
         /// Overlay类型的UI根节点
         /// </summary>
@@ -74,9 +80,9 @@ namespace HT.Framework
         /// <returns>域根节点</returns>
         public RectTransform WorldUIDomainRoot(string domainName)
         {
-            if (_worldUIs.ContainsKey(domainName))
+            if (WorldUIs.ContainsKey(domainName))
             {
-                return _worldUIs[domainName].WorldUIRoot;
+                return WorldUIs[domainName].WorldUIRoot;
             }
             else
             {
@@ -102,21 +108,19 @@ namespace HT.Framework
                 return !_UIEntity.activeSelf;
             }
         }
-
+        
         /// <summary>
-        /// 初始化
+        /// 初始化助手
         /// </summary>
-        /// <param name="defineUINames">预定义的UI名称</param>
-        /// <param name="defineUIEntitys">预定义的UI对象</param>
-        public void OnInitialization(List<string> defineUINames, List<GameObject> defineUIEntitys)
+        public void OnInitialization()
         {
             _module = Module as UIManager;
 
-            for (int i = 0; i < defineUINames.Count; i++)
+            for (int i = 0; i < _module.DefineUINames.Count; i++)
             {
-                if (!_defineUIAndEntitys.ContainsKey(defineUINames[i]))
+                if (!_defineUIAndEntitys.ContainsKey(_module.DefineUINames[i]))
                 {
-                    _defineUIAndEntitys.Add(defineUINames[i], defineUIEntitys[i]);
+                    _defineUIAndEntitys.Add(_module.DefineUINames[i], _module.DefineUIEntitys[i]);
                 }
             }
 
@@ -152,23 +156,23 @@ namespace HT.Framework
                         case UIType.Overlay:
                             if (_module.IsEnableOverlayUI)
                             {
-                                _overlayUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
+                                OverlayUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
                             }
                             break;
                         case UIType.Camera:
                             if (_module.IsEnableCameraUI)
                             {
-                                _cameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
+                                CameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
                             }
                             break;
                         case UIType.World:
                             if (_module.IsEnableWorldUI)
                             {
-                                if (!_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                                if (!WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                                 {
-                                    _worldUIs.Add(attribute.WorldUIDomainName, new UIManager.WorldUIDomain(attribute.WorldUIDomainName, _worldUIRoot.FindChildren("CanvasTem")));
+                                    WorldUIs.Add(attribute.WorldUIDomainName, new UIManager.WorldUIDomain(attribute.WorldUIDomainName, _worldUIRoot.FindChildren("CanvasTem")));
                                 }
-                                _worldUIs[attribute.WorldUIDomainName].Injection(types[i]);
+                                WorldUIs[attribute.WorldUIDomainName].Injection(types[i]);
                             }
                             break;
                     }
@@ -180,13 +184,20 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 逻辑刷新
+        /// 助手准备工作
+        /// </summary>
+        public void OnPreparatory()
+        {
+
+        }
+        /// <summary>
+        /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
             if (_module.IsEnableOverlayUI)
             {
-                foreach (var ui in _overlayUIs)
+                foreach (var ui in OverlayUIs)
                 {
                     if (ui.Value.IsOpened)
                     {
@@ -197,7 +208,7 @@ namespace HT.Framework
 
             if (_module.IsEnableCameraUI)
             {
-                foreach (var ui in _cameraUIs)
+                foreach (var ui in CameraUIs)
                 {
                     if (ui.Value.IsOpened)
                     {
@@ -208,20 +219,20 @@ namespace HT.Framework
 
             if (_module.IsEnableWorldUI)
             {
-                foreach (var ui in _worldUIs)
+                foreach (var ui in WorldUIs)
                 {
                     ui.Value.OnRefresh();
                 }
             }
         }
         /// <summary>
-        /// 终结
+        /// 终结助手
         /// </summary>
         public void OnTermination()
         {
             _defineUIAndEntitys.Clear();
 
-            foreach (var ui in _overlayUIs)
+            foreach (var ui in OverlayUIs)
             {
                 UILogicBase uiLogic = ui.Value;
 
@@ -234,9 +245,9 @@ namespace HT.Framework
                 Main.Kill(uiLogic.UIEntity);
                 uiLogic.UIEntity = null;
             }
-            _overlayUIs.Clear();
+            OverlayUIs.Clear();
 
-            foreach (var ui in _cameraUIs)
+            foreach (var ui in CameraUIs)
             {
                 UILogicBase uiLogic = ui.Value;
 
@@ -249,13 +260,27 @@ namespace HT.Framework
                 Main.Kill(uiLogic.UIEntity);
                 uiLogic.UIEntity = null;
             }
-            _cameraUIs.Clear();
+            CameraUIs.Clear();
 
-            foreach (var ui in _worldUIs)
+            foreach (var ui in WorldUIs)
             {
                 ui.Value.OnTermination();
             }
-            _worldUIs.Clear();
+            WorldUIs.Clear();
+        }
+        /// <summary>
+        /// 暂停助手
+        /// </summary>
+        public void OnPause()
+        {
+
+        }
+        /// <summary>
+        /// 恢复助手
+        /// </summary>
+        public void OnUnPause()
+        {
+
         }
         
         /// <summary>
@@ -271,9 +296,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _overlayUIs[type];
+                            UILogicBase ui = OverlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -286,9 +311,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _cameraUIs[type];
+                            UILogicBase ui = CameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -301,9 +326,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].PreloadingResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
+                            return WorldUIs[attribute.WorldUIDomainName].PreloadingResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
                         }
                         else
                         {
@@ -326,9 +351,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _overlayUIs[type];
+                            UILogicBase ui = OverlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -341,9 +366,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _cameraUIs[type];
+                            UILogicBase ui = CameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -356,9 +381,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].PreloadingTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
+                            return WorldUIs[attribute.WorldUIDomainName].PreloadingTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
                         }
                         else
                         {
@@ -382,9 +407,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicResident ui = _overlayUIs[type] as UILogicResident;
+                            UILogicResident ui = OverlayUIs[type] as UILogicResident;
 
                             if (ui.IsOpened)
                             {
@@ -409,9 +434,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicResident ui = _cameraUIs[type] as UILogicResident;
+                            UILogicResident ui = CameraUIs[type] as UILogicResident;
 
                             if (ui.IsOpened)
                             {
@@ -436,9 +461,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].OpenResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
+                            return WorldUIs[attribute.WorldUIDomainName].OpenResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
                         }
                         else
                         {
@@ -462,9 +487,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicTemporary ui = _overlayUIs[type] as UILogicTemporary;
+                            UILogicTemporary ui = OverlayUIs[type] as UILogicTemporary;
 
                             if (ui.IsOpened)
                             {
@@ -500,9 +525,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicTemporary ui = _cameraUIs[type] as UILogicTemporary;
+                            UILogicTemporary ui = CameraUIs[type] as UILogicTemporary;
 
                             if (ui.IsOpened)
                             {
@@ -538,9 +563,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].OpenTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
+                            return WorldUIs[attribute.WorldUIDomainName].OpenTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
                         }
                         else
                         {
@@ -563,9 +588,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _overlayUIs[type];
+                            UILogicBase ui = OverlayUIs[type];
 
                             if (ui.IsOpened)
                             {
@@ -581,9 +606,9 @@ namespace HT.Framework
                             throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
                         }
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _cameraUIs[type];
+                            UILogicBase ui = CameraUIs[type];
 
                             if (ui.IsOpened)
                             {
@@ -599,9 +624,9 @@ namespace HT.Framework
                             throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
                         }
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            return _worldUIs[attribute.WorldUIDomainName].GetOpenedUI(type);
+                            return WorldUIs[attribute.WorldUIDomainName].GetOpenedUI(type);
                         }
                         else
                         {
@@ -623,9 +648,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicResident ui = _overlayUIs[type] as UILogicResident;
+                            UILogicResident ui = OverlayUIs[type] as UILogicResident;
 
                             if (!ui.IsOpened)
                             {
@@ -641,9 +666,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicResident ui = _cameraUIs[type] as UILogicResident;
+                            UILogicResident ui = CameraUIs[type] as UILogicResident;
 
                             if (!ui.IsOpened)
                             {
@@ -659,9 +684,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            _worldUIs[attribute.WorldUIDomainName].PlaceTop(type);
+                            WorldUIs[attribute.WorldUIDomainName].PlaceTop(type);
                         }
                         else
                         {
@@ -683,9 +708,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _overlayUIs[type];
+                            UILogicBase ui = OverlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -706,9 +731,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _cameraUIs[type];
+                            UILogicBase ui = CameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -729,9 +754,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            _worldUIs[attribute.WorldUIDomainName].CloseUI(type);
+                            WorldUIs[attribute.WorldUIDomainName].CloseUI(type);
                         }
                         else
                         {
@@ -753,9 +778,9 @@ namespace HT.Framework
                 switch (attribute.EntityType)
                 {
                     case UIType.Overlay:
-                        if (_overlayUIs.ContainsKey(type))
+                        if (OverlayUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _overlayUIs[type];
+                            UILogicBase ui = OverlayUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -777,9 +802,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.Camera:
-                        if (_cameraUIs.ContainsKey(type))
+                        if (CameraUIs.ContainsKey(type))
                         {
-                            UILogicBase ui = _cameraUIs[type];
+                            UILogicBase ui = CameraUIs[type];
 
                             if (!ui.IsCreated)
                             {
@@ -801,9 +826,9 @@ namespace HT.Framework
                         }
                         break;
                     case UIType.World:
-                        if (_worldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
-                            _worldUIs[attribute.WorldUIDomainName].DestroyUI(type);
+                            WorldUIs[attribute.WorldUIDomainName].DestroyUI(type);
                         }
                         else
                         {

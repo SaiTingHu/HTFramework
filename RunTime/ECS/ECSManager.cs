@@ -20,34 +20,6 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IECSHelper;
-            _helper.OnInitialization();
-        }
-        /// <summary>
-        /// 模块准备工作
-        /// </summary>
-        internal override void OnPreparatory()
-        {
-            base.OnPreparatory();
-
-            _helper.OnPreparatory();
-        }
-        /// <summary>
-        /// 刷新模块
-        /// </summary>
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            _helper.OnRefresh();
-        }
-        /// <summary>
-        /// 终结模块
-        /// </summary>
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
         }
 
         /// <summary>

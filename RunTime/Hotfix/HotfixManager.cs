@@ -55,13 +55,6 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IHotfixHelper;
-            _helper.OnInitialization();
-        }
-        internal override void OnPreparatory()
-        {
-            base.OnPreparatory();
-
-            _helper.OnPreparatory();
         }
         internal override void OnRefresh()
         {
@@ -71,12 +64,6 @@ namespace HT.Framework
             {
                 UpdateHotfixLogicEvent?.Invoke();
             }
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
         }
 
         /// <summary>

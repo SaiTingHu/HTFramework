@@ -18,13 +18,6 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IDataSetHelper;
-            _helper.OnInitialization();
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _helper.OnTermination();
         }
 
         /// <summary>
