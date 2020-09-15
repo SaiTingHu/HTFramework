@@ -97,7 +97,7 @@ namespace HT.Framework
                 GUILayout.Label(Target.childCount.ToString());
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.childCount > 0;
-                if (GUILayout.Button("Detach", "Minibutton"))
+                if (GUILayout.Button("Detach", EditorStyles.miniButton))
                 {
                     if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to detach all children?", "Yes", "No"))
                     {
@@ -110,39 +110,27 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Unfold Children", "MinibuttonLeft"))
+                if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
                 {
-                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
-                    EditorWindow window = EditorWindow.GetWindow(type);
-                    MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
-                    int id = Target.gameObject.GetInstanceID();
-                    method.Invoke(window, new object[] { id, true });
-                }
-                if (GUILayout.Button("Fold Children", "MinibuttonRight"))
-                {
-                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
-                    EditorWindow window = EditorWindow.GetWindow(type);
-                    MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
-                    int id = Target.gameObject.GetInstanceID();
-                    method.Invoke(window, new object[] { id, false });
+                    CreateEmptyParent();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Fold All", "Minibutton"))
+                if (GUILayout.Button("Unfold Children", EditorStyles.miniButtonLeft))
                 {
-                    Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
-                    EditorWindow window = EditorWindow.GetWindow(type);
-                    object hierarchy = window.GetType().GetProperty("sceneHierarchy", BindingFlags.Public | BindingFlags.Instance).GetValue(window);
-                    int[] expandedIDs = hierarchy.GetType().GetMethod("GetExpandedIDs", BindingFlags.Public | BindingFlags.Instance).Invoke(hierarchy, null) as int[];
-                    MethodInfo method = hierarchy.GetType().GetMethod("ExpandTreeViewItem", BindingFlags.NonPublic | BindingFlags.Instance);
-                    object[] args = new object[2];
-                    args[1] = false;
-                    for (int i = 0; i < expandedIDs.Length; i++)
-                    {
-                        args[0] = expandedIDs[i];
-                        method.Invoke(hierarchy, args);
-                    }
+                    UnfoldChildren();
+                }
+                if (GUILayout.Button("Fold Children", EditorStyles.miniButtonRight))
+                {
+                    FoldChildren();
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Fold All", EditorStyles.miniButton))
+                {
+                    FoldAll();
                 }
                 GUILayout.EndHorizontal();
 
@@ -252,7 +240,55 @@ namespace HT.Framework
             }
             #endregion
         }
-        
+
+        private void CreateEmptyParent()
+        {
+            GameObject parent = new GameObject("EmptyParent");
+            RectTransform rectTransform = parent.AddComponent<RectTransform>();
+            rectTransform.SetParent(Target.parent);
+            rectTransform.localPosition = Target.localPosition;
+            rectTransform.localRotation = Quaternion.identity;
+            rectTransform.localScale = Vector3.one;
+            rectTransform.SetSiblingIndex(Target.GetSiblingIndex());
+            Target.SetParent(rectTransform);
+            Selection.activeGameObject = parent;
+            EditorGUIUtility.PingObject(parent);
+        }
+
+        private void UnfoldChildren()
+        {
+            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+            EditorWindow window = EditorWindow.GetWindow(type);
+            MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
+            int id = Target.gameObject.GetInstanceID();
+            method.Invoke(window, new object[] { id, true });
+        }
+
+        private void FoldChildren()
+        {
+            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+            EditorWindow window = EditorWindow.GetWindow(type);
+            MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
+            int id = Target.gameObject.GetInstanceID();
+            method.Invoke(window, new object[] { id, false });
+        }
+
+        private void FoldAll()
+        {
+            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+            EditorWindow window = EditorWindow.GetWindow(type);
+            object hierarchy = window.GetType().GetProperty("sceneHierarchy", BindingFlags.Public | BindingFlags.Instance).GetValue(window);
+            int[] expandedIDs = hierarchy.GetType().GetMethod("GetExpandedIDs", BindingFlags.Public | BindingFlags.Instance).Invoke(hierarchy, null) as int[];
+            MethodInfo method = hierarchy.GetType().GetMethod("ExpandTreeViewItem", BindingFlags.NonPublic | BindingFlags.Instance);
+            object[] args = new object[2];
+            args[1] = false;
+            for (int i = 0; i < expandedIDs.Length; i++)
+            {
+                args[0] = expandedIDs[i];
+                method.Invoke(hierarchy, args);
+            }
+        }
+
         private int ClampAngle(float angle)
         {
             if (angle > 180) angle -= 360;

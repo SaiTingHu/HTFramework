@@ -90,15 +90,13 @@ namespace HT.Framework
             GameObject[] objs = Selection.gameObjects;
             for (int i = 0; i < objs.Length; i++)
             {
-                if (!objs[i].GetComponent<Collider>())
-                {
-                    objs[i].AddComponent<BoxCollider>();
-                }
-                if (!objs[i].GetComponent<MouseRayTarget>())
-                {
-                    objs[i].AddComponent<MouseRayTarget>();
-                }
-                objs[i].GetComponent<MouseRayTarget>().Name = objs[i].name;
+                Collider collider = objs[i].GetComponent<Collider>();
+                if (!collider) collider = objs[i].AddComponent<BoxCollider>();
+                collider.isTrigger = true;
+
+                MouseRayTarget rayTarget = objs[i].GetComponent<MouseRayTarget>();
+                if (!rayTarget) rayTarget = objs[i].AddComponent<MouseRayTarget>();
+                rayTarget.Name = objs[i].name;
             }
         }
 
@@ -119,17 +117,17 @@ namespace HT.Framework
             GameObject[] objs = Selection.gameObjects;
             for (int i = 0; i < objs.Length; i++)
             {
-                if (!objs[i].GetComponent<Graphic>())
+                Graphic graphic = objs[i].GetComponent<Graphic>();
+                if (!graphic)
                 {
                     Log.Warning("对象 " + objs[i].name + " 没有Graphic组件，无法做为可捕获UI目标！");
                     continue;
                 }
-                objs[i].GetComponent<Graphic>().raycastTarget = true;
-                if (!objs[i].GetComponent<MouseRayUITarget>())
-                {
-                    objs[i].AddComponent<MouseRayUITarget>();
-                }
-                objs[i].GetComponent<MouseRayUITarget>().Name = objs[i].name;
+                graphic.raycastTarget = true;
+
+                MouseRayUITarget rayUITarget = objs[i].GetComponent<MouseRayUITarget>();
+                if (!rayUITarget) rayUITarget = objs[i].AddComponent<MouseRayUITarget>();
+                rayUITarget.Name = objs[i].name;
             }
         }
         #endregion
