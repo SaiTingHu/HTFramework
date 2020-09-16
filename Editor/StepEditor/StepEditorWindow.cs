@@ -43,7 +43,7 @@ namespace HT.Framework
         private GUIContent _stepGC;
         private GUIContent _previewGC;
         private Rect _stepListRect;
-        private static Vector2 _stepListScroll = Vector3.zero;
+        private Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
         private float _stepListGUIWidth = 340;
         private bool _isMoveTo = false;
