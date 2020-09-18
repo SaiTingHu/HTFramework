@@ -13,6 +13,7 @@ namespace HT.Framework
     [Serializable]
     public sealed class StepContent
     {
+        #region Base Property
         /// <summary>
         /// 步骤ID
         /// </summary>
@@ -87,7 +88,9 @@ namespace HT.Framework
         /// 步骤连线列表
         /// </summary>
         [SerializeField] internal List<StepWired> Wireds = new List<StepWired>();
-        
+        #endregion
+
+        #region Execute Method
         /// <summary>
         /// 执行步骤内容
         /// </summary>
@@ -173,7 +176,9 @@ namespace HT.Framework
                 }, Operations[stepIndex].ElapseTime / StepMaster.SkipMultiple);
             }
         }
+        #endregion
 
+        #region EditorOnly
 #if UNITY_EDITOR
         internal static float Width = 150;
         internal static float Height = 40;
@@ -188,6 +193,7 @@ namespace HT.Framework
                 return new Rect(EnterAnchor.x - Width / 2, EnterAnchor.y - Height / 2, Width, Height);
             }
         }
+
         /// <summary>
         /// 克隆
         /// </summary>
@@ -377,5 +383,6 @@ namespace HT.Framework
             }
         }
 #endif
+        #endregion
     }
 }

@@ -46,7 +46,7 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Batch 【优先级100-101】
+        #region Batch 【优先级100】
         /// <summary>
         /// 打开ComponentBatch窗口
         /// </summary>
@@ -74,6 +74,70 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 【验证函数】添加边界框碰撞器
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Add Bounds Box Collider", true)]
+        private static bool AddBoundsBoxColliderValidate()
+        {
+            return Selection.gameObjects.Length > 0;
+        }
+        /// <summary>
+        /// 添加边界框碰撞器
+        /// </summary>
+        [@MenuItem("HTFramework/Batch/Add Bounds Box Collider", false, 120)]
+        private static void AddBoundsBoxCollider()
+        {
+            GameObject[] objs = Selection.gameObjects;
+            for (int i = 0; i < objs.Length; i++)
+            {
+                if (objs[i].GetComponent<MeshRenderer>())
+                {
+                    objs[i].AddComponent<BoxCollider>();
+                    continue;
+                }
+
+                Transform trans = objs[i].transform;
+                Renderer[] renders = trans.GetComponentsInChildren<Renderer>();
+                if (renders.Length == 0)
+                    continue;
+
+                Vector3 postion = trans.position;
+                Quaternion rotation = trans.rotation;
+                Vector3 scale = trans.localScale;
+                trans.position = Vector3.zero;
+                trans.rotation = Quaternion.identity;
+                trans.localScale = Vector3.one;
+
+                Collider[] colliders = trans.GetComponents<Collider>();
+                foreach (Collider collider in colliders)
+                {
+                    UnityEngine.Object.DestroyImmediate(collider);
+                }
+
+                Vector3 center = Vector3.zero;
+                foreach (Renderer child in renders)
+                {
+                    center += child.bounds.center;
+                }
+                center /= renders.Length;
+
+                Bounds bounds = new Bounds(center, Vector3.zero);
+                foreach (Renderer child in renders)
+                {
+                    bounds.Encapsulate(child.bounds);
+                }
+
+                BoxCollider boxCollider = trans.gameObject.AddComponent<BoxCollider>();
+                boxCollider.center = bounds.center - trans.position;
+                boxCollider.size = bounds.size;
+
+                trans.position = postion;
+                trans.rotation = rotation;
+                trans.localScale = scale;
+            }
+        }
+
+        /// <summary>
         /// 【验证函数】设置鼠标射线可捕获物体目标
         /// </summary>
         [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", true)]
@@ -84,9 +148,11 @@ namespace HT.Framework
         /// <summary>
         /// 设置鼠标射线可捕获物体目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 120)]
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 121)]
         private static void SetMouseRayTarget()
         {
+            AddBoundsBoxCollider();
+
             GameObject[] objs = Selection.gameObjects;
             for (int i = 0; i < objs.Length; i++)
             {
@@ -111,7 +177,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置鼠标射线可捕获UI目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 121)]
+        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 122)]
         private static void SetMouseRayUITarget()
         {
             GameObject[] objs = Selection.gameObjects;
@@ -132,11 +198,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Console 【优先级102-105】
+        #region Console 【优先级101】
         /// <summary>
         /// 清理控制台
         /// </summary>
-        [@MenuItem("HTFramework/Console/Clear &1", false, 102)]
+        [@MenuItem("HTFramework/Console/Clear &1", false, 101)]
         private static void ClearConsole()
         {
             Type logEntries = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
@@ -147,7 +213,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印普通日志
         /// </summary>
-        [@MenuItem("HTFramework/Console/Debug Log", false, 103)]
+        [@MenuItem("HTFramework/Console/Debug Log", false, 102)]
         private static void ConsoleDebugLog()
         {
             Log.Info("Debug.Log!");
@@ -156,7 +222,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印警告日志
         /// </summary>
-        [@MenuItem("HTFramework/Console/Debug LogWarning", false, 104)]
+        [@MenuItem("HTFramework/Console/Debug LogWarning", false, 103)]
         private static void ConsoleDebugLogWarning()
         {
             Log.Warning("Debug.LogWarning!");
@@ -165,18 +231,18 @@ namespace HT.Framework
         /// <summary>
         /// 打印错误日志
         /// </summary>
-        [@MenuItem("HTFramework/Console/Debug LogError", false, 105)]
+        [@MenuItem("HTFramework/Console/Debug LogError", false, 104)]
         private static void ConsoleDebugLogError()
         {
             Log.Error("Debug.LogError!");
         }
         #endregion
 
-        #region Editor 【优先级106-107】
+        #region Editor 【优先级102】
         /// <summary>
         /// 运行场景
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Run &2", false, 106)]
+        [@MenuItem("HTFramework/Editor/Run &2", false, 102)]
         private static void RunScene()
         {
             EditorApplication.isPlaying = !EditorApplication.isPlaying;
@@ -185,7 +251,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开编辑器安装路径
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Open Installation Path", false, 107)]
+        [@MenuItem("HTFramework/Editor/Open Installation Path", false, 103)]
         private static void OpenInstallationPath()
         {
             string path = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/"));
@@ -194,11 +260,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region ECS 【优先级108-109】
+        #region ECS 【优先级103】
         /// <summary>
         /// 标记目标为ECS系统的实体
         /// </summary>
-        [@MenuItem("HTFramework/ECS/Mark As To Entity", false, 108)]
+        [@MenuItem("HTFramework/ECS/Mark As To Entity", false, 103)]
         private static void MarkAsToEntity()
         {
             int index = 0;
@@ -213,7 +279,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ECS系统检视器
         /// </summary>
-        [@MenuItem("HTFramework/ECS/Inspector", false, 109)]
+        [@MenuItem("HTFramework/ECS/Inspector", false, 104)]
         private static void OpenECSInspector()
         {
             ECS_Inspector inspector = EditorWindow.GetWindow<ECS_Inspector>();
@@ -223,11 +289,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Tools 【优先级111-117】
+        #region Tools 【优先级104】
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 111)]
+        [@MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 104)]
         private static void MeshCombines()
         {
             if (Selection.gameObjects.Length <= 1)
@@ -277,7 +343,7 @@ namespace HT.Framework
         /// <summary>
         /// 展示模型信息
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 112)]
+        [@MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 105)]
         private static void ShowMeshInfo()
         {
             for (int i = 0; i < Selection.gameObjects.Length; i++)
@@ -293,7 +359,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Assets Master
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Assets Master", false, 113)]
+        [@MenuItem("HTFramework/Tools/Assets Master", false, 106)]
         private static void OpenAssetsMaster()
         {
             AssetsMaster master = EditorWindow.GetWindow<AssetsMaster>();
@@ -307,7 +373,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Assembly Viewer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 114)]
+        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 107)]
         private static void OpenAssemblyViewer()
         {
             AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
@@ -319,7 +385,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Custom Executer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Executer", false, 115)]
+        [@MenuItem("HTFramework/Tools/Custom Executer", false, 108)]
         private static void OpenCustomExecuter()
         {
             CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
@@ -335,7 +401,7 @@ namespace HT.Framework
         /// <summary>
         /// 执行 Custom Tool
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Tool", false, 116)]
+        [@MenuItem("HTFramework/Tools/Custom Tool", false, 109)]
         private static void ExecuteCustomTool()
         {
             CustomTools.Clear();
@@ -369,7 +435,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Extended Inspector
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Extended Inspector", false, 117)]
+        [@MenuItem("HTFramework/Tools/Extended Inspector", false, 110)]
         private static void OpenExtendedInspector()
         {
             ExtendedInspectorWindow window = EditorWindow.GetWindow<ExtendedInspectorWindow>();
@@ -379,11 +445,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region ProjectWizard 【优先级118】
+        #region ProjectWizard 【优先级1000】
         /// <summary>
         /// ProjectWizard
         /// </summary>
-        [@MenuItem("HTFramework/Project Wizard", false, 118)]
+        [@MenuItem("HTFramework/Project Wizard", false, 1000)]
         private static void ProjectWizard()
         {
             ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
@@ -394,11 +460,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region HTFramework Setting... 【优先级1000】
+        #region HTFramework Setting... 【优先级1001】
         /// <summary>
         /// HTFramework Setting...
         /// </summary>
-        [@MenuItem("HTFramework/HTFramework Settings...", false, 1000)]
+        [@MenuItem("HTFramework/HTFramework Settings...", false, 1001)]
         private static void OpenHTFrameworkSettings()
         {
             Setter setter = EditorWindow.GetWindow<Setter>();

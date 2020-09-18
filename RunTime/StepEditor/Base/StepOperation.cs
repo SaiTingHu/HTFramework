@@ -85,6 +85,7 @@ namespace HT.Framework
                 return new Rect(Anchor.x + Width / 2 - 10, Anchor.y - 10, 20, 20);
             }
         }
+
         /// <summary>
         /// 生成预览目标
         /// </summary>
