@@ -585,6 +585,9 @@ namespace HT.Framework
                 if (_pause)
                     return false;
 
+                if (_currentHelper != null && !_currentHelper.IsAllowSkip)
+                    return false;
+
                 Main.Current.StartCoroutine(SkipCurrentStepCoroutine());
                 return true;
             }
@@ -603,6 +606,9 @@ namespace HT.Framework
             if (_running && !_executing)
             {
                 if (_pause)
+                    return false;
+
+                if (_currentHelper != null && !_currentHelper.IsAllowSkip)
                     return false;
 
                 if (!_stepContentIndexs.ContainsKey(stepID))
