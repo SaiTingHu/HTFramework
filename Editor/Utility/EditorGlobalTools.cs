@@ -92,7 +92,8 @@ namespace HT.Framework
             {
                 if (objs[i].GetComponent<MeshRenderer>())
                 {
-                    objs[i].AddComponent<BoxCollider>();
+                    if (!objs[i].GetComponent<Collider>())
+                        objs[i].AddComponent<BoxCollider>();
                     continue;
                 }
 
