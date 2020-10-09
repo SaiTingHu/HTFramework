@@ -301,6 +301,7 @@ namespace HT.Framework
             BackgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", Module.transform);
             SingleSource = AudioToolkit.CreateAudioSource("SingleSource", Module.transform);
             OneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", Module.transform);
+            BackgroundSource.loop = true;
         }
         /// <summary>
         /// 助手准备工作
