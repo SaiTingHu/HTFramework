@@ -12,7 +12,7 @@ namespace HT.Framework
     {
         public UIAnimationType TheAnimationType = UIAnimationType.Move;
         public Ease TheEase = Ease.Linear;
-        public LoopType TheLoopType = LoopType.Yoyo;
+        public LoopType TheLoopType = LoopType.Restart;
         public RotateMode TheRotateMode = RotateMode.LocalAxisAdd;
         public Vector3 TheTargetVector3 = Vector3.zero;
         public float TheTargetFloat = 0;
@@ -21,19 +21,55 @@ namespace HT.Framework
         public int TheLoops = -1;
         public bool PlayOnStart = true;
 
+        /// <summary>
+        /// 动画是否播放中
+        /// </summary>
+        public bool IsPlaying
+        {
+            get
+            {
+                if (_theTweener != null)
+                {
+                    return _theTweener.IsPlaying();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        /// <summary>
+        /// 动画是否暂停中
+        /// </summary>
+        public bool IsPause { get; private set; } = false;
+
+        private RectTransform _rectTransform;
         private Graphic _theGraphic;
+        private Vector3 _positionRecord;
+        private Vector3 _rotationRecord;
+        private Vector3 _scaleRecord;
+        private Color _colorRecord;
         private Tweener _theTweener;
+        
+        private void Awake()
+        {
+            _rectTransform = transform.rectTransform();
+            _theGraphic = GetComponent<Graphic>();
+            _positionRecord = transform.localPosition;
+            _rotationRecord = transform.localRotation.eulerAngles;
+            _scaleRecord = transform.localScale;
+            _colorRecord = _theGraphic != null ? _theGraphic.color : Color.white;
+        }
 
         private void Start()
         {
-            if (!transform.rectTransform())
+            if (_rectTransform == null)
             {
                 Log.Error(name + " 丢失组件rectTransform！不能执行UIAnimation！");
                 Destroy(this);
                 return;
             }
-            _theGraphic = GetComponent<Graphic>();
-            if (!_theGraphic)
+            if (_theGraphic == null)
             {
                 if (TheAnimationType == UIAnimationType.Transparency || TheAnimationType == UIAnimationType.Color)
                 {
@@ -63,13 +99,13 @@ namespace HT.Framework
             switch (TheAnimationType)
             {
                 case UIAnimationType.Move:
-                    _theTweener = transform.rectTransform().DOAnchorPos(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
+                    _theTweener = _rectTransform.DOAnchorPos(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case UIAnimationType.Rotate:
-                    _theTweener = transform.rectTransform().DOLocalRotate(TheTargetVector3, TheTime, TheRotateMode).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
+                    _theTweener = _rectTransform.DOLocalRotate(TheTargetVector3, TheTime, TheRotateMode).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case UIAnimationType.Scale:
-                    _theTweener = transform.rectTransform().DOScale(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
+                    _theTweener = _rectTransform.DOScale(TheTargetVector3, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
                     break;
                 case UIAnimationType.Transparency:
                     _theTweener = _theGraphic.DOFade(TheTargetFloat, TheTime).SetEase(TheEase).SetLoops(TheLoops, TheLoopType);
@@ -80,6 +116,8 @@ namespace HT.Framework
                 default:
                     break;
             }
+
+            IsPause = false;
         }
 
         /// <summary>
@@ -91,6 +129,8 @@ namespace HT.Framework
             {
                 _theTweener.Pause();
             }
+
+            IsPause = true;
         }
 
         /// <summary>
@@ -102,6 +142,8 @@ namespace HT.Framework
             {
                 _theTweener.Play();
             }
+
+            IsPause = false;
         }
 
         /// <summary>
@@ -114,6 +156,13 @@ namespace HT.Framework
                 _theTweener.Kill();
                 _theTweener = null;
             }
+
+            transform.localPosition = _positionRecord;
+            transform.localRotation = _rotationRecord.ToQuaternion();
+            transform.localScale = _scaleRecord;
+            if (_theGraphic) _theGraphic.color = _colorRecord;
+
+            IsPause = false;
         }
     }
 

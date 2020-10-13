@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -38,6 +39,33 @@ namespace HT.Framework
             PropertyField("TheTime", "Time");
             PropertyField("TheLoops", "Loops");
             PropertyField("PlayOnStart");
+        }
+
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
+
+            GUI.enabled = !Target.IsPlaying && !Target.IsPause;
+            if (GUILayout.Button("Play"))
+            {
+                Target.Play();
+            }
+            GUI.enabled = Target.IsPlaying && !Target.IsPause;
+            if (GUILayout.Button("Pause"))
+            {
+                Target.Pause();
+            }
+            GUI.enabled = !Target.IsPlaying && Target.IsPause;
+            if (GUILayout.Button("Resume"))
+            {
+                Target.Resume();
+            }
+            GUI.enabled = Target.IsPlaying;
+            if (GUILayout.Button("Stop"))
+            {
+                Target.Stop();
+            }
+            GUI.enabled = true;
         }
     }
 }

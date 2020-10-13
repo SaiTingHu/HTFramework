@@ -5,6 +5,8 @@ namespace HT.Framework
     [CustomEditor(typeof(DragObject))]
     internal sealed class DragObjectInspector : HTFEditor<DragObject>
     {
+        protected override bool IsEnableRuntimeData => false;
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

@@ -11,14 +11,46 @@ namespace HT.Framework
     {
         public GameObjectAnimationType TheAnimationType = GameObjectAnimationType.Move;
         public Ease TheEase = Ease.Linear;
-        public LoopType TheLoopType = LoopType.Yoyo;
+        public LoopType TheLoopType = LoopType.Restart;
         public RotateMode TheRotateMode = RotateMode.LocalAxisAdd;
         public Vector3 TheTargetVector3 = Vector3.zero;
         public float TheTime = 1;
         public int TheLoops = -1;
         public bool PlayOnStart = true;
 
+        /// <summary>
+        /// 动画是否播放中
+        /// </summary>
+        public bool IsPlaying
+        {
+            get
+            {
+                if (_theTweener != null)
+                {
+                    return _theTweener.IsPlaying();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        /// <summary>
+        /// 动画是否暂停中
+        /// </summary>
+        public bool IsPause { get; private set; } = false;
+
+        private Vector3 _positionRecord;
+        private Vector3 _rotationRecord;
+        private Vector3 _scaleRecord;
         private Tweener _theTweener;
+
+        private void Awake()
+        {
+            _positionRecord = transform.localPosition;
+            _rotationRecord = transform.localRotation.eulerAngles;
+            _scaleRecord = transform.localScale;
+        }
 
         private void Start()
         {
@@ -53,6 +85,8 @@ namespace HT.Framework
                 default:
                     break;
             }
+
+            IsPause = false;
         }
 
         /// <summary>
@@ -64,6 +98,8 @@ namespace HT.Framework
             {
                 _theTweener.Pause();
             }
+
+            IsPause = true;
         }
 
         /// <summary>
@@ -75,6 +111,8 @@ namespace HT.Framework
             {
                 _theTweener.Play();
             }
+
+            IsPause = false;
         }
 
         /// <summary>
@@ -87,6 +125,12 @@ namespace HT.Framework
                 _theTweener.Kill();
                 _theTweener = null;
             }
+
+            transform.localPosition = _positionRecord;
+            transform.localRotation = _rotationRecord.ToQuaternion();
+            transform.localScale = _scaleRecord;
+
+            IsPause = false;
         }
     }
 
