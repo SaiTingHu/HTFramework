@@ -20,6 +20,10 @@ namespace HT.Framework
         
         private IWebRequestHelper _helper;
 
+        private WebRequestManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

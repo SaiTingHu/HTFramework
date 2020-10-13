@@ -28,6 +28,10 @@ namespace HT.Framework
         
         private IResourceHelper _helper;
 
+        private ResourceManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

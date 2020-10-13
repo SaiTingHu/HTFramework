@@ -53,6 +53,10 @@ namespace HT.Framework
         
         private IExceptionHandlerHelper _helper;
 
+        private ExceptionHandler()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

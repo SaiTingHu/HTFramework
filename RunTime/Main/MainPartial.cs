@@ -138,6 +138,10 @@ namespace HT.Framework
         #endregion
 
         #region Lifecycle
+        private Main()
+        {
+
+        }
         private void Awake()
         {
             OnInitialization();

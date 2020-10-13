@@ -61,6 +61,10 @@ namespace HT.Framework
             }
         }
 
+        private InputManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

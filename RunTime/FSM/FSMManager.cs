@@ -12,6 +12,10 @@ namespace HT.Framework
     {
         private IFSMHelper _helper;
 
+        private FSMManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

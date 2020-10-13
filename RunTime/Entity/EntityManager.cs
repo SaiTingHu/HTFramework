@@ -22,6 +22,10 @@ namespace HT.Framework
         
         private IEntityHelper _helper;
 
+        private EntityManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

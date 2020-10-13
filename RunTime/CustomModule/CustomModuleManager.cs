@@ -11,6 +11,10 @@ namespace HT.Framework
     {
         private ICustomModuleHelper _helper;
 
+        private CustomModuleManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

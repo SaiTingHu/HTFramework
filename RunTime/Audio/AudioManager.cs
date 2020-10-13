@@ -235,6 +235,10 @@ namespace HT.Framework
 
         private IAudioHelper _helper;
 
+        private AudioManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

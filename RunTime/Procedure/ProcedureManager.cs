@@ -38,6 +38,10 @@ namespace HT.Framework
             }
         }
 
+        private ProcedureManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

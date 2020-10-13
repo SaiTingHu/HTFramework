@@ -14,6 +14,10 @@ namespace HT.Framework
     {
         private ICoroutinerHelper _helper;
 
+        private Coroutiner()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

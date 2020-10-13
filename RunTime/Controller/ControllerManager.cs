@@ -56,6 +56,10 @@ namespace HT.Framework
         
         private IControllerHelper _helper;
 
+        private ControllerManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

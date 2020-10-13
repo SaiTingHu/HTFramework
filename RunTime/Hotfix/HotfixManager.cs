@@ -50,6 +50,10 @@ namespace HT.Framework
             }
         }
 
+        private HotfixManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

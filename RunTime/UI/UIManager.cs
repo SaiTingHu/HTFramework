@@ -35,6 +35,10 @@ namespace HT.Framework
         
         private IUIHelper _helper;
 
+        private UIManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

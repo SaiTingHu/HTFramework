@@ -68,6 +68,11 @@ namespace HT.Framework
         private Type _defaultState;
         private Type _finalState;
 
+        private FSM()
+        {
+
+        }
+
         private void Awake()
         {
             if (IsAutoRegister)

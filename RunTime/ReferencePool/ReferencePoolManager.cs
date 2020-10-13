@@ -18,6 +18,10 @@ namespace HT.Framework
         
         private IReferencePoolHelper _helper;
 
+        private ReferencePoolManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

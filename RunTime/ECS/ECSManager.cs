@@ -12,9 +12,10 @@ namespace HT.Framework
     {
         private IECSHelper _helper;
 
-        /// <summary>
-        /// 初始化模块
-        /// </summary>
+        private ECSManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

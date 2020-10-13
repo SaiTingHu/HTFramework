@@ -62,6 +62,10 @@ namespace HT.Framework
         private IPEndPoint _clientEndPoint;
         private INetworkHelper _helper;
 
+        private NetworkManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

@@ -33,6 +33,10 @@ namespace HT.Framework
             }
         }
 
+        private AspectTracker()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

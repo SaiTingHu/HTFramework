@@ -32,6 +32,10 @@ namespace HT.Framework
         //任务控制者运行中
         private bool _running = false;
 
+        private TaskMaster()
+        {
+
+        }
         internal override void OnRefresh()
         {
             base.OnRefresh();

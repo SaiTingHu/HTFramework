@@ -97,6 +97,10 @@ namespace HT.Framework
         //暂停时等待
         private WaitUntil _pauseWait;
 
+        private StepMaster()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

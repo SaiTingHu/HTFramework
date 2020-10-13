@@ -17,6 +17,10 @@ namespace HT.Framework
         
         private IObjectPoolHelper _helper;
 
+        private ObjectPoolManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

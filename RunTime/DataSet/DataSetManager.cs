@@ -13,6 +13,10 @@ namespace HT.Framework
     {
         private IDataSetHelper _helper;
 
+        private DataSetManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

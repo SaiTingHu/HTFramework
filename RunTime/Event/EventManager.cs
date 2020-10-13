@@ -12,6 +12,10 @@ namespace HT.Framework
     {
         private IEventHelper _helper;
 
+        private EventManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();

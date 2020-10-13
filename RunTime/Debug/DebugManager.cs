@@ -20,6 +20,10 @@ namespace HT.Framework
 
         private IDebugHelper _helper;
 
+        private DebugManager()
+        {
+
+        }
         internal override void OnInitialization()
         {
             base.OnInitialization();
