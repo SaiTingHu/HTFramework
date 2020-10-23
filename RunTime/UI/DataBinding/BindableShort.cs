@@ -37,6 +37,16 @@ namespace HT.Framework
             }
         }
 
+        public BindableShort()
+        {
+            Value = 0;
+        }
+
+        public BindableShort(short value)
+        {
+            Value = value;
+        }
+
         /// <summary>
         /// 绑定控件
         /// </summary>

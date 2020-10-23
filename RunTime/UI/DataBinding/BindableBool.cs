@@ -37,6 +37,16 @@ namespace HT.Framework
             }
         }
 
+        public BindableBool()
+        {
+            Value = false;
+        }
+
+        public BindableBool(bool value)
+        {
+            Value = value;
+        }
+
         /// <summary>
         /// 绑定控件
         /// </summary>

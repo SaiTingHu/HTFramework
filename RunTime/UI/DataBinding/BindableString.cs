@@ -32,6 +32,16 @@ namespace HT.Framework
             }
         }
 
+        public BindableString()
+        {
+            Value = "";
+        }
+
+        public BindableString(string value)
+        {
+            Value = value;
+        }
+
         /// <summary>
         /// 绑定控件
         /// </summary>

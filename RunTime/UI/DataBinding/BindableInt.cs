@@ -37,6 +37,16 @@ namespace HT.Framework
             }
         }
 
+        public BindableInt()
+        {
+            Value = 0;
+        }
+
+        public BindableInt(int value)
+        {
+            Value = value;
+        }
+
         /// <summary>
         /// 绑定控件
         /// </summary>

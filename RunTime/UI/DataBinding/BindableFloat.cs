@@ -37,6 +37,16 @@ namespace HT.Framework
             }
         }
 
+        public BindableFloat()
+        {
+            Value = 0f;
+        }
+
+        public BindableFloat(float value)
+        {
+            Value = value;
+        }
+
         /// <summary>
         /// 绑定控件
         /// </summary>

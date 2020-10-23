@@ -37,6 +37,16 @@ namespace HT.Framework
             }
         }
 
+        public BindableLong()
+        {
+            Value = 0;
+        }
+
+        public BindableLong(long value)
+        {
+            Value = value;
+        }
+
         /// <summary>
         /// 绑定控件
         /// </summary>
