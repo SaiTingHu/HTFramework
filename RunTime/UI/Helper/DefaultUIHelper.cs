@@ -48,7 +48,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有World类型的UI
         /// </summary>
-        public Dictionary<string, UIManager.WorldUIDomain> WorldUIs { get; private set; } = new Dictionary<string, UIManager.WorldUIDomain>();
+        public Dictionary<string, UIWorldDomain> WorldUIs { get; private set; } = new Dictionary<string, UIWorldDomain>();
         /// <summary>
         /// Camera类型UI的摄像机
         /// </summary>
@@ -170,7 +170,7 @@ namespace HT.Framework
                             {
                                 if (!WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                                 {
-                                    WorldUIs.Add(attribute.WorldUIDomainName, new UIManager.WorldUIDomain(attribute.WorldUIDomainName, _worldUIRoot.FindChildren("CanvasTem")));
+                                    WorldUIs.Add(attribute.WorldUIDomainName, new UIWorldDomain(attribute.WorldUIDomainName, _worldUIRoot.FindChildren("CanvasTem")));
                                 }
                                 WorldUIs[attribute.WorldUIDomainName].Injection(types[i]);
                             }

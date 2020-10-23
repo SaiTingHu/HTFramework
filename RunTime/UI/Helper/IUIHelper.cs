@@ -20,7 +20,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有World类型的UI
         /// </summary>
-        Dictionary<string, UIManager.WorldUIDomain> WorldUIs { get; }
+        Dictionary<string, UIWorldDomain> WorldUIs { get; }
         /// <summary>
         /// Camera类型UI的摄像机
         /// </summary>
