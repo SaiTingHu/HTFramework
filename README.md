@@ -88,6 +88,8 @@
 
 - [Dotween Free](http://dotween.demigiant.com/)。
 
+- [LitJson](https://github.com/LitJSON/litjson)。
+
 ## 注意事项
 
 - 框架中所有On开头的函数为生命周期函数或回调函数，均由框架呼叫，请勿手动调用。
