@@ -18,8 +18,10 @@ namespace HT.Framework
         private Vector2 _scrollItemNameGUI;
         private Vector2 _scrollItemSettingGUI;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _settingItems.Clear();
             _settingItems.Add(new SettingItemMain());
             _settingItems.Add(new SettingItemAspectTrack());

@@ -20,30 +20,13 @@ namespace HT.Framework
             window.Show();
         }
 
-        private Color _adminModeColor = new Color(1, 0.43f, 0, 1);
         private VersionInfo _versionInfo;
         private Version _version;
         private string _versionNumber;
         private bool _isRelease = false;
         private Version _releaseVersion;
         private Vector2 _scroll;
-
-        public bool IsAdminMode { get; set; } = false;
-        public string Password
-        {
-            get
-            {
-                return "1+A/HydBW5UMiL9xsRLN2A==";
-            }
-        }
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
-
+        
         private void Update()
         {
             if (_versionInfo == null)
@@ -56,37 +39,9 @@ namespace HT.Framework
         {
             base.OnBodyGUI();
 
-            TitleGUI();
             VersionGUI();
         }
-
-        private void TitleGUI()
-        {
-            if (IsAdminMode)
-            {
-                GUI.backgroundColor = _adminModeColor;
-                GUILayout.BeginHorizontal(EditorStyles.toolbar);
-                GUILayout.Label("Developer Mode");
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Logout", EditorStyles.toolbarPopup))
-                {
-                    IsAdminMode = false;
-                }
-                GUILayout.EndHorizontal();
-                GUI.backgroundColor = Color.white;
-            }
-            else
-            {
-                GUILayout.BeginHorizontal(EditorStyles.toolbar);
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Admin Login", EditorStyles.toolbarPopup))
-                {
-                    AdminLoginWindow.OpenWindow(this);
-                }
-                GUILayout.EndHorizontal();
-            }
-        }
-
+        
         private void VersionGUI()
         {
             GUILayout.BeginHorizontal();
@@ -116,7 +71,7 @@ namespace HT.Framework
             }
             if (IsAdminMode)
             {
-                GUI.backgroundColor = _adminModeColor;
+                GUI.backgroundColor = AdminModeColor;
                 if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
                 {
                     if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to delete this version？", "Yes", "No"))
@@ -169,7 +124,7 @@ namespace HT.Framework
 
             if (IsAdminMode)
             {
-                GUI.backgroundColor = _adminModeColor;
+                GUI.backgroundColor = AdminModeColor;
 
                 GUILayout.BeginHorizontal();
                 GUI.enabled = !_isRelease;
@@ -251,16 +206,11 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
         }
 
-        public void AdminCheck(string password)
+        protected override void OnAdminCheck(string password)
         {
-            IsAdminMode = MathfToolkit.MD5Encrypt(password) == Password;
-            _isRelease = false;
-            GUI.changed = true;
+            base.OnAdminCheck(password);
 
-            if (!IsAdminMode)
-            {
-                ShowNotification(new GUIContent("Password is wrong!"));
-            }
+            _isRelease = false;
         }
     }
 }

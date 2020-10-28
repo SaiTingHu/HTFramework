@@ -45,8 +45,10 @@ namespace HT.Framework
             }
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _components.Clear();
             _componentInfos.Clear();
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies((type) =>

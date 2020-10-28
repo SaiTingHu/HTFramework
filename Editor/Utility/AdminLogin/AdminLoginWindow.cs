@@ -8,17 +8,20 @@ namespace HT.Framework
     /// </summary>
     internal sealed class AdminLoginWindow : HTFEditorWindow
     {
-        public static void OpenWindow(IAdminLoginWindow parent)
+        public static void OpenWindow(IAdminLoginWindow parent, HTFAction<string> checkAction)
         {
             AdminLoginWindow window = GetWindow<AdminLoginWindow>();
             window._parent = parent;
+            window._checkAction = checkAction;
             window.titleContent.text = "Admin Login";
+            window.position = new Rect(parent.Cast<HTFEditorWindow>().position.center - new Vector2(125, 0), new Vector2(250, 50));
             window.minSize = new Vector2(250, 50);
             window.maxSize = new Vector2(250, 50);
             window.Show();
         }
 
         private IAdminLoginWindow _parent;
+        private HTFAction<string> _checkAction;
         private string _password = "";
 
         protected override bool IsEnableTitleGUI
@@ -45,7 +48,7 @@ namespace HT.Framework
             GUI.enabled = _password != "";
             if (GUILayout.Button("Login", EditorStyles.miniButton))
             {
-                _parent.AdminCheck(_password);
+                _checkAction?.Invoke(_password);
                 Close();
             }
             GUI.enabled = true;
@@ -72,7 +75,7 @@ namespace HT.Framework
                         case KeyCode.KeypadEnter:
                             if (_password != "")
                             {
-                                _parent.AdminCheck(_password);
+                                _checkAction?.Invoke(_password);
                                 Close();
                             }
                             break;

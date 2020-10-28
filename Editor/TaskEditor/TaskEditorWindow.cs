@@ -50,8 +50,10 @@ namespace HT.Framework
                 return false;
             }
         }
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
 
             _addGUIContent = new GUIContent();

@@ -85,8 +85,10 @@ namespace HT.Framework
                 return false;
             }
         }
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             SelectStepContent(_currentStep);
             SelectStepOperation(_currentOperation);
 

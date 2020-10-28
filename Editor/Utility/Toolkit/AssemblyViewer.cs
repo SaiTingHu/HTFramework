@@ -38,9 +38,11 @@ namespace HT.Framework
         private bool _showProperty = true;
 
         private StringBuilder _builder = new StringBuilder();
-        
-        private void OnEnable()
+
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _assemblies = AppDomain.CurrentDomain.GetAssemblies();
             _currentAssembly = null;
             _currentType = null;

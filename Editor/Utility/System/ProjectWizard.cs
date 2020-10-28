@@ -18,8 +18,10 @@ namespace HT.Framework
 
         protected override bool IsEnableTitleGUI => false;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             InitFolder();
         }
         private void InitFolder()

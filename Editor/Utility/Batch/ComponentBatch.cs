@@ -23,8 +23,10 @@ namespace HT.Framework
             }
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             if (_selectionAddMethod == null)
             {
                 MethodInfo[] methods = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.Selection").GetMethods(BindingFlags.Static | BindingFlags.NonPublic);

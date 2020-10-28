@@ -27,9 +27,11 @@ namespace HT.Framework
         private Vector2 _scroll;
         private GUIContent _prefabGC;
         private GUIContent _removeGC;
-        
-        private void OnEnable()
+
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _editors.Clear();
             for (int i = 0; i < _components.Count; i++)
             {

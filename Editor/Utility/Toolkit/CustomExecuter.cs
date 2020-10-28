@@ -129,8 +129,10 @@ namespace HT.Framework
                 _codeTemplate = asset.text;
             }
         }
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _csharpCodeProvider = new CSharpCodeProvider();
             Entity = null;
             _methodName = "<None>";

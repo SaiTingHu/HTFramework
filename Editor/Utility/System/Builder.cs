@@ -60,8 +60,10 @@ namespace HT.Framework
             }
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             BuildPlayerWindow[] buildPlayerWindows = Resources.FindObjectsOfTypeAll<BuildPlayerWindow>();
             _buildPlayerWindow = buildPlayerWindows.Length > 0 ? buildPlayerWindows[0] : CreateInstance<BuildPlayerWindow>();
             _onDisableMethod = _buildPlayerWindow.GetType().GetMethod("OnDisable", BindingFlags.Instance | BindingFlags.NonPublic);

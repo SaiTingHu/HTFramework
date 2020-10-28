@@ -63,8 +63,10 @@ namespace HT.Framework
         #endregion
 
         #region Lifecycle Function
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _sortGC = new GUIContent();
             _sortGC.image = EditorGUIUtility.IconContent("Audio Mixer").image;
             _sortGC.tooltip = "Sort";
