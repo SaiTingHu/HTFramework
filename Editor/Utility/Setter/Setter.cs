@@ -200,35 +200,7 @@ namespace HT.Framework
         }
         private void NewSettingItemScript()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_SettingItem_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 SettingItem 类（必须放在Editor文件夹内）", directory, "NewSettingItem", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/SettingItemTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_SettingItem_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建SettingItem失败，已存在类型 " + className);
-                }
-            }
+            EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_SettingItem_Folder, "SettingItem (EditorOnly)", "SettingItemTemplate");
         }
         private void EditModule()
         {

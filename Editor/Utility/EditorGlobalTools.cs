@@ -24,13 +24,6 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 框架相关目录
-        /// <summary>
-        /// 框架相关目录
-        /// </summary>
-        public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkILHotfix", "HTFrameworkXLua", "HTFrameworkGameComponent" };
-        #endregion
-
         #region About 【优先级0】
         /// <summary>
         /// About
@@ -532,35 +525,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# AspectProxy Script", false, 11)]
         private static void CreateAspectProxy()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_AspectProxy_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 AspectProxy 类", directory, "NewAspectProxy", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/AspectProxyTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_AspectProxy_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建AspectProxy失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_AspectProxy_Folder, "AspectProxy", "AspectProxyTemplate");
         }
 
         /// <summary>
@@ -569,36 +534,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# CustomModule Script", false, 12)]
         private static void CreateCustomModule()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_CustomModule_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 CustomModule 类", directory, "NewCustomModule", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/CustomModuleTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        code = code.Replace("#MODULENAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_CustomModule_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建CustomModule失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_CustomModule_Folder, "CustomModule", "CustomModuleTemplate", "#MODULENAME#");
         }
 
         /// <summary>
@@ -607,35 +543,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# DataSet Script", false, 13)]
         private static void CreateDataSet()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_DataSet_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 DataSet 类", directory, "NewDataSet", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/DataSetTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_DataSet_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建DataSet失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_DataSet_Folder, "DataSet", "DataSetTemplate");
         }
 
         /// <summary>
@@ -644,35 +552,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# EntityLogic Script", false, 14)]
         private static void CreateEntityLogic()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_EntityLogic_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 EntityLogic 类", directory, "NewEntityLogic", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/EntityLogicTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_EntityLogic_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建EntityLogic失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_EntityLogic_Folder, "EntityLogic", "EntityLogicTemplate");
         }
 
         /// <summary>
@@ -681,35 +561,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# EventHandler Script", false, 15)]
         private static void CreateEventHandler()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_EventHandler_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 EventHandler 类", directory, "NewEventHandler", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/EventHandlerTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_EventHandler_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建EventHandler失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_EventHandler_Folder, "EventHandler", "EventHandlerTemplate");
         }
 
         /// <summary>
@@ -718,36 +570,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# FiniteState Script", false, 16)]
         private static void CreateFiniteState()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_FiniteState_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 FiniteState 类", directory, "NewFiniteState", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/FiniteStateTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        code = code.Replace("#STATENAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_FiniteState_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建FiniteState失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_FiniteState_Folder, "FiniteState", "FiniteStateTemplate", "#STATENAME#");
         }
         
         /// <summary>
@@ -756,35 +579,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 17)]
         private static void CreateProcedure()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_Procedure_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 Procedure 类", directory, "NewProcedure", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_Procedure_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建Procedure失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_Procedure_Folder, "Procedure", "ProcedureTemplate");
         }
 
         /// <summary>
@@ -793,35 +588,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# Protocol Channel Script", false, 18)]
         private static void CreateProtocolChannel()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ProtocolChannel_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 ProtocolChannel 类", directory, "NewProtocolChannel", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ProtocolChannelTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_ProtocolChannel_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建ProtocolChannel失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_ProtocolChannel_Folder, "ProtocolChannel", "ProtocolChannelTemplate");
         }
         
         /// <summary>
@@ -830,35 +597,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 19)]
         private static void CreateUILogicResident()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_UILogicResident_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 UILogicResident 类", directory, "NewUILogicResident", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/UILogicResidentTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_UILogicResident_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建UILogicResident失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_UILogicResident_Folder, "UILogicResident", "UILogicResidentTemplate");
         }
 
         /// <summary>
@@ -867,35 +606,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 20)]
         private static void CreateUILogicTemporary()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_UILogicTemporary_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 UILogicTemporary 类", directory, "NewUILogicTemporary", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/UILogicTemporaryTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_UILogicTemporary_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建UILogicTemporary失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_UILogicTemporary_Folder, "UILogicTemporary", "UILogicTemporaryTemplate");
         }
 
         /// <summary>
@@ -904,35 +615,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/[ECS] C# Component Script", false, 1000)]
         private static void CreateECSComponent()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ECSComponent_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 ECS Component 类", directory, "NewComponent", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ECSComponentTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_ECSComponent_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建 ECS Component 失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_ECSComponent_Folder, "ECSComponent", "ECSComponentTemplate");
         }
 
         /// <summary>
@@ -941,35 +624,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/[ECS] C# System Script", false, 1001)]
         private static void CreateECSSystem()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ECSSystem_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 ECS System 类", directory, "NewSystem", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ECSSystemTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_ECSSystem_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建 ECS System 失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_ECSSystem_Folder, "ECSSystem", "ECSSystemTemplate");
         }
 
         /// <summary>
@@ -978,35 +633,7 @@ namespace HT.Framework
         [@MenuItem("Assets/Create/HTFramework/[ECS] C# Order Script", false, 1002)]
         private static void CreateECSOrder()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_ECSOrder_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 ECS Order 类", directory, "NewOrder", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ECSOrderTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_ECSOrder_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建 ECS Order 失败，已存在类型 " + className);
-                }
-            }
+            CreateScriptFormTemplate(EditorPrefsTable.Script_ECSOrder_Folder, "ECSOrder", "ECSOrderTemplate");
         }
 
         /// <summary>
@@ -1017,40 +644,14 @@ namespace HT.Framework
         {
             return AssetDatabase.IsValidFolder("Assets/Hotfix");
         }
-        
         /// <summary>
         /// 新建HotfixProcedure类
         /// </summary>
         [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 2000)]
         private static void CreateHotfixProcedure()
         {
-            string path = EditorUtility.SaveFilePanel("新建 HotfixProcedure 类", Application.dataPath + "/Hotfix", "NewHotfixProcedure", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/HotfixProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                    }
-                }
-                else
-                {
-                    Log.Error("新建HotfixProcedure失败，已存在类型 " + className);
-                }
-            }
+            EditorPrefs.SetString(EditorPrefsTable.Script_HotfixProcedure_Folder, "/Hotfix");
+            CreateScriptFormTemplate(EditorPrefsTable.Script_HotfixProcedure_Folder, "HotfixProcedure", "HotfixProcedureTemplate");
         }
 
         /// <summary>
@@ -1061,40 +662,14 @@ namespace HT.Framework
         {
             return AssetDatabase.IsValidFolder("Assets/Hotfix");
         }
-
         /// <summary>
         /// 新建HotfixObject类
         /// </summary>
         [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 2001)]
         private static void CreateHotfixObject()
         {
-            string path = EditorUtility.SaveFilePanel("新建 HotfixObject 类", Application.dataPath + "/Hotfix", "NewHotfixObject", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/HotfixObjectTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                    }
-                }
-                else
-                {
-                    Log.Error("新建HotfixObject失败，已存在类型 " + className);
-                }
-            }
+            EditorPrefs.SetString(EditorPrefsTable.Script_HotfixObject_Folder, "/Hotfix");
+            CreateScriptFormTemplate(EditorPrefsTable.Script_HotfixObject_Folder, "HotfixObject", "HotfixObjectTemplate");
         }
 
         /// <summary>
@@ -1109,7 +684,6 @@ namespace HT.Framework
             return false;
 #endif
         }
-
         /// <summary>
         /// 新建WebGL插件
         /// </summary>
@@ -1125,7 +699,7 @@ namespace HT.Framework
             }
             if (!File.Exists(pluginPath))
             {
-                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/WebGLPluginTemplate.txt", typeof(TextAsset)) as TextAsset;
+                TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "WebGLPluginTemplate.txt", typeof(TextAsset)) as TextAsset;
                 if (asset)
                 {
                     File.AppendAllText(pluginPath, asset.text);
@@ -1134,7 +708,7 @@ namespace HT.Framework
             }
             if (!File.Exists(callerPath))
             {
-                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/WebGLCallerTemplate.txt", typeof(TextAsset)) as TextAsset;
+                TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "WebGLCallerTemplate.txt", typeof(TextAsset)) as TextAsset;
                 if (asset)
                 {
                     File.AppendAllText(callerPath, asset.text);
@@ -1147,8 +721,71 @@ namespace HT.Framework
             EditorGUIUtility.PingObject(plugin);
             Selection.activeObject = plugin;
         }
+
+        /// <summary>
+        /// 从模板创建脚本
+        /// </summary>
+        /// <param name="prefsKey">脚本配置路径Key</param>
+        /// <param name="scriptType">脚本类型</param>
+        /// <param name="templateName">脚本模板名称</param>
+        /// <param name="replace">脚本替换字段</param>
+        /// <returns>脚本名称</returns>
+        public static string CreateScriptFormTemplate(string prefsKey, string scriptType,string templateName, params string[] replace)
+        {
+            string directory = EditorPrefs.GetString(prefsKey, "");
+            string fullPath = Application.dataPath + directory;
+            if (!Directory.Exists(fullPath)) fullPath = Application.dataPath;
+
+            string path = EditorUtility.SaveFilePanel("Create " + scriptType + " Class", fullPath, "New" + scriptType, "cs");
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (!path.Contains(Application.dataPath))
+                {
+                    Log.Error("新建 " + scriptType + " 失败：创建路径必须在当前项目的 Assets 路径下！");
+                    return "<None>";
+                }
+
+                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
+                if (!File.Exists(path))
+                {
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + templateName + ".txt", typeof(TextAsset)) as TextAsset;
+                    if (asset)
+                    {
+                        string code = asset.text;
+                        code = code.Replace("#SCRIPTNAME#", className);
+                        if (replace != null && replace.Length > 0)
+                        {
+                            for (int i = 0; i < replace.Length; i++)
+                            {
+                                code = code.Replace(replace[i], className);
+                            }
+                        }
+                        File.AppendAllText(path, code);
+                        asset = null;
+                        AssetDatabase.Refresh();
+
+                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
+                        TextAsset csFile = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
+                        EditorGUIUtility.PingObject(csFile);
+                        Selection.activeObject = csFile;
+                        AssetDatabase.OpenAsset(csFile);
+                        EditorPrefs.SetString(prefsKey, path.Substring(0, path.LastIndexOf("/")).Replace(Application.dataPath, ""));
+                        return className;
+                    }
+                    else
+                    {
+                        Log.Error("新建 " + scriptType + " 失败：丢失脚本模板文件！");
+                    }
+                }
+                else
+                {
+                    Log.Error("新建 " + scriptType + " 失败：已存在类文件 " + className);
+                }
+            }
+            return "<None>";
+        }
         #endregion
-        
+
         #region 数学工具
         /// <summary>
         /// Vector2转换为标准Copy字符串

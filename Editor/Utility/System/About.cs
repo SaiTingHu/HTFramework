@@ -10,7 +10,7 @@ namespace HT.Framework
         {
             if (EditorApplication.timeSinceStartup < 30)
             {
-                if (EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true))
+                if (EditorPrefs.GetBool(EditorPrefsTable.About_IsShowOnStart, true))
                 {
                     EditorApplication.delayCall += () =>
                     {
@@ -107,7 +107,7 @@ namespace HT.Framework
         {
             _versionInfo = AssetDatabase.LoadAssetAtPath<VersionInfo>("Assets/HTFramework/Editor/Utility/Version/Version.asset");
             _versionNumber = _versionInfo.CurrentVersion.GetFullNumber();
-            _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true);
+            _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.About_IsShowOnStart, true);
         }
 
         protected override void OnBodyGUI()
@@ -192,7 +192,7 @@ namespace HT.Framework
             if (isShowOnStart != _isShowOnStart)
             {
                 _isShowOnStart = isShowOnStart;
-                EditorPrefs.SetBool(EditorPrefsTable.AboutIsShowOnStart, _isShowOnStart);
+                EditorPrefs.SetBool(EditorPrefsTable.About_IsShowOnStart, _isShowOnStart);
             }
             GUILayout.EndHorizontal();
 

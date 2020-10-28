@@ -333,35 +333,7 @@ namespace HT.Framework
         /// </summary>
         private void NewTaskContentScript()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_TaskContent_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 TaskContent 类", directory, "NewTaskContent", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/TaskContentTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_TaskContent_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建TaskContent失败，已存在类型 " + className);
-                }
-            }
+            EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_TaskContent_Folder, "TaskContent", "TaskContentTemplate");
         }
         /// <summary>
         /// 生成任务内容列表
@@ -492,35 +464,7 @@ namespace HT.Framework
         /// </summary>
         private void NewTaskPointScript()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_TaskPoint_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 TaskPoint 类", directory, "NewTaskPoint", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/TaskPointTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_TaskPoint_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建TaskPoint失败，已存在类型 " + className);
-                }
-            }
+            EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_TaskPoint_Folder, "TaskPoint", "TaskPointTemplate");
         }
 
         /// <summary>

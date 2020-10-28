@@ -105,7 +105,7 @@ namespace HT.Framework
         }
         private bool IsIgnoreFolder(string folderName)
         {
-            if (EditorGlobalTools.HTFrameworkFolder.Contains(folderName))
+            if (EditorPrefsTable.HTFrameworkFolder.Contains(folderName))
             {
                 return true;
             }

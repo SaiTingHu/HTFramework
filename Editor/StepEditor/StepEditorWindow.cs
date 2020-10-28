@@ -1684,14 +1684,14 @@ namespace HT.Framework
         /// </summary>
         private void GetEditorStyle()
         {
-            _stepListBGStyle = EditorPrefs.GetString(EditorPrefsTable.Style_StepEditor_StepListBG, "PreBackground");
+            _stepListBGStyle = EditorPrefs.GetString(EditorPrefsTable.StepEditor_Style_StepListBG, "PreBackground");
         }
         /// <summary>
         /// 应用并存储编辑器样式
         /// </summary>
         private void ApplyEditorStyle()
         {
-            EditorPrefs.SetString(EditorPrefsTable.Style_StepEditor_StepListBG, _stepListBGStyle);
+            EditorPrefs.SetString(EditorPrefsTable.StepEditor_Style_StepListBG, _stepListBGStyle);
         }
         /// <summary>
         /// 停止指定步骤的所有操作预览
@@ -1734,37 +1734,7 @@ namespace HT.Framework
         /// </summary>
         private void NewHelperScript()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_StepHelper_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 Helper 类", directory, "NewHelper", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!MonoScriptToolkit.IsExistMonoScriptName(className))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/StepHelperTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        code = code.Replace("#HELPERNAME#", className);
-                        File.AppendAllText(path, code);
-                        _currentStepObj.Helper = className;
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_StepHelper_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建Helper失败，已存在类型 " + className);
-                }
-            }
+            _currentStepObj.Helper = EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_StepHelper_Folder, "StepHelper", "StepHelperTemplate", "#HELPERNAME#");
         }
 
         /// <summary>
