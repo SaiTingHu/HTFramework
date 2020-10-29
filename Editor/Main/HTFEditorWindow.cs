@@ -12,8 +12,9 @@ namespace HT.Framework
         private bool _isAdminMode = false;
 
         private ILocalizeWindow _localizeWindow;
+        private string _languagePrefsKey;
         private Language _language = Language.English;
-        private Dictionary<string, Word> _localizeWords = new Dictionary<string, Word>();
+        private Dictionary<string, Word> _localizeWords;
 
         private MethodInfo _linkLabel;
         private object[] _linkLabelParameter;
@@ -50,6 +51,14 @@ namespace HT.Framework
         /// 管理员模式颜色
         /// </summary>
         protected Color AdminModeColor { get; set; } = new Color(1, 0.43f, 0, 1);
+        /// <summary>
+        /// 是否启用韩语本地化
+        /// </summary>
+        protected virtual bool IsEnableKorean { get; } = false;
+        /// <summary>
+        /// 是否启用日语本地化
+        /// </summary>
+        protected virtual bool IsEnableJapanese { get; } = false;
 
         protected virtual void OnEnable()
         {
@@ -58,7 +67,9 @@ namespace HT.Framework
 
             if (_localizeWindow != null)
             {
-                GenerateWords(ref _localizeWords);
+                _languagePrefsKey = "HT.Framework.HTFEditorWindow.Language." + GetType().FullName;
+                _language = (Language)EditorPrefs.GetInt(_languagePrefsKey, 1);
+                GenerateWords();
             }
         }
         protected void OnGUI()
@@ -84,19 +95,37 @@ namespace HT.Framework
                         gm.AddItem(new GUIContent("简体中文"), _language == Language.Chinese, () =>
                         {
                             _language = Language.Chinese;
+                            EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
                         });
                         gm.AddItem(new GUIContent("English"), _language == Language.English, () =>
                         {
                             _language = Language.English;
+                            EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
                         });
-                        gm.AddItem(new GUIContent("한국어"), _language == Language.Korean, () =>
+                        if (IsEnableKorean)
                         {
-                            _language = Language.Korean;
-                        });
-                        gm.AddItem(new GUIContent("日本語"), _language == Language.Japanese, () =>
+                            gm.AddItem(new GUIContent("한국어"), _language == Language.Korean, () =>
+                            {
+                                _language = Language.Korean;
+                                EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
+                            });
+                        }
+                        else
+                        {
+                            gm.AddDisabledItem(new GUIContent("한국어"));
+                        }
+                        if (IsEnableJapanese)
+                        {
+                            gm.AddItem(new GUIContent("日本語"), _language == Language.Japanese, () =>
                         {
                             _language = Language.Japanese;
+                            EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
                         });
+                        }
+                        else
+                        {
+                            gm.AddDisabledItem(new GUIContent("日本語"));
+                        }
                         gm.ShowAsContext();
                     }
                 }
@@ -159,14 +188,12 @@ namespace HT.Framework
                 ShowNotification(new GUIContent("Password is wrong!"));
             }
         }
-
         /// <summary>
         /// 生成本地化词汇列表
         /// </summary>
-        /// <param name="words">本地化词汇列表</param>
-        protected virtual void GenerateWords(ref Dictionary<string, Word> words)
+        protected virtual void GenerateWords()
         {
-
+            _localizeWords = new Dictionary<string, Word>();
         }
         /// <summary>
         /// 根据key获取对应的本地化词汇
@@ -199,6 +226,40 @@ namespace HT.Framework
             else
             {
                 return key;
+            }
+        }
+        /// <summary>
+        /// 添加本地化词汇，英语默认为key
+        /// </summary>
+        /// <param name="chinese">简体中文</param>
+        /// <param name="english">英语</param>
+        /// <param name="korean">韩语</param>
+        /// <param name="japanese">日语</param>
+        protected void AddWord(string chinese, string english, string korean, string japanese)
+        {
+            if (!_localizeWords.ContainsKey(english))
+            {
+                _localizeWords.Add(english, new Word(chinese, english, korean, japanese));
+            }
+            else
+            {
+                Log.Error(string.Format("{0} 窗口发现相同Key的本地化词汇：{1}！", GetType().FullName, english));
+            }
+        }
+        /// <summary>
+        /// 添加本地化词汇，英语默认为key
+        /// </summary>
+        /// <param name="chinese">简体中文</param>
+        /// <param name="english">英语</param>
+        protected void AddWord(string chinese, string english)
+        {
+            if (!_localizeWords.ContainsKey(english))
+            {
+                _localizeWords.Add(english, new Word(chinese, english));
+            }
+            else
+            {
+                Log.Error(string.Format("{0} 窗口发现相同Key的本地化词汇：{1}！", GetType().FullName, english));
             }
         }
 
