@@ -7,6 +7,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(HotfixManager))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/90479971")]
     internal sealed class HotfixManagerInspector : InternalModuleInspector<HotfixManager>

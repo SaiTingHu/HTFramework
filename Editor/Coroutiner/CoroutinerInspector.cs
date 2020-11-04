@@ -5,6 +5,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Coroutiner))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/91492838")]
     internal sealed class CoroutinerInspector : InternalModuleInspector<Coroutiner>

@@ -16,8 +16,10 @@ namespace HT.Framework
         protected E Target;
 
         private GithubURLAttribute _GithubURL;
+        private GiteeURLAttribute _GiteeURL;
         private CSDNBlogURLAttribute _CSDNURL;
         private Texture _GithubIcon;
+        private Texture _GiteeIcon;
         private Texture _CSDNIcon;
         private Dictionary<string, SerializedProperty> _serializedPropertys = new Dictionary<string, SerializedProperty>();
 
@@ -47,8 +49,10 @@ namespace HT.Framework
         {
             Target = target as E;
             _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
+            _GiteeURL = GetType().GetCustomAttribute<GiteeURLAttribute>();
             _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
             _GithubIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
+            _GiteeIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
             _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
             _serializedPropertys.Clear();
 
@@ -62,10 +66,21 @@ namespace HT.Framework
         
         public sealed override void OnInspectorGUI()
         {
-            if (_GithubURL != null || _CSDNURL != null)
+            if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
+
+                if (_GiteeURL != null)
+                {
+                    GUI.enabled = !string.IsNullOrEmpty(_GiteeURL.URL);
+                    if (GUILayout.Button(_GiteeIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    {
+                        Application.OpenURL(_GiteeURL.URL);
+                    }
+                    EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
+                    GUI.enabled = true;
+                }
 
                 if (_GithubURL != null)
                 {

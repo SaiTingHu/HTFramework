@@ -7,6 +7,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ControllerManager))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89416110")]
     internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager>

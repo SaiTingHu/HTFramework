@@ -7,6 +7,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(Main))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102956756")]
     internal sealed class MainInspector : InternalModuleInspector<Main>

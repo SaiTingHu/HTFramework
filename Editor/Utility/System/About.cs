@@ -27,8 +27,10 @@ namespace HT.Framework
         private Texture _frameworkLogo;
         private Texture _csdnLogo;
         private Texture _githubLogo;
+        private Texture _giteeLogo;
         private GUIContent _csdnGUIContent;
         private GUIContent _githubGUIContent;
+        private GUIContent _giteeGUIContent;
         private GUIContent _pcGUIContent;
         private GUIContent _androidGUIContent;
         private GUIContent _webglGUIContent;
@@ -57,12 +59,16 @@ namespace HT.Framework
             _frameworkLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGOTitle2.png");
             _csdnLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
             _githubLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
+            _giteeLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
             _csdnGUIContent = new GUIContent();
             _csdnGUIContent.image = _csdnLogo;
             _csdnGUIContent.text = "CSDN";
             _githubGUIContent = new GUIContent();
             _githubGUIContent.image = _githubLogo;
             _githubGUIContent.text = "Github";
+            _giteeGUIContent = new GUIContent();
+            _giteeGUIContent.image = _giteeLogo;
+            _giteeGUIContent.text = "Gitee";
             _pcGUIContent = new GUIContent();
             _pcGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.Standalone.Small").image;
             _pcGUIContent.text = "PC,Mac & Linux Standalone";
@@ -140,6 +146,11 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
+            if (GUILayout.Button(_giteeGUIContent, EditorGlobalTools.Styles.Label))
+            {
+                Application.OpenURL("https://gitee.com/SaiTingHu/HTFramework");
+            }
+            EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
             if (GUILayout.Button(_githubGUIContent, EditorGlobalTools.Styles.Label))
             {
                 Application.OpenURL("https://github.com/SaiTingHu/HTFramework");

@@ -3,17 +3,17 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// Github链接
+    /// Gitee链接
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class GithubURLAttribute : Attribute
+    public sealed class GiteeURLAttribute : Attribute
     {
         /// <summary>
         /// 链接
         /// </summary>
         public string URL { get; private set; }
 
-        public GithubURLAttribute(string url)
+        public GiteeURLAttribute(string url)
         {
             URL = url;
         }
