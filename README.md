@@ -6,11 +6,7 @@
 
 # Unity HTFramework
 
-一个开源的基于Unity的简易、轻量级、模块式框架，更适用于应用软件、小型游戏项目，可插拨特性使其能够最大兼容性的与其他框架、环境混合开发。
-
-## 参考
-
-- [EllanJiang/GameFramework](https://github.com/EllanJiang/GameFramework)。
+HTFramework是基于Unity的一个快速开发框架，集需求模块化、代码重用性、实用便捷性、功能高内聚、统一编码规范、可扩展性、可维护性、可通用性、可插拨性为一体，并提供持续维护、升级。
 
 ## 环境
 
