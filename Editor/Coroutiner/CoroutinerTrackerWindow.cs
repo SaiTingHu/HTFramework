@@ -27,6 +27,8 @@ namespace HT.Framework
         private Vector2 _scrollContent = Vector2.zero;
         private Vector2 _scrollStackTrace = Vector2.zero;
 
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/91492838";
+
         public void Init(Coroutiner coroutiner)
         {
             _coroutiner = coroutiner;

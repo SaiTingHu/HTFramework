@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -42,6 +41,7 @@ namespace HT.Framework
         private bool _isShowHelper = false;
         private GUIContent _stepGC;
         private GUIContent _previewGC;
+        private GUIContent _helpGC;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
@@ -94,6 +94,9 @@ namespace HT.Framework
 
             _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
             _previewGC = EditorGUIUtility.IconContent("AudioMixerView Icon");
+            _helpGC = new GUIContent();
+            _helpGC.image = EditorGUIUtility.IconContent("_Help").image;
+            _helpGC.tooltip = "Help";
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
 
             _ct = FindObjectOfType<CameraTarget>();
@@ -250,7 +253,11 @@ namespace HT.Framework
                 });
                 gm.ShowAsContext();
             }
-            if (GUILayout.Button("About", EditorStyles.toolbarPopup))
+            if (GUILayout.Button("Minimize", EditorStyles.toolbarPopup))
+            {
+                MinimizeWindow();
+            }
+            if (GUILayout.Button(_helpGC, EditorGlobalTools.Styles.IconButton))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Browse Ease Type"), false, () =>
@@ -262,10 +269,6 @@ namespace HT.Framework
                     Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/87712995");
                 });
                 gm.ShowAsContext();
-            }
-            if (GUILayout.Button("Minimize", EditorStyles.toolbarPopup))
-            {
-                MinimizeWindow();
             }
         }
         /// <summary>

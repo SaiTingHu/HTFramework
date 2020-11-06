@@ -37,13 +37,7 @@ namespace HT.Framework
             }
         }
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/106619485";
 
         protected override void OnEnable()
         {
@@ -74,6 +68,13 @@ namespace HT.Framework
             }
 
             Entity = null;
+        }
+
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
+
+            GUILayout.FlexibleSpace();
         }
 
         protected override void OnBodyGUI()

@@ -86,6 +86,8 @@ namespace HT.Framework
             EditorApplication.playModeStateChanged -= OnPlayModeStateChange;
         }
 
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/107974865";
+
         /// <summary>
         /// 当编辑器播放状态改变
         /// </summary>
@@ -114,10 +116,6 @@ namespace HT.Framework
             if (GUILayout.Button("Refresh", EditorStyles.toolbarPopup))
             {
                 SearchAssetsInOpenedScene();
-            }
-            if (GUILayout.Button("About", EditorStyles.toolbarButton))
-            {
-                Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/107974865");
             }
         }
         protected override void OnBodyGUI()

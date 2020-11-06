@@ -19,6 +19,8 @@ namespace HT.Framework
         private MethodInfo _linkLabel;
         private object[] _linkLabelParameter;
 
+        private GUIContent _helpGC;
+
         /// <summary>
         /// 是否启用标题UI
         /// </summary>
@@ -59,6 +61,10 @@ namespace HT.Framework
         /// 是否启用日语本地化
         /// </summary>
         protected virtual bool IsEnableJapanese { get; } = false;
+        /// <summary>
+        /// 帮助链接
+        /// </summary>
+        protected virtual string HelpUrl { get; } = null;
 
         protected virtual void OnEnable()
         {
@@ -70,6 +76,13 @@ namespace HT.Framework
                 _languagePrefsKey = "HT.Framework.HTFEditorWindow.Language." + GetType().FullName;
                 _language = (Language)EditorPrefs.GetInt(_languagePrefsKey, 1);
                 GenerateWords();
+            }
+
+            if (!string.IsNullOrEmpty(HelpUrl))
+            {
+                _helpGC = new GUIContent();
+                _helpGC.image = EditorGUIUtility.IconContent("_Help").image;
+                _helpGC.tooltip = "Help";
             }
         }
         protected void OnGUI()
@@ -117,10 +130,10 @@ namespace HT.Framework
                         if (IsEnableJapanese)
                         {
                             gm.AddItem(new GUIContent("日本語"), _language == Language.Japanese, () =>
-                        {
-                            _language = Language.Japanese;
-                            EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
-                        });
+                            {
+                                _language = Language.Japanese;
+                                EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
+                            });
                         }
                         else
                         {
@@ -147,6 +160,14 @@ namespace HT.Framework
                         }
                     }
                 }
+
+                if (!string.IsNullOrEmpty(HelpUrl))
+                {
+                    if (GUILayout.Button(_helpGC, EditorGlobalTools.Styles.IconButton))
+                    {
+                        Application.OpenURL(HelpUrl);
+                    }
+                }
                 
                 GUILayout.EndHorizontal();
 
@@ -166,12 +187,14 @@ namespace HT.Framework
         /// </summary>
         protected virtual void OnTitleGUI()
         {
+            
         }
         /// <summary>
         /// 窗体UI
         /// </summary>
         protected virtual void OnBodyGUI()
         {
+
         }
 
         /// <summary>

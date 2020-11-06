@@ -28,6 +28,8 @@ namespace HT.Framework
         private GUIContent _prefabGC;
         private GUIContent _removeGC;
 
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
+
         protected override void OnEnable()
         {
             base.OnEnable();

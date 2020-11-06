@@ -104,6 +104,8 @@ namespace HT.Framework
         }
         #endregion
 
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
+
         public override void Initialization()
         {
             base.Initialization();
@@ -142,10 +144,6 @@ namespace HT.Framework
             base.OnTitleGUI();
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("About", EditorStyles.toolbarButton))
-            {
-                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/102971712");
-            }
         }
         protected override void OnBodyGUI()
         {

@@ -14,13 +14,7 @@ namespace HT.Framework
         private MethodInfo _selectionAddMethod;
         private object[] _parameter = new object[1];
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
 
         protected override void OnEnable()
         {
@@ -42,6 +36,13 @@ namespace HT.Framework
                     }
                 }
             }
+        }
+
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
+
+            GUILayout.FlexibleSpace();
         }
 
         protected override void OnBodyGUI()

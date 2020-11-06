@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -17,6 +16,8 @@ namespace HT.Framework
         private string _itemFilter;
         private Vector2 _scrollItemNameGUI;
         private Vector2 _scrollItemSettingGUI;
+
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/104610857";
 
         protected override void OnEnable()
         {
@@ -94,11 +95,6 @@ namespace HT.Framework
             {
                 _itemFilter = "";
                 GUI.FocusControl(null);
-            }
-
-            if (GUILayout.Button("About", EditorStyles.toolbarButton))
-            {
-                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/104610857");
             }
         }
         protected override void OnBodyGUI()

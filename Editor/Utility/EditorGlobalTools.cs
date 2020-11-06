@@ -49,7 +49,7 @@ namespace HT.Framework
             ComponentBatch cb = EditorWindow.GetWindow<ComponentBatch>();
             cb.titleContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             cb.titleContent.text = "Component Batch";
-            cb.position = new Rect(200, 200, 300, 140);
+            cb.position = new Rect(200, 200, 300, 160);
             cb.Show();
         }
 
@@ -62,7 +62,7 @@ namespace HT.Framework
             ProjectBatch pb = EditorWindow.GetWindow<ProjectBatch>();
             pb.titleContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             pb.titleContent.text = "Project Batch";
-            pb.position = new Rect(200, 200, 300, 120);
+            pb.position = new Rect(200, 200, 300, 140);
             pb.Show();
         }
 

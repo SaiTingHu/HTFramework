@@ -39,6 +39,8 @@ namespace HT.Framework
 
         private StringBuilder _builder = new StringBuilder();
 
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -55,10 +57,6 @@ namespace HT.Framework
             base.OnTitleGUI();
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("About", EditorStyles.toolbarButton))
-            {
-                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/102971712");
-            }
         }
         protected override void OnBodyGUI()
         {

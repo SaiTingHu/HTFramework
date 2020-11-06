@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
@@ -32,10 +31,11 @@ namespace HT.Framework
         private Vector2 _contentScroll;
         private int _contentGUIWidth = 250;
         private bool _isBreakDepend = false;
-        private GUIContent _addGUIContent;
-        private GUIContent _editGUIContent;
-        private GUIContent _deleteGUIContent;
-        
+        private GUIContent _addGC;
+        private GUIContent _editGC;
+        private GUIContent _deleteGC;
+        private GUIContent _helpGC;
+
         private string MainAssetPath
         {
             get
@@ -56,15 +56,18 @@ namespace HT.Framework
 
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
 
-            _addGUIContent = new GUIContent();
-            _addGUIContent.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
-            _addGUIContent.tooltip = "Add a task";
-            _editGUIContent = new GUIContent();
-            _editGUIContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
-            _editGUIContent.tooltip = "Edit Content Script";
-            _deleteGUIContent = new GUIContent();
-            _deleteGUIContent.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
-            _deleteGUIContent.tooltip = "Delete";
+            _addGC = new GUIContent();
+            _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
+            _addGC.tooltip = "Add a task";
+            _editGC = new GUIContent();
+            _editGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            _editGC.tooltip = "Edit Content Script";
+            _deleteGC = new GUIContent();
+            _deleteGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
+            _deleteGC.tooltip = "Delete";
+            _helpGC = new GUIContent();
+            _helpGC.image = EditorGUIUtility.IconContent("_Help").image;
+            _helpGC.tooltip = "Help";
 
             EditorApplication.playModeStateChanged += OnPlayModeStateChange;
         }
@@ -126,7 +129,7 @@ namespace HT.Framework
             {
                 ReSet();
             }
-            if (GUILayout.Button("About", EditorStyles.toolbarButton))
+            if (GUILayout.Button(_helpGC, EditorGlobalTools.Styles.IconButton))
             {
                 Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/104317219");
             }
@@ -352,7 +355,7 @@ namespace HT.Framework
                     GUI.Label(sub, "Task Content List:");
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGUIContent, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
                     {
                         GenericMenu gm = new GenericMenu();
                         gm.AddItem(new GUIContent("<New Task Content Script>"), false, () =>
@@ -390,13 +393,13 @@ namespace HT.Framework
                         if (isActive)
                         {
                             sub.Set(rect.x + rect.width - 40, rect.y, 20, 20);
-                            if (GUI.Button(sub, _editGUIContent, "InvisibleButton"))
+                            if (GUI.Button(sub, _editGC, "InvisibleButton"))
                             {
                                 MonoScript monoScript = MonoScript.FromScriptableObject(_asset.Content[index]);
                                 AssetDatabase.OpenAsset(monoScript);
                             }
                             sub.Set(rect.x + rect.width - 20, rect.y, 20, 20);
-                            if (GUI.Button(sub, _deleteGUIContent, "InvisibleButton"))
+                            if (GUI.Button(sub, _deleteGC, "InvisibleButton"))
                             {
                                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete task [" + _asset.Content[index].Name + "]?", "Yes", "No"))
                                 {
