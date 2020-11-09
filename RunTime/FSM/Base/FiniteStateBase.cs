@@ -8,7 +8,7 @@
         /// <summary>
         /// 所属状态机
         /// </summary>
-        public FSM StateMachine;
+        public FSM StateMachine { get; internal set; }
 
         /// <summary>
         /// 状态初始化

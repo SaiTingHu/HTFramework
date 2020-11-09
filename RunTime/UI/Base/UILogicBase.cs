@@ -13,7 +13,7 @@ namespace HT.Framework
         /// <summary>
         /// UI实体
         /// </summary>
-        public GameObject UIEntity;
+        public GameObject UIEntity { get; internal set; }
 
         /// <summary>
         /// UI是否打开

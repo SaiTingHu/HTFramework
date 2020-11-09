@@ -12,11 +12,11 @@ namespace HT.Framework
         /// <summary>
         /// 实体名称
         /// </summary>
-        public string Name;
+        public string Name { get; internal set; }
         /// <summary>
         /// 实体
         /// </summary>
-        public GameObject Entity;
+        public GameObject Entity { get; internal set; }
 
         /// <summary>
         /// 实体是否显示
