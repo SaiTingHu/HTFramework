@@ -12,6 +12,6 @@ namespace HT.Framework
         /// <summary>
         /// 是否开启鼠标左键双击时焦点目标的功能
         /// </summary>
-        public bool IsDoubleClickFocus = true;
+        public bool IsDoubleClickFocus = false;
     }
 }
