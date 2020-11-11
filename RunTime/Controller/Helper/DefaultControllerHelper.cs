@@ -316,6 +316,30 @@ namespace HT.Framework
             _mouseRotation.SetAngle(x, y, distance, damping);
         }
         /// <summary>
+        /// 自由控制：设置视角移动速度
+        /// </summary>
+        /// <param name="x">x轴移动速度</param>
+        /// <param name="y">y轴移动速度</param>
+        /// <param name="z">z轴移动速度</param>
+        public void SetMoveSpeed(float x, float y, float z)
+        {
+            _mousePosition.XSpeed = x;
+            _mousePosition.YSpeed = y;
+            _mousePosition.ZSpeed = z;
+        }
+        /// <summary>
+        /// 自由控制：设置视角旋转速度
+        /// </summary>
+        /// <param name="x">x轴旋转速度</param>
+        /// <param name="y">y轴旋转速度</param>
+        /// <param name="m">滚轮缩放速度</param>
+        public void SetRotateSpeed(float x, float y, float m)
+        {
+            _mouseRotation.XSpeed = x;
+            _mouseRotation.YSpeed = y;
+            _mouseRotation.MSpeed = m;
+        }
+        /// <summary>
         /// 自由控制：进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>

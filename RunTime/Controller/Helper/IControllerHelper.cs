@@ -88,6 +88,20 @@ namespace HT.Framework
         /// <param name="damping">阻尼缓动模式</param>
         void SetLookAngle(float x, float y, float distance, bool damping = true);
         /// <summary>
+        /// 自由控制：设置视角移动速度
+        /// </summary>
+        /// <param name="x">x轴移动速度</param>
+        /// <param name="y">y轴移动速度</param>
+        /// <param name="z">z轴移动速度</param>
+        void SetMoveSpeed(float x, float y, float z);
+        /// <summary>
+        /// 自由控制：设置视角旋转速度
+        /// </summary>
+        /// <param name="x">x轴旋转速度</param>
+        /// <param name="y">y轴旋转速度</param>
+        /// <param name="m">滚轮缩放速度</param>
+        void SetRotateSpeed(float x, float y, float m);
+        /// <summary>
         /// 自由控制：进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>
