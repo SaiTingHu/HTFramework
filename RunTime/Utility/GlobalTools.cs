@@ -1,13 +1,11 @@
 ﻿using DG.Tweening;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,157 +17,6 @@ namespace HT.Framework
     /// </summary>
     public static class GlobalTools
     {
-        #region 延时工具
-        /// <summary>
-        /// 延时执行
-        /// </summary>
-        /// <param name="behaviour">执行者</param>
-        /// <param name="action">执行的代码</param>
-        /// <param name="delaySeconds">延时的秒数</param>
-        /// <returns>延时的协程</returns>
-        public static Coroutine DelayExecute(this MonoBehaviour behaviour, HTFAction action, float delaySeconds)
-        {
-            Coroutine coroutine = behaviour.StartCoroutine(DelayExecute(action, delaySeconds));
-            return coroutine;
-        }
-        private static IEnumerator DelayExecute(HTFAction action, float delaySeconds)
-        {
-            yield return YieldInstructioner.GetWaitForSeconds(delaySeconds);
-            action();
-        }
-
-        /// <summary>
-        /// 下一帧执行
-        /// </summary>
-        /// <param name="behaviour">执行者</param>
-        /// <param name="action">执行的代码</param>
-        /// <returns>延时的协程</returns>
-        public static Coroutine NextFrameExecute(this MonoBehaviour behaviour, HTFAction action)
-        {
-            Coroutine coroutine = behaviour.StartCoroutine(NextFrameExecute(action));
-            return coroutine;
-        }
-        private static IEnumerator NextFrameExecute(HTFAction action)
-        {
-            yield return null;
-            action();
-        }
-
-        /// <summary>
-        /// 等待执行
-        /// </summary>
-        /// <param name="behaviour">执行者</param>
-        /// <param name="action">执行的代码</param>
-        /// <param name="waitUntil">等待的WaitUntil</param>
-        /// <returns>等待的协程</returns>
-        public static Coroutine WaitExecute(this MonoBehaviour behaviour, HTFAction action, WaitUntil waitUntil)
-        {
-            Coroutine coroutine = behaviour.StartCoroutine(WaitExecute(action, waitUntil));
-            return coroutine;
-        }
-        private static IEnumerator WaitExecute(HTFAction action, WaitUntil waitUntil)
-        {
-            yield return waitUntil;
-            action();
-        }
-        #endregion
-        
-        #region 事件工具
-        /// <summary>
-        /// UGUI 控件添加公共事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        /// <param name="type">事件类型</param>
-        /// <param name="callback">回调函数</param>
-        public static void AddCommonEventListener(this RectTransform target, EventTriggerType type, UnityAction<BaseEventData> callback)
-        {
-            EventTrigger trigger = target.GetComponent<EventTrigger>();
-            if (trigger == null)
-            {
-                trigger = target.gameObject.AddComponent<EventTrigger>();
-            }
-            if (trigger.triggers == null)
-            {
-                trigger.triggers = new List<EventTrigger.Entry>();
-            }
-
-            //定义一个事件入口
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            //设置事件类型
-            entry.eventID = type;
-            //设置事件回调函数
-            entry.callback = new EventTrigger.TriggerEvent();
-            entry.callback.AddListener(callback);
-            //添加事件到事件组
-            trigger.triggers.Add(entry);
-        }
-        /// <summary>
-        /// UGUI 控件移除所有公共事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        public static void RemoveAllCommonEventListener(this RectTransform target)
-        {
-            EventTrigger trigger = target.GetComponent<EventTrigger>();
-            if (trigger != null)
-            {
-                if (trigger.triggers != null)
-                {
-                    trigger.triggers.Clear();
-                }
-            }
-        }
-        /// <summary>
-        /// UGUI Button添加点击事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        /// <param name="callback">回调函数</param>
-        public static void AddEventListener(this RectTransform target, UnityAction callback)
-        {
-            Button button = target.GetComponent<Button>();
-            if (button)
-            {
-                button.onClick.AddListener(callback);
-            }
-            else
-            {
-                Log.Info(target.name + " 丢失了组件 Button！");
-            }
-        }
-        /// <summary>
-        /// UGUI Button移除所有点击事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        public static void RemoveAllEventListener(this RectTransform target)
-        {
-            Button button = target.GetComponent<Button>();
-            if (button)
-            {
-                button.onClick.RemoveAllListeners();
-            }
-            else
-            {
-                Log.Info(target.name + " 丢失了组件 Button！");
-            }
-        }
-        /// <summary>
-        /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
-        /// </summary>
-        /// <param name="target">目标</param>
-        /// <param name="callback">点击事件回调</param>
-        public static void AddClickListener(this GameObject target, HTFAction callback)
-        {
-            Main.m_Controller.AddClickListener(target, callback);
-        }
-        /// <summary>
-        /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
-        /// </summary>
-        /// <param name="target">目标</param>
-        public static void RemoveClickListener(this GameObject target)
-        {
-            Main.m_Controller.RemoveClickListener(target);
-        }
-        #endregion
-
         #region Json工具
         /// <summary>
         /// Json数据转换为字符串
@@ -192,7 +39,7 @@ namespace HT.Framework
         /// <returns>Json数据</returns>
         public static JsonData StringToJson(string value)
         {
-            if (string.IsNullOrEmpty(value) || value == "")
+            if (string.IsNullOrEmpty(value))
             {
                 return null;
             }

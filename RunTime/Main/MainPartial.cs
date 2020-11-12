@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 [assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.RunTime")]
@@ -28,7 +28,7 @@ namespace HT.Framework
         /// <typeparam name="T">实例类型</typeparam>
         /// <param name="original">初始对象</param>
         /// <returns>克隆的新对象</returns>
-        public static T Clone<T>(T original) where T : Object
+        public static T Clone<T>(T original) where T : UObject
         {
             return Instantiate(original);
         }
@@ -40,7 +40,7 @@ namespace HT.Framework
         /// <param name="position">新对象的位置</param>
         /// <param name="rotation">新对象的旋转</param>
         /// <returns>克隆的新对象</returns>
-        public static T Clone<T>(T original, Vector3 position, Quaternion rotation) where T : Object
+        public static T Clone<T>(T original, Vector3 position, Quaternion rotation) where T : UObject
         {
             return Instantiate(original, position, rotation);
         }
@@ -53,7 +53,7 @@ namespace HT.Framework
         /// <param name="rotation">新对象的旋转</param>
         /// <param name="parent">新对象的父物体</param>
         /// <returns>克隆的新对象</returns>
-        public static T Clone<T>(T original, Vector3 position, Quaternion rotation, Transform parent) where T : Object
+        public static T Clone<T>(T original, Vector3 position, Quaternion rotation, Transform parent) where T : UObject
         {
             return Instantiate(original, position, rotation, parent);
         }
@@ -64,7 +64,7 @@ namespace HT.Framework
         /// <param name="original">初始对象</param>
         /// <param name="parent">新对象的父物体</param>
         /// <returns>克隆的新对象</returns>
-        public static T Clone<T>(T original, Transform parent) where T : Object
+        public static T Clone<T>(T original, Transform parent) where T : UObject
         {
             return Instantiate(original, parent);
         }
@@ -76,7 +76,7 @@ namespace HT.Framework
         /// <param name="parent">新对象的父物体</param>
         /// <param name="worldPositionStays">是否保持世界位置不变</param>
         /// <returns>克隆的新对象</returns>
-        public static T Clone<T>(T original, Transform parent, bool worldPositionStays) where T : Object
+        public static T Clone<T>(T original, Transform parent, bool worldPositionStays) where T : UObject
         {
             return Instantiate(original, parent, worldPositionStays);
         }
@@ -110,7 +110,7 @@ namespace HT.Framework
         /// 杀死实例
         /// </summary>
         /// <param name="obj">实例对象</param>
-        public static void Kill(Object obj)
+        public static void Kill(UObject obj)
         {
             Destroy(obj);
         }
@@ -118,7 +118,7 @@ namespace HT.Framework
         /// 立即杀死实例
         /// </summary>
         /// <param name="obj">实例对象</param>
-        public static void KillImmediate(Object obj)
+        public static void KillImmediate(UObject obj)
         {
             DestroyImmediate(obj);
         }
@@ -127,13 +127,25 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">实例类型</typeparam>
         /// <param name="objs">实例集合</param>
-        public static void Kills<T>(List<T> objs) where T : Object
+        public static void Kills<T>(List<T> objs) where T : UObject
         {
             for (int i = 0; i < objs.Count; i++)
             {
                 Destroy(objs[i]);
             }
             objs.Clear();
+        }
+        /// <summary>
+        /// 杀死一群实例
+        /// </summary>
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="objs">实例数组</param>
+        public static void Kills<T>(T[] objs) where T : UObject
+        {
+            for (int i = 0; i < objs.Length; i++)
+            {
+                Destroy(objs[i]);
+            }
         }
         #endregion
 

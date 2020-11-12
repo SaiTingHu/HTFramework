@@ -62,6 +62,7 @@ namespace HT.Framework
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
             byte[] fromData = Encoding.UTF8.GetBytes(value);
             byte[] toData = md5.ComputeHash(fromData);
+            md5.Dispose();
             return Convert.ToBase64String(toData);
         }
         /// <summary>
