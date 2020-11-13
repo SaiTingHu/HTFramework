@@ -8,6 +8,7 @@ namespace HT.Framework
     /// </summary>
     public static class MeshOutlineToolkit
     {
+        private static List<MeshOutlineObject> MOCache = new List<MeshOutlineObject>();
         private static HashSet<MeshOutlineObject> MOs = new HashSet<MeshOutlineObject>();
 
         /// <summary>
@@ -29,6 +30,9 @@ namespace HT.Framework
         {
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
+
+            target.ClearMeshOutlineInChildren();
+            target.ClearMeshOutlineInParent();
 
             MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
             if (mo == null) mo = target.AddComponent<MeshOutlineObject>();
@@ -83,6 +87,43 @@ namespace HT.Framework
                 }
             }
             MOs.Clear();
+        }
+
+        /// <summary>
+        /// 清空所有子物体上的轮廓高光效果，不包括自身
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="die">是否销毁高光实例</param>
+        public static void ClearMeshOutlineInChildren(this GameObject target, bool die = false)
+        {
+            MOCache.Clear();
+            target.transform.GetComponentsInChildren(true, MOCache);
+            for (int i = 0; i < MOCache.Count; i++)
+            {
+                if (MOCache[i].gameObject != target)
+                {
+                    MOCache[i].Close();
+                    if (die) MOCache[i].Die();
+                }
+            }
+        }
+        /// <summary>
+        /// 清空所有父物体上的轮廓高光效果，不包括自身
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="die">是否销毁高光实例</param>
+        public static void ClearMeshOutlineInParent(this GameObject target, bool die = false)
+        {
+            MOCache.Clear();
+            target.transform.GetComponentsInParent(true, MOCache);
+            for (int i = 0; i < MOCache.Count; i++)
+            {
+                if (MOCache[i].gameObject != target)
+                {
+                    MOCache[i].Close();
+                    if (die) MOCache[i].Die();
+                }
+            }
         }
     }
 }

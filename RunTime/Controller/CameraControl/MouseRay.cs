@@ -51,7 +51,7 @@ namespace HT.Framework
         /// <summary>
         /// 高亮组件是否自动销毁
         /// </summary>
-        public bool IsAutoDie = true;
+        public bool IsAutoDie = false;
         /// <summary>
         /// 提示框背景
         /// </summary>

@@ -32,6 +32,7 @@ namespace HT.Framework
                 return;
 
             target.ClearHighLightInChildren();
+            target.ClearHighLightInParent();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
@@ -59,6 +60,7 @@ namespace HT.Framework
                 return;
 
             target.ClearHighLightInChildren();
+            target.ClearHighLightInParent();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
@@ -137,6 +139,7 @@ namespace HT.Framework
                 return;
 
             target.ClearHighLightInChildren();
+            target.ClearHighLightInParent();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
@@ -193,6 +196,7 @@ namespace HT.Framework
                 return;
 
             target.ClearHighLightInChildren();
+            target.ClearHighLightInParent();
 
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
@@ -243,7 +247,8 @@ namespace HT.Framework
         /// 清空所有子物体上的高光效果，不包括自身
         /// </summary>
         /// <param name="target">目标物体</param>
-        public static void ClearHighLightInChildren(this GameObject target)
+        /// <param name="die">是否销毁高光实例</param>
+        public static void ClearHighLightInChildren(this GameObject target, bool die = false)
         {
             HOCache.Clear();
             target.transform.GetComponentsInChildren(true, HOCache);
@@ -252,7 +257,25 @@ namespace HT.Framework
                 if (HOCache[i].gameObject != target)
                 {
                     HOCache[i].CloseAll();
-                    HOCache[i].Die();
+                    if (die) HOCache[i].Die();
+                }
+            }
+        }
+        /// <summary>
+        /// 清空所有父物体上的高光效果，不包括自身
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="die">是否销毁高光实例</param>
+        public static void ClearHighLightInParent(this GameObject target, bool die = false)
+        {
+            HOCache.Clear();
+            target.transform.GetComponentsInParent(true, HOCache);
+            for (int i = 0; i < HOCache.Count; i++)
+            {
+                if (HOCache[i].gameObject != target)
+                {
+                    HOCache[i].CloseAll();
+                    if (die) HOCache[i].Die();
                 }
             }
         }

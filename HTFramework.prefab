@@ -792,13 +792,6 @@ MonoBehaviour:
   NeedDamping: 1
   X: 270.2
   Y: 54.1
-  NeedLimit: 0
-  XMinLimit: -5
-  XMaxLimit: 5
-  YMinLimit: 15
-  YMaxLimit: 85
-  ZMinLimit: -5
-  ZMaxLimit: 5
   IsCanOnUGUI: 0
   AllowOverstepDistance: 1
   IsLookAtTarget: 0
@@ -818,13 +811,6 @@ MonoBehaviour:
   XSpeed: 0.1
   YSpeed: 0.1
   ZSpeed: 0.1
-  NeedLimit: 0
-  XMinLimit: -7
-  XMaxLimit: 7
-  YMinLimit: -7
-  YMaxLimit: 7
-  ZMinLimit: -7
-  ZMaxLimit: 7
   IsCanOnUGUI: 0
 --- !u!114 &114469327750072166
 MonoBehaviour:
@@ -858,6 +844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsOpenRay: 1
   IsOpenPrompt: 1
+  IsOpenHighlight: 1
   ActivatedLayer:
     serializedVersion: 2
     m_Bits: 3
@@ -866,6 +853,7 @@ MonoBehaviour:
   FlashColor1: {r: 1, g: 0, b: 0, a: 1}
   FlashColor2: {r: 1, g: 1, b: 1, a: 1}
   OutlineIntensity: 1
+  IsAutoDie: 0
   RayHitBG: {fileID: 0}
   RayHitText: {fileID: 0}
   RayHitImageType: 0
@@ -1469,6 +1457,8 @@ MonoBehaviour:
   DefaultEase: 1
   DefaultAutoPlay: 3
   IsAutoKill: 1
+  FreeControlBounds: []
+  IsEnableBounds: 0
 --- !u!1 &3561192959184875086
 GameObject:
   m_ObjectHideFlags: 0
@@ -1685,10 +1675,12 @@ MonoBehaviour:
   SinglePriorityDefault: 10
   MultiplePriorityDefault: 20
   WorldPriorityDefault: 30
+  OneShootPriorityDefault: 40
   BackgroundVolumeDefault: 0.6
   SingleVolumeDefault: 1
   MultipleVolumeDefault: 1
   WorldVolumeDefault: 1
+  OneShootVolumeDefault: 1
 --- !u!1 &5584504025188897790
 GameObject:
   m_ObjectHideFlags: 0
