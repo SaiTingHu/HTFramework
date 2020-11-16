@@ -68,7 +68,7 @@ namespace HT.Framework
                 });
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
-                    return type.IsSubclassOf(typeof(FSMDataBase));
+                    return type.IsSubclassOf(typeof(FSMDataBase)) && !type.IsAbstract;
                 });
                 for (int i = 0; i < types.Count; i++)
                 {
@@ -191,7 +191,7 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
-                    return type.IsSubclassOf(typeof(FiniteStateBase));
+                    return type.IsSubclassOf(typeof(FiniteStateBase)) && !type.IsAbstract;
                 });
                 for (int i = 0; i < types.Count; i++)
                 {

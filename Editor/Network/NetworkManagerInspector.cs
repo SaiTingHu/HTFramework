@@ -89,7 +89,7 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
-                    return type.IsSubclassOf(typeof(ProtocolChannelBase));
+                    return type.IsSubclassOf(typeof(ProtocolChannelBase)) && !type.IsAbstract;
                 });
                 for (int i = 0; i < types.Count; i++)
                 {

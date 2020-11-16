@@ -40,7 +40,7 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
-                    return type.IsSubclassOf(typeof(InputDeviceBase));
+                    return type.IsSubclassOf(typeof(InputDeviceBase)) && !type.IsAbstract;
                 });
                 for (int i = 0; i < types.Count; i++)
                 {

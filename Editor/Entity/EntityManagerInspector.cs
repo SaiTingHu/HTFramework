@@ -68,7 +68,7 @@ namespace HT.Framework
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                     {
-                        return type.IsSubclassOf(typeof(EntityLogicBase));
+                        return type.IsSubclassOf(typeof(EntityLogicBase)) && !type.IsAbstract;
                     });
                     for (int m = 0; m < types.Count; m++)
                     {

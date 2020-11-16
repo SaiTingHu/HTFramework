@@ -73,7 +73,7 @@ namespace HT.Framework
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                     {
-                        return type.IsSubclassOf(typeof(UILogicBase)) && type != typeof(UILogicResident) && type != typeof(UILogicTemporary);
+                        return type.IsSubclassOf(typeof(UILogicBase)) && !type.IsAbstract;
                     });
                     for (int m = 0; m < types.Count; m++)
                     {
