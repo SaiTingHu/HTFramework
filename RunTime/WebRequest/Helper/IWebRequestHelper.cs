@@ -38,6 +38,16 @@ namespace HT.Framework
         /// <param name="offlineHandle">离线模式处理者</param>
         void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle);
         /// <summary>
+        /// 注册接口（获取 File）
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        /// <param name="savePath">保存路径</param>
+        /// <param name="loadingHandler">下载过程中回调</param>
+        /// <param name="finishedHandler">下载完成回调</param>
+        /// <param name="offlineHandle">离线模式处理者</param>
+        void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler, HTFAction<bool> finishedHandler, HTFAction offlineHandle);
+        /// <summary>
         /// 注册接口（提交 表单）
         /// </summary>
         /// <param name="interfaceName">接口名称</param>
@@ -79,5 +89,12 @@ namespace HT.Framework
         /// <param name="form">参数表单</param>
         /// <returns>请求的协程</returns>
         Coroutine SendRequest(string interfaceName, WWWForm form);
+        /// <summary>
+        /// 发起下载文件请求
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="parameter">可选参数（要同时传入参数名和参数值，例：name='张三'）</param>
+        /// <returns>请求的协程</returns>
+        Coroutine SendDownloadFile(string interfaceName, params string[] parameter);
     }
 }

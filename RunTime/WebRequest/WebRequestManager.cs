@@ -65,6 +65,19 @@ namespace HT.Framework
             _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle);
         }
         /// <summary>
+        /// 注册接口（获取 File）
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        /// <param name="savePath">保存路径</param>
+        /// <param name="loadingHandler">下载过程中回调</param>
+        /// <param name="finishedHandler">下载完成回调</param>
+        /// <param name="offlineHandle">离线模式处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler = null, HTFAction<bool> finishedHandler = null, HTFAction offlineHandle = null)
+        {
+            _helper.RegisterInterface(interfaceName, interfaceUrl, savePath, loadingHandler, finishedHandler, offlineHandle);
+        }
+        /// <summary>
         /// 注册接口（提交 表单）
         /// </summary>
         /// <param name="interfaceName">接口名称</param>
@@ -126,6 +139,16 @@ namespace HT.Framework
         public Coroutine SendRequest(string interfaceName, WWWForm form)
         {
             return _helper.SendRequest(interfaceName, form);
+        }
+        /// <summary>
+        /// 发起下载文件请求
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="parameter">可选参数（要同时传入参数名和参数值，例：name='张三'）</param>
+        /// <returns>请求的协程</returns>
+        public Coroutine SendDownloadFile(string interfaceName, params string[] parameter)
+        {
+            return _helper.SendDownloadFile(interfaceName, parameter);
         }
     }
 }
