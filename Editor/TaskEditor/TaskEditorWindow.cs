@@ -34,7 +34,7 @@ namespace HT.Framework
         private GUIContent _addGC;
         private GUIContent _editGC;
         private GUIContent _deleteGC;
-        private GUIContent _helpGC;
+        private GUIContent _helpUrlGC;
 
         private string MainAssetPath
         {
@@ -65,9 +65,9 @@ namespace HT.Framework
             _deleteGC = new GUIContent();
             _deleteGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _deleteGC.tooltip = "Delete";
-            _helpGC = new GUIContent();
-            _helpGC.image = EditorGUIUtility.IconContent("_Help").image;
-            _helpGC.tooltip = "Help";
+            _helpUrlGC = new GUIContent();
+            _helpUrlGC.image = EditorGUIUtility.IconContent("_Help").image;
+            _helpUrlGC.tooltip = "Help";
 
             EditorApplication.playModeStateChanged += OnPlayModeStateChange;
         }
@@ -129,7 +129,7 @@ namespace HT.Framework
             {
                 ReSet();
             }
-            if (GUILayout.Button(_helpGC, EditorGlobalTools.Styles.IconButton))
+            if (GUILayout.Button(_helpUrlGC, EditorGlobalTools.Styles.IconButton))
             {
                 Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/104317219");
             }

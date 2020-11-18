@@ -41,7 +41,7 @@ namespace HT.Framework
         private bool _isShowHelper = false;
         private GUIContent _stepGC;
         private GUIContent _previewGC;
-        private GUIContent _helpGC;
+        private GUIContent _helpUrlGC;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
@@ -94,9 +94,9 @@ namespace HT.Framework
 
             _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
             _previewGC = EditorGUIUtility.IconContent("AudioMixerView Icon");
-            _helpGC = new GUIContent();
-            _helpGC.image = EditorGUIUtility.IconContent("_Help").image;
-            _helpGC.tooltip = "Help";
+            _helpUrlGC = new GUIContent();
+            _helpUrlGC.image = EditorGUIUtility.IconContent("_Help").image;
+            _helpUrlGC.tooltip = "Help";
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
 
             _ct = FindObjectOfType<CameraTarget>();
@@ -257,7 +257,7 @@ namespace HT.Framework
             {
                 MinimizeWindow();
             }
-            if (GUILayout.Button(_helpGC, EditorGlobalTools.Styles.IconButton))
+            if (GUILayout.Button(_helpUrlGC, EditorGlobalTools.Styles.IconButton))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Browse Ease Type"), false, () =>
