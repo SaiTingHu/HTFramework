@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
+using System.Reflection;
 using UnityEditor;
 #endif
 
@@ -183,6 +184,10 @@ namespace HT.Framework
         internal static float Width = 150;
         internal static float Height = 40;
 
+        /// <summary>
+        /// 步骤助手名称
+        /// </summary>
+        internal string HelperName { get; private set; } = null;
         /// <summary>
         /// Enter节点的位置
         /// </summary>
@@ -379,6 +384,36 @@ namespace HT.Framework
                 {
                     Selection.activeGameObject = Target;
                     EditorGUIUtility.PingObject(Target);
+                }
+            }
+        }
+        /// <summary>
+        /// 更新步骤助手的名称
+        /// </summary>
+        internal void RefreshHelperName()
+        {
+            if (Helper == "<None>")
+            {
+                HelperName = "未设置助手";
+            }
+            else
+            {
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(Helper);
+                if (type == null)
+                {
+                    HelperName = "无效的助手";
+                }
+                else
+                {
+                    CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
+                    if (helper != null)
+                    {
+                        HelperName = helper.Name;
+                    }
+                    else
+                    {
+                        HelperName = type.FullName;
+                    }
                 }
             }
         }

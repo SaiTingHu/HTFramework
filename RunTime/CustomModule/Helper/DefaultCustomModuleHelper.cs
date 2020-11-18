@@ -25,7 +25,7 @@ namespace HT.Framework
         {
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(CustomModuleBase));
+                return type.IsSubclassOf(typeof(CustomModuleBase)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {

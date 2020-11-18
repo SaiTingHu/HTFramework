@@ -306,7 +306,7 @@ namespace HT.Framework
                         GenericMenu gm = new GenericMenu();
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
-                            return type.IsSubclassOf(typeof(LicenserBase));
+                            return type.IsSubclassOf(typeof(LicenserBase)) && !type.IsAbstract;
                         });
                         gm.AddItem(new GUIContent("<None>"), Target.LicenserType == "<None>", () =>
                         {

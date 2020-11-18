@@ -40,6 +40,7 @@ namespace HT.Framework
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
         private GUIContent _stepGC;
+        private GUIContent _stepHelperGC;
         private GUIContent _previewGC;
         private GUIContent _helpUrlGC;
         private Rect _stepListRect;
@@ -93,6 +94,7 @@ namespace HT.Framework
             SelectStepOperation(_currentOperation);
 
             _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
+            _stepHelperGC = new GUIContent();
             _previewGC = EditorGUIUtility.IconContent("AudioMixerView Icon");
             _helpUrlGC = new GUIContent();
             _helpUrlGC.image = EditorGUIUtility.IconContent("_Help").image;
@@ -639,11 +641,13 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Helper:", GUILayout.Width(50));
-                    if (GUILayout.Button(_currentStepObj.Helper, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(100)))
+                    _stepHelperGC.text = _currentStepObj.Helper;
+                    _stepHelperGC.tooltip = _currentStepObj.HelperName;
+                    if (GUILayout.Button(_stepHelperGC, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(100)))
                     {
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
-                            return type.IsSubclassOf(_baseType);
+                            return type.IsSubclassOf(_baseType) && !type.IsAbstract;
                         });
                         GenericMenu gm = new GenericMenu();
                         StringToolkit.BeginNoRepeatNaming();
@@ -1551,7 +1555,11 @@ namespace HT.Framework
         {
             _currentStep = currentStep;
             _currentStepObj = (_currentStep != -1 ? _contentAsset.Content[_currentStep] : null);
-            if (_currentStepObj != null) _currentStepObj.FocusTarget();
+            if (_currentStepObj != null)
+            {
+                _currentStepObj.FocusTarget();
+                _currentStepObj.RefreshHelperName();
+            }
         }
         /// <summary>
         /// 选中步骤操作

@@ -33,7 +33,7 @@ namespace HT.Framework
         {
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(ECS_System));
+                return type.IsSubclassOf(typeof(ECS_System)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {

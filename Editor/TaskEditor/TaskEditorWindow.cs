@@ -233,7 +233,7 @@ namespace HT.Framework
                             });
                             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                             {
-                                return type.IsSubclassOf(typeof(TaskPointBase));
+                                return type.IsSubclassOf(typeof(TaskPointBase)) && !type.IsAbstract;
                             });
                             for (int i = 0; i < types.Count; i++)
                             {
@@ -364,7 +364,7 @@ namespace HT.Framework
                         });
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
-                            return type.IsSubclassOf(typeof(TaskContentBase));
+                            return type.IsSubclassOf(typeof(TaskContentBase)) && !type.IsAbstract;
                         });
                         for (int i = 0; i < types.Count; i++)
                         {

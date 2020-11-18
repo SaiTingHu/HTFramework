@@ -53,7 +53,7 @@ namespace HT.Framework
 
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(EntityLogicBase));
+                return type.IsSubclassOf(typeof(EntityLogicBase)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {

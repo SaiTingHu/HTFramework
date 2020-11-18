@@ -144,7 +144,7 @@ namespace HT.Framework
             //创建所有UI的逻辑对象
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(UILogicResident)) || type.IsSubclassOf(typeof(UILogicTemporary));
+                return (type.IsSubclassOf(typeof(UILogicResident)) || type.IsSubclassOf(typeof(UILogicTemporary))) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {
