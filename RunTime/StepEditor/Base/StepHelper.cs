@@ -27,7 +27,7 @@ namespace HT.Framework
         /// <summary>
         /// 步骤辅助目标
         /// </summary>
-        public List<GameObject> AuxiliaryTarget = new List<GameObject>();
+        public HashSet<GameObject> AuxiliaryTarget = new HashSet<GameObject>();
         /// <summary>
         /// 是否启用帧刷新
         /// </summary>
