@@ -110,6 +110,7 @@ namespace HT.Framework
                             EditorUtility.DisplayProgressBar("Import......", i + "/" + asset.Content.Count, (float)i / asset.Content.Count);
                             Target.Content.Add(asset.Content[i].Clone());
                         }
+                        HasChanged();
                         EditorUtility.ClearProgressBar();
                     }
                 }
