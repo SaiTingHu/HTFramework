@@ -16,7 +16,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Resource Manager, Manage all resource loading and unloading!";
+                return "Resource Manager, use this to complete the loading and unloading of resources!";
             }
         }
 

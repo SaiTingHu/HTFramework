@@ -19,7 +19,7 @@ namespace HT.Framework
         {
             get
             {
-                return "UI Manager, Control all UILogic Entity!";
+                return "UI Manager, this is the master controller for all UIs!";
             }
         }
 

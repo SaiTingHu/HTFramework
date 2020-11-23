@@ -14,7 +14,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Debug Manager, Runtime debugger for games!";
+                return "Debug Manager, this is a runtime debugger for games!";
             }
         }
 

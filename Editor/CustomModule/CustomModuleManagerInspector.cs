@@ -16,7 +16,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Custom Module Manager, Manager of all custom modules!";
+                return "CustomModule Manager, manager of all custom modules, such as starting or stopping a custom module!";
             }
         }
 

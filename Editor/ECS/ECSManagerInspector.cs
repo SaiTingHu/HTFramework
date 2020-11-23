@@ -18,7 +18,7 @@ namespace HT.Framework
         {
             get
             {
-                return "ECS Manager, ECS based development mode!";
+                return "ECS Manager, this is a ECS based development mode!";
             }
         }
 

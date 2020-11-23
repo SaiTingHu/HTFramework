@@ -18,7 +18,7 @@ namespace HT.Framework
         {
             get
             {
-                return "FSM manager, it manages all state machines!";
+                return "FSM manager, this is the master manager for all FSM!";
             }
         }
 

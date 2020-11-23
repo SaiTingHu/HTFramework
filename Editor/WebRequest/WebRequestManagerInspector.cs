@@ -16,7 +16,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Web request manager, it manages all Web request! you can submit forms, upload files, download files!";
+                return "Web request manager, it manages all web request! you can submit forms, upload files, download files!";
             }
         }
 

@@ -14,7 +14,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Coroutiner, Execution and destruction of unified scheduling Coroutine!";
+                return "Coroutiner, a unified scheduler for the coroutines, including execution and destruction, as well as viewing the status of all coroutines!";
             }
         }
 

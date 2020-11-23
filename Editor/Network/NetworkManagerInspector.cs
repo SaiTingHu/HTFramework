@@ -17,7 +17,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Network Manager, implementing basic network client with socket!";
+                return "Network Manager, help you implementing basic network client with socket!";
             }
         }
 

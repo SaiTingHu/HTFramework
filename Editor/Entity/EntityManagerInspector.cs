@@ -19,7 +19,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Entity Manager, Control all EntityLogic!";
+                return "Entity Manager, Everything is entity except UI, this is a controller of all entity!";
             }
         }
 

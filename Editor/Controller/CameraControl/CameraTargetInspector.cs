@@ -17,7 +17,7 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
-            EditorGUILayout.HelpBox("Camera Control Target!", MessageType.Info);
+            EditorGUILayout.HelpBox("Camera Watch Target!", MessageType.Info);
         }
     }
 }

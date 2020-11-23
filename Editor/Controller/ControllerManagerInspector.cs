@@ -18,7 +18,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Controller Manager, It includes free control, first person control, third person control, etc!";
+                return "Controller Manager, it encapsulation free view controller, first person controller, third person controller, etc!";
             }
         }
 

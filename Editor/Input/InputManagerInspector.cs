@@ -15,7 +15,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Input manager, managing cross platform input!";
+                return "Input manager, this is a cross platform input solution!";
             }
         }
 

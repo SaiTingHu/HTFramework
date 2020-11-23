@@ -374,6 +374,22 @@ namespace HT.Framework
                 return null;
             }
         }
+        /// <summary>
+        /// 通过ID获取步骤内容
+        /// </summary>
+        /// <param name="id">步骤内容ID</param>
+        /// <returns>步骤内容</returns>
+        public StepContent GetStepContent(string id)
+        {
+            if (_stepContentIDs.ContainsKey(id))
+            {
+                return _stepContentIDs[id];
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// 重新编译步骤内容，在更改步骤资源 ContentAsset 后，必须重新编译一次才可以开始步骤流程

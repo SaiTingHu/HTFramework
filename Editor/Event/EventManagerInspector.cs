@@ -19,7 +19,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Event Manager, you can subscribe any events, also custom events!";
+                return "Event Manager, this is a global event system, you can subscribe any events, also custom events!";
             }
         }
 

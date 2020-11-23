@@ -16,7 +16,7 @@ namespace HT.Framework
         {
             get
             {
-                return "DataSet Manager, create, modify, delete all data sets!";
+                return "DataSet Manager, manage of all dataSet, you can create, modify, delete any dataSets!";
             }
         }
 

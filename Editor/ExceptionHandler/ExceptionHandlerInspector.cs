@@ -14,7 +14,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Exception handler, When an exception occurs, he catches it!";
+                return "Exception handler, when any exception occurs, he catches it!";
             }
         }
 

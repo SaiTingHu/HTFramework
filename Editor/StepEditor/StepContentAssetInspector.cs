@@ -42,7 +42,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Export Step Data To .txt"))
             {
-                string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
+                string path = EditorUtility.SaveFilePanel("Export Step Data", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
@@ -62,7 +62,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Export Step Name To .txt"))
             {
-                string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
+                string path = EditorUtility.SaveFilePanel("Export Step Name", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
@@ -82,7 +82,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Export Step Prompt To .txt"))
             {
-                string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
+                string path = EditorUtility.SaveFilePanel("Export Step Prompt", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
                 if (path != "")
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
@@ -91,6 +91,27 @@ namespace HT.Framework
                         File.AppendAllText(path, Target.Content[i].Prompt + "\r\n");
                     }
                     EditorUtility.ClearProgressBar();
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Import Step From Other"))
+            {
+                string path = EditorUtility.OpenFilePanel("Import Step From Other", Application.dataPath, "asset");
+                if (path != "")
+                {
+                    string assetPath = "Assets" + path.Replace(Application.dataPath, "");
+                    StepContentAsset asset = AssetDatabase.LoadAssetAtPath<StepContentAsset>(assetPath);
+                    if (asset && asset != Target)
+                    {
+                        for (int i = 0; i < asset.Content.Count; i++)
+                        {
+                            EditorUtility.DisplayProgressBar("Import......", i + "/" + asset.Content.Count, (float)i / asset.Content.Count);
+                            Target.Content.Add(asset.Content[i].Clone());
+                        }
+                        EditorUtility.ClearProgressBar();
+                    }
                 }
             }
             GUILayout.EndHorizontal();

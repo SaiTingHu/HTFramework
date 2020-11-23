@@ -24,7 +24,7 @@ namespace HT.Framework
         {
             get
             {
-                return "Hotfix manager, the hot update in this game!";
+                return "Hotfix manager, help you implement basic hot fixes in your game!";
             }
         }
 
