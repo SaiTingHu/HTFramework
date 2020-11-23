@@ -13,9 +13,7 @@
         internal override void OnInitialization()
         {
             base.OnInitialization();
-
-            DontDestroyOnLoad(gameObject);
-
+            
             if (Current == null)
             {
                 Current = this;
