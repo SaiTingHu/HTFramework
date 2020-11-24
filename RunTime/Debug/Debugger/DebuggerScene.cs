@@ -184,7 +184,6 @@ namespace HT.Framework
 
             _gameObjectCaches.Clear();
             GlobalTools.GetRootGameObjectsInAllScene(_gameObjectCaches);
-            _gameObjectCaches.Add(Main.Current.gameObject);
             for (int i = 0; i < _gameObjectCaches.Count; i++)
             {
                 CollectDebuggerGameObject(_gameObjectCaches[i].transform, null);

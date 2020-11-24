@@ -1237,10 +1237,6 @@ namespace HT.Framework
         {
             List<GameObject> roots = new List<GameObject>();
             GlobalTools.GetRootGameObjectsInAllScene(roots);
-            if (Main.Current != null)
-            {
-                roots.Add(Main.Current.gameObject);
-            }
 
             List<T> assets = new List<T>();
             for (int i = 0; i < roots.Count; i++)

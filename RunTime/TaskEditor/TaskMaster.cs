@@ -289,23 +289,11 @@ namespace HT.Framework
             if (ContentAsset)
             {
                 #region 搜寻任务目标
-                _targets.Clear();
-                //搜寻框架下所有任务目标
-                List<TaskTarget> targetCaches = new List<TaskTarget>();
-                Main.Current.transform.GetComponentsInChildren(true, targetCaches);
-                for (int i = 0; i < targetCaches.Count; i++)
-                {
-                    if (!_targets.ContainsKey(targetCaches[i].GUID))
-                    {
-                        _targets.Add(targetCaches[i].GUID, targetCaches[i]);
-                    }
-                    else
-                    {
-                        Log.Warning(string.Format("任务控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
-                    }
-                }
                 //搜寻场景中所有任务目标
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                _targets.Clear();
+                List<GameObject> rootObjs = new List<GameObject>();
+                List<TaskTarget> targetCaches = new List<TaskTarget>();
+                GlobalTools.GetRootGameObjectsInAllScene(rootObjs);
                 foreach (GameObject rootObj in rootObjs)
                 {
                     targetCaches.Clear();
