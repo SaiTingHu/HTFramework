@@ -923,7 +923,7 @@ namespace HT.Framework
         #endregion
 
         #region Hierarchy窗口扩展
-        private static GUIStyle HierarchyItemStyle;
+        private static GUIStyle HierarchyIconStyle;
         private static Texture HTFrameworkLOGO;
 
         /// <summary>
@@ -931,9 +931,9 @@ namespace HT.Framework
         /// </summary>
         private static void OnInitHierarchy()
         {
-            HierarchyItemStyle = new GUIStyle();
-            HierarchyItemStyle.alignment = TextAnchor.MiddleRight;
-            HierarchyItemStyle.normal.textColor = Color.cyan;
+            HierarchyIconStyle = new GUIStyle();
+            HierarchyIconStyle.alignment = TextAnchor.MiddleRight;
+            HierarchyIconStyle.normal.textColor = Color.cyan;
             HTFrameworkLOGO = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGO.png");
 
             EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowItemOnGUI;
@@ -948,38 +948,84 @@ namespace HT.Framework
             {
                 if (main.GetComponent<Main>())
                 {
-                    GUI.Box(selectionRect, HTFrameworkLOGO, HierarchyItemStyle);
+                    GUI.Box(selectionRect, HTFrameworkLOGO, HierarchyIconStyle);
                 }
             }
         }
         #endregion
 
         #region Project窗口扩展
-        private static GUIStyle ProjectItemStyle;
+        private static GUIStyle ProjectIconStyle;
+        private static GUIStyle ProjectFolderStyle;
         private static Texture HTFrameworkLOGOTitle;
+        private static Texture HTFolderLarge;
+        private static Texture HTFolderSmall;
 
         /// <summary>
         /// 编辑器初始化
         /// </summary>
         private static void OnInitProject()
         {
-            ProjectItemStyle = new GUIStyle();
-            ProjectItemStyle.alignment = TextAnchor.MiddleRight;
-            ProjectItemStyle.normal.textColor = Color.cyan;
+            ProjectIconStyle = new GUIStyle();
+            ProjectIconStyle.alignment = TextAnchor.MiddleRight;
+            ProjectIconStyle.normal.textColor = Color.cyan;
+            ProjectFolderStyle = new GUIStyle();
+            ProjectFolderStyle.alignment = TextAnchor.MiddleLeft;
+            ProjectFolderStyle.normal.textColor = Color.cyan;
             HTFrameworkLOGOTitle = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGOTitle.png");
+            HTFolderLarge = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFolderLarge.png");
+            HTFolderSmall = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFolderSmall.png");
 
+            Editor.finishedDefaultHeaderGUI += OnFinishedDefaultHeaderGUI;
             EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
+        }
+        /// <summary>
+        /// Default头部GUI
+        /// </summary>
+        /// <param name="editor">编辑器对象</param>
+        private static void OnFinishedDefaultHeaderGUI(Editor editor)
+        {
+            if (editor.targets != null && editor.targets.Length > 1)
+            {
+                return;
+            }
+
+            if (editor.target is DefaultAsset)
+            {
+                string path = AssetDatabase.GetAssetPath(editor.target);
+                if (string.Equals(path, "Assets/HTFramework"))
+                {
+                    GUI.DrawTexture(new Rect(6, 6, 32, 32), HTFolderLarge);
+
+                    EditorGUILayout.HelpBox("Unity HTFramework, a rapid development framework of client to the unity.", MessageType.Info);
+                }
+            }
         }
         /// <summary>
         /// Project窗口元素GUI
         /// </summary>
         private static void OnProjectWindowItemOnGUI(string guid, Rect selectionRect)
         {
-            string mainFolder = AssetDatabase.GUIDToAssetPath(guid);
-            if (string.Equals(mainFolder, "Assets/HTFramework"))
+            if (IsSmallIcon(selectionRect))
             {
-                GUI.Box(selectionRect, HTFrameworkLOGOTitle, ProjectItemStyle);
+                string mainFolder = AssetDatabase.GUIDToAssetPath(guid);
+                if (string.Equals(mainFolder, "Assets/HTFramework"))
+                {
+                    GUI.Box(selectionRect, HTFrameworkLOGOTitle, ProjectIconStyle);
+
+                    if (selectionRect.x < 16) selectionRect.x += 3;
+                    GUI.Box(selectionRect, HTFolderSmall, ProjectFolderStyle);
+                }
             }
+        }
+        /// <summary>
+        /// 是否为显示小图标模式
+        /// </summary>
+        /// <param name="rect">显示区域</param>
+        /// <returns>是否为显示小图标模式</returns>
+        private static bool IsSmallIcon(Rect rect)
+        {
+            return rect.width > rect.height;
         }
         #endregion
 
