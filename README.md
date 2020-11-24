@@ -86,6 +86,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [LitJson](https://github.com/LitJSON/litjson)。
 
+- [Highlighting System](https://assetstore.unity.com/packages/tools/particles-effects/highlighting-system-41508)。
+
 ## 演示代码
 
 - [入门级Demo](https://github.com/SaiTingHu/HTFrameworkDemo)。
