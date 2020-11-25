@@ -256,7 +256,7 @@ namespace HT.Framework
             SingleVolume = SingleVolumeDefault;
             MultipleVolume = MultipleVolumeDefault;
             WorldVolume = WorldVolumeDefault;
-            OneShootVolume= OneShootVolumeDefault;
+            OneShootVolume = OneShootVolumeDefault;
         }
 
         /// <summary>
