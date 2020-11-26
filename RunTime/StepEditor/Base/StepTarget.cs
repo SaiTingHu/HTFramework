@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 步骤操作的目标
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class StepTarget : MonoBehaviour
+    public sealed class StepTarget : HTBehaviour
     {
         /// <summary>
         /// 步骤目标ID

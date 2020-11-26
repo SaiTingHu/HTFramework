@@ -7,7 +7,7 @@ namespace HT.Framework
     /// 游戏物体动画
     /// </summary>
     [AddComponentMenu("HTFramework/GameObject/GameObject Animation")]
-    public sealed class GameObjectAnimation : MonoBehaviour
+    public sealed class GameObjectAnimation : HTBehaviour
     {
         public GameObjectAnimationType TheAnimationType = GameObjectAnimationType.Move;
         public Ease TheEase = Ease.Linear;
@@ -45,8 +45,10 @@ namespace HT.Framework
         private Vector3 _scaleRecord;
         private Tweener _theTweener;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _positionRecord = transform.localPosition;
             _rotationRecord = transform.localRotation.eulerAngles;
             _scaleRecord = transform.localScale;

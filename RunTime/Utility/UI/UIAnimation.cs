@@ -8,7 +8,7 @@ namespace HT.Framework
     /// UI控件动画
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIAnimation")]
-    public sealed class UIAnimation : MonoBehaviour
+    public sealed class UIAnimation : HTBehaviour
     {
         public UIAnimationType TheAnimationType = UIAnimationType.Move;
         public Ease TheEase = Ease.Linear;
@@ -51,8 +51,10 @@ namespace HT.Framework
         private Color _colorRecord;
         private Tweener _theTweener;
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _rectTransform = transform.rectTransform();
             _theGraphic = GetComponent<Graphic>();
             _positionRecord = transform.localPosition;

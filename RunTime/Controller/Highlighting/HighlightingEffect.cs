@@ -5,7 +5,7 @@ namespace HT.Framework
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-800)]
-    internal sealed class HighlightingEffect : MonoBehaviour
+    internal sealed class HighlightingEffect : HTBehaviour
     {
         #region Static Fields
         /// <summary>
@@ -188,8 +188,10 @@ namespace HT.Framework
         private Camera _camera = null;
         #endregion
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _camera = GetComponent<Camera>();
         }
 

@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIClickButton")]
     [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
-    public sealed class UIClickButton : MonoBehaviour, IPointerClickHandler
+    public sealed class UIClickButton : HTBehaviour, IPointerClickHandler
     {
         /// <summary>
         /// 启用左键双击事件

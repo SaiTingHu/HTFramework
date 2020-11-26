@@ -10,7 +10,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/FSM")]
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-900)]
-    public sealed class FSM : MonoBehaviour
+    public sealed class FSM : HTBehaviour
     {
         /// <summary>
         /// 是否自动注册到管理器【请勿在代码中修改】
@@ -69,8 +69,10 @@ namespace HT.Framework
 
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             if (IsAutoRegister)
             {
                 Main.m_FSM.RegisterFSM(this);

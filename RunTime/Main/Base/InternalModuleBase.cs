@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 内置模块基类
     /// </summary>
-    public abstract class InternalModuleBase : MonoBehaviour, IModuleManager
+    public abstract class InternalModuleBase : HTBehaviour, IModuleManager
     {
         /// <summary>
         /// 内置模块助手类型

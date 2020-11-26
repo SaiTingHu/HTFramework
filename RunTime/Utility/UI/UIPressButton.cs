@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIPressButton")]
     [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
-    public sealed class UIPressButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    public sealed class UIPressButton : HTBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         /// <summary>
         /// 鼠标按住事件
@@ -37,7 +37,7 @@ namespace HT.Framework
                 OnMouseRelease.Invoke();
             }
         }
-
+        
         private void Update()
         {
             if (_isPressed)

@@ -8,7 +8,7 @@ namespace HT.Framework
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIDragObject")]
     [DisallowMultipleComponent]
-    public sealed class UIDragObject : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    public sealed class UIDragObject : HTBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         /// <summary>
         /// 被拖动目标
@@ -57,8 +57,10 @@ namespace HT.Framework
         private Vector3 _lastPos;
         private HTFAction Draging;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _transform = DragTarget.transform;
             _rectTransform = DragTarget.rectTransform();
 

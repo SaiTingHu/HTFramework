@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
     /// 鼠标射线可捕获的目标
     /// </summary>
-    public abstract class MouseRayTargetBase : MonoBehaviour
+    public abstract class MouseRayTargetBase : HTBehaviour
     {
         /// <summary>
         /// 目标显示的名称

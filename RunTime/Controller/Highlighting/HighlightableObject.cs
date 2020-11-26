@@ -6,7 +6,7 @@ namespace HT.Framework
 {
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-700)]
-    internal sealed class HighlightableObject : MonoBehaviour
+    internal sealed class HighlightableObject : HTBehaviour
     {
         #region Static Fields
         //高亮物体所在的层

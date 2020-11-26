@@ -30,11 +30,16 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 是否启用自动化，这将造成反射的性能消耗
+        /// </summary>
+        protected virtual bool IsAutomate => true;
+
+        /// <summary>
         /// 初始化
         /// </summary>
         public virtual void OnInit()
         {
-            ApplyObjectPath();
+            AutomaticTask();
         }
         
         /// <summary>
@@ -73,10 +78,14 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 应用对象路径定义
+        /// 自动化任务
         /// </summary>
-        private void ApplyObjectPath()
+        private void AutomaticTask()
         {
+            if (!IsAutomate)
+                return;
+
+            //应用对象路径定义
             FieldInfo[] infos = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             for (int i = 0; i < infos.Length; i++)
             {

@@ -7,7 +7,7 @@ namespace HT.Framework
     /// 摄像机注视目标移动控制
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class MousePosition : MonoBehaviour
+    internal sealed class MousePosition : HTBehaviour
     {
         /// <summary>
         /// 阻尼缓冲时长
@@ -118,7 +118,7 @@ namespace HT.Framework
             //应用
             ApplyPosition();
         }
-
+        
         private void Control()
         {
             if (_isKeepTrack)

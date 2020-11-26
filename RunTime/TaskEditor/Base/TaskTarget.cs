@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 任务游戏物体目标
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class TaskTarget : MonoBehaviour
+    public sealed class TaskTarget : HTBehaviour
     {
         /// <summary>
         /// 任务目标ID

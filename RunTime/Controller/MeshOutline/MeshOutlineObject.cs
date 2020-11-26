@@ -5,7 +5,7 @@ namespace HT.Framework
 {
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-700)]
-    internal sealed class MeshOutlineObject : MonoBehaviour
+    internal sealed class MeshOutlineObject : HTBehaviour
     {
         private static Material GetOpaqueMaterial()
         {
@@ -128,7 +128,7 @@ namespace HT.Framework
         {
             Destroy(this);
         }
-
+        
         private void OnDisable()
         {
             Close();

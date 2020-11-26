@@ -7,7 +7,7 @@ namespace HT.Framework
     /// <summary>
     /// 编辑器反射工具箱
     /// </summary>
-    public static class EditorReflectionToolkit
+    internal static class EditorReflectionToolkit
     {
         /// <summary>
         /// 当前的热更新程序集

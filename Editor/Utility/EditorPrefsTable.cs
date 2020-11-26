@@ -9,6 +9,11 @@ namespace HT.Framework
     {
         #region Editor Config
         /// <summary>
+        /// 框架根路径
+        /// </summary>
+        public static readonly string HTFrameworkRootPath = "Assets/HTFramework";
+
+        /// <summary>
         /// 快捷创建Script的模板文件夹
         /// </summary>
         public static readonly string ScriptTemplateFolder = "Assets/HTFramework/Editor/Utility/Template/";

@@ -8,7 +8,7 @@ namespace HT.Framework
     /// ECS的实体
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ECS_Entity : MonoBehaviour
+    public sealed class ECS_Entity : HTBehaviour
     {
         /// <summary>
         /// 创建新的实体
@@ -60,8 +60,10 @@ namespace HT.Framework
         private Dictionary<Type, ECS_Component> _components = new Dictionary<Type, ECS_Component>();
         private Dictionary<int, ECS_Order> _orders = new Dictionary<int, ECS_Order>();
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             Main.m_ECS.AddEntity(this);
         }
         private void OnDestroy()

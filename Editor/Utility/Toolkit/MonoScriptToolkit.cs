@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// MonoScript工具箱
     /// </summary>
-    public static class MonoScriptToolkit
+    internal static class MonoScriptToolkit
     {
         private static Dictionary<string, string> _monoScripts = new Dictionary<string, string>();
         

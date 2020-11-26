@@ -154,8 +154,10 @@ namespace HT.Framework
         {
 
         }
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             OnInitialization();
         }
         private void Start()

@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 摄像机注视目标旋转控制
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class MouseRotation : MonoBehaviour
+    internal sealed class MouseRotation : HTBehaviour
     {
         /// <summary>
         /// x轴旋转速度，y轴旋转速度，滚轮缩放速度
@@ -111,7 +111,7 @@ namespace HT.Framework
             //应用
             ApplyRotation();
         }
-
+        
         private void Control()
         {
             if (!CanControl)

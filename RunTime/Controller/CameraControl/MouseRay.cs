@@ -10,7 +10,7 @@ namespace HT.Framework
     /// </summary>
     [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
-    internal sealed class MouseRay : MonoBehaviour
+    internal sealed class MouseRay : HTBehaviour
     {
         /// <summary>
         /// 是否开启射线投射

@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 单例模式 Behaviour 基类
     /// </summary>
     [DisallowMultipleComponent]
-    public abstract class SingletonBehaviourBase<T> : MonoBehaviour where T : class
+    public abstract class SingletonBehaviourBase<T> : HTBehaviour where T : class
     {
         private static T _current;
         /// <summary>
@@ -20,8 +20,10 @@ namespace HT.Framework
             }
         }
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             if (_current == null)
             {
                 _current = GetComponent<T>();

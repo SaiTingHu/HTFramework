@@ -8,7 +8,7 @@ namespace HT.Framework
     /// </summary>
     [AddComponentMenu("HTFramework/GameObject/DragObject")]
     [DisallowMultipleComponent]
-    public sealed class DragObject : MonoBehaviour
+    public sealed class DragObject : HTBehaviour
     {
         /// <summary>
         /// 是否启用全局拖拽
@@ -45,7 +45,7 @@ namespace HT.Framework
                 return IsAllowDragEnvironment && IsAllowDrag;
             }
         }
-
+        
         private void OnMouseDown()
         {
             if (IsCanDrag)
