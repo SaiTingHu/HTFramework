@@ -54,6 +54,14 @@ namespace HT.Framework
                 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("P", GUILayout.Width(20));
+                EditorGUI.BeginChangeCheck();
+                Vector3 pos = EditorGUILayout.Vector3Field("", Target.position);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(Target, "Move " + Target.name);
+                    Target.position = pos;
+                    HasChanged();
+                }
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
@@ -68,18 +76,18 @@ namespace HT.Framework
                         HasChanged();
                     }
                 }
-                EditorGUI.BeginChangeCheck();
-                Vector3 pos = EditorGUILayout.Vector3Field("", Target.position);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(Target, "Move " + Target.name);
-                    Target.position = pos;
-                    HasChanged();
-                }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("R", GUILayout.Width(20));
+                EditorGUI.BeginChangeCheck();
+                Vector3 rot = EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(Target, "Rotate " + Target.name);
+                    Target.rotation = Quaternion.Euler(rot);
+                    HasChanged();
+                }
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     if (_copyQuaternion)
@@ -115,27 +123,27 @@ namespace HT.Framework
                         }
                     }
                 }
-                EditorGUI.BeginChangeCheck();
-                Vector3 rot = EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(Target, "Rotate " + Target.name);
-                    Target.rotation = Quaternion.Euler(rot);
-                    HasChanged();
-                }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("S", GUILayout.Width(20));
                 GUI.enabled = false;
+                EditorGUILayout.Vector3Field("", Target.lossyScale);
                 GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20));
                 GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20));
-                EditorGUILayout.Vector3Field("", Target.lossyScale);
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LP", GUILayout.Width(20));
+                EditorGUI.BeginChangeCheck();
+                Vector3 localpos = EditorGUILayout.Vector3Field("", Target.localPosition);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(Target, "Move " + Target.name);
+                    Target.localPosition = localpos;
+                    HasChanged();
+                }
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
@@ -150,18 +158,18 @@ namespace HT.Framework
                         HasChanged();
                     }
                 }
-                EditorGUI.BeginChangeCheck();
-                Vector3 localpos = EditorGUILayout.Vector3Field("", Target.localPosition);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(Target, "Move " + Target.name);
-                    Target.localPosition = localpos;
-                    HasChanged();
-                }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LR", GUILayout.Width(20));
+                EditorGUI.BeginChangeCheck();
+                Vector3 localrot = EditorGUILayout.Vector3Field("", Target.localRotation.eulerAngles);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(Target, "Rotate " + Target.name);
+                    Target.localRotation = Quaternion.Euler(localrot);
+                    HasChanged();
+                }
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     if (_copyQuaternion)
@@ -197,18 +205,18 @@ namespace HT.Framework
                         }
                     }
                 }
-                EditorGUI.BeginChangeCheck();
-                Vector3 localrot = EditorGUILayout.Vector3Field("", Target.localRotation.eulerAngles);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(Target, "Rotate " + Target.name);
-                    Target.localRotation = Quaternion.Euler(localrot);
-                    HasChanged();
-                }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LS", GUILayout.Width(20));
+                EditorGUI.BeginChangeCheck();
+                Vector3 localsca = EditorGUILayout.Vector3Field("", Target.localScale);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(Target, "Scale " + Target.name);
+                    Target.localScale = localsca;
+                    HasChanged();
+                }
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
@@ -222,14 +230,6 @@ namespace HT.Framework
                         Target.localScale = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.one);
                         HasChanged();
                     }
-                }
-                EditorGUI.BeginChangeCheck();
-                Vector3 localsca = EditorGUILayout.Vector3Field("", Target.localScale);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(Target, "Scale " + Target.name);
-                    Target.localScale = localsca;
-                    HasChanged();
                 }
                 GUILayout.EndHorizontal();
 
