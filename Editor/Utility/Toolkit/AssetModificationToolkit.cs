@@ -15,19 +15,19 @@ namespace HT.Framework
             path = path.Replace(".meta", "");
             if (path.EndsWith(".cs"))
             {
-                bool isRename = false;
+                bool isFix = false;
                 List<string> codes = File.ReadAllLines(path).ToList();
                 for (int i = 0; i < codes.Count; i++)
                 {
-                    if (!isRename)
+                    if (!isFix)
                     {
-                        if (codes[i].Contains(" class "))
+                        if (codes[i].Contains(" class ") && codes[i].EndsWith("MonoBehaviour"))
                         {
                             codes[i] = codes[i].Replace("MonoBehaviour", "HTBehaviour");
-                            isRename = true;
+                            isFix = true;
                         }
                     }
-                    if (isRename)
+                    if (isFix)
                     {
                         if (codes[i].Contains("{"))
                         {
@@ -38,10 +38,13 @@ namespace HT.Framework
                         }
                     }
                 }
-                codes.Insert(0, "using DG.Tweening;");
-                codes.Insert(0, "using HT.Framework;");
-                File.WriteAllLines(path, codes.ToArray());
-                AssetDatabase.Refresh();
+                if (isFix)
+                {
+                    codes.Insert(0, "using DG.Tweening;");
+                    codes.Insert(0, "using HT.Framework;");
+                    File.WriteAllLines(path, codes.ToArray());
+                    AssetDatabase.Refresh();
+                }
             }
         }
 

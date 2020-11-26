@@ -13,6 +13,8 @@ namespace HT.Framework
         private bool _showHierarchy = false;
         private bool _showCopy = false;
         private Transform _parent;
+        private GUIContent _copy;
+        private GUIContent _paste;
 
         protected override bool IsEnableRuntimeData => false;
 
@@ -23,6 +25,12 @@ namespace HT.Framework
             _showProperty = EditorPrefs.GetBool(EditorPrefsTable.Transform_Property, true);
             _showHierarchy = EditorPrefs.GetBool(EditorPrefsTable.Transform_Hierarchy, false);
             _showCopy = EditorPrefs.GetBool(EditorPrefsTable.Transform_Copy, false);
+            _copy = new GUIContent();
+            _copy.text = "C";
+            _copy.tooltip = "Copy value";
+            _paste = new GUIContent();
+            _paste.text = "P";
+            _paste.tooltip = "Paste value";
         }
 
         protected override void OnInspectorDefaultGUI()
@@ -45,9 +53,24 @@ namespace HT.Framework
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
                 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Position", GUILayout.Width(80));
+                GUILayout.Label("P", GUILayout.Width(20));
+                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                {
+                    GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
+                {
+                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    {
+                        Undo.RecordObject(Target, "Paste position value");
+                        Target.position = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
+                        HasChanged();
+                    }
+                }
+                EditorGUI.BeginChangeCheck();
                 Vector3 pos = EditorGUILayout.Vector3Field("", Target.position);
-                if (pos != Target.position)
+                if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(Target, "Move " + Target.name);
                     Target.position = pos;
@@ -56,9 +79,45 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Rotation", GUILayout.Width(80));
+                GUILayout.Label("R", GUILayout.Width(20));
+                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                {
+                    if (_copyQuaternion)
+                    {
+                        GUIUtility.systemCopyBuffer = Target.rotation.ToCopyString("F4");
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    }
+                    else
+                    {
+                        string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
+                        string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
+                        string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
+
+                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    }
+                }
+                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
+                {
+                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    {
+                        if (_copyQuaternion)
+                        {
+                            Undo.RecordObject(Target, "Paste rotation value");
+                            Target.rotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+                            HasChanged();
+                        }
+                        else
+                        {
+                            Undo.RecordObject(Target, "Paste rotation value");
+                            Target.rotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
+                            HasChanged();
+                        }
+                    }
+                }
+                EditorGUI.BeginChangeCheck();
                 Vector3 rot = EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
-                if (rot != Target.rotation.eulerAngles)
+                if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(Target, "Rotate " + Target.name);
                     Target.rotation = Quaternion.Euler(rot);
@@ -67,16 +126,33 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Scale", GUILayout.Width(80));
+                GUILayout.Label("S", GUILayout.Width(20));
                 GUI.enabled = false;
+                GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20));
+                GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20));
                 EditorGUILayout.Vector3Field("", Target.lossyScale);
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("LocalPosition", GUILayout.Width(80));
+                GUILayout.Label("LP", GUILayout.Width(20));
+                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                {
+                    GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
+                {
+                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    {
+                        Undo.RecordObject(Target, "Paste localPosition value");
+                        Target.localPosition = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
+                        HasChanged();
+                    }
+                }
+                EditorGUI.BeginChangeCheck();
                 Vector3 localpos = EditorGUILayout.Vector3Field("", Target.localPosition);
-                if (localpos != Target.localPosition)
+                if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(Target, "Move " + Target.name);
                     Target.localPosition = localpos;
@@ -85,9 +161,45 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("LocalRotation", GUILayout.Width(80));
+                GUILayout.Label("LR", GUILayout.Width(20));
+                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                {
+                    if (_copyQuaternion)
+                    {
+                        GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    }
+                    else
+                    {
+                        string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
+                        string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
+                        string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
+
+                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    }
+                }
+                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
+                {
+                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    {
+                        if (_copyQuaternion)
+                        {
+                            Undo.RecordObject(Target, "Paste localRotation value");
+                            Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+                            HasChanged();
+                        }
+                        else
+                        {
+                            Undo.RecordObject(Target, "Paste localRotation value");
+                            Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
+                            HasChanged();
+                        }
+                    }
+                }
+                EditorGUI.BeginChangeCheck();
                 Vector3 localrot = EditorGUILayout.Vector3Field("", Target.localRotation.eulerAngles);
-                if (localrot != Target.localRotation.eulerAngles)
+                if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(Target, "Rotate " + Target.name);
                     Target.localRotation = Quaternion.Euler(localrot);
@@ -96,9 +208,24 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("LocalScale", GUILayout.Width(80));
+                GUILayout.Label("LS", GUILayout.Width(20));
+                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                {
+                    GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
+                {
+                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    {
+                        Undo.RecordObject(Target, "Paste localScale value");
+                        Target.localScale = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.one);
+                        HasChanged();
+                    }
+                }
+                EditorGUI.BeginChangeCheck();
                 Vector3 localsca = EditorGUILayout.Vector3Field("", Target.localScale);
-                if (localsca != Target.localScale)
+                if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(Target, "Scale " + Target.name);
                     Target.localScale = localsca;
@@ -203,65 +330,7 @@ namespace HT.Framework
             if (_showCopy)
             {
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Position", EditorStyles.miniButtonLeft))
-                {
-                    GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                if (GUILayout.Button("Copy LocalPosition", EditorStyles.miniButtonRight))
-                {
-                    GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Rotation", EditorStyles.miniButtonLeft))
-                {
-                    if (_copyQuaternion)
-                    {
-                        GUIUtility.systemCopyBuffer = Target.rotation.ToCopyString("F4");
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                    else
-                    {
-                        string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
-                        string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
-                        string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
-
-                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                }
-                if (GUILayout.Button("Copy LocalRotation", EditorStyles.miniButtonRight))
-                {
-                    if (_copyQuaternion)
-                    {
-                        GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                    else
-                    {
-                        string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
-                        string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
-                        string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
-
-                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Scale", EditorStyles.miniButton))
-                {
-                    GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-
+                
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Copy Name", EditorStyles.miniButtonLeft))
                 {

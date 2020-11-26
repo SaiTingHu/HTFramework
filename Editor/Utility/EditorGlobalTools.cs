@@ -801,8 +801,9 @@ namespace HT.Framework
         /// 标准Paste字符串转换为Vector2
         /// </summary>
         /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
         /// <returns>Vector2值</returns>
-        public static Vector2 ToPasteVector2(this string value)
+        public static Vector2 ToPasteVector2(this string value, Vector2 defaultValue = default)
         {
             string[] vector2 = value.Split(',');
             if (vector2.Length == 2)
@@ -815,7 +816,7 @@ namespace HT.Framework
                     return new Vector2(x, y);
                 }
             }
-            return Vector2.zero;
+            return defaultValue;
         }
         /// <summary>
         /// Vector3转换为标准Copy字符串
@@ -831,8 +832,9 @@ namespace HT.Framework
         /// 标准Paste字符串转换为Vector3
         /// </summary>
         /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
         /// <returns>Vector3值</returns>
-        public static Vector3 ToPasteVector3(this string value)
+        public static Vector3 ToPasteVector3(this string value, Vector3 defaultValue = default)
         {
             string[] vector3 = value.Split(',');
             if (vector3.Length == 3)
@@ -846,7 +848,7 @@ namespace HT.Framework
                     return new Vector3(x, y, z);
                 }
             }
-            return Vector3.zero;
+            return defaultValue;
         }
         /// <summary>
         /// Quaternion转换为标准Copy字符串
@@ -862,8 +864,9 @@ namespace HT.Framework
         /// 标准Paste字符串转换为Quaternion
         /// </summary>
         /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
         /// <returns>Quaternion值</returns>
-        public static Quaternion ToPasteQuaternion(this string value)
+        public static Quaternion ToPasteQuaternion(this string value, Quaternion defaultValue = default)
         {
             string[] quaternion = value.Split(',');
             if (quaternion.Length == 4)
@@ -878,7 +881,7 @@ namespace HT.Framework
                     return new Quaternion(x, y, z, w);
                 }
             }
-            return Quaternion.identity;
+            return defaultValue;
         }
         #endregion
 
