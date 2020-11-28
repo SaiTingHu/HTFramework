@@ -22,10 +22,6 @@ namespace HT.Framework
         /// </summary>
         string AssetBundleRootPath { get; }
         /// <summary>
-        /// 是否缓存AB包
-        /// </summary>
-        bool IsCacheAssetBundle { get; }
-        /// <summary>
         /// 所有AssetBundle资源包清单的名称
         /// </summary>
         string AssetBundleManifestName { get; }
@@ -47,9 +43,8 @@ namespace HT.Framework
         /// </summary>
         /// <param name="loadMode">加载模式</param>
         /// <param name="isEditorMode">是否是编辑器模式</param>
-        /// <param name="isCacheAssetBundle">是否缓存AB包</param>
         /// <param name="manifestName">AB包清单名称</param>
-        void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, bool isCacheAssetBundle, string manifestName);
+        void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName);
         /// <summary>
         /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
         /// </summary>
@@ -73,6 +68,14 @@ namespace HT.Framework
         /// <param name="isUI">是否是加载UI</param>
         /// <returns>加载协程迭代器</returns>
         IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab, Transform parent, bool isUI) where T : Object;
+        /// <summary>
+        /// 加载场景（异步）
+        /// </summary>
+        /// <param name="info">资源信息标记</param>
+        /// <param name="loadingAction">加载中事件</param>
+        /// <param name="loadDoneAction">加载完成事件</param>
+        /// <returns>加载协程迭代器</returns>
+        IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> loadingAction, HTFAction loadDoneAction);
         /// <summary>
         /// 卸载资源（卸载AssetBundle）
         /// </summary>

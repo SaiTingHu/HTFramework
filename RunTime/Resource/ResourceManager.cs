@@ -18,10 +18,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsEditorMode = true;
         /// <summary>
-        /// 是否缓存AB包【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal bool IsCacheAssetBundle = true;
-        /// <summary>
         /// 所有AssetBundle资源包清单的名称【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string AssetBundleManifestName;
@@ -37,7 +33,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IResourceHelper;
-            _helper.SetLoader(Mode, IsEditorMode, IsCacheAssetBundle, AssetBundleManifestName);
+            _helper.SetLoader(Mode, IsEditorMode, AssetBundleManifestName);
         }
 
         /// <summary>
@@ -68,7 +64,7 @@ namespace HT.Framework
         /// <param name="loadingAction">资源加载中回调</param>
         /// <param name="loadDoneAction">资源加载完成回调</param>
         /// <returns>加载协程</returns>
-        public Coroutine LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : UnityEngine.Object
+        public Coroutine LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : Object
         {
             return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, loadingAction, loadDoneAction, false, null, false));
         }
@@ -96,6 +92,17 @@ namespace HT.Framework
         public Coroutine LoadPrefab(PrefabInfo info, Transform parent, HTFAction<float> loadingAction = null, HTFAction<GameObject> loadDoneAction = null, bool isUI = false)
         {
             return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, loadingAction, loadDoneAction, true, parent, isUI));
+        }
+        /// <summary>
+        /// 加载场景（异步）
+        /// </summary>
+        /// <param name="info">场景配置信息</param>
+        /// <param name="loadingAction">场景加载中回调</param>
+        /// <param name="loadDoneAction">场景加载完成回调</param>
+        /// <returns>加载协程</returns>
+        public Coroutine LoadScene(SceneInfo info, HTFAction<float> loadingAction = null, HTFAction loadDoneAction = null)
+        {
+            return Main.Current.StartCoroutine(_helper.LoadSceneAsync(info, loadingAction, loadDoneAction));
         }
 
         /// <summary>

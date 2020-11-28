@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Text;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -31,10 +31,6 @@ namespace HT.Framework
         /// AssetBundle资源加载根路径
         /// </summary>
         public string AssetBundleRootPath { get; private set; }
-        /// <summary>
-        /// 是否缓存AB包
-        /// </summary>
-        public bool IsCacheAssetBundle { get; private set; }
         /// <summary>
         /// 所有AssetBundle资源包清单的名称
         /// </summary>
@@ -110,14 +106,12 @@ namespace HT.Framework
         /// </summary>
         /// <param name="loadMode">加载模式</param>
         /// <param name="isEditorMode">是否是编辑器模式</param>
-        /// <param name="isCacheAssetBundle">是否缓存AB包</param>
         /// <param name="manifestName">AB包清单名称</param>
-        public void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, bool isCacheAssetBundle, string manifestName)
+        public void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName)
         {
             LoadMode = loadMode;
             IsEditorMode = isEditorMode;
             AssetBundleRootPath = Application.streamingAssetsPath + "/";
-            IsCacheAssetBundle = isCacheAssetBundle;
             AssetBundleManifestName = manifestName;
             _loadWait = new WaitUntil(() => { return !_isLoading; });
         }
@@ -167,7 +161,7 @@ namespace HT.Framework
 
             _isLoading = true;
 
-            yield return Main.Current.StartCoroutine(LoadDependenciesAssetBundleAsync(info.AssetBundleName));
+            yield return LoadDependenciesAssetBundleAsync(info.AssetBundleName);
 
             DateTime waitTime = DateTime.Now;
 
@@ -217,11 +211,10 @@ namespace HT.Framework
                 }
                 else
                 {
+                    yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
+
                     if (AssetBundles.ContainsKey(info.AssetBundleName))
                     {
-                        loadingAction?.Invoke(1);
-                        yield return null;
-
                         asset = AssetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
                         if (asset)
                         {
@@ -235,62 +228,12 @@ namespace HT.Framework
                             throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
                         }
                     }
-                    else
-                    {
-                        using (UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + info.AssetBundleName, GetAssetBundleHash(info.AssetBundleName)))
-                        {
-                            request.SendWebRequest();
-                            while (!request.isDone)
-                            {
-                                loadingAction?.Invoke(request.downloadProgress);
-                                yield return null;
-                            }
-                            if (!request.isNetworkError && !request.isHttpError)
-                            {
-                                AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
-                                if (bundle)
-                                {
-                                    asset = bundle.LoadAsset<T>(info.AssetPath);
-                                    if (asset)
-                                    {
-                                        if (isPrefab)
-                                        {
-                                            asset = ClonePrefab(asset as GameObject, parent, isUI);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
-                                    }
-
-                                    if (IsCacheAssetBundle)
-                                    {
-                                        if (!AssetBundles.ContainsKey(info.AssetBundleName))
-                                            AssetBundles.Add(info.AssetBundleName, bundle);
-                                    }
-                                    else
-                                    {
-                                        bundle.Unload(false);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
-                                }
-                            }
-                            else
-                            {
-                                throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
-                            }
-                        }
-                    }
                 }
 #else
+                yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
+
                 if (AssetBundles.ContainsKey(info.AssetBundleName))
                 {
-                    loadingAction?.Invoke(1);
-                    yield return null;
-
                     asset = AssetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
                     if (asset)
                     {
@@ -302,55 +245,6 @@ namespace HT.Framework
                     else
                     {
                         throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
-                    }
-                }
-                else
-                {
-                    using (UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + info.AssetBundleName, GetAssetBundleHash(info.AssetBundleName)))
-                    {
-                        request.SendWebRequest();
-                        while (!request.isDone)
-                        {
-                            loadingAction?.Invoke(request.downloadProgress);
-                            yield return null;
-                        }
-                        if (!request.isNetworkError && !request.isHttpError)
-                        {
-                            AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
-                            if (bundle)
-                            {
-                                asset = bundle.LoadAsset<T>(info.AssetPath);
-                                if (asset)
-                                {
-                                    if (isPrefab)
-                                    {
-                                        asset = ClonePrefab(asset as GameObject, parent, isUI);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
-                                }
-
-                                if (IsCacheAssetBundle)
-                                {
-                                    if (!AssetBundles.ContainsKey(info.AssetBundleName))
-                                        AssetBundles.Add(info.AssetBundleName, bundle);
-                                }
-                                else
-                                {
-                                    bundle.Unload(false);
-                                }
-                            }
-                            else
-                            {
-                                throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
-                            }
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
-                        }
                     }
                 }
 #endif
@@ -376,6 +270,64 @@ namespace HT.Framework
                 loadDoneAction?.Invoke(asset as T);
             }
             asset = null;
+
+            _isLoading = false;
+        }
+        /// <summary>
+        /// 加载场景（异步）
+        /// </summary>
+        /// <param name="info">资源信息标记</param>
+        /// <param name="loadingAction">加载中事件</param>
+        /// <param name="loadDoneAction">加载完成事件</param>
+        /// <returns>加载协程迭代器</returns>
+        public IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> loadingAction, HTFAction loadDoneAction)
+        {
+            DateTime beginTime = DateTime.Now;
+
+            if (_isLoading)
+            {
+                yield return _loadWait;
+            }
+
+            _isLoading = true;
+
+            yield return LoadDependenciesAssetBundleAsync(info.AssetBundleName);
+
+            DateTime waitTime = DateTime.Now;
+            
+            if (LoadMode == ResourceLoadMode.Resource)
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Resource, "加载场景失败：场景加载不允许使用Resource模式！");
+            }
+            else
+            {
+#if UNITY_EDITOR
+                if (IsEditorMode)
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, "加载场景失败：场景加载不允许使用编辑器模式！");
+                }
+                else
+                {
+                    yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
+
+                    yield return SceneManager.LoadSceneAsync(info.AssetPath, LoadSceneMode.Additive);
+                }
+#else
+                yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
+
+                yield return SceneManager.LoadSceneAsync(info.AssetPath, LoadSceneMode.Additive);
+#endif
+            }
+
+            DateTime endTime = DateTime.Now;
+
+            Log.Info(string.Format("异步加载场景完成[{0}模式]：{1}\r\n等待耗时：{2}秒  加载耗时：{3}秒"
+                , LoadMode.ToString()
+                , info.AssetPath
+                , (waitTime - beginTime).TotalSeconds
+                , (endTime - waitTime).TotalSeconds));
+
+            loadDoneAction?.Invoke();
 
             _isLoading = false;
         }
@@ -480,7 +432,7 @@ namespace HT.Framework
 #if UNITY_EDITOR
                 if (!IsEditorMode)
                 {
-                    yield return Main.Current.StartCoroutine(LoadAssetBundleManifestAsync());
+                    yield return LoadAssetBundleManifestAsync();
 
                     if (AssetBundleManifest != null)
                     {
@@ -492,12 +444,12 @@ namespace HT.Framework
                                 continue;
                             }
 
-                            yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(item));
+                            yield return LoadAssetBundleAsync(item);
                         }
                     }
                 }
 #else
-                yield return Main.Current.StartCoroutine(LoadAssetBundleManifestAsync());
+                yield return LoadAssetBundleManifestAsync();
 
                 if (AssetBundleManifest != null)
                 {
@@ -509,7 +461,7 @@ namespace HT.Framework
                             continue;
                         }
 
-                        yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(item));
+                        yield return LoadAssetBundleAsync(item);
                     }
                 }
 #endif
@@ -522,7 +474,7 @@ namespace HT.Framework
         /// <returns>协程迭代器</returns>
         private IEnumerator LoadAssetBundleManifestAsync()
         {
-            if (string.IsNullOrEmpty(AssetBundleManifestName) || AssetBundleManifestName == "")
+            if (string.IsNullOrEmpty(AssetBundleManifestName))
             {
                 throw new HTFrameworkException(HTFrameworkModule.Resource, "请设置资源管理模块的 Manifest Name 属性，为所有AB包提供依赖清单！");
             }
@@ -530,7 +482,7 @@ namespace HT.Framework
             {
                 if (AssetBundleManifest == null)
                 {
-                    yield return Main.Current.StartCoroutine(LoadAssetBundleAsync(AssetBundleManifestName, true));
+                    yield return LoadAssetBundleAsync(AssetBundleManifestName, true);
 
                     if (AssetBundles.ContainsKey(AssetBundleManifestName))
                     {
@@ -556,6 +508,47 @@ namespace HT.Framework
                     : UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName, GetAssetBundleHash(assetBundleName)))
                 {
                     yield return request.SendWebRequest();
+                    if (!request.isNetworkError && !request.isHttpError)
+                    {
+                        AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
+                        if (bundle)
+                        {
+                            AssetBundles.Add(assetBundleName, bundle);
+                        }
+                        else
+                        {
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
+                        }
+                    }
+                    else
+                    {
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
+                    }
+                }
+            }
+            yield return null;
+        }
+        /// <summary>
+        /// 异步加载AB包（提供进度回调）
+        /// </summary>
+        /// <param name="assetBundleName">AB包名称</param>
+        /// <param name="loadingAction">加载中事件</param>
+        /// <param name="isManifest">是否是加载清单</param>
+        /// <returns>协程迭代器</returns>
+        private IEnumerator LoadAssetBundleAsync(string assetBundleName, HTFAction<float> loadingAction, bool isManifest = false)
+        {
+            if (!AssetBundles.ContainsKey(assetBundleName))
+            {
+                using (UnityWebRequest request = isManifest
+                    ? UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName)
+                    : UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName, GetAssetBundleHash(assetBundleName)))
+                {
+                    request.SendWebRequest();
+                    while (!request.isDone)
+                    {
+                        loadingAction?.Invoke(request.downloadProgress);
+                        yield return null;
+                    }
                     if (!request.isNetworkError && !request.isHttpError)
                     {
                         AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);

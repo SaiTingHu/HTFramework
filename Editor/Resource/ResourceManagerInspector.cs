@@ -68,10 +68,6 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 Toggle(Target.IsEditorMode, out Target.IsEditorMode, "Editor Mode");
                 GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsCacheAssetBundle, out Target.IsCacheAssetBundle, "Cache AssetBundle");
-                GUILayout.EndHorizontal();
             }
 
             GUI.enabled = true;

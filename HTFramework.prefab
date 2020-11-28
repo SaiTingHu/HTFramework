@@ -1044,7 +1044,6 @@ MonoBehaviour:
   HelperType: HT.Framework.DefaultResourceHelper
   Mode: 0
   IsEditorMode: 1
-  IsCacheAssetBundle: 1
   AssetBundleManifestName: 
 --- !u!1 &25185425244144824
 GameObject:
