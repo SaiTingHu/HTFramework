@@ -77,9 +77,29 @@ namespace HT.Framework
         /// </summary>
         private void FieldGUI()
         {
+            bool drawerValue = true;
             for (int i = 0; i < _fields.Count; i++)
             {
-                _fields[i].Draw(this);
+                if (_fields[i].Drawer != null)
+                {
+                    if (string.IsNullOrEmpty(_fields[i].Drawer.Style))
+                    {
+                        GUILayout.BeginHorizontal();
+                    }
+                    else
+                    {
+                        GUILayout.BeginHorizontal(_fields[i].Drawer.Style);
+                        GUILayout.Space(10);
+                    }
+                    _fields[i].DrawerValue = EditorGUILayout.Foldout(_fields[i].DrawerValue, _fields[i].Drawer.Name, _fields[i].Drawer.ToggleOnLabelClick);
+                    drawerValue = _fields[i].DrawerValue;
+                    GUILayout.EndHorizontal();
+                }
+
+                if (drawerValue)
+                {
+                    _fields[i].Painting(this);
+                }
             }
         }
         /// <summary>
@@ -89,7 +109,7 @@ namespace HT.Framework
         {
             for (int i = 0; i < _events.Count; i++)
             {
-                _events[i].Draw(this);
+                _events[i].Painting(this);
             }
         }
         /// <summary>
@@ -99,7 +119,7 @@ namespace HT.Framework
         {
             for (int i = 0; i < _methods.Count; i++)
             {
-                _methods[i].Draw(this);
+                _methods[i].Painting(this);
             }
         }
         /// <summary>
@@ -107,9 +127,18 @@ namespace HT.Framework
         /// </summary>
         private void FieldSceneHandle()
         {
+            bool drawerValue = true;
             for (int i = 0; i < _fields.Count; i++)
             {
-                _fields[i].SceneHandle(this);
+                if (_fields[i].Drawer != null)
+                {
+                    drawerValue = _fields[i].DrawerValue;
+                }
+
+                if (drawerValue)
+                {
+                    _fields[i].SceneHandle(this);
+                }
             }
         }
         /// <summary>
@@ -136,13 +165,15 @@ namespace HT.Framework
         {
             public FieldInfo Field;
             public SerializedProperty Property;
-            public List<FieldDrawer> Drawers = new List<FieldDrawer>();
+            public List<FieldPainter> Painters = new List<FieldPainter>();
             public List<FieldSceneHandler> SceneHandlers = new List<FieldSceneHandler>();
             public MethodInfo EnableCondition;
             public MethodInfo DisplayCondition;
             public string Label;
             public Color UseColor = Color.white;
             public bool IsReadOnly = false;
+            public DrawerAttribute Drawer;
+            public bool DrawerValue = true;
 
             public bool IsEnable
             {
@@ -197,31 +228,31 @@ namespace HT.Framework
                     {
                         if (iattributes[i] is DropdownAttribute)
                         {
-                            Drawers.Add(new DropdownDrawer(iattributes[i]));
+                            Painters.Add(new DropdownPainter(iattributes[i]));
                         }
                         else if (iattributes[i] is LayerAttribute)
                         {
-                            Drawers.Add(new LayerDrawer(iattributes[i]));
+                            Painters.Add(new LayerPainter(iattributes[i]));
                         }
                         else if (iattributes[i] is ReorderableListAttribute)
                         {
-                            Drawers.Add(new ReorderableList(iattributes[i]));
+                            Painters.Add(new ReorderableListPainter(iattributes[i]));
                         }
                         else if (iattributes[i] is PasswordAttribute)
                         {
-                            Drawers.Add(new PasswordDrawer(iattributes[i]));
+                            Painters.Add(new PasswordPainter(iattributes[i]));
                         }
                         else if (iattributes[i] is HyperlinkAttribute)
                         {
-                            Drawers.Add(new HyperlinkDrawer(iattributes[i]));
+                            Painters.Add(new HyperlinkPainter(iattributes[i]));
                         }
                         else if (iattributes[i] is FilePathAttribute)
                         {
-                            Drawers.Add(new FilePathDrawer(iattributes[i]));
+                            Painters.Add(new FilePathPainter(iattributes[i]));
                         }
                         else if (iattributes[i] is FolderPathAttribute)
                         {
-                            Drawers.Add(new FolderPathDrawer(iattributes[i]));
+                            Painters.Add(new FolderPathPainter(iattributes[i]));
                         }
                         else if (iattributes[i] is EnableAttribute)
                         {
@@ -252,6 +283,11 @@ namespace HT.Framework
                         {
                             IsReadOnly = true;
                         }
+                        else if (iattributes[i] is DrawerAttribute)
+                        {
+                            Drawer = iattributes[i] as DrawerAttribute;
+                            DrawerValue = Drawer.DefaultOpened;
+                        }
                     }
 
                     SceneHandlerAttribute[] sattributes = (SceneHandlerAttribute[])Field.GetCustomAttributes(typeof(SceneHandlerAttribute), true);
@@ -281,17 +317,17 @@ namespace HT.Framework
                 }
             }
 
-            public void Draw(ObjectInspector inspector)
+            public void Painting(ObjectInspector inspector)
             {
                 if (IsDisplay)
                 {
                     GUI.color = UseColor;
-                    if (Drawers.Count > 0)
+                    if (Painters.Count > 0)
                     {
                         GUI.enabled = IsEnable;
-                        for (int i = 0; i < Drawers.Count; i++)
+                        for (int i = 0; i < Painters.Count; i++)
                         {
-                            Drawers[i].Draw(inspector, this);
+                            Painters[i].Painting(inspector, this);
                         }
                         GUI.enabled = true;
                     }
@@ -331,30 +367,30 @@ namespace HT.Framework
         /// <summary>
         /// 字段绘制器
         /// </summary>
-        private abstract class FieldDrawer
+        private abstract class FieldPainter
         {
             public InspectorAttribute IAttribute;
 
-            public FieldDrawer(InspectorAttribute attribute)
+            public FieldPainter(InspectorAttribute attribute)
             {
                 IAttribute = attribute;
             }
 
-            public abstract void Draw(ObjectInspector inspector, FieldInspector fieldInspector);
+            public abstract void Painting(ObjectInspector inspector, FieldInspector fieldInspector);
         }
         /// <summary>
         /// 字段绘制器 - 下拉菜单
         /// </summary>
-        private sealed class DropdownDrawer : FieldDrawer
+        private sealed class DropdownPainter : FieldPainter
         {
             public DropdownAttribute DAttribute;
 
-            public DropdownDrawer(InspectorAttribute attribute) : base(attribute)
+            public DropdownPainter(InspectorAttribute attribute) : base(attribute)
             {
                 DAttribute = attribute as DropdownAttribute;
             }
 
-            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
             {
                 if (DAttribute.ValueType == fieldInspector.Field.FieldType)
                 {
@@ -384,16 +420,16 @@ namespace HT.Framework
         /// <summary>
         /// 字段绘制器 - 层级检视
         /// </summary>
-        private sealed class LayerDrawer : FieldDrawer
+        private sealed class LayerPainter : FieldPainter
         {
             public LayerAttribute LAttribute;
 
-            public LayerDrawer(InspectorAttribute attribute) : base(attribute)
+            public LayerPainter(InspectorAttribute attribute) : base(attribute)
             {
                 LAttribute = attribute as LayerAttribute;
             }
 
-            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
             {
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
@@ -441,17 +477,17 @@ namespace HT.Framework
         /// <summary>
         /// 字段绘制器 - 可排序列表
         /// </summary>
-        private sealed class ReorderableList : FieldDrawer
+        private sealed class ReorderableListPainter : FieldPainter
         {
             public ReorderableListAttribute RAttribute;
             public UReorderableList List;
 
-            public ReorderableList(InspectorAttribute attribute) : base(attribute)
+            public ReorderableListPainter(InspectorAttribute attribute) : base(attribute)
             {
                 RAttribute = attribute as ReorderableListAttribute;
             }
 
-            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
             {
                 if (fieldInspector.Property.isArray)
                 {
@@ -505,16 +541,16 @@ namespace HT.Framework
         /// <summary>
         /// 字段绘制器 - 密码
         /// </summary>
-        private sealed class PasswordDrawer : FieldDrawer
+        private sealed class PasswordPainter : FieldPainter
         {
             public PasswordAttribute PAttribute;
 
-            public PasswordDrawer(InspectorAttribute attribute) : base(attribute)
+            public PasswordPainter(InspectorAttribute attribute) : base(attribute)
             {
                 PAttribute = attribute as PasswordAttribute;
             }
 
-            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
             {
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
@@ -543,13 +579,13 @@ namespace HT.Framework
         /// <summary>
         /// 字段绘制器 - 超链接
         /// </summary>
-        private sealed class HyperlinkDrawer : FieldDrawer
+        private sealed class HyperlinkPainter : FieldPainter
         {
             public HyperlinkAttribute HAttribute;
             public MethodInfo LinkLabel;
             public object[] Parameter;
 
-            public HyperlinkDrawer(InspectorAttribute attribute) : base(attribute)
+            public HyperlinkPainter(InspectorAttribute attribute) : base(attribute)
             {
                 HAttribute = attribute as HyperlinkAttribute;
                 MethodInfo[] methods = typeof(EditorGUILayout).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
@@ -568,7 +604,7 @@ namespace HT.Framework
                 Parameter = new object[] { HAttribute.Name, new GUILayoutOption[0] };
             }
 
-            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
             {
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
@@ -591,18 +627,18 @@ namespace HT.Framework
         /// <summary>
         /// 字段绘制器 - 文件路径
         /// </summary>
-        private sealed class FilePathDrawer : FieldDrawer
+        private sealed class FilePathPainter : FieldPainter
         {
             public FilePathAttribute FAttribute;
             public GUIContent OpenGC;
 
-            public FilePathDrawer(InspectorAttribute attribute) : base(attribute)
+            public FilePathPainter(InspectorAttribute attribute) : base(attribute)
             {
                 FAttribute = attribute as FilePathAttribute;
                 OpenGC = EditorGUIUtility.IconContent("Folder Icon");
             }
 
-            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
             {
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
@@ -641,18 +677,18 @@ namespace HT.Framework
         /// <summary>
         /// 字段绘制器 - 文件夹路径
         /// </summary>
-        private sealed class FolderPathDrawer : FieldDrawer
+        private sealed class FolderPathPainter : FieldPainter
         {
             public FolderPathAttribute FAttribute;
             public GUIContent OpenGC;
 
-            public FolderPathDrawer(InspectorAttribute attribute) : base(attribute)
+            public FolderPathPainter(InspectorAttribute attribute) : base(attribute)
             {
                 FAttribute = attribute as FolderPathAttribute;
                 OpenGC = EditorGUIUtility.IconContent("Folder Icon");
             }
 
-            public override void Draw(ObjectInspector inspector, FieldInspector fieldInspector)
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
             {
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
@@ -1078,7 +1114,7 @@ namespace HT.Framework
                 IsFoldout = true;
             }
 
-            public void Draw(ObjectInspector inspector)
+            public void Painting(ObjectInspector inspector)
             {
                 MulticastDelegate multicast = Field.GetValue(inspector.target) as MulticastDelegate;
                 Delegate[] delegates = multicast != null ? multicast.GetInvocationList() : null;
@@ -1119,7 +1155,7 @@ namespace HT.Framework
                 Name = string.IsNullOrEmpty(Attribute.Text) ? Method.Name : Attribute.Text;
             }
 
-            public void Draw(ObjectInspector inspector)
+            public void Painting(ObjectInspector inspector)
             {
                 GUI.enabled = Attribute.Mode == ButtonAttribute.EnableMode.Always
                 || (Attribute.Mode == ButtonAttribute.EnableMode.Editor && !EditorApplication.isPlaying)
