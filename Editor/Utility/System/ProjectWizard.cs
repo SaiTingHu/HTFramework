@@ -12,7 +12,7 @@ namespace HT.Framework
         private Folder _mainSceneFolder;
         private Folder _procedureFolder;
         private string _mainSceneName = "Main";
-        private bool _isCreateInitialProcedure = true;
+        private bool _isCreateInitialProcedure = false;
         private string _initialProcedure = "InitialProcedure";
         private Vector2 _scrollFolderGUI;
 
@@ -83,7 +83,7 @@ namespace HT.Framework
             folder.IsCreateGuide = GUILayout.Toggle(folder.IsCreateGuide, "Guide");
             if (folder.IsCreateGuide)
             {
-                folder.GuideContent = EditorGUILayout.TextField(folder.GuideContent, GUILayout.Width(120));
+                folder.GuideContent = EditorGUILayout.TextField(folder.GuideContent, GUILayout.Width(200));
             }
             GUI.color = Color.white;
             GUILayout.FlexibleSpace();
@@ -198,7 +198,7 @@ namespace HT.Framework
             }
             else
             {
-                folder.SetGuide(true, "Hold " + folder.Name);
+                folder.SetGuide(true, string.Format("Put the {0} in this folder", folder.Name));
             }
         }
         private void Generate()
