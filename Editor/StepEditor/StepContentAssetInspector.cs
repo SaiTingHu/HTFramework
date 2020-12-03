@@ -96,7 +96,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Import Step From Other"))
+            if (GUILayout.Button("Import Step From Other", EditorGlobalTools.Styles.ButtonLeft))
             {
                 string path = EditorUtility.OpenFilePanel("Import Step From Other", Application.dataPath, "asset");
                 if (path != "")
@@ -115,6 +115,18 @@ namespace HT.Framework
                     }
                 }
             }
+            GUI.enabled = Target.Content.Count > 0;
+            GUI.backgroundColor = Color.red;
+            if (GUILayout.Button("Clear Step", EditorGlobalTools.Styles.ButtonRight))
+            {
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to clear all step? It is not allow regrets!", "Yes", "No"))
+                {
+                    Target.Content.Clear();
+                    HasChanged();
+                }
+            }
+            GUI.backgroundColor = Color.white;
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             _scroll = GUILayout.BeginScrollView(_scroll);
