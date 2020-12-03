@@ -14,7 +14,7 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     /// </summary>
     public override void OnInit()
     {
-
+		base.OnInit();
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     /// </summary>
     public override void OnEnter()
     {
-        
+        base.OnEnter();
     }
     
     /// <summary>
@@ -30,7 +30,7 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     /// </summary>
     public override void OnLeave()
     {
-        
+        base.OnLeave();
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     /// </summary>
     public override void OnUpdate()
     {
-        
+        base.OnUpdate();
     }
 
     /// <summary>
@@ -46,6 +46,6 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     /// </summary>
     public override void OnUpdateSecond()
     {
-        
+        base.OnUpdateSecond();
     }
 }

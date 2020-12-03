@@ -14,15 +14,5 @@ namespace HT.Framework
         [SerializeField] public List<StepContent> Content = new List<StepContent>();
         [SerializeField] internal int StepIDSign = 1;
         [SerializeField] internal string StepIDName = "Step";
-
-        public override void Fill(JsonData data)
-        {
-
-        }
-
-        public override JsonData Pack()
-        {
-            return null;
-        }
     }
 }

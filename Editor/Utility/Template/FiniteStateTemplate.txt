@@ -14,7 +14,7 @@ public class #SCRIPTNAME# : FiniteStateBase
 	/// </summary>
     public override void OnInit()
     {
-
+        base.OnInit();
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public class #SCRIPTNAME# : FiniteStateBase
     /// <param name="lastState">上一个离开的状态</param>
     public override void OnEnter(FiniteStateBase lastState)
     {
-        
+        base.OnEnter(lastState);
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public class #SCRIPTNAME# : FiniteStateBase
     /// <param name="nextState">下一个进入的状态</param>
     public override void OnLeave(FiniteStateBase nextState)
     {
-        
+        base.OnLeave(nextState);
     }
 
 	/// <summary>
@@ -40,7 +40,7 @@ public class #SCRIPTNAME# : FiniteStateBase
 	/// </summary>
     public override void OnReason()
     {
-       
+        base.OnReason();
     }
 
 	/// <summary>
@@ -48,7 +48,7 @@ public class #SCRIPTNAME# : FiniteStateBase
 	/// </summary>
     public override void OnUpdate()
     {
-
+        base.OnUpdate();
     }
 
 	/// <summary>
@@ -56,6 +56,6 @@ public class #SCRIPTNAME# : FiniteStateBase
 	/// </summary>
     public override void OnTermination()
     {
-       
+        base.OnTermination();
     }
 }

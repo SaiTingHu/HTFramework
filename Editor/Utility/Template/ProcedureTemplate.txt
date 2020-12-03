@@ -13,7 +13,7 @@ public class #SCRIPTNAME# : ProcedureBase
     /// </summary>
     public override void OnInit()
     {
-
+		base.OnInit();
     }
 
     /// <summary>
@@ -22,7 +22,7 @@ public class #SCRIPTNAME# : ProcedureBase
     /// <param name="lastProcedure">上一个离开的流程</param>
     public override void OnEnter(ProcedureBase lastProcedure)
     {
-        
+        base.OnEnter(lastProcedure);
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public class #SCRIPTNAME# : ProcedureBase
     /// <param name="nextProcedure">下一个进入的流程</param>
     public override void OnLeave(ProcedureBase nextProcedure)
     {
-        
+        base.OnLeave(nextProcedure);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public class #SCRIPTNAME# : ProcedureBase
     /// </summary>
     public override void OnUpdate()
     {
-        
+        base.OnUpdate();
     }
 
     /// <summary>
@@ -47,6 +47,6 @@ public class #SCRIPTNAME# : ProcedureBase
     /// </summary>
     public override void OnUpdateSecond()
     {
-        
+        base.OnUpdateSecond();
     }
 }
