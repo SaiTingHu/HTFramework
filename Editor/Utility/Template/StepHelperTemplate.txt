@@ -21,6 +21,14 @@ public class #SCRIPTNAME# : StepHelper
     }
 
 	/// <summary>
+	/// 初始化
+	/// </summary>
+    public override void OnInit()
+    {
+        base.OnInit();
+    }
+
+	/// <summary>
 	/// 跳过步骤（仅在跳过时执行）
 	/// </summary>
     public override void OnSkip()
@@ -42,14 +50,6 @@ public class #SCRIPTNAME# : StepHelper
     public override void OnGuide()
     {
 	    base.OnGuide();
-    }
-
-	/// <summary>
-	/// 初始化
-	/// </summary>
-    public override void OnInit()
-    {
-        base.OnInit();
     }
 
 	/// <summary>

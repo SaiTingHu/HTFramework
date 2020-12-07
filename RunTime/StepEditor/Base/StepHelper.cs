@@ -11,32 +11,31 @@ namespace HT.Framework
         /// <summary>
         /// 步骤内容
         /// </summary>
-        public StepContent Content;
+        public StepContent Content { get; internal set; }
         /// <summary>
         /// 步骤目标
         /// </summary>
-        public StepTarget Target;
+        public StepTarget Target { get; internal set; }
         /// <summary>
         /// 助手当前执行的任务类型
         /// </summary>
-        public StepHelperTask Task;
+        public StepHelperTask Task { get; internal set; }
         /// <summary>
         /// 步骤的参数
         /// </summary>
-        public List<StepParameter> Parameters = null;
+        public List<StepParameter> Parameters { get; internal set; } = null;
         /// <summary>
         /// 步骤辅助目标
         /// </summary>
-        public HashSet<GameObject> AuxiliaryTarget = new HashSet<GameObject>();
+        public HashSet<GameObject> AuxiliaryTarget { get; private set; } = new HashSet<GameObject>();
         /// <summary>
         /// 是否启用帧刷新
         /// </summary>
-        public bool IsEnableUpdate = true;
+        public bool IsEnableUpdate { get; set; } = true;
         /// <summary>
         /// 是否允许跳过
         /// </summary>
-        public bool IsAllowSkip = true;
-
+        public bool IsAllowSkip { get; set; } = true;
         /// <summary>
         /// 跳过时生命周期（仅在跳过时生效）
         /// </summary>
@@ -49,13 +48,19 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 初始化
+        /// </summary>
+        public virtual void OnInit()
+        {
+
+        }
+        /// <summary>
         /// 跳过步骤（仅在跳过时执行）
         /// </summary>
         public virtual void OnSkip()
         {
 
         }
-
         /// <summary>
         /// 恢复步骤（仅在倒退时执行）
         /// </summary>
@@ -63,7 +68,6 @@ namespace HT.Framework
         {
 
         }
-
         /// <summary>
         /// 步骤指引（由步骤控制者呼叫）
         /// </summary>
@@ -71,15 +75,6 @@ namespace HT.Framework
         {
 
         }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        public virtual void OnInit()
-        {
-
-        }
-
         /// <summary>
         /// 帧刷新（仅在步骤执行前生效）
         /// </summary>
@@ -87,7 +82,6 @@ namespace HT.Framework
         {
 
         }
-
         /// <summary>
         /// 销毁
         /// </summary>
@@ -95,7 +89,6 @@ namespace HT.Framework
         {
 
         }
-
         /// <summary>
         /// 步骤执行
         /// </summary>
