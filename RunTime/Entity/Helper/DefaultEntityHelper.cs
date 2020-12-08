@@ -168,7 +168,6 @@ namespace HT.Framework
 
                         loadingAction?.Invoke(1);
                         loadDoneAction?.Invoke(entityLogic);
-                        Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
                         return null;
                     }
                     else
@@ -179,7 +178,6 @@ namespace HT.Framework
 
                             loadingAction?.Invoke(1);
                             loadDoneAction?.Invoke(entityLogic);
-                            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
                             return null;
                         }
                         else
@@ -189,7 +187,6 @@ namespace HT.Framework
                                 EntityLogicBase entityLogic = GenerateEntity(type, obj, entityName == "<None>" ? type.Name : entityName);
 
                                 loadDoneAction?.Invoke(entityLogic);
-                                Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
                             });
                         }
                     }
@@ -340,6 +337,7 @@ namespace HT.Framework
             entityLogic.Entity.SetActive(true);
             entityLogic.OnInit();
             entityLogic.OnShow();
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
             return entityLogic;
         }
         //回收实体

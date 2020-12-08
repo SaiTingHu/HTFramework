@@ -67,6 +67,7 @@ namespace HT.Framework
         /// <param name="args">可选参数</param>
         public virtual void OnOpen(params object[] args)
         {
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventUIOpened>().Fill(this));
         }
 
         /// <summary>
@@ -74,6 +75,7 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnClose()
         {
+            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventUIClosed>().Fill(this));
         }
 
         /// <summary>
