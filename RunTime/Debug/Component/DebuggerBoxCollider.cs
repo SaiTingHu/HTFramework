@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(BoxCollider))]
-    public sealed class DebuggerBoxCollider : DebuggerComponentBase
+    internal sealed class DebuggerBoxCollider : DebuggerComponentBase
     {
         private BoxCollider _target;
         

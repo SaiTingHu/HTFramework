@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Text))]
-    public sealed class DebuggerText : DebuggerComponentBase
+    internal sealed class DebuggerText : DebuggerComponentBase
     {
         private Text _target;
 

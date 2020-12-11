@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(MeshFilter))]
-    public sealed class DebuggerMeshFilter : DebuggerComponentBase
+    internal sealed class DebuggerMeshFilter : DebuggerComponentBase
     {
         private MeshFilter _target;
         private string _vertexCount;

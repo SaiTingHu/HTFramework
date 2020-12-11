@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(SkinnedMeshRenderer))]
-    public sealed class DebuggerSkinnedMeshRenderer : DebuggerComponentBase
+    internal sealed class DebuggerSkinnedMeshRenderer : DebuggerComponentBase
     {
         private SkinnedMeshRenderer _target;
 

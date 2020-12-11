@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Light))]
-    public sealed class DebuggerLight : DebuggerComponentBase
+    internal sealed class DebuggerLight : DebuggerComponentBase
     {
         private Light _target;
 

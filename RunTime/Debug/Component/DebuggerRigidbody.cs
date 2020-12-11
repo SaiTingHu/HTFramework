@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Rigidbody))]
-    public sealed class DebuggerRigidbody : DebuggerComponentBase
+    internal sealed class DebuggerRigidbody : DebuggerComponentBase
     {
         private Rigidbody _target;
 

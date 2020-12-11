@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Image))]
-    public sealed class DebuggerImage : DebuggerComponentBase
+    internal sealed class DebuggerImage : DebuggerComponentBase
     {
         private Image _target;
 

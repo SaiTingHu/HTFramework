@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(AudioSource))]
-    public sealed class DebuggerAudioSource : DebuggerComponentBase
+    internal sealed class DebuggerAudioSource : DebuggerComponentBase
     {
         private AudioSource _target;
 

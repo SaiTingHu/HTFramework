@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(InputField))]
-    public sealed class DebuggerInputField : DebuggerComponentBase
+    internal sealed class DebuggerInputField : DebuggerComponentBase
     {
         private InputField _target;
 

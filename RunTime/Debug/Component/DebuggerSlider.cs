@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Slider))]
-    public sealed class DebuggerSlider : DebuggerComponentBase
+    internal sealed class DebuggerSlider : DebuggerComponentBase
     {
         private Slider _target;
 

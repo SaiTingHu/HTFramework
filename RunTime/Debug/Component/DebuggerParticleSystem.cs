@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(ParticleSystem))]
-    public sealed class DebuggerParticleSystem : DebuggerComponentBase
+    internal sealed class DebuggerParticleSystem : DebuggerComponentBase
     {
         private ParticleSystem _target;
         private ParticleSystem.MainModule _mainModule;

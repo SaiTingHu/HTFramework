@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(SphereCollider))]
-    public sealed class DebuggerSphereCollider : DebuggerComponentBase
+    internal sealed class DebuggerSphereCollider : DebuggerComponentBase
     {
         private SphereCollider _target;
 

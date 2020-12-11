@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Toggle))]
-    public sealed class DebuggerToggle : DebuggerComponentBase
+    internal sealed class DebuggerToggle : DebuggerComponentBase
     {
         private Toggle _target;
         private int _onValueChangedEventCount;

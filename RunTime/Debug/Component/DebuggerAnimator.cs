@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Animator))]
-    public sealed class DebuggerAnimator : DebuggerComponentBase
+    internal sealed class DebuggerAnimator : DebuggerComponentBase
     {
         private Animator _target;
 

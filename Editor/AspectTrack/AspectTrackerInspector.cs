@@ -57,6 +57,13 @@ namespace HT.Framework
                 GUILayout.Label(condition.Key);
                 GUILayout.EndHorizontal();
             }
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Clear Conditions"))
+            {
+                Target.InterceptConditions.Clear();
+            }
+            GUILayout.EndHorizontal();
         }
     }
 }

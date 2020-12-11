@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(TextMesh))]
-    public sealed class DebuggerTextMesh : DebuggerComponentBase
+    internal sealed class DebuggerTextMesh : DebuggerComponentBase
     {
         private TextMesh _target;
 

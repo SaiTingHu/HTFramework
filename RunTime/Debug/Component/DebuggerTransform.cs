@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Transform))]
-    public sealed class DebuggerTransform : DebuggerComponentBase
+    internal sealed class DebuggerTransform : DebuggerComponentBase
     {
         private Transform _target;
         private int _childCount;

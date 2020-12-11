@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(RectTransform))]
-    public sealed class DebuggerRectTransform : DebuggerComponentBase
+    internal sealed class DebuggerRectTransform : DebuggerComponentBase
     {
         private RectTransform _target;
 

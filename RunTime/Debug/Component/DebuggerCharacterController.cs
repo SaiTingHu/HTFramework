@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(CharacterController))]
-    public sealed class DebuggerCharacterController : DebuggerComponentBase
+    internal sealed class DebuggerCharacterController : DebuggerComponentBase
     {
         private CharacterController _target;
 

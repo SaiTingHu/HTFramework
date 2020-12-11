@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Button))]
-    public sealed class DebuggerButton : DebuggerComponentBase
+    internal sealed class DebuggerButton : DebuggerComponentBase
     {
         private Button _target;
         private int _onClickEventCount;

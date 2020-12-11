@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Camera))]
-    public sealed class DebuggerCamera : DebuggerComponentBase
+    internal sealed class DebuggerCamera : DebuggerComponentBase
     {
         private Camera _target;
 
