@@ -244,7 +244,10 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IAudioHelper;
-            _helper.SingleSoundEndOfPlayEvent += SingleSoundEndOfPlayEvent;
+            _helper.SingleSoundEndOfPlayEvent += (value) =>
+            {
+                SingleSoundEndOfPlayEvent?.Invoke(value);
+            };
 
             Mute = MuteDefault;
             BackgroundPriority = BackgroundPriorityDefault;
