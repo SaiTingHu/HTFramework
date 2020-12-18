@@ -318,7 +318,7 @@ namespace HT.Framework
                 if (!SingleSource.isPlaying)
                 {
                     _singlePlayDetector = false;
-                    SingleSoundEndOfPlayEvent?.Invoke(SingleSource.clip.name);
+                    SingleSoundEndOfPlayEvent?.Invoke(SingleSource.clip != null ? SingleSource.clip.name : null);
                 }
             }
         }
