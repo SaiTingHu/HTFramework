@@ -8,7 +8,7 @@ namespace HT.Framework
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIDragObject")]
     [DisallowMultipleComponent]
-    public sealed class UIDragObject : HTBehaviour, IPointerDownHandler, IPointerUpHandler
+    public sealed class UIDragObject : HTBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         /// <summary>
         /// 被拖动目标
@@ -54,8 +54,8 @@ namespace HT.Framework
         private Transform _transform;
         private RectTransform _rectTransform;
         private bool _isDrag = false;
-        private Vector3 _lastPos;
-        private HTFAction Draging;
+        private Vector3 _delta;
+        private HTFAction _draging;
 
         protected override void Awake()
         {
@@ -67,22 +67,31 @@ namespace HT.Framework
             switch (Mode)
             {
                 case UIType.Overlay:
-                    Draging = OverlayDraging;
+                    _draging = OverlayDraging;
                     break;
                 case UIType.Camera:
                 case UIType.World:
-                    Draging = WorldDraging;
+                    _draging = WorldDraging;
                     break;
             }
         }
-
-        public void OnPointerDown(PointerEventData eventData)
+        
+        public void OnPointerUp(PointerEventData eventData)
         {
-            _isDrag = true;
-            _lastPos = Main.m_Input.MousePosition;
+            _isDrag = false;
         }
 
-        public void OnPointerUp(PointerEventData eventData)
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            _isDrag = true;
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            _delta = eventData.delta;
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
         {
             _isDrag = false;
         }
@@ -91,28 +100,26 @@ namespace HT.Framework
         {
             if (_isDrag)
             {
-                Draging();
+                _draging();
             }
         }
 
         private void WorldDraging()
         {
-            Vector2 direction = Main.m_Input.MousePosition - _lastPos;
-            if (!Horizontal) direction.x = 0;
-            if (!Vertical) direction.y = 0;
-            _rectTransform.anchoredPosition += direction;
+            if (!Horizontal) _delta.x = 0;
+            if (!Vertical) _delta.y = 0;
+            _rectTransform.anchoredPosition3D += _delta;
+            _delta = Vector3.zero;
             WorldLimitPos();
-            _lastPos = Main.m_Input.MousePosition;
         }
 
         private void OverlayDraging()
         {
-            Vector3 direction = Main.m_Input.MousePosition - _lastPos;
-            if (!Horizontal) direction.x = 0;
-            if (!Vertical) direction.y = 0;
-            _transform.position += direction;
+            if (!Horizontal) _delta.x = 0;
+            if (!Vertical) _delta.y = 0;
+            _transform.position += _delta;
+            _delta = Vector3.zero;
             OverlayLimitPos();
-            _lastPos = Main.m_Input.MousePosition;
         }
 
         private void WorldLimitPos()
