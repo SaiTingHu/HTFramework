@@ -111,7 +111,7 @@ namespace HT.Framework
         {
             LoadMode = loadMode;
             IsEditorMode = isEditorMode;
-            AssetBundleRootPath = Application.streamingAssetsPath + "/";
+            AssetBundleRootPath = Application.persistentDataPath + "/";
             AssetBundleManifestName = manifestName;
             _loadWait = new WaitUntil(() => { return !_isLoading; });
         }

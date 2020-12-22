@@ -1,32 +1,53 @@
+#region Header
+/**
+ * JsonException.cs
+ *   Base class throwed by LitJSON when a parsing error occurs.
+ *
+ * The authors disclaim copyright to this source code. For more details, see
+ * the COPYING file included with this distribution.
+ **/
+#endregion
+
+
 using System;
+
 
 namespace HT.Framework
 {
-    public class JsonException : ApplicationException
+    public class JsonException :
+#if NETSTANDARD1_5
+        Exception
+#else
+        ApplicationException
+#endif
     {
         public JsonException () : base ()
         {
         }
 
         internal JsonException (ParserToken token) :
-            base (string.Format ("输入字符串中包含无效的令牌 '{0}' ！", token))
+            base (String.Format (
+                    "Invalid token '{0}' in input string", token))
         {
         }
 
         internal JsonException (ParserToken token,
                                 Exception inner_exception) :
-            base (string.Format("输入字符串中包含无效的令牌 '{0}' ！", token),
+            base (String.Format (
+                    "Invalid token '{0}' in input string", token),
                 inner_exception)
         {
         }
 
         internal JsonException (int c) :
-            base (string.Format ("输入字符串中包含无效的字符 '{0}' ！", (char) c))
+            base (String.Format (
+                    "Invalid character '{0}' in input string", (char) c))
         {
         }
 
         internal JsonException (int c, Exception inner_exception) :
-            base (string.Format ("输入字符串中包含无效的字符 '{0}' ！", (char) c),
+            base (String.Format (
+                    "Invalid character '{0}' in input string", (char) c),
                 inner_exception)
         {
         }

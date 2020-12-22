@@ -28,7 +28,7 @@ namespace HT.Framework
             if (json == null)
             {
                 Log.Error("Json数据为空！");
-                return "";
+                return null;
             }
             return json.ToJson();
         }
@@ -985,36 +985,6 @@ namespace HT.Framework
             stream.Close();
 
             return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
-        }
-        #endregion
-
-        #region 日志工具
-        /// <summary>
-        /// 打印普通日志
-        /// </summary>
-        /// <param name="value">日志</param>
-        [Obsolete("Use 'Log.Info(string)' instead. It will be removed in the future.")]
-        public static void LogInfo(string value)
-        {
-            value.Info();
-        }
-        /// <summary>
-        /// 打印警告日志
-        /// </summary>
-        /// <param name="value">日志</param>
-        [Obsolete("Use 'Log.Warning(string)' instead. It will be removed in the future.")]
-        public static void LogWarning(string value)
-        {
-            value.Warning();
-        }
-        /// <summary>
-        /// 打印错误日志
-        /// </summary>
-        /// <param name="value">日志</param>
-        [Obsolete("Use 'Log.Error(string)' instead. It will be removed in the future.")]
-        public static void LogError(string value)
-        {
-            value.Error();
         }
         #endregion
 

@@ -1,8 +1,20 @@
+#region Header
+/**
+ * JsonWriter.cs
+ *   Stream-like facility to output JSON text.
+ *
+ * The authors disclaim copyright to this source code. For more details, see
+ * the COPYING file included with this distribution.
+ **/
+#endregion
+
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+
 
 namespace HT.Framework
 {
@@ -27,7 +39,7 @@ namespace HT.Framework
     public class JsonWriter
     {
         #region Fields
-        private static NumberFormatInfo number_format;
+        private static readonly NumberFormatInfo number_format;
 
         private WriterContext        context;
         private Stack<WriterContext> ctx_stack;
@@ -38,6 +50,7 @@ namespace HT.Framework
         private StringBuilder        inst_string_builder;
         private bool                 pretty_print;
         private bool                 validate;
+        private bool                 lower_case_properties;
         private TextWriter           writer;
         #endregion
 
@@ -63,6 +76,11 @@ namespace HT.Framework
         public bool Validate {
             get { return validate; }
             set { validate = value; }
+        }
+
+        public bool LowerCaseProperties {
+            get { return lower_case_properties; }
+            set { lower_case_properties = value; }
         }
         #endregion
 
@@ -108,34 +126,41 @@ namespace HT.Framework
                 return;
 
             if (has_reached_end)
-                throw new JsonException("已经编写了完整的json符号！");
+                throw new JsonException (
+                    "A complete JSON symbol has already been written");
 
             switch (cond) {
             case Condition.InArray:
-                    if (!context.InArray)
-                        throw new JsonException("无法在此关闭数组！");
-                    break;
+                if (! context.InArray)
+                    throw new JsonException (
+                        "Can't close an array here");
+                break;
 
             case Condition.InObject:
-                    if (!context.InObject || context.ExpectingValue)
-                        throw new JsonException("无法关闭此处的对象！");
-                    break;
+                if (! context.InObject || context.ExpectingValue)
+                    throw new JsonException (
+                        "Can't close an object here");
+                break;
 
             case Condition.NotAProperty:
-                    if (context.InObject && !context.ExpectingValue)
-                        throw new JsonException("需要一个属性！");
-                    break;
+                if (context.InObject && ! context.ExpectingValue)
+                    throw new JsonException (
+                        "Expected a property");
+                break;
 
             case Condition.Property:
-                    if (!context.InObject || context.ExpectingValue)
-                        throw new JsonException("无法在此处添加属性！");
-                    break;
+                if (! context.InObject || context.ExpectingValue)
+                    throw new JsonException (
+                        "Can't add a property here");
+                break;
 
             case Condition.Value:
-                    if (!context.InArray &&
-                        (!context.InObject || !context.ExpectingValue))
-                        throw new JsonException("无法在此处添加值！");
-                    break;
+                if (! context.InArray &&
+                    (! context.InObject || ! context.ExpectingValue))
+                    throw new JsonException (
+                        "Can't add a value here");
+
+                break;
             }
         }
 
@@ -147,6 +172,7 @@ namespace HT.Framework
             indent_value = 4;
             pretty_print = false;
             validate = true;
+            lower_case_properties = false;
 
             ctx_stack = new Stack<WriterContext> ();
             context = new WriterContext ();
@@ -197,16 +223,16 @@ namespace HT.Framework
                 writer.Write (',');
 
             if (pretty_print && ! context.ExpectingValue)
-                writer.Write ('\n');
+                writer.Write (Environment.NewLine);
         }
 
         private void PutString (string str)
         {
-            Put (string.Empty);
+            Put (String.Empty);
 
             writer.Write ('"');
 
-            /*int n = str.Length;
+            int n = str.Length;
             for (int i = 0; i < n; i++) {
                 switch (str[i]) {
                 case '\n':
@@ -245,8 +271,7 @@ namespace HT.Framework
                 IntToHex ((int) str[i], hex_seq);
                 writer.Write ("\\u");
                 writer.Write (hex_seq);
-            }*/
-            writer.Write(str);
+            }
 
             writer.Write ('"');
         }
@@ -262,7 +287,7 @@ namespace HT.Framework
         public override string ToString ()
         {
             if (inst_string_builder == null)
-                return string.Empty;
+                return String.Empty;
 
             return inst_string_builder.ToString ();
         }
@@ -310,6 +335,17 @@ namespace HT.Framework
             if (str.IndexOf ('.') == -1 &&
                 str.IndexOf ('E') == -1)
                 writer.Write (".0");
+
+            context.ExpectingValue = false;
+        }
+
+        public void Write(float number)
+        {
+            DoValidation(Condition.Value);
+            PutNewline();
+
+            string str = Convert.ToString(number, number_format);
+            Put(str);
 
             context.ExpectingValue = false;
         }
@@ -423,14 +459,17 @@ namespace HT.Framework
         {
             DoValidation (Condition.Property);
             PutNewline ();
+            string propertyName = (property_name == null || !lower_case_properties)
+                ? property_name
+                : property_name.ToLowerInvariant();
 
-            PutString (property_name);
+            PutString (propertyName);
 
             if (pretty_print) {
-                if (property_name.Length > context.Padding)
-                    context.Padding = property_name.Length;
+                if (propertyName.Length > context.Padding)
+                    context.Padding = propertyName.Length;
 
-                for (int i = context.Padding - property_name.Length;
+                for (int i = context.Padding - propertyName.Length;
                      i >= 0; i--)
                     writer.Write (' ');
 

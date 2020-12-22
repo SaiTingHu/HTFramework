@@ -12,8 +12,13 @@ namespace HT.Framework
     /// </summary>
     public sealed class INIParser
     {
-        public int Error = 0;
+        /// <summary>
+        /// 配置文件完整路径
+        /// </summary>
         public string FileName { get; private set; } = null;
+        /// <summary>
+        /// 配置文件内容
+        /// </summary>
         public string IniString { get; private set; } = null;
 
         private object _lock = new object();
@@ -25,6 +30,10 @@ namespace HT.Framework
         /// <summary>
         /// 写入配置数据
         /// </summary>
+        /// <param name="section">配置单元</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        /// <param name="path">配置文件路径</param>
         public static void WriteIniData(string section, string key, string value, string path)
         {
             INIParser ini = new INIParser();
@@ -36,6 +45,11 @@ namespace HT.Framework
         /// <summary>
         /// 读取配置数据
         /// </summary>
+        /// <param name="section">配置单元</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultvalue">缺省值</param>
+        /// <param name="path">配置文件路径</param>
+        /// <returns>读取到的值</returns>
         public static string ReadIniData(string section, string key, string defaultvalue, string path)
         {
             INIParser ini = new INIParser();
@@ -45,6 +59,10 @@ namespace HT.Framework
             return value;
         }
 
+        /// <summary>
+        /// 打开配置文件
+        /// </summary>
+        /// <param name="path">配置文件路径</param>
         public void Open(string path)
         {
             FileName = path;
@@ -63,46 +81,46 @@ namespace HT.Framework
             Initialize(IniString, false);
         }
 
-        public void Open(TextAsset name)
+        /// <summary>
+        /// 打开配置文件
+        /// </summary>
+        /// <param name="file">配置文件</param>
+        public void Open(TextAsset file)
         {
-            if (name == null)
+            if (file == null)
             {
-                Error = 1;
                 IniString = "";
                 FileName = null;
                 Initialize(IniString, false);
             }
             else
             {
-                FileName = Application.persistentDataPath + name.name;
-
+                FileName = Application.persistentDataPath + "/" + file.name;
                 if (File.Exists(FileName))
                 {
                     IniString = File.ReadAllText(FileName);
                 }
-                else IniString = name.text;
+                else
+                {
+                    IniString = file.text;
+                }
                 Initialize(IniString, false);
             }
         }
 
+        /// <summary>
+        /// 打开配置文件，通过配置数据
+        /// </summary>
+        /// <param name="str">配置数据</param>
         public void OpenFromString(string str)
         {
             FileName = null;
             Initialize(str, false);
         }
 
-        public override string ToString()
-        {
-            return IniString;
-        }
-
-        private void Initialize(string iniString, bool AutoFlush)
-        {
-            IniString = iniString;
-            _autoFlush = AutoFlush;
-            Refresh();
-        }
-
+        /// <summary>
+        /// 关闭配置文件
+        /// </summary>
         public void Close()
         {
             lock (_lock)
@@ -114,35 +132,360 @@ namespace HT.Framework
             }
         }
 
-        private string ParseSectionName(string Line)
+        /// <summary>
+        /// 读取配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>值</returns>
+        public string ReadValue(string sectionName, string key, string defaultValue)
         {
-            if (!Line.StartsWith("[")) return null;
-            if (!Line.EndsWith("]")) return null;
-            if (Line.Length < 3) return null;
-            return Line.Substring(1, Line.Length - 2);
+            lock (_lock)
+            {
+                Dictionary<string, string> section;
+                if (!_sections.TryGetValue(sectionName, out section)) return defaultValue;
+
+                string value;
+                if (!section.TryGetValue(key, out value)) return defaultValue;
+
+                return value;
+            }
         }
 
-        private bool ParseKeyValuePair(string Line, ref string Key, ref string Value)
+        /// <summary>
+        /// 读取配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>值</returns>
+        public bool ReadValue(string sectionName, string key, bool defaultValue)
         {
-            int i;
-            if ((i = Line.IndexOf('=')) <= 0) return false;
+            string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
+            int Value;
+            if (int.TryParse(stringValue, out Value)) return (Value != 0);
+            return defaultValue;
+        }
 
-            int j = Line.Length - i - 1;
-            Key = Line.Substring(0, i).Trim();
-            if (Key.Length <= 0) return false;
+        /// <summary>
+        /// 读取配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>值</returns>
+        public int ReadValue(string sectionName, string key, int defaultValue)
+        {
+            string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
+            int Value;
+            if (int.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
+            return defaultValue;
+        }
 
-            Value = (j > 0) ? (Line.Substring(i + 1, j).Trim()) : ("");
+        /// <summary>
+        /// 读取配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>值</returns>
+        public long ReadValue(string sectionName, string key, long defaultValue)
+        {
+            string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
+            long Value;
+            if (long.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// 读取配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>值</returns>
+        public double ReadValue(string sectionName, string key, double defaultValue)
+        {
+            string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
+            double Value;
+            if (double.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// 读取配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>值</returns>
+        public byte[] ReadValue(string sectionName, string key, byte[] defaultValue)
+        {
+            string stringValue = ReadValue(sectionName, key, EncodeByteArray(defaultValue));
+            try
+            {
+                return DecodeByteArray(stringValue);
+            }
+            catch (FormatException)
+            {
+                return defaultValue;
+            }
+        }
+
+        /// <summary>
+        /// 读取配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="defaultValue">缺省值</param>
+        /// <returns>值</returns>
+        public DateTime ReadValue(string sectionName, string key, DateTime defaultValue)
+        {
+            string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
+            DateTime Value;
+            if (DateTime.TryParse(stringValue, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AssumeLocal, out Value)) return Value;
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// 写入配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void WriteValue(string sectionName, string key, string value)
+        {
+            lock (_lock)
+            {
+                _cacheModified = true;
+
+                Dictionary<string, string> section;
+                if (!_sections.TryGetValue(sectionName, out section))
+                {
+                    section = new Dictionary<string, string>();
+                    _sections.Add(sectionName, section);
+                }
+
+                if (section.ContainsKey(key)) section.Remove(key);
+                section.Add(key, value);
+
+                if (!_modified.TryGetValue(sectionName, out section))
+                {
+                    section = new Dictionary<string, string>();
+                    _modified.Add(sectionName, section);
+                }
+
+                if (section.ContainsKey(key)) section.Remove(key);
+                section.Add(key, value);
+
+                if (_autoFlush) PerformFlush();
+            }
+        }
+
+        /// <summary>
+        /// 写入配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void WriteValue(string sectionName, string key, bool value)
+        {
+            WriteValue(sectionName, key, (value) ? ("1") : ("0"));
+        }
+
+        /// <summary>
+        /// 写入配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void WriteValue(string sectionName, string key, int value)
+        {
+            WriteValue(sectionName, key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// 写入配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void WriteValue(string sectionName, string key, long value)
+        {
+            WriteValue(sectionName, key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// 写入配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void WriteValue(string sectionName, string key, double value)
+        {
+            WriteValue(sectionName, key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// 写入配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void WriteValue(string sectionName, string key, byte[] value)
+        {
+            WriteValue(sectionName, key, EncodeByteArray(value));
+        }
+
+        /// <summary>
+        /// 写入配置
+        /// </summary>
+        /// <param name="sectionName">配置单元名称</param>
+        /// <param name="key">键</param>
+        /// <param name="value">值</param>
+        public void WriteValue(string sectionName, string key, DateTime value)
+        {
+            WriteValue(sectionName, key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// 是否存在指定的数据单元名称
+        /// </summary>
+        /// <param name="sectionName">数据单元名称</param>
+        /// <returns>是否存在</returns>
+        public bool IsSectionExists(string sectionName)
+        {
+            return _sections.ContainsKey(sectionName);
+        }
+
+        /// <summary>
+        /// 是否存在指定的键名称
+        /// </summary>
+        /// <param name="sectionName">数据单元名称</param>
+        /// <param name="key">键名称</param>
+        /// <returns>是否存在</returns>
+        public bool IsKeyExists(string sectionName, string key)
+        {
+            Dictionary<string, string> Section;
+
+            if (_sections.ContainsKey(sectionName))
+            {
+                _sections.TryGetValue(sectionName, out Section);
+
+                return Section.ContainsKey(key);
+            }
+            else return false;
+        }
+
+        /// <summary>
+        /// 删除数据单元
+        /// </summary>
+        /// <param name="sectionName">数据单元名称</param>
+        public void SectionDelete(string sectionName)
+        {
+            if (IsSectionExists(sectionName))
+            {
+                lock (_lock)
+                {
+                    _cacheModified = true;
+                    _sections.Remove(sectionName);
+                    _modified.Remove(sectionName);
+                    if (_autoFlush) PerformFlush();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 删除键
+        /// </summary>
+        /// <param name="sectionName">数据单元名称</param>
+        /// <param name="key">键名称</param>
+        public void KeyDelete(string sectionName, string key)
+        {
+            Dictionary<string, string> section;
+
+            if (IsKeyExists(sectionName, key))
+            {
+                lock (_lock)
+                {
+                    _cacheModified = true;
+                    _sections.TryGetValue(sectionName, out section);
+                    section.Remove(key);
+
+                    if (_modified.TryGetValue(sectionName, out section)) section.Remove(sectionName);
+
+                    if (_autoFlush) PerformFlush();
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return IniString;
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="iniString">配置数据</param>
+        /// <param name="autoFlush">是否自动覆盖旧的</param>
+        private void Initialize(string iniString, bool autoFlush)
+        {
+            IniString = iniString;
+            _autoFlush = autoFlush;
+            Refresh();
+        }
+        
+        /// <summary>
+        /// 解析配置单元的名称
+        /// </summary>
+        /// <param name="line">数据行</param>
+        /// <returns>配置单元的名称</returns>
+        private string ParseSectionName(string line)
+        {
+            if (!line.StartsWith("[")) return null;
+            if (!line.EndsWith("]")) return null;
+            if (line.Length < 3) return null;
+            return line.Substring(1, line.Length - 2);
+        }
+
+        /// <summary>
+        /// 解析键值
+        /// </summary>
+        /// <param name="line">数据行</param>
+        /// <param name="key">输出键</param>
+        /// <param name="value">输出值</param>
+        /// <returns>是否解析成功</returns>
+        private bool ParseKeyValuePair(string line, ref string key, ref string value)
+        {
+            int i = line.IndexOf('=');
+            if (i <= 0) return false;
+
+            int j = line.Length - i - 1;
+            key = line.Substring(0, i).Trim();
+            if (key.Length <= 0) return false;
+
+            value = (j > 0) ? (line.Substring(i + 1, j).Trim()) : ("");
             return true;
         }
 
-        private bool IsComment(string Line)
+        /// <summary>
+        /// 是否是注释
+        /// </summary>
+        /// <param name="line">数据行</param>
+        /// <returns>是否是注释</returns>
+        private bool IsComment(string line)
         {
             string tmpKey = null, tmpValue = null;
-            if (ParseSectionName(Line) != null) return false;
-            if (ParseKeyValuePair(Line, ref tmpKey, ref tmpValue)) return false;
+            if (ParseSectionName(line) != null) return false;
+            if (ParseKeyValuePair(line, ref tmpKey, ref tmpValue)) return false;
             return true;
         }
 
+        /// <summary>
+        /// 刷新
+        /// </summary>
         private void Refresh()
         {
             lock (_lock)
@@ -155,35 +498,35 @@ namespace HT.Framework
 
                     sr = new StringReader(IniString);
 
-                    Dictionary<string, string> CurrentSection = null;
+                    Dictionary<string, string> currentSection = null;
                     string s;
-                    string SectionName;
-                    string Key = null;
-                    string Value = null;
+                    string sectionName;
+                    string key = null;
+                    string value = null;
                     while ((s = sr.ReadLine()) != null)
                     {
                         s = s.Trim();
 
-                        SectionName = ParseSectionName(s);
-                        if (SectionName != null)
+                        sectionName = ParseSectionName(s);
+                        if (sectionName != null)
                         {
-                            if (_sections.ContainsKey(SectionName))
+                            if (_sections.ContainsKey(sectionName))
                             {
-                                CurrentSection = null;
+                                currentSection = null;
                             }
                             else
                             {
-                                CurrentSection = new Dictionary<string, string>();
-                                _sections.Add(SectionName, CurrentSection);
+                                currentSection = new Dictionary<string, string>();
+                                _sections.Add(sectionName, currentSection);
                             }
                         }
-                        else if (CurrentSection != null)
+                        else if (currentSection != null)
                         {
-                            if (ParseKeyValuePair(s, ref Key, ref Value))
+                            if (ParseKeyValuePair(s, ref key, ref value))
                             {
-                                if (!CurrentSection.ContainsKey(Key))
+                                if (!currentSection.ContainsKey(key))
                                 {
-                                    CurrentSection.Add(Key, Value);
+                                    currentSection.Add(key, value);
                                 }
                             }
                         }
@@ -197,6 +540,9 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 执行配置数据覆盖
+        /// </summary>
         private void PerformFlush()
         {
             if (!_cacheModified) return;
@@ -206,48 +552,48 @@ namespace HT.Framework
 
             try
             {
-                Dictionary<string, string> CurrentSection = null;
-                Dictionary<string, string> CurrentSection2 = null;
+                Dictionary<string, string> currentSection = null;
+                Dictionary<string, string> currentSection2 = null;
                 StringReader sr = null;
                 try
                 {
                     sr = new StringReader(IniString);
 
                     string s;
-                    string SectionName;
-                    string Key = null;
-                    string Value = null;
-                    bool Unmodified;
-                    bool Reading = true;
+                    string sectionName;
+                    string key = null;
+                    string value = null;
+                    bool unmodified;
+                    bool reading = true;
 
-                    bool Deleted = false;
-                    string Key2 = null;
-                    string Value2 = null;
+                    bool deleted = false;
+                    string key2 = null;
+                    string value2 = null;
 
                     StringBuilder sb_temp;
 
-                    while (Reading)
+                    while (reading)
                     {
                         s = sr.ReadLine();
-                        Reading = (s != null);
+                        reading = (s != null);
 
-                        if (Reading)
+                        if (reading)
                         {
-                            Unmodified = true;
+                            unmodified = true;
                             s = s.Trim();
-                            SectionName = ParseSectionName(s);
+                            sectionName = ParseSectionName(s);
                         }
                         else
                         {
-                            Unmodified = false;
-                            SectionName = null;
+                            unmodified = false;
+                            sectionName = null;
                         }
 
-                        if ((SectionName != null) || (!Reading))
+                        if ((sectionName != null) || (!reading))
                         {
-                            if (CurrentSection != null)
+                            if (currentSection != null)
                             {
-                                if (CurrentSection.Count > 0)
+                                if (currentSection.Count > 0)
                                 {
                                     sb_temp = sw.GetStringBuilder();
                                     while ((sb_temp[sb_temp.Length - 1] == '\n') || (sb_temp[sb_temp.Length - 1] == '\r'))
@@ -256,75 +602,75 @@ namespace HT.Framework
                                     }
                                     sw.WriteLine();
 
-                                    foreach (string fkey in CurrentSection.Keys)
+                                    foreach (string fkey in currentSection.Keys)
                                     {
-                                        if (CurrentSection.TryGetValue(fkey, out Value))
+                                        if (currentSection.TryGetValue(fkey, out value))
                                         {
                                             sw.Write(fkey);
                                             sw.Write('=');
-                                            sw.WriteLine(Value);
+                                            sw.WriteLine(value);
                                         }
                                     }
                                     sw.WriteLine();
-                                    CurrentSection.Clear();
+                                    currentSection.Clear();
                                 }
                             }
 
-                            if (Reading)
+                            if (reading)
                             {
-                                if (!_modified.TryGetValue(SectionName, out CurrentSection))
+                                if (!_modified.TryGetValue(sectionName, out currentSection))
                                 {
-                                    CurrentSection = null;
+                                    currentSection = null;
                                 }
                             }
                         }
-                        else if (CurrentSection != null)
+                        else if (currentSection != null)
                         {
-                            if (ParseKeyValuePair(s, ref Key, ref Value))
+                            if (ParseKeyValuePair(s, ref key, ref value))
                             {
-                                if (CurrentSection.TryGetValue(Key, out Value))
+                                if (currentSection.TryGetValue(key, out value))
                                 {
-                                    Unmodified = false;
-                                    CurrentSection.Remove(Key);
+                                    unmodified = false;
+                                    currentSection.Remove(key);
 
-                                    sw.Write(Key);
+                                    sw.Write(key);
                                     sw.Write('=');
-                                    sw.WriteLine(Value);
+                                    sw.WriteLine(value);
                                 }
                             }
                         }
 
-                        if (Unmodified)
+                        if (unmodified)
                         {
-                            if (SectionName != null)
+                            if (sectionName != null)
                             {
-                                if (!_sections.ContainsKey(SectionName))
+                                if (!_sections.ContainsKey(sectionName))
                                 {
-                                    Deleted = true;
-                                    CurrentSection2 = null;
+                                    deleted = true;
+                                    currentSection2 = null;
                                 }
                                 else
                                 {
-                                    Deleted = false;
-                                    _sections.TryGetValue(SectionName, out CurrentSection2);
+                                    deleted = false;
+                                    _sections.TryGetValue(sectionName, out currentSection2);
                                 }
 
                             }
-                            else if (CurrentSection2 != null)
+                            else if (currentSection2 != null)
                             {
-                                if (ParseKeyValuePair(s, ref Key2, ref Value2))
+                                if (ParseKeyValuePair(s, ref key2, ref value2))
                                 {
-                                    if (!CurrentSection2.ContainsKey(Key2)) Deleted = true;
-                                    else Deleted = false;
+                                    if (!currentSection2.ContainsKey(key2)) deleted = true;
+                                    else deleted = false;
                                 }
                             }
                         }
 
 
-                        if (Unmodified)
+                        if (unmodified)
                         {
                             if (IsComment(s)) sw.WriteLine(s);
-                            else if (!Deleted) sw.WriteLine(s);
+                            else if (!deleted) sw.WriteLine(s);
                         }
                     }
 
@@ -339,8 +685,8 @@ namespace HT.Framework
 
                 foreach (KeyValuePair<string, Dictionary<string, string>> SectionPair in _modified)
                 {
-                    CurrentSection = SectionPair.Value;
-                    if (CurrentSection.Count > 0)
+                    currentSection = SectionPair.Value;
+                    if (currentSection.Count > 0)
                     {
                         sw.WriteLine();
 
@@ -348,13 +694,13 @@ namespace HT.Framework
                         sw.Write(SectionPair.Key);
                         sw.WriteLine(']');
 
-                        foreach (KeyValuePair<string, string> ValuePair in CurrentSection)
+                        foreach (KeyValuePair<string, string> ValuePair in currentSection)
                         {
                             sw.Write(ValuePair.Key);
                             sw.Write('=');
                             sw.WriteLine(ValuePair.Value);
                         }
-                        CurrentSection.Clear();
+                        currentSection.Clear();
                     }
                 }
                 _modified.Clear();
@@ -374,110 +720,18 @@ namespace HT.Framework
                 sw = null;
             }
         }
-
-        public bool IsSectionExists(string SectionName)
+        
+        /// <summary>
+        /// 编码字节数组
+        /// </summary>
+        /// <param name="value">字节数组</param>
+        /// <returns>值</returns>
+        private string EncodeByteArray(byte[] value)
         {
-            return _sections.ContainsKey(SectionName);
-        }
-
-        public bool IsKeyExists(string SectionName, string Key)
-        {
-            Dictionary<string, string> Section;
-
-            if (_sections.ContainsKey(SectionName))
-            {
-                _sections.TryGetValue(SectionName, out Section);
-
-                return Section.ContainsKey(Key);
-            }
-            else return false;
-        }
-
-        public void SectionDelete(string SectionName)
-        {
-            if (IsSectionExists(SectionName))
-            {
-                lock (_lock)
-                {
-                    _cacheModified = true;
-                    _sections.Remove(SectionName);
-
-                    _modified.Remove(SectionName);
-
-                    if (_autoFlush) PerformFlush();
-                }
-            }
-        }
-
-        public void KeyDelete(string SectionName, string Key)
-        {
-            Dictionary<string, string> Section;
-
-            if (IsKeyExists(SectionName, Key))
-            {
-                lock (_lock)
-                {
-                    _cacheModified = true;
-                    _sections.TryGetValue(SectionName, out Section);
-                    Section.Remove(Key);
-
-                    if (_modified.TryGetValue(SectionName, out Section)) Section.Remove(SectionName);
-
-                    if (_autoFlush) PerformFlush();
-                }
-            }
-
-        }
-
-        public string ReadValue(string SectionName, string Key, string DefaultValue)
-        {
-            lock (_lock)
-            {
-                Dictionary<string, string> Section;
-                if (!_sections.TryGetValue(SectionName, out Section)) return DefaultValue;
-
-                string Value;
-                if (!Section.TryGetValue(Key, out Value)) return DefaultValue;
-
-                return Value;
-            }
-        }
-
-        public void WriteValue(string SectionName, string Key, string Value)
-        {
-            lock (_lock)
-            {
-                _cacheModified = true;
-
-                Dictionary<string, string> Section;
-                if (!_sections.TryGetValue(SectionName, out Section))
-                {
-                    Section = new Dictionary<string, string>();
-                    _sections.Add(SectionName, Section);
-                }
-
-                if (Section.ContainsKey(Key)) Section.Remove(Key);
-                Section.Add(Key, Value);
-
-                if (!_modified.TryGetValue(SectionName, out Section))
-                {
-                    Section = new Dictionary<string, string>();
-                    _modified.Add(SectionName, Section);
-                }
-
-                if (Section.ContainsKey(Key)) Section.Remove(Key);
-                Section.Add(Key, Value);
-
-                if (_autoFlush) PerformFlush();
-            }
-        }
-
-        private string EncodeByteArray(byte[] Value)
-        {
-            if (Value == null) return null;
+            if (value == null) return null;
 
             StringBuilder sb = new StringBuilder();
-            foreach (byte b in Value)
+            foreach (byte b in value)
             {
                 string hex = Convert.ToString(b, 16);
                 int l = hex.Length;
@@ -494,100 +748,22 @@ namespace HT.Framework
             return sb.ToString();
         }
 
-        private byte[] DecodeByteArray(string Value)
+        /// <summary>
+        /// 解码字节数组
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns>字节数组</returns>
+        private byte[] DecodeByteArray(string value)
         {
-            if (Value == null) return null;
+            if (value == null) return null;
 
-            int l = Value.Length;
+            int l = value.Length;
             if (l < 2) return new byte[] { };
 
             l /= 2;
-            byte[] Result = new byte[l];
-            for (int i = 0; i < l; i++) Result[i] = Convert.ToByte(Value.Substring(i * 2, 2), 16);
-            return Result;
-        }
-
-        public bool ReadValue(string SectionName, string Key, bool DefaultValue)
-        {
-            string StringValue = ReadValue(SectionName, Key, DefaultValue.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            int Value;
-            if (int.TryParse(StringValue, out Value)) return (Value != 0);
-            return DefaultValue;
-        }
-
-        public int ReadValue(string SectionName, string Key, int DefaultValue)
-        {
-            string StringValue = ReadValue(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
-            int Value;
-            if (int.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
-            return DefaultValue;
-        }
-
-        public long ReadValue(string SectionName, string Key, long DefaultValue)
-        {
-            string StringValue = ReadValue(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
-            long Value;
-            if (long.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
-            return DefaultValue;
-        }
-
-        public double ReadValue(string SectionName, string Key, double DefaultValue)
-        {
-            string StringValue = ReadValue(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
-            double Value;
-            if (double.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
-            return DefaultValue;
-        }
-
-        public byte[] ReadValue(string SectionName, string Key, byte[] DefaultValue)
-        {
-            string StringValue = ReadValue(SectionName, Key, EncodeByteArray(DefaultValue));
-            try
-            {
-                return DecodeByteArray(StringValue);
-            }
-            catch (FormatException)
-            {
-                return DefaultValue;
-            }
-        }
-
-        public DateTime ReadValue(string SectionName, string Key, DateTime DefaultValue)
-        {
-            string StringValue = ReadValue(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
-            DateTime Value;
-            if (DateTime.TryParse(StringValue, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AssumeLocal, out Value)) return Value;
-            return DefaultValue;
-        }
-
-        public void WriteValue(string SectionName, string Key, bool Value)
-        {
-            WriteValue(SectionName, Key, (Value) ? ("1") : ("0"));
-        }
-
-        public void WriteValue(string SectionName, string Key, int Value)
-        {
-            WriteValue(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
-        }
-
-        public void WriteValue(string SectionName, string Key, long Value)
-        {
-            WriteValue(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
-        }
-
-        public void WriteValue(string SectionName, string Key, double Value)
-        {
-            WriteValue(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
-        }
-
-        public void WriteValue(string SectionName, string Key, byte[] Value)
-        {
-            WriteValue(SectionName, Key, EncodeByteArray(Value));
-        }
-
-        public void WriteValue(string SectionName, string Key, DateTime Value)
-        {
-            WriteValue(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
+            byte[] result = new byte[l];
+            for (int i = 0; i < l; i++) result[i] = Convert.ToByte(value.Substring(i * 2, 2), 16);
+            return result;
         }
     }
 }

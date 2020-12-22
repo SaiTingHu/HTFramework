@@ -98,20 +98,31 @@ namespace HT.Framework
         /// <summary>
         /// 方法被拦截
         /// </summary>
+        /// <param name="method">方法</param>
         protected virtual void OnIntercept(MethodBase method)
         { }
 
         /// <summary>
         /// 方法调用前
         /// </summary>
+        /// <param name="method">方法</param>
+        /// <param name="args">参数</param>
+        /// <returns>修正后的参数</returns>
         protected abstract object[] OnBeforeInvoke(MethodBase method, object[] args);
 
         /// <summary>
         /// 方法调用后
         /// </summary>
+        /// <param name="method">方法</param>
+        /// <param name="returnValue">返回值</param>
         protected abstract void OnAfterInvoke(MethodBase method, object returnValue);
 
-        //是否拦截
+        /// <summary>
+        /// 是否拦截
+        /// </summary>
+        /// <param name="methodBase">方法</param>
+        /// <param name="args">参数</param>
+        /// <returns>是否被拦截</returns>
         private bool IsIntercept(MethodBase methodBase, object[] args)
         {
             if (Main.m_AspectTrack.IsEnableIntercept)

@@ -1,8 +1,21 @@
+#region Header
+/**
+ * JsonData.cs
+ *   Generic type to hold JSON data (objects, arrays, and so on). This is
+ *   the default type returned by JsonMapper.ToObject().
+ *
+ * The authors disclaim copyright to this source code. For more details, see
+ * the COPYING file included with this distribution.
+ **/
+#endregion
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+
 
 namespace HT.Framework
 {
@@ -59,6 +72,16 @@ namespace HT.Framework
 
         public ICollection<string> Keys {
             get { EnsureDictionary (); return inst_object.Keys; }
+        }
+        
+        /// <summary>
+        /// Determines whether the json contains an element that has the specified key.
+        /// </summary>
+        /// <param name="key">The key to locate in the json.</param>
+        /// <returns>true if the json contains an element that has the specified key; otherwise, false.</returns>
+        public Boolean ContainsKey(String key) {
+            EnsureDictionary();
+            return this.inst_object.Keys.Contains(key);
         }
         #endregion
 
@@ -126,7 +149,8 @@ namespace HT.Framework
         }
         #endregion
 
-        
+
+
         #region IJsonWrapper Properties
         bool IJsonWrapper.IsArray {
             get { return IsArray; }
@@ -180,8 +204,9 @@ namespace HT.Framework
             }
 
             set {
-                if (!(key is string))
-                    throw new ArgumentException("键值必须是字符串类型！");
+                if (! (key is String))
+                    throw new ArgumentException (
+                        "The key has to be a string");
 
                 JsonData data = ToJsonData (value);
 
@@ -321,37 +346,38 @@ namespace HT.Framework
 
         public JsonData (object obj)
         {
-            if (obj is bool) {
+            if (obj is Boolean) {
                 type = JsonType.Boolean;
                 inst_boolean = (bool) obj;
                 return;
             }
 
-            if (obj is double) {
+            if (obj is Double) {
                 type = JsonType.Double;
                 inst_double = (double) obj;
                 return;
             }
 
-            if (obj is int) {
+            if (obj is Int32) {
                 type = JsonType.Int;
                 inst_int = (int) obj;
                 return;
             }
 
-            if (obj is long) {
+            if (obj is Int64) {
                 type = JsonType.Long;
                 inst_long = (long) obj;
                 return;
             }
 
-            if (obj is string) {
+            if (obj is String) {
                 type = JsonType.String;
                 inst_string = (string) obj;
                 return;
             }
 
-            throw new ArgumentException("无法将给定对象 " + obj.GetType().Name + " 包装为 JsonData！");
+            throw new ArgumentException (
+                "Unable to wrap the given object with JsonData");
         }
 
         public JsonData (string str)
@@ -363,27 +389,27 @@ namespace HT.Framework
 
 
         #region Implicit Conversions
-        public static implicit operator JsonData (bool data)
+        public static implicit operator JsonData (Boolean data)
         {
             return new JsonData (data);
         }
 
-        public static implicit operator JsonData (double data)
+        public static implicit operator JsonData (Double data)
         {
             return new JsonData (data);
         }
 
-        public static implicit operator JsonData (int data)
+        public static implicit operator JsonData (Int32 data)
         {
             return new JsonData (data);
         }
 
-        public static implicit operator JsonData (long data)
+        public static implicit operator JsonData (Int64 data)
         {
             return new JsonData (data);
         }
 
-        public static implicit operator JsonData (string data)
+        public static implicit operator JsonData (String data)
         {
             return new JsonData (data);
         }
@@ -391,42 +417,52 @@ namespace HT.Framework
 
 
         #region Explicit Conversions
-        public static explicit operator bool(JsonData data)
+        public static explicit operator Boolean (JsonData data)
         {
             if (data.type != JsonType.Boolean)
-                throw new InvalidCastException ("JsonData 实例并不是 bool 类型！");
+                throw new InvalidCastException (
+                    "Instance of JsonData doesn't hold a double");
 
             return data.inst_boolean;
         }
 
-        public static explicit operator double(JsonData data)
+        public static explicit operator Double (JsonData data)
         {
             if (data.type != JsonType.Double)
-                throw new InvalidCastException ("JsonData 实例并不是 double 类型！");
+                throw new InvalidCastException (
+                    "Instance of JsonData doesn't hold a double");
 
             return data.inst_double;
         }
 
-        public static explicit operator int(JsonData data)
+       public static explicit operator Int32(JsonData data)
         {
-            if (data.type != JsonType.Int)
-                throw new InvalidCastException ("JsonData 实例并不是 int 类型！");
+            if (data.type != JsonType.Int && data.type != JsonType.Long)
+            {
+                throw new InvalidCastException(
+                    "Instance of JsonData doesn't hold an int");
+            }
 
-            return data.inst_int;
+            // cast may truncate data... but that's up to the user to consider
+            return data.type == JsonType.Int ? data.inst_int : (int)data.inst_long;
         }
 
-        public static explicit operator long(JsonData data)
+        public static explicit operator Int64(JsonData data)
         {
-            if (data.type != JsonType.Long)
-                throw new InvalidCastException ("JsonData 实例并不是 long 类型！");
+            if (data.type != JsonType.Long && data.type != JsonType.Int)
+            {
+                throw new InvalidCastException(
+                    "Instance of JsonData doesn't hold a long");
+            }
 
-            return data.inst_long;
+            return data.type == JsonType.Long ? data.inst_long : data.inst_int;
         }
 
-        public static explicit operator string(JsonData data)
+        public static explicit operator String (JsonData data)
         {
             if (data.type != JsonType.String)
-                throw new InvalidCastException ("JsonData 实例并不是 string 类型！");
+                throw new InvalidCastException (
+                    "Instance of JsonData doesn't hold a string");
 
             return data.inst_string;
         }
@@ -500,7 +536,8 @@ namespace HT.Framework
         bool IJsonWrapper.GetBoolean ()
         {
             if (type != JsonType.Boolean)
-                throw new InvalidOperationException ("JsonData 实例并不是 bool 类型！");
+                throw new InvalidOperationException (
+                    "JsonData instance doesn't hold a boolean");
 
             return inst_boolean;
         }
@@ -508,7 +545,8 @@ namespace HT.Framework
         double IJsonWrapper.GetDouble ()
         {
             if (type != JsonType.Double)
-                throw new InvalidOperationException ("JsonData 实例并不是 double 类型！");
+                throw new InvalidOperationException (
+                    "JsonData instance doesn't hold a double");
 
             return inst_double;
         }
@@ -516,7 +554,8 @@ namespace HT.Framework
         int IJsonWrapper.GetInt ()
         {
             if (type != JsonType.Int)
-                throw new InvalidOperationException ("JsonData 实例并不是 int 类型！");
+                throw new InvalidOperationException (
+                    "JsonData instance doesn't hold an int");
 
             return inst_int;
         }
@@ -524,7 +563,8 @@ namespace HT.Framework
         long IJsonWrapper.GetLong ()
         {
             if (type != JsonType.Long)
-                throw new InvalidOperationException ("JsonData 实例并不是 long 类型！");
+                throw new InvalidOperationException (
+                    "JsonData instance doesn't hold a long");
 
             return inst_long;
         }
@@ -532,7 +572,8 @@ namespace HT.Framework
         string IJsonWrapper.GetString ()
         {
             if (type != JsonType.String)
-                throw new InvalidOperationException ("JsonData 实例并不是 string 类型！");
+                throw new InvalidOperationException (
+                    "JsonData instance doesn't hold a string");
 
             return inst_string;
         }
@@ -667,7 +708,8 @@ namespace HT.Framework
             if (type == JsonType.Object)
                 return (ICollection) inst_object;
 
-            throw new InvalidOperationException ("JsonData 实例必须先初始化！");
+            throw new InvalidOperationException (
+                "The JsonData instance has to be initialized first");
         }
 
         private IDictionary EnsureDictionary ()
@@ -676,7 +718,8 @@ namespace HT.Framework
                 return (IDictionary) inst_object;
 
             if (type != JsonType.None)
-                throw new InvalidOperationException ("JsonData 实例不是一个有效的 Dictionary！");
+                throw new InvalidOperationException (
+                    "Instance of JsonData is not a dictionary");
 
             type = JsonType.Object;
             inst_object = new Dictionary<string, JsonData> ();
@@ -691,7 +734,8 @@ namespace HT.Framework
                 return (IList) inst_array;
 
             if (type != JsonType.None)
-                throw new InvalidOperationException ("JsonData 实例不是一个有效的 List！");
+                throw new InvalidOperationException (
+                    "Instance of JsonData is not a list");
 
             type = JsonType.Array;
             inst_array = new List<JsonData> ();
@@ -775,6 +819,25 @@ namespace HT.Framework
             return EnsureList ().Add (data);
         }
 
+        public bool Remove(object obj)
+        {
+            json = null;
+            if(IsObject)
+            {
+                JsonData value = null;
+                if (inst_object.TryGetValue((string)obj, out value))
+                    return inst_object.Remove((string)obj) && object_list.Remove(new KeyValuePair<string, JsonData>((string)obj, value));
+                else
+                    throw new KeyNotFoundException("The specified key was not found in the JsonData object.");
+            }
+            if(IsArray)
+            {
+                return inst_array.Remove(ToJsonData(obj));
+            }
+            throw new InvalidOperationException (
+                    "Instance of JsonData is not an object or a list.");
+        }
+
         public void Clear ()
         {
             if (IsObject) {
@@ -794,7 +857,14 @@ namespace HT.Framework
                 return false;
 
             if (x.type != this.type)
-                return false;
+            {
+                // further check to see if this is a long to int comparison
+                if ((x.type != JsonType.Int && x.type != JsonType.Long)
+                    || (this.type != JsonType.Int && this.type != JsonType.Long))
+                {
+                    return false;
+                }
+            }
 
             switch (this.type) {
             case JsonType.None:
@@ -810,10 +880,26 @@ namespace HT.Framework
                 return this.inst_string.Equals (x.inst_string);
 
             case JsonType.Int:
-                return this.inst_int.Equals (x.inst_int);
+            {
+                if (x.IsLong)
+                {
+                    if (x.inst_long < Int32.MinValue || x.inst_long > Int32.MaxValue)
+                        return false;
+                    return this.inst_int.Equals((int)x.inst_long);
+                }
+                return this.inst_int.Equals(x.inst_int);
+            }
 
             case JsonType.Long:
-                return this.inst_long.Equals (x.inst_long);
+            {
+                if (x.IsInt)
+                {
+                    if (this.inst_long < Int32.MinValue || this.inst_long > Int32.MaxValue)
+                        return false;
+                    return x.inst_int.Equals((int)this.inst_long);
+                }
+                return this.inst_long.Equals(x.inst_long);
+            }
 
             case JsonType.Double:
                 return this.inst_double.Equals (x.inst_double);
@@ -849,23 +935,23 @@ namespace HT.Framework
                 break;
 
             case JsonType.String:
-                inst_string = default (string);
+                inst_string = default (String);
                 break;
 
             case JsonType.Int:
-                inst_int = default (int);
+                inst_int = default (Int32);
                 break;
 
             case JsonType.Long:
-                inst_long = default (long);
+                inst_long = default (Int64);
                 break;
 
             case JsonType.Double:
-                inst_double = default (double);
+                inst_double = default (Double);
                 break;
 
             case JsonType.Boolean:
-                inst_boolean = default (bool);
+                inst_boolean = default (Boolean);
                 break;
             }
 

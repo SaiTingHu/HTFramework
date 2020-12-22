@@ -1,7 +1,19 @@
+#region Header
+/**
+ * Lexer.cs
+ *   JSON lexer implementation based on a finite state machine.
+ *
+ * The authors disclaim copyright to this source code. For more details, see
+ * the COPYING file included with this distribution.
+ **/
+#endregion
+
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
 
 namespace HT.Framework
 {
@@ -19,8 +31,8 @@ namespace HT.Framework
         #region Fields
         private delegate bool StateHandler (FsmContext ctx);
 
-        private static int[]          fsm_return_table;
-        private static StateHandler[] fsm_handler_table;
+        private static readonly int[]          fsm_return_table;
+        private static readonly StateHandler[] fsm_handler_table;
 
         private bool          allow_comments;
         private bool          allow_single_quoted_strings;
@@ -65,7 +77,7 @@ namespace HT.Framework
         #region Constructors
         static Lexer ()
         {
-            PopulateFsmTables ();
+            PopulateFsmTables (out fsm_handler_table, out fsm_return_table);
         }
 
         public Lexer (TextReader reader)
@@ -118,7 +130,7 @@ namespace HT.Framework
             }
         }
 
-        private static void PopulateFsmTables ()
+        private static void PopulateFsmTables (out StateHandler[] fsm_handler_table, out int[] fsm_return_table)
         {
             // See section A.1. of the manual for details of the finite
             // state machine.

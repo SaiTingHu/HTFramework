@@ -1,9 +1,21 @@
+#region Header
+/**
+ * JsonMapper.cs
+ *   JSON to .Net object and object to JSON conversions.
+ *
+ * The authors disclaim copyright to this source code. For more details, see
+ * the COPYING file included with this distribution.
+ **/
+#endregion
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+
 
 namespace HT.Framework
 {
@@ -88,33 +100,33 @@ namespace HT.Framework
     public class JsonMapper
     {
         #region Fields
-        private static int max_nesting_depth;
+        private static readonly int max_nesting_depth;
 
-        private static IFormatProvider datetime_format;
+        private static readonly IFormatProvider datetime_format;
 
-        private static IDictionary<Type, ExporterFunc> base_exporters_table;
-        private static IDictionary<Type, ExporterFunc> custom_exporters_table;
+        private static readonly IDictionary<Type, ExporterFunc> base_exporters_table;
+        private static readonly IDictionary<Type, ExporterFunc> custom_exporters_table;
 
-        private static IDictionary<Type,
+        private static readonly IDictionary<Type,
                 IDictionary<Type, ImporterFunc>> base_importers_table;
-        private static IDictionary<Type,
+        private static readonly IDictionary<Type,
                 IDictionary<Type, ImporterFunc>> custom_importers_table;
 
-        private static IDictionary<Type, ArrayMetadata> array_metadata;
+        private static readonly IDictionary<Type, ArrayMetadata> array_metadata;
         private static readonly object array_metadata_lock = new Object ();
 
-        private static IDictionary<Type,
+        private static readonly IDictionary<Type,
                 IDictionary<Type, MethodInfo>> conv_ops;
         private static readonly object conv_ops_lock = new Object ();
 
-        private static IDictionary<Type, ObjectMetadata> object_metadata;
+        private static readonly IDictionary<Type, ObjectMetadata> object_metadata;
         private static readonly object object_metadata_lock = new Object ();
 
-        private static IDictionary<Type,
+        private static readonly IDictionary<Type,
                 IList<PropertyMetadata>> type_properties;
         private static readonly object type_properties_lock = new Object ();
 
-        private static JsonWriter      static_writer;
+        private static readonly JsonWriter      static_writer;
         private static readonly object static_writer_lock = new Object ();
         #endregion
 
@@ -302,11 +314,19 @@ namespace HT.Framework
             Type value_type = underlying_type ?? inst_type;
 
             if (reader.Token == JsonToken.Null) {
+                #if NETSTANDARD1_5
+                if (inst_type.IsClass() || underlying_type != null) {
+                    return null;
+                }
+                #else
                 if (inst_type.IsClass || underlying_type != null) {
                     return null;
                 }
+                #endif
 
-                throw new JsonException(string.Format("无法将空值赋给 {0} 类型的实例！", inst_type));
+                throw new JsonException (String.Format (
+                            "Can't assign null to an instance of type {0}",
+                            inst_type));
             }
 
             if (reader.Token == JsonToken.Double ||
@@ -343,9 +363,13 @@ namespace HT.Framework
                 }
 
                 // Maybe it's an enum
+                #if NETSTANDARD1_5
+                if (value_type.IsEnum())
+                    return Enum.ToObject (value_type, reader.Value);
+                #else
                 if (value_type.IsEnum)
                     return Enum.ToObject (value_type, reader.Value);
-
+                #endif
                 // Try using an implicit conversion operator
                 MethodInfo conv_op = GetConvOp (value_type, json_type);
 
@@ -354,7 +378,9 @@ namespace HT.Framework
                                            new object[] { reader.Value });
 
                 // No luck
-                throw new JsonException(string.Format("无法将值 {0}（类型{1}）赋给类型 {2}！", reader.Value, json_type, inst_type));
+                throw new JsonException (String.Format (
+                        "Can't assign value '{0}' (type {1}) to type {2}",
+                        reader.Value, json_type, inst_type));
             }
 
             object instance = null;
@@ -365,7 +391,9 @@ namespace HT.Framework
                 ArrayMetadata t_data = array_metadata[inst_type];
 
                 if (! t_data.IsArray && ! t_data.IsList)
-                    throw new JsonException(string.Format("类型 {0} 不能用作数组！", inst_type));
+                    throw new JsonException (String.Format (
+                            "Type {0} can't act as an array",
+                            inst_type));
 
                 IList list;
                 Type elem_type;
@@ -377,6 +405,8 @@ namespace HT.Framework
                     list = new ArrayList ();
                     elem_type = inst_type.GetElementType ();
                 }
+                
+                list.Clear();
 
                 while (true) {
                     object item = ReadValue (elem_type, reader);
@@ -433,7 +463,10 @@ namespace HT.Framework
                         if (! t_data.IsDictionary) {
 
                             if (! reader.SkipNonMembers) {
-                                throw new JsonException(string.Format("类型 {0} 没有属性 {1}！", inst_type, property));
+                                throw new JsonException (String.Format (
+                                        "The type {0} doesn't have the " +
+                                        "property '{1}'",
+                                        inst_type, property));
                             } else {
                                 ReadSkip (reader);
                                 continue;
@@ -572,6 +605,11 @@ namespace HT.Framework
                 delegate (object obj, JsonWriter writer) {
                     writer.Write ((ulong) obj);
                 };
+
+            base_exporters_table[typeof(DateTimeOffset)] =
+                delegate (object obj, JsonWriter writer) {
+                    writer.Write(((DateTimeOffset)obj).ToString("yyyy-MM-ddTHH:mm:ss.fffffffzzz", datetime_format));
+                };
         }
 
         private static void RegisterBaseImporters ()
@@ -589,6 +627,12 @@ namespace HT.Framework
             };
             RegisterImporter (base_importers_table, typeof (int),
                               typeof (ulong), importer);
+
+            importer = delegate (object input) {
+                return Convert.ToInt64((int)input);
+            };
+            RegisterImporter(base_importers_table, typeof(int),
+                              typeof(long), importer);
 
             importer = delegate (object input) {
                 return Convert.ToSByte ((int) input);
@@ -632,6 +676,11 @@ namespace HT.Framework
             RegisterImporter (base_importers_table, typeof (double),
                               typeof (decimal), importer);
 
+            importer = delegate (object input) {
+                return Convert.ToSingle((double)input);
+            };
+            RegisterImporter(base_importers_table, typeof(double),
+                typeof(float), importer);
 
             importer = delegate (object input) {
                 return Convert.ToUInt32 ((long) input);
@@ -650,6 +699,12 @@ namespace HT.Framework
             };
             RegisterImporter (base_importers_table, typeof (string),
                               typeof (DateTime), importer);
+
+            importer = delegate (object input) {
+                return DateTimeOffset.Parse((string)input, datetime_format);
+            };
+            RegisterImporter(base_importers_table, typeof(string),
+                typeof(DateTimeOffset), importer);
         }
 
         private static void RegisterImporter (
@@ -667,8 +722,10 @@ namespace HT.Framework
                                         int depth)
         {
             if (depth > max_nesting_depth)
-                throw new JsonException(
-                    string.Format("尝试从类型 {0} 导出时达到了最大允许对象深度！", obj.GetType()));
+                throw new JsonException (
+                    String.Format ("Max allowed object depth reached while " +
+                                   "trying to export from type {0}",
+                                   obj.GetType ()));
 
             if (obj == null) {
                 writer.Write (null);
@@ -684,27 +741,33 @@ namespace HT.Framework
                 return;
             }
 
-            if (obj is string) {
+            if (obj is String) {
                 writer.Write ((string) obj);
                 return;
             }
 
-            if (obj is double) {
+            if (obj is Double) {
                 writer.Write ((double) obj);
                 return;
             }
 
-            if (obj is int) {
+            if (obj is Single)
+            {
+                writer.Write((float)obj);
+                return;
+            }
+
+            if (obj is Int32) {
                 writer.Write ((int) obj);
                 return;
             }
 
-            if (obj is bool) {
+            if (obj is Boolean) {
                 writer.Write ((bool) obj);
                 return;
             }
 
-            if (obj is long) {
+            if (obj is Int64) {
                 writer.Write ((long) obj);
                 return;
             }
@@ -729,10 +792,13 @@ namespace HT.Framework
                 return;
             }
 
-            if (obj is IDictionary) {
+            if (obj is IDictionary dictionary) {
                 writer.WriteObjectStart ();
-                foreach (DictionaryEntry entry in (IDictionary) obj) {
-                    writer.WritePropertyName ((string) entry.Key);
+                foreach (DictionaryEntry entry in dictionary) {
+                    var propertyName = entry.Key is string key ?
+                        key
+                        : Convert.ToString(entry.Key, CultureInfo.InvariantCulture);
+                    writer.WritePropertyName (propertyName);
                     WriteValue (entry.Value, writer, writer_is_private,
                                 depth + 1);
                 }
@@ -853,6 +919,13 @@ namespace HT.Framework
             JsonReader reader = new JsonReader (json);
 
             return (T) ReadValue (typeof (T), reader);
+        }
+        
+        public static object ToObject(string json, Type ConvertType )
+        {
+            JsonReader reader = new JsonReader(json);
+
+            return ReadValue(ConvertType, reader);
         }
 
         public static IJsonWrapper ToWrapper (WrapperFactory factory,
