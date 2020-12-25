@@ -345,7 +345,7 @@ namespace HT.Framework
                 MeshFilter filter = Selection.gameObjects[i].GetComponent<MeshFilter>();
                 if (filter)
                 {
-                    Log.Info("Mesh [" + filter.name + "] : vertices " + filter.sharedMesh.vertexCount + ", triangles " + filter.sharedMesh.triangles.Length);
+                    Log.Info("Mesh [" + filter.name + "] : vertices " + filter.sharedMesh.vertexCount + ", triangles " + (filter.sharedMesh.triangles.Length / 3));
                 }
             }
         }
@@ -891,9 +891,15 @@ namespace HT.Framework
         /// </summary>
         public static void CoerciveCompile()
         {
-            MonoScript monoScript = MonoImporter.GetAllRuntimeMonoScripts()[0];
-            int order = MonoImporter.GetExecutionOrder(monoScript);
-            MonoImporter.SetExecutionOrder(monoScript, order);
+            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface");
+            if (type != null)
+            {
+                MethodInfo method = type.GetMethod("RecompileAllScriptsOnNextTick", BindingFlags.Static | BindingFlags.Public);
+                if (method != null)
+                {
+                    method.Invoke(null, null);
+                }
+            }
         }
         #endregion
 
