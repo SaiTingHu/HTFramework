@@ -37,6 +37,14 @@ public class #SCRIPTNAME# : StepHelper
     }
 
 	/// <summary>
+    /// 跳过步骤，立即模式（仅在立即跳过时执行）
+    /// </summary>
+    public override void OnSkipImmediate()
+    {
+		base.OnSkipImmediate();
+    }
+
+	/// <summary>
 	/// 恢复步骤（仅在倒退时执行）
 	/// </summary>
     public override void OnRestore()

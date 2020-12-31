@@ -177,6 +177,33 @@ namespace HT.Framework
                 }, Operations[stepIndex].ElapseTime / StepMaster.SkipMultiple);
             }
         }
+
+        /// <summary>
+        /// 跳过步骤内容（立即模式）
+        /// </summary>
+        internal void SkipImmediate()
+        {
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                if (Wireds[i].Left == -1)
+                {
+                    SkipImmediate(i);
+                }
+            }
+        }
+        private void SkipImmediate(int index)
+        {
+            int stepIndex = Wireds[index].Right;
+            Operations[stepIndex].SkipImmediate();
+
+            for (int i = 0; i < Wireds.Count; i++)
+            {
+                if (Wireds[i].Left == stepIndex)
+                {
+                    SkipImmediate(i);
+                }
+            }
+        }
         #endregion
 
         #region EditorOnly

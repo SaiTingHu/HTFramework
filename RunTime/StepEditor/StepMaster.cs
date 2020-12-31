@@ -39,6 +39,10 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<StepContent, bool> SkipStepEvent;
         /// <summary>
+        /// 步骤立即跳过事件【任何一个步骤立即跳过后触发】
+        /// </summary>
+        public event HTFAction<StepContent, bool> SkipStepImmediateEvent;
+        /// <summary>
         /// 步骤恢复事件【任何一个步骤恢复后触发】
         /// </summary>
         public event HTFAction<StepContent, bool> RestoreStepEvent;
@@ -75,10 +79,15 @@ namespace HT.Framework
         private Dictionary<string, StepContent> _stepContentIDs = new Dictionary<string, StepContent>();
         //所有的 步骤索引 <步骤ID、步骤索引>
         private Dictionary<string, int> _stepContentIndexs = new Dictionary<string, int>();
+        //当前的步骤索引
         private int _currentStepIndex = -1;
+        //当前的步骤内容
         private StepContent _currentContent;
+        //当前的步骤目标
         private StepTarget _currentTarget;
+        //当前的步骤助手
         private StepHelper _currentHelper;
+        //当前的步骤按钮
         private Button _currentButton;
         //跳过的目标步骤
         private int _skipTargetIndex = 0;
@@ -635,6 +644,58 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 跳过当前步骤（立即模式）
+        /// </summary>
+        /// <returns>跳过成功/失败</returns>
+        public bool SkipCurrentStepImmediate()
+        {
+            if (_running && !_executing)
+            {
+                if (_pause)
+                    return false;
+
+                if (_currentHelper != null && !_currentHelper.IsAllowSkip)
+                    return false;
+
+                SkipCurrentStepImmediateCoroutine();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// 跳过到指定步骤（立即模式）
+        /// </summary>
+        /// <param name="stepID">步骤ID</param>
+        /// <returns>跳过成功/失败</returns>
+        public bool SkipStepImmediate(string stepID)
+        {
+            if (_running && !_executing)
+            {
+                if (_pause)
+                    return false;
+
+                if (_currentHelper != null && !_currentHelper.IsAllowSkip)
+                    return false;
+
+                if (!_stepContentIndexs.ContainsKey(stepID))
+                    return false;
+
+                int index = _stepContentIndexs[stepID];
+                if (index <= _currentStepIndex || index > _stepContents.Count - 1)
+                    return false;
+
+                SkipStepImmediateCoroutine(index);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
         /// 停止未完成的连续跳过
         /// </summary>
         public void StopSkip()
@@ -812,7 +873,9 @@ namespace HT.Framework
             _customOrder.Clear();
         }
 
-        //步骤开始
+        /// <summary>
+        /// 步骤开始
+        /// </summary>
         private void BeginCurrentStep()
         {
             _executing = false;
@@ -874,7 +937,7 @@ namespace HT.Framework
                 BeginStepEvent?.Invoke(_currentContent, _stepContentEnables[_currentContent.GUID]);
                 if (!_stepContentEnables[_currentContent.GUID])
                 {
-                    Main.Current.StartCoroutine(SkipCurrentStepCoroutine());
+                    SkipCurrentStepImmediateCoroutine();
                 }
             }
             else
@@ -882,7 +945,9 @@ namespace HT.Framework
                 BeginStepEvent?.Invoke(_currentContent, false);
             }
         }
-        //步骤执行
+        /// <summary>
+        /// 步骤执行
+        /// </summary>
         private void ExecuteCurrentStep()
         {
             _executing = true;
@@ -904,7 +969,9 @@ namespace HT.Framework
 
             ExecuteStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
         }
-        //跳过当前步骤
+        /// <summary>
+        /// 跳过当前步骤
+        /// </summary>
         private IEnumerator SkipCurrentStepCoroutine()
         {
             _executing = true;
@@ -978,7 +1045,10 @@ namespace HT.Framework
 
             _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime / SkipMultiple));
         }
-        //跳过到指定步骤
+        /// <summary>
+        /// 跳过到指定步骤
+        /// </summary>
+        /// <param name="index">步骤索引</param>
         private IEnumerator SkipStepCoroutine(int index)
         {
             _executing = true;
@@ -1065,7 +1135,163 @@ namespace HT.Framework
 
             _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(BeginCurrentStep, 0));
         }
-        //进入下一步骤
+        /// <summary>
+        /// 跳过当前步骤（立即模式）
+        /// </summary>
+        private void SkipCurrentStepImmediateCoroutine()
+        {
+            _executing = true;
+            _currentContent.SkipImmediate();
+
+            SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+
+            //UGUI按钮点击型步骤，自动执行按钮事件
+            if (_currentContent.Trigger == StepTrigger.ButtonClick)
+            {
+                if (_currentButton)
+                {
+                    _currentButton.onClick.Invoke();
+                    _currentButton.onClick.RemoveListener(ButtonClickCallback);
+                }
+                else
+                {
+                    _currentButton = _currentTarget.GetComponent<Button>();
+                    if (_currentButton)
+                    {
+                        _currentButton.onClick.Invoke();
+                    }
+                    else
+                    {
+                        Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
+                    }
+                }
+                _currentButton = null;
+            }
+
+            //创建步骤助手
+            if (_currentHelper == null && _currentContent.Helper != "<None>")
+            {
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
+                if (type != null)
+                {
+                    _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                    _currentHelper.Parameters = _currentContent.Parameters;
+                    for (int i = 0; i < _currentHelper.Parameters.Count; i++)
+                    {
+                        if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                        {
+                            if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
+                            {
+                                _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
+                            }
+                        }
+                    }
+                    _currentHelper.Content = _currentContent;
+                    _currentHelper.Target = _currentTarget;
+                    _currentHelper.Task = StepHelperTask.SkipImmediate;
+                    _currentHelper.OnInit();
+                }
+                else
+                {
+                    Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
+                }
+            }
+            //助手执行跳过，等待生命周期结束后销毁助手
+            if (_currentHelper != null)
+            {
+                _currentHelper.Task = StepHelperTask.SkipImmediate;
+                _currentHelper.OnSkipImmediate();
+                _currentHelper.OnTermination();
+                _currentHelper = null;
+            }
+
+            ChangeNextStep();
+        }
+        /// <summary>
+        /// 跳过到指定步骤（立即模式）
+        /// </summary>
+        /// <param name="index">步骤索引</param>
+        private void SkipStepImmediateCoroutine(int index)
+        {
+            _executing = true;
+            _skipTargetIndex = index;
+
+            while (_currentStepIndex < _skipTargetIndex)
+            {
+                _currentContent = _stepContents[_currentStepIndex];
+                _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
+                _currentContent.SkipImmediate();
+
+                SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+
+                //UGUI按钮点击型步骤，自动执行按钮事件
+                if (_currentContent.Trigger == StepTrigger.ButtonClick)
+                {
+                    if (_currentButton)
+                    {
+                        _currentButton.onClick.Invoke();
+                        _currentButton.onClick.RemoveListener(ButtonClickCallback);
+                    }
+                    else
+                    {
+                        _currentButton = _currentContent.Target.GetComponent<Button>();
+                        if (_currentButton)
+                        {
+                            _currentButton.onClick.Invoke();
+                        }
+                        else
+                        {
+                            Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
+                        }
+                    }
+                    _currentButton = null;
+                }
+
+                //创建步骤助手
+                if (_currentHelper == null && _currentContent.Helper != "<None>")
+                {
+                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
+                    if (type != null)
+                    {
+                        _currentHelper = Activator.CreateInstance(type) as StepHelper;
+                        _currentHelper.Parameters = _currentContent.Parameters;
+                        for (int i = 0; i < _currentHelper.Parameters.Count; i++)
+                        {
+                            if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                            {
+                                if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
+                                {
+                                    _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
+                                }
+                            }
+                        }
+                        _currentHelper.Content = _currentContent;
+                        _currentHelper.Target = _currentTarget;
+                        _currentHelper.Task = StepHelperTask.SkipImmediate;
+                        _currentHelper.OnInit();
+                    }
+                    else
+                    {
+                        Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
+                    }
+                }
+                //助手执行跳过，等待生命周期结束后销毁助手
+                if (_currentHelper != null)
+                {
+                    _currentHelper.Task = StepHelperTask.SkipImmediate;
+                    _currentHelper.OnSkipImmediate();
+                    _currentHelper.OnTermination();
+                    _currentHelper = null;
+                }
+                
+                _currentStepIndex += 1;
+            }
+
+            BeginCurrentStep();
+        }
+        /// <summary>
+        /// 进入下一步骤
+        /// </summary>
         private void ChangeNextStep()
         {
             if (_customOrder.ContainsKey(_currentContent.GUID))
@@ -1086,7 +1312,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 鼠标点击UGUI按钮触发步骤的回调
         /// </summary>

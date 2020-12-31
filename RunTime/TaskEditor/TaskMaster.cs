@@ -411,7 +411,9 @@ namespace HT.Framework
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskEnd>());
         }
 
-        //当前任务开始
+        /// <summary>
+        /// 当前任务开始
+        /// </summary>
         private void BeginCurrentTask()
         {
             _currentContent = ContentAsset.Content[_currentContentIndex];
@@ -419,7 +421,9 @@ namespace HT.Framework
 
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(_currentContent));
         }
-        //当前任务完成
+        /// <summary>
+        /// 当前任务完成
+        /// </summary>
         private void CompleteCurrentTask()
         {
             _currentContent.OnComplete();

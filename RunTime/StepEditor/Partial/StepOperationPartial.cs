@@ -448,6 +448,176 @@ namespace HT.Framework
         }
         #endregion
 
+        #region SkipImmediate
+        internal void SkipImmediate()
+        {
+            switch (OperationType)
+            {
+                case StepOperationType.Move:
+                    MoveSkipImmediate();
+                    break;
+                case StepOperationType.Rotate:
+                    RotateSkipImmediate();
+                    break;
+                case StepOperationType.Scale:
+                    ScaleSkipImmediate();
+                    break;
+                case StepOperationType.Color:
+                    ColorSkipImmediate();
+                    break;
+                case StepOperationType.Active:
+                    ActiveSkipImmediate();
+                    break;
+                case StepOperationType.Action:
+                    ActionSkipImmediate();
+                    break;
+                case StepOperationType.ActionArgs:
+                    ActionArgsSkipImmediate();
+                    break;
+                case StepOperationType.CameraFollow:
+                    CameraFollowSkipImmediate();
+                    break;
+                case StepOperationType.TextMesh:
+                    TextMeshSkipImmediate();
+                    break;
+                case StepOperationType.Prompt:
+                    PromptSkipImmediate();
+                    break;
+                case StepOperationType.FSM:
+                    FSMSkipImmediate();
+                    break;
+                case StepOperationType.Delay:
+                    DelaySkipImmediate();
+                    break;
+                case StepOperationType.ActiveComponent:
+                    ActiveComponentSkipImmediate();
+                    break;
+                case StepOperationType.Transform:
+                    TransformSkipImmediate();
+                    break;
+                case StepOperationType.ChangeParent:
+                    ChangeParentSkipImmediate();
+                    break;
+                default:
+                    Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 SkipImmediate 定义！");
+                    break;
+            }
+        }
+        private void MoveSkipImmediate()
+        {
+            Target.transform.localPosition = Vector3Value;
+        }
+        private void RotateSkipImmediate()
+        {
+            Target.transform.localRotation = Quaternion.Euler(Vector3Value);
+        }
+        private void ScaleSkipImmediate()
+        {
+            Target.transform.localScale = Vector3Value;
+        }
+        private void ColorSkipImmediate()
+        {
+            if (BoolValue)
+            {
+                Renderer renderer = Target.GetComponent<Renderer>();
+                if (!renderer)
+                {
+                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Renderer！无法播放颜色改变动画！");
+                    return;
+                }
+                renderer.material.color = ColorValue;
+            }
+            if (BoolValue2)
+            {
+                Graphic graphic = Target.GetComponent<Graphic>();
+                if (!graphic)
+                {
+                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Graphic！无法播放颜色改变动画！");
+                    return;
+                }
+                graphic.color = ColorValue;
+            }
+        }
+        private void ActiveSkipImmediate()
+        {
+            Target.SetActive(BoolValue);
+        }
+        private void ActionSkipImmediate()
+        {
+            if (StringValue != "<None>")
+            {
+                Target.SendMessage(StringValue);
+            }
+        }
+        private void ActionArgsSkipImmediate()
+        {
+            if (StringValue != "<None>")
+            {
+                Target.SendMessage(StringValue, StringValue2);
+            }
+        }
+        private void CameraFollowSkipImmediate()
+        {
+            Main.m_Controller.SetLookPoint(Vector3Value, false);
+            Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, false);
+        }
+        private void TextMeshSkipImmediate()
+        {
+            if (!Target.GetComponent<TextMesh>())
+            {
+                Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件TextMesh！无法设置TextMesh文本！");
+                return;
+            }
+            Target.GetComponent<TextMesh>().text = StringValue;
+        }
+        private void PromptSkipImmediate()
+        {
+            
+        }
+        private void FSMSkipImmediate()
+        {
+            if (StringValue != "<None>")
+            {
+                Target.GetComponent<FSM>().SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue));
+            }
+        }
+        private void DelaySkipImmediate()
+        {
+        }
+        private void ActiveComponentSkipImmediate()
+        {
+            Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue);
+            if (type != null)
+            {
+                Component component = Target.GetComponent(type);
+                Behaviour behaviour = component as Behaviour;
+                Collider collider = component as Collider;
+                Renderer renderer = component as Renderer;
+                if (behaviour) behaviour.enabled = BoolValue;
+                else if (collider) collider.enabled = BoolValue;
+                else if (renderer) renderer.enabled = BoolValue;
+            }
+            else
+            {
+                Log.Error("步骤控制者：未获取到组件类型 " + StringValue + " ！");
+            }
+        }
+        private void TransformSkipImmediate()
+        {
+            Target.transform.localPosition = Vector3Value;
+            Target.transform.localRotation = Vector3Value2.ToQuaternion();
+            Target.transform.localScale = Vector3Value3;
+        }
+        private void ChangeParentSkipImmediate()
+        {
+            StepTarget parent = Main.m_StepMaster.GetTarget(StringValue);
+            if (parent != null && parent.gameObject != Target)
+            {
+                Target.transform.SetParent(parent.transform);
+            }
+        }
+        #endregion
+
         #region EditorOnly
 #if UNITY_EDITOR
         internal GameObject GameObjectValue;

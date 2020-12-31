@@ -62,6 +62,13 @@ namespace HT.Framework
 
         }
         /// <summary>
+        /// 跳过步骤，立即模式（仅在立即跳过时执行）
+        /// </summary>
+        public virtual void OnSkipImmediate()
+        {
+
+        }
+        /// <summary>
         /// 恢复步骤（仅在倒退时执行）
         /// </summary>
         public virtual void OnRestore()
@@ -347,6 +354,10 @@ namespace HT.Framework
         /// 跳过任务
         /// </summary>
         Skip,
+        /// <summary>
+        /// 跳过任务（立即模式）
+        /// </summary>
+        SkipImmediate,
         /// <summary>
         /// 恢复任务
         /// </summary>

@@ -58,9 +58,13 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Current Step: " + Target.CurrentStepIndex);
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Skip", EditorStyles.miniButton))
+                if (GUILayout.Button("Skip", EditorStyles.miniButtonLeft))
                 {
                     Target.SkipCurrentStep();
+                }
+                if (GUILayout.Button("SkipImmediate", EditorStyles.miniButtonRight))
+                {
+                    Target.SkipCurrentStepImmediate();
                 }
                 GUILayout.EndHorizontal();
 
