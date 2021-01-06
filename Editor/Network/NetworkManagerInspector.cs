@@ -20,7 +20,6 @@ namespace HT.Framework
                 return "Network Manager, help you implementing basic network client with socket!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -35,7 +34,6 @@ namespace HT.Framework
 
             _networkHelper = _helper as INetworkHelper;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -116,7 +114,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

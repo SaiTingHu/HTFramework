@@ -62,7 +62,6 @@ namespace HT.Framework
             PropertyField("_id", "ID");
             GUILayout.EndHorizontal();
         }
-
         private void GenerateID()
         {
             if (Target.ID == "")

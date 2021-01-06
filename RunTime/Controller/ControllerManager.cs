@@ -36,7 +36,6 @@ namespace HT.Framework
         /// 自由控制：是否启用边界盒
         /// </summary>
         public bool IsEnableBounds = false;
-
         /// <summary>
         /// 切换至自由控制事件
         /// </summary>
@@ -55,32 +54,7 @@ namespace HT.Framework
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
         
         private IControllerHelper _helper;
-
-        private ControllerManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-            
-            DOTween.defaultEaseType = DefaultEase;
-            DOTween.defaultAutoPlay = DefaultAutoPlay;
-            DOTween.defaultAutoKill = IsAutoKill;
-            
-            _helper = Helper as IControllerHelper;
-            _helper.RayEvent += (target, point, point2D) =>
-            {
-                RayEvent?.Invoke(target, point, point2D);
-            };
-        }
-        internal override void OnPreparatory()
-        {
-            base.OnPreparatory();
-
-            TheControlMode = DefaultControlMode;
-        }
-
+        
         /// <summary>
         /// 主摄像机
         /// </summary>
@@ -281,6 +255,31 @@ namespace HT.Framework
             {
                 _helper.EnableMouseRayHitPrompt = value;
             }
+        }
+
+        private ControllerManager()
+        {
+
+        }
+        internal override void OnInitialization()
+        {
+            base.OnInitialization();
+
+            DOTween.defaultEaseType = DefaultEase;
+            DOTween.defaultAutoPlay = DefaultAutoPlay;
+            DOTween.defaultAutoKill = IsAutoKill;
+
+            _helper = Helper as IControllerHelper;
+            _helper.RayEvent += (target, point, point2D) =>
+            {
+                RayEvent?.Invoke(target, point, point2D);
+            };
+        }
+        internal override void OnPreparatory()
+        {
+            base.OnPreparatory();
+
+            TheControlMode = DefaultControlMode;
         }
 
         /// <summary>

@@ -22,7 +22,6 @@ namespace HT.Framework
                 return "UI Manager, this is the master controller for all UIs!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -37,7 +36,6 @@ namespace HT.Framework
 
             _UIHelper = _helper as IUIHelper;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -135,7 +133,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

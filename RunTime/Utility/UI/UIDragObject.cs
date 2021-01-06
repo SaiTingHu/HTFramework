@@ -75,27 +75,6 @@ namespace HT.Framework
                     break;
             }
         }
-        
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            _isDrag = false;
-        }
-
-        public void OnBeginDrag(PointerEventData eventData)
-        {
-            _isDrag = true;
-        }
-
-        public void OnDrag(PointerEventData eventData)
-        {
-            _delta = eventData.delta;
-        }
-
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            _isDrag = false;
-        }
-
         private void Update()
         {
             if (_isDrag)
@@ -104,6 +83,23 @@ namespace HT.Framework
             }
         }
 
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            _isDrag = false;
+        }
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            _isDrag = true;
+        }
+        public void OnDrag(PointerEventData eventData)
+        {
+            _delta = eventData.delta;
+        }
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            _isDrag = false;
+        }
+        
         private void WorldDraging()
         {
             if (!Horizontal) _delta.x = 0;
@@ -112,7 +108,6 @@ namespace HT.Framework
             _delta = Vector3.zero;
             WorldLimitPos();
         }
-
         private void OverlayDraging()
         {
             if (!Horizontal) _delta.x = 0;
@@ -121,7 +116,6 @@ namespace HT.Framework
             _delta = Vector3.zero;
             OverlayLimitPos();
         }
-
         private void WorldLimitPos()
         {
             Vector2 pos = _rectTransform.anchoredPosition;
@@ -137,7 +131,6 @@ namespace HT.Framework
             }
             _rectTransform.anchoredPosition = pos;
         }
-
         private void OverlayLimitPos()
         {
             Vector2 pos = _transform.position;

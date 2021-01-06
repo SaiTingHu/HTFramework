@@ -36,7 +36,6 @@ namespace HT.Framework
         {
             Value = "";
         }
-
         public BindableString(string value)
         {
             Value = value;

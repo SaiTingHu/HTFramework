@@ -16,6 +16,15 @@ namespace HT.Framework
     public sealed class DefaultResourceHelper : IResourceHelper
     {
         /// <summary>
+        /// 单线下载中
+        /// </summary>
+        private bool _isLoading = false;
+        /// <summary>
+        /// 单线下载等待
+        /// </summary>
+        private WaitUntil _loadWait;
+
+        /// <summary>
         /// 资源管理器
         /// </summary>
         public InternalModuleBase Module { get; set; }
@@ -47,15 +56,6 @@ namespace HT.Framework
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
         public Dictionary<string, Hash128> AssetBundleHashs { get; private set; } = new Dictionary<string, Hash128>();
-
-        /// <summary>
-        /// 单线下载中
-        /// </summary>
-        private bool _isLoading = false;
-        /// <summary>
-        /// 单线下载等待
-        /// </summary>
-        private WaitUntil _loadWait;
         
         /// <summary>
         /// 初始化助手

@@ -19,7 +19,6 @@ namespace HT.Framework
                 return "DataSet Manager, manage of all dataSet, you can create, modify, delete any dataSets!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -34,7 +33,6 @@ namespace HT.Framework
 
             _dataSetHelper = _helper as IDataSetHelper;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

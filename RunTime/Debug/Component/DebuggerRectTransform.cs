@@ -11,7 +11,6 @@ namespace HT.Framework
         {
             _target = Target as RectTransform;
         }
-
         public override void OnDebuggerGUI()
         {
             GUILayout.BeginHorizontal();

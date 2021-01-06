@@ -26,7 +26,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 是否已存在指定名称的MonoScript脚本对象
         /// </summary>
@@ -36,7 +35,6 @@ namespace HT.Framework
         {
             return _monoScripts.ContainsKey(name);
         }
-
         /// <summary>
         /// 打开并编辑MonoScript脚本对象
         /// </summary>

@@ -31,7 +31,6 @@ namespace HT.Framework
             _stepContentEnables = Target.GetType().GetField("_stepContentEnables", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, bool>;
             _customOrder = Target.GetType().GetField("_customOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, string>;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -44,7 +43,6 @@ namespace HT.Framework
             EnumPopup(Target.GuideHighlighting, out Target.GuideHighlighting, "Guide Highlighting");
             GUILayout.EndHorizontal();
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

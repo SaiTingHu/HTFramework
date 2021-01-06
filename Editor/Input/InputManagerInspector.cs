@@ -18,7 +18,6 @@ namespace HT.Framework
                 return "Input manager, this is a cross platform input solution!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -58,7 +57,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

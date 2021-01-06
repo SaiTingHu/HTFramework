@@ -22,7 +22,6 @@ namespace HT.Framework
                 return "Event Manager, this is a global event system, you can subscribe any events, also custom events!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -37,7 +36,6 @@ namespace HT.Framework
 
             _eventHelper = _helper as IEventHelper;
         }
-        
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

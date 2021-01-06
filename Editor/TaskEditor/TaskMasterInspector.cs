@@ -29,7 +29,6 @@ namespace HT.Framework
             Toggle(Target.IsAutoChange, out Target.IsAutoChange, "Auto Change");
             GUILayout.EndHorizontal();
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

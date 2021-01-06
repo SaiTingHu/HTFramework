@@ -55,7 +55,6 @@ namespace HT.Framework
             _removeGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _removeGC.tooltip = "Remove";
         }
-
         protected override void OnTitleGUI()
         {
             base.OnTitleGUI();
@@ -70,7 +69,6 @@ namespace HT.Framework
                 }
             }
         }
-
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();

@@ -21,6 +21,14 @@ namespace HT.Framework
         public int TheLoops = -1;
         public bool PlayOnStart = true;
 
+        private RectTransform _rectTransform;
+        private Graphic _theGraphic;
+        private Vector3 _positionRecord;
+        private Vector3 _rotationRecord;
+        private Vector3 _scaleRecord;
+        private Color _colorRecord;
+        private Tweener _theTweener;
+
         /// <summary>
         /// 动画是否播放中
         /// </summary>
@@ -42,14 +50,6 @@ namespace HT.Framework
         /// 动画是否暂停中
         /// </summary>
         public bool IsPause { get; private set; } = false;
-
-        private RectTransform _rectTransform;
-        private Graphic _theGraphic;
-        private Vector3 _positionRecord;
-        private Vector3 _rotationRecord;
-        private Vector3 _scaleRecord;
-        private Color _colorRecord;
-        private Tweener _theTweener;
         
         protected override void Awake()
         {
@@ -62,7 +62,6 @@ namespace HT.Framework
             _scaleRecord = transform.localScale;
             _colorRecord = _theGraphic != null ? _theGraphic.color : Color.white;
         }
-
         private void Start()
         {
             if (_rectTransform == null)
@@ -121,7 +120,6 @@ namespace HT.Framework
 
             IsPause = false;
         }
-
         /// <summary>
         /// 暂停
         /// </summary>
@@ -134,7 +132,6 @@ namespace HT.Framework
 
             IsPause = true;
         }
-
         /// <summary>
         /// 继续播放
         /// </summary>
@@ -147,7 +144,6 @@ namespace HT.Framework
 
             IsPause = false;
         }
-
         /// <summary>
         /// 停止
         /// </summary>

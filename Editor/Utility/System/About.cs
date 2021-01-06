@@ -88,12 +88,18 @@ namespace HT.Framework
 
             EditorApplication.update += RefreshLOGOColor;
         }
-
         private void OnDestroy()
         {
             EditorApplication.update -= RefreshLOGOColor;
         }
+        protected override void OnBodyGUI()
+        {
+            base.OnBodyGUI();
 
+            LOGOGUI();
+
+            AboutGUI();
+        }
         private void RefreshLOGOColor()
         {
             if (_colorPos <= 1)
@@ -110,23 +116,12 @@ namespace HT.Framework
             }
             Repaint();
         }
-
         private void ReadCurrentVersion()
         {
             _versionInfo = AssetDatabase.LoadAssetAtPath<VersionInfo>("Assets/HTFramework/Editor/Utility/Version/Version.asset");
             _versionNumber = _versionInfo.CurrentVersion.GetFullNumber();
             _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.About_IsShowOnStart, true);
         }
-
-        protected override void OnBodyGUI()
-        {
-            base.OnBodyGUI();
-
-            LOGOGUI();
-
-            AboutGUI();
-        }
-
         private void LOGOGUI()
         {
             GUI.color = Color.Lerp(_lastColor, _currentColor, _colorPos);
@@ -139,7 +134,6 @@ namespace HT.Framework
                 VersionViewer.OpenWindow(_versionInfo);
             }
         }
-
         private void AboutGUI()
         {
             GUILayout.BeginVertical();

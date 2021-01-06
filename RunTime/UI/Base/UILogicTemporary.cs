@@ -14,7 +14,6 @@
 
             Main.m_UI.OpenTemporaryUI(GetType());
         }
-
         /// <summary>
         /// 关闭自己
         /// </summary>

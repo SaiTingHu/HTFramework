@@ -18,7 +18,6 @@
             TaskContent = taskContent;
             return this;
         }
-
         /// <summary>
         /// 重置引用，当被引用池回收时调用
         /// </summary>

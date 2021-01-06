@@ -15,6 +15,14 @@ namespace HT.Framework
     internal sealed class AssetsMaster : HTFEditorWindow
     {
         #region Field
+        public bool IsMarkTextureWidth = true;
+        public bool IsMarkTextureHeight = true;
+        public bool IsMarkTextureCrunched = true;
+        public bool IsMarkTextureMipMap = true;
+        public int TextureWidthUpper = 1024;
+        public int TextureHeightUpper = 1024;
+        public int TextureMipMapUpper = 1;
+
         private AssetType _type = AssetType.Texture;
 
         private bool _isIncludeDisabled = true;
@@ -52,17 +60,11 @@ namespace HT.Framework
         private string _filterName = "";
         private int _totalMeshVertices = 0;
         private int _textureAlarmCount = 0;
-
-        public bool IsMarkTextureWidth = true;
-        public bool IsMarkTextureHeight = true;
-        public bool IsMarkTextureCrunched = true;
-        public bool IsMarkTextureMipMap = true;
-        public int TextureWidthUpper = 1024;
-        public int TextureHeightUpper = 1024;
-        public int TextureMipMapUpper = 1;
         #endregion
 
         #region Lifecycle Function
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/107974865";
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -85,9 +87,6 @@ namespace HT.Framework
         {
             EditorApplication.playModeStateChanged -= OnPlayModeStateChange;
         }
-
-        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/107974865";
-
         /// <summary>
         /// 当编辑器播放状态改变
         /// </summary>

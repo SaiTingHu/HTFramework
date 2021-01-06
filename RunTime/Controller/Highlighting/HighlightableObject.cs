@@ -259,7 +259,6 @@ namespace HT.Framework
             StartCoroutine(EndOfFrame());
             HighlightingEffect.HighlightingEvent += UpdateHighlighting;
         }
-
         private void OnDisable()
         {
             StopAllCoroutines();
@@ -299,7 +298,6 @@ namespace HT.Framework
         {
             _materialsIsDirty = true;
         }
-
         /// <summary>
         /// 设置只高亮一帧的参数
         /// </summary>
@@ -308,7 +306,6 @@ namespace HT.Framework
         {
             _onceColor = color;
         }
-
         /// <summary>
         /// 开启高亮一帧
         /// </summary>
@@ -316,7 +313,6 @@ namespace HT.Framework
         {
             _isOnce = true;
         }
-
         /// <summary>
         /// 开启高亮一帧
         /// </summary>
@@ -326,7 +322,6 @@ namespace HT.Framework
             _onceColor = color;
             _isOnce = true;
         }
-
         /// <summary>
         /// 设置闪光参数
         /// </summary>
@@ -339,7 +334,6 @@ namespace HT.Framework
             _flashingColorMax = color2;
             _flashingFrequency = freq;
         }
-
         /// <summary>
         /// 开启闪光
         /// </summary>
@@ -347,7 +341,6 @@ namespace HT.Framework
         {
             _isFlashing = true;
         }
-
         /// <summary>
         /// 开启闪光
         /// </summary>
@@ -359,7 +352,6 @@ namespace HT.Framework
             _flashingColorMax = color2;
             _isFlashing = true;
         }
-
         /// <summary>
         /// 开启闪光
         /// </summary>
@@ -373,7 +365,6 @@ namespace HT.Framework
             _flashingFrequency = freq;
             _isFlashing = true;
         }
-
         /// <summary>
         /// 开启闪光
         /// </summary>
@@ -383,7 +374,6 @@ namespace HT.Framework
             _flashingFrequency = freq;
             _isFlashing = true;
         }
-
         /// <summary>
         /// 关闭闪光
         /// </summary>
@@ -391,7 +381,6 @@ namespace HT.Framework
         {
             _isFlashing = false;
         }
-
         /// <summary>
         /// 闪光模式切换
         /// </summary>
@@ -399,7 +388,6 @@ namespace HT.Framework
         {
             _isFlashing = !_isFlashing;
         }
-
         /// <summary>
         /// 设置持续高亮参数
         /// </summary>
@@ -408,7 +396,6 @@ namespace HT.Framework
         {
             _constantColor = color;
         }
-
         /// <summary>
         /// 开启持续高亮
         /// </summary>
@@ -417,7 +404,6 @@ namespace HT.Framework
             _isConstantly = true;
             _transitionActive = true;
         }
-
         /// <summary>
         /// 开启持续高亮
         /// </summary>
@@ -428,7 +414,6 @@ namespace HT.Framework
             _isConstantly = true;
             _transitionActive = true;
         }
-
         /// <summary>
         /// 关闭持续高亮
         /// </summary>
@@ -437,7 +422,6 @@ namespace HT.Framework
             _isConstantly = false;
             _transitionActive = true;
         }
-
         /// <summary>
         /// 持续高亮模式切换
         /// </summary>
@@ -446,7 +430,6 @@ namespace HT.Framework
             _isConstantly = !_isConstantly;
             _transitionActive = true;
         }
-
         /// <summary>
         /// 立即开启持续高亮
         /// </summary>
@@ -456,7 +439,6 @@ namespace HT.Framework
             _transitionValue = 1f;
             _transitionActive = false;
         }
-
         /// <summary>
         /// 立即开启持续高亮
         /// </summary>
@@ -468,7 +450,6 @@ namespace HT.Framework
             _transitionValue = 1f;
             _transitionActive = false;
         }
-
         /// <summary>
         /// 立即关闭持续高亮
         /// </summary>
@@ -478,7 +459,6 @@ namespace HT.Framework
             _transitionValue = 0f;
             _transitionActive = false;
         }
-
         /// <summary>
         /// 持续高亮模式立即切换
         /// </summary>
@@ -488,7 +468,6 @@ namespace HT.Framework
             _transitionValue = _isConstantly ? 1f : 0f;
             _transitionActive = false;
         }
-
         /// <summary>
         /// 开启遮光板
         /// </summary>
@@ -496,7 +475,6 @@ namespace HT.Framework
         {
             _isOccluder = true;
         }
-
         /// <summary>
         /// 关闭遮光板
         /// </summary>
@@ -504,7 +482,6 @@ namespace HT.Framework
         {
             _isOccluder = false;
         }
-
         /// <summary>
         /// 遮光板模式切换
         /// </summary>
@@ -512,7 +489,6 @@ namespace HT.Framework
         {
             _isOccluder = !_isOccluder;
         }
-
         /// <summary>
         /// 关闭所有高亮模式
         /// </summary>
@@ -525,7 +501,6 @@ namespace HT.Framework
             _transitionValue = 0f;
             _transitionActive = false;
         }
-
         /// <summary>
         /// 死亡
         /// </summary>
@@ -554,7 +529,6 @@ namespace HT.Framework
             _materialsIsDirty = false;
             _currentHighlightingColor = Color.clear;
         }
-
         private void CacheRenderers(Renderer[] renderers)
         {
             for (int i = 0; i < renderers.Length; i++)
@@ -567,7 +541,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void SetColor(Color color)
         {
             if (_currentHighlightingColor == color)
@@ -591,7 +564,6 @@ namespace HT.Framework
 
             _currentHighlightingColor = color;
         }
-
         private void UpdateColors()
         {
             if (_currentHighlightingState == false)
@@ -630,7 +602,6 @@ namespace HT.Framework
                 return;
             }
         }
-
         private void PerformTransition()
         {
             if (_transitionActive == false)
@@ -657,7 +628,6 @@ namespace HT.Framework
                 return;
             }
         }
-
         private void UpdateHighlighting(bool enable, bool writeDepth)
         {
             if (enable)
@@ -708,7 +678,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private IEnumerator EndOfFrame()
         {
             while (enabled)

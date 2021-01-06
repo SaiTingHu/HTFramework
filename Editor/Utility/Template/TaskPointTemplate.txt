@@ -22,17 +22,14 @@ public class #SCRIPTNAME# : TaskPointBase
     {
         base.OnStart();
     }
-
     protected override void OnUpdate()
     {
         base.OnUpdate();
     }
-
 	public override void OnGuide()
     {
         base.OnGuide();
     }
-
 	public override void OnAutoComplete()
     {
         if (_isCompleting)
@@ -42,12 +39,10 @@ public class #SCRIPTNAME# : TaskPointBase
 
         base.OnAutoComplete();
     }
-
     protected override void OnEnd()
     {
         base.OnEnd();
     }
-
     protected override IEnumerator OnBeforeComplete()
     {
         yield return base.OnBeforeComplete();

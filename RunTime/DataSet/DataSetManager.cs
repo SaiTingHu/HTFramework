@@ -181,7 +181,6 @@ namespace HT.Framework
         {
             return _helper.GetCount(type);
         }
-
         /// <summary>
         /// 清空某一类型的数据集仓库
         /// </summary>

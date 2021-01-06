@@ -12,15 +12,25 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultExceptionHandlerHelper : IExceptionHandlerHelper
     {
-        //异常处理器
+        /// <summary>
+        /// 异常处理器
+        /// </summary>
         private ExceptionHandler _module;
-        //异常日志Builder
+        /// <summary>
+        /// 异常日志Builder
+        /// </summary>
         private StringBuilder _logInfoBuilder = new StringBuilder();
-        //异常日志保存路径
+        /// <summary>
+        /// 异常日志保存路径
+        /// </summary>
         private string _logPath;
-        //邮件发送者
+        /// <summary>
+        /// 邮件发送者
+        /// </summary>
         private EmailSender _sender;
-        //回发邮件缓冲计时器
+        /// <summary>
+        /// 回发邮件缓冲计时器
+        /// </summary>
         private float _reportBufferTimer = 0;
 
         /// <summary>

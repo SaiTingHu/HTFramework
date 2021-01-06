@@ -33,7 +33,6 @@ namespace HT.Framework
             EnumPopup(Target.State, out Target.State, "State");
             GUILayout.EndHorizontal();
         }
-
         private void GenerateGUID()
         {
             if (Target.GUID == "<None>")

@@ -13,21 +13,6 @@ namespace HT.Framework
     public sealed class INIParser
     {
         /// <summary>
-        /// 配置文件完整路径
-        /// </summary>
-        public string FileName { get; private set; } = null;
-        /// <summary>
-        /// 配置文件内容
-        /// </summary>
-        public string IniString { get; private set; } = null;
-
-        private object _lock = new object();
-        private bool _autoFlush = false;
-        private Dictionary<string, Dictionary<string, string>> _sections = new Dictionary<string, Dictionary<string, string>>();
-        private Dictionary<string, Dictionary<string, string>> _modified = new Dictionary<string, Dictionary<string, string>>();
-        private bool _cacheModified = false;
-
-        /// <summary>
         /// 写入配置数据
         /// </summary>
         /// <param name="section">配置单元</param>
@@ -41,7 +26,6 @@ namespace HT.Framework
             ini.WriteValue(section, key, value);
             ini.Close();
         }
-
         /// <summary>
         /// 读取配置数据
         /// </summary>
@@ -59,6 +43,21 @@ namespace HT.Framework
             return value;
         }
 
+        private object _lock = new object();
+        private bool _autoFlush = false;
+        private Dictionary<string, Dictionary<string, string>> _sections = new Dictionary<string, Dictionary<string, string>>();
+        private Dictionary<string, Dictionary<string, string>> _modified = new Dictionary<string, Dictionary<string, string>>();
+        private bool _cacheModified = false;
+
+        /// <summary>
+        /// 配置文件完整路径
+        /// </summary>
+        public string FileName { get; private set; } = null;
+        /// <summary>
+        /// 配置文件内容
+        /// </summary>
+        public string IniString { get; private set; } = null;
+        
         /// <summary>
         /// 打开配置文件
         /// </summary>
@@ -80,7 +79,6 @@ namespace HT.Framework
 
             Initialize(IniString, false);
         }
-
         /// <summary>
         /// 打开配置文件
         /// </summary>
@@ -107,7 +105,6 @@ namespace HT.Framework
                 Initialize(IniString, false);
             }
         }
-
         /// <summary>
         /// 打开配置文件，通过配置数据
         /// </summary>
@@ -117,7 +114,6 @@ namespace HT.Framework
             FileName = null;
             Initialize(str, false);
         }
-
         /// <summary>
         /// 关闭配置文件
         /// </summary>
@@ -152,7 +148,6 @@ namespace HT.Framework
                 return value;
             }
         }
-
         /// <summary>
         /// 读取配置
         /// </summary>
@@ -167,7 +162,6 @@ namespace HT.Framework
             if (int.TryParse(stringValue, out Value)) return (Value != 0);
             return defaultValue;
         }
-
         /// <summary>
         /// 读取配置
         /// </summary>
@@ -182,7 +176,6 @@ namespace HT.Framework
             if (int.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
             return defaultValue;
         }
-
         /// <summary>
         /// 读取配置
         /// </summary>
@@ -197,7 +190,6 @@ namespace HT.Framework
             if (long.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
             return defaultValue;
         }
-
         /// <summary>
         /// 读取配置
         /// </summary>
@@ -212,7 +204,6 @@ namespace HT.Framework
             if (double.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
             return defaultValue;
         }
-
         /// <summary>
         /// 读取配置
         /// </summary>
@@ -232,7 +223,6 @@ namespace HT.Framework
                 return defaultValue;
             }
         }
-
         /// <summary>
         /// 读取配置
         /// </summary>
@@ -282,7 +272,6 @@ namespace HT.Framework
                 if (_autoFlush) PerformFlush();
             }
         }
-
         /// <summary>
         /// 写入配置
         /// </summary>
@@ -293,7 +282,6 @@ namespace HT.Framework
         {
             WriteValue(sectionName, key, (value) ? ("1") : ("0"));
         }
-
         /// <summary>
         /// 写入配置
         /// </summary>
@@ -304,7 +292,6 @@ namespace HT.Framework
         {
             WriteValue(sectionName, key, value.ToString(CultureInfo.InvariantCulture));
         }
-
         /// <summary>
         /// 写入配置
         /// </summary>
@@ -315,7 +302,6 @@ namespace HT.Framework
         {
             WriteValue(sectionName, key, value.ToString(CultureInfo.InvariantCulture));
         }
-
         /// <summary>
         /// 写入配置
         /// </summary>
@@ -326,7 +312,6 @@ namespace HT.Framework
         {
             WriteValue(sectionName, key, value.ToString(CultureInfo.InvariantCulture));
         }
-
         /// <summary>
         /// 写入配置
         /// </summary>
@@ -337,7 +322,6 @@ namespace HT.Framework
         {
             WriteValue(sectionName, key, EncodeByteArray(value));
         }
-
         /// <summary>
         /// 写入配置
         /// </summary>
@@ -358,7 +342,6 @@ namespace HT.Framework
         {
             return _sections.ContainsKey(sectionName);
         }
-
         /// <summary>
         /// 是否存在指定的键名称
         /// </summary>
@@ -377,7 +360,6 @@ namespace HT.Framework
             }
             else return false;
         }
-
         /// <summary>
         /// 删除数据单元
         /// </summary>
@@ -395,7 +377,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 删除键
         /// </summary>
@@ -436,7 +417,6 @@ namespace HT.Framework
             _autoFlush = autoFlush;
             Refresh();
         }
-        
         /// <summary>
         /// 解析配置单元的名称
         /// </summary>
@@ -449,7 +429,6 @@ namespace HT.Framework
             if (line.Length < 3) return null;
             return line.Substring(1, line.Length - 2);
         }
-
         /// <summary>
         /// 解析键值
         /// </summary>
@@ -469,7 +448,6 @@ namespace HT.Framework
             value = (j > 0) ? (line.Substring(i + 1, j).Trim()) : ("");
             return true;
         }
-
         /// <summary>
         /// 是否是注释
         /// </summary>
@@ -482,7 +460,6 @@ namespace HT.Framework
             if (ParseKeyValuePair(line, ref tmpKey, ref tmpValue)) return false;
             return true;
         }
-
         /// <summary>
         /// 刷新
         /// </summary>
@@ -539,7 +516,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 执行配置数据覆盖
         /// </summary>
@@ -720,7 +696,6 @@ namespace HT.Framework
                 sw = null;
             }
         }
-        
         /// <summary>
         /// 编码字节数组
         /// </summary>
@@ -747,7 +722,6 @@ namespace HT.Framework
             }
             return sb.ToString();
         }
-
         /// <summary>
         /// 解码字节数组
         /// </summary>

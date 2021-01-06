@@ -17,7 +17,6 @@ namespace HT.Framework
                 return "Exception handler, when any exception occurs, he catches it!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -97,7 +96,6 @@ namespace HT.Framework
                 }
             }
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

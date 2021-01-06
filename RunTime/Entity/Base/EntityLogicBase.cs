@@ -41,42 +41,36 @@ namespace HT.Framework
         {
             AutomaticTask();
         }
-        
         /// <summary>
         /// 显示实体
         /// </summary>
         public virtual void OnShow()
         {
         }
-
         /// <summary>
         /// 隐藏实体
         /// </summary>
         public virtual void OnHide()
         {
         }
-
         /// <summary>
         /// 销毁实体
         /// </summary>
         public virtual void OnDestroy()
         {
         }
-
         /// <summary>
         /// 实体逻辑刷新
         /// </summary>
         public virtual void OnUpdate()
         {
         }
-
         /// <summary>
         /// 重置实体
         /// </summary>
         public virtual void Reset()
         {
         }
-
         /// <summary>
         /// 自动化任务
         /// </summary>

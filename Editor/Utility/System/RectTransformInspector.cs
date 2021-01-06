@@ -19,6 +19,72 @@ namespace HT.Framework
 
         protected override bool IsEnableRuntimeData => false;
 
+        public override void DrawPreview(Rect previewArea)
+        {
+            _originalEditor.DrawPreview(previewArea);
+        }
+        public override string GetInfoString()
+        {
+            return _originalEditor.GetInfoString();
+        }
+        public override GUIContent GetPreviewTitle()
+        {
+            return _originalEditor.GetPreviewTitle();
+        }
+        public override bool HasPreviewGUI()
+        {
+            return _originalEditor.HasPreviewGUI();
+        }
+        public override void OnInteractivePreviewGUI(Rect r, GUIStyle background)
+        {
+            _originalEditor.OnInteractivePreviewGUI(r, background);
+        }
+        public override void OnPreviewGUI(Rect r, GUIStyle background)
+        {
+            _originalEditor.OnPreviewGUI(r, background);
+        }
+        public override void OnPreviewSettings()
+        {
+            _originalEditor.OnPreviewSettings();
+        }
+        public override void ReloadPreviewInstances()
+        {
+            _originalEditor.ReloadPreviewInstances();
+        }
+        public override Texture2D RenderStaticPreview(string assetPath, UnityEngine.Object[] subAssets, int width, int height)
+        {
+            return _originalEditor.RenderStaticPreview(assetPath, subAssets, width, height);
+        }
+        public override bool RequiresConstantRepaint()
+        {
+            return _originalEditor.RequiresConstantRepaint();
+        }
+        public override bool UseDefaultMargins()
+        {
+            return _originalEditor.UseDefaultMargins();
+        }
+
+        private void OnDisable()
+        {
+            if (_originalEditor != null)
+            {
+                DestroyImmediate(_originalEditor);
+            }
+        }
+        private void OnSceneGUI()
+        {
+            if (_originalEditor != null && _originalOnSceneGUI != null)
+            {
+                _originalOnSceneGUI.Invoke(_originalEditor, null);
+            }
+        }
+        protected override void OnHeaderGUI()
+        {
+            if (_originalEditor != null && _originalOnHeaderGUI != null)
+            {
+                _originalOnHeaderGUI.Invoke(_originalEditor, null);
+            }
+        }
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
@@ -35,7 +101,6 @@ namespace HT.Framework
                 _originalOnHeaderGUI = rectTransformEditor.GetMethod("OnHeaderGUI", BindingFlags.Instance | BindingFlags.NonPublic);
             }
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -240,7 +305,6 @@ namespace HT.Framework
             }
             #endregion
         }
-
         private void CreateEmptyParent()
         {
             GameObject parent = new GameObject("EmptyParent");
@@ -254,7 +318,6 @@ namespace HT.Framework
             Selection.activeGameObject = parent;
             EditorGUIUtility.PingObject(parent);
         }
-
         private void UnfoldChildren()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
@@ -263,7 +326,6 @@ namespace HT.Framework
             int id = Target.gameObject.GetInstanceID();
             method.Invoke(window, new object[] { id, true });
         }
-
         private void FoldChildren()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
@@ -272,7 +334,6 @@ namespace HT.Framework
             int id = Target.gameObject.GetInstanceID();
             method.Invoke(window, new object[] { id, false });
         }
-
         private void FoldAll()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
@@ -288,92 +349,12 @@ namespace HT.Framework
                 method.Invoke(hierarchy, args);
             }
         }
-
         private int ClampAngle(float angle)
         {
             if (angle > 180) angle -= 360;
             else if (angle < -180) angle += 360;
 
             return (int)angle;
-        }
-
-        private void OnDisable()
-        {
-            if (_originalEditor != null)
-            {
-                DestroyImmediate(_originalEditor);
-            }
-        }
-
-        private void OnSceneGUI()
-        {
-            if (_originalEditor != null && _originalOnSceneGUI != null)
-            {
-                _originalOnSceneGUI.Invoke(_originalEditor, null);
-            }
-        }
-
-        protected override void OnHeaderGUI()
-        {
-            if (_originalEditor != null && _originalOnHeaderGUI != null)
-            {
-                _originalOnHeaderGUI.Invoke(_originalEditor, null);
-            }
-        }
-
-        public override void DrawPreview(Rect previewArea)
-        {
-            _originalEditor.DrawPreview(previewArea);
-        }
-
-        public override string GetInfoString()
-        {
-            return _originalEditor.GetInfoString();
-        }
-
-        public override GUIContent GetPreviewTitle()
-        {
-            return _originalEditor.GetPreviewTitle();
-        }
-
-        public override bool HasPreviewGUI()
-        {
-            return _originalEditor.HasPreviewGUI();
-        }
-
-        public override void OnInteractivePreviewGUI(Rect r, GUIStyle background)
-        {
-            _originalEditor.OnInteractivePreviewGUI(r, background);
-        }
-
-        public override void OnPreviewGUI(Rect r, GUIStyle background)
-        {
-            _originalEditor.OnPreviewGUI(r, background);
-        }
-
-        public override void OnPreviewSettings()
-        {
-            _originalEditor.OnPreviewSettings();
-        }
-
-        public override void ReloadPreviewInstances()
-        {
-            _originalEditor.ReloadPreviewInstances();
-        }
-
-        public override Texture2D RenderStaticPreview(string assetPath, UnityEngine.Object[] subAssets, int width, int height)
-        {
-            return _originalEditor.RenderStaticPreview(assetPath, subAssets, width, height);
-        }
-
-        public override bool RequiresConstantRepaint()
-        {
-            return _originalEditor.RequiresConstantRepaint();
-        }
-
-        public override bool UseDefaultMargins()
-        {
-            return _originalEditor.UseDefaultMargins();
         }
     }
 }

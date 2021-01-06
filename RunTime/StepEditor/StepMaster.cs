@@ -106,6 +106,85 @@ namespace HT.Framework
         //暂停时等待
         private WaitUntil _pauseWait;
 
+        /// <summary>
+        /// 当前是否运行中
+        /// </summary>
+        public bool IsRunning
+        {
+            get
+            {
+                return _running;
+            }
+        }
+        /// <summary>
+        /// 暂停步骤控制者
+        /// </summary>
+        public bool Pause
+        {
+            get
+            {
+                return _pause;
+            }
+            set
+            {
+                _pause = value;
+                if (_pause)
+                {
+                    StopSkip();
+                }
+            }
+        }
+        /// <summary>
+        /// 当前步骤索引
+        /// </summary>
+        public int CurrentStepIndex
+        {
+            get
+            {
+                return _currentStepIndex;
+            }
+        }
+        /// <summary>
+        /// 当前步骤内容
+        /// </summary>
+        public StepContent CurrentStepContent
+        {
+            get
+            {
+                return _currentContent;
+            }
+        }
+        /// <summary>
+        /// 当前步骤助手
+        /// </summary>
+        public StepHelper CurrentStepHelper
+        {
+            get
+            {
+                return _currentHelper;
+            }
+        }
+        /// <summary>
+        /// 当前所有的步骤，包含启用的和未启用的
+        /// </summary>
+        public List<StepContent> AllStep
+        {
+            get
+            {
+                return _stepContents;
+            }
+        }
+        /// <summary>
+        /// 步骤数量
+        /// </summary>
+        public int StepCount
+        {
+            get
+            {
+                return _stepContents.Count;
+            }
+        }
+
         private StepMaster()
         {
 
@@ -256,85 +335,7 @@ namespace HT.Framework
 
             Pause = false;
         }
-
-        /// <summary>
-        /// 当前是否运行中
-        /// </summary>
-        public bool IsRunning
-        {
-            get
-            {
-                return _running;
-            }
-        }
-        /// <summary>
-        /// 暂停步骤控制者
-        /// </summary>
-        public bool Pause
-        {
-            get
-            {
-                return _pause;
-            }
-            set
-            {
-                _pause = value;
-                if (_pause)
-                {
-                    StopSkip();
-                }
-            }
-        }
-        /// <summary>
-        /// 当前步骤索引
-        /// </summary>
-        public int CurrentStepIndex
-        {
-            get
-            {
-                return _currentStepIndex;
-            }
-        }
-        /// <summary>
-        /// 当前步骤内容
-        /// </summary>
-        public StepContent CurrentStepContent
-        {
-            get
-            {
-                return _currentContent;
-            }
-        }
-        /// <summary>
-        /// 当前步骤助手
-        /// </summary>
-        public StepHelper CurrentStepHelper
-        {
-            get
-            {
-                return _currentHelper;
-            }
-        }
-        /// <summary>
-        /// 当前所有的步骤，包含启用的和未启用的
-        /// </summary>
-        public List<StepContent> AllStep
-        {
-            get
-            {
-                return _stepContents;
-            }
-        }
-        /// <summary>
-        /// 步骤数量
-        /// </summary>
-        public int StepCount
-        {
-            get
-            {
-                return _stepContents.Count;
-            }
-        }
+        
         /// <summary>
         /// 根据步骤ID获取步骤的启用标记
         /// </summary>

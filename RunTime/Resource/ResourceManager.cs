@@ -24,6 +24,17 @@ namespace HT.Framework
         
         private IResourceHelper _helper;
 
+        /// <summary>
+        /// 当前的资源加载模式
+        /// </summary>
+        public ResourceLoadMode LoadMode
+        {
+            get
+            {
+                return _helper.LoadMode;
+            }
+        }
+
         private ResourceManager()
         {
 
@@ -35,17 +46,7 @@ namespace HT.Framework
             _helper = Helper as IResourceHelper;
             _helper.SetLoader(Mode, IsEditorMode, AssetBundleManifestName);
         }
-
-        /// <summary>
-        /// 当前的资源加载模式
-        /// </summary>
-        public ResourceLoadMode LoadMode
-        {
-            get
-            {
-                return _helper.LoadMode;
-            }
-        }
+        
         /// <summary>
         /// 通过名称获取指定的AssetBundle
         /// </summary>

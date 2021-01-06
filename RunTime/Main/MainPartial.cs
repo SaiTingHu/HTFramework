@@ -287,6 +287,36 @@ namespace HT.Framework
         private Dictionary<HTFrameworkModule, InternalModuleBase> _internalModules = new Dictionary<HTFrameworkModule, InternalModuleBase>();
         private bool _isPause = false;
 
+        /// <summary>
+        /// 暂停主程序
+        /// </summary>
+        public bool Pause
+        {
+            get
+            {
+                return _isPause;
+            }
+            set
+            {
+                if (_isPause == value)
+                {
+                    return;
+                }
+
+                _isPause = value;
+                if (_isPause)
+                {
+                    OnPause();
+                    m_Event.Throw(this, m_ReferencePool.Spawn<EventPauseGame>());
+                }
+                else
+                {
+                    OnUnPause();
+                    m_Event.Throw(this, m_ReferencePool.Spawn<EventUnPauseGame>());
+                }
+            }
+        }
+
         private void ModuleInitialization()
         {
             InternalModuleBase[] internalModules = transform.GetComponentsInChildren<InternalModuleBase>(true);
@@ -403,35 +433,6 @@ namespace HT.Framework
             else
             {
                 throw new HTFrameworkException(HTFrameworkModule.Main, "获取内置模块失败：不存在名为 " + moduleName.ToString() + " 的内置模块！");
-            }
-        }
-        /// <summary>
-        /// 暂停主程序
-        /// </summary>
-        public bool Pause
-        {
-            get
-            {
-                return _isPause;
-            }
-            set
-            {
-                if (_isPause == value)
-                {
-                    return;
-                }
-
-                _isPause = value;
-                if (_isPause)
-                {
-                    OnPause();
-                    m_Event.Throw(this, m_ReferencePool.Spawn<EventPauseGame>());
-                }
-                else
-                {
-                    OnUnPause();
-                    m_Event.Throw(this, m_ReferencePool.Spawn<EventUnPauseGame>());
-                }
             }
         }
         #endregion

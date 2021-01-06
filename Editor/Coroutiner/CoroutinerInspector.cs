@@ -17,7 +17,6 @@ namespace HT.Framework
                 return "Coroutiner, a unified scheduler for the coroutines, including execution and destruction, as well as viewing the status of all coroutines!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -45,7 +44,6 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

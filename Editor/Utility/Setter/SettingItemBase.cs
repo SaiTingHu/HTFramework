@@ -19,6 +19,7 @@ namespace HT.Framework
                 return GetType().FullName;
             }
         }
+
         /// <summary>
         /// 开始设置
         /// </summary>

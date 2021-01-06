@@ -17,7 +17,6 @@ namespace HT.Framework
                 return "Debug Manager, this is a runtime debugger for games!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -42,7 +41,6 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
             }
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

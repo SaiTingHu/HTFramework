@@ -15,6 +15,7 @@ namespace HT.Framework
     public sealed class UIPolygon : Image
     {
         private PolygonCollider2D _polygon = null;
+
         private PolygonCollider2D polygon
         {
             get
@@ -61,6 +62,7 @@ namespace HT.Framework
         }
 #endif
     }
+
 #if UNITY_EDITOR
     [CustomEditor(typeof(UIPolygon), true)]
     public class UIPolygonInspector : Editor

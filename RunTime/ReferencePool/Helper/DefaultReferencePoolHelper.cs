@@ -9,6 +9,11 @@ namespace HT.Framework
     public sealed class DefaultReferencePoolHelper : IReferencePoolHelper
     {
         /// <summary>
+        /// 对象池默认上限
+        /// </summary>
+        private int _limit;
+
+        /// <summary>
         /// 引用池管理器
         /// </summary>
         public InternalModuleBase Module { get; set; }
@@ -16,11 +21,6 @@ namespace HT.Framework
         /// 所有引用池
         /// </summary>
         public Dictionary<Type, ReferenceSpawnPool> SpawnPools { get; private set; } = new Dictionary<Type, ReferenceSpawnPool>();
-
-        /// <summary>
-        /// 对象池默认上限
-        /// </summary>
-        private int _limit;
         
         /// <summary>
         /// 初始化助手

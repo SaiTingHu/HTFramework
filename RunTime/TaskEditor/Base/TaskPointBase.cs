@@ -62,7 +62,6 @@ namespace HT.Framework
         {
             
         }
-
         /// <summary>
         /// 任务点开始后，帧刷新
         /// </summary>
@@ -70,7 +69,6 @@ namespace HT.Framework
         {
 
         }
-
         /// <summary>
         /// 任务点指引
         /// </summary>
@@ -78,7 +76,6 @@ namespace HT.Framework
         {
 
         }
-
         /// <summary>
         /// 完成任务点
         /// </summary>
@@ -93,7 +90,6 @@ namespace HT.Framework
             _isCompleting = true;
             Main.Current.StartCoroutine(CompleteCoroutine(completeAction));
         }
-
         /// <summary>
         /// 完成任务点协程
         /// </summary>
@@ -106,7 +102,6 @@ namespace HT.Framework
             OnEnd();
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
         }
-
         /// <summary>
         /// 任务点触发完成之前
         /// </summary>
@@ -114,7 +109,6 @@ namespace HT.Framework
         {
             yield return null;
         }
-
         /// <summary>
         /// 自动完成任务点
         /// </summary>
@@ -130,7 +124,6 @@ namespace HT.Framework
             OnEnd();
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
         }
-
         /// <summary>
         /// 任务点结束
         /// </summary>
@@ -152,7 +145,6 @@ namespace HT.Framework
 
             OnUpdate();
         }
-
         internal void ReSet()
         {
             IsEnable = true;
@@ -186,7 +178,6 @@ namespace HT.Framework
                 return _showName;
             }
         }
-
         internal Vector2 LeftPosition
         {
             get
@@ -194,7 +185,6 @@ namespace HT.Framework
                 return new Vector2(Anchor.x + 15, Anchor.y + 30);
             }
         }
-
         internal Vector2 RightPosition
         {
             get
@@ -202,7 +192,6 @@ namespace HT.Framework
                 return new Vector2(Anchor.x + Anchor.width - 15, Anchor.y + 30);
             }
         }
-
         internal Vector2 LeftTangent
         {
             get
@@ -210,7 +199,6 @@ namespace HT.Framework
                 return new Vector2(Anchor.x - 200, Anchor.y + 30);
             }
         }
-
         internal Vector2 RightTangent
         {
             get
@@ -250,12 +238,10 @@ namespace HT.Framework
 
             OnWired();
         }
-
         internal void OnDrag(Vector2 delta)
         {
             Anchor.position += delta;
         }
-
         private void OnWired()
         {
             if (_isWired)
@@ -270,7 +256,6 @@ namespace HT.Framework
                 }
             }
         }
-
         internal void OnPointEventHandle(Event e, TaskContentBase content)
         {
             switch (e.type)
@@ -424,7 +409,6 @@ namespace HT.Framework
                     break;
             }
         }
-        
         private bool ChoosePoint(Vector2 mousePosition, TaskContentBase content, out int index)
         {
             for (int i = 0; i < content.Points.Count; i++)
@@ -438,7 +422,6 @@ namespace HT.Framework
             index = -1;
             return false;
         }
-
         internal int OnDependGUI(TaskContentBase taskContent)
         {
             int height = 0;
@@ -462,7 +445,6 @@ namespace HT.Framework
 
             return height;
         }
-
         public virtual int OnPropertyGUI()
         {
             int height = 0;
@@ -544,7 +526,6 @@ namespace HT.Framework
 
             return height;
         }
-        
         private void RightClickMenu(TaskContentBase content)
         {
             GenericMenu gm = new GenericMenu();
@@ -562,7 +543,6 @@ namespace HT.Framework
             });
             gm.ShowAsContext();
         }
-
         private void DeletePoint(TaskContentBase content)
         {
             int index = content.Points.IndexOf(this);
@@ -589,7 +569,6 @@ namespace HT.Framework
             TaskContentBase.DestroySerializeSubObject(this, content);
             content.Points.Remove(this);
         }
-
         protected void TaskGameObjectField(ref TaskGameObject taskGameObject, string name, float nameWidth)
         {
             if (taskGameObject == null)

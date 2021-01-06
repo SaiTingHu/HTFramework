@@ -12,7 +12,6 @@ namespace HT.Framework
         {
             return bBool.Value;
         }
-
         public static implicit operator string(BindableBool bBool)
         {
             return bBool.Value.ToString();
@@ -41,7 +40,6 @@ namespace HT.Framework
         {
             Value = false;
         }
-
         public BindableBool(bool value)
         {
             Value = value;

@@ -48,7 +48,6 @@
             Korean = korean;
             Japanese = japanese;
         }
-
         public Word(string chinese, string english)
         {
             Chinese = chinese;

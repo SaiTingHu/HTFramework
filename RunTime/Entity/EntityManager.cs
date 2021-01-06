@@ -22,18 +22,6 @@ namespace HT.Framework
         
         private IEntityHelper _helper;
 
-        private EntityManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IEntityHelper;
-            _helper.SetDefine(DefineEntityNames, DefineEntityTargets);
-        }
-
         /// <summary>
         /// 是否隐藏所有实体
         /// </summary>
@@ -49,6 +37,18 @@ namespace HT.Framework
             }
         }
 
+        private EntityManager()
+        {
+
+        }
+        internal override void OnInitialization()
+        {
+            base.OnInitialization();
+
+            _helper = Helper as IEntityHelper;
+            _helper.SetDefine(DefineEntityNames, DefineEntityTargets);
+        }
+        
         /// <summary>
         /// 创建实体
         /// </summary>

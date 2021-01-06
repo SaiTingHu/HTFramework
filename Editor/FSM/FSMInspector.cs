@@ -33,7 +33,6 @@ namespace HT.Framework
                 _currentStateName = nameAttribute != null ? nameAttribute.Name : Target.CurrentState.GetType().Name;
             }
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -235,7 +234,6 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

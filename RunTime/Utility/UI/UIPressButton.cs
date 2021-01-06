@@ -24,25 +24,24 @@ namespace HT.Framework
 
         private bool _isPressed;
 
+        private void Update()
+        {
+            if (_isPressed)
+            {
+                OnMousePressed.Invoke();
+            }
+        }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             _isPressed = true;
         }
-
         public void OnPointerUp(PointerEventData eventData)
         {
             if (_isPressed)
             {
                 _isPressed = false;
                 OnMouseRelease.Invoke();
-            }
-        }
-        
-        private void Update()
-        {
-            if (_isPressed)
-            {
-                OnMousePressed.Invoke();
             }
         }
     }

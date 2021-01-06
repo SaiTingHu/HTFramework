@@ -12,7 +12,11 @@ namespace HT.Framework
         /// 所有网络接口
         /// </summary>
         Dictionary<string, WebInterfaceBase> WebInterfaces { get; }
-        
+        /// <summary>
+        /// 是否已连接到因特网
+        /// </summary>
+        bool IsConnectedInternet { get; }
+
         /// <summary>
         /// 注册接口（获取 string）
         /// </summary>

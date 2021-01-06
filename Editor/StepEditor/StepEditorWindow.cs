@@ -86,6 +86,7 @@ namespace HT.Framework
                 return false;
             }
         }
+
         protected override void OnEnable()
         {
             base.OnEnable();

@@ -27,7 +27,6 @@ namespace HT.Framework
                 _controllerManager = controllerManager.GetComponent<ControllerManager>();
             }
         }
-        
         public override void OnSettingGUI()
         {
             base.OnSettingGUI();
@@ -56,7 +55,6 @@ namespace HT.Framework
                 }
             }
         }
-        
         public override void OnReset()
         {
             base.OnReset();

@@ -31,7 +31,6 @@ namespace HT.Framework
             _isDeveloperMode = Unsupported.IsDeveloperMode();
             _isEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, false);
         }
-        
         public override void OnSettingGUI()
         {
             base.OnSettingGUI();

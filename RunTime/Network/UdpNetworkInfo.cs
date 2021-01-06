@@ -11,7 +11,6 @@
         {
             Message = message;
         }
-
         public UdpNetworkInfo()
         {
         }

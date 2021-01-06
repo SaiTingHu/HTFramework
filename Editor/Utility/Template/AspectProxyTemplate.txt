@@ -22,7 +22,6 @@ public class #SCRIPTNAME#<T> : AspectProxyBase<T> where T : I#SCRIPTNAME#
     {
 		return args;
     }
-
 	/// <summary>
     /// 方法调用后
     /// </summary>

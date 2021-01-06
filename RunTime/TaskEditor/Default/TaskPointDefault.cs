@@ -20,7 +20,6 @@ namespace HT.Framework
 
             Log.Info("任务点：[" + Name + "]开始!");
         }
-
         protected override void OnUpdate()
         {
             base.OnUpdate();
@@ -29,14 +28,12 @@ namespace HT.Framework
 
             Log.Info("任务点：[" + Name + "]监控中......");
         }
-
         public override void OnGuide()
         {
             base.OnGuide();
 
             Log.Info("任务点：[" + Name + "]指引!");
         }
-
         public override void OnAutoComplete()
         {
             if (_isCompleting)
@@ -48,14 +45,12 @@ namespace HT.Framework
 
             base.OnAutoComplete();
         }
-
         protected override void OnEnd()
         {
             base.OnEnd();
 
             Log.Info("任务点：[" + Name + "]结束!");
         }
-
         protected override IEnumerator OnBeforeComplete()
         {
             yield return base.OnBeforeComplete();

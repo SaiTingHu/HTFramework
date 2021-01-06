@@ -21,7 +21,6 @@ namespace HT.Framework
                 _onValueChangedEvents.Add(string.Format("{0}: {1} / {2}()", (i + 1).ToString(), _target.onValueChanged.GetPersistentTarget(i).name, _target.onValueChanged.GetPersistentMethodName(i)));
             }
         }
-
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;

@@ -27,7 +27,6 @@ namespace HT.Framework
             StackTrace = stackTrace;
             return this;
         }
-
         public void Reset()
         {
             Type = LogType.Error;

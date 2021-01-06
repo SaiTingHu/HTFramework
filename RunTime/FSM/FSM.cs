@@ -44,7 +44,6 @@ namespace HT.Framework
         /// 当前最终状态名称【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string FinalStateName = "";
-
         /// <summary>
         /// 有限状态机名称
         /// </summary>
@@ -141,7 +140,6 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.FSM, "有限状态机 " + Name + " 丢失了最终状态 " + FinalState + "！");
             }
         }
-
         private void Start()
         {
             //进入默认状态
@@ -158,7 +156,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void Update()
         {
             if (Main.Current.Pause)
@@ -172,7 +169,6 @@ namespace HT.Framework
                 _currentState.OnReason();
             }
         }
-
         private void OnDestroy()
         {
             foreach (var state in _stateInstances)

@@ -30,6 +30,11 @@ namespace HT.Framework
             return entity;
         }
 
+        [SerializeField] private string _name = "";
+        [SerializeField] private string _id = "";
+        private Dictionary<Type, ECS_Component> _components = new Dictionary<Type, ECS_Component>();
+        private Dictionary<int, ECS_Order> _orders = new Dictionary<int, ECS_Order>();
+
         /// <summary>
         /// 实体名称
         /// </summary>
@@ -54,12 +59,7 @@ namespace HT.Framework
                 return _id;
             }
         }
-
-        [SerializeField] private string _name = "";
-        [SerializeField] private string _id = "";
-        private Dictionary<Type, ECS_Component> _components = new Dictionary<Type, ECS_Component>();
-        private Dictionary<int, ECS_Order> _orders = new Dictionary<int, ECS_Order>();
-
+        
         protected override void Awake()
         {
             base.Awake();

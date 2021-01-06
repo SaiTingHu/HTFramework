@@ -12,7 +12,6 @@ namespace HT.Framework
         {
             _target = Target as InputField;
         }
-
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;

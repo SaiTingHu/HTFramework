@@ -21,7 +21,6 @@ namespace HT.Framework
                 return "ECS Manager, this is a ECS based development mode!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -42,7 +41,6 @@ namespace HT.Framework
                 _systemFoldouts.Add(system.Value.Name, false);
             }
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

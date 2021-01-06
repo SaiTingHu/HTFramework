@@ -19,7 +19,6 @@ namespace HT.Framework
                 return "Resource Manager, use this to complete the loading and unloading of resources!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -34,7 +33,6 @@ namespace HT.Framework
 
             _resourceHelper = _helper as IResourceHelper;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -72,7 +70,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

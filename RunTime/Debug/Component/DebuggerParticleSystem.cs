@@ -13,7 +13,6 @@ namespace HT.Framework
             _target = Target as ParticleSystem;
             _mainModule = _target.main;
         }
-
         public override void OnDebuggerGUI()
         {
             GUILayout.BeginHorizontal();

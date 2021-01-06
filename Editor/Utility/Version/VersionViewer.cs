@@ -34,21 +34,18 @@ namespace HT.Framework
                 Close();
             }
         }
-
         protected override void OnTitleGUI()
         {
             base.OnTitleGUI();
 
             GUILayout.FlexibleSpace();
         }
-
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
 
             VersionGUI();
         }
-        
         private void VersionGUI()
         {
             GUILayout.BeginHorizontal();
@@ -150,7 +147,6 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.white;
             }
         }
-
         private void ReleaseGUI()
         {
             if (_releaseVersion == null)

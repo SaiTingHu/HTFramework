@@ -13,7 +13,6 @@ namespace HT.Framework
             _target = Target as MeshFilter;
             _vertexCount = _target.mesh ? _target.mesh.vertexCount.ToString() : "0";
         }
-
         public override void OnDebuggerGUI()
         {
             GUILayout.BeginHorizontal();

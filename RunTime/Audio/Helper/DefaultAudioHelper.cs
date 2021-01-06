@@ -776,7 +776,10 @@ namespace HT.Framework
             OneShootSource.PlayOneShot(clip);
         }
 
-        //提取闲置中的多通道音源
+        /// <summary>
+        /// 提取闲置中的多通道音源
+        /// </summary>
+        /// <returns>闲置中的多通道音源</returns>
         private AudioSource ExtractIdleMultipleAudioSource()
         {
             for (int i = 0; i < MultipleSources.Count; i++)

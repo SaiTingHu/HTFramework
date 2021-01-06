@@ -21,7 +21,6 @@ namespace HT.Framework
                 return "Controller Manager, it encapsulation free view controller, first person controller, third person controller, etc!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -63,51 +62,6 @@ namespace HT.Framework
                 PropertyField("FreeControlBounds");
             }
         }
-
-        private void OnSceneGUI()
-        {
-            if (Target.IsEnableBounds)
-            {
-                if (_handles.Count != Target.FreeControlBounds.Count)
-                {
-                    while (_handles.Count < Target.FreeControlBounds.Count)
-                    {
-                        _handles.Add(new BoxBoundsHandle());
-                    }
-                    while (_handles.Count > Target.FreeControlBounds.Count)
-                    {
-                        _handles.RemoveAt(0);
-                    }
-                }
-
-                if (_handles.Count > 0)
-                {
-                    using (new Handles.DrawingScope(Color.cyan))
-                    {
-                        EditorGUI.BeginChangeCheck();
-                        for (int i = 0; i < _handles.Count; i++)
-                        {
-                            _handles[i].center = Target.FreeControlBounds[i].center;
-                            _handles[i].size = Target.FreeControlBounds[i].size;
-                            _handles[i].DrawHandle();
-                        }
-                        if (EditorGUI.EndChangeCheck())
-                        {
-                            Undo.RecordObject(Target, "Change FreeControl Bounds");
-                            for (int i = 0; i < _handles.Count; i++)
-                            {
-                                Bounds bounds = Target.FreeControlBounds[i];
-                                bounds.center = _handles[i].center;
-                                bounds.size = _handles[i].size;
-                                Target.FreeControlBounds[i] = bounds;
-                            }
-                            HasChanged();
-                        }
-                    }
-                }
-            }
-        }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
@@ -166,6 +120,49 @@ namespace HT.Framework
                     GUIUtility.systemCopyBuffer = Target.LookAngle.ToCopyString("F2");
                 }
                 GUILayout.EndHorizontal();
+            }
+        }
+        private void OnSceneGUI()
+        {
+            if (Target.IsEnableBounds)
+            {
+                if (_handles.Count != Target.FreeControlBounds.Count)
+                {
+                    while (_handles.Count < Target.FreeControlBounds.Count)
+                    {
+                        _handles.Add(new BoxBoundsHandle());
+                    }
+                    while (_handles.Count > Target.FreeControlBounds.Count)
+                    {
+                        _handles.RemoveAt(0);
+                    }
+                }
+
+                if (_handles.Count > 0)
+                {
+                    using (new Handles.DrawingScope(Color.cyan))
+                    {
+                        EditorGUI.BeginChangeCheck();
+                        for (int i = 0; i < _handles.Count; i++)
+                        {
+                            _handles[i].center = Target.FreeControlBounds[i].center;
+                            _handles[i].size = Target.FreeControlBounds[i].size;
+                            _handles[i].DrawHandle();
+                        }
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            Undo.RecordObject(Target, "Change FreeControl Bounds");
+                            for (int i = 0; i < _handles.Count; i++)
+                            {
+                                Bounds bounds = Target.FreeControlBounds[i];
+                                bounds.center = _handles[i].center;
+                                bounds.size = _handles[i].size;
+                                Target.FreeControlBounds[i] = bounds;
+                            }
+                            HasChanged();
+                        }
+                    }
+                }
             }
         }
     }

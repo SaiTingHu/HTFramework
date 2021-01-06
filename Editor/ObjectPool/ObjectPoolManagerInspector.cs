@@ -19,7 +19,6 @@ namespace HT.Framework
                 return "Object pool manager, it manages all object pools and can register new object pools!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -34,7 +33,6 @@ namespace HT.Framework
 
             _objectPoolHelper = _helper as IObjectPoolHelper;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -47,7 +45,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

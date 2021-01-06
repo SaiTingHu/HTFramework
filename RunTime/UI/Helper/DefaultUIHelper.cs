@@ -839,7 +839,14 @@ namespace HT.Framework
             }
         }
 
-        //创建UI实体
+        /// <summary>
+        /// 创建UI实体
+        /// </summary>
+        /// <param name="uIResource">UI资源标记</param>
+        /// <param name="uITypeName">UI逻辑类型</param>
+        /// <param name="uILogic">UI逻辑类对象</param>
+        /// <param name="uIParent">UI的父级</param>
+        /// <returns>加载协程</returns>
         private Coroutine CreateUIEntity(UIResourceAttribute uIResource, string uITypeName, UILogicBase uILogic, Transform uIParent)
         {
             if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)
@@ -858,7 +865,15 @@ namespace HT.Framework
                 }, true);
             }
         }
-        //创建并打开UI实体
+        /// <summary>
+        /// 创建并打开UI实体
+        /// </summary>
+        /// <param name="uIResource">UI资源标记</param>
+        /// <param name="uITypeName">UI逻辑类型</param>
+        /// <param name="uILogic">UI逻辑类对象</param>
+        /// <param name="uIParent">UI的父级</param>
+        /// <param name="args">UI打开的参数</param>
+        /// <returns>加载协程</returns>
         private Coroutine CreateOpenUIEntity(UIResourceAttribute uIResource, string uITypeName, UILogicBase uILogic, Transform uIParent, params object[] args)
         {
             if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)

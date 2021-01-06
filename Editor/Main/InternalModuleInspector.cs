@@ -22,7 +22,6 @@ namespace HT.Framework
                 return "";
             }
         }
-
         protected virtual Type HelperInterface
         {
             get
@@ -37,7 +36,6 @@ namespace HT.Framework
 
             _module = Target as InternalModuleBase;
         }
-
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
@@ -45,7 +43,6 @@ namespace HT.Framework
             FieldInfo fieldInfo = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic);
             _helper = fieldInfo != null ? (fieldInfo.GetValue(Target) as IInternalModuleHelper) : null;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -61,7 +58,6 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }
-
         private void ChangeHelper()
         {
             GenericMenu gm = new GenericMenu();

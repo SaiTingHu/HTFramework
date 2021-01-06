@@ -15,27 +15,22 @@ namespace HT.Framework
         {
             LoadingHandler?.Invoke(progress);
         }
-
         public void OnFinished(bool result)
         {
             FinishedHandler?.Invoke(result);
         }
-
         public override void OnRequestFinished(DownloadHandler handler)
         {
 
         }
-
         public override void OnSetDownloadHandler(UnityWebRequest request)
         {
             request.downloadHandler = new DownloadHandlerFile(Path);
         }
-
         public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }
-
         public override void Reset()
         {
             OfflineHandler = null;

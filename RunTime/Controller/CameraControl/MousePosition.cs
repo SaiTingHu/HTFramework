@@ -21,31 +21,36 @@ namespace HT.Framework
         /// 在UGUI目标上是否可以控制
         /// </summary>
         public bool IsCanOnUGUI = false;
-        
-        //最终的位置
+
+        /// <summary>
+        /// 最终的位置
+        /// </summary>
         private Vector3 _finalPosition;
-        //阻尼缓动模式时的动画
+        /// <summary>
+        /// 阻尼缓动模式时的动画缓存
+        /// </summary>
         private Tweener _moveTweener;
-        //保持追踪模式
+        /// <summary>
+        /// 保持追踪模式
+        /// </summary>
         private bool _isKeepTrack = false;
-        //追踪目标
+        /// <summary>
+        /// 追踪的目标
+        /// </summary>
         private Transform _trackTarget;
 
         /// <summary>
         /// 是否可以控制
         /// </summary>
         public bool CanControl { get; set; } = true;
-
         /// <summary>
         /// 注视目标
         /// </summary>
         public CameraTarget Target { get; set; }
-
         /// <summary>
         /// 操作控制器
         /// </summary>
         public ControllerManager Manager { get; set; }
-
         /// <summary>
         /// 旋转控制器
         /// </summary>
@@ -84,7 +89,6 @@ namespace HT.Framework
                 Target.transform.position = position;
             }
         }
-
         /// <summary>
         /// 进入保持追踪模式
         /// </summary>
@@ -99,7 +103,6 @@ namespace HT.Framework
             _isKeepTrack = true;
             _trackTarget = target;
         }
-
         /// <summary>
         /// 退出保持追踪模式
         /// </summary>
@@ -107,7 +110,6 @@ namespace HT.Framework
         {
             _isKeepTrack = false;
         }
-
         /// <summary>
         /// 刷新
         /// </summary>
@@ -168,7 +170,6 @@ namespace HT.Framework
                 MR.NeedDamping = true;
             }
         }
-
         private void ApplyPosition()
         {
             if (Manager.IsEnableBounds)
@@ -176,7 +177,6 @@ namespace HT.Framework
                 Target.transform.position = ApplyBounds(Target.transform.position);
             }
         }
-
         private Vector3 ApplyBounds(Vector3 position)
         {
             if (InTheBounds(position))
@@ -188,7 +188,6 @@ namespace HT.Framework
                 return ClosestPoint(position);
             }
         }
-
         private bool InTheBounds(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 0)
@@ -211,7 +210,6 @@ namespace HT.Framework
                 return false;
             }
         }
-
         private Vector3 ClosestPoint(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 1)

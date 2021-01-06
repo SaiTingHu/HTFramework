@@ -14,7 +14,6 @@ namespace HT.Framework
         /// UI实体
         /// </summary>
         public GameObject UIEntity { get; internal set; }
-
         /// <summary>
         /// UI是否打开
         /// </summary>
@@ -25,7 +24,6 @@ namespace HT.Framework
                 return UIEntity ? UIEntity.activeSelf : false;
             }
         }
-
         /// <summary>
         /// UI实体是否已创建
         /// </summary>
@@ -36,7 +34,6 @@ namespace HT.Framework
                 return UIEntity;
             }
         }
-
         /// <summary>
         /// 是否支持数据驱动
         /// </summary>
@@ -47,7 +44,6 @@ namespace HT.Framework
                 return Array.Exists(GetType().GetInterfaces(), t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IDataDriver<>));
             }
         }
-
         /// <summary>
         /// 是否启用自动化，这将造成反射的性能消耗
         /// </summary>
@@ -60,7 +56,6 @@ namespace HT.Framework
         {
             AutomaticTask();
         }
-
         /// <summary>
         /// 打开UI
         /// </summary>
@@ -69,7 +64,6 @@ namespace HT.Framework
         {
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventUIOpened>().Fill(this));
         }
-
         /// <summary>
         /// 关闭UI
         /// </summary>
@@ -77,7 +71,6 @@ namespace HT.Framework
         {
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventUIClosed>().Fill(this));
         }
-
         /// <summary>
         /// 销毁UI
         /// </summary>
@@ -90,28 +83,24 @@ namespace HT.Framework
                 dataInfo.SetValue(this, null);
             }
         }
-
         /// <summary>
         /// UI逻辑刷新
         /// </summary>
         public virtual void OnUpdate()
         {
         }
-
         /// <summary>
         /// 打开自己
         /// </summary>
         protected virtual void Open()
         {
         }
-
         /// <summary>
         /// 关闭自己
         /// </summary>
         protected virtual void Close()
         {
         }
-
         /// <summary>
         /// 自动化任务
         /// </summary>

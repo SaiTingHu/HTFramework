@@ -17,7 +17,6 @@ namespace HT.Framework
                 return "Aspect Tracker, you can track code calls anywhere in the program, or intercept him.";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -41,7 +40,6 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
             }
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

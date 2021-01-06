@@ -13,11 +13,12 @@ namespace HT.Framework
         {
             return bSelectable.Value;
         }
-
         public static implicit operator string(BindableSelectable bSelectable)
         {
             return bSelectable.ValueString;
         }
+
+        private List<string> _values = new List<string>();
 
         /// <summary>
         /// 数据值
@@ -51,14 +52,11 @@ namespace HT.Framework
                 return (Value >= 0 && Value < _values.Count) ? _values[Value] : null;
             }
         }
-
-        private List<string> _values = new List<string>();
-
+        
         public BindableSelectable()
         {
             Value = 0;
         }
-
         public BindableSelectable(string[] values, int value = 0)
         {
             for (int i = 0; i < values.Length; i++)
@@ -68,7 +66,6 @@ namespace HT.Framework
 
             Value = value;
         }
-
         public BindableSelectable(List<string> values, int value = 0)
         {
             for (int i = 0; i < values.Count; i++)

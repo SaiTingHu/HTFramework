@@ -47,7 +47,6 @@ namespace HT.Framework
                 }
             }
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -209,7 +208,6 @@ namespace HT.Framework
             }
             GUILayout.EndScrollView();
         }
-
         protected override void OnHeaderGUI()
         {
             base.OnHeaderGUI();

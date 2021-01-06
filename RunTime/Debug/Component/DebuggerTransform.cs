@@ -13,7 +13,6 @@ namespace HT.Framework
             _target = Target as Transform;
             _childCount = _target.childCount;
         }
-
         public override void OnDebuggerGUI()
         {
             GUILayout.BeginHorizontal();

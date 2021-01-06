@@ -75,12 +75,10 @@ namespace HT.Framework
             CheckResourceMode();
             Check();
         }
-
         private void OnDisable()
         {
             _onDisableMethod.Invoke(_buildPlayerWindow, null);
         }
-        
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
@@ -126,7 +124,6 @@ namespace HT.Framework
                 setter.Show();
             }
         }
-
         private void Update()
         {
             if (!_buildPlayerWindow)
@@ -140,7 +137,6 @@ namespace HT.Framework
                 _updateMethod.Invoke(_buildPlayerWindow, null);
             }
         }
-        
         private void BuildButtonMaskGUI()
         {
             if (IsSelectedCurrentBuildTarget())
@@ -151,7 +147,6 @@ namespace HT.Framework
                 GUI.color = Color.white;
             }
         }
-
         private bool IsSelectedCurrentBuildTarget()
         {
             BuildTarget selectedBuildTarget = (BuildTarget)_calculateSelectedBuildTarget.Invoke(null, null);
@@ -159,7 +154,6 @@ namespace HT.Framework
             BuildTargetGroup activeBuildTargetGroup = (BuildTargetGroup)_activeBuildTargetGroup.GetValue(null);
             return EditorUserBuildSettings.activeBuildTarget == selectedBuildTarget && activeBuildTargetGroup == selectedBuildTargetGroup;
         }
-        
         private void CheckResourceMode()
         {
             _isShowBuildABButton = false;
@@ -174,7 +168,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void Check()
         {
             for (int i = 0; i < CheckBuildPreconditions.Count; i++)

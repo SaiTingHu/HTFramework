@@ -7,6 +7,9 @@ namespace HT.Framework
     /// </summary>
     public abstract class BindableType<T>
     {
+        protected T _value;
+        protected HTFAction<T> _onValueChanged;
+
         /// <summary>
         /// 数据值
         /// </summary>
@@ -23,9 +26,6 @@ namespace HT.Framework
             }
         }
         
-        protected T _value;
-        protected HTFAction<T> _onValueChanged;
-
         /// <summary>
         /// 绑定控件
         /// </summary>

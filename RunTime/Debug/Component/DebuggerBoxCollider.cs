@@ -11,7 +11,6 @@ namespace HT.Framework
         {
             _target = Target as BoxCollider;
         }
-
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;

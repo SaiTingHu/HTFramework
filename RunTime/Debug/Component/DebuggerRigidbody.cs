@@ -11,7 +11,6 @@ namespace HT.Framework
         {
             _target = Target as Rigidbody;
         }
-
         public override void OnDebuggerGUI()
         {
             _target.useGravity = GUILayout.Toggle(_target.useGravity, "Use Gravity");

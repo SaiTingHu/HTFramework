@@ -47,7 +47,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private static AssetMoveResult OnWillMoveAsset(string oldPath, string newPath)
         {
             if (oldPath == EditorPrefsTable.HTFrameworkRootPath)
@@ -57,7 +56,6 @@ namespace HT.Framework
             }
             return AssetMoveResult.DidNotMove;
         }
-
         private static AssetDeleteResult OnWillDeleteAsset(string assetPath, RemoveAssetOptions option)
         {
             if (assetPath == EditorPrefsTable.HTFrameworkRootPath)

@@ -12,7 +12,6 @@ namespace HT.Framework
         {
             return bInt.Value;
         }
-
         public static implicit operator string(BindableInt bInt)
         {
             return bInt.Value.ToString();
@@ -41,7 +40,6 @@ namespace HT.Framework
         {
             Value = 0;
         }
-
         public BindableInt(int value)
         {
             Value = value;

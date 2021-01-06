@@ -37,14 +37,12 @@ namespace HT.Framework
                 }
             }
         }
-
         protected override void OnTitleGUI()
         {
             base.OnTitleGUI();
 
             GUILayout.FlexibleSpace();
         }
-
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();

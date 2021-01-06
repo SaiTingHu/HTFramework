@@ -16,7 +16,6 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     {
 		base.OnInit();
     }
-
     /// <summary>
     /// 进入流程
     /// </summary>
@@ -24,7 +23,6 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     {
         base.OnEnter();
     }
-    
     /// <summary>
     /// 离开流程
     /// </summary>
@@ -32,7 +30,6 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     {
         base.OnLeave();
     }
-
     /// <summary>
     /// 流程帧刷新
     /// </summary>
@@ -40,7 +37,6 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     {
         base.OnUpdate();
     }
-
     /// <summary>
     /// 流程帧刷新（秒）
     /// </summary>

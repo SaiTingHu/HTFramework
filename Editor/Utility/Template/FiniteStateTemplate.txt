@@ -16,7 +16,6 @@ public class #SCRIPTNAME# : FiniteStateBase
     {
         base.OnInit();
     }
-
     /// <summary>
     /// 进入状态
     /// </summary>
@@ -25,7 +24,6 @@ public class #SCRIPTNAME# : FiniteStateBase
     {
         base.OnEnter(lastState);
     }
-
     /// <summary>
     /// 离开状态
     /// </summary>
@@ -34,7 +32,6 @@ public class #SCRIPTNAME# : FiniteStateBase
     {
         base.OnLeave(nextState);
     }
-
 	/// <summary>
 	/// 切换状态的动机
 	/// </summary>
@@ -42,7 +39,6 @@ public class #SCRIPTNAME# : FiniteStateBase
     {
         base.OnReason();
     }
-
 	/// <summary>
 	/// 状态帧刷新
 	/// </summary>
@@ -50,7 +46,6 @@ public class #SCRIPTNAME# : FiniteStateBase
     {
         base.OnUpdate();
     }
-
 	/// <summary>
 	/// 状态终结
 	/// </summary>

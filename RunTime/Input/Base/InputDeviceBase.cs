@@ -9,12 +9,10 @@
         /// 设备启动
         /// </summary>
         public abstract void OnStartUp();
-
         /// <summary>
         /// 设备运作
         /// </summary>
         public abstract void OnRun();
-
         /// <summary>
         /// 设备关闭
         /// </summary>

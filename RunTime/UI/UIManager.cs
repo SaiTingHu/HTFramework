@@ -33,18 +33,7 @@ namespace HT.Framework
         [SerializeField] internal List<GameObject> DefineUIEntitys = new List<GameObject>();
         
         private IUIHelper _helper;
-
-        private UIManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IUIHelper;
-        }
-
+        
         /// <summary>
         /// Camera类型UI的摄像机
         /// </summary>
@@ -111,6 +100,17 @@ namespace HT.Framework
             {
                 return _helper.IsHideAll;
             }
+        }
+
+        private UIManager()
+        {
+
+        }
+        internal override void OnInitialization()
+        {
+            base.OnInitialization();
+
+            _helper = Helper as IUIHelper;
         }
 
         /// <summary>

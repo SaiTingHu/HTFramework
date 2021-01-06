@@ -74,7 +74,6 @@ namespace HT.Framework
         /// <param name="type">数据集类型</param>
         /// <returns>数据集数量</returns>
         int GetCount(Type type);
-
         /// <summary>
         /// 清空某一类型的数据集仓库
         /// </summary>

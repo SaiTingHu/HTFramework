@@ -62,6 +62,35 @@ namespace HT.Framework
         private IPEndPoint _clientEndPoint;
         private INetworkHelper _helper;
 
+        /// <summary>
+        /// 服务器地址
+        /// </summary>
+        public IPEndPoint ServerEndPoint
+        {
+            get
+            {
+                if (_serverEndPoint == null)
+                {
+                    _serverEndPoint = new IPEndPoint(IPAddress.Parse(ServerIP), ServerPort);
+                }
+                return _serverEndPoint;
+            }
+        }
+        /// <summary>
+        /// 客户端地址
+        /// </summary>
+        public IPEndPoint ClientEndPoint
+        {
+            get
+            {
+                if (_clientEndPoint == null)
+                {
+                    _clientEndPoint = new IPEndPoint(IPAddress.Parse(ClientIP), ClientPort);
+                }
+                return _clientEndPoint;
+            }
+        }
+
         private NetworkManager()
         {
 
@@ -97,36 +126,7 @@ namespace HT.Framework
                 ReceiveMessageEvent?.Invoke(cha, mes);
             };
         }
-
-        /// <summary>
-        /// 服务器地址
-        /// </summary>
-        public IPEndPoint ServerEndPoint
-        {
-            get
-            {
-                if (_serverEndPoint == null)
-                {
-                    _serverEndPoint = new IPEndPoint(IPAddress.Parse(ServerIP), ServerPort);
-                }
-                return _serverEndPoint;
-            }
-        }
-        /// <summary>
-        /// 客户端地址
-        /// </summary>
-        public IPEndPoint ClientEndPoint
-        {
-            get
-            {
-                if (_clientEndPoint == null)
-                {
-                    _clientEndPoint = new IPEndPoint(IPAddress.Parse(ClientIP), ClientPort);
-                }
-                return _clientEndPoint;
-            }
-        }
-
+        
         /// <summary>
         /// 设置服务器IP地址及端口号
         /// </summary>

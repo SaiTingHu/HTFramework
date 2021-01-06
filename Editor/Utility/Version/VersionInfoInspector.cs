@@ -22,7 +22,6 @@ namespace HT.Framework
 
             _versionNumber = Target.CurrentVersion.GetFullNumber();
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

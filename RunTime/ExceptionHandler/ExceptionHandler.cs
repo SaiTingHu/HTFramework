@@ -53,6 +53,17 @@ namespace HT.Framework
         
         private IExceptionHandlerHelper _helper;
 
+        /// <summary>
+        /// 当前捕获的所有异常信息
+        /// </summary>
+        public List<ExceptionInfo> ExceptionInfos
+        {
+            get
+            {
+                return _helper.ExceptionInfos;
+            }
+        }
+
         private ExceptionHandler()
         {
 
@@ -64,16 +75,6 @@ namespace HT.Framework
             _helper = Helper as IExceptionHandlerHelper;
         }
         
-        /// <summary>
-        /// 当前捕获的所有异常信息
-        /// </summary>
-        public List<ExceptionInfo> ExceptionInfos
-        {
-            get
-            {
-                return _helper.ExceptionInfos;
-            }
-        }
         /// <summary>
         /// 回发邮件
         /// </summary>

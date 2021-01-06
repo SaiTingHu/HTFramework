@@ -98,12 +98,10 @@ namespace HT.Framework
         /// 射线发射摄像机
         /// </summary>
         public Camera RayCamera { get; set; }
-
         /// <summary>
         /// 当前被射线捕获的目标
         /// </summary>
         public MouseRayTargetBase Target { get; private set; }
-
         /// <summary>
         /// 当前被射线击中的点
         /// </summary>
@@ -139,7 +137,6 @@ namespace HT.Framework
                 RayEvent?.Invoke(Target, HitPoint, pos);
             }
         }
-
         /// <summary>
         /// 关闭射线投射
         /// </summary>
@@ -234,7 +231,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 射线击中目标的名字显示框跟随
         /// </summary>
@@ -252,7 +248,6 @@ namespace HT.Framework
                 RayHitBG.rectTransform.sizeDelta = _rayHitBGSize;
             }
         }
-
         /// <summary>
         /// 获取当前鼠标位置的UGUI控件
         /// </summary>

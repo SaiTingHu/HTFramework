@@ -32,36 +32,6 @@ namespace HT.Framework
         //任务控制者运行中
         private bool _running = false;
 
-        private TaskMaster()
-        {
-
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
-
-            if (_running)
-            {
-                if (_currentContent != null)
-                {
-                    _currentContent.OnMonitor();
-
-                    if (_currentContent.IsComplete)
-                    {
-                        CompleteCurrentTask();
-                    }
-                }
-            }
-        }
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            _targets.Clear();
-            _taskContents.Clear();
-            _taskPoints.Clear();
-        }
-
         /// <summary>
         /// 当前是否运行中
         /// </summary>
@@ -120,6 +90,37 @@ namespace HT.Framework
                 return _currentContent;
             }
         }
+
+        private TaskMaster()
+        {
+
+        }
+        internal override void OnRefresh()
+        {
+            base.OnRefresh();
+
+            if (_running)
+            {
+                if (_currentContent != null)
+                {
+                    _currentContent.OnMonitor();
+
+                    if (_currentContent.IsComplete)
+                    {
+                        CompleteCurrentTask();
+                    }
+                }
+            }
+        }
+        internal override void OnTermination()
+        {
+            base.OnTermination();
+
+            _targets.Clear();
+            _taskContents.Clear();
+            _taskPoints.Clear();
+        }
+        
         /// <summary>
         /// 通过ID获取任务目标
         /// </summary>

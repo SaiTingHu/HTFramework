@@ -9,6 +9,9 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultProcedureHelper : IProcedureHelper
     {
+        private float _timer = 0;
+        private string _defaultProcedure;
+
         /// <summary>
         /// 流程管理器
         /// </summary>
@@ -29,9 +32,6 @@ namespace HT.Framework
         /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
         /// </summary>
         public event HTFAction<ProcedureBase, ProcedureBase> AnyProcedureSwitchEvent;
-
-        private float _timer = 0;
-        private string _defaultProcedure;
         
         /// <summary>
         /// 初始化助手

@@ -121,7 +121,6 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
         }
-
         private void Update()
         {
             if (_taskEditorWindow == null || _contentAsset == null)

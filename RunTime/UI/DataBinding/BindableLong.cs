@@ -12,7 +12,6 @@ namespace HT.Framework
         {
             return bLong.Value;
         }
-
         public static implicit operator string(BindableLong bLong)
         {
             return bLong.Value.ToString();
@@ -41,7 +40,6 @@ namespace HT.Framework
         {
             Value = 0;
         }
-
         public BindableLong(long value)
         {
             Value = value;

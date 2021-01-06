@@ -19,7 +19,6 @@ namespace HT.Framework
                 return "Reference pool manager, it manages all reference pools and can register new reference pools!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -34,7 +33,6 @@ namespace HT.Framework
 
             _referencePoolHelper = _helper as IReferencePoolHelper;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -47,7 +45,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

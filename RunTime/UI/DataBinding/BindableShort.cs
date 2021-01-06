@@ -12,7 +12,6 @@ namespace HT.Framework
         {
             return bShort.Value;
         }
-
         public static implicit operator string(BindableShort bShort)
         {
             return bShort.Value.ToString();
@@ -41,7 +40,6 @@ namespace HT.Framework
         {
             Value = 0;
         }
-
         public BindableShort(short value)
         {
             Value = value;

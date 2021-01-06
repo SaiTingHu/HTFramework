@@ -29,7 +29,6 @@ namespace HT.Framework
             TextField(Target.GUID, out Target.GUID, "GUID");
             GUILayout.EndHorizontal();
         }
-
         private void GenerateGUID()
         {
             if (Target.GUID == "<None>")

@@ -19,7 +19,6 @@ namespace HT.Framework
             RenderQueue = Mat.renderQueue;
             TextureCount = 0;
         }
-
         public void AddTextureDependence()
         {
             TextureCount += 1;

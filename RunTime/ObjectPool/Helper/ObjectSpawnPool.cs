@@ -14,14 +14,6 @@ namespace HT.Framework
         private HTFAction<GameObject> _onSpawn;
         private HTFAction<GameObject> _onDespawn;
 
-        public ObjectSpawnPool(GameObject spawnTem, int limit, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
-        {
-            _spawnTem = spawnTem;
-            _limit = limit;
-            _onSpawn = onSpawn;
-            _onDespawn = onDespawn;
-        }
-
         /// <summary>
         /// 对象数量
         /// </summary>
@@ -33,6 +25,14 @@ namespace HT.Framework
             }
         }
 
+        public ObjectSpawnPool(GameObject spawnTem, int limit, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn)
+        {
+            _spawnTem = spawnTem;
+            _limit = limit;
+            _onSpawn = onSpawn;
+            _onDespawn = onDespawn;
+        }
+        
         /// <summary>
         /// 生成对象
         /// </summary>
@@ -55,7 +55,6 @@ namespace HT.Framework
 
             return obj;
         }
-
         /// <summary>
         /// 回收对象
         /// </summary>
@@ -77,7 +76,6 @@ namespace HT.Framework
                 _objectQueue.Enqueue(obj);
             }
         }
-
         /// <summary>
         /// 清空所有对象
         /// </summary>

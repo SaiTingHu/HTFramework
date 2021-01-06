@@ -12,6 +12,8 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultWebRequestHelper : IWebRequestHelper
     {
+        private WebRequestManager _module;
+
         /// <summary>
         /// Web请求管理器
         /// </summary>
@@ -20,9 +22,17 @@ namespace HT.Framework
         /// 所有网络接口
         /// </summary>
         public Dictionary<string, WebInterfaceBase> WebInterfaces { get; private set; } = new Dictionary<string, WebInterfaceBase>();
+        /// <summary>
+        /// 是否已连接到因特网
+        /// </summary>
+        public bool IsConnectedInternet
+        {
+            get
+            {
+                return Application.internetReachability != NetworkReachability.NotReachable;
+            }
+        }
 
-        private WebRequestManager _module;
-        
         /// <summary>
         /// 初始化助手
         /// </summary>
@@ -244,7 +254,7 @@ namespace HT.Framework
         {
             if (WebInterfaces.ContainsKey(interfaceName))
             {
-                if (_module.IsOfflineState || WebInterfaces[interfaceName].IsOffline)
+                if (_module.IsOfflineState || WebInterfaces[interfaceName].IsOffline || !IsConnectedInternet)
                 {
                     WebInterfaces[interfaceName].OfflineHandler?.Invoke();
                 }
@@ -309,7 +319,7 @@ namespace HT.Framework
         {
             if (WebInterfaces.ContainsKey(interfaceName))
             {
-                if (_module.IsOfflineState || WebInterfaces[interfaceName].IsOffline)
+                if (_module.IsOfflineState || WebInterfaces[interfaceName].IsOffline || !IsConnectedInternet)
                 {
                     WebInterfaces[interfaceName].OfflineHandler?.Invoke();
                 }
@@ -362,7 +372,7 @@ namespace HT.Framework
         {
             if (WebInterfaces.ContainsKey(interfaceName) && WebInterfaces[interfaceName] is WebInterfaceDownloadFile)
             {
-                if (_module.IsOfflineState || WebInterfaces[interfaceName].IsOffline)
+                if (_module.IsOfflineState || WebInterfaces[interfaceName].IsOffline || !IsConnectedInternet)
                 {
                     WebInterfaces[interfaceName].OfflineHandler?.Invoke();
                 }

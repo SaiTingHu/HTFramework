@@ -82,7 +82,6 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
         }
-
         private void Update()
         {
             if (_assetsMaster == null)

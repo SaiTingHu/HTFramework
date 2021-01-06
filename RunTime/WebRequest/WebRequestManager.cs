@@ -20,6 +20,17 @@ namespace HT.Framework
         
         private IWebRequestHelper _helper;
 
+        /// <summary>
+        /// 是否已连接到因特网
+        /// </summary>
+        public bool IsConnectedInternet
+        {
+            get
+            {
+                return _helper.IsConnectedInternet;
+            }
+        }
+
         private WebRequestManager()
         {
 
@@ -30,7 +41,7 @@ namespace HT.Framework
 
             _helper = Helper as IWebRequestHelper;
         }
-
+        
         /// <summary>
         /// 注册接口（获取 string）
         /// </summary>

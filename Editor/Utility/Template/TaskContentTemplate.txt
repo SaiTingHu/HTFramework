@@ -22,12 +22,10 @@ public class #SCRIPTNAME# : TaskContentBase
     {
         base.OnStart();
     }
-
     protected override void OnUpdate()
     {
         base.OnUpdate();
     }
-
     public override void OnComplete()
     {
         base.OnComplete();

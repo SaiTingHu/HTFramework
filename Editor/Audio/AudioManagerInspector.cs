@@ -24,7 +24,6 @@ namespace HT.Framework
                 return "Audio Manager, manage all audio playback, pause, stop, etc.";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -39,7 +38,6 @@ namespace HT.Framework
 
             _audioHelper = _helper as IAudioHelper;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -92,7 +90,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

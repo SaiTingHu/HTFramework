@@ -32,7 +32,6 @@ namespace HT.Framework
             _paste.text = "P";
             _paste.tooltip = "Paste value";
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -352,7 +351,6 @@ namespace HT.Framework
             }
             #endregion
         }
-
         private void CreateEmptyParent()
         {
             GameObject parent = new GameObject("EmptyParent");
@@ -365,7 +363,6 @@ namespace HT.Framework
             Selection.activeGameObject = parent;
             EditorGUIUtility.PingObject(parent);
         }
-
         private void UnfoldChildren()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
@@ -374,7 +371,6 @@ namespace HT.Framework
             int id = Target.gameObject.GetInstanceID();
             method.Invoke(window, new object[] { id, true });
         }
-
         private void FoldChildren()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
@@ -383,7 +379,6 @@ namespace HT.Framework
             int id = Target.gameObject.GetInstanceID();
             method.Invoke(window, new object[] { id, false });
         }
-
         private void FoldAll()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
@@ -399,7 +394,6 @@ namespace HT.Framework
                 method.Invoke(hierarchy, args);
             }
         }
-
         private int ClampAngle(float angle)
         {
             if (angle > 180) angle -= 360;

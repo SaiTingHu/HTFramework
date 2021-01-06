@@ -15,6 +15,21 @@ namespace HT.Framework
         private static readonly string SourceDllPath = "/Library/ScriptAssemblies/Hotfix.dll";
         private static readonly string AssetsDllPath = "/Assets/Hotfix/Hotfix.dll.bytes";
 
+        [InitializeOnLoadMethod]
+        private static void CopyHotfixDll()
+        {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                string sourcePath = GlobalTools.GetDirectorySameLevelOfAssets(SourceDllPath);
+                if (File.Exists(sourcePath))
+                {
+                    File.Copy(sourcePath, GlobalTools.GetDirectorySameLevelOfAssets(AssetsDllPath), true);
+                    AssetDatabase.Refresh();
+                    Log.Info("更新：Assets/Hotfix/Hotfix.dll");
+                }
+            }
+        }
+
         private bool _hotfixIsCreated = false;
         private string _hotfixDirectory = "/Hotfix/";
         private string _hotfixEnvironmentPath = "/Hotfix/Environment/HotfixEnvironment.cs";
@@ -27,7 +42,6 @@ namespace HT.Framework
                 return "Hotfix manager, help you implement basic hot fixes in your game!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -55,7 +69,6 @@ namespace HT.Framework
                 }
             }
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -131,7 +144,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
@@ -207,21 +219,6 @@ namespace HT.Framework
                 File.AppendAllText(filePath, code);
                 asset = null;
                 AssetDatabase.Refresh();
-            }
-        }
-
-        [InitializeOnLoadMethod]
-        private static void CopyHotfixDll()
-        {
-            if (!EditorApplication.isPlayingOrWillChangePlaymode)
-            {
-                string sourcePath = GlobalTools.GetDirectorySameLevelOfAssets(SourceDllPath);
-                if (File.Exists(sourcePath))
-                {
-                    File.Copy(sourcePath, GlobalTools.GetDirectorySameLevelOfAssets(AssetsDllPath), true);
-                    AssetDatabase.Refresh();
-                    Log.Info("更新：Assets/Hotfix/Hotfix.dll");
-                }
             }
         }
     }

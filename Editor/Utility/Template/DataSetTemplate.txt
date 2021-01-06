@@ -18,7 +18,6 @@ public class #SCRIPTNAME# : DataSetBase
     {
         base.Fill(data);
     }
-
 	/// <summary>
     /// 将数据集打包为Json数据
     /// </summary>

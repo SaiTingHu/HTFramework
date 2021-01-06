@@ -12,7 +12,6 @@ namespace HT.Framework
         {
             return bFloat.Value;
         }
-
         public static implicit operator string(BindableFloat bFloat)
         {
             return bFloat.Value.ToString("F4");
@@ -41,7 +40,6 @@ namespace HT.Framework
         {
             Value = 0f;
         }
-
         public BindableFloat(float value)
         {
             Value = value;

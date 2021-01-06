@@ -33,7 +33,6 @@ namespace HT.Framework
             ScriptingDefineEnable();
             ParameterEnable();
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -44,7 +43,6 @@ namespace HT.Framework
             ParameterGUI();
             SettingGUI();
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

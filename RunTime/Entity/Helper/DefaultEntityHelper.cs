@@ -10,11 +10,17 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultEntityHelper : IEntityHelper
     {
-        //当前定义的实体与对象对应关系
+        /// <summary>
+        /// 当前定义的实体与对象对应关系
+        /// </summary>
         private Dictionary<string, GameObject> _defineEntities = new Dictionary<string, GameObject>();
-        //所有实体组
+        /// <summary>
+        /// 所有实体组
+        /// </summary>
         private Dictionary<Type, GameObject> _entitiesGroup = new Dictionary<Type, GameObject>();
-        //实体根节点
+        /// <summary>
+        /// 实体根节点
+        /// </summary>
         private Transform _entityRoot;
 
         /// <summary>
@@ -327,7 +333,13 @@ namespace HT.Framework
             }
         }
 
-        //生成实体
+        /// <summary>
+        /// 生成实体
+        /// </summary>
+        /// <param name="type">实体类型</param>
+        /// <param name="entity">实体对象</param>
+        /// <param name="entityName">实体名称</param>
+        /// <returns>实体逻辑类</returns>
         private EntityLogicBase GenerateEntity(Type type, GameObject entity, string entityName)
         {
             EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
@@ -340,7 +352,10 @@ namespace HT.Framework
             Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
             return entityLogic;
         }
-        //回收实体
+        /// <summary>
+        /// 回收实体
+        /// </summary>
+        /// <param name="entityLogic">实体逻辑类</param>
         private void RecoveryEntity(EntityLogicBase entityLogic)
         {
             Type type = entityLogic.GetType();
@@ -375,7 +390,10 @@ namespace HT.Framework
                 }
             }
         }
-        //批量回收实体
+        /// <summary>
+        /// 批量回收实体
+        /// </summary>
+        /// <param name="type">实体类型</param>
         private void RecoveryEntities(Type type)
         {
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();

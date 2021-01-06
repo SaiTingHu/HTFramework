@@ -26,7 +26,6 @@ namespace HT.Framework
                 _audio = audio.GetComponent<AudioManager>();
             }
         }
-        
         public override void OnSettingGUI()
         {
             base.OnSettingGUI();
@@ -75,7 +74,6 @@ namespace HT.Framework
                 }
             }
         }
-        
         public override void OnReset()
         {
             base.OnReset();

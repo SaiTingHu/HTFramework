@@ -32,7 +32,6 @@ namespace HT.Framework
             PropertyField("TheLoops", "Loops");
             PropertyField("PlayOnStart");
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

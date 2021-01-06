@@ -9,6 +9,11 @@ namespace HT.Framework
     public sealed class DefaultObjectPoolHelper : IObjectPoolHelper
     {
         /// <summary>
+        /// 对象池默认上限
+        /// </summary>
+        private int _limit;
+
+        /// <summary>
         /// 对象池管理器
         /// </summary>
         public InternalModuleBase Module { get; set; }
@@ -16,11 +21,6 @@ namespace HT.Framework
         /// 所有对象池
         /// </summary>
         public Dictionary<string, ObjectSpawnPool> SpawnPools { get; private set; } = new Dictionary<string, ObjectSpawnPool>();
-
-        /// <summary>
-        /// 对象池默认上限
-        /// </summary>
-        private int _limit;
         
         /// <summary>
         /// 初始化助手

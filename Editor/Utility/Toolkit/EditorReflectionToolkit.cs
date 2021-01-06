@@ -17,6 +17,7 @@ namespace HT.Framework
         /// 当前的编辑器程序集
         /// </summary>
         private static HashSet<string> EditorAssemblies = new HashSet<string>() { "Assembly-CSharp-Editor", "UnityEditor" };
+
         /// <summary>
         /// 从当前程序域的热更新程序集中获取所有类型
         /// </summary>

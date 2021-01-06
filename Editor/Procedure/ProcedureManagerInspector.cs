@@ -20,7 +20,6 @@ namespace HT.Framework
                 return "Procedure Manager, this is the beginning and the end of everything!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -35,7 +34,6 @@ namespace HT.Framework
 
             _procedureHelper = _helper as IProcedureHelper;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -164,7 +162,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

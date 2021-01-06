@@ -21,7 +21,6 @@ namespace HT.Framework
                 return "FSM manager, this is the master manager for all FSM!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -42,7 +41,6 @@ namespace HT.Framework
                 _fsmGroupsShow.Add(fsm.Key, false);
             }
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

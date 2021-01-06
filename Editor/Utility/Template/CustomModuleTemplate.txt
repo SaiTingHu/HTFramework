@@ -31,7 +31,6 @@ public class #SCRIPTNAME# : CustomModuleBase
     {
         base.OnInitialization();
     }
-
     /// <summary>
     /// 模块准备工作
     /// </summary>
@@ -42,7 +41,6 @@ public class #SCRIPTNAME# : CustomModuleBase
 		//自动启动
         IsRunning = true;
     }
-
     /// <summary>
     /// 刷新模块
     /// </summary>
@@ -50,7 +48,6 @@ public class #SCRIPTNAME# : CustomModuleBase
     {
         base.OnRefresh();
     }
-
     /// <summary>
     /// 终结模块
     /// </summary>
@@ -58,7 +55,6 @@ public class #SCRIPTNAME# : CustomModuleBase
     {
         base.OnTermination();
     }
-
     /// <summary>
     /// 暂停模块
     /// </summary>
@@ -66,7 +62,6 @@ public class #SCRIPTNAME# : CustomModuleBase
     {
         base.OnPause();
     }
-
     /// <summary>
     /// 恢复模块
     /// </summary>

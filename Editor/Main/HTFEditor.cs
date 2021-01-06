@@ -14,7 +14,6 @@ namespace HT.Framework
         /// 当前目标
         /// </summary>
         protected E Target;
-
         private GithubURLAttribute _GithubURL;
         private GiteeURLAttribute _GiteeURL;
         private CSDNBlogURLAttribute _CSDNURL;
@@ -33,7 +32,6 @@ namespace HT.Framework
                 return true;
             }
         }
-
         /// <summary>
         /// 是否启用基础属性展示
         /// </summary>
@@ -63,7 +61,6 @@ namespace HT.Framework
                 OnRuntimeEnable();
             }
         }
-        
         public sealed override void OnInspectorGUI()
         {
             if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)
@@ -132,31 +129,26 @@ namespace HT.Framework
 
             serializedObject.ApplyModifiedProperties();
         }
-
         /// <summary>
         /// 默认 Enable 初始化
         /// </summary>
         protected virtual void OnDefaultEnable()
         { }
-
         /// <summary>
         /// 运行时 Enable 初始化
         /// </summary>
         protected virtual void OnRuntimeEnable()
         { }
-
         /// <summary>
         /// 默认 Inspector GUI
         /// </summary>
         protected virtual void OnInspectorDefaultGUI()
         { }
-
         /// <summary>
         /// 运行时 Inspector GUI
         /// </summary>
         protected virtual void OnInspectorRuntimeGUI()
         { }
-
         /// <summary>
         /// 标记目标已改变
         /// </summary>
@@ -172,7 +164,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 根据名字获取序列化属性
         /// </summary>

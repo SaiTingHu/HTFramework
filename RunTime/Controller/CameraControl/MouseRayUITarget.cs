@@ -9,5 +9,6 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class MouseRayUITarget : MouseRayTargetBase
     {
+
     }
 }

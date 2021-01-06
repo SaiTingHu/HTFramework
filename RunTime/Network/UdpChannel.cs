@@ -10,6 +10,8 @@ namespace HT.Framework
     /// </summary>
     public sealed class UdpChannel : ProtocolChannelBase
     {
+        private EndPoint _serverEndPoint;
+
         /// <summary>
         /// 通信协议
         /// </summary>
@@ -40,9 +42,7 @@ namespace HT.Framework
                 return false;
             }
         }
-
-        private EndPoint _serverEndPoint;
-
+        
         /// <summary>
         /// 初始化通道
         /// </summary>

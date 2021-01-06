@@ -21,6 +21,17 @@ namespace HT.Framework
             }
         }
 
+        [OnOpenAsset]
+        private static bool OnOpenAsset(int instanceID, int line)
+        {
+            UnityEngine.Object instance = EditorUtility.InstanceIDToObject(instanceID);
+            if (AssetDatabase.GetAssetOrScenePath(instance).EndsWith(".cs"))
+            {
+                return Current.OpenAsset();
+            }
+            return false;
+        }
+
         private Type _consoleWindowType;
         private FieldInfo _activeTextInfo;
         private FieldInfo _consoleWindowInfo;
@@ -36,18 +47,6 @@ namespace HT.Framework
             _setActiveEntry = _consoleWindowType.GetMethod("SetActiveEntry", BindingFlags.Instance | BindingFlags.NonPublic);
             _setActiveEntryArgs = new object[] { null };
         }
-
-        [OnOpenAsset]
-        private static bool OnOpenAsset(int instanceID, int line)
-        {
-            UnityEngine.Object instance = EditorUtility.InstanceIDToObject(instanceID);
-            if (AssetDatabase.GetAssetOrScenePath(instance).EndsWith(".cs"))
-            {
-                return Current.OpenAsset();
-            }
-            return false;
-        }
-
         private bool OpenAsset()
         {
             string stackTrace = GetStackTrace();
@@ -73,7 +72,6 @@ namespace HT.Framework
             }
             return false;
         }
-
         private bool OpenScriptAsset(string path)
         {
             int startIndex = path.IndexOf(" (at ") + 5;
@@ -97,7 +95,6 @@ namespace HT.Framework
             }
             return false;
         }
-        
         private string GetStackTrace()
         {
             object consoleWindow = GetConsoleWindow();
@@ -112,7 +109,6 @@ namespace HT.Framework
             }
             return "";
         }
-
         private object GetConsoleWindow()
         {
             if (_consoleWindow == null)

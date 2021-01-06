@@ -61,7 +61,6 @@ namespace HT.Framework
             Target.BlurSpread = EditorGUILayout.Slider("Spread:", Target.BlurSpread, 0f, 3f);
             Target.BlurIntensityProperty = EditorGUILayout.Slider("Intensity:", Target.BlurIntensityProperty, 0f, 1f);
         }
-
         private void Default()
         {
             Target.DownSampleFactorProperty = 2;

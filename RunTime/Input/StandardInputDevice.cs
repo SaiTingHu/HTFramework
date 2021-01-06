@@ -34,7 +34,6 @@ namespace HT.Framework
             Main.m_Input.RegisterVirtualAxis(InputAxisType.Vertical);
             Main.m_Input.RegisterVirtualAxis(InputAxisType.UpperLower);
         }
-
         public override void OnRun()
         {
             //标准PC平台：鼠标和键盘做为输入设备
@@ -78,7 +77,6 @@ namespace HT.Framework
 
             Main.m_Input.SetVirtualMousePosition(Input.mousePosition);
         }
-
         public override void OnShutdown()
         {
             Main.m_Input.UnRegisterVirtualButton(InputButtonType.MouseLeft);

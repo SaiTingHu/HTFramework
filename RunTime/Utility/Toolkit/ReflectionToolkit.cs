@@ -35,6 +35,7 @@ namespace HT.Framework
         private static HashSet<string> RunTimeAssemblies = new HashSet<string>() {
             "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.ILHotfix.RunTime", "HTFramework.GC.RunTime",
             "UnityEngine", "UnityEngine.CoreModule", "UnityEngine.UI", "UnityEngine.PhysicsModule" };
+
         /// <summary>
         /// 从当前程序域的运行时程序集中获取所有类型
         /// </summary>

@@ -18,7 +18,6 @@ namespace HT.Framework
             Assembly = mono.GetType().Assembly.GetName().Name;
             IsMono = true;
         }
-
         public MonoScriptContent(ScriptableObject scriptObj)
         {
             Script = MonoScript.FromScriptableObject(scriptObj);

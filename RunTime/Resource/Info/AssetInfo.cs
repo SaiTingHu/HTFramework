@@ -7,6 +7,7 @@
     {
         public AssetInfo(string assetBundleName, string assetPath, string resourcePath) : base(assetBundleName, assetPath, resourcePath)
         {
+
         }
     }
 }

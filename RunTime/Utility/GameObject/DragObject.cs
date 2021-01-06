@@ -59,7 +59,6 @@ namespace HT.Framework
                 _offset = screenPoint - mousePoint;
             }
         }
-
         private void OnMouseDrag()
         {
             if (IsCanDrag)
@@ -83,7 +82,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void OnMouseUp()
         {
             if (IsCanDrag)

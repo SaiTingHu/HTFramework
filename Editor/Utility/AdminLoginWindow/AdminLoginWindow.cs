@@ -58,7 +58,6 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             GUILayout.EndVertical();
         }
-
         private void EventHandle()
         {
             if (Event.current == null)
@@ -83,7 +82,6 @@ namespace HT.Framework
                     break;
             }
         }
-
         private void Update()
         {
             if (_parent == null)

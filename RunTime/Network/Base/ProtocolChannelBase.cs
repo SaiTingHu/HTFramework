@@ -11,6 +11,12 @@ namespace HT.Framework
     /// </summary>
     public abstract class ProtocolChannelBase
     {
+        private bool _isEnableThread = false;
+        private Thread _sendThread;
+        private Thread _receiveThread;
+        private List<byte[]> _sendDataBuffer = new List<byte[]>();
+        private bool _isCanSend = false;
+
         /// <summary>
         /// 通信协议
         /// </summary>
@@ -74,12 +80,6 @@ namespace HT.Framework
         /// 与服务器断开连接事件
         /// </summary>
         public event HTFAction<ProtocolChannelBase> DisconnectServerEvent;
-
-        private bool _isEnableThread = false;
-        private Thread _sendThread;
-        private Thread _receiveThread;
-        private List<byte[]> _sendDataBuffer = new List<byte[]>();
-        private bool _isCanSend = false;
         
         /// <summary>
         /// 初始化通道

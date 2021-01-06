@@ -43,7 +43,6 @@ namespace HT.Framework
         {
             _mailMessage.To.Add(new MailAddress(toEmail));
         }
-
         /// <summary>
         /// 设置邮件标题
         /// </summary>
@@ -52,7 +51,6 @@ namespace HT.Framework
         {
             _subject = subject;
         }
-
         /// <summary>
         /// 设置邮件内容
         /// </summary>
@@ -61,7 +59,6 @@ namespace HT.Framework
         {
             _body = body;
         }
-
         /// <summary>
         /// 发送邮件
         /// </summary>
@@ -71,7 +68,6 @@ namespace HT.Framework
             _mailMessage.Body = _body;
             return Main.Current.StartCoroutine(SendCoroutine());
         }
-
         /// <summary>
         /// 发送邮件
         /// </summary>
@@ -85,7 +81,6 @@ namespace HT.Framework
             _mailMessage.Body = _body;
             return Main.Current.StartCoroutine(SendCoroutine());
         }
-
         /// <summary>
         /// 销毁
         /// </summary>

@@ -53,29 +53,37 @@ namespace HT.Framework
         /// </summary>
         public bool IsLookAtTarget = true;
 
-        //注视点（注视目标的准确位置，经过偏移后的位置）
+        /// <summary>
+        /// 注视点（注视目标的准确位置，经过偏移后的位置）
+        /// </summary>
         private Vector3 _targetPoint;
-        //插值量
+        /// <summary>
+        /// 插值量
+        /// </summary>
         private float _damping = 5.0f;
-        //系数
+        /// <summary>
+        /// 系数
+        /// </summary>
         private float _factor = 0.02f;
-        //目标位置
+        /// <summary>
+        /// 目标位置
+        /// </summary>
         private Quaternion _rotation;
         private Vector3 _position;
         private Vector3 _disVector;
-        //最终的位置
+        /// <summary>
+        /// 最终的位置
+        /// </summary>
         private Vector3 _finalPosition;
 
         /// <summary>
         /// 是否可以控制
         /// </summary>
         public bool CanControl { get; set; } = true;
-
         /// <summary>
         /// 注视目标
         /// </summary>
         public CameraTarget Target { get; set; }
-
         /// <summary>
         /// 操作控制器
         /// </summary>
@@ -100,7 +108,6 @@ namespace HT.Framework
                 SwitchAngle(damping);
             }
         }
-
         /// <summary>
         /// 刷新
         /// </summary>
@@ -138,7 +145,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void ApplyRotation()
         {
             //重新计算视角
@@ -153,7 +159,6 @@ namespace HT.Framework
                 transform.LookAt(Target.transform.position);
             }
         }
-
         private void CalculateAngle()
         {
             //将纵向旋转限制在视角最低值和最高值之间
@@ -168,7 +173,6 @@ namespace HT.Framework
             //摄像机的最新旋转角度*摄像机与注视点的距离，得出摄像机与注视点的相对位置，再由注视点的位置加上相对位置便等于摄像机的位置
             _position = Target.transform.position + _rotation * _disVector;
         }
-
         private void SwitchAngle(bool damping)
         {
             //摄像机插值变换到新的位置
@@ -191,7 +195,6 @@ namespace HT.Framework
                 transform.position = ApplyBounds(transform.position);
             }
         }
-
         private float ClampYAngle(float angle, float min, float max)
         {
             if (angle < -360)
@@ -201,7 +204,6 @@ namespace HT.Framework
 
             return Mathf.Clamp(angle, min, max);
         }
-
         private Vector3 ApplyBounds(Vector3 position)
         {
             if (InTheBounds(position))
@@ -213,7 +215,6 @@ namespace HT.Framework
                 return ClosestPoint(position);
             }
         }
-
         private bool InTheBounds(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 0)
@@ -236,7 +237,6 @@ namespace HT.Framework
                 return false;
             }
         }
-
         private Vector3 ClosestPoint(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 1)

@@ -19,7 +19,6 @@ namespace HT.Framework
                 return "CustomModule Manager, manager of all custom modules, such as starting or stopping a custom module!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -34,7 +33,6 @@ namespace HT.Framework
 
             _customModuleHelper = _helper as ICustomModuleHelper;
         }
-        
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

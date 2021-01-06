@@ -50,7 +50,6 @@ namespace HT.Framework
             }
             GUILayout.FlexibleSpace();
         }
-
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
@@ -243,7 +242,6 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
         }
-
         private void Update()
         {
             if (_stepEditorWindow == null || _contentAsset == null || _content == null)

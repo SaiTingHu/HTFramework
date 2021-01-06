@@ -26,7 +26,6 @@ namespace HT.Framework
         {
             OnMouseEnter.Invoke();
         }
-
         public void OnPointerExit(PointerEventData eventData)
         {
             OnMouseExit.Invoke();

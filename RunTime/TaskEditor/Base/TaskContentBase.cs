@@ -74,7 +74,6 @@ namespace HT.Framework
         {
             
         }
-
         /// <summary>
         /// 任务内容开始后，帧刷新
         /// </summary>
@@ -82,7 +81,6 @@ namespace HT.Framework
         {
 
         }
-
         /// <summary>
         /// 任务内容完成
         /// </summary>
@@ -121,7 +119,6 @@ namespace HT.Framework
                 IsComplete = true;
             }
         }
-
         internal void OnMonitor()
         {
             OnUpdate();
@@ -141,12 +138,10 @@ namespace HT.Framework
             }
             IsComplete = isComplete;
         }
-
         internal void ReSet()
         {
             IsComplete = false;
         }
-
         internal bool IsDependComplete(int taskPointIndex)
         {
             for (int i = 0; i < Depends.Count; i++)
@@ -183,7 +178,6 @@ namespace HT.Framework
             
             GUILayout.EndVertical();
         }
-
         public virtual int OnPropertyGUI()
         {
             int height = 0;
@@ -222,7 +216,6 @@ namespace HT.Framework
 
             return height;
         }
-        
         public bool IsExistDepend(int originalPoint, int dependPoint)
         {
             for (int i = 0; i < Depends.Count; i++)
@@ -234,7 +227,6 @@ namespace HT.Framework
             }
             return false;
         }
-
         public void DisconnectDepend(int originalPoint, int dependPoint)
         {
             for (int i = 0; i < Depends.Count; i++)
@@ -246,12 +238,10 @@ namespace HT.Framework
                 }
             }
         }
-
         public void ConnectDepend(int originalPoint, int dependPoint)
         {
             Depends.Add(new TaskDepend(originalPoint, dependPoint));
         }
-
         protected void TaskGameObjectField(ref TaskGameObject taskGameObject, string name, float nameWidth)
         {
             if (taskGameObject == null)
@@ -327,14 +317,12 @@ namespace HT.Framework
 
             GUILayout.EndHorizontal();
         }
-
         internal static void GenerateSerializeSubObject(UnityEngine.Object obj, UnityEngine.Object mainAsset)
         {
             obj.hideFlags = HideFlags.HideInHierarchy;
             AssetDatabase.AddObjectToAsset(obj, mainAsset);
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(mainAsset));
         }
-
         internal static void DestroySerializeSubObject(UnityEngine.Object obj, UnityEngine.Object mainAsset)
         {
             AssetDatabase.RemoveObjectFromAsset(obj);

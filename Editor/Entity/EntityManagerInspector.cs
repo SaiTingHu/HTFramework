@@ -22,7 +22,6 @@ namespace HT.Framework
                 return "Entity Manager, Everything is entity except UI, this is a controller of all entity!";
             }
         }
-
         protected override Type HelperInterface
         {
             get
@@ -44,7 +43,6 @@ namespace HT.Framework
                 _objectPoolFoldouts.Add(entity.Key, true);
             }
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -130,7 +128,6 @@ namespace HT.Framework
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

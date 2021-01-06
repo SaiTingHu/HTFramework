@@ -21,7 +21,6 @@
 
             Main.m_UI.OpenResidentUI(GetType());
         }
-
         /// <summary>
         /// 关闭自己
         /// </summary>

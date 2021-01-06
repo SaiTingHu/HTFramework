@@ -12,6 +12,7 @@ namespace HT.Framework
     {
         #region 不重复命名
         private static HashSet<string> NoRepeatNames = new HashSet<string>();
+
         /// <summary>
         /// 开始不重复命名
         /// </summary>
@@ -49,6 +50,7 @@ namespace HT.Framework
 
         #region 字符串拼接
         private static StringBuilder StringInstance = new StringBuilder();
+
         /// <summary>
         /// 字符串拼接
         /// </summary>

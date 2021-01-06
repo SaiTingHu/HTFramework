@@ -262,7 +262,6 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取数据集数量失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
-        
         /// <summary>
         /// 清空某一类型的数据集仓库
         /// </summary>
