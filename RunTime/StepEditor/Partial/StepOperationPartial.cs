@@ -572,7 +572,7 @@ namespace HT.Framework
         }
         private void PromptSkipImmediate()
         {
-            
+            Main.m_StepMaster.ShowPrompt(StringValue);
         }
         private void FSMSkipImmediate()
         {
