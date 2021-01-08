@@ -349,7 +349,7 @@ namespace HT.Framework
             entityLogic.Entity.SetActive(true);
             entityLogic.OnInit();
             entityLogic.OnShow();
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
             return entityLogic;
         }
         /// <summary>

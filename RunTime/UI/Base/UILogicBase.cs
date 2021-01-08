@@ -62,14 +62,14 @@ namespace HT.Framework
         /// <param name="args">可选参数</param>
         public virtual void OnOpen(params object[] args)
         {
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventUIOpened>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventUIOpened>().Fill(this));
         }
         /// <summary>
         /// 关闭UI
         /// </summary>
         public virtual void OnClose()
         {
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventUIClosed>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventUIClosed>().Fill(this));
         }
         /// <summary>
         /// 销毁UI

@@ -230,7 +230,7 @@ namespace HT.Framework
 
             SearchHotfixMethod();
 
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventHotfixReady>());
+            Main.m_Event.Throw<EventHotfixReady>();
         }
         private void SearchHotfixMethod()
         {

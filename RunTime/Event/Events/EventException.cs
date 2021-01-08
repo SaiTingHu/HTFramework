@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 异常事件
+    /// 异常事件（三型事件）
     /// </summary>
     public sealed class EventException : EventHandlerBase
     {

@@ -307,12 +307,12 @@ namespace HT.Framework
                 if (_isPause)
                 {
                     OnPause();
-                    m_Event.Throw(this, m_ReferencePool.Spawn<EventPauseGame>());
+                    m_Event.Throw<EventPauseGame>();
                 }
                 else
                 {
                     OnUnPause();
-                    m_Event.Throw(this, m_ReferencePool.Spawn<EventUnPauseGame>());
+                    m_Event.Throw<EventUnPauseGame>();
                 }
             }
         }

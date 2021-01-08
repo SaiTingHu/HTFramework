@@ -192,7 +192,7 @@ namespace HT.Framework
         }
         private void OnException(string logString, string stackTrace, LogType type)
         {
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventException>().Fill(logString, stackTrace, type));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventException>().Fill(logString, stackTrace, type));
         }
     }
 }

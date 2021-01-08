@@ -1,7 +1,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 任意UI关闭事件
+    /// 任意UI关闭事件（三型事件）
     /// </summary>
     public sealed class EventUIClosed : EventHandlerBase
     {

@@ -100,7 +100,7 @@ namespace HT.Framework
             IsComplete = true;
             completeAction?.Invoke();
             OnEnd();
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
         }
         /// <summary>
         /// 任务点触发完成之前
@@ -122,7 +122,7 @@ namespace HT.Framework
             IsComplete = true;
             _isCompleting = true;
             OnEnd();
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
         }
         /// <summary>
         /// 任务点结束
@@ -140,7 +140,7 @@ namespace HT.Framework
 
                 OnStart();
 
-                Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
             }
 
             OnUpdate();

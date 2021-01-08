@@ -393,7 +393,7 @@ namespace HT.Framework
             _currentContent = null;
             _running = true;
 
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskBegin>());
+            Main.m_Event.Throw<EventTaskBegin>();
 
             if (IsAutoChangeState)
             {
@@ -409,7 +409,7 @@ namespace HT.Framework
             _currentContent = null;
             _running = false;
 
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskEnd>());
+            Main.m_Event.Throw<EventTaskEnd>();
         }
 
         /// <summary>
@@ -420,7 +420,7 @@ namespace HT.Framework
             _currentContent = ContentAsset.Content[_currentContentIndex];
             _currentContent.OnStart();
 
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(_currentContent));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(_currentContent));
         }
         /// <summary>
         /// 当前任务完成
@@ -429,7 +429,7 @@ namespace HT.Framework
         {
             _currentContent.OnComplete();
 
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(_currentContent));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(_currentContent));
             _currentContent = null;
 
             if (AllUncompleteTaskCount > 0)

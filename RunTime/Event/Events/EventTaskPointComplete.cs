@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 任务点完成事件
+    /// 任务点完成事件（三型事件）
     /// </summary>
     public sealed class EventTaskPointComplete : EventHandlerBase
     {
