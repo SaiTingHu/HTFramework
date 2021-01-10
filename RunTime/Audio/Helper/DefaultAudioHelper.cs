@@ -20,8 +20,6 @@ namespace HT.Framework
         private float _multipleVolume = 1;
         private float _worldVolume = 1;
         private float _oneShootVolume = 1;
-        private Tweener _bgPauseTweener;
-        private Tweener _singlePauseTweener;
         private bool _singlePlayDetector = false;
 
         /// <summary>
@@ -350,6 +348,8 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         public void PlayBackgroundMusic(AudioClip clip, bool isLoop = true, float speed = 1)
         {
+            BackgroundSource.DOKill();
+
             if (BackgroundSource.isPlaying)
             {
                 BackgroundSource.Stop();
@@ -366,6 +366,8 @@ namespace HT.Framework
         /// <param name="clip">音乐剪辑</param>
         public void PlayBackgroundMusic(AudioClip clip)
         {
+            BackgroundSource.DOKill();
+
             if (BackgroundSource.isPlaying)
             {
                 BackgroundSource.Stop();
@@ -380,17 +382,12 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void PauseBackgroundMusic(bool isGradual = true)
         {
-            if (_bgPauseTweener != null)
-            {
-                _bgPauseTweener.Kill();
-                _bgPauseTweener = null;
-            }
+            BackgroundSource.DOKill();
 
             if (isGradual)
             {
-                _bgPauseTweener = BackgroundSource.DOFade(0, 2).OnComplete(() =>
+                BackgroundSource.DOFade(0, 2).OnComplete(() =>
                 {
-                    _bgPauseTweener = null;
                     BackgroundSource.Pause();
                     BackgroundSource.volume = BackgroundVolume;
                 });
@@ -407,20 +404,13 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void UnPauseBackgroundMusic(bool isGradual = true)
         {
-            if (_bgPauseTweener != null)
-            {
-                _bgPauseTweener.Kill();
-                _bgPauseTweener = null;
-            }
+            BackgroundSource.DOKill();
 
             if (isGradual)
             {
                 BackgroundSource.volume = 0;
                 BackgroundSource.UnPause();
-                _bgPauseTweener = BackgroundSource.DOFade(BackgroundVolume, 2).OnComplete(() =>
-                {
-                    _bgPauseTweener = null;
-                });
+                BackgroundSource.DOFade(BackgroundVolume, 2);
             }
             else
             {
@@ -433,6 +423,8 @@ namespace HT.Framework
         /// </summary>
         public void StopBackgroundMusic()
         {
+            BackgroundSource.DOKill();
+
             if (BackgroundSource.isPlaying)
             {
                 BackgroundSource.Stop();
@@ -447,6 +439,8 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         public void PlaySingleSound(AudioClip clip, bool isLoop = false, float speed = 1)
         {
+            SingleSource.DOKill();
+
             if (SingleSource.isPlaying)
             {
                 SingleSource.Stop();
@@ -464,6 +458,8 @@ namespace HT.Framework
         /// <param name="clip">音乐剪辑</param>
         public void PlaySingleSound(AudioClip clip)
         {
+            SingleSource.DOKill();
+
             if (SingleSource.isPlaying)
             {
                 SingleSource.Stop();
@@ -479,17 +475,12 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void PauseSingleSound(bool isGradual = true)
         {
-            if (_singlePauseTweener != null)
-            {
-                _singlePauseTweener.Kill();
-                _singlePauseTweener = null;
-            }
+            SingleSource.DOKill();
 
             if (isGradual)
             {
-                _singlePauseTweener = SingleSource.DOFade(0, 2).OnComplete(() =>
+                SingleSource.DOFade(0, 2).OnComplete(() =>
                 {
-                    _singlePauseTweener = null;
                     SingleSource.Pause();
                     SingleSource.volume = SingleVolume;
                 });
@@ -506,20 +497,13 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void UnPauseSingleSound(bool isGradual = true)
         {
-            if (_singlePauseTweener != null)
-            {
-                _singlePauseTweener.Kill();
-                _singlePauseTweener = null;
-            }
+            SingleSource.DOKill();
 
             if (isGradual)
             {
                 SingleSource.volume = 0;
                 SingleSource.UnPause();
-                _singlePauseTweener = SingleSource.DOFade(SingleVolume, 2).OnComplete(() =>
-                {
-                    _singlePauseTweener = null;
-                });
+                SingleSource.DOFade(SingleVolume, 2);
             }
             else
             {
@@ -532,6 +516,8 @@ namespace HT.Framework
         /// </summary>
         public void StopSingleSound()
         {
+            SingleSource.DOKill();
+
             if (SingleSource.isPlaying)
             {
                 SingleSource.Stop();
@@ -621,6 +607,7 @@ namespace HT.Framework
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
+                audio.DOKill();
                 if (audio.isPlaying)
                 {
                     audio.Stop();
@@ -650,6 +637,7 @@ namespace HT.Framework
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
+                audio.DOKill();
                 if (audio.isPlaying)
                 {
                     audio.Stop();
@@ -675,6 +663,7 @@ namespace HT.Framework
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
+                audio.DOKill();
                 if (isGradual)
                 {
                     audio.DOFade(0, 2).OnComplete(() =>
@@ -699,6 +688,7 @@ namespace HT.Framework
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
+                audio.DOKill();
                 if (isGradual)
                 {
                     audio.volume = 0;
@@ -719,6 +709,7 @@ namespace HT.Framework
         {
             if (WorldSources.ContainsKey(attachTarget))
             {
+                WorldSources[attachTarget].DOKill();
                 if (WorldSources[attachTarget].isPlaying)
                 {
                     WorldSources[attachTarget].Stop();
@@ -732,6 +723,7 @@ namespace HT.Framework
         {
             foreach (var audio in WorldSources)
             {
+                audio.Value.DOKill();
                 if (audio.Value.isPlaying)
                 {
                     audio.Value.Stop();
