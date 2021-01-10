@@ -358,6 +358,7 @@ namespace HT.Framework
             BackgroundSource.clip = clip;
             BackgroundSource.loop = isLoop;
             BackgroundSource.pitch = speed;
+            BackgroundSource.volume = BackgroundVolume;
             BackgroundSource.Play();
         }
         /// <summary>
@@ -374,6 +375,7 @@ namespace HT.Framework
             }
 
             BackgroundSource.clip = clip;
+            BackgroundSource.volume = BackgroundVolume;
             BackgroundSource.Play();
         }
         /// <summary>
@@ -449,6 +451,7 @@ namespace HT.Framework
             SingleSource.clip = clip;
             SingleSource.loop = isLoop;
             SingleSource.pitch = speed;
+            SingleSource.volume = SingleVolume;
             SingleSource.Play();
             _singlePlayDetector = true;
         }
@@ -466,6 +469,7 @@ namespace HT.Framework
             }
 
             SingleSource.clip = clip;
+            SingleSource.volume = SingleVolume;
             SingleSource.Play();
             _singlePlayDetector = true;
         }
@@ -615,6 +619,7 @@ namespace HT.Framework
                 audio.clip = clip;
                 audio.loop = isLoop;
                 audio.pitch = speed;
+                audio.volume = WorldVolume;
                 audio.Play();
             }
             else
@@ -643,6 +648,7 @@ namespace HT.Framework
                     audio.Stop();
                 }
                 audio.clip = clip;
+                audio.volume = WorldVolume;
                 audio.Play();
             }
             else
@@ -675,6 +681,7 @@ namespace HT.Framework
                 else
                 {
                     audio.Pause();
+                    audio.volume = WorldVolume;
                 }
             }
         }
@@ -698,6 +705,7 @@ namespace HT.Framework
                 else
                 {
                     audio.UnPause();
+                    audio.volume = WorldVolume;
                 }
             }
         }
