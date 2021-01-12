@@ -28,7 +28,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    return 0;
+                    return (int)(1.0f / Time.deltaTime);
                 }
             }
         }
