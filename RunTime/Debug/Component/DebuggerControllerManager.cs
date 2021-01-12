@@ -16,6 +16,18 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             _target.IsEnableBounds = GUILayout.Toggle(_target.IsEnableBounds, "Is Enable Bounds");
             GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            _target.IsCanControlOnUGUI = GUILayout.Toggle(_target.IsCanControlOnUGUI, "Is Can Control On UGUI");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            _target.EnableHighlightingEffect = GUILayout.Toggle(_target.EnableHighlightingEffect, "Enable Highlighting Effect");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            _target.EnableMouseRay = GUILayout.Toggle(_target.EnableMouseRay, "Enable MouseRay");
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Control Mode: ", GUILayout.Width(100));

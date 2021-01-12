@@ -20,6 +20,17 @@ namespace HT.Framework
 
         private IDebugHelper _helper;
 
+        /// <summary>
+        /// 当前的帧率
+        /// </summary>
+        public int FPS
+        {
+            get
+            {
+                return _helper.FPS;
+            }
+        }
+
         private DebugManager()
         {
 

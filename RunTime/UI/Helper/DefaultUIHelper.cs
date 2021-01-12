@@ -32,6 +32,8 @@ namespace HT.Framework
         private Transform _cameraTemporaryPanel;
         //World类型的UI根节点
         private Transform _worldUIRoot;
+        //遮罩面板
+        private GameObject _maskPanel;
 
         /// <summary>
         /// UI管理器
@@ -108,7 +110,21 @@ namespace HT.Framework
                 return !_UIEntity.activeSelf;
             }
         }
-        
+        /// <summary>
+        /// 是否显示全屏遮罩
+        /// </summary>
+        public bool IsDisplayMask
+        {
+            set
+            {
+                _maskPanel.SetActive(value);
+            }
+            get
+            {
+                return _maskPanel.activeSelf;
+            }
+        }
+
         /// <summary>
         /// 初始化助手
         /// </summary>
@@ -134,6 +150,7 @@ namespace HT.Framework
             _cameraResidentPanel = _cameraUIRoot.Find("ResidentPanel");
             _cameraTemporaryPanel = _cameraUIRoot.Find("TemporaryPanel");
             _worldUIRoot = _UIEntity.transform.Find("WorldUIRoot");
+            _maskPanel = _overlayUIRoot.FindChildren("MaskPanel");
             UICamera = _UIEntity.GetComponentByChild<Camera>("UICamera");
 
             _overlayUIRoot.gameObject.SetActive(_module.IsEnableOverlayUI);

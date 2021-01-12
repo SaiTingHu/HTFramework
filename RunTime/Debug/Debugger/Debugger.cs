@@ -36,6 +36,18 @@ namespace HT.Framework
                 }
             }
         }
+        /// <summary>
+        /// 当前的帧率
+        /// </summary>
+        public int FPS { get; private set; } = 0;
+        /// <summary>
+        /// 当前的最小帧率
+        /// </summary>
+        public int MinFPS { get; private set; } = 60;
+        /// <summary>
+        /// 当前的最大帧率
+        /// </summary>
+        public int MaxFPS { get; private set; } = 0;
         #endregion
 
         #region Private Field
@@ -45,10 +57,6 @@ namespace HT.Framework
         private Rect _maxWindowRect;
         private bool _isExpand = false;
         private DebuggerModule _module = DebuggerModule.Console;
-        //FPS
-        private int _fps = 0;
-        private int _minfps = 60;
-        private int _maxfps = 0;
         private Color _fpsColor = Color.white;
         private float _lastShowFPSTime = 0f;
         //Console
@@ -118,9 +126,17 @@ namespace HT.Framework
                 {
                     _maxWindowRect.x = 0;
                 }
+                else if ((_maxWindowRect.x + _maxWindowRect.width) > Screen.width)
+                {
+                    _maxWindowRect.x = Screen.width - _maxWindowRect.width;
+                }
                 if (_maxWindowRect.y < 0)
                 {
                     _maxWindowRect.y = 0;
+                }
+                else if ((_maxWindowRect.y + _maxWindowRect.height) > Screen.height)
+                {
+                    _maxWindowRect.y = Screen.height - _maxWindowRect.height;
                 }
             }
             else
@@ -130,13 +146,25 @@ namespace HT.Framework
                 {
                     _minWindowRect.x = 0;
                 }
+                else if ((_minWindowRect.x + _minWindowRect.width) > Screen.width)
+                {
+                    _minWindowRect.x = Screen.width - _minWindowRect.width;
+                }
                 if (_minWindowRect.y < 0)
                 {
                     _minWindowRect.y = 0;
                 }
+                else if ((_minWindowRect.y + _minWindowRect.height) > Screen.height)
+                {
+                    _minWindowRect.y = Screen.height - _minWindowRect.height;
+                }
             }
 
             FPSUpdate();
+        }
+        public void RefreshMaskState()
+        {
+            Main.m_UI.IsDisplayMask = Main.m_Debug.IsEnableDebugger && _isExpand;
         }
         #endregion
 
@@ -151,9 +179,10 @@ namespace HT.Framework
             #region Title
             GUILayout.BeginHorizontal();
             GUI.contentColor = _fpsColor;
-            if (GUILayout.Button("FPS: " + _fps.ToString(), GUILayout.Height(40)))
+            if (GUILayout.Button("FPS: " + FPS.ToString(), GUILayout.Height(40)))
             {
                 _isExpand = false;
+                RefreshMaskState();
             }
             GUI.contentColor = (Module == DebuggerModule.Console ? Color.white : Color.gray);
             if (GUILayout.Button("Console", GUILayout.Height(40)))
@@ -622,8 +651,9 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginVertical("Box", GUILayout.Height(275));
-
                     GUILayout.Label("Graphics Quality: " + QualitySettings.names[QualitySettings.GetQualityLevel()]);
+                    GUILayout.Label("Min FPS: " + MinFPS.ToString());
+                    GUILayout.Label("Max FPS: " + MaxFPS.ToString());
                     GUILayout.EndVertical();
 
                     GUILayout.BeginHorizontal();
@@ -728,9 +758,10 @@ namespace HT.Framework
             GUI.DragWindow(_dragWindowRect);
 
             GUI.contentColor = _fpsColor;
-            if (GUILayout.Button("FPS: " + _fps.ToString(), GUILayout.Width(80), GUILayout.Height(30)))
+            if (GUILayout.Button("FPS: " + FPS.ToString(), GUILayout.Width(80), GUILayout.Height(30)))
             {
                 _isExpand = true;
+                RefreshMaskState();
             }
             GUI.contentColor = Color.white;
         }
@@ -783,11 +814,11 @@ namespace HT.Framework
             float time = Time.realtimeSinceStartup - _lastShowFPSTime;
             if (time >= 1)
             {
-                _fps = (int)(1.0f / Time.deltaTime);
+                FPS = (int)(1.0f / Time.deltaTime);
                 _lastShowFPSTime = Time.realtimeSinceStartup;
 
-                if (_fps > _maxfps) _maxfps = _fps;
-                if (_fps < _minfps) _minfps = _fps;
+                if (FPS > MaxFPS) MaxFPS = FPS;
+                if (FPS < MinFPS) MinFPS = FPS;
             }
         }
         /// <summary>
@@ -795,7 +826,7 @@ namespace HT.Framework
         /// </summary>
         private IEnumerator ScreenShot()
         {
-            string path = "";
+            string path = null;
 #if UNITY_ANDROID
             path = "/sdcard/DCIM/ScreenShots/";
 #endif
@@ -804,7 +835,7 @@ namespace HT.Framework
             path = Application.dataPath + "/ScreenShots/";
 #endif
 
-            if (path != "")
+            if (!string.IsNullOrEmpty(path))
             {
                 Main.m_Debug.IsEnableDebugger = false;
                 yield return YieldInstructioner.GetWaitForEndOfFrame();
@@ -819,12 +850,13 @@ namespace HT.Framework
                 string name = "ScreenShotImage_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".png";
                 byte[] bytes = texture.EncodeToPNG();
                 File.WriteAllBytes(path + name, bytes);
+                Main.Kill(texture);
                 Main.m_Debug.IsEnableDebugger = true;
             }
             else
             {
                 Log.Warning("当前平台不支持截屏！");
-                yield return 0;
+                yield return null;
             }
         }
         #endregion

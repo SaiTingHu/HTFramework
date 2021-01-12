@@ -8,6 +8,11 @@ namespace HT.Framework
     public interface IDebugHelper : IInternalModuleHelper
     {
         /// <summary>
+        /// 当前的帧率
+        /// </summary>
+        int FPS { get; }
+
+        /// <summary>
         /// 初始化调试器
         /// </summary>
         /// <param name="debuggerSkin">调试器皮肤</param>

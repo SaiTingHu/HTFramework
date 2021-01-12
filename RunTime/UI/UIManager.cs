@@ -101,6 +101,20 @@ namespace HT.Framework
                 return _helper.IsHideAll;
             }
         }
+        /// <summary>
+        /// 是否显示全屏遮罩
+        /// </summary>
+        public bool IsDisplayMask
+        {
+            set
+            {
+                _helper.IsDisplayMask = value;
+            }
+            get
+            {
+                return _helper.IsDisplayMask;
+            }
+        }
 
         private UIManager()
         {

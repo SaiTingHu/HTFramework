@@ -47,6 +47,10 @@ namespace HT.Framework
         /// 是否隐藏所有UI实体
         /// </summary>
         bool IsHideAll { get; set; }
+        /// <summary>
+        /// 是否显示全屏遮罩
+        /// </summary>
+        bool IsDisplayMask { get; set; }
 
         /// <summary>
         /// 预加载常驻UI
