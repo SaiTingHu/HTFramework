@@ -22,7 +22,7 @@ namespace HT.Framework
         {
             get
             {
-                if (_debugger != null)
+                if (_module.IsEnableDebugger && _debugger != null)
                 {
                     return _debugger.FPS;
                 }
