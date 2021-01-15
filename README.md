@@ -76,7 +76,7 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [XLua](https://github.com/SaiTingHu/HTFrameworkXLua)【可选模块】 - 本模块旨在结合XLua与框架的资源加载策略，快速实现热更流程，并优化了开发环境，使得开发人员可以最低成本的投入到Lua业务开发。
 
-- [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于文件系统、本地化系统、新手引导系统、时间系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
+- [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于文件系统、本地化系统、新手引导系统、时间系统、AVG2D系统、FTG2D系统、RPG2D系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
 
 ## 内置工具
 
@@ -91,6 +91,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 - [入门级Demo](https://github.com/SaiTingHu/HTFrameworkDemo)。
 
 - [应用级Demo - 超级坦克大战](https://blog.csdn.net/qq992817263/category_10133279.html)。
+
+- [应用级Demo - FTG2D横版自由格斗](https://blog.csdn.net/qq992817263/category_10732753.html)。
 
 ## 注意事项
 
