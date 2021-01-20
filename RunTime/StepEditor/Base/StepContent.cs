@@ -183,25 +183,56 @@ namespace HT.Framework
         /// </summary>
         internal void SkipImmediate()
         {
+            List<StepOperation> operations = new List<StepOperation>();
+
+            GenerateTimeline(operations);
+            ExecuteTimeline(operations);
+        }
+        /// <summary>
+        /// 生成步骤操作时间轴
+        /// </summary>
+        /// <param name="operations">时间轴</param>
+        private void GenerateTimeline(List<StepOperation> operations)
+        {
             for (int i = 0; i < Wireds.Count; i++)
             {
                 if (Wireds[i].Left == -1)
                 {
-                    SkipImmediate(i);
+                    int nextIndex = Wireds[i].Right;
+                    Operations[nextIndex].TimePoint = 0;
+                    operations.Add(Operations[nextIndex]);
+                    GenerateTimeline(operations, i);
                 }
             }
         }
-        private void SkipImmediate(int index)
+        private void GenerateTimeline(List<StepOperation> operations, int index)
         {
-            int stepIndex = Wireds[index].Right;
-            Operations[stepIndex].SkipImmediate();
-
+            int lastIndex = Wireds[index].Right;
             for (int i = 0; i < Wireds.Count; i++)
             {
-                if (Wireds[i].Left == stepIndex)
+                if (Wireds[i].Left == lastIndex)
                 {
-                    SkipImmediate(i);
+                    int nextIndex = Wireds[i].Right;
+                    Operations[nextIndex].TimePoint = Operations[lastIndex].TimePoint + Operations[lastIndex].ElapseTime;
+                    operations.Add(Operations[nextIndex]);
+                    GenerateTimeline(operations, i);
                 }
+            }
+        }
+        /// <summary>
+        /// 根据时间轴执行步骤操作
+        /// </summary>
+        /// <param name="operations">时间轴</param>
+        private void ExecuteTimeline(List<StepOperation> operations)
+        {
+            operations.Sort((a, b) =>
+            {
+                return a.TimePoint <= b.TimePoint ? -1 : 1;
+            });
+
+            for (int i = 0; i < operations.Count; i++)
+            {
+                operations[i].SkipImmediate();
             }
         }
         #endregion

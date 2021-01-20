@@ -44,6 +44,10 @@ namespace HT.Framework
         /// 操作类型
         /// </summary>
         public StepOperationType OperationType = StepOperationType.Move;
+        /// <summary>
+        /// 位于时间轴上的时间点
+        /// </summary>
+        internal float TimePoint { get; set; }
         #endregion
 
         #region EditorOnly
