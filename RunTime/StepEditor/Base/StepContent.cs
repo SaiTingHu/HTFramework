@@ -227,7 +227,18 @@ namespace HT.Framework
         {
             operations.Sort((a, b) =>
             {
-                return a.TimePoint <= b.TimePoint ? -1 : 1;
+                if (a.TimePoint < b.TimePoint)
+                {
+                    return -1;
+                }
+                else if (a.TimePoint == b.TimePoint)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 1;
+                }
             });
 
             for (int i = 0; i < operations.Count; i++)
