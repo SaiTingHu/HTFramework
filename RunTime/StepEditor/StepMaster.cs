@@ -976,8 +976,7 @@ namespace HT.Framework
         private IEnumerator SkipCurrentStepCoroutine()
         {
             _executing = true;
-            _currentContent.Skip();
-
+            
             SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
             //UGUI按钮点击型步骤，自动执行按钮事件
@@ -1031,6 +1030,9 @@ namespace HT.Framework
                     Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
                 }
             }
+
+            _currentContent.Skip();
+
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
@@ -1059,8 +1061,7 @@ namespace HT.Framework
             {
                 _currentContent = _stepContents[_currentStepIndex];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
-                _currentContent.Skip();
-
+                
                 SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
                 //UGUI按钮点击型步骤，自动执行按钮事件
@@ -1114,6 +1115,9 @@ namespace HT.Framework
                         Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
                     }
                 }
+
+                _currentContent.Skip();
+
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
@@ -1142,8 +1146,7 @@ namespace HT.Framework
         private void SkipCurrentStepImmediateCoroutine()
         {
             _executing = true;
-            _currentContent.SkipImmediate();
-
+            
             SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
             //UGUI按钮点击型步骤，自动执行按钮事件
@@ -1197,6 +1200,9 @@ namespace HT.Framework
                     Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
                 }
             }
+
+            _currentContent.SkipImmediate();
+
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
@@ -1221,8 +1227,7 @@ namespace HT.Framework
             {
                 _currentContent = _stepContents[_currentStepIndex];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
-                _currentContent.SkipImmediate();
-
+                
                 SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
                 //UGUI按钮点击型步骤，自动执行按钮事件
@@ -1276,6 +1281,9 @@ namespace HT.Framework
                         Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
                     }
                 }
+
+                _currentContent.SkipImmediate();
+
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
