@@ -43,7 +43,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                Toggle(Target.IsAutoDie, out Target.IsAutoDie, "Auto Die");
+                Toggle(Target.IsAutoDie, out Target.IsAutoDie, "Highlight Auto Die");
                 GUILayout.EndHorizontal();
 
                 switch (Target.TriggerHighlighting)

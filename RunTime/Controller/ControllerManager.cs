@@ -256,6 +256,20 @@ namespace HT.Framework
                 _helper.EnableMouseRayHitPrompt = value;
             }
         }
+        /// <summary>
+        /// 高亮组件是否自动销毁
+        /// </summary>
+        public bool HighlightAutoDie
+        {
+            get
+            {
+                return _helper.HighlightAutoDie;
+            }
+            set
+            {
+                _helper.HighlightAutoDie = value;
+            }
+        }
 
         private ControllerManager()
         {

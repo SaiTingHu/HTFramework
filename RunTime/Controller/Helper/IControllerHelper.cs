@@ -69,6 +69,10 @@ namespace HT.Framework
         /// </summary>
         bool EnableMouseRayHitPrompt { get; set; }
         /// <summary>
+        /// 高亮组件是否自动销毁
+        /// </summary>
+        bool HighlightAutoDie { get; set; }
+        /// <summary>
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
         event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;

@@ -165,10 +165,10 @@ namespace HT.Framework
                 _highlightingEffect.enabled = value;
                 if (!value)
                 {
-                    HighlightableToolkit.CloseAllFlashHighLight();
-                    HighlightableToolkit.CloseAllHighLight();
-                    HighlightableToolkit.CloseAllOccluder();
-                    MeshOutlineToolkit.CloseAllMeshOutline();
+                    HighlightableToolkit.CloseAllFlashHighLight(HighlightAutoDie);
+                    HighlightableToolkit.CloseAllHighLight(HighlightAutoDie);
+                    HighlightableToolkit.CloseAllOccluder(HighlightAutoDie);
+                    MeshOutlineToolkit.CloseAllMeshOutline(HighlightAutoDie);
                 }
             }
         }
@@ -202,6 +202,20 @@ namespace HT.Framework
             set
             {
                 _mouseRay.IsOpenPrompt = value;
+            }
+        }
+        /// <summary>
+        /// 高亮组件是否自动销毁
+        /// </summary>
+        public bool HighlightAutoDie
+        {
+            get
+            {
+                return _mouseRay.IsAutoDie;
+            }
+            set
+            {
+                _mouseRay.IsAutoDie = value;
             }
         }
         /// <summary>
