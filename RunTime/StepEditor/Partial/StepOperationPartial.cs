@@ -102,7 +102,14 @@ namespace HT.Framework
         {
             if (BoolValue2)
             {
-                Target.transform.localRotation = Quaternion.Euler(Vector3Value);
+                if (BoolValue)
+                {
+                    Target.transform.localRotation = (Target.transform.localRotation.eulerAngles + Vector3Value).ToQuaternion();
+                }
+                else
+                {
+                    Target.transform.localRotation = Vector3Value.ToQuaternion();
+                }
             }
             else
             {
@@ -310,7 +317,14 @@ namespace HT.Framework
         {
             if (BoolValue2)
             {
-                Target.transform.localRotation = Quaternion.Euler(Vector3Value);
+                if (BoolValue)
+                {
+                    Target.transform.localRotation = (Target.transform.localRotation.eulerAngles + Vector3Value).ToQuaternion();
+                }
+                else
+                {
+                    Target.transform.localRotation = Vector3Value.ToQuaternion();
+                }
             }
             else
             {
@@ -509,7 +523,14 @@ namespace HT.Framework
         }
         private void RotateSkipImmediate()
         {
-            Target.transform.localRotation = Quaternion.Euler(Vector3Value);
+            if (BoolValue)
+            {
+                Target.transform.localRotation = (Target.transform.localRotation.eulerAngles + Vector3Value).ToQuaternion();
+            }
+            else
+            {
+                Target.transform.localRotation = Vector3Value.ToQuaternion();
+            }
         }
         private void ScaleSkipImmediate()
         {
@@ -755,9 +776,29 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (PreviewTarget) Vector3Value = PreviewTarget.transform.localRotation.eulerAngles;
+            if (PreviewTarget)
+            {
+                if (BoolValue)
+                {
+                    Vector3Value = PreviewTarget.transform.localRotation.eulerAngles - Target.transform.localRotation.eulerAngles;
+                }
+                else
+                {
+                    Vector3Value = PreviewTarget.transform.localRotation.eulerAngles;
+                }
+            }
             Vector3Value = EditorGUILayout.Vector3Field("", Vector3Value, GUILayout.Width(180));
-            if (PreviewTarget) PreviewTarget.transform.localRotation = Vector3Value.ToQuaternion();
+            if (PreviewTarget)
+            {
+                if (BoolValue)
+                {
+                    PreviewTarget.transform.localRotation = (Target.transform.localRotation.eulerAngles + Vector3Value).ToQuaternion();
+                }
+                else
+                {
+                    PreviewTarget.transform.localRotation = Vector3Value.ToQuaternion();
+                }
+            }
             GUILayout.EndHorizontal();
 
             GUI.enabled = !BoolValue2;
@@ -1305,7 +1346,14 @@ namespace HT.Framework
         }
         private void RotatePreviewTarget()
         {
-            PreviewTarget.transform.localRotation = Vector3Value.ToQuaternion();
+            if (BoolValue)
+            {
+                PreviewTarget.transform.localRotation = Quaternion.Euler(PreviewTarget.transform.localRotation.eulerAngles + Vector3Value);
+            }
+            else
+            {
+                PreviewTarget.transform.localRotation = Vector3Value.ToQuaternion();
+            }
         }
         private void ScalePreviewTarget()
         {
