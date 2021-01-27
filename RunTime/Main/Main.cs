@@ -76,10 +76,5 @@
 
             ModuleUnPause();
         }
-
-        internal void OnMainQuit()
-        {
-            ApplicationQuitEvent?.Invoke();
-        }
     }
 }

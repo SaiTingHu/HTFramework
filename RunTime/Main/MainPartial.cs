@@ -180,9 +180,13 @@ namespace HT.Framework
         {
             OnTermination();
         }
+        private void OnApplicationFocus(bool focus)
+        {
+            ApplicationFocusEvent?.Invoke(focus);
+        }
         private void OnApplicationQuit()
         {
-            OnMainQuit();
+            ApplicationQuitEvent?.Invoke();
         }
         #endregion
 
@@ -1039,6 +1043,13 @@ namespace HT.Framework
             _actionQueue.Add(action);
             _isCanDoQueue = true;
         }
+        #endregion
+
+        #region ApplicationFocus
+        /// <summary>
+        /// 程序焦点事件
+        /// </summary>
+        public event HTFAction<bool> ApplicationFocusEvent;
         #endregion
 
         #region ApplicationQuit
