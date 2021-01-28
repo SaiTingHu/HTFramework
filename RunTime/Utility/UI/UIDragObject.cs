@@ -15,6 +15,10 @@ namespace HT.Framework
         /// </summary>
         public GameObject DragTarget;
         /// <summary>
+        /// 拖动触发键
+        /// </summary>
+        public PointerEventData.InputButton DragButton = PointerEventData.InputButton.Left;
+        /// <summary>
         /// 拖动模式
         /// </summary>
         public UIType Mode = UIType.Overlay;
@@ -89,7 +93,10 @@ namespace HT.Framework
         }
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _isDrag = true;
+            if (eventData.button == DragButton)
+            {
+                _isDrag = true;
+            }
         }
         public void OnDrag(PointerEventData eventData)
         {

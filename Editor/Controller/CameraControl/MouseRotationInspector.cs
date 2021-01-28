@@ -81,7 +81,11 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             Toggle(Target.NeedDamping, out Target.NeedDamping, "      Need Damping");
             GUILayout.EndHorizontal();
-            
+
+            GUILayout.BeginHorizontal();
+            FloatField(Target.DampingTime, out Target.DampingTime, "      Damping Time");
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();

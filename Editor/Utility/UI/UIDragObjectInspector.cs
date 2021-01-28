@@ -14,6 +14,7 @@ namespace HT.Framework
 
             GUI.enabled = Target.DragTarget;
 
+            PropertyField("DragButton");
             PropertyField("Mode");
             PropertyField("Horizontal");
             if (Target.Horizontal)

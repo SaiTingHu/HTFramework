@@ -33,6 +33,10 @@ namespace HT.Framework
         /// </summary>
         public bool NeedDamping = true;
         /// <summary>
+        /// 阻尼缓冲时长
+        /// </summary>
+        public float DampingTime = 1;
+        /// <summary>
         /// 初始的摄像机x轴旋转值
         /// </summary>
         public float X = 90.0f;
@@ -57,10 +61,6 @@ namespace HT.Framework
         /// 注视点（注视目标的准确位置，经过偏移后的位置）
         /// </summary>
         private Vector3 _targetPoint;
-        /// <summary>
-        /// 插值量
-        /// </summary>
-        private float _damping = 5.0f;
         /// <summary>
         /// 系数
         /// </summary>
@@ -178,8 +178,8 @@ namespace HT.Framework
             //摄像机插值变换到新的位置
             if (damping)
             {
-                transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * _damping);
-                transform.position = Vector3.Lerp(transform.position, _position, Time.deltaTime * _damping);
+                transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * DampingTime);
+                transform.position = Vector3.Lerp(transform.position, _position, Time.deltaTime * DampingTime);
             }
             //摄像机直接变换到新的位置
             else
