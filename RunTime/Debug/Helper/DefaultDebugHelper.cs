@@ -91,12 +91,13 @@ namespace HT.Framework
         /// 初始化调试器
         /// </summary>
         /// <param name="debuggerSkin">调试器皮肤</param>
-        public void OnInitDebugger(GUISkin debuggerSkin)
+        /// <param name="isChinese">是否切换为中文</param>
+        public void OnInitDebugger(GUISkin debuggerSkin, bool isChinese)
         {
             if (_module.IsEnableDebugger)
             {
                 _debugger = new Debugger();
-                _debugger.OnInitialization(debuggerSkin);
+                _debugger.OnInitialization(debuggerSkin, isChinese);
             }
         }
         /// <summary>

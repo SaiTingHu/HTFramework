@@ -16,7 +16,8 @@ namespace HT.Framework
         /// 初始化调试器
         /// </summary>
         /// <param name="debuggerSkin">调试器皮肤</param>
-        void OnInitDebugger(GUISkin debuggerSkin);
+        /// <param name="isChinese">是否切换为中文</param>
+        void OnInitDebugger(GUISkin debuggerSkin, bool isChinese);
         /// <summary>
         /// 调试器UI刷新
         /// </summary>

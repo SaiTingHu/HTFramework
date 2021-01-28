@@ -17,6 +17,10 @@ namespace HT.Framework
         /// 是否启用调试器
         /// </summary>
         public bool IsEnableDebugger = false;
+        /// <summary>
+        /// 是否切换为中文【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal bool IsChinese = false;
 
         private IDebugHelper _helper;
 
@@ -40,7 +44,7 @@ namespace HT.Framework
             base.OnInitialization();
 
             _helper = Helper as IDebugHelper;
-            _helper.OnInitDebugger(DebuggerSkin);
+            _helper.OnInitDebugger(DebuggerSkin, IsChinese);
         }
         private void OnGUI()
         {

@@ -39,6 +39,10 @@ namespace HT.Framework
                 GUILayout.Label("Debugger Skin", GUILayout.Width(100));
                 ObjectField(Target.DebuggerSkin, out Target.DebuggerSkin, false, "");
                 GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                Toggle(Target.IsChinese, out Target.IsChinese, "Is Chinese");
+                GUILayout.EndHorizontal();
             }
         }
         protected override void OnInspectorRuntimeGUI()
