@@ -791,7 +791,7 @@ MonoBehaviour:
   MinDistance: 0.1
   MaxDistance: 5
   NeedDamping: 1
-  DampingTime: 1
+  DampingTime: 3
   X: 270.2
   Y: 54.1
   IsCanOnUGUI: 0

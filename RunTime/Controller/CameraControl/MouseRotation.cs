@@ -35,7 +35,7 @@ namespace HT.Framework
         /// <summary>
         /// 阻尼缓冲时长
         /// </summary>
-        public float DampingTime = 1;
+        public float DampingTime = 3;
         /// <summary>
         /// 初始的摄像机x轴旋转值
         /// </summary>

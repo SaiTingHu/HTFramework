@@ -177,7 +177,7 @@ namespace HT.Framework
         }
         private void CameraFollowExecute()
         {
-            Main.m_Controller.SetLookPoint(Vector3Value, true);
+            Main.m_Controller.SetLookPoint(Vector3Value, false);
             Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, true);
         }
         private void TextMeshExecute()
