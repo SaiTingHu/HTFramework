@@ -165,6 +165,10 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 当前步骤的任务类型
+        /// </summary>
+        public StepHelperTask CurrentTask { get; private set; }
+        /// <summary>
         /// 当前所有的步骤，包含启用的和未启用的
         /// </summary>
         public List<StepContent> AllStep
@@ -749,7 +753,7 @@ namespace HT.Framework
                             }
                             _currentHelper.Content = _currentContent;
                             _currentHelper.Target = _currentTarget;
-                            _currentHelper.Task = StepHelperTask.Restore;
+                            _currentHelper.Task = CurrentTask = StepHelperTask.Restore;
                             _currentHelper.OnInit();
                         }
                         else
@@ -760,7 +764,7 @@ namespace HT.Framework
                     //助手执行恢复
                     if (_currentHelper != null)
                     {
-                        _currentHelper.Task = StepHelperTask.Restore;
+                        _currentHelper.Task = CurrentTask = StepHelperTask.Restore;
                         _currentHelper.OnRestore();
                         _currentHelper.OnTermination();
                         _currentHelper = null;
@@ -923,7 +927,7 @@ namespace HT.Framework
                     }
                     _currentHelper.Content = _currentContent;
                     _currentHelper.Target = _currentTarget;
-                    _currentHelper.Task = StepHelperTask.Execute;
+                    _currentHelper.Task = CurrentTask = StepHelperTask.Execute;
                     _currentHelper.OnInit();
                 }
                 else
@@ -1022,7 +1026,7 @@ namespace HT.Framework
                     }
                     _currentHelper.Content = _currentContent;
                     _currentHelper.Target = _currentTarget;
-                    _currentHelper.Task = StepHelperTask.Skip;
+                    _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
                     _currentHelper.OnInit();
                 }
                 else
@@ -1036,7 +1040,7 @@ namespace HT.Framework
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
-                _currentHelper.Task = StepHelperTask.Skip;
+                _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
                 _currentHelper.OnSkip();
                 if (_currentHelper.SkipLifeTime > 0)
                 {
@@ -1107,7 +1111,7 @@ namespace HT.Framework
                         }
                         _currentHelper.Content = _currentContent;
                         _currentHelper.Target = _currentTarget;
-                        _currentHelper.Task = StepHelperTask.Skip;
+                        _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
                         _currentHelper.OnInit();
                     }
                     else
@@ -1121,7 +1125,7 @@ namespace HT.Framework
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
-                    _currentHelper.Task = StepHelperTask.Skip;
+                    _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
                     _currentHelper.OnSkip();
                     if (_currentHelper.SkipLifeTime > 0)
                     {
@@ -1192,7 +1196,7 @@ namespace HT.Framework
                     }
                     _currentHelper.Content = _currentContent;
                     _currentHelper.Target = _currentTarget;
-                    _currentHelper.Task = StepHelperTask.SkipImmediate;
+                    _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
                     _currentHelper.OnInit();
                 }
                 else
@@ -1206,7 +1210,7 @@ namespace HT.Framework
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
-                _currentHelper.Task = StepHelperTask.SkipImmediate;
+                _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
                 _currentHelper.OnSkipImmediate();
                 _currentHelper.OnTermination();
                 _currentHelper = null;
@@ -1273,7 +1277,7 @@ namespace HT.Framework
                         }
                         _currentHelper.Content = _currentContent;
                         _currentHelper.Target = _currentTarget;
-                        _currentHelper.Task = StepHelperTask.SkipImmediate;
+                        _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
                         _currentHelper.OnInit();
                     }
                     else
@@ -1287,7 +1291,7 @@ namespace HT.Framework
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
-                    _currentHelper.Task = StepHelperTask.SkipImmediate;
+                    _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
                     _currentHelper.OnSkipImmediate();
                     _currentHelper.OnTermination();
                     _currentHelper = null;
