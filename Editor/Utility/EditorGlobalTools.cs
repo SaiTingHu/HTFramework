@@ -252,6 +252,48 @@ namespace HT.Framework
             System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
             System.Diagnostics.Process.Start(psi);
         }
+
+        /// <summary>
+        /// 打开DataPath文件夹
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Open DataPath Folder", false, 104)]
+        private static void OpenDataPathFolder()
+        {
+            string path = Application.dataPath;
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
+            System.Diagnostics.Process.Start(psi);
+        }
+
+        /// <summary>
+        /// 打开StreamingAssets文件夹
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Open StreamingAssets Folder", false, 105)]
+        private static void OpenStreamingAssetsFolder()
+        {
+            string path = Application.streamingAssetsPath;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                AssetDatabase.Refresh();
+            }
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
+            System.Diagnostics.Process.Start(psi);
+        }
+
+        /// <summary>
+        /// 打开PersistentData文件夹
+        /// </summary>
+        [@MenuItem("HTFramework/Editor/Open PersistentData Folder", false, 106)]
+        private static void OpenPersistentDataFolder()
+        {
+            string path = Application.persistentDataPath;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
+            System.Diagnostics.Process.Start(psi);
+        }
         #endregion
 
         #region ECS 【优先级103】
