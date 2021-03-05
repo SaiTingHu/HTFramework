@@ -731,8 +731,6 @@ namespace HT.Framework
                     _currentContent = _stepContents[_currentStepIndex];
                     _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
-                    RestoreStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
-
                     //创建步骤助手
                     if (_currentHelper == null && _currentContent.Helper != "<None>")
                     {
@@ -761,6 +759,9 @@ namespace HT.Framework
                             Log.Error(string.Format("步骤控制者：【步骤：{0}】的助手 {1} 丢失！", _currentStepIndex + 1, _currentContent.Helper));
                         }
                     }
+
+                    RestoreStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+
                     //助手执行恢复
                     if (_currentHelper != null)
                     {
@@ -958,6 +959,8 @@ namespace HT.Framework
             _executing = true;
             _currentContent.Execute();
 
+            ExecuteStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+
             //UGUI按钮点击型步骤，取消按钮注册
             if (_currentButton)
             {
@@ -971,8 +974,6 @@ namespace HT.Framework
                 _currentHelper.OnTermination();
                 _currentHelper = null;
             }
-
-            ExecuteStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
         }
         /// <summary>
         /// 跳过当前步骤
@@ -981,8 +982,6 @@ namespace HT.Framework
         {
             _executing = true;
             
-            SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
-
             //UGUI按钮点击型步骤，自动执行按钮事件
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
@@ -1037,6 +1036,8 @@ namespace HT.Framework
 
             _currentContent.Skip();
 
+            SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
@@ -1066,8 +1067,6 @@ namespace HT.Framework
                 _currentContent = _stepContents[_currentStepIndex];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
                 
-                SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
-
                 //UGUI按钮点击型步骤，自动执行按钮事件
                 if (_currentContent.Trigger == StepTrigger.ButtonClick)
                 {
@@ -1122,6 +1121,8 @@ namespace HT.Framework
 
                 _currentContent.Skip();
 
+                SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
@@ -1151,8 +1152,6 @@ namespace HT.Framework
         {
             _executing = true;
             
-            SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
-
             //UGUI按钮点击型步骤，自动执行按钮事件
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
@@ -1207,6 +1206,8 @@ namespace HT.Framework
 
             _currentContent.SkipImmediate();
 
+            SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
@@ -1232,8 +1233,6 @@ namespace HT.Framework
                 _currentContent = _stepContents[_currentStepIndex];
                 _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
                 
-                SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
-
                 //UGUI按钮点击型步骤，自动执行按钮事件
                 if (_currentContent.Trigger == StepTrigger.ButtonClick)
                 {
@@ -1287,6 +1286,8 @@ namespace HT.Framework
                 }
 
                 _currentContent.SkipImmediate();
+
+                SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
