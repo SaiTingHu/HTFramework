@@ -72,9 +72,9 @@ namespace HT.Framework
         public void OnPreparatory()
         {
             //流程初始化
-            foreach (var procedureInstance in Procedures)
+            foreach (var procedure in Procedures)
             {
-                procedureInstance.Value.OnInit();
+                procedure.Value.OnInit();
             }
 
             //进入默认流程

@@ -74,7 +74,7 @@
         {
             base.OnResume();
 
-            ModuleUnPause();
+            ModuleResume();
         }
     }
 }

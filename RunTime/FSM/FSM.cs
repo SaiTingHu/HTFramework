@@ -86,7 +86,6 @@ namespace HT.Framework
                     {
                         _data = Activator.CreateInstance(type) as FSMDataBase;
                         _data.StateMachine = this;
-                        _data.OnInit();
                     }
                     else
                     {
@@ -110,7 +109,6 @@ namespace HT.Framework
                         {
                             FiniteStateBase state = Activator.CreateInstance(type) as FiniteStateBase;
                             state.StateMachine = this;
-                            state.OnInit();
                             _stateInstances.Add(type, state);
                         }
                     }
@@ -142,7 +140,14 @@ namespace HT.Framework
         }
         private void Start()
         {
-            //进入默认状态
+            if (_data != null)
+            {
+                _data.OnInit();
+            }
+            foreach(var state in _stateInstances)
+            {
+                state.Value.OnInit();
+            }
             if (_defaultState != null)
             {
                 if (_stateInstances.ContainsKey(_defaultState))

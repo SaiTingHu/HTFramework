@@ -487,7 +487,7 @@ namespace HT.Framework
         /// ProjectWizard
         /// </summary>
         [@MenuItem("HTFramework/Project Wizard", false, 1000)]
-        private static void ProjectWizard()
+        private static void OpenProjectWizard()
         {
             ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
             wizard.titleContent.image = EditorGUIUtility.IconContent("SocialNetworks.UDNLogo").image;
@@ -497,11 +497,25 @@ namespace HT.Framework
         }
         #endregion
 
-        #region HTFramework Setting... 【优先级1001】
+        #region Execution Order 【优先级1001】
+        /// <summary>
+        /// Execution Order
+        /// </summary>
+        [@MenuItem("HTFramework/Execution Order", false, 1001)]
+        private static void OpenExecutionOrder()
+        {
+            ExecutionOrder window = EditorWindow.GetWindow<ExecutionOrder>();
+            window.titleContent.image = EditorGUIUtility.IconContent("SortingGroup Icon").image;
+            window.titleContent.text = "Execution Order";
+            window.Show();
+        }
+        #endregion
+
+        #region HTFramework Setting... 【优先级1002】
         /// <summary>
         /// HTFramework Setting...
         /// </summary>
-        [@MenuItem("HTFramework/HTFramework Settings...", false, 1001)]
+        [@MenuItem("HTFramework/HTFramework Settings...", false, 1002)]
         private static void OpenHTFrameworkSettings()
         {
             Setter setter = EditorWindow.GetWindow<Setter>();

@@ -410,7 +410,7 @@ namespace HT.Framework
                 internalModule.Value.OnPause();
             }
         }
-        private void ModuleUnPause()
+        private void ModuleResume()
         {
             foreach (var internalModule in _internalModules)
             {
