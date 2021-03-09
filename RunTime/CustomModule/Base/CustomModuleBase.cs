@@ -38,7 +38,7 @@
         /// <summary>
         /// 恢复模块
         /// </summary>
-        public virtual void OnUnPause()
+        public virtual void OnResume()
         { }
     }
 }

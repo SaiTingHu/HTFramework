@@ -89,11 +89,11 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
             foreach (var module in CustomModules)
             {
-                module.Value.OnUnPause();
+                module.Value.OnResume();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -50,9 +51,9 @@ namespace HT.Framework
                         EditorUtility.DisplayProgressBar("Export......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
                         if (Target.Content[i].Ancillary != "")
                         {
-                            File.AppendAllText(path, "【" + Target.Content[i].Ancillary + "】\r\n");
+                            File.AppendAllText(path, "【" + Target.Content[i].Ancillary + "】\r\n", Encoding.UTF8);
                         }
-                        File.AppendAllText(path, (i + 1) + "、" + Target.Content[i].Name + "\r\n" + Target.Content[i].Prompt + "\r\n");
+                        File.AppendAllText(path, (i + 1) + "、" + Target.Content[i].Name + "\r\n" + Target.Content[i].Prompt + "\r\n", Encoding.UTF8);
                     }
                     EditorUtility.ClearProgressBar();
                 }
@@ -70,9 +71,9 @@ namespace HT.Framework
                         EditorUtility.DisplayProgressBar("Export......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
                         if (Target.Content[i].Ancillary != "")
                         {
-                            File.AppendAllText(path, "【" + Target.Content[i].Ancillary + "】\r\n");
+                            File.AppendAllText(path, "【" + Target.Content[i].Ancillary + "】\r\n", Encoding.UTF8);
                         }
-                        File.AppendAllText(path, Target.Content[i].Name + "\r\n");
+                        File.AppendAllText(path, Target.Content[i].Name + "\r\n", Encoding.UTF8);
                     }
                     EditorUtility.ClearProgressBar();
                 }
@@ -88,7 +89,7 @@ namespace HT.Framework
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
                         EditorUtility.DisplayProgressBar("Export......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
-                        File.AppendAllText(path, Target.Content[i].Prompt + "\r\n");
+                        File.AppendAllText(path, Target.Content[i].Prompt + "\r\n", Encoding.UTF8);
                     }
                     EditorUtility.ClearProgressBar();
                 }

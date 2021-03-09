@@ -114,7 +114,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }
@@ -164,7 +164,7 @@ namespace HT.Framework
 
 #if UNITY_STANDALONE_WIN
                 string logPath = _logPath + "/" + DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff") + ".log";
-                File.AppendAllText(logPath, _logInfoBuilder.ToString());
+                File.AppendAllText(logPath, _logInfoBuilder.ToString(), Encoding.UTF8);
 
                 if (_module.IsEnableFeedback)
                 {
@@ -179,7 +179,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        File.AppendAllText(logPath, "[feedback]:Doesn't find feedback program!path: " + _module.FeedbackProgramPath + "\r\n");
+                        File.AppendAllText(logPath, "[feedback]:Doesn't find feedback program!path: " + _module.FeedbackProgramPath + "\r\n", Encoding.UTF8);
                     }
                     Application.Quit();
                 }

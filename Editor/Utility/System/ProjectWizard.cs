@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -222,7 +223,7 @@ namespace HT.Framework
 
                 if (folder.IsCreateGuide)
                 {
-                    File.AppendAllText(folder.FullPath + "/Guide.txt", folder.GuideContent);
+                    File.AppendAllText(folder.FullPath + "/Guide.txt", folder.GuideContent, Encoding.UTF8);
                 }
             }
 
@@ -275,7 +276,7 @@ namespace HT.Framework
                             string code = asset.text;
                             code = code.Replace("新建流程", "初始流程（运行 " + _mainSceneName + " 场景会首先进入此流程）");
                             code = code.Replace("#SCRIPTNAME#", _initialProcedure);
-                            File.AppendAllText(path, code);
+                            File.AppendAllText(path, code, Encoding.UTF8);
                             asset = null;
 
                             Main main = FindObjectOfType<Main>();

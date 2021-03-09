@@ -295,7 +295,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }

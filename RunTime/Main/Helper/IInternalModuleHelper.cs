@@ -33,6 +33,6 @@
         /// <summary>
         /// 恢复助手
         /// </summary>
-        void OnUnPause();
+        void OnResume();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -68,10 +69,10 @@ namespace HT.Framework
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
                         EditorUtility.DisplayProgressBar("Export......", i + "/" + _taskContentCount, (float)i / _taskContentCount);
-                        File.AppendAllText(path, "【" + Target.Content[i].Name + "】\r\n");
+                        File.AppendAllText(path, "【" + Target.Content[i].Name + "】\r\n", Encoding.UTF8);
                         for (int j = 0; j < Target.Content[i].Points.Count; j++)
                         {
-                            File.AppendAllText(path, Target.Content[i].Points[j].Name + "\r\n");
+                            File.AppendAllText(path, Target.Content[i].Points[j].Name + "\r\n", Encoding.UTF8);
                         }
                     }
                     EditorUtility.ClearProgressBar();
@@ -88,10 +89,10 @@ namespace HT.Framework
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
                         EditorUtility.DisplayProgressBar("Export......", i + "/" + _taskContentCount, (float)i / _taskContentCount);
-                        File.AppendAllText(path, "【" + Target.Content[i].Details + "】\r\n");
+                        File.AppendAllText(path, "【" + Target.Content[i].Details + "】\r\n", Encoding.UTF8);
                         for (int j = 0; j < Target.Content[i].Points.Count; j++)
                         {
-                            File.AppendAllText(path, Target.Content[i].Points[j].Details + "\r\n");
+                            File.AppendAllText(path, Target.Content[i].Points[j].Details + "\r\n", Encoding.UTF8);
                         }
                     }
                     EditorUtility.ClearProgressBar();

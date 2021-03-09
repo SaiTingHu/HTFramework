@@ -333,9 +333,9 @@ namespace HT.Framework
 
             Pause = true;
         }
-        internal override void OnUnPause()
+        internal override void OnResume()
         {
-            base.OnUnPause();
+            base.OnResume();
 
             Pause = false;
         }

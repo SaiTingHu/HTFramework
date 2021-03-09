@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -744,7 +745,7 @@ namespace HT.Framework
                 TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "WebGLPluginTemplate.txt", typeof(TextAsset)) as TextAsset;
                 if (asset)
                 {
-                    File.AppendAllText(pluginPath, asset.text);
+                    File.AppendAllText(pluginPath, asset.text, Encoding.UTF8);
                     asset = null;
                 }
             }
@@ -753,7 +754,7 @@ namespace HT.Framework
                 TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "WebGLCallerTemplate.txt", typeof(TextAsset)) as TextAsset;
                 if (asset)
                 {
-                    File.AppendAllText(callerPath, asset.text);
+                    File.AppendAllText(callerPath, asset.text, Encoding.UTF8);
                     asset = null;
                 }
             }
@@ -802,7 +803,7 @@ namespace HT.Framework
                                 code = code.Replace(replace[i], className);
                             }
                         }
-                        File.AppendAllText(path, code);
+                        File.AppendAllText(path, code, Encoding.UTF8);
                         asset = null;
                         AssetDatabase.Refresh();
 

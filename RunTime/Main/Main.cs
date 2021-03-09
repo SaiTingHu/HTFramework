@@ -70,9 +70,9 @@
             ModulePause();
         }
 
-        internal override void OnUnPause()
+        internal override void OnResume()
         {
-            base.OnUnPause();
+            base.OnResume();
 
             ModuleUnPause();
         }

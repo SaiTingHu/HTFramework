@@ -315,8 +315,8 @@ namespace HT.Framework
                 }
                 else
                 {
-                    OnUnPause();
-                    m_Event.Throw<EventUnPauseGame>();
+                    OnResume();
+                    m_Event.Throw<EventResumeGame>();
                 }
             }
         }
@@ -414,7 +414,7 @@ namespace HT.Framework
         {
             foreach (var internalModule in _internalModules)
             {
-                internalModule.Value.OnUnPause();
+                internalModule.Value.OnResume();
             }
         }
 

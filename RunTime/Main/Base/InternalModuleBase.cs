@@ -87,11 +87,11 @@ namespace HT.Framework
         /// <summary>
         /// 恢复模块
         /// </summary>
-        internal virtual void OnUnPause()
+        internal virtual void OnResume()
         {
             if (Helper != null)
             {
-                Helper.OnUnPause();
+                Helper.OnResume();
             }
         }
     }
