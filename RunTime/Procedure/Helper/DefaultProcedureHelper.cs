@@ -114,7 +114,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    _timer = 0;
+                    _timer -= 1;
                     CurrentProcedure.OnUpdateSecond();
                 }
             }
