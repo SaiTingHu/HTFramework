@@ -9,12 +9,19 @@ using DG.Tweening;
 [FiniteStateName("新建状态组/#STATENAME#")]
 public class #SCRIPTNAME# : FiniteStateBase
 {
+    /// <summary>
+    /// 所属状态机的数据
+    /// </summary>
+    private FSMDataBase _data;
+
 	/// <summary>
 	/// 初始化
 	/// </summary>
     public override void OnInit()
     {
         base.OnInit();
+
+		_data = StateMachine.CurrentData;
     }
     /// <summary>
     /// 进入状态
