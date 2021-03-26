@@ -726,38 +726,17 @@ namespace HT.Framework
                 if (index < 0 || index >= _currentStepIndex)
                     return false;
 
+                CurrentTask = StepHelperTask.Restore;
+
                 while (_currentStepIndex >= index)
                 {
                     _currentContent = _stepContents[_currentStepIndex];
                     _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
                     //创建步骤助手
-                    if (_currentHelper == null && _currentContent.Helper != "<None>")
+                    if (_currentHelper == null)
                     {
-                        Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
-                        if (type != null)
-                        {
-                            _currentHelper = Activator.CreateInstance(type) as StepHelper;
-                            _currentHelper.Parameters = _currentContent.Parameters;
-                            for (int i = 0; i < _currentHelper.Parameters.Count; i++)
-                            {
-                                if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
-                                {
-                                    if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
-                                    {
-                                        _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
-                                    }
-                                }
-                            }
-                            _currentHelper.Content = _currentContent;
-                            _currentHelper.Target = _currentTarget;
-                            _currentHelper.Task = CurrentTask = StepHelperTask.Restore;
-                            _currentHelper.OnInit();
-                        }
-                        else
-                        {
-                            Log.Error(string.Format("步骤控制者：【步骤：{0}】的助手 {1} 丢失！", _currentStepIndex + 1, _currentContent.Helper));
-                        }
+                        _currentHelper = CreateHelper(_currentContent, StepHelperTask.Restore);
                     }
 
                     RestoreStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
@@ -765,7 +744,7 @@ namespace HT.Framework
                     //助手执行恢复
                     if (_currentHelper != null)
                     {
-                        _currentHelper.Task = CurrentTask = StepHelperTask.Restore;
+                        _currentHelper.Task = StepHelperTask.Restore;
                         _currentHelper.OnRestore();
                         _currentHelper.OnTermination();
                         _currentHelper = null;
@@ -888,6 +867,8 @@ namespace HT.Framework
             _currentContent = _stepContents[_currentStepIndex];
             _currentTarget = _currentContent.Target.GetComponent<StepTarget>();
 
+            CurrentTask = StepHelperTask.Execute;
+
             //UGUI按钮点击型步骤，注册监听
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
@@ -909,33 +890,7 @@ namespace HT.Framework
             }
 
             //创建步骤助手
-            if (_currentContent.Helper != "<None>")
-            {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
-                if (type != null)
-                {
-                    _currentHelper = Activator.CreateInstance(type) as StepHelper;
-                    _currentHelper.Parameters = _currentContent.Parameters;
-                    for (int i = 0; i < _currentHelper.Parameters.Count; i++)
-                    {
-                        if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
-                        {
-                            if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
-                            {
-                                _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
-                            }
-                        }
-                    }
-                    _currentHelper.Content = _currentContent;
-                    _currentHelper.Target = _currentTarget;
-                    _currentHelper.Task = CurrentTask = StepHelperTask.Execute;
-                    _currentHelper.OnInit();
-                }
-                else
-                {
-                    Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
-                }
-            }
+            _currentHelper = CreateHelper(_currentContent, StepHelperTask.Execute);
             
             //未激活的步骤自动跳过
             if (_stepContentEnables.ContainsKey(_currentContent.GUID))
@@ -981,7 +936,9 @@ namespace HT.Framework
         private IEnumerator SkipCurrentStepCoroutine()
         {
             _executing = true;
-            
+
+            CurrentTask = StepHelperTask.Skip;
+
             //UGUI按钮点击型步骤，自动执行按钮事件
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
@@ -1006,32 +963,9 @@ namespace HT.Framework
             }
 
             //创建步骤助手
-            if (_currentHelper == null && _currentContent.Helper != "<None>")
+            if (_currentHelper == null)
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
-                if (type != null)
-                {
-                    _currentHelper = Activator.CreateInstance(type) as StepHelper;
-                    _currentHelper.Parameters = _currentContent.Parameters;
-                    for (int i = 0; i < _currentHelper.Parameters.Count; i++)
-                    {
-                        if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
-                        {
-                            if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
-                            {
-                                _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
-                            }
-                        }
-                    }
-                    _currentHelper.Content = _currentContent;
-                    _currentHelper.Target = _currentTarget;
-                    _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
-                    _currentHelper.OnInit();
-                }
-                else
-                {
-                    Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
-                }
+                _currentHelper = CreateHelper(_currentContent, StepHelperTask.Skip);
             }
 
             _currentContent.Skip();
@@ -1041,7 +975,7 @@ namespace HT.Framework
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
-                _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
+                _currentHelper.Task = StepHelperTask.Skip;
                 _currentHelper.OnSkip();
                 if (_currentHelper.SkipLifeTime > 0)
                 {
@@ -1061,6 +995,8 @@ namespace HT.Framework
         {
             _executing = true;
             _skipTargetIndex = index;
+
+            CurrentTask = StepHelperTask.Skip;
 
             while (_currentStepIndex < _skipTargetIndex)
             {
@@ -1091,32 +1027,9 @@ namespace HT.Framework
                 }
 
                 //创建步骤助手
-                if (_currentHelper == null && _currentContent.Helper != "<None>")
+                if (_currentHelper == null)
                 {
-                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
-                    if (type != null)
-                    {
-                        _currentHelper = Activator.CreateInstance(type) as StepHelper;
-                        _currentHelper.Parameters = _currentContent.Parameters;
-                        for (int i = 0; i < _currentHelper.Parameters.Count; i++)
-                        {
-                            if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
-                            {
-                                if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
-                                {
-                                    _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
-                                }
-                            }
-                        }
-                        _currentHelper.Content = _currentContent;
-                        _currentHelper.Target = _currentTarget;
-                        _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
-                        _currentHelper.OnInit();
-                    }
-                    else
-                    {
-                        Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
-                    }
+                    _currentHelper = CreateHelper(_currentContent, StepHelperTask.Skip);
                 }
 
                 _currentContent.Skip();
@@ -1126,7 +1039,7 @@ namespace HT.Framework
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
-                    _currentHelper.Task = CurrentTask = StepHelperTask.Skip;
+                    _currentHelper.Task = StepHelperTask.Skip;
                     _currentHelper.OnSkip();
                     if (_currentHelper.SkipLifeTime > 0)
                     {
@@ -1151,7 +1064,9 @@ namespace HT.Framework
         private void SkipCurrentStepImmediateCoroutine()
         {
             _executing = true;
-            
+
+            CurrentTask = StepHelperTask.SkipImmediate;
+
             //UGUI按钮点击型步骤，自动执行按钮事件
             if (_currentContent.Trigger == StepTrigger.ButtonClick)
             {
@@ -1176,32 +1091,9 @@ namespace HT.Framework
             }
 
             //创建步骤助手
-            if (_currentHelper == null && _currentContent.Helper != "<None>")
+            if (_currentHelper == null)
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
-                if (type != null)
-                {
-                    _currentHelper = Activator.CreateInstance(type) as StepHelper;
-                    _currentHelper.Parameters = _currentContent.Parameters;
-                    for (int i = 0; i < _currentHelper.Parameters.Count; i++)
-                    {
-                        if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
-                        {
-                            if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
-                            {
-                                _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
-                            }
-                        }
-                    }
-                    _currentHelper.Content = _currentContent;
-                    _currentHelper.Target = _currentTarget;
-                    _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
-                    _currentHelper.OnInit();
-                }
-                else
-                {
-                    Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
-                }
+                _currentHelper = CreateHelper(_currentContent, StepHelperTask.SkipImmediate);
             }
 
             _currentContent.SkipImmediate();
@@ -1211,7 +1103,7 @@ namespace HT.Framework
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
-                _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
+                _currentHelper.Task = StepHelperTask.SkipImmediate;
                 _currentHelper.OnSkipImmediate();
                 _currentHelper.OnTermination();
                 _currentHelper = null;
@@ -1227,6 +1119,8 @@ namespace HT.Framework
         {
             _executing = true;
             _skipTargetIndex = index;
+
+            CurrentTask = StepHelperTask.SkipImmediate;
 
             while (_currentStepIndex < _skipTargetIndex)
             {
@@ -1257,32 +1151,9 @@ namespace HT.Framework
                 }
 
                 //创建步骤助手
-                if (_currentHelper == null && _currentContent.Helper != "<None>")
+                if (_currentHelper == null)
                 {
-                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_currentContent.Helper);
-                    if (type != null)
-                    {
-                        _currentHelper = Activator.CreateInstance(type) as StepHelper;
-                        _currentHelper.Parameters = _currentContent.Parameters;
-                        for (int i = 0; i < _currentHelper.Parameters.Count; i++)
-                        {
-                            if (_currentHelper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
-                            {
-                                if (_targets.ContainsKey(_currentHelper.Parameters[i].GameObjectGUID))
-                                {
-                                    _currentHelper.Parameters[i].GameObjectValue = _targets[_currentHelper.Parameters[i].GameObjectGUID].gameObject;
-                                }
-                            }
-                        }
-                        _currentHelper.Content = _currentContent;
-                        _currentHelper.Target = _currentTarget;
-                        _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
-                        _currentHelper.OnInit();
-                    }
-                    else
-                    {
-                        Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
-                    }
+                    _currentHelper = CreateHelper(_currentContent, StepHelperTask.SkipImmediate);
                 }
 
                 _currentContent.SkipImmediate();
@@ -1292,7 +1163,7 @@ namespace HT.Framework
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
-                    _currentHelper.Task = CurrentTask = StepHelperTask.SkipImmediate;
+                    _currentHelper.Task = StepHelperTask.SkipImmediate;
                     _currentHelper.OnSkipImmediate();
                     _currentHelper.OnTermination();
                     _currentHelper = null;
@@ -1326,12 +1197,48 @@ namespace HT.Framework
                 }
             }
         }
+
         /// <summary>
         /// 鼠标点击UGUI按钮触发步骤的回调
         /// </summary>
         private void ButtonClickCallback()
         {
             _isButtonClick = true;
+        }
+        /// <summary>
+        /// 创建步骤助手
+        /// </summary>
+        private StepHelper CreateHelper(StepContent content, StepHelperTask task)
+        {
+            if (!string.IsNullOrEmpty(content.Helper) && content.Helper != "<None>")
+            {
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(content.Helper);
+                if (type != null)
+                {
+                    StepHelper helper = Activator.CreateInstance(type) as StepHelper;
+                    helper.Parameters = content.Parameters;
+                    for (int i = 0; i < helper.Parameters.Count; i++)
+                    {
+                        if (helper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                        {
+                            if (_targets.ContainsKey(helper.Parameters[i].GameObjectGUID))
+                            {
+                                helper.Parameters[i].GameObjectValue = _targets[helper.Parameters[i].GameObjectGUID].gameObject;
+                            }
+                        }
+                    }
+                    helper.Content = content;
+                    helper.Target = content.Target.GetComponent<StepTarget>();
+                    helper.Task = task;
+                    helper.OnInit();
+                    return helper;
+                }
+                else
+                {
+                    Log.Error(string.Format("步骤控制器：步骤 {0}.{1} 的助手 {2} 丢失！", _currentStepIndex + 1, _currentContent.Name, _currentContent.Helper));
+                }
+            }
+            return null;
         }
         /// <summary>
         /// 等待协程
