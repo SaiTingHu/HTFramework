@@ -55,11 +55,18 @@ namespace HT.Framework
         /// <param name="key">键</param>
         /// <param name="defaultValue">缺省值</param>
         /// <returns>获取到的键对应的值</returns>
-        public static string GetValueInSafe(this JsonData json, string key, string defaultValue)
+        public static string GetValueInSafe(this JsonData json, string key, string defaultValue = null)
         {
             if (json.Keys.Contains(key))
             {
-                return json[key].ToString();
+                if (json[key] != null)
+                {
+                    return json[key].ToString();
+                }
+                else
+                {
+                    return defaultValue;
+                }
             }
             else
             {
