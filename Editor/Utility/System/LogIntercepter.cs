@@ -58,7 +58,7 @@ namespace HT.Framework
                     int index = 0;
                     for (int i = 0; i < paths.Length; i++)
                     {
-                        if (paths[i].Contains(" (at "))
+                        if (paths[i].Contains(" (at ") && paths[i].Contains(".cs:"))
                         {
                             index += 1;
 

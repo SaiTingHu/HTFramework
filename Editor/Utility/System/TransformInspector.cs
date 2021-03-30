@@ -344,6 +344,22 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Copy To C# Public Field", EditorStyles.miniButton))
+                {
+                    GUIUtility.systemCopyBuffer = ToCSPublicField();
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Copy To C# Private Field", EditorStyles.miniButton))
+                {
+                    GUIUtility.systemCopyBuffer = ToCSPrivateField();
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
                 _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");
                 GUILayout.EndHorizontal();
 
@@ -400,6 +416,20 @@ namespace HT.Framework
             else if (angle < -180) angle += 360;
 
             return (int)angle;
+        }
+        private string ToCSPublicField()
+        {
+            string fieldName = Target.name.Trim().Replace(" ", "");
+            string field = string.Format("[Label(\"{0}\")] public GameObject {1};", Target.name, fieldName);
+            return field;
+        }
+        private string ToCSPrivateField()
+        {
+            string fieldName = Target.name.Trim().Replace(" ", "");
+            char[] fieldNames = fieldName.ToCharArray();
+            fieldNames[0] = char.ToLower(fieldNames[0]);
+            string field = string.Format("[ObjectPath(\"{0}\")] private GameObject _{1};", Target.FullName(), new string(fieldNames));
+            return field;
         }
     }
 }
