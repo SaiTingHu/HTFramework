@@ -25,15 +25,9 @@ namespace HT.Framework
 
             _settingItems.Clear();
             _settingItems.Add(new SettingItemMain());
-            _settingItems.Add(new SettingItemAspectTrack());
-            _settingItems.Add(new SettingItemAudio());
-            _settingItems.Add(new SettingItemController());
             _settingItems.Add(new SettingItemWebRequest());
 
             _settingItemSigns.Clear();
-            _settingItemSigns.Add(true);
-            _settingItemSigns.Add(true);
-            _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
 
@@ -208,15 +202,6 @@ namespace HT.Framework
             {
                 case HTFrameworkModule.Main:
                     moduleEntity = GameObject.Find("HTFramework");
-                    break;
-                case HTFrameworkModule.AspectTrack:
-                    moduleEntity = GameObject.Find("HTFramework/AspectTrack");
-                    break;
-                case HTFrameworkModule.Audio:
-                    moduleEntity = GameObject.Find("HTFramework/Audio");
-                    break;
-                case HTFrameworkModule.Controller:
-                    moduleEntity = GameObject.Find("HTFramework/Controller");
                     break;
                 case HTFrameworkModule.WebRequest:
                     moduleEntity = GameObject.Find("HTFramework/WebRequest");

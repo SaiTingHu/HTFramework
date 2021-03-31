@@ -103,29 +103,33 @@ namespace HT.Framework
         public static readonly string Script_HotfixObject_Folder = "HT.Framework.Script.HotfixObject";
 
         /// <summary>
+        /// Transform组件Inspector面板配置：是否仅显示局部坐标
+        /// </summary>
+        public static readonly string Transform_OnlyShowLocal = "HT.Framework.Transform.OnlyShowLocal";
+        /// <summary>
         /// Transform组件Inspector面板配置：是否展开Property
         /// </summary>
-        public static readonly string Transform_Property= "HT.Framework.Transform.Property";
+        public static readonly string Transform_Property = "HT.Framework.Transform.Property";
         /// <summary>
         /// Transform组件Inspector面板配置：是否展开Hierarchy
         /// </summary>
-        public static readonly string Transform_Hierarchy= "HT.Framework.Transform.Hierarchy";
+        public static readonly string Transform_Hierarchy = "HT.Framework.Transform.Hierarchy";
         /// <summary>
         /// Transform组件Inspector面板配置：是否展开Copy
         /// </summary>
-        public static readonly string Transform_Copy= "HT.Framework.Transform.Copy";
+        public static readonly string Transform_Copy = "HT.Framework.Transform.Copy";
         /// <summary>
         /// RectTransform组件Inspector面板配置：是否展开Property
         /// </summary>
-        public static readonly string RectTransform_Property= "HT.Framework.RectTransform.Property";
+        public static readonly string RectTransform_Property = "HT.Framework.RectTransform.Property";
         /// <summary>
         /// RectTransform组件Inspector面板配置：是否展开Hierarchy
         /// </summary>
-        public static readonly string RectTransform_Hierarchy= "HT.Framework.RectTransform.Hierarchy";
+        public static readonly string RectTransform_Hierarchy = "HT.Framework.RectTransform.Hierarchy";
         /// <summary>
         /// RectTransform组件Inspector面板配置：是否展开Copy
         /// </summary>
-        public static readonly string RectTransform_Copy= "HT.Framework.RectTransform.Copy";
+        public static readonly string RectTransform_Copy = "HT.Framework.RectTransform.Copy";
 
         /// <summary>
         /// 快捷工具是否启用

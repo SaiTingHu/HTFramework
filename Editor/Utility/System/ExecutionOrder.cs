@@ -93,8 +93,8 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUI.color = cla.Value.IsDisplay ? Color.white : Color.gray;
-                cla.Value.IsDisplay = GUILayout.Toggle(cla.Value.IsDisplay, gUIContent, GUILayout.Height(20), GUILayout.Width(200));
-                cla.Value.DisplayColor = EditorGUILayout.ColorField(cla.Value.DisplayColor, GUILayout.Height(20), GUILayout.Width(100));
+                cla.Value.IsDisplay = GUILayout.Toggle(cla.Value.IsDisplay, gUIContent, GUILayout.Height(EditorGUIUtility.singleLineHeight), GUILayout.Width(200));
+                cla.Value.DisplayColor = EditorGUILayout.ColorField(cla.Value.DisplayColor, GUILayout.Height(EditorGUIUtility.singleLineHeight), GUILayout.Width(100));
                 GUI.color = Color.white;
                 GUILayout.EndHorizontal();
             }
@@ -109,11 +109,14 @@ namespace HT.Framework
 
             for (int i = 0; i < _functions.Count; i++)
             {
-                GUILayout.BeginHorizontal();
-                GUI.backgroundColor = _classes[_functions[i].ClassName].IsDisplay ? _classes[_functions[i].ClassName].DisplayColor : Color.gray;
-                GUILayout.Label(_functions[i].ClassName + "." + _functions[i].FunctionName, "wordwrapminibutton", GUILayout.Height(20));
-                GUI.backgroundColor = Color.white;
-                GUILayout.EndHorizontal();
+                if (_classes[_functions[i].ClassName].IsDisplay)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUI.backgroundColor = _classes[_functions[i].ClassName].DisplayColor;
+                    GUILayout.Label(_functions[i].ClassName + "." + _functions[i].FunctionName, "wordwrapminibutton", GUILayout.Height(20));
+                    GUI.backgroundColor = Color.white;
+                    GUILayout.EndHorizontal();
+                }
             }
 
             GUILayout.EndScrollView();
