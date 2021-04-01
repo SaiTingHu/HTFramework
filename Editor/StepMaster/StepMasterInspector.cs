@@ -9,7 +9,7 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/87712995")]
-    internal sealed class StepMasterInspector : InternalModuleInspector<StepMaster>
+    internal sealed class StepMasterInspector : InternalModuleInspector<StepMaster, IStepMasterHelper>
     {
         private Dictionary<string, StepContent> _stepContentIDs;
         private Dictionary<string, bool> _stepContentEnables;

@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    [CustomDebugger(typeof(AspectTracker))]
+    [CustomDebugger(typeof(AspectTrackManager))]
     internal sealed class DebuggerAspectTracker : DebuggerComponentBase
     {
-        private AspectTracker _target;
+        private AspectTrackManager _target;
 
         public override void OnEnable()
         {
-            _target = Target as AspectTracker;
+            _target = Target as AspectTrackManager;
         }
         public override void OnDebuggerGUI()
         {

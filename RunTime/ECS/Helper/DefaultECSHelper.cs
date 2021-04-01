@@ -16,7 +16,7 @@ namespace HT.Framework
         /// <summary>
         /// ECS管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有系统【系统类型，系统对象】
         /// </summary>

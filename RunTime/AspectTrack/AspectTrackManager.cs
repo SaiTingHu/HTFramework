@@ -7,9 +7,8 @@ namespace HT.Framework
     /// <summary>
     /// 切面代理追踪器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.AspectTrack)]
-    public sealed class AspectTracker : InternalModuleBase
+    public sealed class AspectTrackManager : InternalModuleBase<IAspectTrackHelper>
     {
         /// <summary>
         /// 是否启用切面追踪【请勿在代码中修改】
@@ -20,8 +19,6 @@ namespace HT.Framework
         /// </summary>
         public bool IsEnableIntercept = false;
         
-        private IAspectTrackHelper _helper;
-
         /// <summary>
         /// 全局拦截条件
         /// </summary>
@@ -33,15 +30,9 @@ namespace HT.Framework
             }
         }
 
-        private AspectTracker()
+        private AspectTrackManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IAspectTrackHelper;
         }
 
         /// <summary>

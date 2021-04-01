@@ -7,26 +7,17 @@ namespace HT.Framework
     /// <summary>
     /// 引用池管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.ReferencePool)]
-    public sealed class ReferencePoolManager : InternalModuleBase
+    public sealed class ReferencePoolManager : InternalModuleBase<IReferencePoolHelper>
     {
         /// <summary>
         /// 单个引用池上限【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal int Limit = 100;
         
-        private IReferencePoolHelper _helper;
-
         private ReferencePoolManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IReferencePoolHelper;
         }
 
         /// <summary>

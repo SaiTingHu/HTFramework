@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -8,14 +7,13 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89874351")]
-    internal sealed class AudioManagerInspector : InternalModuleInspector<AudioManager>
+    internal sealed class AudioManagerInspector : InternalModuleInspector<AudioManager, IAudioHelper>
     {
         private bool _backgroundAudioFoldout = true;
         private bool _singleAudioFoldout = true;
         private bool _multipleAudioFoldout = true;
         private bool _worldAudioFoldout = true;
         private bool _oneShootAudioFoldout = true;
-        private IAudioHelper _audioHelper;
 
         protected override string Intro
         {
@@ -24,20 +22,7 @@ namespace HT.Framework
                 return "Audio Manager, manage all audio playback, pause, stop, etc.";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IAudioHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _audioHelper = _helper as IAudioHelper;
-        }
+        
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -108,10 +93,10 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUI.enabled = _audioHelper.BackgroundSource.clip;
+                GUI.enabled = _helper.BackgroundSource.clip;
                 if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
-                    Target.PlayBackgroundMusic(_audioHelper.BackgroundSource.clip);
+                    Target.PlayBackgroundMusic(_helper.BackgroundSource.clip);
                 }
                 if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
@@ -130,12 +115,12 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                _audioHelper.BackgroundSource.clip = EditorGUILayout.ObjectField("Clip:", _audioHelper.BackgroundSource.clip, typeof(AudioClip), true) as AudioClip;
+                _helper.BackgroundSource.clip = EditorGUILayout.ObjectField("Clip:", _helper.BackgroundSource.clip, typeof(AudioClip), true) as AudioClip;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Loop: " + _audioHelper.BackgroundSource.loop);
+                GUILayout.Label("Loop: " + _helper.BackgroundSource.loop);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -150,7 +135,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Speed: " + _audioHelper.BackgroundSource.pitch);
+                GUILayout.Label("Speed: " + _helper.BackgroundSource.pitch);
                 GUILayout.EndHorizontal();
             }
             #endregion
@@ -165,10 +150,10 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUI.enabled = _audioHelper.SingleSource.clip;
+                GUI.enabled = _helper.SingleSource.clip;
                 if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
-                    Target.PlaySingleSound(_audioHelper.SingleSource.clip);
+                    Target.PlaySingleSound(_helper.SingleSource.clip);
                 }
                 if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
@@ -187,12 +172,12 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                _audioHelper.SingleSource.clip = EditorGUILayout.ObjectField("Clip:", _audioHelper.SingleSource.clip, typeof(AudioClip), true) as AudioClip;
+                _helper.SingleSource.clip = EditorGUILayout.ObjectField("Clip:", _helper.SingleSource.clip, typeof(AudioClip), true) as AudioClip;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Loop: " + _audioHelper.SingleSource.loop);
+                GUILayout.Label("Loop: " + _helper.SingleSource.loop);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -207,7 +192,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Speed: " + _audioHelper.SingleSource.pitch);
+                GUILayout.Label("Speed: " + _helper.SingleSource.pitch);
                 GUILayout.EndHorizontal();
             }
             #endregion
@@ -234,9 +219,9 @@ namespace HT.Framework
 
                 int mplayingCount = 0;
                 int mstopedCount = 0;
-                for (int i = 0; i < _audioHelper.MultipleSources.Count; i++)
+                for (int i = 0; i < _helper.MultipleSources.Count; i++)
                 {
-                    if (_audioHelper.MultipleSources[i].isPlaying)
+                    if (_helper.MultipleSources[i].isPlaying)
                     {
                         mplayingCount += 1;
                     }
@@ -258,7 +243,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Source: " + _audioHelper.MultipleSources.Count);
+                GUILayout.Label("Source: " + _helper.MultipleSources.Count);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -295,7 +280,7 @@ namespace HT.Framework
 
                 int wplayingCount = 0;
                 int wstopedCount = 0;
-                foreach (var audio in _audioHelper.WorldSources)
+                foreach (var audio in _helper.WorldSources)
                 {
                     if (audio.Value.isPlaying)
                     {
@@ -319,7 +304,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Source: " + _audioHelper.WorldSources.Count);
+                GUILayout.Label("Source: " + _helper.WorldSources.Count);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

@@ -3,14 +3,14 @@
     /// <summary>
     /// HTFramework 主模块
     /// </summary>
-    public sealed partial class Main : InternalModuleBase
+    public sealed partial class Main : InternalModuleBase<IMainHelper>
     {
         /// <summary>
         /// 当前主程序
         /// </summary>
         public static Main Current { get; private set; }
-        
-        internal override void OnInitialization()
+
+        public override void OnInitialization()
         {
             base.OnInitialization();
             
@@ -27,8 +27,7 @@
             MainDataInitialization();
             ModuleInitialization();
         }
-
-        internal override void OnPreparatory()
+        public override void OnPreparatory()
         {
             base.OnPreparatory();
 
@@ -36,8 +35,7 @@
             MainDataPreparatory();
             ModulePreparatory();
         }
-
-        internal override void OnRefresh()
+        public override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -45,32 +43,19 @@
             UtilityRefresh();
             ModuleRefresh();
         }
-
-        internal void OnFixedRefresh()
-        {
-            LogicFixedLoopRefresh();
-        }
-
-        internal void OnMainGUI()
-        {
-            LicenseOnGUI();
-        }
-
-        internal override void OnTermination()
+        public override void OnTermination()
         {
             base.OnTermination();
 
             ModuleTermination();
         }
-
-        internal override void OnPause()
+        public override void OnPause()
         {
             base.OnPause();
 
             ModulePause();
         }
-
-        internal override void OnResume()
+        public override void OnResume()
         {
             base.OnResume();
 

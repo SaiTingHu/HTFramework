@@ -100,7 +100,7 @@ namespace HT.Framework
             _helpUrlGC = new GUIContent();
             _helpUrlGC.image = EditorGUIUtility.IconContent("_Help").image;
             _helpUrlGC.tooltip = "Help";
-            _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
+            _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
             _ct = FindObjectOfType<CameraTarget>();
             _mp = FindObjectOfType<MousePosition>();

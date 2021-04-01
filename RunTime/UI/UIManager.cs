@@ -7,9 +7,8 @@ namespace HT.Framework
     /// <summary>
     /// UI管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.UI)]
-    public sealed class UIManager : InternalModuleBase
+    public sealed class UIManager : InternalModuleBase<IUIHelper>
     {
         /// <summary>
         /// 是否启用Overlay类型的UI【请勿在代码中修改】
@@ -31,8 +30,6 @@ namespace HT.Framework
         /// 当前定义的UI实体【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal List<GameObject> DefineUIEntitys = new List<GameObject>();
-        
-        private IUIHelper _helper;
         
         /// <summary>
         /// Camera类型UI的摄像机
@@ -119,12 +116,6 @@ namespace HT.Framework
         private UIManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IUIHelper;
         }
 
         /// <summary>

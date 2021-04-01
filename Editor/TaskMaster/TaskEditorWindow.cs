@@ -55,7 +55,7 @@ namespace HT.Framework
         {
             base.OnEnable();
 
-            _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/StepEditor/Texture/background.png");
+            _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
             _addGC = new GUIContent();
             _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;

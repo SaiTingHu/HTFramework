@@ -27,7 +27,7 @@ namespace HT.Framework
         /// <summary>
         /// 资源管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 当前的资源加载模式
         /// </summary>
@@ -301,22 +301,8 @@ namespace HT.Framework
             }
             else
             {
-#if UNITY_EDITOR
-                if (IsEditorMode)
-                {
-                    throw new HTFrameworkException(HTFrameworkModule.Resource, "加载场景失败：场景加载不允许使用编辑器模式！");
-                }
-                else
-                {
-                    yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
-
-                    yield return SceneManager.LoadSceneAsync(info.AssetPath, LoadSceneMode.Additive);
-                }
-#else
                 yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
-
                 yield return SceneManager.LoadSceneAsync(info.AssetPath, LoadSceneMode.Additive);
-#endif
             }
 
             DateTime endTime = DateTime.Now;

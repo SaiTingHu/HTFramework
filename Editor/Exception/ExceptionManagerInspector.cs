@@ -1,27 +1,19 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
 {
-    [CustomEditor(typeof(ExceptionHandler))]
+    [CustomEditor(typeof(ExceptionManager))]
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102894933")]
-    internal sealed class ExceptionHandlerInspector : InternalModuleInspector<ExceptionHandler>
+    internal sealed class ExceptionManagerInspector : InternalModuleInspector<ExceptionManager, IExceptionHelper>
     {
         protected override string Intro
         {
             get
             {
-                return "Exception handler, when any exception occurs, he catches it!";
-            }
-        }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IExceptionHandlerHelper);
+                return "Exception Manager, when any exception occurs, he catches it!";
             }
         }
 

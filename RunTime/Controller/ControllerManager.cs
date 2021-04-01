@@ -8,9 +8,8 @@ namespace HT.Framework
     /// <summary>
     /// 操作控制器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Controller)]
-    public sealed class ControllerManager : InternalModuleBase
+    public sealed class ControllerManager : InternalModuleBase<IControllerHelper>
     {
         /// <summary>
         /// 默认的控制模式【请勿在代码中修改】
@@ -52,8 +51,6 @@ namespace HT.Framework
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
-        
-        private IControllerHelper _helper;
         
         /// <summary>
         /// 主摄像机
@@ -275,7 +272,7 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
@@ -283,13 +280,12 @@ namespace HT.Framework
             DOTween.defaultAutoPlay = DefaultAutoPlay;
             DOTween.defaultAutoKill = IsAutoKill;
 
-            _helper = Helper as IControllerHelper;
             _helper.RayEvent += (target, point, point2D) =>
             {
                 RayEvent?.Invoke(target, point, point2D);
             };
         }
-        internal override void OnPreparatory()
+        public override void OnPreparatory()
         {
             base.OnPreparatory();
 

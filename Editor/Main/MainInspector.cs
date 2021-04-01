@@ -10,7 +10,7 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102956756")]
-    internal sealed class MainInspector : InternalModuleInspector<Main>
+    internal sealed class MainInspector : InternalModuleInspector<Main, IMainHelper>
     {
         private static bool _showScriptingDefine = false;
         private static bool _showMainData = false;

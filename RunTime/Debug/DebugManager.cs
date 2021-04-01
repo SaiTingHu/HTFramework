@@ -5,9 +5,8 @@ namespace HT.Framework
     /// <summary>
     /// 调试管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Debug)]
-    public sealed class DebugManager : InternalModuleBase
+    public sealed class DebugManager : InternalModuleBase<IDebugHelper>
     {
         /// <summary>
         /// 调试器皮肤【请勿在代码中修改】
@@ -21,9 +20,7 @@ namespace HT.Framework
         /// 是否切换为中文【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal bool IsChinese = false;
-
-        private IDebugHelper _helper;
-
+        
         /// <summary>
         /// 当前的帧率
         /// </summary>
@@ -39,11 +36,10 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _helper = Helper as IDebugHelper;
             _helper.OnInitDebugger(DebuggerSkin, IsChinese);
         }
         private void OnGUI()

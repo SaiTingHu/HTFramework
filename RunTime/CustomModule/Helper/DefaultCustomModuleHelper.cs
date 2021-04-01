@@ -12,7 +12,7 @@ namespace HT.Framework
         /// <summary>
         /// 自定义模块管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有自定义模块
         /// </summary>

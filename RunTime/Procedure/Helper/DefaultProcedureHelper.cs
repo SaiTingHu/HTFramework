@@ -15,7 +15,7 @@ namespace HT.Framework
         /// <summary>
         /// 流程管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 当前流程
         /// </summary>

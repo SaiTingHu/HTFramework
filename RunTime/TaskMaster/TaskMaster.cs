@@ -6,9 +6,8 @@ namespace HT.Framework
     /// <summary>
     /// 任务控制器
     /// </summary>
-    [DisallowMultipleComponent]
-    [InternalModule(HTFrameworkModule.TaskEditor)]
-    public sealed class TaskMaster : InternalModuleBase
+    [InternalModule(HTFrameworkModule.TaskMaster)]
+    public sealed class TaskMaster : InternalModuleBase<ITaskMasterHelper>
     {
         /// <summary>
         /// 任务资源
@@ -95,7 +94,7 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnRefresh()
+        public override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -112,7 +111,7 @@ namespace HT.Framework
                 }
             }
         }
-        internal override void OnTermination()
+        public override void OnTermination()
         {
             base.OnTermination();
 
@@ -376,7 +375,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.TaskEditor, "任务控制者：重新编译任务失败，任务控制者丢失了任务资源 TaskContentAsset！");
+                throw new HTFrameworkException(HTFrameworkModule.TaskMaster, "任务控制者：重新编译任务失败，任务控制者丢失了任务资源 TaskContentAsset！");
             }
         }
         /// <summary>
@@ -386,7 +385,7 @@ namespace HT.Framework
         {
             if (!ContentAsset || ContentAsset.Content.Count <= 0 || _taskContents.Count <= 0)
             {
-                throw new HTFrameworkException(HTFrameworkModule.TaskEditor, "任务控制者：当前无法开始任务流程，请重新编译任务内容 RecompileTaskContent！");
+                throw new HTFrameworkException(HTFrameworkModule.TaskMaster, "任务控制者：当前无法开始任务流程，请重新编译任务内容 RecompileTaskContent！");
             }
 
             _currentContentIndex = 0;

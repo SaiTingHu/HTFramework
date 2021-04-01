@@ -5,9 +5,8 @@ namespace HT.Framework
     /// <summary>
     /// 资源管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Resource)]
-    public sealed class ResourceManager : InternalModuleBase
+    public sealed class ResourceManager : InternalModuleBase<IResourceHelper>
     {
         /// <summary>
         /// 资源加载模式【请勿在代码中修改】
@@ -22,8 +21,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal string AssetBundleManifestName;
         
-        private IResourceHelper _helper;
-
         /// <summary>
         /// 当前的资源加载模式
         /// </summary>
@@ -39,11 +36,10 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _helper = Helper as IResourceHelper;
             _helper.SetLoader(Mode, IsEditorMode, AssetBundleManifestName);
         }
         

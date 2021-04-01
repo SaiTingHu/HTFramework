@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -8,10 +7,8 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103390089")]
-    internal sealed class CustomModuleManagerInspector : InternalModuleInspector<CustomModuleManager>
+    internal sealed class CustomModuleManagerInspector : InternalModuleInspector<CustomModuleManager, ICustomModuleHelper>
     {
-        private ICustomModuleHelper _customModuleHelper;
-
         protected override string Intro
         {
             get
@@ -19,29 +16,16 @@ namespace HT.Framework
                 return "CustomModule Manager, manager of all custom modules, such as starting or stopping a custom module!";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(ICustomModuleHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _customModuleHelper = _helper as ICustomModuleHelper;
-        }
+        
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("CustomModules: " + _customModuleHelper.CustomModules.Count);
+            GUILayout.Label("CustomModules: " + _helper.CustomModules.Count);
             GUILayout.EndHorizontal();
 
-            foreach (var item in _customModuleHelper.CustomModules)
+            foreach (var item in _helper.CustomModules)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);

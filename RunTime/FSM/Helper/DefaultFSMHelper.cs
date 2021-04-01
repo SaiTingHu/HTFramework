@@ -11,7 +11,7 @@ namespace HT.Framework
         /// <summary>
         /// FSM管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 已注册的状态机
         /// </summary>

@@ -8,21 +8,12 @@ namespace HT.Framework
     /// <summary>
     /// 协程调度器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Coroutiner)]
-    public sealed class Coroutiner : InternalModuleBase
+    public sealed class CoroutinerManager : InternalModuleBase<ICoroutinerHelper>
     {
-        private ICoroutinerHelper _helper;
-
-        private Coroutiner()
+        private CoroutinerManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as ICoroutinerHelper;
         }
 
         /// <summary>

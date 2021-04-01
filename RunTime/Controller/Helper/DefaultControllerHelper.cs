@@ -9,6 +9,7 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultControllerHelper : IControllerHelper
     {
+        private ControllerManager _module;
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
@@ -19,7 +20,7 @@ namespace HT.Framework
         /// <summary>
         /// 操作控制器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 控制模式
         /// </summary>
@@ -228,8 +229,9 @@ namespace HT.Framework
         /// </summary>
         public void OnInitialization()
         {
-            MainCamera = Module.GetComponentByChild<Camera>("MainCamera");
-            _cameraTarget = Module.GetComponentByChild<CameraTarget>("CameraTarget");
+            _module = Module as ControllerManager;
+            MainCamera = _module.GetComponentByChild<Camera>("MainCamera");
+            _cameraTarget = _module.GetComponentByChild<CameraTarget>("CameraTarget");
             _mousePosition = MainCamera.GetComponent<MousePosition>();
             _mouseRotation = MainCamera.GetComponent<MouseRotation>();
             _mouseRay = MainCamera.GetComponent<MouseRay>();

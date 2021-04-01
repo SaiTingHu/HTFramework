@@ -10,10 +10,10 @@ namespace HT.Framework
 {
     internal sealed class CoroutinerTrackerWindow : HTFEditorWindow
     {
-        private Coroutiner _coroutiner;
+        private CoroutinerManager _coroutiner;
         private ICoroutinerHelper _helper;
         private Dictionary<Delegate, bool> _enumerators = new Dictionary<Delegate, bool>();
-        private Coroutiner.CoroutineEnumerator _currentEnumerator;
+        private CoroutinerManager.CoroutineEnumerator _currentEnumerator;
         private string _currentStackTrace;
         private int _firstLineBlank = 40;
         private int _IDWidth = 300;
@@ -29,7 +29,7 @@ namespace HT.Framework
 
         protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/91492838";
 
-        public void Init(Coroutiner coroutiner)
+        public void Init(CoroutinerManager coroutiner)
         {
             _coroutiner = coroutiner;
             _helper = _coroutiner.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_coroutiner) as ICoroutinerHelper;
@@ -97,7 +97,7 @@ namespace HT.Framework
                         GUILayout.Label(enumerator.ID, GUILayout.Width(_IDWidth));
                         GUILayout.Label(enumerator.State.ToString(), GUILayout.Width(_stateWidth));
                         GUILayout.Label(enumerator.CreationTime.ToString("mm:ss:fff"), GUILayout.Width(_creationTimeWidth));
-                        if (enumerator.State == Coroutiner.CoroutineState.Running)
+                        if (enumerator.State == CoroutinerManager.CoroutineState.Running)
                         {
                             GUILayout.Label("--:--:--", GUILayout.Width(_stoppingTimeWidth));
                             GUILayout.Label("-:---", GUILayout.Width(_elapsedTimeWidth));
@@ -113,7 +113,7 @@ namespace HT.Framework
                         {
                             enumerator.RerunInEditor();
                         }
-                        GUI.enabled = enumerator.State == Coroutiner.CoroutineState.Running;
+                        GUI.enabled = enumerator.State == CoroutinerManager.CoroutineState.Running;
                         if (GUILayout.Button("Stop", EditorStyles.miniButtonRight, GUILayout.Width(50)))
                         {
                             enumerator.Stop();
@@ -152,7 +152,7 @@ namespace HT.Framework
             }
         }
 
-        private void MouseDownEnumerator(Coroutiner.CoroutineEnumerator enumerator)
+        private void MouseDownEnumerator(CoroutinerManager.CoroutineEnumerator enumerator)
         {
             _currentEnumerator = enumerator;
             _currentStackTrace = _currentEnumerator.ID + "\r\n\r\n" + GetFullStackTraceInfo(_currentEnumerator.StackTraceInfo);

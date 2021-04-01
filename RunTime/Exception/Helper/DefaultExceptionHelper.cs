@@ -10,12 +10,12 @@ namespace HT.Framework
     /// <summary>
     /// 默认的异常处理器助手
     /// </summary>
-    public sealed class DefaultExceptionHandlerHelper : IExceptionHandlerHelper
+    public sealed class DefaultExceptionHelper : IExceptionHelper
     {
         /// <summary>
         /// 异常处理器
         /// </summary>
-        private ExceptionHandler _module;
+        private ExceptionManager _module;
         /// <summary>
         /// 异常日志Builder
         /// </summary>
@@ -36,7 +36,7 @@ namespace HT.Framework
         /// <summary>
         /// 异常处理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 当前捕获的所有异常信息
         /// </summary>
@@ -47,7 +47,7 @@ namespace HT.Framework
         /// </summary>
         public void OnInitialization()
         {
-            _module = Module as ExceptionHandler;
+            _module = Module as ExceptionManager;
 
 #if UNITY_EDITOR
             _module.IsHandler = false;

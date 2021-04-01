@@ -1,26 +1,16 @@
 ﻿using System;
-using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 事件管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Event)]
-    public sealed class EventManager : InternalModuleBase
+    public sealed class EventManager : InternalModuleBase<IEventHelper>
     {
-        private IEventHelper _helper;
-
         private EventManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IEventHelper;
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultAudioHelper : IAudioHelper
     {
+        private AudioManager _module;
         private bool _isMute = false;
         private int _backgroundPriority = 0;
         private int _singlePriority = 10;
@@ -25,7 +26,7 @@ namespace HT.Framework
         /// <summary>
         /// 音频管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 背景音乐音源
         /// </summary>
@@ -296,9 +297,10 @@ namespace HT.Framework
         /// </summary>
         public void OnInitialization()
         {
-            BackgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", Module.transform);
-            SingleSource = AudioToolkit.CreateAudioSource("SingleSource", Module.transform);
-            OneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", Module.transform);
+            _module = Module as AudioManager;
+            BackgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", _module.transform);
+            SingleSource = AudioToolkit.CreateAudioSource("SingleSource", _module.transform);
+            OneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", _module.transform);
             BackgroundSource.loop = true;
         }
         /// <summary>
@@ -790,7 +792,7 @@ namespace HT.Framework
                 }
             }
 
-            AudioSource audio = AudioToolkit.CreateAudioSource("MultipleAudio", MultiplePriority, MultipleVolume, 1, 0, Mute, Module.transform);
+            AudioSource audio = AudioToolkit.CreateAudioSource("MultipleAudio", MultiplePriority, MultipleVolume, 1, 0, Mute, _module.transform);
             MultipleSources.Add(audio);
             return audio;
         }

@@ -12,7 +12,7 @@ namespace HT.Framework
         /// <summary>
         /// 网络管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有的通信管道
         /// </summary>

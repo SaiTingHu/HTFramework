@@ -7,9 +7,8 @@ namespace HT.Framework
     /// <summary>
     /// 流程管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Procedure)]
-    public sealed class ProcedureManager : InternalModuleBase
+    public sealed class ProcedureManager : InternalModuleBase<IProcedureHelper>
     {
         /// <summary>
         /// 当前激活的流程类名【请勿在代码中修改】
@@ -25,8 +24,6 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<ProcedureBase, ProcedureBase> AnyProcedureSwitchEvent;
         
-        private IProcedureHelper _helper;
-
         /// <summary>
         /// 当前流程
         /// </summary>
@@ -42,11 +39,10 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _helper = Helper as IProcedureHelper;
             _helper.AnyProcedureSwitchEvent += (last, next) =>
             {
                 AnyProcedureSwitchEvent?.Invoke(last, next);

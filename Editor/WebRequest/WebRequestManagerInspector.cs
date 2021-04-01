@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -8,10 +7,8 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89886124")]
-    internal sealed class WebRequestManagerInspector : InternalModuleInspector<WebRequestManager>
+    internal sealed class WebRequestManagerInspector : InternalModuleInspector<WebRequestManager, IWebRequestHelper>
     {
-        private IWebRequestHelper _webRequestHelper;
-
         protected override string Intro
         {
             get
@@ -19,20 +16,7 @@ namespace HT.Framework
                 return "Web request manager, it manages all web request! you can submit forms, upload files, download files!";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IWebRequestHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _webRequestHelper = _helper as IWebRequestHelper;
-        }
+        
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -54,10 +38,10 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Web Interfaces:" + _webRequestHelper.WebInterfaces.Count);
+            GUILayout.Label("Web Interfaces:" + _helper.WebInterfaces.Count);
             GUILayout.EndHorizontal();
 
-            foreach (var inter in _webRequestHelper.WebInterfaces)
+            foreach (var inter in _helper.WebInterfaces)
             {
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 

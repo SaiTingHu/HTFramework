@@ -7,7 +7,7 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/104317219")]
-    internal sealed class TaskMasterInspector : InternalModuleInspector<TaskMaster>
+    internal sealed class TaskMasterInspector : InternalModuleInspector<TaskMaster, ITaskMasterHelper>
     {
         protected override string Intro
         {

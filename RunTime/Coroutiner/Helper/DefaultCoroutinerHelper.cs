@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static HT.Framework.Coroutiner;
+using static HT.Framework.CoroutinerManager;
 
 namespace HT.Framework
 {
@@ -12,7 +12,7 @@ namespace HT.Framework
         /// <summary>
         /// 协程调度器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有协程迭代器
         /// </summary>

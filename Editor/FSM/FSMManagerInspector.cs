@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,9 +8,8 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86073351")]
-    internal sealed class FSMManagerInspector : InternalModuleInspector<FSMManager>
+    internal sealed class FSMManagerInspector : InternalModuleInspector<FSMManager, IFSMHelper>
     {
-        private IFSMHelper _FSMHelper;
         private Dictionary<string, bool> _fsmGroupsShow;
 
         protected override string Intro
@@ -21,22 +19,14 @@ namespace HT.Framework
                 return "FSM manager, this is the master manager for all FSM!";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IFSMHelper);
-            }
-        }
 
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _FSMHelper = _helper as IFSMHelper;
             _fsmGroupsShow = new Dictionary<string, bool>();
 
-            foreach (var fsm in _FSMHelper.FSMGroups)
+            foreach (var fsm in _helper.FSMGroups)
             {
                 _fsmGroupsShow.Add(fsm.Key, false);
             }
@@ -46,10 +36,10 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("FSMs: " + _FSMHelper.FSMs.Count);
+            GUILayout.Label("FSMs: " + _helper.FSMs.Count);
             GUILayout.EndHorizontal();
 
-            foreach (var fsm in _FSMHelper.FSMGroups)
+            foreach (var fsm in _helper.FSMGroups)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);

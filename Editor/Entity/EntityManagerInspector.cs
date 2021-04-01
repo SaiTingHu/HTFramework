@@ -9,9 +9,8 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/101541066")]
-    internal sealed class EntityManagerInspector : InternalModuleInspector<EntityManager>
+    internal sealed class EntityManagerInspector : InternalModuleInspector<EntityManager, IEntityHelper>
     {
-        private IEntityHelper _entityHelper;
         private Dictionary<Type, bool> _entityFoldouts;
         private Dictionary<Type, bool> _objectPoolFoldouts;
 
@@ -22,22 +21,14 @@ namespace HT.Framework
                 return "Entity Manager, Everything is entity except UI, this is a controller of all entity!";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IEntityHelper);
-            }
-        }
 
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _entityHelper = _helper as IEntityHelper;
             _entityFoldouts = new Dictionary<Type, bool>();
             _objectPoolFoldouts = new Dictionary<Type, bool>();
-            foreach (var entity in _entityHelper.Entities)
+            foreach (var entity in _helper.Entities)
             {
                 _entityFoldouts.Add(entity.Key, true);
                 _objectPoolFoldouts.Add(entity.Key, true);
@@ -132,14 +123,14 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
-            if (_entityHelper.Entities.Count == 0 && _entityHelper.ObjectPools.Count == 0)
+            if (_helper.Entities.Count == 0 && _helper.ObjectPools.Count == 0)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("No Runtime Data!");
                 GUILayout.EndHorizontal();
             }
 
-            foreach (var entity in _entityHelper.Entities)
+            foreach (var entity in _helper.Entities)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);
@@ -170,7 +161,7 @@ namespace HT.Framework
                 }
             }
 
-            foreach (var pool in _entityHelper.ObjectPools)
+            foreach (var pool in _helper.ObjectPools)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);

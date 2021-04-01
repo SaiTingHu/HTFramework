@@ -7,9 +7,8 @@ namespace HT.Framework
     /// <summary>
     /// 实体管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Entity)]
-    public sealed class EntityManager : InternalModuleBase
+    public sealed class EntityManager : InternalModuleBase<IEntityHelper>
     {
         /// <summary>
         /// 当前定义的实体名称【请勿在代码中修改】
@@ -20,8 +19,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal List<GameObject> DefineEntityTargets = new List<GameObject>();
         
-        private IEntityHelper _helper;
-
         /// <summary>
         /// 是否隐藏所有实体
         /// </summary>
@@ -41,11 +38,10 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _helper = Helper as IEntityHelper;
             _helper.SetDefine(DefineEntityNames, DefineEntityTargets);
         }
         

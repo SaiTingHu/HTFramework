@@ -8,7 +8,7 @@
         /// <summary>
         /// 所属的内置模块
         /// </summary>
-        InternalModuleBase Module { get; set; }
+        IModuleManager Module { get; set; }
 
         /// <summary>
         /// 初始化助手

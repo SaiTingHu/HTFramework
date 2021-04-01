@@ -1,8 +1,11 @@
-﻿namespace HT.Framework
+﻿using UnityEngine;
+
+namespace HT.Framework
 {
     /// <summary>
     /// 鼠标射线可捕获的目标
     /// </summary>
+    [DisallowMultipleComponent]
     public abstract class MouseRayTargetBase : HTBehaviour
     {
         /// <summary>

@@ -11,7 +11,7 @@ namespace HT.Framework
         /// <summary>
         /// 切面代理追踪器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有的代理对象【真实对象、代理对象】
         /// </summary>

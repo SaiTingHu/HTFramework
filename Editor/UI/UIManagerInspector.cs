@@ -9,9 +9,8 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88125982")]
-    internal sealed class UIManagerInspector : InternalModuleInspector<UIManager>
+    internal sealed class UIManagerInspector : InternalModuleInspector<UIManager, IUIHelper>
     {
-        private IUIHelper _UIHelper;
         private bool _overlayUIFoldout = true;
         private bool _cameraUIFoldout = true;
 
@@ -22,20 +21,7 @@ namespace HT.Framework
                 return "UI Manager, this is the master controller for all UIs!";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IUIHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _UIHelper = _helper as IUIHelper;
-        }
+        
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -148,7 +134,7 @@ namespace HT.Framework
 
             if (_overlayUIFoldout)
             {
-                foreach (var ui in _UIHelper.OverlayUIs)
+                foreach (var ui in _helper.OverlayUIs)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -193,7 +179,7 @@ namespace HT.Framework
 
             if (_cameraUIFoldout)
             {
-                foreach (var ui in _UIHelper.CameraUIs)
+                foreach (var ui in _helper.CameraUIs)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);

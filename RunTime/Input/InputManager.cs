@@ -5,16 +5,13 @@ namespace HT.Framework
     /// <summary>
     /// 输入管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Input)]
-    public sealed class InputManager : InternalModuleBase
+    public sealed class InputManager : InternalModuleBase<IInputHelper>
     {
         /// <summary>
         /// 输入设备类型【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string InputDeviceType = "";
-        
-        private IInputHelper _helper;
         
         /// <summary>
         /// 是否启用输入设备
@@ -65,11 +62,10 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _helper = Helper as IInputHelper;
             _helper.LoadDevice(InputDeviceType);
         }
 

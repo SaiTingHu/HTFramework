@@ -2,7 +2,6 @@
 
 namespace HT.Framework
 {
-    [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-800)]
     internal sealed class HighlightingEffect : HTBehaviour

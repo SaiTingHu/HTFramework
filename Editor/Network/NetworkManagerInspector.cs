@@ -9,10 +9,8 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103575999")]
-    internal sealed class NetworkManagerInspector : InternalModuleInspector<NetworkManager>
+    internal sealed class NetworkManagerInspector : InternalModuleInspector<NetworkManager, INetworkHelper>
     {
-        private INetworkHelper _networkHelper;
-
         protected override string Intro
         {
             get
@@ -20,20 +18,7 @@ namespace HT.Framework
                 return "Network Manager, help you implementing basic network client with socket!";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(INetworkHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _networkHelper = _helper as INetworkHelper;
-        }
+        
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -123,7 +108,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            foreach (var channel in _networkHelper.ProtocolChannels)
+            foreach (var channel in _helper.ProtocolChannels)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(channel.Key.FullName + " [" + channel.Value.Protocol.ToString() + "]");

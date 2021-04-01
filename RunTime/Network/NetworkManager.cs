@@ -8,9 +8,8 @@ namespace HT.Framework
     /// <summary>
     /// 网络管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Network)]
-    public sealed class NetworkManager : InternalModuleBase
+    public sealed class NetworkManager : InternalModuleBase<INetworkHelper>
     {
         /// <summary>
         /// 启用的通信协议通道类型【请勿在代码中修改】
@@ -60,7 +59,6 @@ namespace HT.Framework
 
         private IPEndPoint _serverEndPoint;
         private IPEndPoint _clientEndPoint;
-        private INetworkHelper _helper;
 
         /// <summary>
         /// 服务器地址
@@ -95,11 +93,10 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _helper = Helper as INetworkHelper;
             _helper.LoadProtocolChannels(ChannelTypes);
             _helper.BeginConnectServerEvent += (cha) =>
             {

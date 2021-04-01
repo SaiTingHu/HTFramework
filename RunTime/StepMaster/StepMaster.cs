@@ -9,9 +9,8 @@ namespace HT.Framework
     /// <summary>
     /// 步骤控制器
     /// </summary>
-    [DisallowMultipleComponent]
-    [InternalModule(HTFrameworkModule.StepEditor)]
-    public sealed class StepMaster : InternalModuleBase
+    [InternalModule(HTFrameworkModule.StepMaster)]
+    public sealed class StepMaster : InternalModuleBase<IStepMasterHelper>
     {
         /// <summary>
         /// 步骤跳过时的速度
@@ -193,13 +192,13 @@ namespace HT.Framework
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
             _pauseWait = new WaitUntil(() => { return !_pause; });
         }
-        internal override void OnRefresh()
+        public override void OnRefresh()
         {
             base.OnRefresh();
 
@@ -316,7 +315,7 @@ namespace HT.Framework
                 }
             }
         }
-        internal override void OnTermination()
+        public override void OnTermination()
         {
             base.OnTermination();
 
@@ -327,13 +326,13 @@ namespace HT.Framework
             _stepContentIndexs.Clear();
             ClearCustomOrder();
         }
-        internal override void OnPause()
+        public override void OnPause()
         {
             base.OnPause();
 
             Pause = true;
         }
-        internal override void OnResume()
+        public override void OnResume()
         {
             base.OnResume();
 
@@ -543,7 +542,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.StepEditor, "步骤控制者：重新编译步骤失败，步骤控制者丢失了步骤资源 StepContentAsset！");
+                throw new HTFrameworkException(HTFrameworkModule.StepMaster, "步骤控制者：重新编译步骤失败，步骤控制者丢失了步骤资源 StepContentAsset！");
             }
         }
         /// <summary>
@@ -553,7 +552,7 @@ namespace HT.Framework
         {
             if (!ContentAsset || ContentAsset.Content.Count <= 0 || _stepContents.Count <= 0)
             {
-                throw new HTFrameworkException(HTFrameworkModule.StepEditor, "步骤控制者：当前无法开始步骤流程，请重新编译步骤内容 RecompileStepContent！");
+                throw new HTFrameworkException(HTFrameworkModule.StepMaster, "步骤控制者：当前无法开始步骤流程，请重新编译步骤内容 RecompileStepContent！");
             }
 
             _currentStepIndex = 0;

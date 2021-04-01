@@ -6,9 +6,8 @@ namespace HT.Framework
     /// <summary>
     /// 异常处理器
     /// </summary>
-    [DisallowMultipleComponent]
-    [InternalModule(HTFrameworkModule.ExceptionHandler)]
-    public sealed class ExceptionHandler : InternalModuleBase
+    [InternalModule(HTFrameworkModule.Exception)]
+    public sealed class ExceptionManager : InternalModuleBase<IExceptionHelper>
     {
         /// <summary>
         /// 是否开启异常处理监听【请勿在代码中修改】
@@ -51,8 +50,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal float ReportBufferTime = 5;
         
-        private IExceptionHandlerHelper _helper;
-
         /// <summary>
         /// 当前捕获的所有异常信息
         /// </summary>
@@ -64,15 +61,9 @@ namespace HT.Framework
             }
         }
 
-        private ExceptionHandler()
+        private ExceptionManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IExceptionHandlerHelper;
         }
         
         /// <summary>

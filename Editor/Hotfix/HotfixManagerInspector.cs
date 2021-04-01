@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using UnityEditor;
 using UnityEditorInternal;
@@ -11,7 +10,7 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/90479971")]
-    internal sealed class HotfixManagerInspector : InternalModuleInspector<HotfixManager>
+    internal sealed class HotfixManagerInspector : InternalModuleInspector<HotfixManager, IHotfixHelper>
     {
         private static readonly string SourceDllPath = "/Library/ScriptAssemblies/Hotfix.dll";
         private static readonly string AssetsDllPath = "/Assets/Hotfix/Hotfix.dll.bytes";
@@ -41,13 +40,6 @@ namespace HT.Framework
             get
             {
                 return "Hotfix manager, help you implement basic hot fixes in your game!";
-            }
-        }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IHotfixHelper);
             }
         }
 

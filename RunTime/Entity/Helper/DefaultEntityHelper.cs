@@ -19,6 +19,10 @@ namespace HT.Framework
         /// </summary>
         private Dictionary<Type, GameObject> _entitiesGroup = new Dictionary<Type, GameObject>();
         /// <summary>
+        /// 实体管理器
+        /// </summary>
+        private EntityManager _module;
+        /// <summary>
         /// 实体根节点
         /// </summary>
         private Transform _entityRoot;
@@ -26,7 +30,7 @@ namespace HT.Framework
         /// <summary>
         /// 实体管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有实体列表
         /// </summary>
@@ -55,7 +59,8 @@ namespace HT.Framework
         /// </summary>
         public void OnInitialization()
         {
-            _entityRoot = Module.transform.Find("EntityRoot");
+            _module = Module as EntityManager;
+            _entityRoot = _module.transform.Find("EntityRoot");
 
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {

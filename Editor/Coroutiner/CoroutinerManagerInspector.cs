@@ -1,27 +1,19 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
 {
-    [CustomEditor(typeof(Coroutiner))]
+    [CustomEditor(typeof(CoroutinerManager))]
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/91492838")]
-    internal sealed class CoroutinerInspector : InternalModuleInspector<Coroutiner>
+    internal sealed class CoroutinerManagerInspector : InternalModuleInspector<CoroutinerManager, ICoroutinerHelper>
     {
         protected override string Intro
         {
             get
             {
-                return "Coroutiner, a unified scheduler for the coroutines, including execution and destruction, as well as viewing the status of all coroutines!";
-            }
-        }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(ICoroutinerHelper);
+                return "Coroutiner Manager, a unified scheduler for the coroutines, including execution and destruction, as well as viewing the status of all coroutines!";
             }
         }
 

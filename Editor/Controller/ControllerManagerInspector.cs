@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89416110")]
-    internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager>
+    internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager, IControllerHelper>
     {
         private List<BoxBoundsHandle> _handles = new List<BoxBoundsHandle>();
         
@@ -19,13 +18,6 @@ namespace HT.Framework
             get
             {
                 return "Controller Manager, it encapsulation free view controller, first person controller, third person controller, etc!";
-            }
-        }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IControllerHelper);
             }
         }
 

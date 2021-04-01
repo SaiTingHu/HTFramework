@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 异常处理器的助手接口
     /// </summary>
-    public interface IExceptionHandlerHelper : IInternalModuleHelper
+    public interface IExceptionHelper : IInternalModuleHelper
     {
         /// <summary>
         /// 当前捕获的所有异常信息

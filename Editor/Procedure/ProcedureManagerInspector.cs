@@ -9,10 +9,8 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86998412")]
-    internal sealed class ProcedureManagerInspector : InternalModuleInspector<ProcedureManager>
+    internal sealed class ProcedureManagerInspector : InternalModuleInspector<ProcedureManager, IProcedureHelper>
     {
-        private IProcedureHelper _procedureHelper;
-
         protected override string Intro
         {
             get
@@ -20,20 +18,7 @@ namespace HT.Framework
                 return "Procedure Manager, this is the beginning and the end of everything!";
             }
         }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IProcedureHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _procedureHelper = _helper as IProcedureHelper;
-        }
+        
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -171,10 +156,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Procedures: " + _procedureHelper.Procedures.Count);
+            GUILayout.Label("Procedures: " + _helper.Procedures.Count);
             GUILayout.EndHorizontal();
 
-            foreach (var procedure in _procedureHelper.Procedures)
+            foreach (var procedure in _helper.Procedures)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);

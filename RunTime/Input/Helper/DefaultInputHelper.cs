@@ -16,7 +16,7 @@ namespace HT.Framework
         /// <summary>
         /// 输入管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 输入设备
         /// </summary>

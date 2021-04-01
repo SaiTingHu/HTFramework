@@ -5,9 +5,8 @@ namespace HT.Framework
     /// <summary>
     /// 音频管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Audio)]
-    public sealed class AudioManager : InternalModuleBase
+    public sealed class AudioManager : InternalModuleBase<IAudioHelper>
     {
         /// <summary>
         /// 是否静音初始值【请勿在代码中修改】
@@ -232,18 +231,15 @@ namespace HT.Framework
         /// 单通道音效播放结束事件，参数为播放结束时的音频剪辑名称
         /// </summary>
         public event HTFAction<string> SingleSoundEndOfPlayEvent;
-
-        private IAudioHelper _helper;
-
+        
         private AudioManager()
         {
 
         }
-        internal override void OnInitialization()
+        public override void OnInitialization()
         {
             base.OnInitialization();
 
-            _helper = Helper as IAudioHelper;
             _helper.SingleSoundEndOfPlayEvent += (value) =>
             {
                 SingleSoundEndOfPlayEvent?.Invoke(value);

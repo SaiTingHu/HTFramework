@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 数据集管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.DataSet)]
-    public sealed class DataSetManager : InternalModuleBase
+    public sealed class DataSetManager : InternalModuleBase<IDataSetHelper>
     {
-        private IDataSetHelper _helper;
-
         private DataSetManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IDataSetHelper;
         }
 
         /// <summary>

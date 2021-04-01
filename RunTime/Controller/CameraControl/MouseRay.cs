@@ -8,7 +8,6 @@ namespace HT.Framework
     /// <summary>
     /// 鼠标位置射线发射器
     /// </summary>
-    [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     internal sealed class MouseRay : HTBehaviour
     {

@@ -1,25 +1,14 @@
-﻿using UnityEngine;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
     /// 自定义模块管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.CustomModule)]
-    public sealed class CustomModuleManager : InternalModuleBase
+    public sealed class CustomModuleManager : InternalModuleBase<ICustomModuleHelper>
     {
-        private ICustomModuleHelper _helper;
-
         private CustomModuleManager()
         {
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as ICustomModuleHelper;
         }
 
         /// <summary>

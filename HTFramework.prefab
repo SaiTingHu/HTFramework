@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 4575458302469458}
   - component: {fileID: 114972963364434120}
   m_Layer: 0
-  m_Name: ExceptionHandler
+  m_Name: Exception
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3adeff5ee5e2c654293425bf7098e6eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HelperType: HT.Framework.DefaultExceptionHandlerHelper
+  HelperType: HT.Framework.DefaultExceptionHelper
   IsHandler: 0
   IsEnableFeedback: 0
   IsEnableMailReport: 0

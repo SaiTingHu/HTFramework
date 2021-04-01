@@ -9,20 +9,13 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89001848")]
-    internal sealed class InputManagerInspector : InternalModuleInspector<InputManager>
+    internal sealed class InputManagerInspector : InternalModuleInspector<InputManager, IInputHelper>
     {
         protected override string Intro
         {
             get
             {
                 return "Input manager, this is a cross platform input solution!";
-            }
-        }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IInputHelper);
             }
         }
 

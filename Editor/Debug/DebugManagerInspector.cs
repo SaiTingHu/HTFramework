@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -8,20 +7,13 @@ namespace HT.Framework
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102570194")]
-    internal sealed class DebugManagerInspector : InternalModuleInspector<DebugManager>
+    internal sealed class DebugManagerInspector : InternalModuleInspector<DebugManager, IDebugHelper>
     {
         protected override string Intro
         {
             get
             {
                 return "Debug Manager, this is a runtime debugger for games!";
-            }
-        }
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IDebugHelper);
             }
         }
 
