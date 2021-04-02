@@ -21,7 +21,6 @@ namespace HT.Framework
         {
             OnInitHierarchy();
             OnInitProject();
-            OnInitLnkTools();
         }
         #endregion
 
@@ -1094,126 +1093,7 @@ namespace HT.Framework
             return rect.width > rect.height;
         }
         #endregion
-
-        #region LnkTools
-        private static bool IsEnableLnkTools = false;
-        private static bool IsExpansionLnkTools = false;
-        private static List<LnkTools> LnkToolss = new List<LnkTools>();
-
-        /// <summary>
-        /// LnkTools初始化
-        /// </summary>
-        private static void OnInitLnkTools()
-        {
-            IsEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, false);
-            IsExpansionLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Expansion, false);
-
-            if (IsEnableLnkTools)
-            {
-                LnkToolss.Clear();
-                List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
-                for (int i = 0; i < types.Count; i++)
-                {
-                    MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                    for (int j = 0; j < methods.Length; j++)
-                    {
-                        if (methods[j].IsDefined(typeof(LnkToolsAttribute), false))
-                        {
-                            LnkToolsAttribute attribute = methods[j].GetCustomAttribute<LnkToolsAttribute>();
-                            LnkTools lnkTools = new LnkTools(attribute.Tooltip, attribute.Priority, methods[j]);
-                            LnkToolss.Add(lnkTools);
-                        }
-                    }
-                }
-
-                LnkToolss.Sort((x, y) =>
-                {
-                    if (x.Priority < y.Priority) return -1;
-                    else if (x.Priority == y.Priority) return 0;
-                    else return 1;
-                });
-
-                SceneView.onSceneGUIDelegate += OnLnkToolsGUI;
-            }
-        }
-        /// <summary>
-        /// LnkTools界面
-        /// </summary>
-        private static void OnLnkToolsGUI(SceneView sceneView)
-        {
-            Handles.BeginGUI();
-
-            Rect rect = Rect.zero;
-            int h = sceneView.in2DMode ? 5 : 120;
-
-            if (IsExpansionLnkTools)
-            {
-                rect.Set(sceneView.position.width - 115, h, 110, (LnkToolss.Count + 1) * 22 + 8);
-                GUI.Box(rect, "");
-            }
-
-            rect.Set(sceneView.position.width - 110, h + 5, 100, 20);
-            bool expansion = GUI.Toggle(rect, IsExpansionLnkTools, "LnkTools", "Prebutton");
-            if (expansion != IsExpansionLnkTools)
-            {
-                IsExpansionLnkTools = expansion;
-                EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Expansion, IsExpansionLnkTools);
-            }
-            rect.y += 22;
-
-            if (IsExpansionLnkTools)
-            {
-                for (int i = 0; i < LnkToolss.Count; i++)
-                {
-                    if (GUI.Button(rect, LnkToolss[i].Tooltip))
-                    {
-                        LnkToolss[i].Method.Invoke(null, null);
-                    }
-                    rect.y += 22;
-                }
-            }
-
-            Handles.EndGUI();
-        }
         
-        /// <summary>
-        /// LnkTools，看向指定目标
-        /// </summary>
-        [LnkTools("Look At")]
-        private static void LookAt()
-        {
-            if (EditorApplication.isPlaying && Main.m_Controller != null)
-            {
-                if (Selection.activeGameObject != null)
-                {
-                    Main.m_Controller.SetLookPoint(Selection.activeGameObject.transform.position);
-                }
-                else
-                {
-                    Log.Warning("请选中一个LookAt的目标！");
-                }
-            }
-            else
-            {
-                Log.Warning("仅在运行时才能调用框架的Controller模块LookAt至选中目标！");
-            }
-        }
-
-        private class LnkTools
-        {
-            public string Tooltip;
-            public int Priority;
-            public MethodInfo Method;
-
-            public LnkTools(string tooltip, int priority, MethodInfo method)
-            {
-                Tooltip = tooltip;
-                Priority = priority;
-                Method = method;
-            }
-        }
-        #endregion
-
         #region Styles
         public static class Styles
         {
