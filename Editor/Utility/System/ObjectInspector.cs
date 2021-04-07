@@ -78,10 +78,14 @@ namespace HT.Framework
         private void FieldGUI()
         {
             bool drawerValue = true;
+            int indentLevel = 0;
             for (int i = 0; i < _fields.Count; i++)
             {
                 if (_fields[i].Drawer != null)
                 {
+                    EditorGUI.indentLevel = 0;
+                    indentLevel = 1;
+
                     if (string.IsNullOrEmpty(_fields[i].Drawer.Style))
                     {
                         GUILayout.BeginHorizontal();
@@ -98,6 +102,8 @@ namespace HT.Framework
 
                 if (drawerValue)
                 {
+                    EditorGUI.indentLevel = indentLevel;
+
                     _fields[i].Painting(this);
                 }
             }
