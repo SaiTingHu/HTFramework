@@ -887,22 +887,23 @@ namespace HT.Framework
             {
                 _currentTarget.State = StepTargetState.Normal;
             }
-
-            //创建步骤助手
-            _currentHelper = CreateHelper(_currentContent, StepHelperTask.Execute);
             
-            //未激活的步骤自动跳过
-            if (_stepContentEnables.ContainsKey(_currentContent.GUID))
+            //激活的步骤正常启动，未激活的步骤自动跳过
+            if (_stepContentEnables.ContainsKey(_currentContent.GUID) && _stepContentEnables[_currentContent.GUID])
             {
-                BeginStepEvent?.Invoke(_currentContent, _stepContentEnables[_currentContent.GUID]);
-                if (!_stepContentEnables[_currentContent.GUID])
-                {
-                    SkipCurrentStepImmediateCoroutine();
-                }
+                //创建步骤助手
+                _currentHelper = CreateHelper(_currentContent, StepHelperTask.Execute);
+
+                BeginStepEvent?.Invoke(_currentContent, true);
             }
             else
             {
+                //创建步骤助手
+                _currentHelper = CreateHelper(_currentContent, StepHelperTask.SkipImmediate);
+
                 BeginStepEvent?.Invoke(_currentContent, false);
+
+                SkipCurrentStepImmediateCoroutine();
             }
         }
         /// <summary>
