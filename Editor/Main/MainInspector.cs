@@ -48,7 +48,7 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("No Runtime Data!");
+            Target.Pause = EditorGUILayout.Toggle("Pause", Target.Pause);
             GUILayout.EndHorizontal();
         }
 

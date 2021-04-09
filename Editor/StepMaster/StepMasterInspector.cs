@@ -54,15 +54,27 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
+                GUILayout.Label("Is Running: " + Target.IsRunning);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                Target.Pause = EditorGUILayout.Toggle("Pause", Target.Pause);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
                 GUILayout.Label("Current Step: " + Target.CurrentStepIndex);
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Skip", EditorStyles.miniButtonLeft))
                 {
                     Target.SkipCurrentStep();
                 }
-                if (GUILayout.Button("SkipImmediate", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("SkipImmediate", EditorStyles.miniButtonMid))
                 {
                     Target.SkipCurrentStepImmediate();
+                }
+                if (GUILayout.Button("Guide", EditorStyles.miniButtonRight))
+                {
+                    Target.Guide();
                 }
                 GUILayout.EndHorizontal();
 

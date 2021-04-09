@@ -124,6 +124,14 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
+            Target.IsHideAll = EditorGUILayout.Toggle("Hide All", Target.IsHideAll);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Target.IsDisplayMask = EditorGUILayout.Toggle("Display Mask", Target.IsDisplayMask);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             Target.IsLockTemporaryUI = EditorGUILayout.Toggle("Lock Temporary", Target.IsLockTemporaryUI);
             GUILayout.EndHorizontal();
 

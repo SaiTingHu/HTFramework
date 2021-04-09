@@ -41,6 +41,10 @@ namespace HT.Framework
             GUILayout.Label("Web Interfaces:" + _helper.WebInterfaces.Count);
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Connected Internet:" + _helper.IsConnectedInternet);
+            GUILayout.EndHorizontal();
+
             foreach (var inter in _helper.WebInterfaces)
             {
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
