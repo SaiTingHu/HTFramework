@@ -505,7 +505,34 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("GUID: " + _currentStepObj.TargetGUID, GUILayout.Width(140));
+                    if (GUILayout.Button("GUID:", "Label", GUILayout.Width(40)))
+                    {
+                        GenericMenu gm = new GenericMenu();
+                        if (_currentStepObj.TargetGUID == "<None>")
+                        {
+                            gm.AddDisabledItem(new GUIContent("Copy"));
+                        }
+                        else
+                        {
+                            gm.AddItem(new GUIContent("Copy"), false, () =>
+                            {
+                                GUIUtility.systemCopyBuffer = _currentStepObj.TargetGUID;
+                            });
+                        }
+                        if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            gm.AddDisabledItem(new GUIContent("Paste"));
+                        }
+                        else
+                        {
+                            gm.AddItem(new GUIContent("Paste"), false, () =>
+                            {
+                                _currentStepObj.TargetGUID = GUIUtility.systemCopyBuffer;
+                            });
+                        }
+                        gm.ShowAsContext();
+                    }
+                    GUILayout.Label(_currentStepObj.TargetGUID, GUILayout.Width(100));
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
                     {
@@ -837,7 +864,34 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("GUID: " + _currentOperationObj.TargetGUID, GUILayout.Width(140));
+                    if (GUILayout.Button("GUID:", "Label", GUILayout.Width(40)))
+                    {
+                        GenericMenu gm = new GenericMenu();
+                        if (_currentOperationObj.TargetGUID == "<None>")
+                        {
+                            gm.AddDisabledItem(new GUIContent("Copy"));
+                        }
+                        else
+                        {
+                            gm.AddItem(new GUIContent("Copy"), false, () =>
+                            {
+                                GUIUtility.systemCopyBuffer = _currentOperationObj.TargetGUID;
+                            });
+                        }
+                        if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            gm.AddDisabledItem(new GUIContent("Paste"));
+                        }
+                        else
+                        {
+                            gm.AddItem(new GUIContent("Paste"), false, () =>
+                            {
+                                _currentOperationObj.TargetGUID = GUIUtility.systemCopyBuffer;
+                            });
+                        }
+                        gm.ShowAsContext();
+                    }
+                    GUILayout.Label(_currentOperationObj.TargetGUID, GUILayout.Width(100));
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
                     {
