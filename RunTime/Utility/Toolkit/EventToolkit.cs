@@ -19,6 +19,9 @@ namespace HT.Framework
         /// <param name="callback">回调函数</param>
         public static void AddCommonEventListener(this RectTransform target, EventTriggerType type, UnityAction<BaseEventData> callback)
         {
+            if (target == null)
+                return;
+
             EventTrigger trigger = target.GetComponent<EventTrigger>();
             if (trigger == null)
             {
@@ -45,6 +48,9 @@ namespace HT.Framework
         /// <param name="target">事件监听目标</param>
         public static void RemoveAllCommonEventListener(this RectTransform target)
         {
+            if (target == null)
+                return;
+
             EventTrigger trigger = target.GetComponent<EventTrigger>();
             if (trigger != null)
             {
@@ -61,6 +67,9 @@ namespace HT.Framework
         /// <param name="callback">回调函数</param>
         public static void AddEventListener(this RectTransform target, UnityAction callback)
         {
+            if (target == null)
+                return;
+
             Button button = target.GetComponent<Button>();
             if (button)
             {
@@ -77,6 +86,9 @@ namespace HT.Framework
         /// <param name="target">事件监听目标</param>
         public static void RemoveAllEventListener(this RectTransform target)
         {
+            if (target == null)
+                return;
+
             Button button = target.GetComponent<Button>();
             if (button)
             {

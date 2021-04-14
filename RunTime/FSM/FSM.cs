@@ -236,7 +236,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "获取状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
+                return null;
             }
         }
 
@@ -293,7 +293,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "切换状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
+                Log.Warning("切换状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
             }
         }
 
@@ -313,14 +313,16 @@ namespace HT.Framework
         {
             if (type == _defaultState || type == _finalState)
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为该状态为初始状态或最终状态！");
+                Log.Warning("终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为该状态为初始状态或最终状态！");
+                return;
             }
 
             if (_stateInstances.ContainsKey(type))
             {
                 if (_currentState == _stateInstances[type])
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.FSM, "终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为当前正处于该状态！");
+                    Log.Warning("终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为当前正处于该状态！");
+                    return;
                 }
 
                 _stateInstances[type].OnTermination();
@@ -328,7 +330,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "终止状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
+                Log.Warning("终止状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
             }
         }
 
@@ -355,7 +357,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "附加状态失败：有限状态机 " + Name + " 已存在状态 " + type.Name + "！");
+                Log.Warning("附加状态失败：有限状态机 " + Name + " 已存在状态 " + type.Name + "！");
             }
         }
 

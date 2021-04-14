@@ -19,6 +19,9 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenOnceHighLight(this GameObject target)
         {
+            if (target == null)
+                return;
+
             target.OpenOnceHighLight(Color.cyan);
         }
         /// <summary>
@@ -28,6 +31,9 @@ namespace HT.Framework
         /// <param name="color">发光颜色</param>
         public static void OpenOnceHighLight(this GameObject target, Color color)
         {
+            if (target == null)
+                return;
+
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
@@ -46,6 +52,9 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenHighLight(this GameObject target)
         {
+            if (target == null)
+                return;
+
             target.OpenHighLight(Color.cyan);
         }
         /// <summary>
@@ -56,6 +65,9 @@ namespace HT.Framework
         /// <param name="isImmediate">是否立即模式</param>
         public static void OpenHighLight(this GameObject target, Color color, bool isImmediate = true)
         {
+            if (target == null)
+                return;
+
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
@@ -80,6 +92,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁高光实例</param>
         public static void CloseHighLight(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
@@ -114,6 +129,9 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenFlashHighLight(this GameObject target)
         {
+            if (target == null)
+                return;
+
             target.OpenFlashHighLight(Color.red, Color.white, 2);
         }
         /// <summary>
@@ -124,6 +142,9 @@ namespace HT.Framework
         /// <param name="color2">颜色2</param>
         public static void OpenFlashHighLight(this GameObject target, Color color1, Color color2)
         {
+            if (target == null)
+                return;
+
             target.OpenFlashHighLight(color1, color2, 2);
         }
         /// <summary>
@@ -135,6 +156,9 @@ namespace HT.Framework
         /// <param name="freq">频率</param>
         public static void OpenFlashHighLight(this GameObject target, Color color1, Color color2, float freq)
         {
+            if (target == null)
+                return;
+
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
@@ -158,6 +182,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁高光实例</param>
         public static void CloseFlashHighLight(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
@@ -192,6 +219,9 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenOccluder(this GameObject target)
         {
+            if (target == null)
+                return;
+
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
@@ -215,6 +245,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁高光实例</param>
         public static void CloseOccluder(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
@@ -250,6 +283,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁高光实例</param>
         public static void ClearHighLightInChildren(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             HOCache.Clear();
             target.transform.GetComponentsInChildren(true, HOCache);
             for (int i = 0; i < HOCache.Count; i++)
@@ -268,6 +304,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁高光实例</param>
         public static void ClearHighLightInParent(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             HOCache.Clear();
             target.transform.GetComponentsInParent(true, HOCache);
             for (int i = 0; i < HOCache.Count; i++)

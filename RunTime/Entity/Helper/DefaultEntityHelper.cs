@@ -267,10 +267,8 @@ namespace HT.Framework
         /// <param name="entityLogic">实体逻辑对象</param>
         public void ShowEntity(EntityLogicBase entityLogic)
         {
-            if (entityLogic.IsShowed)
-            {
+            if (entityLogic == null || entityLogic.IsShowed)
                 return;
-            }
 
             entityLogic.Entity.SetActive(true);
             entityLogic.OnShow();
@@ -281,10 +279,8 @@ namespace HT.Framework
         /// <param name="entityLogic">实体逻辑对象</param>
         public void HideEntity(EntityLogicBase entityLogic)
         {
-            if (!entityLogic.IsShowed)
-            {
+            if (entityLogic == null || !entityLogic.IsShowed)
                 return;
-            }
 
             entityLogic.Entity.SetActive(false);
             entityLogic.OnHide();
@@ -363,6 +359,9 @@ namespace HT.Framework
         /// <param name="entityLogic">实体逻辑类</param>
         private void RecoveryEntity(EntityLogicBase entityLogic)
         {
+            if (entityLogic == null)
+                return;
+
             Type type = entityLogic.GetType();
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)

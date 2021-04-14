@@ -350,6 +350,9 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         public void PlayBackgroundMusic(AudioClip clip, bool isLoop = true, float speed = 1)
         {
+            if (clip == null)
+                return;
+
             BackgroundSource.DOKill();
 
             if (BackgroundSource.isPlaying)
@@ -369,6 +372,9 @@ namespace HT.Framework
         /// <param name="clip">音乐剪辑</param>
         public void PlayBackgroundMusic(AudioClip clip)
         {
+            if (clip == null)
+                return;
+
             BackgroundSource.DOKill();
 
             if (BackgroundSource.isPlaying)
@@ -443,6 +449,9 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         public void PlaySingleSound(AudioClip clip, bool isLoop = false, float speed = 1)
         {
+            if (clip == null)
+                return;
+
             SingleSource.DOKill();
 
             if (SingleSource.isPlaying)
@@ -463,6 +472,9 @@ namespace HT.Framework
         /// <param name="clip">音乐剪辑</param>
         public void PlaySingleSound(AudioClip clip)
         {
+            if (clip == null)
+                return;
+
             SingleSource.DOKill();
 
             if (SingleSource.isPlaying)
@@ -538,6 +550,9 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         public void PlayMultipleSound(AudioClip clip, bool isLoop = false, float speed = 1)
         {
+            if (clip == null)
+                return;
+
             AudioSource audio = ExtractIdleMultipleAudioSource();
             audio.clip = clip;
             audio.loop = isLoop;
@@ -550,6 +565,9 @@ namespace HT.Framework
         /// <param name="clip">音乐剪辑</param>
         public void PlayMultipleSound(AudioClip clip)
         {
+            if (clip == null)
+                return;
+
             AudioSource audio = ExtractIdleMultipleAudioSource();
             audio.clip = clip;
             audio.Play();
@@ -560,6 +578,9 @@ namespace HT.Framework
         /// <param name="clip">音乐剪辑</param>
         public void StopMultipleSound(AudioClip clip)
         {
+            if (clip == null)
+                return;
+
             for (int i = 0; i < MultipleSources.Count; i++)
             {
                 if (MultipleSources[i].isPlaying)
@@ -610,6 +631,9 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         public void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool isLoop = false, float speed = 1)
         {
+            if (attachTarget == null || clip == null)
+                return;
+
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
@@ -641,6 +665,9 @@ namespace HT.Framework
         /// <param name="clip">音乐剪辑</param>
         public void PlayWorldSound(GameObject attachTarget, AudioClip clip)
         {
+            if (attachTarget == null || clip == null)
+                return;
+
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
@@ -668,6 +695,9 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void PauseWorldSound(GameObject attachTarget, bool isGradual = true)
         {
+            if (attachTarget == null)
+                return;
+
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
@@ -694,6 +724,9 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void UnPauseWorldSound(GameObject attachTarget, bool isGradual = true)
         {
+            if (attachTarget == null)
+                return;
+
             if (WorldSources.ContainsKey(attachTarget))
             {
                 AudioSource audio = WorldSources[attachTarget];
@@ -717,6 +750,9 @@ namespace HT.Framework
         /// <param name="attachTarget">附加目标</param>
         public void StopWorldSound(GameObject attachTarget)
         {
+            if (attachTarget == null)
+                return;
+
             if (WorldSources.ContainsKey(attachTarget))
             {
                 WorldSources[attachTarget].DOKill();
@@ -767,6 +803,9 @@ namespace HT.Framework
         /// <param name="volumeScale">音量缩放比</param>
         public void PlayOneShoot(AudioClip clip, float volumeScale = 1)
         {
+            if (clip == null)
+                return;
+
             OneShootSource.PlayOneShot(clip, volumeScale);
         }
         /// <summary>
@@ -775,6 +814,9 @@ namespace HT.Framework
         /// <param name="clip">音效剪辑</param>
         public void PlayOneShoot(AudioClip clip)
         {
+            if (clip == null)
+                return;
+
             OneShootSource.PlayOneShot(clip);
         }
 

@@ -75,13 +75,16 @@ namespace HT.Framework
         /// <param name="limit">对象池上限，等于0时，表示使用默认值</param>
         public void RegisterSpawnPool(string name, GameObject spawnTem, HTFAction<GameObject> onSpawn, HTFAction<GameObject> onDespawn, int limit)
         {
+            if (spawnTem == null)
+                return;
+
             if (!SpawnPools.ContainsKey(name))
             {
                 SpawnPools.Add(name, new ObjectSpawnPool(spawnTem, limit <= 0 ? _limit : limit, onSpawn, onDespawn));
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "注册对象池失败：已存在对象池 " + name + " ！");
+                Log.Error("注册对象池失败：已存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -106,7 +109,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "移除对象池失败：不存在对象池 " + name + " ！");
+                Log.Error("移除对象池失败：不存在对象池 " + name + " ！");
             }
         }
 
@@ -123,7 +126,8 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "获取对象数量失败：不存在对象池 " + name + " ！");
+                Log.Error("获取对象数量失败：不存在对象池 " + name + " ！");
+                return 0;
             }
         }
         /// <summary>
@@ -139,7 +143,8 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "生成对象失败：不存在对象池 " + name + " ！");
+                Log.Error("生成对象失败：不存在对象池 " + name + " ！");
+                return null;
             }
         }
         /// <summary>
@@ -149,13 +154,16 @@ namespace HT.Framework
         /// <param name="target">对象</param>
         public void Despawn(string name, GameObject target)
         {
+            if (target == null)
+                return;
+
             if (SpawnPools.ContainsKey(name))
             {
                 SpawnPools[name].Despawn(target);
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "回收对象失败：不存在对象池 " + name + " ！");
+                Log.Error("回收对象失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -165,6 +173,9 @@ namespace HT.Framework
         /// <param name="targets">对象数组</param>
         public void Despawns(string name, GameObject[] targets)
         {
+            if (targets == null)
+                return;
+
             if (SpawnPools.ContainsKey(name))
             {
                 for (int i = 0; i < targets.Length; i++)
@@ -174,7 +185,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "回收对象失败：不存在对象池 " + name + " ！");
+                Log.Error("回收对象失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -184,6 +195,9 @@ namespace HT.Framework
         /// <param name="targets">对象集合</param>
         public void Despawns(string name, List<GameObject> targets)
         {
+            if (targets == null)
+                return;
+
             if (SpawnPools.ContainsKey(name))
             {
                 for (int i = 0; i < targets.Count; i++)
@@ -194,7 +208,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "回收对象失败：不存在对象池 " + name + " ！");
+                Log.Error("回收对象失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>
@@ -209,7 +223,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ObjectPool, "清空对象池失败：不存在对象池 " + name + " ！");
+                Log.Error("清空对象池失败：不存在对象池 " + name + " ！");
             }
         }
         /// <summary>

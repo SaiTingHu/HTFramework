@@ -404,6 +404,9 @@ namespace HT.Framework
         /// <param name="callback">点击事件回调</param>
         public void AddClickListener(GameObject target, HTFAction callback)
         {
+            if (target == null || callback == null)
+                return;
+
             MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
             if (mouseRayTargetBase)
             {
@@ -419,6 +422,9 @@ namespace HT.Framework
         /// <param name="target">目标</param>
         public void RemoveClickListener(GameObject target)
         {
+            if (target == null)
+                return;
+
             MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
             if (mouseRayTargetBase)
             {

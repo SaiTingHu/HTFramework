@@ -68,7 +68,7 @@ namespace HT.Framework
             return _helper.GetProcedure(type);
         }
         /// <summary>
-        /// 是否存在流程
+        /// 是否存在指定类型的流程
         /// </summary>
         /// <typeparam name="T">流程类</typeparam>
         /// <returns>是否存在</returns>
@@ -77,13 +77,22 @@ namespace HT.Framework
             return _helper.IsExistProcedure(typeof(T));
         }
         /// <summary>
-        /// 是否存在流程
+        /// 是否存在指定类型的流程
         /// </summary>
         /// <param name="type">流程类</param>
         /// <returns>是否存在</returns>
         public bool IsExistProcedure(Type type)
         {
             return _helper.IsExistProcedure(type);
+        }
+        /// <summary>
+        /// 是否存在指定序号的流程（依据编辑器面板的序号）
+        /// </summary>
+        /// <param name="index">流程序号</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistProcedure(int index)
+        {
+            return _helper.IsExistProcedure(index);
         }
 
         /// <summary>

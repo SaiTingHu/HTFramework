@@ -72,6 +72,9 @@ namespace HT.Framework
         /// <returns>拼接成功的字符串</returns>
         public static string Concat(List<string> str)
         {
+            if (str == null || str.Count <= 0)
+                return null;
+
             StringInstance.Clear();
             for (int i = 0; i < str.Count; i++)
             {

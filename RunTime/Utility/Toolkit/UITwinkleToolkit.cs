@@ -23,6 +23,9 @@ namespace HT.Framework
         /// <param name="time">闪烁一次的时间</param>
         public static void OpenTwinkle(this Graphic graphic, Color color, float time = 0.5f)
         {
+            if (graphic == null)
+                return;
+
             if (!Graphics.ContainsKey(graphic))
             {
                 TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
@@ -45,6 +48,9 @@ namespace HT.Framework
         /// <param name="graphic">图像控件</param>
         public static void CloseTwinkle(this Graphic graphic)
         {
+            if (graphic == null)
+                return;
+
             if (Graphics.ContainsKey(graphic))
             {
                 Color normalColor = Graphics[graphic].startValue;
@@ -63,6 +69,9 @@ namespace HT.Framework
         /// <param name="time">闪烁一次的时间</param>
         public static void OpenTwinkle(this Selectable selectable, Color color, float time = 0.5f)
         {
+            if (selectable == null)
+                return;
+
             if (!Selectables.ContainsKey(selectable) && selectable.targetGraphic != null)
             {
                 if (selectable.transition == Selectable.Transition.ColorTint)
@@ -105,6 +114,9 @@ namespace HT.Framework
         /// <param name="selectable">可选控件</param>
         public static void CloseTwinkle(this Selectable selectable)
         {
+            if (selectable == null)
+                return;
+
             if (Selectables.ContainsKey(selectable))
             {
                 if (selectable.transition == Selectable.Transition.ColorTint)

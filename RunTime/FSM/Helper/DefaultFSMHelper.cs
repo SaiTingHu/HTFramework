@@ -70,6 +70,9 @@ namespace HT.Framework
         /// <param name="fsm">状态机</param>
         public void RegisterFSM(FSM fsm)
         {
+            if (fsm == null)
+                return;
+
             if (!FSMs.ContainsKey(fsm.Name))
             {
                 FSMs.Add(fsm.Name, fsm);
@@ -86,7 +89,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "注册状态机失败：已存在状态机 " + fsm.Name + " ！");
+                Log.Warning("注册状态机失败：已存在状态机 " + fsm.Name + " ！");
             }
         }
         /// <summary>
@@ -95,6 +98,9 @@ namespace HT.Framework
         /// <param name="fsm">状态机</param>
         public void UnRegisterFSM(FSM fsm)
         {
+            if (fsm == null)
+                return;
+
             if (FSMs.ContainsKey(fsm.Name))
             {
                 FSMs.Remove(fsm.Name);
@@ -106,7 +112,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "移除已注册的状态机失败：不存在状态机 " + fsm.Name + " ！");
+                Log.Warning("移除已注册的状态机失败：不存在状态机 " + fsm.Name + " ！");
             }
         }
 
@@ -123,7 +129,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "获取状态机失败：不存在状态机 " + name + " ！");
+                return null;
             }
         }
         /// <summary>

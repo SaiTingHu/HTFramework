@@ -29,6 +29,9 @@ namespace HT.Framework
         /// <returns>随机获取的值</returns>
         public static T RandomValue<T>(this T[] values)
         {
+            if (values == null || values.Length <= 0)
+                return default;
+
             int index = UnityEngine.Random.Range(0, values.Length);
             return values[index];
         }
@@ -40,6 +43,9 @@ namespace HT.Framework
         /// <returns>随机获取的值</returns>
         public static T RandomValue<T>(this List<T> values)
         {
+            if (values == null || values.Count <= 0)
+                return default;
+
             int index = UnityEngine.Random.Range(0, values.Count);
             return values[index];
         }
@@ -49,6 +55,9 @@ namespace HT.Framework
         /// <param name="values">Action数组</param>
         public static void RandomExecute(params HTFAction[] values)
         {
+            if (values == null || values.Length <= 0)
+                return;
+
             int index = UnityEngine.Random.Range(0, values.Length);
             values[index]?.Invoke();
         }

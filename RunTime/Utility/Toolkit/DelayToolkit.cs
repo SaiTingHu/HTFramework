@@ -17,6 +17,9 @@ namespace HT.Framework
         /// <returns>延时的协程</returns>
         public static Coroutine DelayExecute(this MonoBehaviour behaviour, HTFAction action, float delaySeconds)
         {
+            if (behaviour == null || action == null)
+                return null;
+
             Coroutine coroutine = behaviour.StartCoroutine(DelayExecute(action, delaySeconds));
             return coroutine;
         }
@@ -34,6 +37,9 @@ namespace HT.Framework
         /// <returns>延时的协程</returns>
         public static Coroutine NextFrameExecute(this MonoBehaviour behaviour, HTFAction action)
         {
+            if (behaviour == null || action == null)
+                return null;
+
             Coroutine coroutine = behaviour.StartCoroutine(NextFrameExecute(action));
             return coroutine;
         }
@@ -52,6 +58,9 @@ namespace HT.Framework
         /// <returns>等待的协程</returns>
         public static Coroutine WaitExecute(this MonoBehaviour behaviour, HTFAction action, WaitUntil waitUntil)
         {
+            if (behaviour == null || action == null)
+                return null;
+
             Coroutine coroutine = behaviour.StartCoroutine(WaitExecute(action, waitUntil));
             return coroutine;
         }

@@ -190,6 +190,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理类实例</param>
         public void Throw(object sender, EventHandlerBase handler)
         {
+            if (sender == null || handler == null)
+                return;
+
             Type type = handler.GetType();
             if (EventHandlerList1.ContainsKey(type))
             {
@@ -225,6 +228,9 @@ namespace HT.Framework
         /// <param name="handler">事件处理类实例</param>
         public void Throw(EventHandlerBase handler)
         {
+            if (handler == null)
+                return;
+
             Type type = handler.GetType();
             if (EventHandlerList3.ContainsKey(type))
             {

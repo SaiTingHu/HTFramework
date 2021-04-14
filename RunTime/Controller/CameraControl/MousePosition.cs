@@ -95,10 +95,8 @@ namespace HT.Framework
         /// <param name="target">追踪目标</param>
         public void EnterKeepTrack(Transform target)
         {
-            if (!target)
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Controller, "保持追踪的目标不能为空！");
-            }
+            if (target == null)
+                return;
 
             _isKeepTrack = true;
             _trackTarget = target;

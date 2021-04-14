@@ -114,6 +114,9 @@ namespace HT.Framework
         /// <param name="refe">对象</param>
         public void Despawn(IReference refe)
         {
+            if (refe == null)
+                return;
+
             Type type = refe.GetType();
             if (!SpawnPools.ContainsKey(type))
             {
@@ -129,6 +132,9 @@ namespace HT.Framework
         /// <param name="refes">对象集合</param>
         public void Despawns<T>(List<T> refes) where T : class, IReference, new()
         {
+            if (refes == null)
+                return;
+
             Type type = typeof(T);
             if (!SpawnPools.ContainsKey(type))
             {
@@ -148,6 +154,9 @@ namespace HT.Framework
         /// <param name="refes">对象数组</param>
         public void Despawns<T>(T[] refes) where T : class, IReference, new()
         {
+            if (refes == null)
+                return;
+
             Type type = typeof(T);
             if (!SpawnPools.ContainsKey(type))
             {

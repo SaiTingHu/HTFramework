@@ -18,6 +18,9 @@ namespace HT.Framework
         /// <param name="intensity">强度</param>
         public static void OpenMeshOutline(this GameObject target, float intensity = 1)
         {
+            if (target == null)
+                return;
+
             target.OpenMeshOutline(Color.yellow, intensity);
         }
         /// <summary>
@@ -28,6 +31,9 @@ namespace HT.Framework
         /// <param name="intensity">强度</param>
         public static void OpenMeshOutline(this GameObject target, Color color, float intensity = 1)
         {
+            if (target == null)
+                return;
+
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
@@ -49,6 +55,9 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void ResetOutline(this GameObject target)
         {
+            if (target == null)
+                return;
+
             MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
             if (mo != null)
             {
@@ -62,6 +71,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁实例</param>
         public static void CloseMeshOutline(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
             if (mo == null) return;
 
@@ -96,6 +108,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁高光实例</param>
         public static void ClearMeshOutlineInChildren(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             MOCache.Clear();
             target.transform.GetComponentsInChildren(true, MOCache);
             for (int i = 0; i < MOCache.Count; i++)
@@ -114,6 +129,9 @@ namespace HT.Framework
         /// <param name="die">是否销毁高光实例</param>
         public static void ClearMeshOutlineInParent(this GameObject target, bool die = false)
         {
+            if (target == null)
+                return;
+
             MOCache.Clear();
             target.transform.GetComponentsInParent(true, MOCache);
             for (int i = 0; i < MOCache.Count; i++)

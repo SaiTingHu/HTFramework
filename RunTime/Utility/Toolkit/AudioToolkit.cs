@@ -71,6 +71,9 @@ namespace HT.Framework
         /// <returns>音源</returns>
         public static AudioSource AttachAudioSource(GameObject target, int priority, float volume, float speed, float spatialBlend, bool mute)
         {
+            if (target == null)
+                return null;
+
             AudioSource audio = target.AddComponent<AudioSource>();
             audio.playOnAwake = false;
             audio.priority = priority;
@@ -87,6 +90,9 @@ namespace HT.Framework
         /// <returns>音源</returns>
         public static AudioSource AttachAudioSource(GameObject target)
         {
+            if (target == null)
+                return null;
+
             AudioSource audio = target.AddComponent<AudioSource>();
             audio.playOnAwake = false;
             audio.pitch = 1;

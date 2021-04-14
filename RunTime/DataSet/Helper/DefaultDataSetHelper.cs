@@ -78,10 +78,8 @@ namespace HT.Framework
         /// <param name="dataSet">数据集</param>
         public void AddDataSet(DataSetBase dataSet)
         {
-            if (!dataSet)
-            {
-                throw new HTFrameworkException(HTFrameworkModule.DataSet, "不能添加空的数据集至仓库！");
-            }
+            if (dataSet == null)
+                return;
 
             Type type = dataSet.GetType();
             if (!DataSets.ContainsKey(type))
@@ -96,10 +94,8 @@ namespace HT.Framework
         /// <param name="dataSet">数据集</param>
         public void RemoveDataSet(DataSetBase dataSet)
         {
-            if (!dataSet)
-            {
-                throw new HTFrameworkException(HTFrameworkModule.DataSet, "不能移除空的数据集！");
-            }
+            if (dataSet == null)
+                return;
 
             Type type = dataSet.GetType();
             if (!DataSets.ContainsKey(type))
