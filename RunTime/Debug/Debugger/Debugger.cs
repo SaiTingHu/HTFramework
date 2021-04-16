@@ -59,7 +59,8 @@ namespace HT.Framework
         private bool _isExpand = false;
         private DebuggerModule _module = DebuggerModule.Console;
         private Color _fpsColor = Color.white;
-        private float _lastShowFPSTime = 0f;
+        private float _lastTime = 0f;
+        private int _fpsCount = 0;
         private Dictionary<string, string> _words = new Dictionary<string, string>();
         //Console
         private List<DebuggerConsoleLog> _consoleLogs = new List<DebuggerConsoleLog>();
@@ -164,12 +165,24 @@ namespace HT.Framework
                     _minWindowRect.y = Screen.height - _minWindowRect.height;
                 }
             }
-
-            FPSUpdate();
         }
         public void RefreshMaskState()
         {
             Main.m_UI.IsDisplayMask = Main.m_Debug.IsEnableDebugger && _isExpand;
+        }
+        public void RefreshFPS()
+        {
+            float time = Time.realtimeSinceStartup - _lastTime;
+            _fpsCount += 1;
+            if (time > 1)
+            {
+                FPS = (int)(_fpsCount / time);
+                _fpsCount = 0;
+                _lastTime = Time.realtimeSinceStartup;
+
+                if (FPS > MaxFPS) MaxFPS = FPS;
+                if (FPS < MinFPS) MinFPS = FPS;
+            }
         }
         #endregion
 
@@ -779,21 +792,6 @@ namespace HT.Framework
             if (_errorLogCount > 0)
             {
                 _fpsColor = Color.red;
-            }
-        }
-        /// <summary>
-        /// 更新FPS
-        /// </summary>
-        private void FPSUpdate()
-        {
-            float time = Time.realtimeSinceStartup - _lastShowFPSTime;
-            if (time >= 1)
-            {
-                FPS = (int)(1.0f / Time.deltaTime);
-                _lastShowFPSTime = Time.realtimeSinceStartup;
-
-                if (FPS > MaxFPS) MaxFPS = FPS;
-                if (FPS < MinFPS) MinFPS = FPS;
             }
         }
         /// <summary>

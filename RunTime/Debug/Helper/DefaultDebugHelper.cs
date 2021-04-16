@@ -52,11 +52,12 @@ namespace HT.Framework
         /// </summary>
         public void OnRefresh()
         {
-            if (_isEnableDebugger != _module.IsEnableDebugger)
+            if (_debugger != null)
             {
-                _isEnableDebugger = _module.IsEnableDebugger;
-                if (_debugger != null)
+                _debugger.RefreshFPS();
+                if (_isEnableDebugger != _module.IsEnableDebugger)
                 {
+                    _isEnableDebugger = _module.IsEnableDebugger;
                     _debugger.RefreshMaskState();
                 }
             }
