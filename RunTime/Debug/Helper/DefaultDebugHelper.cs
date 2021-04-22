@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -10,6 +11,10 @@ namespace HT.Framework
         private DebugManager _module;
         private Debugger _debugger;
         private bool _isEnableDebugger = false;
+        private string _monitorName;
+        private float _monitorBeginTime;
+        private long _monitorBeginMemory;
+        private int _monitorBeginGC;
 
         /// <summary>
         /// 调试管理器
@@ -113,6 +118,59 @@ namespace HT.Framework
                     _debugger.OnDebuggerGUI();
                 }
             }
+        }
+        /// <summary>
+        /// 监控中执行方法
+        /// </summary>
+        /// <param name="function">方法</param>
+        /// <param name="name">监控名称</param>
+        /// <returns>监控数据</returns>
+        public MonitorData MonitorExecute(HTFAction function, string name = null)
+        {
+            float beginTime = Time.realtimeSinceStartup;
+            long beginMemory = GC.GetTotalMemory(false);
+            int beginGC = GC.CollectionCount(0);
+
+            function();
+
+            float endTime = Time.realtimeSinceStartup;
+            long endMemory = GC.GetTotalMemory(false);
+            int endGC = GC.CollectionCount(0);
+
+            MonitorData data = new MonitorData();
+            data.Name = string.IsNullOrEmpty(name) ? function.Method.Name : name;
+            data.Elapsed = endTime - beginTime;
+            data.MemoryIncrement = endMemory - beginMemory;
+            data.GCCount = endGC - beginGC;
+            return data;
+        }
+        /// <summary>
+        /// 开始监控
+        /// </summary>
+        /// <param name="name">监控名称</param>
+        public void BeginMonitor(string name = null)
+        {
+            _monitorName = name;
+            _monitorBeginTime = Time.realtimeSinceStartup;
+            _monitorBeginMemory = GC.GetTotalMemory(false);
+            _monitorBeginGC = GC.CollectionCount(0);
+        }
+        /// <summary>
+        /// 结束监控
+        /// </summary>
+        /// <returns>监控数据</returns>
+        public MonitorData EndMonitor()
+        {
+            float endTime = Time.realtimeSinceStartup;
+            long endMemory = GC.GetTotalMemory(false);
+            int endGC = GC.CollectionCount(0);
+
+            MonitorData data = new MonitorData();
+            data.Name = _monitorName;
+            data.Elapsed = endTime - _monitorBeginTime;
+            data.MemoryIncrement = endMemory - _monitorBeginMemory;
+            data.GCCount = endGC - _monitorBeginGC;
+            return data;
         }
     }
 }

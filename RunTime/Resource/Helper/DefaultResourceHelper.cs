@@ -381,6 +381,7 @@ namespace HT.Framework
         {
             Resources.UnloadUnusedAssets();
             GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
         
         /// <summary>

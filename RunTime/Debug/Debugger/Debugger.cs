@@ -521,6 +521,7 @@ namespace HT.Framework
                     if (GUILayout.Button(GetWord("Garbage Collection"), GUILayout.Height(20)))
                     {
                         GC.Collect();
+                        GC.WaitForPendingFinalizers();
                     }
                     GUILayout.EndHorizontal();
                     #endregion

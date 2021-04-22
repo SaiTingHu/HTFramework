@@ -78,7 +78,6 @@ namespace HT.Framework
         {
             _resourcesFolders.Clear();
             EditorUtility.UnloadUnusedAssetsImmediate();
-            System.GC.Collect();
         }
         private void SearchResourcesFolder(string folderPath)
         {

@@ -22,5 +22,22 @@ namespace HT.Framework
         /// 调试器UI刷新
         /// </summary>
         void OnDebuggerGUI();
+        /// <summary>
+        /// 监控中执行方法
+        /// </summary>
+        /// <param name="function">方法</param>
+        /// <param name="name">监控名称</param>
+        /// <returns>监控数据</returns>
+        MonitorData MonitorExecute(HTFAction function, string name = null);
+        /// <summary>
+        /// 开始监控
+        /// </summary>
+        /// <param name="name">监控名称</param>
+        void BeginMonitor(string name = null);
+        /// <summary>
+        /// 结束监控
+        /// </summary>
+        /// <returns>监控数据</returns>
+        MonitorData EndMonitor();
     }
 }
