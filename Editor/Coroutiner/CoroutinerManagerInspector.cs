@@ -23,6 +23,7 @@ namespace HT.Framework
             
             GUILayout.BeginHorizontal();
             GUI.enabled = EditorApplication.isPlaying;
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Coroutiner Tracker", EditorGlobalTools.Styles.LargeButton))
             {
                 CoroutinerTrackerWindow tracker = EditorWindow.GetWindow<CoroutinerTrackerWindow>();
@@ -33,6 +34,7 @@ namespace HT.Framework
                 tracker.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
                 tracker.Show();
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }

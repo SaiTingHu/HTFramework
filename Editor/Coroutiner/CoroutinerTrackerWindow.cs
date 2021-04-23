@@ -32,7 +32,7 @@ namespace HT.Framework
         public void Init(CoroutinerManager coroutiner)
         {
             _coroutiner = coroutiner;
-            _helper = _coroutiner.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_coroutiner) as ICoroutinerHelper;
+            _helper = _coroutiner.GetType().GetProperty("_helper", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_coroutiner) as ICoroutinerHelper;
         }
         private void Update()
         {

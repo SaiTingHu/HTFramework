@@ -65,6 +65,7 @@ namespace HT.Framework
                         Target.position = pos;
                         HasChanged();
                     }
+                    GUI.backgroundColor = Color.yellow;
                     if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                     {
                         GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
@@ -79,6 +80,7 @@ namespace HT.Framework
                             HasChanged();
                         }
                     }
+                    GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -91,6 +93,7 @@ namespace HT.Framework
                         Target.rotation = Quaternion.Euler(rot);
                         HasChanged();
                     }
+                    GUI.backgroundColor = Color.yellow;
                     if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                     {
                         if (_copyQuaternion)
@@ -126,14 +129,17 @@ namespace HT.Framework
                             }
                         }
                     }
+                    GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("S", GUILayout.Width(20));
                     GUI.enabled = false;
                     EditorGUILayout.Vector3Field("", Target.lossyScale);
+                    GUI.backgroundColor = Color.yellow;
                     GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20));
                     GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20));
+                    GUI.backgroundColor = Color.white;
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
                 }
@@ -148,6 +154,7 @@ namespace HT.Framework
                     Target.localPosition = localpos;
                     HasChanged();
                 }
+                GUI.backgroundColor = Color.yellow;
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
@@ -162,6 +169,7 @@ namespace HT.Framework
                         HasChanged();
                     }
                 }
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -174,6 +182,7 @@ namespace HT.Framework
                     Target.localRotation = Quaternion.Euler(localrot);
                     HasChanged();
                 }
+                GUI.backgroundColor = Color.yellow;
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     if (_copyQuaternion)
@@ -209,6 +218,7 @@ namespace HT.Framework
                         }
                     }
                 }
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -221,6 +231,7 @@ namespace HT.Framework
                     Target.localScale = localsca;
                     HasChanged();
                 }
+                GUI.backgroundColor = Color.yellow;
                 if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
                 {
                     GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
@@ -235,6 +246,7 @@ namespace HT.Framework
                         HasChanged();
                     }
                 }
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
@@ -279,6 +291,7 @@ namespace HT.Framework
                 GUILayout.Label(Target.childCount.ToString());
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.childCount > 0;
+                GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("Detach", EditorStyles.miniButton))
                 {
                     if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to detach all children?", "Yes", "No"))
@@ -288,8 +301,11 @@ namespace HT.Framework
                         HasChanged();
                     }
                 }
+                GUI.backgroundColor = Color.white;
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
+
+                GUI.backgroundColor = Color.yellow;
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
@@ -316,6 +332,8 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
+                GUI.backgroundColor = Color.white;
+
                 GUILayout.EndVertical();
             }
             #endregion
@@ -334,7 +352,9 @@ namespace HT.Framework
             if (_showCopy)
             {
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-                
+
+                GUI.backgroundColor = Color.yellow;
+
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Copy Name", EditorStyles.miniButtonLeft))
                 {
@@ -347,6 +367,8 @@ namespace HT.Framework
                     Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 GUILayout.EndHorizontal();
+
+                GUI.backgroundColor = Color.green;
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Copy To C# Public Field", EditorStyles.miniButton))
@@ -363,6 +385,8 @@ namespace HT.Framework
                     Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 GUILayout.EndHorizontal();
+
+                GUI.backgroundColor = Color.white;
 
                 GUILayout.BeginHorizontal();
                 _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");

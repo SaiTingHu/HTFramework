@@ -30,6 +30,7 @@ namespace HT.Framework
             if (Target.Mode == ResourceLoadMode.Resource)
             {
                 GUILayout.BeginHorizontal();
+                GUI.backgroundColor = Color.green;
                 if (GUILayout.Button("Resources Folder View", EditorGlobalTools.Styles.LargeButton))
                 {
                     ResourcesFolderViewWindow window = EditorWindow.GetWindow<ResourcesFolderViewWindow>();
@@ -39,6 +40,7 @@ namespace HT.Framework
                     window.Init();
                     window.Show();
                 }
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
             }
             else if (Target.Mode == ResourceLoadMode.AssetBundle)

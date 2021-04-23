@@ -97,6 +97,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.yellow;
             if (GUILayout.Button("Import Step From Other", EditorGlobalTools.Styles.ButtonLeft))
             {
                 string path = EditorUtility.OpenFilePanel("Import Step From Other", Application.dataPath, "asset");

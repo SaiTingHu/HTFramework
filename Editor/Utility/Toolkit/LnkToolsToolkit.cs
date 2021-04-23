@@ -26,8 +26,8 @@ namespace HT.Framework
         /// </summary>
         private static void OnInitLnkTools()
         {
-            IsEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, false);
-            IsExpansionLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Expansion, false);
+            IsEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, true);
+            IsExpansionLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Expansion, true);
 
             if (IsEnableLnkTools)
             {
@@ -41,7 +41,7 @@ namespace HT.Framework
                         if (methods[j].IsDefined(typeof(LnkToolsAttribute), false))
                         {
                             LnkToolsAttribute attribute = methods[j].GetCustomAttribute<LnkToolsAttribute>();
-                            LnkTools lnkTools = new LnkTools(attribute.Tooltip, attribute.Mode, attribute.Priority, methods[j]);
+                            LnkTools lnkTools = new LnkTools(attribute.Tooltip, new Color(attribute.R, attribute.G, attribute.B, attribute.A), attribute.Mode, attribute.Priority, methods[j]);
                             LnkToolss.Add(lnkTools);
                         }
                     }
@@ -99,10 +99,12 @@ namespace HT.Framework
                         GUI.enabled = true;
                     }
 
+                    GUI.backgroundColor = LnkToolss[i].BGColor;
                     if (GUI.Button(rect, LnkToolss[i].Tooltip))
                     {
                         LnkToolss[i].Method.Invoke(null, null);
                     }
+                    GUI.backgroundColor = Color.white;
                     rect.y += 22;
                 }
                 GUI.enabled = true;
@@ -111,17 +113,17 @@ namespace HT.Framework
             Handles.EndGUI();
         }
 
-        [LnkTools("Save Scene", LnkToolsMode.OnlyEditor, -5)]
+        [LnkTools("Save Scene", 0, 1, 0, 1, LnkToolsMode.OnlyEditor, -5)]
         private static void SaveScene()
         {
             EditorApplication.ExecuteMenuItem("File/Save");
         }
-        [LnkTools("Save Project", LnkToolsMode.OnlyEditor, -4)]
+        [LnkTools("Save Project", 0, 1, 0, 1, LnkToolsMode.OnlyEditor, -4)]
         private static void SaveProject()
         {
             EditorApplication.ExecuteMenuItem("File/Save Project");
         }
-        [LnkTools("Set Ray Target", LnkToolsMode.OnlyEditor, -3)]
+        [LnkTools("Set Ray Target", 1, 0.92f, 0.016f, 1, LnkToolsMode.OnlyEditor, -3)]
         private static void SetMouseRayTarget()
         {
             if (Selection.gameObjects.Length > 0)
@@ -130,7 +132,7 @@ namespace HT.Framework
                 EditorApplication.ExecuteMenuItem("HTFramework/Batch/Set Mouse Ray Target");
             }
         }
-        [LnkTools("Set Ray UI Target", LnkToolsMode.OnlyEditor, -2)]
+        [LnkTools("Set Ray UI Target", 1, 0.92f, 0.016f, 1, LnkToolsMode.OnlyEditor, -2)]
         private static void SetMouseRayUITarget()
         {
             if (Selection.gameObjects.Length > 0)
@@ -161,13 +163,15 @@ namespace HT.Framework
         private class LnkTools
         {
             public string Tooltip;
+            public Color BGColor;
             public LnkToolsMode Mode;
             public int Priority;
             public MethodInfo Method;
 
-            public LnkTools(string tooltip, LnkToolsMode mode, int priority, MethodInfo method)
+            public LnkTools(string tooltip, Color bgColor, LnkToolsMode mode, int priority, MethodInfo method)
             {
                 Tooltip = tooltip;
+                BGColor = bgColor;
                 Mode = mode;
                 Priority = priority;
                 Method = method;

@@ -162,6 +162,7 @@ namespace HT.Framework
                 GUILayout.Label(Target.childCount.ToString());
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.childCount > 0;
+                GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("Detach", EditorStyles.miniButton))
                 {
                     if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to detach all children?", "Yes", "No"))
@@ -171,8 +172,11 @@ namespace HT.Framework
                         HasChanged();
                     }
                 }
+                GUI.backgroundColor = Color.white;
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
+
+                GUI.backgroundColor = Color.yellow;
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
@@ -199,6 +203,8 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
+                GUI.backgroundColor = Color.white;
+
                 GUILayout.EndVertical();
             }
             #endregion
@@ -217,6 +223,8 @@ namespace HT.Framework
             if (_showCopy)
             {
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+
+                GUI.backgroundColor = Color.yellow;
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Copy Position", EditorStyles.miniButtonLeft))
@@ -297,6 +305,8 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
+                GUI.backgroundColor = Color.green;
+
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Copy To C# Public Field", EditorStyles.miniButton))
                 {
@@ -312,6 +322,8 @@ namespace HT.Framework
                     Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                 }
                 GUILayout.EndHorizontal();
+
+                GUI.backgroundColor = Color.white;
 
                 GUILayout.BeginHorizontal();
                 _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");

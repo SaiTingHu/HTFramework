@@ -83,11 +83,13 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUI.enabled = _currentScriptingDefine.IsAnyDefined;
+                GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
                 {
                     _currentScriptingDefine.ClearDefines();
                 }
                 GUI.enabled = true;
+                GUI.backgroundColor = Color.yellow;
                 if (GUILayout.Button("New", EditorStyles.miniButtonMid))
                 {
                     _isNewDefine = !_isNewDefine;
@@ -97,6 +99,7 @@ namespace HT.Framework
                 {
                     _currentScriptingDefine.Apply();
                 }
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 if (_isNewDefine)

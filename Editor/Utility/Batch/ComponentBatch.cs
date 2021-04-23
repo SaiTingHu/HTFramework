@@ -95,6 +95,7 @@ namespace HT.Framework
             GUI.enabled = _root && _componentType != null && _selectionAddMethod != null;
 
             EditorGUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Collect"))
             {
                 Selection.activeGameObject = null;
@@ -105,6 +106,7 @@ namespace HT.Framework
                     CollectComponent(components[i]);
                 }
             }
+            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 
             GUI.enabled = true;

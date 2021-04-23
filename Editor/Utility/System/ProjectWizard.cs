@@ -177,6 +177,7 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUI.enabled = _mainSceneFolder != null && _mainSceneName != "";
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Generate", EditorGlobalTools.Styles.LargeButton))
             {
                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to generate by project wizard？", "Yes", "No"))
@@ -184,6 +185,7 @@ namespace HT.Framework
                     Generate();
                 }
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }

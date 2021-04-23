@@ -116,20 +116,24 @@ namespace HT.Framework
                     GUILayout.EndVertical();
 
                     GUILayout.BeginHorizontal();
+                    GUI.backgroundColor = Color.yellow;
                     if (GUILayout.Button("Correct Hotfix Environment", EditorGlobalTools.Styles.LargeButton))
                     {
                         SetHotfixAssemblyDefinition(Application.dataPath + _hotfixAssemblyDefinitionPath);
                     }
+                    GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
                 }
                 else
                 {
                     GUILayout.BeginHorizontal();
+                    GUI.backgroundColor = Color.green;
                     if (GUILayout.Button("Create Hotfix Environment", EditorGlobalTools.Styles.LargeButton))
                     {
                         CreateHotfixEnvironment();
                         _hotfixIsCreated = true;
                     }
+                    GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
                 }
                 #endregion

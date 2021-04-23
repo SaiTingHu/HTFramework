@@ -129,10 +129,12 @@ namespace HT.Framework
             GUI.color = Color.white;
 
             GUI.Label(new Rect(80, 100, 100, 20), "Version: " + _versionNumber);
+            GUI.backgroundColor = Color.cyan;
             if (GUI.Button(new Rect(200, 100, 100, 16), "Version History", EditorGlobalTools.Styles.MiniPopup))
             {
                 VersionViewer.OpenWindow(_versionInfo);
             }
+            GUI.backgroundColor = Color.white;
         }
         private void AboutGUI()
         {

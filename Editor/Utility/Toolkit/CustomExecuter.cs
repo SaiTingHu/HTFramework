@@ -261,10 +261,12 @@ namespace HT.Framework
             #region Execute
             GUILayout.BeginHorizontal();
             GUI.enabled = _code != "";
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Execute", EditorGlobalTools.Styles.LargeButton))
             {
                 DynamicExecute();
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = true;
             GUILayout.EndHorizontal();
             #endregion
@@ -382,10 +384,12 @@ namespace HT.Framework
             #region Execute
             GUILayout.BeginHorizontal();
             GUI.enabled = Method != null;
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Execute", EditorGlobalTools.Styles.LargeButton))
             {
                 StaticExecute();
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = true;
             GUILayout.EndHorizontal();
             #endregion

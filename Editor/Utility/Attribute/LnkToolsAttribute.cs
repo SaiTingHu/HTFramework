@@ -13,6 +13,22 @@ namespace HT.Framework
         /// </summary>
         public string Tooltip { get; private set; }
         /// <summary>
+        /// 颜色r值
+        /// </summary>
+        public float R { get; private set; }
+        /// <summary>
+        /// 颜色g值
+        /// </summary>
+        public float G { get; private set; }
+        /// <summary>
+        /// 颜色b值
+        /// </summary>
+        public float B { get; private set; }
+        /// <summary>
+        /// 颜色a值
+        /// </summary>
+        public float A { get; private set; }
+        /// <summary>
         /// 快捷工具触发类型
         /// </summary>
         public LnkToolsMode Mode { get; private set; }
@@ -20,10 +36,24 @@ namespace HT.Framework
         /// 工具优先级
         /// </summary>
         public int Priority { get; private set; }
-
+        
         public LnkToolsAttribute(string tooltip, LnkToolsMode mode = LnkToolsMode.AllMode, int priority = int.MaxValue)
         {
             Tooltip = tooltip;
+            R = 1;
+            G = 1;
+            B = 1;
+            A = 1;
+            Mode = mode;
+            Priority = priority;
+        }
+        public LnkToolsAttribute(string tooltip, float r, float g, float b, float a, LnkToolsMode mode = LnkToolsMode.AllMode, int priority = int.MaxValue)
+        {
+            Tooltip = tooltip;
+            R = r;
+            G = g;
+            B = b;
+            A = a;
             Mode = mode;
             Priority = priority;
         }

@@ -389,6 +389,7 @@ namespace HT.Framework
             {
                 _isMoveTo = !_isMoveTo;
             }
+            GUI.backgroundColor = Color.yellow;
             if (GUILayout.Button("Clone", EditorGlobalTools.Styles.ButtonMid))
             {
                 CloneStepContent();
@@ -956,6 +957,7 @@ namespace HT.Framework
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
+                    GUI.backgroundColor = Color.yellow;
                     if (GUILayout.Button("Clone"))
                     {
                         StepOperation operationClone = _currentOperationObj.Clone();
