@@ -188,10 +188,6 @@ namespace HT.Framework
             }
         }
 
-        private StepMaster()
-        {
-
-        }
         public override void OnInitialization()
         {
             base.OnInitialization();

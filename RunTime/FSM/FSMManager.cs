@@ -8,11 +8,6 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.FSM)]
     public sealed class FSMManager : InternalModuleBase<IFSMHelper>
     {
-        private FSMManager()
-        {
-
-        }
-
         /// <summary>
         /// 注册状态机
         /// </summary>

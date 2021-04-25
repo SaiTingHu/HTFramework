@@ -6,11 +6,6 @@
     [InternalModule(HTFrameworkModule.CustomModule)]
     public sealed class CustomModuleManager : InternalModuleBase<ICustomModuleHelper>
     {
-        private CustomModuleManager()
-        {
-
-        }
-
         /// <summary>
         /// 自定义模块
         /// </summary>

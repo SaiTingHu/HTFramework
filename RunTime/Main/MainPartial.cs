@@ -149,10 +149,6 @@ namespace HT.Framework
         #endregion
 
         #region Lifecycle
-        private Main()
-        {
-
-        }
         protected override void Awake()
         {
             base.Awake();

@@ -60,11 +60,6 @@ namespace HT.Framework
                 return _helper.ExceptionInfos;
             }
         }
-
-        private ExceptionManager()
-        {
-
-        }
         
         /// <summary>
         /// 回发邮件

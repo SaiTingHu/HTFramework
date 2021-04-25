@@ -491,7 +491,7 @@ namespace HT.Framework
             ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
             wizard.titleContent.image = EditorGUIUtility.IconContent("SocialNetworks.UDNLogo").image;
             wizard.titleContent.text = "Project Wizard";
-            wizard.position = new Rect(200, 200, 600, 500);
+            wizard.position = new Rect(200, 200, 600, 600);
             wizard.Show();
         }
         #endregion

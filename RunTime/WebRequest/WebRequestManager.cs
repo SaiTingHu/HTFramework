@@ -27,11 +27,6 @@ namespace HT.Framework
                 return _helper.IsConnectedInternet;
             }
         }
-
-        private WebRequestManager()
-        {
-
-        }
         
         /// <summary>
         /// 注册接口（获取 string）

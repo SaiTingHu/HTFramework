@@ -90,10 +90,6 @@ namespace HT.Framework
             }
         }
 
-        private TaskMaster()
-        {
-
-        }
         public override void OnRefresh()
         {
             base.OnRefresh();

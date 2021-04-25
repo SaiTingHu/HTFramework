@@ -16,6 +16,8 @@ namespace HT.Framework
 
         protected virtual void Awake()
         {
+            useGUILayout = false;
+
             AutomaticTask();
         }
 

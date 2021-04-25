@@ -268,10 +268,6 @@ namespace HT.Framework
             }
         }
 
-        private ControllerManager()
-        {
-
-        }
         public override void OnInitialization()
         {
             base.OnInitialization();

@@ -62,12 +62,7 @@ namespace HT.Framework
         private FiniteStateBase _currentState;
         private Type _defaultState;
         private Type _finalState;
-
-        private FSM()
-        {
-
-        }
-
+        
         protected override void Awake()
         {
             base.Awake();

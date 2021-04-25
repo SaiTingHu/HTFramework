@@ -14,11 +14,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal int Limit = 100;
         
-        private ObjectPoolManager()
-        {
-
-        }
-
         /// <summary>
         /// 注册对象池
         /// </summary>

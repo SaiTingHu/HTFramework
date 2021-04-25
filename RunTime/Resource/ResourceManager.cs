@@ -32,10 +32,6 @@ namespace HT.Framework
             }
         }
 
-        private ResourceManager()
-        {
-
-        }
         public override void OnInitialization()
         {
             base.OnInitialization();

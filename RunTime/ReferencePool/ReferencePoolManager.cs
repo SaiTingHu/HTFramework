@@ -15,11 +15,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal int Limit = 100;
         
-        private ReferencePoolManager()
-        {
-
-        }
-
         /// <summary>
         /// 获取引用池中引用数量
         /// </summary>

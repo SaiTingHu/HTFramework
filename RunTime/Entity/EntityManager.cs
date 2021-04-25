@@ -34,10 +34,6 @@ namespace HT.Framework
             }
         }
 
-        private EntityManager()
-        {
-
-        }
         public override void OnInitialization()
         {
             base.OnInitialization();

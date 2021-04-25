@@ -232,10 +232,6 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<string> SingleSoundEndOfPlayEvent;
         
-        private AudioManager()
-        {
-
-        }
         public override void OnInitialization()
         {
             base.OnInitialization();

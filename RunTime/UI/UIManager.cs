@@ -112,12 +112,7 @@ namespace HT.Framework
                 return _helper.IsDisplayMask;
             }
         }
-
-        private UIManager()
-        {
-
-        }
-
+        
         /// <summary>
         /// 预加载常驻UI
         /// </summary>

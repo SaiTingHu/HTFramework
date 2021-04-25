@@ -29,12 +29,7 @@ namespace HT.Framework
                 return _helper.InterceptConditions;
             }
         }
-
-        private AspectTrackManager()
-        {
-
-        }
-
+        
         /// <summary>
         /// 新增拦截条件
         /// </summary>

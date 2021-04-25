@@ -8,11 +8,6 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.ECS)]
     public sealed class ECSManager : InternalModuleBase<IECSHelper>
     {
-        private ECSManager()
-        {
-
-        }
-
         /// <summary>
         /// 设置ECS环境为脏的，触发ECS环境重新刷新
         /// </summary>

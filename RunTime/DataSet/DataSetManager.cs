@@ -9,11 +9,6 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.DataSet)]
     public sealed class DataSetManager : InternalModuleBase<IDataSetHelper>
     {
-        private DataSetManager()
-        {
-
-        }
-
         /// <summary>
         /// 添加数据集至数据集仓库
         /// </summary>

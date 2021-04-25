@@ -47,10 +47,6 @@ namespace HT.Framework
             }
         }
 
-        private HotfixManager()
-        {
-
-        }
         public override void OnRefresh()
         {
             base.OnRefresh();

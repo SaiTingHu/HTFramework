@@ -8,11 +8,6 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.Event)]
     public sealed class EventManager : InternalModuleBase<IEventHelper>
     {
-        private EventManager()
-        {
-
-        }
-
         /// <summary>
         /// 订阅一型事件
         /// </summary>

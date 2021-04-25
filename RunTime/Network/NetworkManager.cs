@@ -89,10 +89,6 @@ namespace HT.Framework
             }
         }
 
-        private NetworkManager()
-        {
-
-        }
         public override void OnInitialization()
         {
             base.OnInitialization();

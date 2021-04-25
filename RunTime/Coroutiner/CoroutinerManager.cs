@@ -11,11 +11,6 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.Coroutiner)]
     public sealed class CoroutinerManager : InternalModuleBase<ICoroutinerHelper>
     {
-        private CoroutinerManager()
-        {
-
-        }
-
         /// <summary>
         /// 运行协程
         /// </summary>
