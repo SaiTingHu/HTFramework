@@ -70,7 +70,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="name">轴线名称</param>
         /// <returns>是否存在</returns>
-        public bool IsExistVirtualAxis(string name)
+        internal bool IsExistVirtualAxis(string name)
         {
             return _helper.IsExistVirtualAxis(name);
         }
@@ -79,7 +79,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="name">按钮名称</param>
         /// <returns>是否存在</returns>
-        public bool IsExistVirtualButton(string name)
+        internal bool IsExistVirtualButton(string name)
         {
             return _helper.IsExistVirtualButton(name);
         }
@@ -87,7 +87,7 @@ namespace HT.Framework
         /// 注册虚拟轴线
         /// </summary>
         /// <param name="name">轴线名称</param>
-        public void RegisterVirtualAxis(string name)
+        internal void RegisterVirtualAxis(string name)
         {
             _helper.RegisterVirtualAxis(name);
         }
@@ -95,7 +95,7 @@ namespace HT.Framework
         /// 注册虚拟按钮
         /// </summary>
         /// <param name="name">按钮名称</param>
-        public void RegisterVirtualButton(string name)
+        internal void RegisterVirtualButton(string name)
         {
             _helper.RegisterVirtualButton(name);
         }
@@ -103,7 +103,7 @@ namespace HT.Framework
         /// 取消注册虚拟轴线
         /// </summary>
         /// <param name="name">轴线名称</param>
-        public void UnRegisterVirtualAxis(string name)
+        internal void UnRegisterVirtualAxis(string name)
         {
             _helper.UnRegisterVirtualAxis(name);
         }
@@ -111,11 +111,79 @@ namespace HT.Framework
         /// 取消注册虚拟按钮
         /// </summary>
         /// <param name="name">按钮名称</param>
-        public void UnRegisterVirtualButton(string name)
+        internal void UnRegisterVirtualButton(string name)
         {
             _helper.UnRegisterVirtualButton(name);
         }
-        
+
+        /// <summary>
+        /// 设置虚拟鼠标位置
+        /// </summary>
+        /// <param name="x">x值</param>
+        /// <param name="y">y值</param>
+        /// <param name="z">z值</param>
+        internal void SetVirtualMousePosition(float x, float y, float z)
+        {
+            _helper.SetVirtualMousePosition(new Vector3(x, y, z));
+        }
+        /// <summary>
+        /// 设置虚拟鼠标位置
+        /// </summary>
+        /// <param name="value">鼠标位置</param>
+        internal void SetVirtualMousePosition(Vector3 value)
+        {
+            _helper.SetVirtualMousePosition(value);
+        }
+        /// <summary>
+        /// 设置按钮按下
+        /// </summary>
+        /// <param name="name">按钮名称</param>
+        internal void SetButtonDown(string name)
+        {
+            _helper.SetButtonDown(name);
+        }
+        /// <summary>
+        /// 设置按钮抬起
+        /// </summary>
+        /// <param name="name">按钮名称</param>
+        internal void SetButtonUp(string name)
+        {
+            _helper.SetButtonUp(name);
+        }
+        /// <summary>
+        /// 设置轴线值为正方向1
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        internal void SetAxisPositive(string name)
+        {
+            _helper.SetAxisPositive(name);
+        }
+        /// <summary>
+        /// 设置轴线值为负方向-1
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        internal void SetAxisNegative(string name)
+        {
+            _helper.SetAxisNegative(name);
+        }
+        /// <summary>
+        /// 设置轴线值为0
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        internal void SetAxisZero(string name)
+        {
+            _helper.SetAxisZero(name);
+        }
+        /// <summary>
+        /// 设置轴线值
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        /// <param name="value">值</param>
+        internal void SetAxis(string name, float value)
+        {
+            _helper.SetAxis(name, value);
+        }
+
         /// <summary>
         /// 按钮按住
         /// </summary>
@@ -251,74 +319,6 @@ namespace HT.Framework
         public bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3)
         {
             return _helper.GetKeyUp(keyCode1, keyCode2, keyCode3);
-        }
-
-        /// <summary>
-        /// 设置虚拟鼠标位置
-        /// </summary>
-        /// <param name="x">x值</param>
-        /// <param name="y">y值</param>
-        /// <param name="z">z值</param>
-        public void SetVirtualMousePosition(float x, float y, float z)
-        {
-            _helper.MousePosition = new Vector3(x, y, z);
-        }
-        /// <summary>
-        /// 设置虚拟鼠标位置
-        /// </summary>
-        /// <param name="value">鼠标位置</param>
-        public void SetVirtualMousePosition(Vector3 value)
-        {
-            _helper.MousePosition = value;
-        }
-        /// <summary>
-        /// 设置按钮按下
-        /// </summary>
-        /// <param name="name">按钮名称</param>
-        public void SetButtonDown(string name)
-        {
-            _helper.SetButtonDown(name);
-        }
-        /// <summary>
-        /// 设置按钮抬起
-        /// </summary>
-        /// <param name="name">按钮名称</param>
-        public void SetButtonUp(string name)
-        {
-            _helper.SetButtonUp(name);
-        }
-        /// <summary>
-        /// 设置轴线值为正方向1
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        public void SetAxisPositive(string name)
-        {
-            _helper.SetAxisPositive(name);
-        }
-        /// <summary>
-        /// 设置轴线值为负方向-1
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        public void SetAxisNegative(string name)
-        {
-            _helper.SetAxisNegative(name);
-        }
-        /// <summary>
-        /// 设置轴线值为0
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        public void SetAxisZero(string name)
-        {
-            _helper.SetAxisZero(name);
-        }
-        /// <summary>
-        /// 设置轴线值
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        /// <param name="value">值</param>
-        public void SetAxis(string name, float value)
-        {
-            _helper.SetAxis(name, value);
         }
     }
 }
