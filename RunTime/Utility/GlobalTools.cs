@@ -999,34 +999,26 @@ namespace HT.Framework
         /// <summary>
         /// 获取本机Mac地址
         /// </summary>
+        /// <param name="name">网卡的名称</param>
         /// <returns>Mac地址</returns>
-        public static string GetMacAddress()
+        public static string GetMacAddress(string name = "本地连接")
         {
             try
             {
                 NetworkInterface[] nis = NetworkInterface.GetAllNetworkInterfaces();
                 for (int i = 0; i < nis.Length; i++)
                 {
-                    if (nis[i].Name == "本地连接")
+                    if (nis[i].Name == name)
                     {
                         return nis[i].GetPhysicalAddress().ToString();
                     }
                 }
-                return "null";
+                return null;
             }
             catch
             {
-                return "null";
+                return null;
             }
-        }
-        /// <summary>
-        /// 获取与Assets同级的目录
-        /// </summary>
-        /// <param name="directory">目录名（例如：/Library，获取项目的Library目录）</param>
-        /// <returns>目录</returns>
-        public static string GetDirectorySameLevelOfAssets(string directory)
-        {
-            return Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + directory;
         }
         /// <summary>
         /// 转换为颜色RGB参数的十六进制字符串

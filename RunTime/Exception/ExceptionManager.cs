@@ -24,7 +24,7 @@ namespace HT.Framework
         /// <summary>
         /// 反馈程序路径【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal string FeedbackProgramPath = "/Feedback.exe";
+        [SerializeField] internal string FeedbackProgramPath = "Feedback.exe";
         /// <summary>
         /// 回发邮件的发送邮箱【请勿在代码中修改】
         /// </summary>

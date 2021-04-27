@@ -116,16 +116,15 @@ namespace HT.Framework
             _assemblies.Add(typeof(Button).Assembly.Location);
             _assemblies.Add(typeof(Main).Assembly.Location);
             _assemblies.Add(typeof(DOTween).Assembly.Location);
-            _assemblies.Add(_assembliesPath + "/UnityEditor.dll");
-            _assemblies.Add(_assembliesPath + "/UnityEngine/UnityEngine.dll");
-            _assemblies.Add(_assembliesPath + "/UnityEngine/UnityEngine.CoreModule.dll");
-            _assemblies.Add(GlobalTools.GetDirectorySameLevelOfAssets("/Library/ScriptAssemblies/Assembly-CSharp.dll"));
-            _assemblies.Add(GlobalTools.GetDirectorySameLevelOfAssets("/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll"));
+            _assemblies.Add(typeof(Editor).Assembly.Location);
+            _assemblies.Add(typeof(GameObject).Assembly.Location);
+            _assemblies.Add(PathToolkit.ProjectPath + "Library/ScriptAssemblies/Assembly-CSharp.dll");
+            _assemblies.Add(PathToolkit.ProjectPath + "Library/ScriptAssemblies/Assembly-CSharp-Editor.dll");
 
             _namespace = "using System;\r\nusing System.Collections;\r\nusing System.Collections.Generic;\r\nusing UnityEngine;\r\nusing UnityEngine.UI;\r\nusing UnityEditor;\r\nusing HT.Framework;\r\nusing DG.Tweening;\r\n";
             _code = "Log.Info(\"Hello world!\");";
 
-            TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/DynamicExecuterTemplate.txt", typeof(TextAsset)) as TextAsset;
+            TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "DynamicExecuterTemplate.txt", typeof(TextAsset)) as TextAsset;
             if (asset)
             {
                 _codeTemplate = asset.text;

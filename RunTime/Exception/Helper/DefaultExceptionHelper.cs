@@ -54,8 +54,8 @@ namespace HT.Framework
 #endif
 
 #if UNITY_STANDALONE_WIN
-            _module.FeedbackProgramPath = GlobalTools.GetDirectorySameLevelOfAssets(_module.FeedbackProgramPath);
-            _logPath = GlobalTools.GetDirectorySameLevelOfAssets("/Log");
+            _module.FeedbackProgramPath = PathToolkit.ProjectPath + _module.FeedbackProgramPath;
+            _logPath = PathToolkit.ProjectPath + "Logs";
             if (!Directory.Exists(_logPath))
             {
                 Directory.CreateDirectory(_logPath);

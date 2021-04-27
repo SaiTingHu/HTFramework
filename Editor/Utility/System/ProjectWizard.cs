@@ -392,7 +392,7 @@ namespace HT.Framework
                             string path = _procedureFolder.FullPath + "/" + _initialProcedure + ".cs";
                             if (!File.Exists(path))
                             {
-                                TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
+                                TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "ProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
                                 if (asset)
                                 {
                                     string code = asset.text;

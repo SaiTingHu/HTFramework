@@ -12,20 +12,20 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/90479971")]
     internal sealed class HotfixManagerInspector : InternalModuleInspector<HotfixManager, IHotfixHelper>
     {
-        private static readonly string SourceDllPath = "/Library/ScriptAssemblies/Hotfix.dll";
-        private static readonly string AssetsDllPath = "/Assets/Hotfix/Hotfix.dll.bytes";
+        private static readonly string SourceDllPath = "Library/ScriptAssemblies/Hotfix.dll";
+        private static readonly string AssetsDllPath = "Assets/Hotfix/Hotfix.dll.bytes";
 
         [InitializeOnLoadMethod]
         private static void CopyHotfixDll()
         {
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
             {
-                string sourcePath = GlobalTools.GetDirectorySameLevelOfAssets(SourceDllPath);
+                string sourcePath = PathToolkit.ProjectPath + SourceDllPath;
                 if (File.Exists(sourcePath))
                 {
-                    File.Copy(sourcePath, GlobalTools.GetDirectorySameLevelOfAssets(AssetsDllPath), true);
+                    File.Copy(sourcePath, PathToolkit.ProjectPath + AssetsDllPath, true);
                     AssetDatabase.Refresh();
-                    Log.Info("更新：Assets/Hotfix/Hotfix.dll");
+                    Log.Info("已更新：Assets/Hotfix/Hotfix.dll");
                 }
             }
         }
@@ -209,7 +209,7 @@ namespace HT.Framework
         }
         private void CreateHotfixEnvironment(string filePath)
         {
-            TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/HotfixEnvironmentTemplate.txt", typeof(TextAsset)) as TextAsset;
+            TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "HotfixEnvironmentTemplate.txt", typeof(TextAsset)) as TextAsset;
             if (asset)
             {
                 string code = asset.text;
