@@ -921,7 +921,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224680823398141106}
-  - component: {fileID: 222205211217512434}
   m_Layer: 5
   m_Name: TemporaryPanel
   m_TagString: Untagged
@@ -948,14 +947,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &222205211217512434
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1832947091760460}
-  m_CullTransparentMesh: 0
 --- !u!1 &1928168688486364
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,7 +956,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 224643381155065208}
-  - component: {fileID: 222294198567182014}
   m_Layer: 5
   m_Name: ResidentPanel
   m_TagString: Untagged
@@ -992,14 +982,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &222294198567182014
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928168688486364}
-  m_CullTransparentMesh: 0
 --- !u!1 &1947914668180360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1373,7 +1355,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8411987863906872909}
-  - component: {fileID: 4570786186818177625}
   m_Layer: 0
   m_Name: ResidentPanel
   m_TagString: Untagged
@@ -1400,14 +1381,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &4570786186818177625
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2624223350496621478}
-  m_CullTransparentMesh: 0
 --- !u!1 &3203883641810679623
 GameObject:
   m_ObjectHideFlags: 0
@@ -1592,7 +1565,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1177953487578822358}
-  - component: {fileID: 8052692872634623779}
   m_Layer: 5
   m_Name: ResidentPanel
   m_TagString: Untagged
@@ -1619,14 +1591,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &8052692872634623779
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4547706495370186365}
-  m_CullTransparentMesh: 0
 --- !u!1 &5453857065797883186
 GameObject:
   m_ObjectHideFlags: 0
@@ -2126,7 +2090,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3401788255710077791}
-  - component: {fileID: 1980034254040247033}
   m_Layer: 5
   m_Name: TemporaryPanel
   m_TagString: Untagged
@@ -2153,14 +2116,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1980034254040247033
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8775430792589470182}
-  m_CullTransparentMesh: 0
 --- !u!1 &8939765184236815034
 GameObject:
   m_ObjectHideFlags: 0
@@ -2217,7 +2172,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8120711310803783204}
-  - component: {fileID: 6923129794254711503}
   m_Layer: 0
   m_Name: TemporaryPanel
   m_TagString: Untagged
@@ -2244,11 +2198,3 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6923129794254711503
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9096913144627347778}
-  m_CullTransparentMesh: 0
