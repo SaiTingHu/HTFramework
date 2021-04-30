@@ -83,10 +83,13 @@ namespace HT.Framework
             GameObject[] objs = Selection.gameObjects;
             for (int i = 0; i < objs.Length; i++)
             {
-                if (objs[i].GetComponent<MeshRenderer>())
+                if (objs[i].GetComponent<Renderer>())
                 {
                     if (!objs[i].GetComponent<Collider>())
-                        objs[i].AddComponent<BoxCollider>();
+                    {
+                        Undo.AddComponent<BoxCollider>(objs[i]);
+                        EditorUtility.SetDirty(objs[i]);
+                    }
                     continue;
                 }
 
@@ -105,7 +108,7 @@ namespace HT.Framework
                 Collider[] colliders = trans.GetComponents<Collider>();
                 foreach (Collider collider in colliders)
                 {
-                    UnityEngine.Object.DestroyImmediate(collider);
+                    Undo.DestroyObjectImmediate(collider);
                 }
 
                 Vector3 center = Vector3.zero;
@@ -121,13 +124,15 @@ namespace HT.Framework
                     bounds.Encapsulate(child.bounds);
                 }
 
-                BoxCollider boxCollider = trans.gameObject.AddComponent<BoxCollider>();
+                BoxCollider boxCollider = Undo.AddComponent<BoxCollider>(trans.gameObject);
                 boxCollider.center = bounds.center - trans.position;
                 boxCollider.size = bounds.size;
 
                 trans.position = postion;
                 trans.rotation = rotation;
                 trans.localScale = scale;
+
+                EditorUtility.SetDirty(trans.gameObject);
             }
         }
 
@@ -151,12 +156,16 @@ namespace HT.Framework
             for (int i = 0; i < objs.Length; i++)
             {
                 Collider collider = objs[i].GetComponent<Collider>();
-                if (!collider) collider = objs[i].AddComponent<BoxCollider>();
-                collider.isTrigger = true;
+                if (collider)
+                {
+                    collider.isTrigger = true;
 
-                MouseRayTarget rayTarget = objs[i].GetComponent<MouseRayTarget>();
-                if (!rayTarget) rayTarget = objs[i].AddComponent<MouseRayTarget>();
-                rayTarget.Name = objs[i].name;
+                    MouseRayTarget rayTarget = objs[i].GetComponent<MouseRayTarget>();
+                    if (!rayTarget) rayTarget = Undo.AddComponent<MouseRayTarget>(objs[i]);
+                    rayTarget.Name = objs[i].name;
+
+                    EditorUtility.SetDirty(objs[i]);
+                }
             }
         }
 
@@ -178,16 +187,20 @@ namespace HT.Framework
             for (int i = 0; i < objs.Length; i++)
             {
                 Graphic graphic = objs[i].GetComponent<Graphic>();
-                if (!graphic)
+                if (graphic)
+                {
+                    graphic.raycastTarget = true;
+
+                    MouseRayUITarget rayUITarget = objs[i].GetComponent<MouseRayUITarget>();
+                    if (!rayUITarget) rayUITarget = Undo.AddComponent<MouseRayUITarget>(objs[i]);
+                    rayUITarget.Name = objs[i].name;
+
+                    EditorUtility.SetDirty(objs[i]);
+                }
+                else
                 {
                     Log.Warning("对象 " + objs[i].name + " 没有Graphic组件，无法做为可捕获UI目标！");
-                    continue;
                 }
-                graphic.raycastTarget = true;
-
-                MouseRayUITarget rayUITarget = objs[i].GetComponent<MouseRayUITarget>();
-                if (!rayUITarget) rayUITarget = objs[i].AddComponent<MouseRayUITarget>();
-                rayUITarget.Name = objs[i].name;
             }
         }
         #endregion
