@@ -21,26 +21,13 @@
 
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
-
-			struct appdata
-			{
-				float4 pos : POSITION;
-				float2 uv : TEXCOORD0;
-				float3 normal : NORMAL;
-			};
-			struct v2f 
-			{ 
-				float2 uv : TEXCOORD0;				
-				float4 pos : SV_POSITION;
-				float3 worldNormal : NORMAL;				
-				float4 worldPos : TEXCOORD1; 
-			};
-
+			#include "MeshOutline.cginc"
+			
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			fixed4 _Diffuse;
-			float4 _HighlightColor;
-			float _HighlightIntensity;
+			fixed4 _HighlightColor;
+			half _HighlightIntensity;
 
 			v2f vert(appdata v)
 			{
@@ -63,7 +50,7 @@
 				//获取摄像机世界空间下的视角的方向，并归一化
 				float3 worldViewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);						
 				//通过视线与顶点法线的点乘，来判断该点位置是否在边缘，越是边缘夹角越接近90度，点乘值越接近0
-				float value = 1 - max(0, dot(worldViewDir, normalize(i.worldNormal)));
+				fixed value = 1 - max(0, dot(worldViewDir, normalize(i.worldNormal)));
 				//计算边缘高光			
 				fixed3 highlightColor = _HighlightColor * value * _HighlightIntensity;
 				//计算最终光照
