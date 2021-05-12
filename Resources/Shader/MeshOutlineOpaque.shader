@@ -2,14 +2,17 @@
 {
 	Properties
 	{ 
-		_MainTex("Texture", 2D) = "white" {}		
-		_Diffuse("Diffuse", Color) = (1,1,1,1)		
+		_MainTex("Texture", 2D) = "white" {}	
+		_Diffuse("Diffuse", Color) = (1,1,1,1)
 		_HighlightColor("Highlight Color", Color) = (1,1,0,1)
 		_HighlightIntensity("Highlight Intensity", Range(0.0, 2.0)) = 1
 	} 		
 	SubShader
 	{
-		Tags { "RenderType" = "Opaque" }
+		Tags
+		{ 
+			"RenderType" = "Opaque"
+		}
 
 		Pass
 		{
@@ -52,7 +55,7 @@
 				//计算边缘高光			
 				fixed3 highlightColor = _HighlightColor * value * _HighlightIntensity;
 				//计算最终光照
-				fixed3 finalColor = color.rgb * _Diffuse.xyz + highlightColor;
+				fixed3 finalColor = color.rgb * _Diffuse.rgb + highlightColor;
 
 				return fixed4(finalColor, 1);
 			}
