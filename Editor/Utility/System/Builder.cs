@@ -14,14 +14,19 @@ namespace HT.Framework
         /// </summary>
         public static List<HTFFunc<bool>> CheckBuildPreconditions = new List<HTFFunc<bool>>();
         /// <summary>
-        /// 项目发布完成事件
+        /// 项目发布前事件
         /// </summary>
-        public static event HTFAction<BuildTarget,string> PostProcessBuildEvent;
+        public static event HTFAction<BuildPlayerOptions> PreProcessBuildEvent;
+        /// <summary>
+        /// 项目发布后事件
+        /// </summary>
+        public static event HTFAction<BuildTarget, string> PostProcessBuildEvent;
 
         [InitializeOnLoadMethod]
         private static void RegisterUpdate()
         {
             EditorApplication.update += CheckBuildPlayerWindow;
+            BuildPlayerWindow.RegisterBuildPlayerHandler(OnRegisterBuildPlayerHandler);
         }
         private static void CheckBuildPlayerWindow()
         {
@@ -35,12 +40,33 @@ namespace HT.Framework
             }
         }
         
+        /// <summary>
+        /// 项目发布后处理
+        /// </summary>
+        /// <param name="target">发布平台</param>
+        /// <param name="pathToBuildProject">发布路径</param>
         [PostProcessBuild(0)]
         private static void OnPostProcessBuild(BuildTarget target, string pathToBuildProject)
         {
             Log.Info("项目发布成功！发布平台：" + target.ToString() + "！发布路径：" + pathToBuildProject + "！");
 
             PostProcessBuildEvent?.Invoke(target, pathToBuildProject);
+        }
+        /// <summary>
+        /// 项目发布前处理
+        /// </summary>
+        /// <param name="options">发布参数</param>
+        private static void OnRegisterBuildPlayerHandler(BuildPlayerOptions options)
+        {
+            if (options.options.HasFlag(BuildOptions.AutoRunPlayer))
+            {
+                Log.Error("项目发布失败：由于某些特殊原因，框架不支持 Build And Run 形式发布项目！");
+                return;
+            }
+
+            PreProcessBuildEvent?.Invoke(options);
+
+            BuildPlayerWindow.DefaultBuildMethods.BuildPlayer(options);
         }
 
         private BuildPlayerWindow _buildPlayerWindow;
