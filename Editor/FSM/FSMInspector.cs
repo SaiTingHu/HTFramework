@@ -55,7 +55,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUI.color = Target.Data == "<None>" ? Color.gray : Color.white;
-            GUILayout.Label("Data", GUILayout.Width(60));
+            GUILayout.Label("Data", GUILayout.Width(LabelWidth));
             if (GUILayout.Button(Target.Data, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
@@ -90,7 +90,7 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.StateNames.Count > 0;
-            if (GUILayout.Button("Set Default", EditorGlobalTools.Styles.MiniPopup))
+            if (GUILayout.Button("Set Default", EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(80)))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < Target.StateNames.Count; i++)
@@ -115,7 +115,7 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.StateNames.Count > 0;
-            if (GUILayout.Button("Set Final", EditorGlobalTools.Styles.MiniPopup))
+            if (GUILayout.Button("Set Final", EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(80)))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < Target.StateNames.Count; i++)

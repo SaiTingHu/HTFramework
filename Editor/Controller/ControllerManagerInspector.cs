@@ -59,34 +59,34 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Main Camera: ", GUILayout.Width(100));
+            GUILayout.Label("Main Camera: ", GUILayout.Width(LabelWidth));
             EditorGUILayout.ObjectField(Target.MainCamera, typeof(Camera), true);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ray Target: ", GUILayout.Width(100));
+            GUILayout.Label("Ray Target: ", GUILayout.Width(LabelWidth));
             EditorGUILayout.ObjectField(Target.RayTargetObj, typeof(GameObject), true);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Control Mode: ", GUILayout.Width(100));
+            GUILayout.Label("Control Mode: ", GUILayout.Width(LabelWidth));
             Target.TheControlMode = (ControlMode)EditorGUILayout.EnumPopup(Target.TheControlMode);
             GUILayout.EndHorizontal();
 
             if (Target.TheControlMode == ControlMode.FreeControl)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Position Control: ", GUILayout.Width(100));
+                GUILayout.Label("Position Control: ", GUILayout.Width(LabelWidth));
                 Target.EnablePositionControl = EditorGUILayout.Toggle(Target.EnablePositionControl);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Rotation Control: ", GUILayout.Width(100));
+                GUILayout.Label("Rotation Control: ", GUILayout.Width(LabelWidth));
                 Target.EnableRotationControl = EditorGUILayout.Toggle(Target.EnableRotationControl);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Look Point: ", GUILayout.Width(100));
+                GUILayout.Label("Look Point: ", GUILayout.Width(LabelWidth));
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -100,7 +100,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Look Angle: ", GUILayout.Width(100));
+                GUILayout.Label("Look Angle: ", GUILayout.Width(LabelWidth));
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

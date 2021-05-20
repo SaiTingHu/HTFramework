@@ -28,8 +28,7 @@ namespace HT.Framework
             if (Target.IsEnableDebugger)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Debugger Skin", GUILayout.Width(100));
-                ObjectField(Target.DebuggerSkin, out Target.DebuggerSkin, false, "");
+                ObjectField(Target.DebuggerSkin, out Target.DebuggerSkin, false, "Debugger Skin");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

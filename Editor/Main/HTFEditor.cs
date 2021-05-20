@@ -46,6 +46,16 @@ namespace HT.Framework
                 return false;
             }
         }
+        /// <summary>
+        /// 控件标签的标准宽度
+        /// </summary>
+        protected float LabelWidth
+        {
+            get
+            {
+                return EditorGUIUtility.labelWidth - 5;
+            }
+        }
 
         private void OnEnable()
         {
@@ -244,46 +254,6 @@ namespace HT.Framework
             GUI.color = value ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, style, options);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, "Set bool value");
-                outValue = newValue;
-                HasChanged();
-            }
-            else
-            {
-                outValue = value;
-            }
-            GUI.color = Color.white;
-        }
-        /// <summary>
-        /// 制作一个GUILayout Toggle
-        /// </summary>
-        protected void GUILayoutToggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
-        {
-            GUI.color = value ? Color.white : Color.gray;
-            EditorGUI.BeginChangeCheck();
-            bool newValue = GUILayout.Toggle(value, name, options);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, "Set bool value");
-                outValue = newValue;
-                HasChanged();
-            }
-            else
-            {
-                outValue = value;
-            }
-            GUI.color = Color.white;
-        }
-        /// <summary>
-        /// 制作一个GUILayout Toggle
-        /// </summary>
-        protected void GUILayoutToggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
-        {
-            GUI.color = value ? Color.white : Color.gray;
-            EditorGUI.BeginChangeCheck();
-            bool newValue = GUILayout.Toggle(value, name, style, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set bool value");

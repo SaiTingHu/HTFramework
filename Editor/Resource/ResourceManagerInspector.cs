@@ -65,17 +65,17 @@ namespace HT.Framework
                 if (!Target.IsEditorMode)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Root Path: ", GUILayout.Width(100));
+                    GUILayout.Label("Root Path: ", GUILayout.Width(LabelWidth));
                     EditorGUILayout.TextField(_helper.AssetBundleRootPath);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Manifest: ", GUILayout.Width(100));
+                    GUILayout.Label("Manifest: ", GUILayout.Width(LabelWidth));
                     EditorGUILayout.ObjectField(_helper.AssetBundleManifest, typeof(AssetBundleManifest), false);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("AssetBundles: ", GUILayout.Width(100));
+                    GUILayout.Label("AssetBundles: ", GUILayout.Width(LabelWidth));
                     GUILayout.Label(_helper.AssetBundles.Count.ToString());
                     GUILayout.EndHorizontal();
 
@@ -83,7 +83,7 @@ namespace HT.Framework
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
-                        GUILayout.Label(item.Key, GUILayout.Width(80));
+                        GUILayout.Label(item.Key, GUILayout.Width(LabelWidth - 20));
                         EditorGUILayout.ObjectField(item.Value, typeof(AssetBundle), false);
                         GUILayout.EndHorizontal();
                     }

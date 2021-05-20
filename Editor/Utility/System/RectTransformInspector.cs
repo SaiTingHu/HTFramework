@@ -140,12 +140,12 @@ namespace HT.Framework
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Root: ", GUILayout.Width(80));
+                GUILayout.Label("Root: ", GUILayout.Width(LabelWidth));
                 EditorGUILayout.ObjectField(Target.root, typeof(Transform), true);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Parent: ", GUILayout.Width(80));
+                GUILayout.Label("Parent: ", GUILayout.Width(LabelWidth));
                 GUI.color = Target.parent ? Color.white : Color.gray;
                 _parent = EditorGUILayout.ObjectField(Target.parent, typeof(Transform), true) as Transform;
                 if (_parent != Target.parent)
@@ -158,7 +158,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Child Count: ", GUILayout.Width(80));
+                GUILayout.Label("Child Count: ", GUILayout.Width(LabelWidth));
                 GUILayout.Label(Target.childCount.ToString());
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.childCount > 0;

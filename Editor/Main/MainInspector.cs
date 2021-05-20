@@ -249,7 +249,7 @@ namespace HT.Framework
             if (_showMainData)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("MainData");
+                GUILayout.Label("MainData", GUILayout.Width(LabelWidth));
                 if (GUILayout.Button(Target.MainDataType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
@@ -301,7 +301,7 @@ namespace HT.Framework
                 if (!Target.IsPermanentLicense)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Licenser");
+                    GUILayout.Label("Licenser", GUILayout.Width(LabelWidth));
                     if (GUILayout.Button(Target.LicenserType, EditorGlobalTools.Styles.MiniPopup))
                     {
                         GenericMenu gm = new GenericMenu();

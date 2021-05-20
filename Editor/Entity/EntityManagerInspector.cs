@@ -106,13 +106,15 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("New", EditorStyles.miniButton))
+            GUI.backgroundColor = Color.green;
+            if (GUILayout.Button("New", EditorStyles.miniButton, GUILayout.Width(50)))
             {
                 Undo.RecordObject(target, "New Define Entity");
                 Target.DefineEntityNames.Add("<None>");
                 Target.DefineEntityTargets.Add(null);
                 HasChanged();
             }
+            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();

@@ -50,17 +50,17 @@ namespace HT.Framework
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Name", GUILayout.Width(40));
+                GUILayout.Label("Name", GUILayout.Width(LabelWidth));
                 EditorGUILayout.TextField(inter.Value.Name);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Url", GUILayout.Width(40));
+                GUILayout.Label("Url", GUILayout.Width(LabelWidth));
                 EditorGUILayout.TextField(inter.Value.Url);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Is Offline", GUILayout.Width(60));
+                GUILayout.Label("Is Offline", GUILayout.Width(LabelWidth));
                 inter.Value.IsOffline = EditorGUILayout.Toggle(inter.Value.IsOffline);
                 GUILayout.EndHorizontal();
 

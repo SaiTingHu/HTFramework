@@ -26,8 +26,8 @@ namespace HT.Framework
             GUI.enabled = !EditorApplication.isPlaying;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("InputDevice ");
-            if (GUILayout.Button(Target.InputDeviceType, EditorGlobalTools.Styles.MiniPopup))
+            GUILayout.Label("InputDevice ", GUILayout.Width(LabelWidth));
+            if (GUILayout.Button(Target.InputDeviceType, EditorStyles.popup))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>

@@ -52,7 +52,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Type", GUILayout.Width(40));
-                if (GUILayout.Button(Target.DefineUINames[i], EditorGlobalTools.Styles.MiniPopup))
+                if (GUILayout.Button(Target.DefineUINames[i], EditorStyles.popup))
                 {
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
@@ -106,13 +106,15 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("New", EditorStyles.miniButton))
+            GUI.backgroundColor = Color.green;
+            if (GUILayout.Button("New", EditorStyles.miniButton, GUILayout.Width(50)))
             {
                 Undo.RecordObject(target, "New Define UI");
                 Target.DefineUINames.Add("<None>");
                 Target.DefineUIEntitys.Add(null);
                 HasChanged();
             }
+            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.EndVertical();

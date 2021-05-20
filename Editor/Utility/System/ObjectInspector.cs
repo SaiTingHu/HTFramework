@@ -289,6 +289,10 @@ namespace HT.Framework
                         {
                             IsReadOnly = true;
                         }
+                        else if (iattributes[i] is GenericMenuAttribute)
+                        {
+                            Painters.Add(new GenericMenuPainter(iattributes[i]));
+                        }
                         else if (iattributes[i] is DrawerAttribute)
                         {
                             Drawer = iattributes[i] as DrawerAttribute;
@@ -727,6 +731,126 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used FolderPath! because the types don't match!", MessageType.Error);
                     GUILayout.EndHorizontal();
+                }
+            }
+        }
+        /// <summary>
+        /// 字段绘制器 - 通用菜单
+        /// </summary>
+        private sealed class GenericMenuPainter : FieldPainter
+        {
+            public GenericMenuAttribute GAttribute;
+            public MethodInfo GenerateMenu;
+            public MethodInfo ChooseMenu;
+            public bool IsReady = false;
+
+            public GenericMenuPainter(InspectorAttribute attribute) : base(attribute)
+            {
+                GAttribute = attribute as GenericMenuAttribute;
+            }
+
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(string))
+                {
+                    if (!IsReady)
+                    {
+                        Ready(fieldInspector);
+                    }
+
+                    string value = (string)fieldInspector.Field.GetValue(inspector.target);
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(fieldInspector.Label, GUILayout.Width(EditorGUIUtility.labelWidth - 5));
+                    if (GUILayout.Button(value, EditorStyles.popup))
+                    {
+                        if (GenerateMenu != null)
+                        {
+                            string[] menus = CallGenerateMenu(fieldInspector);
+                            if (menus != null && menus.Length > 0)
+                            {
+                                GenericMenu gm = new GenericMenu();
+                                for (int i = 0; i < menus.Length; i++)
+                                {
+                                    int j = i;
+                                    gm.AddItem(new GUIContent(menus[j]), value == menus[j], () =>
+                                    {
+                                        Undo.RecordObject(inspector.target, "GenericMenu");
+                                        value = menus[j];
+                                        fieldInspector.Field.SetValue(inspector.target, value);
+                                        inspector.HasChanged();
+
+                                        if (ChooseMenu != null)
+                                        {
+                                            CallChooseMenu(fieldInspector, value);
+                                        }
+                                    });
+                                }
+                                gm.ShowAsContext();
+                            }
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                else
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used GenericMenu! because the types don't match!", MessageType.Error);
+                    GUILayout.EndHorizontal();
+                }
+            }
+
+            public void Ready(FieldInspector fieldInspector)
+            {
+                IsReady = true;
+                BindingFlags flags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+                if (!string.IsNullOrEmpty(GAttribute.GenerateMenu))
+                {
+                    GenerateMenu = fieldInspector.Property.serializedObject.targetObject.GetType().GetMethod(GAttribute.GenerateMenu, flags);
+                    if (GenerateMenu != null && GenerateMenu.ReturnType != typeof(string[]))
+                    {
+                        GenerateMenu = null;
+                    }
+                }
+                if (!string.IsNullOrEmpty(GAttribute.ChooseMenu))
+                {
+                    ChooseMenu = fieldInspector.Property.serializedObject.targetObject.GetType().GetMethod(GAttribute.ChooseMenu, flags);
+                    if (ChooseMenu != null)
+                    {
+                        ParameterInfo[] parameters = ChooseMenu.GetParameters();
+                        if (parameters.Length != 1)
+                        {
+                            GenerateMenu = null;
+                        }
+                        else if (parameters[0].ParameterType != typeof(string))
+                        {
+                            GenerateMenu = null;
+                        }
+                    }
+                }
+            }
+
+            public string[] CallGenerateMenu(FieldInspector fieldInspector)
+            {
+                if (GenerateMenu.IsStatic)
+                {
+                    return GenerateMenu.Invoke(null, null) as string[];
+                }
+                else
+                {
+                    return GenerateMenu.Invoke(fieldInspector.Property.serializedObject.targetObject, null) as string[];
+                }
+            }
+
+            public void CallChooseMenu(FieldInspector fieldInspector, string value)
+            {
+                if (ChooseMenu.IsStatic)
+                {
+                    ChooseMenu.Invoke(null, new object[] { value });
+                }
+                else
+                {
+                    ChooseMenu.Invoke(fieldInspector.Property.serializedObject.targetObject, new object[] { value });
                 }
             }
         }
