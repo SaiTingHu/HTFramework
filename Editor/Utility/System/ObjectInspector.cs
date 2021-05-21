@@ -1330,7 +1330,8 @@ namespace HT.Framework
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox("[" + Name + "] can't used PropertyDisplay! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.TextField(Name, value != null ? value.ToString() : "null");
+                    EditorGUI.EndChangeCheck();
                 }
                 GUILayout.EndHorizontal();
 
@@ -1382,7 +1383,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox("[" + Name + "] can't used PropertyDisplay! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.TextField(Name, value != null ? value.ToString() : "null");
                 }
                 GUILayout.EndHorizontal();
 
@@ -1417,7 +1418,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);
-                IsFoldout = EditorGUILayout.Foldout(IsFoldout, string.Format("{0} [{1}]", Name, delegates != null ? delegates.Length : 0));
+                IsFoldout = EditorGUILayout.Foldout(IsFoldout, string.Format("{0} [{1}]", Name, delegates != null ? delegates.Length : 0), true);
                 GUILayout.EndHorizontal();
 
                 if (IsFoldout && delegates != null)
