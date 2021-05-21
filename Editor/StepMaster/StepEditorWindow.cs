@@ -147,7 +147,7 @@ namespace HT.Framework
 
             if (GUI.changed)
             {
-                EditorUtility.SetDirty(_contentAsset);
+                HasChanged(_contentAsset);
             }
         }
 
@@ -492,6 +492,7 @@ namespace HT.Framework
                                 {
                                     target = _currentStepObj.Target.AddComponent<StepTarget>();
                                     target.GUID = _currentStepObj.TargetGUID;
+                                    HasChanged(_currentStepObj.Target);
                                 }
                             }
                         }
@@ -557,6 +558,7 @@ namespace HT.Framework
                             if (!target)
                             {
                                 target = contentObj.AddComponent<StepTarget>();
+                                HasChanged(contentObj);
                             }
                             if (target.GUID == "<None>")
                             {
@@ -851,6 +853,7 @@ namespace HT.Framework
                                 {
                                     target = _currentOperationObj.Target.AddComponent<StepTarget>();
                                     target.GUID = _currentOperationObj.TargetGUID;
+                                    HasChanged(_currentOperationObj.Target);
                                 }
                             }
                         }
@@ -916,6 +919,7 @@ namespace HT.Framework
                             if (!target)
                             {
                                 target = operationObj.AddComponent<StepTarget>();
+                                HasChanged(operationObj);
                             }
                             if (target.GUID == "<None>")
                             {

@@ -265,6 +265,7 @@ namespace HT.Framework
                     if (!target)
                     {
                         target = newEntity.AddComponent<TaskTarget>();
+                        EditorUtility.SetDirty(newEntity);
                     }
                     if (target.GUID == "<None>")
                     {
@@ -300,6 +301,7 @@ namespace HT.Framework
                     {
                         target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
                         target.GUID = taskGameObject.GUID;
+                        EditorUtility.SetDirty(taskGameObject.AgentEntity);
                     }
                 }
             }

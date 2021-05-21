@@ -7,7 +7,10 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    internal sealed class Builder : HTFEditorWindow
+    /// <summary>
+    /// 框架构建器
+    /// </summary>
+    public sealed class Builder : HTFEditorWindow
     {
         /// <summary>
         /// 检查项目构建的前置条件，如果至少有一个条件返回false，将禁止打包，全部返回true，才启用打包

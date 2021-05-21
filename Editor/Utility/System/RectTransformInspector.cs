@@ -186,20 +186,20 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Unfold Children", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Expand All Children", EditorStyles.miniButtonLeft))
                 {
-                    UnfoldChildren();
+                    ExpandAllChildren();
                 }
-                if (GUILayout.Button("Fold Children", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Collapse All Children", EditorStyles.miniButtonRight))
                 {
-                    FoldChildren();
+                    CollapseAllChildren();
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Fold All", EditorStyles.miniButton))
+                if (GUILayout.Button("Collapse All", EditorStyles.miniButton))
                 {
-                    FoldAll();
+                    CollapseAll();
                 }
                 GUILayout.EndHorizontal();
 
@@ -346,7 +346,7 @@ namespace HT.Framework
             Selection.activeGameObject = parent;
             EditorGUIUtility.PingObject(parent);
         }
-        private void UnfoldChildren()
+        private void ExpandAllChildren()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
             EditorWindow window = EditorWindow.GetWindow(type);
@@ -354,7 +354,7 @@ namespace HT.Framework
             int id = Target.gameObject.GetInstanceID();
             method.Invoke(window, new object[] { id, true });
         }
-        private void FoldChildren()
+        private void CollapseAllChildren()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
             EditorWindow window = EditorWindow.GetWindow(type);
@@ -362,7 +362,7 @@ namespace HT.Framework
             int id = Target.gameObject.GetInstanceID();
             method.Invoke(window, new object[] { id, false });
         }
-        private void FoldAll()
+        private void CollapseAll()
         {
             Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
             EditorWindow window = EditorWindow.GetWindow(type);

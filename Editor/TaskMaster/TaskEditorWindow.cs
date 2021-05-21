@@ -105,7 +105,7 @@ namespace HT.Framework
 
             if (GUI.changed)
             {
-                EditorUtility.SetDirty(_asset);
+                HasChanged(_asset);
             }
         }
         /// <summary>

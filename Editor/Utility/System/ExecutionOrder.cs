@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
-    /// ¿ò¼Ü½Å±¾Ö´ĞĞË³Ğò²é¿´Æ÷
+    /// æ¡†æ¶è„šæœ¬æ‰§è¡Œé¡ºåºæŸ¥çœ‹å™¨
     /// </summary>
     internal sealed class ExecutionOrder : HTFEditorWindow
     {

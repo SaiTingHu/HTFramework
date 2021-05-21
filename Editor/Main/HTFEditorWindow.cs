@@ -289,11 +289,22 @@ namespace HT.Framework
         /// <summary>
         /// 标记目标已改变
         /// </summary>
+        /// <param name="target">目标</param>
         protected void HasChanged(Object target)
         {
-            if (!EditorApplication.isPlaying && target != null)
+            if (target != null)
             {
                 EditorUtility.SetDirty(target);
+
+                if (EditorApplication.isPlaying)
+                    return;
+
+                GameObject gameObject = target as GameObject;
+                if (gameObject != null && gameObject.scene != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(gameObject.scene);
+                }
+
                 Component component = target as Component;
                 if (component != null && component.gameObject.scene != null)
                 {

@@ -1256,6 +1256,7 @@ namespace HT.Framework
                         {
                             target = GameObjectValue.AddComponent<StepTarget>();
                             target.GUID = StringValue;
+                            EditorUtility.SetDirty(GameObjectValue);
                         }
                     }
                 }
@@ -1290,6 +1291,7 @@ namespace HT.Framework
                     if (!target)
                     {
                         target = parent.AddComponent<StepTarget>();
+                        EditorUtility.SetDirty(parent);
                     }
                     if (target.GUID == "<None>")
                     {

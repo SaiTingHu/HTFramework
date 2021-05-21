@@ -10,6 +10,9 @@ using UnityEngine.UI;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 项目创建向导
+    /// </summary>
     internal sealed class ProjectWizard : HTFEditorWindow
     {
         private List<Folder> _rootFolders = new List<Folder>();

@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 关于框架
+    /// </summary>
     internal sealed class About : HTFEditorWindow
     {
         [InitializeOnLoadMethod]

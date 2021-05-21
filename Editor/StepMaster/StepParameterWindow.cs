@@ -151,6 +151,7 @@ namespace HT.Framework
                                     {
                                         target = stepParameter.GameObjectValue.AddComponent<StepTarget>();
                                         target.GUID = stepParameter.GameObjectGUID;
+                                        HasChanged(stepParameter.GameObjectValue);
                                     }
                                 }
                             }
@@ -170,6 +171,7 @@ namespace HT.Framework
                                 if (!target)
                                 {
                                     target = objValue.AddComponent<StepTarget>();
+                                    HasChanged(objValue);
                                 }
                                 if (target.GUID == "<None>")
                                 {
@@ -238,7 +240,7 @@ namespace HT.Framework
             if (GUILayout.Button("Apply"))
             {
                 GUI.FocusControl(null);
-                EditorUtility.SetDirty(_contentAsset);
+                HasChanged(_contentAsset);
             }
             GUILayout.EndHorizontal();
         }

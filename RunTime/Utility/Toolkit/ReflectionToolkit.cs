@@ -135,25 +135,6 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 从当前类型中获取所有方法
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <param name="filter">方法筛选器</param>
-        /// <returns>所有方法集合</returns>
-        public static List<MethodInfo> GetMethods(this Type type, HTFFunc<MethodInfo, bool> filter)
-        {
-            List<MethodInfo> methods = new List<MethodInfo>();
-            MethodInfo[] infos = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-            for (int i = 0; i < infos.Length; i++)
-            {
-                if (filter(infos[i]))
-                {
-                    methods.Add(infos[i]);
-                }
-            }
-            return methods;
-        }
-        /// <summary>
         /// 从当前类型中获取所有字段
         /// </summary>
         /// <param name="type">类型</param>
@@ -171,6 +152,44 @@ namespace HT.Framework
                 }
             }
             return fields;
+        }
+        /// <summary>
+        /// 从当前类型中获取所有属性
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="filter">属性筛选器</param>
+        /// <returns>所有属性集合</returns>
+        public static List<PropertyInfo> GetProperties(this Type type, HTFFunc<PropertyInfo, bool> filter)
+        {
+            List<PropertyInfo> properties = new List<PropertyInfo>();
+            PropertyInfo[] infos = type.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            for (int i = 0; i < infos.Length; i++)
+            {
+                if (filter(infos[i]))
+                {
+                    properties.Add(infos[i]);
+                }
+            }
+            return properties;
+        }
+        /// <summary>
+        /// 从当前类型中获取所有方法
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="filter">方法筛选器</param>
+        /// <returns>所有方法集合</returns>
+        public static List<MethodInfo> GetMethods(this Type type, HTFFunc<MethodInfo, bool> filter)
+        {
+            List<MethodInfo> methods = new List<MethodInfo>();
+            MethodInfo[] infos = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            for (int i = 0; i < infos.Length; i++)
+            {
+                if (filter(infos[i]))
+                {
+                    methods.Add(infos[i]);
+                }
+            }
+            return methods;
         }
     }
 }

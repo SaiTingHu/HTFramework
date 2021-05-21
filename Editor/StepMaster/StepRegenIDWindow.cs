@@ -73,13 +73,13 @@ namespace HT.Framework
                         index += _indexIncrement;
                     }
                     _contentAsset.StepIDSign = index;
-                    EditorUtility.SetDirty(_contentAsset);
+                    HasChanged(_contentAsset);
                     Close();
                 }
             }
             if (GUILayout.Button("Cancel", EditorGlobalTools.Styles.ButtonRight))
             {
-                EditorUtility.SetDirty(_contentAsset);
+                HasChanged(_contentAsset);
                 Close();
             }
             GUILayout.EndHorizontal();

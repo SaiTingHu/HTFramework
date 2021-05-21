@@ -91,7 +91,7 @@ namespace HT.Framework
                         index += _indexIncrement;
                     }
                     _contentAsset.TaskIDSign = index;
-                    EditorUtility.SetDirty(_contentAsset);
+                    HasChanged(_contentAsset);
                     Close();
                 }
             }
@@ -110,13 +110,13 @@ namespace HT.Framework
                         }
                     }
                     _contentAsset.TaskPointIDSign = index;
-                    EditorUtility.SetDirty(_contentAsset);
+                    HasChanged(_contentAsset);
                     Close();
                 }
             }
             if (GUILayout.Button("Cancel", EditorGlobalTools.Styles.ButtonRight))
             {
-                EditorUtility.SetDirty(_contentAsset);
+                HasChanged(_contentAsset);
                 Close();
             }
             GUILayout.EndHorizontal();

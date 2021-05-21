@@ -45,9 +45,19 @@ namespace HT.Framework
         /// </summary>
         protected void HasChanged(Object target)
         {
-            if (!EditorApplication.isPlaying && target != null)
+            if (target != null)
             {
                 EditorUtility.SetDirty(target);
+
+                if (EditorApplication.isPlaying)
+                    return;
+
+                GameObject gameObject = target as GameObject;
+                if (gameObject != null && gameObject.scene != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(gameObject.scene);
+                }
+
                 Component component = target as Component;
                 if (component != null && component.gameObject.scene != null)
                 {

@@ -15,9 +15,10 @@ namespace HT.Framework
     /// </summary>
     [CanEditMultipleObjects]
     [CustomEditor(typeof(UObject), true)]
-    public sealed class ObjectInspector : Editor
+    internal sealed class ObjectInspector : Editor
     {
         private List<FieldInspector> _fields = new List<FieldInspector>();
+        private List<PropertyInspector> _properties = new List<PropertyInspector>();
         private List<EventInspector> _events = new List<EventInspector>();
         private List<MethodInspector> _methods = new List<MethodInspector>();
 
@@ -36,7 +37,16 @@ namespace HT.Framework
                         }
                     }
                 }
-                
+
+                List<PropertyInfo> properties = target.GetType().GetProperties((property) =>
+                {
+                    return property.IsDefined(typeof(PropertyDisplayAttribute), true);
+                });
+                for (int i = 0; i < properties.Count; i++)
+                {
+                    _properties.Add(new PropertyInspector(properties[i]));
+                }
+
                 List<FieldInfo> events = target.GetType().GetFields((field) =>
                 {
                     return field.FieldType.IsSubclassOf(typeof(MulticastDelegate)) && field.IsDefined(typeof(EventAttribute), true);
@@ -63,6 +73,7 @@ namespace HT.Framework
             serializedObject.Update();
 
             FieldGUI();
+            PropertyGUI();
             EventGUI();
             MethodGUI();
 
@@ -109,6 +120,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 绘制属性
+        /// </summary>
+        private void PropertyGUI()
+        {
+            for (int i = 0; i < _properties.Count; i++)
+            {
+                _properties[i].Painting(this);
+            }
+        }
+        /// <summary>
         /// 绘制事件
         /// </summary>
         private void EventGUI()
@@ -152,14 +173,15 @@ namespace HT.Framework
         /// </summary>
         private void HasChanged()
         {
-            if (!EditorApplication.isPlaying)
+            EditorUtility.SetDirty(target);
+
+            if (EditorApplication.isPlaying)
+                return;
+
+            Component component = target as Component;
+            if (component != null && component.gameObject.scene != null)
             {
-                EditorUtility.SetDirty(target);
-                Component component = target as Component;
-                if (component != null && component.gameObject.scene != null)
-                {
-                    EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
-                }
+                EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
             }
         }
 
@@ -1221,6 +1243,150 @@ namespace HT.Framework
                 }
                 
                 return value * DynamicMultiple;
+            }
+        }
+        #endregion
+
+        #region Property
+        /// <summary>
+        /// 属性检视器
+        /// </summary>
+        private sealed class PropertyInspector
+        {
+            public PropertyInfo Property;
+            public PropertyDisplayAttribute Attribute;
+            public string Name;
+
+            public PropertyInspector(PropertyInfo property)
+            {
+                Property = property;
+                Attribute = property.GetCustomAttribute<PropertyDisplayAttribute>(true);
+                Name = string.IsNullOrEmpty(Attribute.Text) ? property.Name : Attribute.Text;
+            }
+
+            public void Painting(ObjectInspector inspector)
+            {
+                if (!Property.CanRead)
+                    return;
+
+                if (Attribute.DisplayOnlyRuntime && !EditorApplication.isPlaying)
+                    return;
+
+                if (Property.CanWrite)
+                {
+                    CanWritePainting(inspector);
+                }
+                else
+                {
+                    ReadOnlyPainting(inspector);
+                }
+            }
+
+            private void CanWritePainting(ObjectInspector inspector)
+            {
+                GUILayout.BeginHorizontal();
+                EditorGUI.BeginChangeCheck();
+                object value = Property.GetValue(inspector.target);
+                object newValue = value;
+                if (Property.PropertyType == typeof(string))
+                {
+                    string realValue = EditorGUILayout.TextField(Name, (string)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType == typeof(int))
+                {
+                    int realValue = EditorGUILayout.IntField(Name, (int)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType == typeof(float))
+                {
+                    float realValue = EditorGUILayout.FloatField(Name, (float)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType == typeof(bool))
+                {
+                    bool realValue = EditorGUILayout.Toggle(Name, (bool)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType == typeof(Vector2))
+                {
+                    Vector2 realValue = EditorGUILayout.Vector2Field(Name, (Vector2)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType == typeof(Vector3))
+                {
+                    Vector3 realValue = EditorGUILayout.Vector3Field(Name, (Vector3)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType == typeof(Color))
+                {
+                    Color realValue = EditorGUILayout.ColorField(Name, (Color)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType.IsSubclassOf(typeof(UObject)))
+                {
+                    UObject realValue = EditorGUILayout.ObjectField(Name, value as UObject, Property.PropertyType, true);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("[" + Name + "] can't used PropertyDisplay! because the types don't match!", MessageType.Error);
+                }
+                GUILayout.EndHorizontal();
+
+                if (value != newValue)
+                {
+                    Undo.RecordObject(inspector.target, "Property Changed");
+                    Property.SetValue(inspector.target, newValue);
+                    inspector.HasChanged();
+                }
+            }
+            
+            private void ReadOnlyPainting(ObjectInspector inspector)
+            {
+                GUI.enabled = false;
+
+                GUILayout.BeginHorizontal();
+                object value = Property.GetValue(inspector.target);
+                if (Property.PropertyType == typeof(string))
+                {
+                    EditorGUILayout.TextField(Name, (string)value);
+                }
+                else if (Property.PropertyType == typeof(int))
+                {
+                    EditorGUILayout.IntField(Name, (int)value);
+                }
+                else if (Property.PropertyType == typeof(float))
+                {
+                    EditorGUILayout.FloatField(Name, (float)value);
+                }
+                else if (Property.PropertyType == typeof(bool))
+                {
+                    EditorGUILayout.Toggle(Name, (bool)value);
+                }
+                else if (Property.PropertyType == typeof(Vector2))
+                {
+                    EditorGUILayout.Vector2Field(Name, (Vector2)value);
+                }
+                else if (Property.PropertyType == typeof(Vector3))
+                {
+                    EditorGUILayout.Vector3Field(Name, (Vector3)value);
+                }
+                else if (Property.PropertyType == typeof(Color))
+                {
+                    EditorGUILayout.ColorField(Name, (Color)value);
+                }
+                else if (Property.PropertyType.IsSubclassOf(typeof(UObject)))
+                {
+                    EditorGUILayout.ObjectField(Name, value as UObject, Property.PropertyType, false);
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("[" + Name + "] can't used PropertyDisplay! because the types don't match!", MessageType.Error);
+                }
+                GUILayout.EndHorizontal();
+
+                GUI.enabled = true;
             }
         }
         #endregion

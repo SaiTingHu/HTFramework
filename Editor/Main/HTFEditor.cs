@@ -168,14 +168,15 @@ namespace HT.Framework
         /// </summary>
         protected void HasChanged()
         {
-            if (!EditorApplication.isPlaying)
+            EditorUtility.SetDirty(target);
+
+            if (EditorApplication.isPlaying)
+                return;
+
+            Component component = target as Component;
+            if (component != null && component.gameObject.scene != null)
             {
-                EditorUtility.SetDirty(target);
-                Component component = target as Component;
-                if (component != null && component.gameObject.scene != null)
-                {
-                    EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
-                }
+                EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
             }
         }
         /// <summary>
