@@ -6,8 +6,43 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 步骤编辑器窗口
+    /// </summary>
     internal sealed class StepEditorWindow : HTFEditorWindow
     {
+        private static HTFAction<StepContent> AddStepContentHandler;
+        private static HTFFunc<string, string> NewHelperScriptHandler;
+        private static HTFFunc<ControlMode, Vector3> GetBestViewHandler;
+
+        /// <summary>
+        /// 注册【新增步骤内容】时的自定义处理者
+        /// </summary>
+        /// <param name="handler">自定义处理者</param>
+        public static void RegisterAddStepContentHandler(HTFAction<StepContent> handler)
+        {
+            AddStepContentHandler = handler;
+        }
+        /// <summary>
+        /// 注册【新建步骤助手脚本】时的自定义处理者
+        /// </summary>
+        /// <param name="handler">自定义处理者</param>
+        public static void RegisterNewHelperScriptHandler(HTFFunc<string, string> handler)
+        {
+            NewHelperScriptHandler = handler;
+        }
+        /// <summary>
+        /// 注册【获取步骤最佳视角】时的自定义处理者（第一人称、第三人称控制模式）
+        /// </summary>
+        /// <param name="handler">自定义处理者</param>
+        public static void RegisterGetBestViewHandler(HTFFunc<ControlMode, Vector3> handler)
+        {
+            GetBestViewHandler = handler;
+        }
+        /// <summary>
+        /// 打开窗口
+        /// </summary>
+        /// <param name="contentAsset">步骤资源</param>
         public static void ShowWindow(StepContentAsset contentAsset)
         {
             StepEditorWindow window = GetWindow<StepEditorWindow>();
@@ -631,7 +666,17 @@ namespace HT.Framework
                     GUI.enabled = _mr;
                     if (GUILayout.Button("Get", EditorStyles.miniButton, GUILayout.Width(40)))
                     {
-                        _currentStepObj.BestView = new Vector3(_mr.X, _mr.Y, _mr.Distance);
+                        if (_currentStepObj.InitialMode == ControlMode.FreeControl)
+                        {
+                            _currentStepObj.BestView = new Vector3(_mr.X, _mr.Y, _mr.Distance);
+                        }
+                        else
+                        {
+                            if (GetBestViewHandler != null)
+                            {
+                                _currentStepObj.BestView = GetBestViewHandler(_currentStepObj.InitialMode);
+                            }
+                        }
                     }
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
@@ -1485,6 +1530,7 @@ namespace HT.Framework
             _contentAsset.StepIDSign += 1;
             content.EnterAnchor = new Vector2(position.width / 2, position.height / 2);
             _contentAsset.Content.Add(content);
+            AddStepContentHandler?.Invoke(content);
             SelectStepContent(_contentAsset.Content.Count - 1);
             SelectStepOperation(-1);
             SetStepListScroll(1);
@@ -1808,7 +1854,7 @@ namespace HT.Framework
         /// </summary>
         private void NewHelperScript()
         {
-            _currentStepObj.Helper = EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_StepHelper_Folder, "StepHelper", "StepHelperTemplate", "#HELPERNAME#");
+            _currentStepObj.Helper = EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_StepHelper_Folder, "StepHelper", "StepHelperTemplate", NewHelperScriptHandler, "#HELPERNAME#");
         }
 
         /// <summary>

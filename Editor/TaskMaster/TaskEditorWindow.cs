@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 任务编辑器窗口
+    /// </summary>
     internal sealed class TaskEditorWindow : HTFEditorWindow
     {
         public static void ShowWindow(TaskContentAsset contentAsset)
