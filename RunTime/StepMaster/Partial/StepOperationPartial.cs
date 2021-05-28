@@ -678,67 +678,67 @@ namespace HT.Framework
             return operation;
         }
 
-        internal void OnEditorGUI()
+        internal void OnEditorGUI(HTFFunc<string, string> getWord)
         {
             switch (OperationType)
             {
                 case StepOperationType.Move:
-                    MoveGUI();
+                    MoveGUI(getWord);
                     break;
                 case StepOperationType.Rotate:
-                    RotateGUI();
+                    RotateGUI(getWord);
                     break;
                 case StepOperationType.Scale:
-                    ScaleGUI();
+                    ScaleGUI(getWord);
                     break;
                 case StepOperationType.Color:
-                    ColorGUI();
+                    ColorGUI(getWord);
                     break;
                 case StepOperationType.Active:
-                    ActiveGUI();
+                    ActiveGUI(getWord);
                     break;
                 case StepOperationType.Action:
-                    ActionGUI();
+                    ActionGUI(getWord);
                     break;
                 case StepOperationType.ActionArgs:
-                    ActionArgsGUI();
+                    ActionArgsGUI(getWord);
                     break;
                 case StepOperationType.CameraFollow:
-                    CameraFollowGUI();
+                    CameraFollowGUI(getWord);
                     break;
                 case StepOperationType.TextMesh:
-                    TextMeshGUI();
+                    TextMeshGUI(getWord);
                     break;
                 case StepOperationType.Prompt:
-                    PromptGUI();
+                    PromptGUI(getWord);
                     break;
                 case StepOperationType.FSM:
-                    FSMGUI();
+                    FSMGUI(getWord);
                     break;
                 case StepOperationType.Delay:
-                    DelayGUI();
+                    DelayGUI(getWord);
                     break;
                 case StepOperationType.ActiveComponent:
-                    ActiveComponentGUI();
+                    ActiveComponentGUI(getWord);
                     break;
                 case StepOperationType.Transform:
-                    TransformGUI();
+                    TransformGUI(getWord);
                     break;
                 case StepOperationType.ChangeParent:
-                    ChangeParentGUI();
+                    ChangeParentGUI(getWord);
                     break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 OnEditorGUI 定义！");
                     break;
             }
         }
-        private void MoveGUI()
+        private void MoveGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Move to:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Move To") + ":", GUILayout.Width(80));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localPosition;
             }
@@ -753,22 +753,22 @@ namespace HT.Framework
 
             GUI.enabled = !BoolValue;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ease:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Ease") + ":", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
             GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            BoolValue = GUILayout.Toggle(BoolValue, "Transformation");
+            BoolValue = GUILayout.Toggle(BoolValue, getWord("Transformation"));
             GUILayout.EndHorizontal();
         }
-        private void RotateGUI()
+        private void RotateGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Rotate to:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Rotate To") + ":", GUILayout.Width(80));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localRotation.eulerAngles;
             }
@@ -803,26 +803,26 @@ namespace HT.Framework
 
             GUI.enabled = !BoolValue2;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ease:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Ease") + ":", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            BoolValue = GUILayout.Toggle(BoolValue, "Is Axis Add");
+            BoolValue = GUILayout.Toggle(BoolValue, getWord("Is Axis Add"));
             GUILayout.EndHorizontal();
             GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            BoolValue2 = GUILayout.Toggle(BoolValue2, "Transformation");
+            BoolValue2 = GUILayout.Toggle(BoolValue2, getWord("Transformation"));
             GUILayout.EndHorizontal();
         }
-        private void ScaleGUI()
+        private void ScaleGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Scale to:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Scale To") + ":", GUILayout.Width(80));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localScale;
             }
@@ -837,19 +837,19 @@ namespace HT.Framework
 
             GUI.enabled = !BoolValue;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ease:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Ease") + ":", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
             GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            BoolValue = GUILayout.Toggle(BoolValue, "Transformation");
+            BoolValue = GUILayout.Toggle(BoolValue, getWord("Transformation"));
             GUILayout.EndHorizontal();
         }
-        private void ColorGUI()
+        private void ColorGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Color to:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Color To") + ":");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -895,22 +895,22 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ease:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Ease") + ":", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
-            BoolValue = GUILayout.Toggle(BoolValue, "Act Renderer");
+            BoolValue = GUILayout.Toggle(BoolValue, getWord("Act Renderer"));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            BoolValue2 = GUILayout.Toggle(BoolValue2, "Act Graphic");
+            BoolValue2 = GUILayout.Toggle(BoolValue2, getWord("Act Graphic"));
             GUILayout.EndHorizontal();
         }
-        private void ActiveGUI()
+        private void ActiveGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Set Active:", GUILayout.Width(80));
+            GUILayout.Label(getWord("Set Active") + ":", GUILayout.Width(80));
             if (GUILayout.Button(BoolValue ? "true" : "false", "MiniPopup", GUILayout.Width(100)))
             {
                 GenericMenu gm = new GenericMenu();
@@ -926,12 +926,13 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
         }
-        private void ActionGUI()
+        private void ActionGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
             GUI.enabled = Target;
-            GUILayout.Label("Action:", GUILayout.Width(50));
-            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(130)))
+            GUILayout.Label(getWord("Action") + ":", GUILayout.Width(50));
+            string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
+            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(130)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -955,13 +956,14 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }
-        private void ActionArgsGUI()
+        private void ActionArgsGUI(HTFFunc<string, string> getWord)
         {
             GUI.enabled = Target;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Action:", GUILayout.Width(50));
-            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(130)))
+            GUILayout.Label(getWord("Action") + ":", GUILayout.Width(50));
+            string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
+            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(130)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -986,19 +988,19 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Args:", GUILayout.Width(50));
+            GUILayout.Label(getWord("Args") + ":", GUILayout.Width(50));
             StringValue2 = EditorGUILayout.TextField(StringValue2);
             GUILayout.EndHorizontal();
 
             GUI.enabled = true;
         }
-        private void CameraFollowGUI()
+        private void CameraFollowGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Look point:");
+            GUILayout.Label(getWord("Look Point") + ":");
             GUILayout.FlexibleSpace();
             GUI.enabled = EditorApplication.isPlaying;
-            if (GUILayout.Button("Get", "Minibuttonleft", GUILayout.Width(40)))
+            if (GUILayout.Button(getWord("Get"), "Minibuttonleft"))
             {
                 if (Main.m_Controller)
                 {
@@ -1006,7 +1008,7 @@ namespace HT.Framework
                 }
             }
             GUI.enabled = true;
-            if (GUILayout.Button("Paste", "Minibuttonright", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Paste"), "Minibuttonright"))
             {
                 string[] vector3 = GUIUtility.systemCopyBuffer.Split(',');
                 if (vector3.Length == 3)
@@ -1028,10 +1030,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Look angle:");
+            GUILayout.Label(getWord("Look Angle") + ":");
             GUILayout.FlexibleSpace();
             GUI.enabled = EditorApplication.isPlaying;
-            if (GUILayout.Button("Get", "Minibuttonleft", GUILayout.Width(40)))
+            if (GUILayout.Button(getWord("Get"), "Minibuttonleft"))
             {
                 if (Main.m_Controller)
                 {
@@ -1040,7 +1042,7 @@ namespace HT.Framework
                 }
             }
             GUI.enabled = true;
-            if (GUILayout.Button("Paste", "Minibuttonright", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Paste"), "Minibuttonright"))
             {
                 string[] vector3 = GUIUtility.systemCopyBuffer.Split(',');
                 if (vector3.Length == 3)
@@ -1063,40 +1065,41 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Look distance:", GUILayout.Width(100));
+            GUILayout.Label(getWord("Look Distance") + ":", GUILayout.Width(100));
             FloatValue = EditorGUILayout.FloatField("", FloatValue, GUILayout.Width(80));
             GUILayout.EndHorizontal();
         }
-        private void TextMeshGUI()
+        private void TextMeshGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("TextMesh to:");
+            GUILayout.Label(getWord("TextMesh To") + ":");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             StringValue = EditorGUILayout.TextField(StringValue);
             GUILayout.EndHorizontal();
         }
-        private void PromptGUI()
+        private void PromptGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Prompt:");
+            GUILayout.Label(getWord("Prompt") + ":");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             StringValue = EditorGUILayout.TextField(StringValue);
             GUILayout.EndHorizontal();
         }
-        private void FSMGUI()
+        private void FSMGUI(HTFFunc<string, string> getWord)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("FSM switch state to:");
+            GUILayout.Label(getWord("FSM Switch State To") + ":");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUI.enabled = Target;
-            GUILayout.Label("State:", GUILayout.Width(50));
-            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(130)))
+            GUILayout.Label(getWord("State") + ":", GUILayout.Width(50));
+            string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
+            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(130)))
             {
                 FSM fsm = Target.GetComponent<FSM>();
                 if (fsm)
@@ -1116,13 +1119,13 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }
-        private void DelayGUI()
+        private void DelayGUI(HTFFunc<string, string> getWord)
         {
             if (Instant)
             {
                 GUILayout.BeginHorizontal();
                 GUI.color = Color.red;
-                GUILayout.Label("Delay time is invalid!");
+                GUILayout.Label(getWord("Delay Time Is Invalid"));
                 GUI.color = Color.white;
                 GUILayout.EndHorizontal();
             }
@@ -1130,17 +1133,18 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUI.color = Color.cyan;
-                GUILayout.Label("Delay time " + ElapseTime + " second!");
+                GUILayout.Label(string.Format("{0} {1} {2}", getWord("Delay Time"), ElapseTime, getWord("Second")));
                 GUI.color = Color.white;
                 GUILayout.EndHorizontal();
             }
         }
-        private void ActiveComponentGUI()
+        private void ActiveComponentGUI(HTFFunc<string, string> getWord)
         {
             GUI.enabled = Target;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Component:", GUILayout.Width(80));
-            if (GUILayout.Button(StringValue, "MiniPopup", GUILayout.Width(100)))
+            GUILayout.Label(getWord("Component") + ":", GUILayout.Width(80));
+            string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
+            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(100)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -1160,7 +1164,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Set Active:", GUILayout.Width(80));
+            GUILayout.Label(getWord("Set Active") + ":", GUILayout.Width(80));
             if (GUILayout.Button(BoolValue ? "true" : "false", "MiniPopup", GUILayout.Width(100)))
             {
                 GenericMenu gm = new GenericMenu();
@@ -1177,7 +1181,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
             GUI.enabled = true;
         }
-        private void TransformGUI()
+        private void TransformGUI(HTFFunc<string, string> getWord)
         {
             if (PreviewTarget)
             {
@@ -1210,16 +1214,16 @@ namespace HT.Framework
 
             GUI.enabled = !BoolValue;
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Ease:", GUILayout.Width(60));
+            GUILayout.Label(getWord("Ease") + ":", GUILayout.Width(60));
             AnimationEase = (Ease)EditorGUILayout.EnumPopup("", AnimationEase, GUILayout.Width(120));
             GUILayout.EndHorizontal();
             GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            BoolValue = GUILayout.Toggle(BoolValue, "Transformation");
+            BoolValue = GUILayout.Toggle(BoolValue, getWord("Transformation"));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button("Get", "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localPosition;
                 Vector3Value2 = Target.transform.localRotation.eulerAngles;
@@ -1228,7 +1232,7 @@ namespace HT.Framework
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }
-        private void ChangeParentGUI()
+        private void ChangeParentGUI(HTFFunc<string, string> getWord)
         {
             #region 父级目标物体丢失，根据目标GUID重新搜寻
             if (!GameObjectValue)
@@ -1264,16 +1268,43 @@ namespace HT.Framework
             #endregion
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Parent:", GUILayout.Width(50));
+            GUILayout.Label(getWord("Parent") + ":", GUILayout.Width(50));
             GUI.color = GameObjectValue ? Color.white : Color.gray;
             GameObject parent = EditorGUILayout.ObjectField(GameObjectValue, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
             GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("GUID: " + StringValue, GUILayout.Width(140));
+            if (GUILayout.Button(getWord("GUID") + ":", "Label", GUILayout.Width(40)))
+            {
+                GenericMenu gm = new GenericMenu();
+                if (StringValue == "<None>")
+                {
+                    gm.AddDisabledItem(new GUIContent(getWord("Copy")));
+                }
+                else
+                {
+                    gm.AddItem(new GUIContent(getWord("Copy")), false, () =>
+                    {
+                        GUIUtility.systemCopyBuffer = StringValue;
+                    });
+                }
+                if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                {
+                    gm.AddDisabledItem(new GUIContent(getWord("Paste")));
+                }
+                else
+                {
+                    gm.AddItem(new GUIContent(getWord("Paste")), false, () =>
+                    {
+                        StringValue = GUIUtility.systemCopyBuffer;
+                    });
+                }
+                gm.ShowAsContext();
+            }
+            GUILayout.Label(StringValue == "<None>" ? getWord(StringValue) : StringValue, GUILayout.Width(100));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
+            if (GUILayout.Button(getWord("Clear"), EditorStyles.miniButton, GUILayout.Width(40)))
             {
                 parent = GameObjectValue = null;
                 StringValue = "<None>";
@@ -1421,9 +1452,9 @@ namespace HT.Framework
         [Remark("缩放")]
         Scale,
         /// <summary>
-        /// 颜色改变
+        /// 颜色
         /// </summary>
-        [Remark("颜色改变")]
+        [Remark("颜色")]
         Color,
         /// <summary>
         /// 延时
@@ -1431,29 +1462,29 @@ namespace HT.Framework
         [Remark("延时")]
         Delay,
         /// <summary>
-        /// 激活或隐藏
+        /// 激活
         /// </summary>
-        [Remark("激活或隐藏")]
+        [Remark("激活")]
         Active,
         /// <summary>
         /// 呼叫方法 void Action()
         /// </summary>
-        [Remark("呼叫方法")]
+        [Remark("行为")]
         Action,
         /// <summary>
         /// 呼叫方法 void Action(string args)
         /// </summary>
-        [Remark("呼叫方法")]
+        [Remark("行为（带参数）")]
         ActionArgs,
         /// <summary>
-        /// 切换状态
+        /// 状态机
         /// </summary>
-        [Remark("切换状态")]
+        [Remark("状态机")]
         FSM,
         /// <summary>
-        /// 设置文本
+        /// 网格文本
         /// </summary>
-        [Remark("设置文本")]
+        [Remark("网格文本")]
         TextMesh,
         /// <summary>
         /// 提示
@@ -1466,9 +1497,9 @@ namespace HT.Framework
         [Remark("摄像机跟随")]
         CameraFollow,
         /// <summary>
-        /// 激活或隐藏组件
+        /// 激活组件
         /// </summary>
-        [Remark("激活或隐藏组件")]
+        [Remark("激活组件")]
         ActiveComponent,
         /// <summary>
         /// 变换（移动、旋转、缩放）

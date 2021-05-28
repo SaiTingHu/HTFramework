@@ -9,7 +9,7 @@ namespace HT.Framework
     /// <summary>
     /// 步骤编辑器窗口
     /// </summary>
-    internal sealed class StepEditorWindow : HTFEditorWindow
+    internal sealed class StepEditorWindow : HTFEditorWindow, ILocalizeWindow
     {
         private static HTFAction<StepContent> AddStepContentHandler;
         private static HTFFunc<string, string> NewHelperScriptHandler;
@@ -71,13 +71,13 @@ namespace HT.Framework
         private Rect _recordedPosition;
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
+        private string[] _stepListTypes = new string[] { "ID", "Name", "IDAndName" };
         private bool _isShowAncillary = true;
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
         private GUIContent _stepGC;
         private GUIContent _stepHelperGC;
         private GUIContent _previewGC;
-        private GUIContent _helpUrlGC;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = "";
@@ -87,13 +87,10 @@ namespace HT.Framework
 
         private Rect _stepContentProRect;
         private Vector2 _stepContentProScroll = Vector3.zero;
-
         private Rect _stepOperationProRect;
         private Vector2 _stepOperationProScroll = Vector3.zero;
-
         private Rect _stepContentAreaRect;
         private bool _stepContentAreaDragging = false;
-
         private Rect _splitterRect;
         private float _splitterWidth = 5;
         private bool _splitterDragging = false;
@@ -111,6 +108,12 @@ namespace HT.Framework
         private Transform _player;
         private Type _baseType = typeof(StepHelper);
         private HashSet<int> _operationIndexs = new HashSet<int>();
+        private HTFFunc<string, string> _getWord;
+        private string[] _operationTypes = new string[] {
+            "Move","Rotate","Scale","Color","Delay"
+            ,"Active","Action","ActionArgs","FSM","TextMesh"
+            ,"Prompt","CameraFollow","ActiveComponent","Transform","ChangeParent"
+        };
 
         private string _stepListBGStyle;
 
@@ -118,9 +121,10 @@ namespace HT.Framework
         {
             get
             {
-                return false;
+                return !_isMinimize;
             }
         }
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/87712995";
 
         protected override void OnEnable()
         {
@@ -132,15 +136,13 @@ namespace HT.Framework
             _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
             _stepHelperGC = new GUIContent();
             _previewGC = EditorGUIUtility.IconContent("AudioMixerView Icon");
-            _helpUrlGC = new GUIContent();
-            _helpUrlGC.image = EditorGUIUtility.IconContent("_Help").image;
-            _helpUrlGC.tooltip = "Help";
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
             _ct = FindObjectOfType<CameraTarget>();
             _mp = FindObjectOfType<MousePosition>();
             _mr = FindObjectOfType<MouseRotation>();
             _player = null;
+            _getWord = GetWord;
         }
         private void Update()
         {
@@ -153,79 +155,32 @@ namespace HT.Framework
         {
             StopPreviewInAllStep();
         }
-        protected override void OnBodyGUI()
+        protected override void OnGUIReady()
         {
-            base.OnBodyGUI();
+            base.OnGUIReady();
 
             if (_isMinimize)
-            {
-                MinimizeGUI();
-            }
-            else
-            {
-                GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
+                return;
 
-                StepContentRemovableGUI();
+            GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
 
-                GUILayout.BeginHorizontal(EditorStyles.toolbar);
-                TitleGUI();
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                StepListGUI();
-                SplitterGUI();
-                StepContentFixedGUI();
-                GUILayout.EndHorizontal();
-
-                EventHandle();
-            }
-
-            if (GUI.changed)
-            {
-                HasChanged(_contentAsset);
-            }
+            StepContentRemovableGUI();
         }
-
-        /// <summary>
-        /// 最小化后的GUI
-        /// </summary>
-        private void MinimizeGUI()
+        protected override void OnTitleGUI()
         {
-            GUILayout.BeginHorizontal(EditorStyles.toolbar);
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Maximize", EditorStyles.toolbarButton))
-            {
-                MaximizeWindow();
-            }
-            GUILayout.EndHorizontal();
+            base.OnTitleGUI();
 
-            GUILayout.BeginVertical();
-            GUILayout.FlexibleSpace();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-
-            GUILayout.Label("Step Count:" + _contentAsset.Content.Count);
-
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.FlexibleSpace();
-            GUILayout.EndVertical();
-        }
-        /// <summary>
-        /// 标题GUI
-        /// </summary>
-        private void TitleGUI()
-        {
             if (GUILayout.Button(_contentAsset.name, EditorStyles.toolbarButton))
             {
                 Selection.activeObject = _contentAsset;
                 EditorGUIUtility.PingObject(_contentAsset);
             }
-            if (GUILayout.Button("Clear Unused GUID", EditorStyles.toolbarPopup))
+            if (GUILayout.Button(GetWord("Clear Unused GUID"), EditorStyles.toolbarPopup))
             {
-                if (EditorUtility.DisplayDialog("Prompt", "Are you sure clear unused GUID [StepTarget] in the current opened scene？", "Yes", "No"))
+                string prompt = CurrentLanguage == Language.English
+                    ? "Are you sure clear unused GUID [StepTarget] in the current opened scene？"
+                    : "你确定要从当前打开的场景中清除所有未使用的步骤目标脚本 [StepTarget] 吗？";
+                if (EditorUtility.DisplayDialog(GetWord("Prompt"), prompt, GetWord("Yes"), GetWord("No")))
                 {
                     HashSet<string> usedTargets = new HashSet<string>();
                     for (int i = 0; i < _contentAsset.Content.Count; i++)
@@ -260,54 +215,210 @@ namespace HT.Framework
                     }
                 }
             }
-            if (GUILayout.Button("Regen Step ID", EditorStyles.toolbarPopup))
+            if (GUILayout.Button(GetWord("Regen Step ID"), EditorStyles.toolbarPopup))
             {
-                StepRegenIDWindow.ShowWindow(this, _contentAsset);
+                StepRegenIDWindow.ShowWindow(this, _contentAsset, CurrentLanguage);
             }
-            _isShowStepContent = GUILayout.Toggle(_isShowStepContent, "Step Content Properties", EditorStyles.toolbarButton);
-            _isShowCamControl = GUILayout.Toggle(_isShowCamControl, "Camera Control", EditorStyles.toolbarButton);
-            _isShowStepOperation = GUILayout.Toggle(_isShowStepOperation, "Step Operation Properties", EditorStyles.toolbarButton);
+            _isShowStepContent = GUILayout.Toggle(_isShowStepContent, GetWord("Step Content Properties"), EditorStyles.toolbarButton);
+            _isShowCamControl = GUILayout.Toggle(_isShowCamControl, GetWord("Camera Control"), EditorStyles.toolbarButton);
+            _isShowStepOperation = GUILayout.Toggle(_isShowStepOperation, GetWord("Step Operation Properties"), EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Setting", EditorStyles.toolbarPopup))
+            if (GUILayout.Button(GetWord("Setting"), EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("Style/StepContentList [BG]/Dark"), _stepListBGStyle == "PreBackground", () =>
+                string content = string.Format("{0}/{1}/{2}", GetWord("Style"), GetWord("StepContentList [BG]"), GetWord("Dark"));
+                gm.AddItem(new GUIContent(content), _stepListBGStyle == "PreBackground", () =>
                 {
                     _stepListBGStyle = "PreBackground";
                     ApplyEditorStyle();
                 });
-                gm.AddItem(new GUIContent("Style/StepContentList [BG]/Gray"), _stepListBGStyle == "HelpBox", () =>
+                content = string.Format("{0}/{1}/{2}", GetWord("Style"), GetWord("StepContentList [BG]"), GetWord("Gray"));
+                gm.AddItem(new GUIContent(content), _stepListBGStyle == "HelpBox", () =>
                 {
                     _stepListBGStyle = "HelpBox";
                     ApplyEditorStyle();
                 });
-                gm.AddItem(new GUIContent("Preview/Stop Preview Current Step"), false, () =>
+                content = string.Format("{0}/{1}", GetWord("Preview"), GetWord("Stop Preview Current Step"));
+                gm.AddItem(new GUIContent(content), false, () =>
                 {
                     StopPreviewInStep(_currentStep);
                 });
-                gm.AddItem(new GUIContent("Preview/Stop Preview All Step"), false, () =>
+                content = string.Format("{0}/{1}", GetWord("Preview"), GetWord("Stop Preview All Step"));
+                gm.AddItem(new GUIContent(content), false, () =>
                 {
                     StopPreviewInAllStep();
                 });
                 gm.ShowAsContext();
             }
-            if (GUILayout.Button("Minimize", EditorStyles.toolbarPopup))
+            if (GUILayout.Button(GetWord("Minimize"), EditorStyles.toolbarPopup))
             {
                 MinimizeWindow();
             }
-            if (GUILayout.Button(_helpUrlGC, EditorGlobalTools.Styles.IconButton))
+        }
+        protected override void OnBodyGUI()
+        {
+            base.OnBodyGUI();
+
+            if (_isMinimize)
             {
-                GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("Browse Ease Type"), false, () =>
-                {
-                    Application.OpenURL(@"http://robertpenner.com/easing/easing_demo.html");
-                });
-                gm.AddItem(new GUIContent("CSDN Blog"), false, () =>
-                {
-                    Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/87712995");
-                });
-                gm.ShowAsContext();
+                MinimizeGUI();
             }
+            else
+            {
+                GUILayout.BeginHorizontal();
+                StepListGUI();
+                SplitterGUI();
+                StepContentFixedGUI();
+                GUILayout.EndHorizontal();
+
+                EventHandle();
+            }
+
+            if (GUI.changed)
+            {
+                HasChanged(_contentAsset);
+            }
+        }
+        protected override void GenerateWords()
+        {
+            base.GenerateWords();
+
+            AddWord("清除未使用的步骤目标", "Clear Unused GUID");
+            AddWord("重新生成步骤身份号", "Regen Step ID");
+            AddWord("步骤内容的属性", "Step Content Properties");
+            AddWord("摄像机控制组件", "Camera Control");
+            AddWord("步骤操作的属性", "Step Operation Properties");
+            AddWord("设置", "Setting");
+            AddWord("最小化", "Minimize");
+            AddWord("风格", "Style");
+            AddWord("步骤内容列表 [背景]", "StepContentList [BG]");
+            AddWord("深色", "Dark");
+            AddWord("灰色", "Gray");
+            AddWord("预览", "Preview");
+            AddWord("停止当前步骤的预览", "Stop Preview Current Step");
+            AddWord("停止所有步骤的预览", "Stop Preview All Step");
+            AddWord("最大化", "Maximize");
+            AddWord("步骤数量", "Step Count");
+            AddWord("步骤内容列表", "Step Content List");
+            AddWord("身份号", "ID");
+            AddWord("名称", "Name");
+            AddWord("身份号和名称", "IDAndName");
+            AddWord("附加信息", "Ancillary");
+            AddWord("触发方式", "Trigger");
+            AddWord("脚本助手", "Helper");
+            AddWord("移动到", "Move To");
+            AddWord("确定", "Sure");
+            AddWord("取消", "Cancel");
+            AddWord("添加", "Add");
+            AddWord("上移", "Move Up");
+            AddWord("下移", "Move Down");
+            AddWord("克隆", "Clone");
+            AddWord("删除", "Delete");
+            AddWord("身份号", "GUID");
+            AddWord("执行时间", "Elapse Time");
+            AddWord("立即执行", "Instant");
+            AddWord("目标", "Target");
+            AddWord("复制", "Copy");
+            AddWord("粘贴", "Paste");
+            AddWord("清除", "Clear");
+            AddWord("提示", "Prompt");
+            AddWord("操作", "Operation");
+            AddWord("查找", "Find");
+            AddWord("进入", "Enter");
+            AddWord("初始控制模式", "Initial Mode");
+            AddWord("最佳视角", "Best View");
+            AddWord("获取", "Get");
+            AddWord("视点偏移", "View Offset");
+            AddWord("最佳位置", "Best Pos");
+            AddWord("<无>", "<None>");
+            AddWord("<新建助手脚本>", "<New Helper Script>");
+            AddWord("编辑", "Edit");
+            AddWord("脚本参数", "Parameter");
+            AddWord("编辑参数", "Edit Parameter");
+            AddWord("重新查找", "ReFind");
+            AddWord("类型", "Type");
+            AddWord("停止", "Stop");
+            AddWord("是的", "Yes");
+            AddWord("不", "No");
+            AddWord("计算总时间", "Compute total time");
+            AddWord("连接或断开", "Connect or break");
+            AddWord("添加步骤操作", "Add Step Operation");
+            AddWord("缓动类型", "Ease");
+            AddWord("立即变换", "Transformation");
+            AddWord("旋转到", "Rotate To");
+            AddWord("是否为轴累加形式", "Is Axis Add");
+            AddWord("缩放到", "Scale To");
+            AddWord("颜色变换到", "Color To");
+            AddWord("作用于渲染器", "Act Renderer");
+            AddWord("作用于图形组件", "Act Graphic");
+            AddWord("设置激活", "Set Active");
+            AddWord("行为", "Action");
+            AddWord("参数", "Args");
+            AddWord("注视位置", "Look Point");
+            AddWord("注视角度", "Look Angle");
+            AddWord("注视距离", "Look Distance");
+            AddWord("文本改变到", "TextMesh To");
+            AddWord("切换状态到", "FSM Switch State To");
+            AddWord("状态", "State");
+            AddWord("延时是无效的", "Delay Time Is Invalid");
+            AddWord("延时", "Delay Time");
+            AddWord("秒", "Second");
+            AddWord("组件", "Component");
+            AddWord("父亲", "Parent");
+            AddWord("移动", "Move");
+            AddWord("旋转", "Rotate");
+            AddWord("缩放", "Scale");
+            AddWord("颜色", "Color");
+            AddWord("延时", "Delay");
+            AddWord("激活", "Active");
+            AddWord("行为（带参数）", "ActionArgs");
+            AddWord("状态机", "FSM");
+            AddWord("网格文本", "TextMesh");
+            AddWord("摄像机跟随", "CameraFollow");
+            AddWord("激活组件", "ActiveComponent");
+            AddWord("变换", "Transform");
+            AddWord("改变父级", "ChangeParent");
+        }
+        protected override void OnLanguageChanged()
+        {
+            base.OnLanguageChanged();
+
+            for (int i = 0; i < _stepListTypes.Length; i++)
+            {
+                _stepListTypes[i] = GetWord(((StepListShowType)i).ToString());
+            }
+            for (int i = 0; i < _operationTypes.Length; i++)
+            {
+                _operationTypes[i] = GetWord(((StepOperationType)i).ToString());
+            }
+        }
+
+        /// <summary>
+        /// 最小化后的GUI
+        /// </summary>
+        private void MinimizeGUI()
+        {
+            GUILayout.BeginHorizontal(EditorStyles.toolbar);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(GetWord("Maximize"), EditorStyles.toolbarButton))
+            {
+                MaximizeWindow();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical();
+            GUILayout.FlexibleSpace();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            GUILayout.Label(GetWord("Step Count") + ":" + _contentAsset.Content.Count);
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
         }
         /// <summary>
         /// 步骤列表GUI
@@ -318,16 +429,16 @@ namespace HT.Framework
 
             #region 筛选步骤
             GUILayout.BeginHorizontal("Icon.OutlineBorder");
-            GUILayout.Label("Step Content List", EditorStyles.boldLabel);
+            GUILayout.Label(GetWord("Step Content List"), EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.Space(5);
 
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
-            _stepListShowType = (StepListShowType)EditorGUILayout.EnumPopup(_stepListShowType, EditorStyles.toolbarPopup, GUILayout.Width(100));
-            _isShowAncillary = GUILayout.Toggle(_isShowAncillary, "Ancillary", EditorStyles.toolbarButton);
-            _isShowTrigger = GUILayout.Toggle(_isShowTrigger, "Trigger", EditorStyles.toolbarButton);
-            _isShowHelper = GUILayout.Toggle(_isShowHelper, "Helper", EditorStyles.toolbarButton);
+            _stepListShowType = (StepListShowType)EditorGUILayout.Popup((int)_stepListShowType, _stepListTypes, EditorStyles.toolbarPopup, GUILayout.Width(100));
+            _isShowAncillary = GUILayout.Toggle(_isShowAncillary, GetWord("Ancillary"), EditorStyles.toolbarButton);
+            _isShowTrigger = GUILayout.Toggle(_isShowTrigger, GetWord("Trigger"), EditorStyles.toolbarButton);
+            _isShowHelper = GUILayout.Toggle(_isShowHelper, GetWord("Helper"), EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -379,9 +490,9 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUI.enabled = (_currentStep != -1);
-                GUILayout.Label("Move To: ");
+                GUILayout.Label(GetWord("Move To") + ": ");
                 _moveToIndex = EditorGUILayout.IntField(_moveToIndex);
-                if (GUILayout.Button("Sure", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button(GetWord("Sure"), EditorStyles.miniButtonLeft))
                 {
                     if (_moveToIndex >= 0 && _moveToIndex <= _contentAsset.Content.Count - 1)
                     {
@@ -396,7 +507,7 @@ namespace HT.Framework
                     }
                     _isMoveTo = false;
                 }
-                if (GUILayout.Button("Cancel", EditorStyles.miniButtonRight))
+                if (GUILayout.Button(GetWord("Cancel"), EditorStyles.miniButtonRight))
                 {
                     _isMoveTo = false;
                 }
@@ -407,30 +518,30 @@ namespace HT.Framework
 
             #region 添加、移动、克隆、删除步骤
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", EditorGlobalTools.Styles.ButtonLeft))
+            if (GUILayout.Button(GetWord("Add"), EditorGlobalTools.Styles.ButtonLeft))
             {
                 AddStepContent();
             }
             GUI.enabled = (_currentStep != -1);
-            if (GUILayout.Button("Move Up", EditorGlobalTools.Styles.ButtonMid))
+            if (GUILayout.Button(GetWord("Move Up"), EditorGlobalTools.Styles.ButtonMid))
             {
                 MoveUpStepContent();
             }
-            if (GUILayout.Button("Move Down", EditorGlobalTools.Styles.ButtonMid))
+            if (GUILayout.Button(GetWord("Move Down"), EditorGlobalTools.Styles.ButtonMid))
             {
                 MoveDownStepContent();
             }
-            if (GUILayout.Button("Move To", EditorGlobalTools.Styles.ButtonMid))
+            if (GUILayout.Button(GetWord("Move To"), EditorGlobalTools.Styles.ButtonMid))
             {
                 _isMoveTo = !_isMoveTo;
             }
             GUI.backgroundColor = Color.yellow;
-            if (GUILayout.Button("Clone", EditorGlobalTools.Styles.ButtonMid))
+            if (GUILayout.Button(GetWord("Clone"), EditorGlobalTools.Styles.ButtonMid))
             {
                 CloneStepContent();
             }
             GUI.backgroundColor = Color.red;
-            if (GUILayout.Button("Delete", EditorGlobalTools.Styles.ButtonRight))
+            if (GUILayout.Button(GetWord("Delete"), EditorGlobalTools.Styles.ButtonRight))
             {
                 DeleteStepContent(_currentStep);
             }
@@ -461,7 +572,8 @@ namespace HT.Framework
             if (_currentStep == -1)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Please select a Step Content!", EditorStyles.boldLabel);
+                string prompt = CurrentLanguage == Language.English ? "Please select a Step Content!" : "请选择一个步骤内容！";
+                GUILayout.Label(prompt, EditorStyles.boldLabel);
                 GUILayout.EndHorizontal();
             }
             else
@@ -474,7 +586,7 @@ namespace HT.Framework
                     GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(420));
 
                     GUILayout.BeginHorizontal("Icon.OutlineBorder");
-                    GUILayout.Label("Step Content Properties", EditorStyles.boldLabel);
+                    GUILayout.Label(GetWord("Step Content Properties"), EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
                     GUILayout.Space(5);
@@ -484,21 +596,21 @@ namespace HT.Framework
                     GUILayout.BeginVertical("Tooltip");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Name:", GUILayout.Width(50));
+                    GUILayout.Label(GetWord("Name") + ":", GUILayout.Width(50));
                     _currentStepObj.Name = EditorGUILayout.TextField(_currentStepObj.Name, GUILayout.Width(130));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("GUID:", GUILayout.Width(50));
+                    GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(50));
                     _currentStepObj.GUID = EditorGUILayout.TextField(_currentStepObj.GUID, GUILayout.Width(130));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUI.enabled = !_currentStepObj.Instant;
-                    GUILayout.Label("Elapse Time:", GUILayout.Width(80));
-                    _currentStepObj.ElapseTime = EditorGUILayout.FloatField(_currentStepObj.ElapseTime, GUILayout.Width(40));
+                    GUILayout.Label(GetWord("Elapse Time") + ":", GUILayout.Width(80));
+                    _currentStepObj.ElapseTime = EditorGUILayout.FloatField(_currentStepObj.ElapseTime, GUILayout.Width(35));
                     GUI.enabled = true;
-                    _currentStepObj.Instant = GUILayout.Toggle(_currentStepObj.Instant, "Instant", GUILayout.Width(60));
+                    _currentStepObj.Instant = GUILayout.Toggle(_currentStepObj.Instant, GetWord("Instant"), GUILayout.Width(65));
                     GUILayout.EndHorizontal();
 
                     #region 步骤目标物体丢失，根据目标GUID重新搜寻
@@ -535,43 +647,43 @@ namespace HT.Framework
                     #endregion
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Target:", GUILayout.Width(50));
+                    GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
                     GUI.color = _currentStepObj.Target ? Color.white : Color.gray;
                     GameObject contentObj = EditorGUILayout.ObjectField(_currentStepObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("GUID:", "Label", GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(40)))
                     {
                         GenericMenu gm = new GenericMenu();
                         if (_currentStepObj.TargetGUID == "<None>")
                         {
-                            gm.AddDisabledItem(new GUIContent("Copy"));
+                            gm.AddDisabledItem(new GUIContent(GetWord("Copy")));
                         }
                         else
                         {
-                            gm.AddItem(new GUIContent("Copy"), false, () =>
+                            gm.AddItem(new GUIContent(GetWord("Copy")), false, () =>
                             {
                                 GUIUtility.systemCopyBuffer = _currentStepObj.TargetGUID;
                             });
                         }
                         if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
                         {
-                            gm.AddDisabledItem(new GUIContent("Paste"));
+                            gm.AddDisabledItem(new GUIContent(GetWord("Paste")));
                         }
                         else
                         {
-                            gm.AddItem(new GUIContent("Paste"), false, () =>
+                            gm.AddItem(new GUIContent(GetWord("Paste")), false, () =>
                             {
                                 _currentStepObj.TargetGUID = GUIUtility.systemCopyBuffer;
                             });
                         }
                         gm.ShowAsContext();
                     }
-                    GUILayout.Label(_currentStepObj.TargetGUID, GUILayout.Width(100));
+                    GUILayout.Label(_currentStepObj.TargetGUID == "<None>" ? GetWord(_currentStepObj.TargetGUID) : _currentStepObj.TargetGUID, GUILayout.Width(100));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         contentObj = _currentStepObj.Target = null;
                         _currentStepObj.TargetGUID = "<None>";
@@ -609,7 +721,7 @@ namespace HT.Framework
                     GUILayout.BeginVertical("Tooltip");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Prompt:", GUILayout.Width(180));
+                    GUILayout.Label(GetWord("Prompt") + ":", GUILayout.Width(180));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -617,7 +729,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Ancillary:", GUILayout.Width(180));
+                    GUILayout.Label(GetWord("Ancillary") + ":", GUILayout.Width(180));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -625,13 +737,13 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Operation: " + _currentStepObj.Operations.Count, GUILayout.Width(130));
-                    if (GUILayout.Button("Find", EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(50)))
+                    GUILayout.Label(GetWord("Operation") + ": " + _currentStepObj.Operations.Count, GUILayout.Width(130));
+                    if (GUILayout.Button(GetWord("Find"), EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(50)))
                     {
                         GUI.FocusControl(null);
                         GenericMenu gm = new GenericMenu();
                         StringToolkit.BeginNoRepeatNaming();
-                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Enter")), false, () =>
+                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(GetWord("Enter"))), false, () =>
                         {
                             FindStepOperation(_currentStepObj.EnterAnchor);
                         });
@@ -651,20 +763,20 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Trigger:", GUILayout.Width(50));
-                    _currentStepObj.Trigger = (StepTrigger)EditorGUILayout.EnumPopup(_currentStepObj.Trigger, GUILayout.Width(130));
+                    GUILayout.Label(GetWord("Trigger") + ":", GUILayout.Width(80));
+                    _currentStepObj.Trigger = (StepTrigger)EditorGUILayout.EnumPopup(_currentStepObj.Trigger, GUILayout.Width(100));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Initial Mode:", GUILayout.Width(80));
+                    GUILayout.Label(GetWord("Initial Mode") + ":", GUILayout.Width(80));
                     _currentStepObj.InitialMode = (ControlMode)EditorGUILayout.EnumPopup(_currentStepObj.InitialMode, GUILayout.Width(100));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Best View:", GUILayout.Width(80));
+                    GUILayout.Label(GetWord("Best View") + ":", GUILayout.Width(80));
                     GUILayout.FlexibleSpace();
                     GUI.enabled = _mr;
-                    if (GUILayout.Button("Get", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Get"), EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         if (_currentStepObj.InitialMode == ControlMode.FreeControl)
                         {
@@ -686,10 +798,10 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("View Offset:", GUILayout.Width(80));
+                    GUILayout.Label(GetWord("View Offset") + ":", GUILayout.Width(80));
                     GUILayout.FlexibleSpace();
                     GUI.enabled = _ct && _currentStepObj.Target;
-                    if (GUILayout.Button("Get", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Get"), EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         _currentStepObj.ViewOffset = _ct.transform.position - _currentStepObj.Target.transform.position;
                     }
@@ -701,10 +813,10 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Best Pos:", GUILayout.Width(80));
+                    GUILayout.Label(GetWord("Best Pos") + ":", GUILayout.Width(80));
                     GUILayout.FlexibleSpace();
                     GUI.enabled = _player && _currentStepObj.Target;
-                    if (GUILayout.Button("Get", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Get"), EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         _currentStepObj.BestPos = _player.transform.position;
                     }
@@ -716,10 +828,10 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Helper:", GUILayout.Width(50));
-                    _stepHelperGC.text = _currentStepObj.Helper;
+                    GUILayout.Label(GetWord("Helper") + ":", GUILayout.Width(55));
+                    _stepHelperGC.text = _currentStepObj.Helper == "<None>" ? GetWord(_currentStepObj.Helper) : _currentStepObj.Helper;
                     _stepHelperGC.tooltip = _currentStepObj.HelperName;
-                    if (GUILayout.Button(_stepHelperGC, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(100)))
+                    if (GUILayout.Button(_stepHelperGC, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(95)))
                     {
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
@@ -727,11 +839,11 @@ namespace HT.Framework
                         });
                         GenericMenu gm = new GenericMenu();
                         StringToolkit.BeginNoRepeatNaming();
-                        gm.AddItem(new GUIContent("<None>"), _currentStepObj.Helper == "<None>", () =>
+                        gm.AddItem(new GUIContent(GetWord("<None>")), _currentStepObj.Helper == "<None>", () =>
                         {
                             _currentStepObj.Helper = "<None>";
                         });
-                        gm.AddItem(new GUIContent("<New Helper Script>"), false, () =>
+                        gm.AddItem(new GUIContent(GetWord("<New Helper Script>")), false, () =>
                         {
                             NewHelperScript();
                         });
@@ -749,7 +861,7 @@ namespace HT.Framework
                         gm.ShowAsContext();
                     }
                     GUI.enabled = _currentStepObj.Helper != "<None>";
-                    if (GUILayout.Button("Edit", EditorStyles.miniButton, GUILayout.Width(30)))
+                    if (GUILayout.Button(GetWord("Edit"), EditorStyles.miniButton, GUILayout.Width(30)))
                     {
                         OpenHelperScript(_currentStepObj.Helper);
                     }
@@ -757,10 +869,10 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Parameter:", GUILayout.Width(70));
-                    if (GUILayout.Button("Edit Parameter " + _currentStepObj.Parameters.Count, EditorStyles.miniButton))
+                    GUILayout.Label(GetWord("Parameter") + ":", GUILayout.Width(70));
+                    if (GUILayout.Button(GetWord("Edit Parameter") + " " + _currentStepObj.Parameters.Count, EditorStyles.miniButton))
                     {
-                        StepParameterWindow.ShowWindow(this, _contentAsset, _currentStepObj);
+                        StepParameterWindow.ShowWindow(this, _contentAsset, _currentStepObj, CurrentLanguage);
                     }
                     GUILayout.EndHorizontal();
 
@@ -786,7 +898,7 @@ namespace HT.Framework
                     GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(130));
 
                     GUILayout.BeginHorizontal("Icon.OutlineBorder");
-                    GUILayout.Label("Camera Control", EditorStyles.boldLabel);
+                    GUILayout.Label(GetWord("Camera Control"), EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
                     GUILayout.Space(5);
@@ -823,7 +935,7 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("ReFind", EditorStyles.miniButton))
+                    if (GUILayout.Button(GetWord("ReFind"), EditorStyles.miniButton))
                     {
                         _ct = FindObjectOfType<CameraTarget>();
                         _mp = FindObjectOfType<MousePosition>();
@@ -845,7 +957,7 @@ namespace HT.Framework
                     GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(320));
 
                     GUILayout.BeginHorizontal("Icon.OutlineBorder");
-                    GUILayout.Label("Step Operation Properties", EditorStyles.boldLabel);
+                    GUILayout.Label(GetWord("Step Operation Properties"), EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
                     GUILayout.Space(5);
@@ -855,21 +967,21 @@ namespace HT.Framework
                     GUILayout.BeginVertical("Tooltip");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Name:", GUILayout.Width(50));
+                    GUILayout.Label(GetWord("Name") + ":", GUILayout.Width(50));
                     _currentOperationObj.Name = EditorGUILayout.TextField(_currentOperationObj.Name, GUILayout.Width(130));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("GUID:", GUILayout.Width(50));
+                    GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(50));
                     _currentOperationObj.GUID = EditorGUILayout.TextField(_currentOperationObj.GUID, GUILayout.Width(130));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUI.enabled = !_currentOperationObj.Instant;
-                    GUILayout.Label("Elapse Time:", GUILayout.Width(80));
-                    _currentOperationObj.ElapseTime = EditorGUILayout.FloatField(_currentOperationObj.ElapseTime, GUILayout.Width(40));
+                    GUILayout.Label(GetWord("Elapse Time") + ":", GUILayout.Width(80));
+                    _currentOperationObj.ElapseTime = EditorGUILayout.FloatField(_currentOperationObj.ElapseTime, GUILayout.Width(35));
                     GUI.enabled = true;
-                    _currentOperationObj.Instant = GUILayout.Toggle(_currentOperationObj.Instant, "Instant", GUILayout.Width(60));
+                    _currentOperationObj.Instant = GUILayout.Toggle(_currentOperationObj.Instant, GetWord("Instant"), GUILayout.Width(65));
                     GUILayout.EndHorizontal();
 
                     #region 步骤目标物体丢失，根据目标GUID重新搜寻
@@ -906,43 +1018,43 @@ namespace HT.Framework
                     #endregion
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Target:", GUILayout.Width(50));
+                    GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
                     GUI.color = _currentOperationObj.Target ? Color.white : Color.gray;
                     GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("GUID:", "Label", GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(40)))
                     {
                         GenericMenu gm = new GenericMenu();
                         if (_currentOperationObj.TargetGUID == "<None>")
                         {
-                            gm.AddDisabledItem(new GUIContent("Copy"));
+                            gm.AddDisabledItem(new GUIContent(GetWord("Copy")));
                         }
                         else
                         {
-                            gm.AddItem(new GUIContent("Copy"), false, () =>
+                            gm.AddItem(new GUIContent(GetWord("Copy")), false, () =>
                             {
                                 GUIUtility.systemCopyBuffer = _currentOperationObj.TargetGUID;
                             });
                         }
                         if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
                         {
-                            gm.AddDisabledItem(new GUIContent("Paste"));
+                            gm.AddDisabledItem(new GUIContent(GetWord("Paste")));
                         }
                         else
                         {
-                            gm.AddItem(new GUIContent("Paste"), false, () =>
+                            gm.AddItem(new GUIContent(GetWord("Paste")), false, () =>
                             {
                                 _currentOperationObj.TargetGUID = GUIUtility.systemCopyBuffer;
                             });
                         }
                         gm.ShowAsContext();
                     }
-                    GUILayout.Label(_currentOperationObj.TargetGUID, GUILayout.Width(100));
+                    GUILayout.Label(_currentOperationObj.TargetGUID == "<None>" ? GetWord(_currentOperationObj.TargetGUID) : _currentOperationObj.TargetGUID, GUILayout.Width(100));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         operationObj = _currentOperationObj.Target = null;
                         _currentOperationObj.TargetGUID = "<None>";
@@ -980,11 +1092,11 @@ namespace HT.Framework
                     GUILayout.BeginVertical("Tooltip");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Type:", GUILayout.Width(50));
-                    _currentOperationObj.OperationType = (StepOperationType)EditorGUILayout.EnumPopup(_currentOperationObj.OperationType, GUILayout.Width(130));
+                    GUILayout.Label(GetWord("Type") + ":", GUILayout.Width(50));
+                    _currentOperationObj.OperationType = (StepOperationType)EditorGUILayout.Popup((int)_currentOperationObj.OperationType, _operationTypes, GUILayout.Width(130));
                     GUILayout.EndHorizontal();
 
-                    _currentOperationObj.OnEditorGUI();
+                    _currentOperationObj.OnEditorGUI(_getWord);
 
                     GUILayout.EndVertical();
 
@@ -994,12 +1106,12 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUI.enabled = _currentOperationObj.Target && !_currentOperationObj.PreviewTarget;
-                    if (GUILayout.Button("Preview", EditorGlobalTools.Styles.ButtonLeft))
+                    if (GUILayout.Button(GetWord("Preview"), EditorGlobalTools.Styles.ButtonLeft))
                     {
                         _currentOperationObj.CreatePreviewTarget(_currentStepObj, _currentOperation);
                     }
                     GUI.enabled = _currentOperationObj.PreviewTarget;
-                    if (GUILayout.Button("Stop", EditorGlobalTools.Styles.ButtonRight))
+                    if (GUILayout.Button(GetWord("Stop"), EditorGlobalTools.Styles.ButtonRight))
                     {
                         _currentOperationObj.DeletePreviewTarget();
                     }
@@ -1007,7 +1119,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUI.backgroundColor = Color.yellow;
-                    if (GUILayout.Button("Clone"))
+                    if (GUILayout.Button(GetWord("Clone")))
                     {
                         StepOperation operationClone = _currentOperationObj.Clone();
                         operationClone.Anchor = _currentOperationObj.Anchor + new Vector2(StepOperation.Width + 20, 0);
@@ -1017,7 +1129,7 @@ namespace HT.Framework
                         GUI.changed = true;
                     }
                     GUI.backgroundColor = Color.red;
-                    if (GUILayout.Button("Delete"))
+                    if (GUILayout.Button(GetWord("Delete")))
                     {
                         DeleteStepOperation(_currentStepObj, _currentOperation);
                     }
@@ -1122,7 +1234,7 @@ namespace HT.Framework
                     StepOperation operation = _currentStepObj.Operations[i];
                     GUI.color = operation.TargetGUID != "<None>" ? Color.white : Color.gray;
                     string style = _currentOperation == i ? "flow node 0 on" : "flow node 0";
-                    string showName = string.Format("[{0}] {1}\r\n{2}", operation.OperationType, operation.Name, operation.Instant ? "Instant" : (operation.ElapseTime.ToString() + "s"));
+                    string showName = string.Format("[{0}] {1}\r\n{2}", GetWord(operation.OperationType.ToString()), operation.Name, operation.Instant ? GetWord("Instant") : (operation.ElapseTime.ToString() + "s"));
                     Rect leftRect = operation.LeftPosition;
                     Rect rightRect = operation.RightPosition;
                     Rect operationRect = operation.Position;
@@ -1143,7 +1255,7 @@ namespace HT.Framework
 
                 #region Enter
                 Rect enterRect = _currentStepObj.EnterPosition;
-                GUI.Box(enterRect, "Enter\r\n" + _currentStepObj.Totaltime.ToString() + "s", "flow node 3");
+                GUI.Box(enterRect, GetWord("Enter") + "\r\n" + _currentStepObj.Totaltime.ToString() + "s", "flow node 3");
                 EditorGUIUtility.AddCursorRect(enterRect, MouseCursor.MoveArrow);
                 #endregion
                 
@@ -1198,7 +1310,7 @@ namespace HT.Framework
                             else if (Event.current.button == 1)
                             {
                                 GenericMenu gm = new GenericMenu();
-                                gm.AddItem(new GUIContent("Compute total time"), false, () =>
+                                gm.AddItem(new GUIContent(GetWord("Compute total time")), false, () =>
                                 {
                                     ComputeTotalTime(_currentStepObj);
                                 });
@@ -1207,7 +1319,7 @@ namespace HT.Framework
                                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                                 {
                                     int j = i;
-                                    gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
+                                    gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(GetWord("Connect or break") + "/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
                                     {
                                         ConnectOrBreakWired(_currentStepObj, -1, j);
                                     });
@@ -1234,7 +1346,7 @@ namespace HT.Framework
                                     if (i != downIndex)
                                     {
                                         int j = i;
-                                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Connect or break/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(downIndex, j), () =>
+                                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(GetWord("Connect or break") + "/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(downIndex, j), () =>
                                         {
                                             ConnectOrBreakWired(_currentStepObj, downIndex, j);
                                         });
@@ -1595,7 +1707,7 @@ namespace HT.Framework
             GenericMenu gm = new GenericMenu();
             foreach (StepOperationType type in Enum.GetValues(typeof(StepOperationType)))
             {
-                gm.AddItem(new GUIContent("Add Step Operation/" + type), false, () =>
+                gm.AddItem(new GUIContent(GetWord("Add Step Operation") + "/" + GetWord(type.ToString())), false, () =>
                 {
                     StepOperation operation = new StepOperation();
                     operation.GUID = Guid.NewGuid().ToString();
@@ -1730,11 +1842,11 @@ namespace HT.Framework
 
             if (_currentStep == -1)
             {
-                gm.AddDisabledItem(new GUIContent("Copy"));
+                gm.AddDisabledItem(new GUIContent(GetWord("Copy")));
             }
             else
             {
-                gm.AddItem(new GUIContent("Copy " + _currentStepObj.Name), false, () =>
+                gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentStepObj.Name), false, () =>
                 {
                     GUIUtility.systemCopyBuffer = string.Format("{0}|{1}", assetPath, _currentStepObj.GUID);
                 });
@@ -1760,11 +1872,11 @@ namespace HT.Framework
 
             if (stepContent == null)
             {
-                gm.AddDisabledItem(new GUIContent("Paste"));
+                gm.AddDisabledItem(new GUIContent(GetWord("Paste")));
             }
             else
             {
-                gm.AddItem(new GUIContent("Paste " + stepContent.Name), false, () =>
+                gm.AddItem(new GUIContent(GetWord("Paste") + " " + stepContent.Name), false, () =>
                 {
                     StepContent content = stepContent.Clone();
                     content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();

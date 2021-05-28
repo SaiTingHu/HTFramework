@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace HT.Framework
 {
-    internal sealed class StepParameterWindow : HTFEditorWindow
+    internal sealed class StepParameterWindow : HTFEditorWindow, ILocalizeWindow
     {
-        public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset, StepContent content)
+        public static void ShowWindow(StepEditorWindow stepEditorWindow, StepContentAsset contentAsset, StepContent content, Language language)
         {
             StepParameterWindow window = GetWindow<StepParameterWindow>();
+            window.CurrentLanguage = language;
             window.titleContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             window.titleContent.text = "Parameters";
             window._stepEditorWindow = stepEditorWindow;
@@ -41,7 +42,8 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
-            if (GUILayout.Button(_content.Helper, EditorStyles.toolbarButton))
+            string button = _content.Helper == "<None>" ? GetWord(_content.Helper) : _content.Helper;
+            if (GUILayout.Button(button, EditorStyles.toolbarButton))
             {
                 if (_content.Helper != "<None>")
                 {
@@ -64,7 +66,7 @@ namespace HT.Framework
                 GUILayout.BeginVertical(EditorStyles.helpBox);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Type:", GUILayout.Width(40));
+                GUILayout.Label(GetWord("Type") + ":", GUILayout.Width(40));
                 stepParameter.Type = (StepParameter.ParameterType)EditorGUILayout.EnumPopup(stepParameter.Type, GUILayout.Width(100));
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("▲", EditorStyles.miniButtonLeft, GUILayout.Width(20)))
@@ -86,7 +88,7 @@ namespace HT.Framework
                     }
                 }
                 GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Delete", EditorStyles.miniButtonRight))
+                if (GUILayout.Button(GetWord("Delete"), EditorStyles.miniButtonRight))
                 {
                     _content.Parameters.RemoveAt(i);
                     continue;
@@ -95,12 +97,12 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Name:", GUILayout.Width(40));
+                GUILayout.Label(GetWord("Name") + ":", GUILayout.Width(40));
                 stepParameter.Name = EditorGUILayout.TextField(stepParameter.Name);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Value:", GUILayout.Width(40));
+                GUILayout.Label(GetWord("Value") + ":", GUILayout.Width(40));
                 switch (_content.Parameters[i].Type)
                 {
                     case StepParameter.ParameterType.String:
@@ -205,10 +207,11 @@ namespace HT.Framework
                 if (_content.Parameters[i].Type == StepParameter.ParameterType.GameObject)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("GUID:", GUILayout.Width(40));
-                    EditorGUILayout.TextField(_content.Parameters[i].GameObjectGUID);
+                    GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(40));
+                    string guid = _content.Parameters[i].GameObjectGUID;
+                    EditorGUILayout.TextField(guid == "<None>" ? GetWord(guid) : guid);
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Clear", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         _content.Parameters[i].GameObjectValue = null;
                         _content.Parameters[i].GameObjectGUID = "<None>";
@@ -225,24 +228,42 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add", EditorGlobalTools.Styles.ButtonLeft))
+            if (GUILayout.Button(GetWord("Add"), EditorGlobalTools.Styles.ButtonLeft))
             {
                 _content.Parameters.Add(new StepParameter());
             }
-            if (GUILayout.Button("Clear", EditorGlobalTools.Styles.ButtonRight))
+            if (GUILayout.Button(GetWord("Clear"), EditorGlobalTools.Styles.ButtonRight))
             {
-                if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete all parameter？", "Yes", "No"))
+                string prompt = CurrentLanguage == Language.English ? "Are you sure delete all parameter？" : "你确定要删除所有的参数吗？";
+                if (EditorUtility.DisplayDialog(GetWord("Prompt"), prompt, GetWord("Yes"), GetWord("No")))
                 {
                     _content.Parameters.Clear();
                 }
             }
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Apply"))
+            if (GUILayout.Button(GetWord("Apply")))
             {
                 GUI.FocusControl(null);
                 HasChanged(_contentAsset);
             }
             GUILayout.EndHorizontal();
+        }
+        protected override void GenerateWords()
+        {
+            base.GenerateWords();
+
+            AddWord("类型", "Type");
+            AddWord("删除", "Delete");
+            AddWord("名称", "Name");
+            AddWord("值", "Value");
+            AddWord("身份号", "GUID");
+            AddWord("清空", "Clear");
+            AddWord("添加", "Add");
+            AddWord("应用", "Apply");
+            AddWord("提示", "Prompt");
+            AddWord("是的", "Yes");
+            AddWord("不", "No");
+            AddWord("<无>", "<None>");
         }
         private void Update()
         {

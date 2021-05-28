@@ -13,7 +13,7 @@ namespace HT.Framework
 
         private ILocalizeWindow _localizeWindow;
         private string _languagePrefsKey;
-        private Language _language = Language.English;
+        private Language _currentLanguage = Language.English;
         private Dictionary<string, Word> _localizeWords;
 
         private MethodInfo _linkLabel;
@@ -54,6 +54,28 @@ namespace HT.Framework
         /// </summary>
         protected Color AdminModeColor { get; set; } = new Color(1, 0.43f, 0, 1);
         /// <summary>
+        /// 当前的本地化语言
+        /// </summary>
+        protected Language CurrentLanguage
+        {
+            get
+            {
+                return _currentLanguage;
+            }
+            set
+            {
+                if (_localizeWindow == null)
+                    return;
+
+                if (_currentLanguage != value)
+                {
+                    _currentLanguage = value;
+                    EditorPrefs.SetInt(_languagePrefsKey, (int)_currentLanguage);
+                    OnLanguageChanged();
+                }
+            }
+        }
+        /// <summary>
         /// 是否启用韩语本地化
         /// </summary>
         protected virtual bool IsEnableKorean { get; } = false;
@@ -73,9 +95,9 @@ namespace HT.Framework
 
             if (_localizeWindow != null)
             {
-                _languagePrefsKey = "HT.Framework.HTFEditorWindow.Language." + GetType().FullName;
-                _language = (Language)EditorPrefs.GetInt(_languagePrefsKey, 1);
                 GenerateWords();
+                _languagePrefsKey = "HT.Framework.HTFEditorWindow.Language." + GetType().FullName;
+                CurrentLanguage = (Language)EditorPrefs.GetInt(_languagePrefsKey, 1);
             }
 
             if (!string.IsNullOrEmpty(HelpUrl))
@@ -87,6 +109,8 @@ namespace HT.Framework
         }
         protected void OnGUI()
         {
+            OnGUIReady();
+
             if (IsEnableTitleGUI)
             {
                 GUI.backgroundColor = IsAdminMode ? AdminModeColor : Color.white;
@@ -95,32 +119,29 @@ namespace HT.Framework
 
                 if (IsAdminMode)
                 {
-                    GUILayout.Label("Admin Mode");
+                    GUILayout.Label(GetWord("Admin Mode"));
                 }
                 
                 OnTitleGUI();
 
                 if (_localizeWindow != null)
                 {
-                    if (GUILayout.Button("Localize", EditorStyles.toolbarPopup))
+                    if (GUILayout.Button(GetWord("Localize"), EditorStyles.toolbarPopup))
                     {
                         GenericMenu gm = new GenericMenu();
-                        gm.AddItem(new GUIContent("简体中文"), _language == Language.Chinese, () =>
+                        gm.AddItem(new GUIContent("简体中文"), CurrentLanguage == Language.Chinese, () =>
                         {
-                            _language = Language.Chinese;
-                            EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
+                            CurrentLanguage = Language.Chinese;
                         });
-                        gm.AddItem(new GUIContent("English"), _language == Language.English, () =>
+                        gm.AddItem(new GUIContent("English"), CurrentLanguage == Language.English, () =>
                         {
-                            _language = Language.English;
-                            EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
+                            CurrentLanguage = Language.English;
                         });
                         if (IsEnableKorean)
                         {
-                            gm.AddItem(new GUIContent("한국어"), _language == Language.Korean, () =>
+                            gm.AddItem(new GUIContent("한국어"), CurrentLanguage == Language.Korean, () =>
                             {
-                                _language = Language.Korean;
-                                EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
+                                CurrentLanguage = Language.Korean;
                             });
                         }
                         else
@@ -129,10 +150,9 @@ namespace HT.Framework
                         }
                         if (IsEnableJapanese)
                         {
-                            gm.AddItem(new GUIContent("日本語"), _language == Language.Japanese, () =>
+                            gm.AddItem(new GUIContent("日本語"), CurrentLanguage == Language.Japanese, () =>
                             {
-                                _language = Language.Japanese;
-                                EditorPrefs.SetInt(_languagePrefsKey, (int)_language);
+                                CurrentLanguage = Language.Japanese;
                             });
                         }
                         else
@@ -147,14 +167,14 @@ namespace HT.Framework
                 {
                     if (IsAdminMode)
                     {
-                        if (GUILayout.Button("Logout", EditorStyles.toolbarPopup))
+                        if (GUILayout.Button(GetWord("Logout"), EditorStyles.toolbarPopup))
                         {
                             IsAdminMode = false;
                         }
                     }
                     else
                     {
-                        if (GUILayout.Button("Admin Login", EditorStyles.toolbarPopup))
+                        if (GUILayout.Button(GetWord("Admin Login"), EditorStyles.toolbarPopup))
                         {
                             AdminLoginWindow.OpenWindow(_adminLoginWindow, OnAdminCheck);
                         }
@@ -181,6 +201,14 @@ namespace HT.Framework
         /// </summary>
         public virtual void Initialization()
         {
+
+        }
+        /// <summary>
+        /// 准备开始绘制UI
+        /// </summary>
+        protected virtual void OnGUIReady()
+        {
+
         }
         /// <summary>
         /// 标题UI
@@ -217,6 +245,10 @@ namespace HT.Framework
         protected virtual void GenerateWords()
         {
             _localizeWords = new Dictionary<string, Word>();
+            AddWord("本地化", "Localize", "현지화", "地域化");
+            AddWord("管理员模式", "Admin Mode", "관리자 모드", "管理者モード");
+            AddWord("注销", "Logout", "취소하다", "ログオフ");
+            AddWord("管理员登录", "Admin Login", "로그인", "ログイン");
         }
         /// <summary>
         /// 根据key获取对应的本地化词汇
@@ -230,7 +262,7 @@ namespace HT.Framework
                 if (_localizeWords.ContainsKey(key))
                 {
                     Word word = _localizeWords[key];
-                    switch (_language)
+                    switch (CurrentLanguage)
                     {
                         case Language.Chinese:
                             return word.Chinese;
@@ -284,6 +316,13 @@ namespace HT.Framework
             {
                 Log.Error(string.Format("{0} 窗口发现相同Key的本地化词汇：{1}！", GetType().FullName, english));
             }
+        }
+        /// <summary>
+        /// 当本地化语言改变
+        /// </summary>
+        protected virtual void OnLanguageChanged()
+        {
+
         }
 
         /// <summary>
