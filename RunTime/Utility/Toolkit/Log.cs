@@ -22,7 +22,7 @@ namespace HT.Framework
 #else
             if (Main.Current.IsEnabledLogInfo)
             {
-                Debug.Log(InfoPrefix + content);
+                Debug.Log(content);
             }
 #endif
         }
@@ -37,7 +37,7 @@ namespace HT.Framework
 #else
             if (Main.Current.IsEnabledLogWarning)
             {
-                Debug.LogWarning(WarningPrefix + content);
+                Debug.LogWarning(content);
             }
 #endif
         }
@@ -52,7 +52,7 @@ namespace HT.Framework
 #else
             if (Main.Current.IsEnabledLogError)
             {
-                Debug.LogError(ErrorPrefix + content);
+                Debug.LogError(content);
             }
 #endif
         }

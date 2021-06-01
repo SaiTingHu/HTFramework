@@ -18,6 +18,7 @@ namespace HT.Framework
             return bInt.Value.ToString();
         }
 
+        private UnityAction<int> _callbackInt;
         private UnityAction<float> _callbackFloat;
         private UnityAction<string> _callbackString;
 
@@ -42,6 +43,7 @@ namespace HT.Framework
 
         public BindableInt()
         {
+            _callbackInt = (v) => { Value = v; };
             _callbackFloat = (v) => { Value = (int)v; };
             _callbackString = (v) =>
             {
@@ -52,6 +54,7 @@ namespace HT.Framework
         }
         public BindableInt(int value)
         {
+            _callbackInt = (v) => { Value = v; };
             _callbackFloat = (v) => { Value = (int)v; };
             _callbackString = (v) =>
             {
@@ -95,6 +98,14 @@ namespace HT.Framework
                 _onValueChanged += (value) => { if (slider) slider.value = value; };
                 _bindedControls.Add(control);
             }
+            else if (control is Dropdown)
+            {
+                Dropdown dropdown = control as Dropdown;
+                dropdown.value = Value;
+                dropdown.onValueChanged.AddListener(_callbackInt);
+                _onValueChanged += (value) => { if (dropdown) dropdown.value = value; };
+                _bindedControls.Add(control);
+            }
             else
             {
                 Log.Warning(string.Format("自动化任务：数据绑定失败，当前不支持控件 {0} 与 BindableInt 类型的数据绑定！", control.GetType().FullName));
@@ -121,6 +132,11 @@ namespace HT.Framework
                 {
                     Slider slider = control as Slider;
                     slider.onValueChanged.RemoveListener(_callbackFloat);
+                }
+                else if (control is Dropdown)
+                {
+                    Dropdown dropdown = control as Dropdown;
+                    dropdown.onValueChanged.RemoveListener(_callbackInt);
                 }
             }
             _onValueChanged = null;

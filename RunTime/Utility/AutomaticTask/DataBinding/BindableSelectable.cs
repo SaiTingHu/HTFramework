@@ -113,6 +113,13 @@ namespace HT.Framework
                 _onValueChanged += (value) => { if (dropdown) dropdown.value = value; };
                 _bindedControls.Add(control);
             }
+            else if (control is Text)
+            {
+                Text text = control as Text;
+                text.text = ValueString;
+                _onValueChanged += (value) => { if (text) text.text = ValueString; };
+                _bindedControls.Add(control);
+            }
             else
             {
                 Log.Warning(string.Format("自动化任务：数据绑定失败，当前不支持控件 {0} 与 BindableSelectable 类型的数据绑定！", control.GetType().FullName));

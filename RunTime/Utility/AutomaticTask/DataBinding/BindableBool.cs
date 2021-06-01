@@ -76,6 +76,13 @@ namespace HT.Framework
                 _onValueChanged += (value) => { if (button) button.interactable = value; };
                 _bindedControls.Add(control);
             }
+            else if (control is Text)
+            {
+                Text text = control as Text;
+                text.text = Value.ToString();
+                _onValueChanged += (value) => { if (text) text.text = value.ToString(); };
+                _bindedControls.Add(control);
+            }
             else
             {
                 Log.Warning(string.Format("自动化任务：数据绑定失败，当前不支持控件 {0} 与 BindableBool 类型的数据绑定！", control.GetType().FullName));
