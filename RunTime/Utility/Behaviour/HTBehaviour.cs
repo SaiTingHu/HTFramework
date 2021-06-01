@@ -10,6 +10,16 @@ namespace HT.Framework
     public abstract class HTBehaviour : MonoBehaviour
     {
         /// <summary>
+        /// 是否支持数据驱动
+        /// </summary>
+        public bool IsSupportedDataDriver
+        {
+            get
+            {
+                return Array.Exists(GetType().GetInterfaces(), t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IDataDriver<>));
+            }
+        }
+        /// <summary>
         /// 是否启用自动化，这将造成反射的性能消耗
         /// </summary>
         protected virtual bool IsAutomate => false;
@@ -18,35 +28,22 @@ namespace HT.Framework
         {
             useGUILayout = false;
 
-            AutomaticTask();
-        }
-
-        /// <summary>
-        /// 自动化任务
-        /// </summary>
-        private void AutomaticTask()
-        {
-            if (!IsAutomate)
-                return;
-
-            //应用对象路径定义
-            FieldInfo[] infos = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-            for (int i = 0; i < infos.Length; i++)
+            if (IsAutomate)
             {
-                if (infos[i].IsDefined(typeof(ObjectPathAttribute), true))
+                FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(GetType());
+                AutomaticTask.ApplyObjectPath(this, fieldInfos);
+
+                if (IsSupportedDataDriver)
                 {
-                    string path = infos[i].GetCustomAttribute<ObjectPathAttribute>().Path;
-                    Type type = infos[i].FieldType;
-                    if (type == typeof(GameObject))
-                    {
-                        infos[i].SetValue(this, transform.FindChildren(path));
-                    }
-                    else if (type.IsSubclassOf(typeof(Component)))
-                    {
-                        GameObject obj = transform.FindChildren(path);
-                        infos[i].SetValue(this, obj != null ? obj.GetComponent(type) : null);
-                    }
+                    AutomaticTask.ApplyDataBinding(this, fieldInfos);
                 }
+            }
+        }
+        protected virtual void OnDestroy()
+        {
+            if (IsAutomate && IsSupportedDataDriver)
+            {
+                AutomaticTask.ClearDataBinding(this);
             }
         }
     }

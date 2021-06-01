@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace HT.Framework
 {
@@ -54,7 +53,16 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnInit()
         {
-            AutomaticTask();
+            if (IsAutomate)
+            {
+                FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(GetType());
+                AutomaticTask.ApplyObjectPath(this, fieldInfos);
+
+                if (IsSupportedDataDriver)
+                {
+                    AutomaticTask.ApplyDataBinding(this, fieldInfos);
+                }
+            }
         }
         /// <summary>
         /// 打开UI
@@ -76,11 +84,9 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnDestroy()
         {
-            //销毁绑定的数据
-            if (IsSupportedDataDriver)
+            if (IsAutomate && IsSupportedDataDriver)
             {
-                PropertyInfo dataInfo = GetType().GetProperty("Data", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                dataInfo.SetValue(this, null);
+                AutomaticTask.ClearDataBinding(this);
             }
         }
         /// <summary>
@@ -100,98 +106,6 @@ namespace HT.Framework
         /// </summary>
         protected virtual void Close()
         {
-        }
-        /// <summary>
-        /// 自动化任务
-        /// </summary>
-        private void AutomaticTask()
-        {
-            if (!IsAutomate)
-                return;
-
-            Type uiType = GetType();
-            FieldInfo[] infos = uiType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-
-            //应用对象路径定义
-            for (int i = 0; i < infos.Length; i++)
-            {
-                if (!infos[i].IsDefined(typeof(ObjectPathAttribute), true))
-                {
-                    continue;
-                }
-
-                string path = infos[i].GetCustomAttribute<ObjectPathAttribute>().Path;
-                Type type = infos[i].FieldType;
-                if (type == typeof(GameObject))
-                {
-                    infos[i].SetValue(this, UIEntity.FindChildren(path));
-                }
-                else if (type.IsSubclassOf(typeof(Component)))
-                {
-                    GameObject obj = UIEntity.FindChildren(path);
-                    infos[i].SetValue(this, obj != null ? obj.GetComponent(type) : null);
-                }
-            }
-            
-            //进行数据绑定
-            if (IsSupportedDataDriver)
-            {
-                PropertyInfo dataInfo = uiType.GetProperty("Data", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                Type dataType = dataInfo.PropertyType;
-                object dataValue = dataInfo.GetValue(this);
-                if (dataValue == null)
-                {
-                    dataValue = Activator.CreateInstance(dataType);
-                    dataInfo.SetValue(this, dataValue);
-                }
-
-                object[] args = new object[1];
-
-                for (int i = 0; i < infos.Length; i++)
-                {
-                    if (!infos[i].IsDefined(typeof(DataBindingAttribute), false))
-                    {
-                        continue;
-                    }
-
-                    if (!infos[i].FieldType.IsSubclassOf(typeof(UIBehaviour)))
-                    {
-                        Log.Error(string.Format("数据驱动器：数据绑定失败，字段 {0}.{1} 的类型不支持数据绑定，只有 UnityEngine.EventSystems.UIBehaviour 类型支持数据绑定！", uiType.FullName, infos[i].Name));
-                        continue;
-                    }
-
-                    string target = infos[i].GetCustomAttribute<DataBindingAttribute>().Target;
-                    FieldInfo targetField = dataType.GetField(target, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    if (targetField == null)
-                    {
-                        Log.Error(string.Format("数据驱动器：数据绑定失败，未找到字段 {0}.{1} 绑定的目标数据字段 {2}.{3}！", uiType.FullName, infos[i].Name, dataType.FullName, target));
-                        continue;
-                    }
-                    if (!(targetField.FieldType.BaseType.IsGenericType && targetField.FieldType.BaseType.GetGenericTypeDefinition() == typeof(BindableType<>)))
-                    {
-                        Log.Error(string.Format("数据驱动器：数据绑定失败，目标数据字段 {0}.{1} 并不是可绑定的数据类型 BindableType！", dataType.FullName, target));
-                        continue;
-                    }
-
-                    object targetValue = targetField.GetValue(dataValue);
-                    if (targetValue == null)
-                    {
-                        targetValue = Activator.CreateInstance(targetField.FieldType);
-                        targetField.SetValue(dataValue, targetValue);
-                    }
-
-                    object controlValue = infos[i].GetValue(this);
-                    if (controlValue == null)
-                    {
-                        Log.Error(string.Format("数据驱动器：数据绑定失败，字段 {0}.{1} 是个空引用！", uiType.FullName, infos[i].Name));
-                        continue;
-                    }
-
-                    MethodInfo binding = targetField.FieldType.GetMethod("Binding", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    args[0] = controlValue;
-                    binding.Invoke(targetValue, args);
-                }
-            }
         }
     }
 }

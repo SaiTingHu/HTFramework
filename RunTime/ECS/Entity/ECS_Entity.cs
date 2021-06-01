@@ -66,8 +66,10 @@ namespace HT.Framework
 
             Main.m_ECS.AddEntity(this);
         }
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             Main.m_ECS.RemoveEntity(this);
         }
 

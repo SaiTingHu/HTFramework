@@ -1,4 +1,5 @@
-﻿using UnityEngine.EventSystems;
+﻿using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 namespace HT.Framework
 {
@@ -9,6 +10,7 @@ namespace HT.Framework
     {
         protected T _value;
         protected HTFAction<T> _onValueChanged;
+        protected HashSet<UIBehaviour> _bindedControls = new HashSet<UIBehaviour>();
 
         /// <summary>
         /// 数据值
@@ -31,6 +33,13 @@ namespace HT.Framework
         /// </summary>
         /// <param name="control">绑定的目标控件</param>
         protected virtual void Binding(UIBehaviour control)
+        {
+
+        }
+        /// <summary>
+        /// 解除所有控件的绑定
+        /// </summary>
+        protected virtual void Unbind()
         {
 
         }

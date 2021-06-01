@@ -33,8 +33,10 @@ namespace HT.Framework
             Name = string.Format("{0} ({1})", cna != null ? cna.Name : "未命名", GetType().FullName);
 #endif
         }
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             if (Entity) Entity.RemoveComponent(this);
         }
     }

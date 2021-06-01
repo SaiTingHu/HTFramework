@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -18,6 +19,7 @@ namespace HT.Framework
             return bSelectable.ValueString;
         }
 
+        private UnityAction<int> _callback;
         private List<string> _values = new List<string>();
 
         /// <summary>
@@ -55,24 +57,25 @@ namespace HT.Framework
         
         public BindableSelectable()
         {
+            _callback = (v) => { Value = v; };
             Value = 0;
         }
         public BindableSelectable(string[] values, int value = 0)
         {
+            _callback = (v) => { Value = v; };
             for (int i = 0; i < values.Length; i++)
             {
                 _values.Add(values[i]);
             }
-
             Value = value;
         }
         public BindableSelectable(List<string> values, int value = 0)
         {
+            _callback = (v) => { Value = v; };
             for (int i = 0; i < values.Count; i++)
             {
                 _values.Add(values[i]);
             }
-
             Value = value;
         }
 
@@ -84,6 +87,9 @@ namespace HT.Framework
         {
             base.Binding(control);
 
+            if (_bindedControls.Contains(control))
+                return;
+
             if (control is Dropdown)
             {
                 Dropdown dropdown = control as Dropdown;
@@ -91,18 +97,47 @@ namespace HT.Framework
                 {
                     dropdown.options = new List<Dropdown.OptionData>();
                 }
+                while (dropdown.options.Count != _values.Count)
+                {
+                    if (dropdown.options.Count < _values.Count)
+                        dropdown.options.Add(new Dropdown.OptionData());
+                    else if (dropdown.options.Count > _values.Count)
+                        dropdown.options.RemoveAt(0);
+                }
                 for (int i = 0; i < _values.Count; i++)
                 {
-                    dropdown.options.Add(new Dropdown.OptionData(_values[i]));
+                    dropdown.options[i].text = _values[i];
                 }
                 dropdown.value = Value;
-                dropdown.onValueChanged.AddListener((value) => { Value = value; });
+                dropdown.onValueChanged.AddListener(_callback);
                 _onValueChanged += (value) => { if (dropdown) dropdown.value = value; };
+                _bindedControls.Add(control);
             }
             else
             {
-                Log.Warning(string.Format("数据驱动器：数据绑定失败，当前不支持控件 {0} 与 BindableSelectable 类型的数据绑定！", control.GetType().FullName));
+                Log.Warning(string.Format("自动化任务：数据绑定失败，当前不支持控件 {0} 与 BindableSelectable 类型的数据绑定！", control.GetType().FullName));
             }
+        }
+        /// <summary>
+        /// 解除所有控件的绑定
+        /// </summary>
+        protected override void Unbind()
+        {
+            base.Unbind();
+
+            foreach (var control in _bindedControls)
+            {
+                if (control == null)
+                    continue;
+
+                if (control is Dropdown)
+                {
+                    Dropdown dropdown = control as Dropdown;
+                    dropdown.onValueChanged.RemoveListener(_callback);
+                }
+            }
+            _onValueChanged = null;
+            _bindedControls.Clear();
         }
     }
 }

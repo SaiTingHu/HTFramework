@@ -1,4 +1,5 @@
-﻿using UnityEngine.EventSystems;
+﻿using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -16,6 +17,9 @@ namespace HT.Framework
         {
             return bFloat.Value.ToString("F4");
         }
+
+        private UnityAction<float> _callbackFloat;
+        private UnityAction<string> _callbackString;
 
         /// <summary>
         /// 数据值
@@ -38,10 +42,22 @@ namespace HT.Framework
 
         public BindableFloat()
         {
+            _callbackFloat = (v) => { Value = v; };
+            _callbackString = (v) =>
+            {
+                float newValue;
+                if (float.TryParse(v, out newValue)) Value = newValue;
+            };
             Value = 0f;
         }
         public BindableFloat(float value)
         {
+            _callbackFloat = (v) => { Value = v; };
+            _callbackString = (v) =>
+            {
+                float newValue;
+                if (float.TryParse(v, out newValue)) Value = newValue;
+            };
             Value = value;
         }
 
@@ -53,44 +69,75 @@ namespace HT.Framework
         {
             base.Binding(control);
 
+            if (_bindedControls.Contains(control))
+                return;
+
             if (control is InputField)
             {
                 InputField inputField = control as InputField;
                 inputField.text = Value.ToString();
-                inputField.onValueChanged.AddListener((value) =>
-                {
-                    float newValue;
-                    if (float.TryParse(value, out newValue))
-                    {
-                        Value = newValue;
-                    }
-                });
+                inputField.onValueChanged.AddListener(_callbackString);
                 _onValueChanged += (value) => { if (inputField) inputField.text = value.ToString(); };
+                _bindedControls.Add(control);
             }
             else if (control is Text)
             {
                 Text text = control as Text;
                 text.text = Value.ToString();
                 _onValueChanged += (value) => { if (text) text.text = value.ToString(); };
+                _bindedControls.Add(control);
             }
             else if (control is Slider)
             {
                 Slider slider = control as Slider;
                 slider.value = Value;
-                slider.onValueChanged.AddListener((value) => { Value = value; });
+                slider.onValueChanged.AddListener(_callbackFloat);
                 _onValueChanged += (value) => { if (slider) slider.value = value; };
+                _bindedControls.Add(control);
             }
             else if (control is Scrollbar)
             {
                 Scrollbar scrollbar = control as Scrollbar;
                 scrollbar.value = Value;
-                scrollbar.onValueChanged.AddListener((value) => { Value = value; });
+                scrollbar.onValueChanged.AddListener(_callbackFloat);
                 _onValueChanged += (value) => { if (scrollbar) scrollbar.value = value; };
+                _bindedControls.Add(control);
             }
             else
             {
-                Log.Warning(string.Format("数据驱动器：数据绑定失败，当前不支持控件 {0} 与 BindableFloat 类型的数据绑定！", control.GetType().FullName));
+                Log.Warning(string.Format("自动化任务：数据绑定失败，当前不支持控件 {0} 与 BindableFloat 类型的数据绑定！", control.GetType().FullName));
             }
+        }
+        /// <summary>
+        /// 解除所有控件的绑定
+        /// </summary>
+        protected override void Unbind()
+        {
+            base.Unbind();
+
+            foreach (var control in _bindedControls)
+            {
+                if (control == null)
+                    continue;
+
+                if (control is InputField)
+                {
+                    InputField inputField = control as InputField;
+                    inputField.onValueChanged.RemoveListener(_callbackString);
+                }
+                else if (control is Slider)
+                {
+                    Slider slider = control as Slider;
+                    slider.onValueChanged.RemoveListener(_callbackFloat);
+                }
+                else if (control is Scrollbar)
+                {
+                    Scrollbar scrollbar = control as Scrollbar;
+                    scrollbar.onValueChanged.RemoveListener(_callbackFloat);
+                }
+            }
+            _onValueChanged = null;
+            _bindedControls.Clear();
         }
     }
 }

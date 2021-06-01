@@ -17,7 +17,6 @@ namespace HT.Framework
         /// 实体
         /// </summary>
         public GameObject Entity { get; internal set; }
-
         /// <summary>
         /// 实体是否显示
         /// </summary>
@@ -28,7 +27,16 @@ namespace HT.Framework
                 return Entity ? Entity.activeSelf : false;
             }
         }
-
+        /// <summary>
+        /// 是否支持数据驱动
+        /// </summary>
+        public bool IsSupportedDataDriver
+        {
+            get
+            {
+                return Array.Exists(GetType().GetInterfaces(), t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IDataDriver<>));
+            }
+        }
         /// <summary>
         /// 是否启用自动化，这将造成反射的性能消耗
         /// </summary>
@@ -39,7 +47,16 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnInit()
         {
-            AutomaticTask();
+            if (IsAutomate)
+            {
+                FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(GetType());
+                AutomaticTask.ApplyObjectPath(this, fieldInfos);
+
+                if (IsSupportedDataDriver)
+                {
+                    AutomaticTask.ApplyDataBinding(this, fieldInfos);
+                }
+            }
         }
         /// <summary>
         /// 显示实体
@@ -58,6 +75,10 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnDestroy()
         {
+            if (IsAutomate && IsSupportedDataDriver)
+            {
+                AutomaticTask.ClearDataBinding(this);
+            }
         }
         /// <summary>
         /// 实体逻辑刷新
@@ -70,34 +91,6 @@ namespace HT.Framework
         /// </summary>
         public virtual void Reset()
         {
-        }
-        /// <summary>
-        /// 自动化任务
-        /// </summary>
-        private void AutomaticTask()
-        {
-            if (!IsAutomate)
-                return;
-
-            //应用对象路径定义
-            FieldInfo[] infos = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-            for (int i = 0; i < infos.Length; i++)
-            {
-                if (infos[i].IsDefined(typeof(ObjectPathAttribute), true))
-                {
-                    string path = infos[i].GetCustomAttribute<ObjectPathAttribute>().Path;
-                    Type type = infos[i].FieldType;
-                    if (type == typeof(GameObject))
-                    {
-                        infos[i].SetValue(this, Entity.FindChildren(path));
-                    }
-                    else if (type.IsSubclassOf(typeof(Component)))
-                    {
-                        GameObject obj = Entity.FindChildren(path);
-                        infos[i].SetValue(this, obj != null ? obj.GetComponent(type) : null);
-                    }
-                }
-            }
         }
     }
 }

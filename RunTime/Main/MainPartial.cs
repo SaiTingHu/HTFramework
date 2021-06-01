@@ -171,8 +171,10 @@ namespace HT.Framework
         {
             LicenseOnGUI();
         }
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             OnTermination();
         }
         private void OnApplicationFocus(bool focus)

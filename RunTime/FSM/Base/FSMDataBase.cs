@@ -1,4 +1,6 @@
-﻿namespace HT.Framework
+﻿using System;
+
+namespace HT.Framework
 {
     /// <summary>
     /// 有限状态机数据基类
@@ -9,6 +11,20 @@
         /// 所属状态机
         /// </summary>
         public FSM StateMachine { get; internal set; }
+        /// <summary>
+        /// 是否支持数据驱动
+        /// </summary>
+        public bool IsSupportedDataDriver
+        {
+            get
+            {
+                return Array.Exists(GetType().GetInterfaces(), t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IDataDriver<>));
+            }
+        }
+        /// <summary>
+        /// 是否启用自动化，这将造成反射的性能消耗
+        /// </summary>
+        public virtual bool IsAutomate => false;
 
         /// <summary>
         /// 所属状态机初始化，数据初始化
