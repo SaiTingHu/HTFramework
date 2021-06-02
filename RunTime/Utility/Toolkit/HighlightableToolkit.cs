@@ -19,10 +19,7 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenOnceHighLight(this GameObject target)
         {
-            if (target == null)
-                return;
-
-            target.OpenOnceHighLight(Color.cyan);
+            OpenOnceHighLight(target, Color.cyan);
         }
         /// <summary>
         /// 开启高亮一次，使用指定发光颜色
@@ -52,10 +49,7 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenHighLight(this GameObject target)
         {
-            if (target == null)
-                return;
-
-            target.OpenHighLight(Color.cyan);
+            OpenHighLight(target, Color.cyan);
         }
         /// <summary>
         /// 开启持续高光，使用指定发光颜色
@@ -71,17 +65,17 @@ namespace HT.Framework
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
-            target.ClearHighLightInChildren();
-            target.ClearHighLightInParent();
-
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
 
-            if (!HOs.Contains(ho))
-            {
-                HOs.Add(ho);
-            }
+            if (HOs.Contains(ho))
+                return;
 
+            HOs.Add(ho);
+
+            target.ClearHighLightInChildren();
+            target.ClearHighLightInParent();
+            
             if (isImmediate) ho.OpenConstantImmediate(color);
             else ho.OpenConstant(color);
         }
@@ -98,10 +92,7 @@ namespace HT.Framework
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
-            if (HOs.Contains(ho))
-            {
-                HOs.Remove(ho);
-            }
+            HOs.Remove(ho);
 
             ho.CloseConstant();
             if (die) ho.Die();
@@ -129,10 +120,7 @@ namespace HT.Framework
         /// <param name="target">目标物体</param>
         public static void OpenFlashHighLight(this GameObject target)
         {
-            if (target == null)
-                return;
-
-            target.OpenFlashHighLight(Color.red, Color.white, 2);
+            OpenFlashHighLight(target, Color.red, Color.white, 2);
         }
         /// <summary>
         /// 开启闪光，使用默认频率
@@ -142,10 +130,7 @@ namespace HT.Framework
         /// <param name="color2">颜色2</param>
         public static void OpenFlashHighLight(this GameObject target, Color color1, Color color2)
         {
-            if (target == null)
-                return;
-
-            target.OpenFlashHighLight(color1, color2, 2);
+            OpenFlashHighLight(target, color1, color2, 2);
         }
         /// <summary>
         /// 开启闪光，使用指定频率
@@ -162,16 +147,16 @@ namespace HT.Framework
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
-            target.ClearHighLightInChildren();
-            target.ClearHighLightInParent();
-
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
 
-            if (!FlashHOs.Contains(ho))
-            {
-                FlashHOs.Add(ho);
-            }
+            if (FlashHOs.Contains(ho))
+                return;
+
+            FlashHOs.Add(ho);
+
+            target.ClearHighLightInChildren();
+            target.ClearHighLightInParent();
 
             ho.OpenFlashing(color1, color2, freq);
         }
@@ -188,10 +173,7 @@ namespace HT.Framework
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
-            if (FlashHOs.Contains(ho))
-            {
-                FlashHOs.Remove(ho);
-            }
+            FlashHOs.Remove(ho);
 
             ho.CloseFlashing();
             if (die) ho.Die();
@@ -225,16 +207,16 @@ namespace HT.Framework
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
-            target.ClearHighLightInChildren();
-            target.ClearHighLightInParent();
-
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) ho = target.AddComponent<HighlightableObject>();
 
-            if (!OccluderHOs.Contains(ho))
-            {
-                OccluderHOs.Add(ho);
-            }
+            if (OccluderHOs.Contains(ho))
+                return;
+
+            OccluderHOs.Add(ho);
+
+            target.ClearHighLightInChildren();
+            target.ClearHighLightInParent();
 
             ho.OpenOccluder();
         }
@@ -251,10 +233,7 @@ namespace HT.Framework
             HighlightableObject ho = target.GetComponent<HighlightableObject>();
             if (ho == null) return;
 
-            if (OccluderHOs.Contains(ho))
-            {
-                OccluderHOs.Remove(ho);
-            }
+            OccluderHOs.Remove(ho);
 
             ho.CloseOccluder();
             if (die) ho.Die();

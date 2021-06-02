@@ -18,10 +18,7 @@ namespace HT.Framework
         /// <param name="intensity">强度</param>
         public static void OpenMeshOutline(this GameObject target, float intensity = 1)
         {
-            if (target == null)
-                return;
-
-            target.OpenMeshOutline(Color.yellow, intensity);
+            OpenMeshOutline(target, Color.yellow, intensity);
         }
         /// <summary>
         /// 开启网格轮廓高亮，使用指定颜色
@@ -37,16 +34,17 @@ namespace HT.Framework
             if (!Main.m_Controller.EnableHighlightingEffect)
                 return;
 
-            target.ClearMeshOutlineInChildren();
-            target.ClearMeshOutlineInParent();
-
             MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
             if (mo == null) mo = target.AddComponent<MeshOutlineObject>();
 
-            if (!MOs.Contains(mo))
-            {
-                MOs.Add(mo);
-            }
+            if (MOs.Contains(mo))
+                return;
+
+            MOs.Add(mo);
+
+            target.ClearMeshOutlineInChildren();
+            target.ClearMeshOutlineInParent();
+
             mo.Open(color, intensity);
         }
         /// <summary>
@@ -77,10 +75,8 @@ namespace HT.Framework
             MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
             if (mo == null) return;
 
-            if (MOs.Contains(mo))
-            {
-                MOs.Remove(mo);
-            }
+            MOs.Remove(mo);
+
             mo.Close();
             if (die) mo.Die();
         }

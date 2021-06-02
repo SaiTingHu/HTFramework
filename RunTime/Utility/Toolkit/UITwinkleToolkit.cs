@@ -26,21 +26,21 @@ namespace HT.Framework
             if (graphic == null)
                 return;
 
-            if (!Graphics.ContainsKey(graphic))
-            {
-                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
-                () =>
-                {
-                    return graphic.color;
-                },
-                (c) =>
-                {
-                    graphic.color = c;
-                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+            if (Graphics.ContainsKey(graphic))
+                return;
 
-                tweener.startValue = graphic.color;
-                Graphics.Add(graphic, tweener);
-            }
+            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+            () =>
+            {
+                return graphic.color;
+            },
+            (c) =>
+            {
+                graphic.color = c;
+            }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+            tweener.startValue = graphic.color;
+            Graphics.Add(graphic, tweener);
         }
         /// <summary>
         /// 关闭图像控件的闪烁
@@ -51,15 +51,15 @@ namespace HT.Framework
             if (graphic == null)
                 return;
 
-            if (Graphics.ContainsKey(graphic))
-            {
-                Color normalColor = Graphics[graphic].startValue;
+            if (!Graphics.ContainsKey(graphic))
+                return;
 
-                Graphics[graphic].Kill();
-                Graphics.Remove(graphic);
+            Color normalColor = Graphics[graphic].startValue;
 
-                graphic.color = normalColor;
-            }
+            Graphics[graphic].Kill();
+            Graphics.Remove(graphic);
+
+            graphic.color = normalColor;
         }
         /// <summary>
         /// 开启可选控件的闪烁（只在Normal状态）
@@ -72,40 +72,43 @@ namespace HT.Framework
             if (selectable == null)
                 return;
 
-            if (!Selectables.ContainsKey(selectable) && selectable.targetGraphic != null)
+            if (selectable.targetGraphic == null)
+                return;
+
+            if (Selectables.ContainsKey(selectable))
+                return;
+
+            if (selectable.transition == Selectable.Transition.ColorTint)
             {
-                if (selectable.transition == Selectable.Transition.ColorTint)
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
                 {
-                    TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
-                    () =>
-                    {
-                        return selectable.colors.normalColor;
-                    },
-                    (c) =>
-                    {
-                        ColorBlock block = selectable.colors;
-                        block.normalColor = c;
-                        selectable.colors = block;
-                    }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-
-                    tweener.startValue = selectable.colors.normalColor;
-                    Selectables.Add(selectable, tweener);
-                }
-                else
+                    return selectable.colors.normalColor;
+                },
+                (c) =>
                 {
-                    TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
-                    () =>
-                    {
-                        return selectable.targetGraphic.color;
-                    },
-                    (c) =>
-                    {
-                        selectable.targetGraphic.color = c;
-                    }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+                    ColorBlock block = selectable.colors;
+                    block.normalColor = c;
+                    selectable.colors = block;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
-                    tweener.startValue = selectable.targetGraphic.color;
-                    Selectables.Add(selectable, tweener);
-                }
+                tweener.startValue = selectable.colors.normalColor;
+                Selectables.Add(selectable, tweener);
+            }
+            else
+            {
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
+                {
+                    return selectable.targetGraphic.color;
+                },
+                (c) =>
+                {
+                    selectable.targetGraphic.color = c;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+                tweener.startValue = selectable.targetGraphic.color;
+                Selectables.Add(selectable, tweener);
             }
         }
         /// <summary>
@@ -117,28 +120,28 @@ namespace HT.Framework
             if (selectable == null)
                 return;
 
-            if (Selectables.ContainsKey(selectable))
+            if (!Selectables.ContainsKey(selectable))
+                return;
+
+            if (selectable.transition == Selectable.Transition.ColorTint)
             {
-                if (selectable.transition == Selectable.Transition.ColorTint)
-                {
-                    ColorBlock block = selectable.colors;
-                    block.normalColor = Selectables[selectable].startValue;
+                ColorBlock block = selectable.colors;
+                block.normalColor = Selectables[selectable].startValue;
 
-                    Selectables[selectable].Kill();
-                    Selectables.Remove(selectable);
+                Selectables[selectable].Kill();
+                Selectables.Remove(selectable);
 
-                    selectable.colors = block;
-                }
-                else
-                {
-                    Color normalColor = Selectables[selectable].startValue;
+                selectable.colors = block;
+            }
+            else
+            {
+                Color normalColor = Selectables[selectable].startValue;
 
-                    Selectables[selectable].Kill();
-                    Selectables.Remove(selectable);
+                Selectables[selectable].Kill();
+                Selectables.Remove(selectable);
 
-                    if (selectable.targetGraphic != null)
-                        selectable.targetGraphic.color = normalColor;
-                }
+                if (selectable.targetGraphic != null)
+                    selectable.targetGraphic.color = normalColor;
             }
         }
         /// <summary>
