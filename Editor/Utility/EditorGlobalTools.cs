@@ -28,7 +28,7 @@ namespace HT.Framework
         /// <summary>
         /// About
         /// </summary>
-        [@MenuItem("HTFramework/About", false, 0)]
+        [MenuItem("HTFramework/About", false, 0)]
         private static void About()
         {
             About about = EditorWindow.GetWindow<About>(true, "HTFramework About", true);
@@ -43,7 +43,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ComponentBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Component Batch", false, 100)]
+        [MenuItem("HTFramework/Batch/Component Batch", false, 100)]
         private static void OpenComponentBatch()
         {
             ComponentBatch cb = EditorWindow.GetWindow<ComponentBatch>();
@@ -56,7 +56,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ProjectBatch窗口
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Project Batch", false, 101)]
+        [MenuItem("HTFramework/Batch/Project Batch", false, 101)]
         private static void OpenProjectBatch()
         {
             ProjectBatch pb = EditorWindow.GetWindow<ProjectBatch>();
@@ -69,7 +69,7 @@ namespace HT.Framework
         /// <summary>
         /// 【验证函数】添加边界框碰撞器
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Add Bounds Box Collider", true)]
+        [MenuItem("HTFramework/Batch/Add Bounds Box Collider", true)]
         private static bool AddBoundsBoxColliderValidate()
         {
             return Selection.gameObjects.Length > 0;
@@ -77,7 +77,7 @@ namespace HT.Framework
         /// <summary>
         /// 添加边界框碰撞器
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Add Bounds Box Collider", false, 120)]
+        [MenuItem("HTFramework/Batch/Add Bounds Box Collider", false, 120)]
         private static void AddBoundsBoxCollider()
         {
             GameObject[] objs = Selection.gameObjects;
@@ -139,7 +139,7 @@ namespace HT.Framework
         /// <summary>
         /// 【验证函数】设置鼠标射线可捕获物体目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", true)]
+        [MenuItem("HTFramework/Batch/Set Mouse Ray Target", true)]
         private static bool SetMouseRayTargetValidate()
         {
             return Selection.gameObjects.Length > 0;
@@ -147,7 +147,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置鼠标射线可捕获物体目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 121)]
+        [MenuItem("HTFramework/Batch/Set Mouse Ray Target", false, 121)]
         private static void SetMouseRayTarget()
         {
             AddBoundsBoxCollider();
@@ -172,7 +172,7 @@ namespace HT.Framework
         /// <summary>
         /// 【验证函数】设置鼠标射线可捕获UI目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", true)]
+        [MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", true)]
         private static bool SetMouseRayUITargetValidate()
         {
             return Selection.gameObjects.Length > 0;
@@ -180,7 +180,7 @@ namespace HT.Framework
         /// <summary>
         /// 设置鼠标射线可捕获UI目标
         /// </summary>
-        [@MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 122)]
+        [MenuItem("HTFramework/Batch/Set Mouse Ray UI Target", false, 122)]
         private static void SetMouseRayUITarget()
         {
             GameObject[] objs = Selection.gameObjects;
@@ -209,7 +209,7 @@ namespace HT.Framework
         /// <summary>
         /// 清理控制台
         /// </summary>
-        [@MenuItem("HTFramework/Console/Clear &1", false, 101)]
+        [MenuItem("HTFramework/Console/Clear &1", false, 101)]
         private static void ClearConsole()
         {
             Type logEntries = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
@@ -220,7 +220,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印普通日志
         /// </summary>
-        [@MenuItem("HTFramework/Console/Debug Log", false, 102)]
+        [MenuItem("HTFramework/Console/Debug Log", false, 102)]
         private static void ConsoleDebugLog()
         {
             Log.Info("Debug.Log!");
@@ -229,7 +229,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印警告日志
         /// </summary>
-        [@MenuItem("HTFramework/Console/Debug LogWarning", false, 103)]
+        [MenuItem("HTFramework/Console/Debug LogWarning", false, 103)]
         private static void ConsoleDebugLogWarning()
         {
             Log.Warning("Debug.LogWarning!");
@@ -238,7 +238,7 @@ namespace HT.Framework
         /// <summary>
         /// 打印错误日志
         /// </summary>
-        [@MenuItem("HTFramework/Console/Debug LogError", false, 104)]
+        [MenuItem("HTFramework/Console/Debug LogError", false, 104)]
         private static void ConsoleDebugLogError()
         {
             Log.Error("Debug.LogError!");
@@ -249,7 +249,7 @@ namespace HT.Framework
         /// <summary>
         /// 运行场景
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Run &2", false, 102)]
+        [MenuItem("HTFramework/Editor/Run &2", false, 102)]
         private static void RunScene()
         {
             EditorApplication.isPlaying = !EditorApplication.isPlaying;
@@ -258,7 +258,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开编辑器安装路径
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Open Installation Path", false, 103)]
+        [MenuItem("HTFramework/Editor/Open Installation Path", false, 103)]
         private static void OpenInstallationPath()
         {
             string path = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/"));
@@ -269,7 +269,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开DataPath文件夹
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Open DataPath Folder", false, 104)]
+        [MenuItem("HTFramework/Editor/Open DataPath Folder", false, 104)]
         private static void OpenDataPathFolder()
         {
             string path = Application.dataPath;
@@ -280,7 +280,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开StreamingAssets文件夹
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Open StreamingAssets Folder", false, 105)]
+        [MenuItem("HTFramework/Editor/Open StreamingAssets Folder", false, 105)]
         private static void OpenStreamingAssetsFolder()
         {
             string path = Application.streamingAssetsPath;
@@ -296,7 +296,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开PersistentData文件夹
         /// </summary>
-        [@MenuItem("HTFramework/Editor/Open PersistentData Folder", false, 106)]
+        [MenuItem("HTFramework/Editor/Open PersistentData Folder", false, 106)]
         private static void OpenPersistentDataFolder()
         {
             string path = Application.persistentDataPath;
@@ -313,7 +313,7 @@ namespace HT.Framework
         /// <summary>
         /// 标记目标为ECS系统的实体
         /// </summary>
-        [@MenuItem("HTFramework/ECS/Mark As To Entity", false, 103)]
+        [MenuItem("HTFramework/ECS/Mark As To Entity", false, 103)]
         private static void MarkAsToEntity()
         {
             int index = 0;
@@ -328,7 +328,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开ECS系统检视器
         /// </summary>
-        [@MenuItem("HTFramework/ECS/Inspector", false, 104)]
+        [MenuItem("HTFramework/ECS/Inspector", false, 104)]
         private static void OpenECSInspector()
         {
             ECS_Inspector inspector = EditorWindow.GetWindow<ECS_Inspector>();
@@ -342,7 +342,7 @@ namespace HT.Framework
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 104)]
+        [MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 104)]
         private static void MeshCombines()
         {
             if (Selection.gameObjects.Length <= 1)
@@ -392,7 +392,7 @@ namespace HT.Framework
         /// <summary>
         /// 展示模型信息
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 105)]
+        [MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 105)]
         private static void ShowMeshInfo()
         {
             for (int i = 0; i < Selection.gameObjects.Length; i++)
@@ -408,7 +408,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Assets Master
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Assets Master", false, 106)]
+        [MenuItem("HTFramework/Tools/Assets Master", false, 106)]
         private static void OpenAssetsMaster()
         {
             AssetsMaster master = EditorWindow.GetWindow<AssetsMaster>();
@@ -422,7 +422,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Assembly Viewer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Assembly Viewer", false, 107)]
+        [MenuItem("HTFramework/Tools/Assembly Viewer", false, 107)]
         private static void OpenAssemblyViewer()
         {
             AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
@@ -434,7 +434,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Custom Executer
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Executer", false, 108)]
+        [MenuItem("HTFramework/Tools/Custom Executer", false, 108)]
         private static void OpenCustomExecuter()
         {
             CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
@@ -445,46 +445,10 @@ namespace HT.Framework
             tools.Show();
         }
 
-        private static List<MethodInfo> CustomTools = new List<MethodInfo>();
-
-        /// <summary>
-        /// 执行 Custom Tool
-        /// </summary>
-        [@MenuItem("HTFramework/Tools/Custom Tool", false, 109)]
-        private static void ExecuteCustomTool()
-        {
-            CustomTools.Clear();
-            List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
-            for (int i = 0; i < types.Count; i++)
-            {
-                MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                for (int j = 0; j < methods.Length; j++)
-                {
-                    if (methods[j].IsDefined(typeof(CustomToolAttribute), false))
-                    {
-                        CustomTools.Add(methods[j]);
-                    }
-                }
-            }
-            if (CustomTools.Count <= 0)
-            {
-                Log.Warning("当前不存在至少一个自定义工具！为任何处于 Editor 文件夹中的类的无参静态函数添加 CustomTool 特性，可将该函数附加至自定义工具菜单！");
-            }
-            else
-            {
-                for (int i = 0; i < CustomTools.Count; i++)
-                {
-                    CustomTools[i].Invoke(null, null);
-                }
-                Log.Info("已执行 " + CustomTools.Count + " 个自定义工具！");
-                CustomTools.Clear();
-            }
-        }
-
         /// <summary>
         /// 打开 Extended Inspector
         /// </summary>
-        [@MenuItem("HTFramework/Tools/Extended Inspector", false, 110)]
+        [MenuItem("HTFramework/Tools/Extended Inspector", false, 109)]
         private static void OpenExtendedInspector()
         {
             ExtendedInspectorWindow window = EditorWindow.GetWindow<ExtendedInspectorWindow>();
@@ -498,7 +462,7 @@ namespace HT.Framework
         /// <summary>
         /// ProjectWizard
         /// </summary>
-        [@MenuItem("HTFramework/Project Wizard", false, 1000)]
+        [MenuItem("HTFramework/Project Wizard", false, 1000)]
         private static void OpenProjectWizard()
         {
             ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
@@ -513,7 +477,7 @@ namespace HT.Framework
         /// <summary>
         /// Execution Order
         /// </summary>
-        [@MenuItem("HTFramework/Execution Order", false, 1001)]
+        [MenuItem("HTFramework/Execution Order", false, 1001)]
         private static void OpenExecutionOrder()
         {
             ExecutionOrder window = EditorWindow.GetWindow<ExecutionOrder>();
@@ -527,7 +491,7 @@ namespace HT.Framework
         /// <summary>
         /// HTFramework Setting...
         /// </summary>
-        [@MenuItem("HTFramework/HTFramework Settings...", false, 1002)]
+        [MenuItem("HTFramework/HTFramework Settings...", false, 1002)]
         private static void OpenHTFrameworkSettings()
         {
             Setter setter = EditorWindow.GetWindow<Setter>();
@@ -542,7 +506,7 @@ namespace HT.Framework
         /// <summary>
         /// 【验证函数】新建框架主环境
         /// </summary>
-        [@MenuItem("GameObject/HTFramework/Main Environment", true)]
+        [MenuItem("GameObject/HTFramework/Main Environment", true)]
         private static bool CreateMainValidate()
         {
             return UnityEngine.Object.FindObjectOfType<Main>() == null;
@@ -550,7 +514,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建框架主环境
         /// </summary>
-        [@MenuItem("GameObject/HTFramework/Main Environment", false, 0)]
+        [MenuItem("GameObject/HTFramework/Main Environment", false, 0)]
         private static void CreateMain()
         {
             UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/HTFramework/HTFramework.prefab");
@@ -573,7 +537,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建FSM
         /// </summary>
-        [@MenuItem("GameObject/HTFramework/FSM", false, 1)]
+        [MenuItem("GameObject/HTFramework/FSM", false, 1)]
         private static void CreateFSM()
         {
             GameObject fsm = new GameObject();
@@ -591,7 +555,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建AspectProxy类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# AspectProxy Script", false, 11)]
+        [MenuItem("Assets/Create/HTFramework/C# AspectProxy Script", false, 11)]
         private static void CreateAspectProxy()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_AspectProxy_Folder, "AspectProxy", "AspectProxyTemplate");
@@ -600,7 +564,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建CustomModule类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# CustomModule Script", false, 12)]
+        [MenuItem("Assets/Create/HTFramework/C# CustomModule Script", false, 12)]
         private static void CreateCustomModule()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_CustomModule_Folder, "CustomModule", "CustomModuleTemplate", "#MODULENAME#");
@@ -609,7 +573,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建DataSet类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# DataSet Script", false, 13)]
+        [MenuItem("Assets/Create/HTFramework/C# DataSet Script", false, 13)]
         private static void CreateDataSet()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_DataSet_Folder, "DataSet", "DataSetTemplate");
@@ -618,7 +582,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建EntityLogic类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# EntityLogic Script", false, 14)]
+        [MenuItem("Assets/Create/HTFramework/C# EntityLogic Script", false, 14)]
         private static void CreateEntityLogic()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_EntityLogic_Folder, "EntityLogic", "EntityLogicTemplate");
@@ -627,7 +591,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建EventHandler类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# EventHandler Script", false, 15)]
+        [MenuItem("Assets/Create/HTFramework/C# EventHandler Script", false, 15)]
         private static void CreateEventHandler()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_EventHandler_Folder, "EventHandler", "EventHandlerTemplate");
@@ -636,7 +600,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建FiniteState类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# FiniteState Script", false, 16)]
+        [MenuItem("Assets/Create/HTFramework/C# FiniteState Script", false, 16)]
         private static void CreateFiniteState()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_FiniteState_Folder, "FiniteState", "FiniteStateTemplate", "#STATENAME#");
@@ -645,7 +609,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建Procedure类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 17)]
+        [MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 17)]
         private static void CreateProcedure()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_Procedure_Folder, "Procedure", "ProcedureTemplate");
@@ -654,7 +618,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ProtocolChannel类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# Protocol Channel Script", false, 18)]
+        [MenuItem("Assets/Create/HTFramework/C# Protocol Channel Script", false, 18)]
         private static void CreateProtocolChannel()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ProtocolChannel_Folder, "ProtocolChannel", "ProtocolChannelTemplate");
@@ -663,7 +627,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicResident类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 19)]
+        [MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 19)]
         private static void CreateUILogicResident()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_UILogicResident_Folder, "UILogicResident", "UILogicResidentTemplate");
@@ -672,7 +636,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicTemporary类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 20)]
+        [MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 20)]
         private static void CreateUILogicTemporary()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_UILogicTemporary_Folder, "UILogicTemporary", "UILogicTemporaryTemplate");
@@ -681,7 +645,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ECS的组件类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[ECS] C# Component Script", false, 1000)]
+        [MenuItem("Assets/Create/HTFramework/[ECS] C# Component Script", false, 1000)]
         private static void CreateECSComponent()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ECSComponent_Folder, "ECSComponent", "ECSComponentTemplate");
@@ -690,7 +654,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ECS的系统类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[ECS] C# System Script", false, 1001)]
+        [MenuItem("Assets/Create/HTFramework/[ECS] C# System Script", false, 1001)]
         private static void CreateECSSystem()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ECSSystem_Folder, "ECSSystem", "ECSSystemTemplate");
@@ -699,7 +663,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ECS的指令类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[ECS] C# Order Script", false, 1002)]
+        [MenuItem("Assets/Create/HTFramework/[ECS] C# Order Script", false, 1002)]
         private static void CreateECSOrder()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ECSOrder_Folder, "ECSOrder", "ECSOrderTemplate");
@@ -708,7 +672,7 @@ namespace HT.Framework
         /// <summary>
         /// 【验证函数】新建HotfixProcedure类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", true)]
+        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", true)]
         private static bool CreateHotfixProcedureValidate()
         {
             return AssetDatabase.IsValidFolder("Assets/Hotfix");
@@ -716,7 +680,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建HotfixProcedure类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 2000)]
+        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 2000)]
         private static void CreateHotfixProcedure()
         {
             EditorPrefs.SetString(EditorPrefsTable.Script_HotfixProcedure_Folder, "/Hotfix");
@@ -726,7 +690,7 @@ namespace HT.Framework
         /// <summary>
         /// 【验证函数】新建HotfixObject类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", true)]
+        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", true)]
         private static bool CreateHotfixObjectValidate()
         {
             return AssetDatabase.IsValidFolder("Assets/Hotfix");
@@ -734,7 +698,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建HotfixObject类
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 2001)]
+        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 2001)]
         private static void CreateHotfixObject()
         {
             EditorPrefs.SetString(EditorPrefsTable.Script_HotfixObject_Folder, "/Hotfix");
@@ -744,7 +708,7 @@ namespace HT.Framework
         /// <summary>
         /// 【验证函数】新建WebGL插件
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", true)]
+        [MenuItem("Assets/Create/HTFramework/WebGL Plugin", true)]
         private static bool CreateWebGLPluginValidate()
         {
 #if UNITY_WEBGL
@@ -756,7 +720,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建WebGL插件
         /// </summary>
-        [@MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 3000)]
+        [MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 3000)]
         private static void CreateWebGLPlugin()
         {
             string pluginsDirectory = Application.dataPath + "/Plugins";
@@ -1035,34 +999,6 @@ namespace HT.Framework
                 {
                     method.Invoke(null, null);
                 }
-            }
-        }
-        #endregion
-
-        #region IO工具
-        /// <summary>
-        /// 删除文件夹及以下的所有文件夹、文件
-        /// </summary>
-        /// <param name="folderPath">文件夹路径</param>
-        public static void DeleteFolder(string folderPath)
-        {
-            if (Directory.Exists(folderPath))
-            {
-                DirectoryInfo directory = new DirectoryInfo(folderPath);
-
-                FileInfo[] files = directory.GetFiles();
-                foreach (var file in files)
-                {
-                    file.Delete();
-                }
-
-                DirectoryInfo[] folders = directory.GetDirectories();
-                foreach (var folder in folders)
-                {
-                    DeleteFolder(folder.FullName);
-                }
-
-                directory.Delete();
             }
         }
         #endregion

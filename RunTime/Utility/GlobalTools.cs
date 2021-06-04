@@ -27,7 +27,6 @@ namespace HT.Framework
         {
             if (json == null)
             {
-                Log.Error("Json数据为空！");
                 return null;
             }
             return json.ToJson();
@@ -325,7 +324,7 @@ namespace HT.Framework
             }
             else
             {
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
                     if (rootObj.name == name)
@@ -353,7 +352,7 @@ namespace HT.Framework
             }
             else
             {
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
                     if (rootObj.name == name)
@@ -381,7 +380,7 @@ namespace HT.Framework
             }
             else
             {
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
                     if (rootObj.name == name)
@@ -547,22 +546,6 @@ namespace HT.Framework
             {
                 action(array[i], i);
             }
-        }
-        /// <summary>
-        /// 生成一个长度为length的数组，数组中每个数据均为此值
-        /// </summary>
-        /// <typeparam name="T">数组类型</typeparam>
-        /// <param name="value">数组值</param>
-        /// <param name="length">数组长度</param>
-        /// <returns>数组</returns>
-        public static T[] GenerateArray<T>(this T value, int length)
-        {
-            T[] array = new T[length];
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = value;
-            }
-            return array;
         }
         /// <summary>
         /// 判断数组中是否存在某元素
@@ -986,12 +969,15 @@ namespace HT.Framework
             byte[] buffer = new byte[stream.Length];
             stream.Read(buffer, 0, (int)stream.Length);
 
-            Texture2D tex = new Texture2D(80, 80);
-            tex.LoadImage(buffer);
+            Texture2D texture = new Texture2D(80, 80);
+            texture.LoadImage(buffer);
 
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
+            Main.Kill(texture);
             stream.Close();
 
-            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
+            return sprite;
         }
         #endregion
 
@@ -1027,10 +1013,11 @@ namespace HT.Framework
         /// <returns>十六进制字符串</returns>
         public static string ToHexSystemString(this Color color)
         {
-            return "#" + ((int)(color.r * 255)).ToString("x2") +
-                ((int)(color.g * 255)).ToString("x2") +
-                ((int)(color.b * 255)).ToString("x2") +
-                ((int)(color.a * 255)).ToString("x2");
+            return string.Format("#{0}{1}{2}{3}"
+                , ((int)(color.r * 255)).ToString("x2")
+                , ((int)(color.g * 255)).ToString("x2")
+                , ((int)(color.b * 255)).ToString("x2")
+                , ((int)(color.a * 255)).ToString("x2"));
         }
         #endregion
 
