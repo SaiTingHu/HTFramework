@@ -61,7 +61,7 @@ namespace HT.Framework
 
             GUILayout.Label("Targets " + _components.Count.ToString(), EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Fold All", EditorStyles.toolbarButton))
+            if (GUILayout.Button("Collapse All", EditorStyles.toolbarButton))
             {
                 for (int i = 0; i < _foldouts.Count; i++)
                 {

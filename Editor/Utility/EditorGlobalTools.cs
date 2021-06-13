@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -1041,6 +1043,7 @@ namespace HT.Framework
         private static Texture HTFrameworkLOGOTitle;
         private static Texture HTFolderLarge;
         private static Texture HTFolderSmall;
+        private static string NotepadPlusPath = null;
 
         /// <summary>
         /// 编辑器初始化
@@ -1074,12 +1077,23 @@ namespace HT.Framework
             if (editor.target is DefaultAsset)
             {
                 string path = AssetDatabase.GetAssetPath(editor.target);
-                if (string.Equals(path, "Assets/HTFramework"))
+                if (AssetDatabase.IsValidFolder(path))
                 {
-                    GUI.DrawTexture(new Rect(6, 6, 32, 32), HTFolderLarge);
+                    if (string.Equals(path, "Assets/HTFramework"))
+                    {
+                        GUI.DrawTexture(new Rect(6, 6, 32, 32), HTFolderLarge);
 
-                    EditorGUILayout.HelpBox("Unity HTFramework, a rapid development framework of client to the unity.", MessageType.Info);
+                        EditorGUILayout.HelpBox("Unity HTFramework, a rapid development framework of client to the unity.", MessageType.Info);
+                    }
                 }
+                else
+                {
+                    DrawNotepadPlusButton(editor);
+                }
+            }
+            else if (editor.target is TextAsset)
+            {
+                DrawNotepadPlusButton(editor);
             }
         }
         /// <summary>
@@ -1090,7 +1104,7 @@ namespace HT.Framework
             if (IsSmallIcon(selectionRect))
             {
                 string mainFolder = AssetDatabase.GUIDToAssetPath(guid);
-                if (string.Equals(mainFolder, "Assets/HTFramework"))
+                if (AssetDatabase.IsValidFolder(mainFolder) && string.Equals(mainFolder, "Assets/HTFramework"))
                 {
                     GUI.Box(selectionRect, HTFrameworkLOGOTitle, ProjectIconStyle);
 
@@ -1108,8 +1122,44 @@ namespace HT.Framework
         {
             return rect.width > rect.height;
         }
+        /// <summary>
+        /// 绘制 Edit with Notepad++ 按钮
+        /// </summary>
+        private static void DrawNotepadPlusButton(Editor editor)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Edit with Notepad++", EditorStyles.miniButton))
+            {
+                EditWithNotepadPlus(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 打开 Edit with Notepad++ 编辑
+        /// </summary>
+        private static void EditWithNotepadPlus(string filePath)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(NotepadPlusPath))
+                {
+                    string app = "notepad++.exe";
+                    RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + app, false);
+                    object value = key.GetValue(string.Empty);
+                    NotepadPlusPath = value.ToString();
+                }
+                Process process = new Process();
+                process.StartInfo = new ProcessStartInfo(NotepadPlusPath, filePath);
+                process.Start();
+            }
+            catch
+            {
+                Log.Error("本机未安装Notepad++，请先下载安装，Notepad++官网：https://notepad-plus-plus.org");
+            }
+        }
         #endregion
-        
+
         #region Styles
         public static class Styles
         {
