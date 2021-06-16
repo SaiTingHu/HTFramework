@@ -305,7 +305,8 @@ namespace HT.Framework
                         }
                         else
                         {
-                            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime));
+                            float elapseTime = _currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime;
+                            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, elapseTime));
                         }
                     }
                 }
@@ -981,7 +982,8 @@ namespace HT.Framework
                 _currentHelper = null;
             }
 
-            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, _currentContent.ElapseTime / SkipMultiple));
+            float elapseTime = _currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime;
+            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, elapseTime / SkipMultiple));
         }
         /// <summary>
         /// 跳过到指定步骤
@@ -1044,8 +1046,9 @@ namespace HT.Framework
                     _currentHelper.OnTermination();
                     _currentHelper = null;
                 }
-                
-                yield return YieldInstructioner.GetWaitForSeconds(_currentContent.ElapseTime / SkipMultiple);
+
+                float elapseTime = _currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime;
+                yield return YieldInstructioner.GetWaitForSeconds(elapseTime / SkipMultiple);
 
                 _currentStepIndex += 1;
             }

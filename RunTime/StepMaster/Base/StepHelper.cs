@@ -37,6 +37,16 @@ namespace HT.Framework
         /// </summary>
         public bool IsAllowSkip { get; set; } = true;
         /// <summary>
+        /// 步骤执行到进入下一步的时间
+        /// </summary>
+        public virtual float ElapseTime
+        {
+            get
+            {
+                return Content.ElapseTime;
+            }
+        }
+        /// <summary>
         /// 跳过时生命周期（仅在跳过时生效）
         /// </summary>
         public virtual float SkipLifeTime
