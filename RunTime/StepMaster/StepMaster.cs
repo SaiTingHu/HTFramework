@@ -297,17 +297,11 @@ namespace HT.Framework
 
                     if (_execute)
                     {
+                        float elapseTime = _currentContent.Instant ? 0 : (_currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime);
+
                         ExecuteCurrentStep();
 
-                        if (_currentContent.Instant)
-                        {
-                            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, 0));
-                        }
-                        else
-                        {
-                            float elapseTime = _currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime;
-                            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, elapseTime));
-                        }
+                        _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, elapseTime));
                     }
                 }
             }
@@ -969,6 +963,8 @@ namespace HT.Framework
 
             SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
+            float elapseTime = _currentContent.Instant ? 0 : (_currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime);
+
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
             {
@@ -982,7 +978,6 @@ namespace HT.Framework
                 _currentHelper = null;
             }
 
-            float elapseTime = _currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime;
             _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, elapseTime / SkipMultiple));
         }
         /// <summary>
@@ -1034,6 +1029,8 @@ namespace HT.Framework
 
                 SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
 
+                float elapseTime = _currentContent.Instant ? 0 : (_currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime);
+
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
                 {
@@ -1047,7 +1044,6 @@ namespace HT.Framework
                     _currentHelper = null;
                 }
 
-                float elapseTime = _currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime;
                 yield return YieldInstructioner.GetWaitForSeconds(elapseTime / SkipMultiple);
 
                 _currentStepIndex += 1;
