@@ -22,7 +22,7 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsHandler, out Target.IsHandler, "Is Handler");
+            Toggle(Target.IsHandler, out Target.IsHandler, "Handler");
             GUILayout.EndHorizontal();
 
             if (Target.IsHandler)
@@ -32,7 +32,7 @@ namespace HT.Framework
                 GUI.enabled = true;
 #endif
                 GUILayout.BeginHorizontal();
-                Toggle(Target.IsEnableFeedback, out Target.IsEnableFeedback, "Is Enable Feedback");
+                Toggle(Target.IsEnableFeedback, out Target.IsEnableFeedback, "Enable Feedback");
                 GUILayout.EndHorizontal();
 
                 if (Target.IsEnableFeedback)
@@ -53,7 +53,7 @@ namespace HT.Framework
                 GUI.enabled = true;
 
                 GUILayout.BeginHorizontal();
-                Toggle(Target.IsEnableMailReport, out Target.IsEnableMailReport, "Is Enable Mail Report");
+                Toggle(Target.IsEnableMailReport, out Target.IsEnableMailReport, "Enable Mail Report");
                 GUILayout.EndHorizontal();
 
                 if (Target.IsEnableMailReport)

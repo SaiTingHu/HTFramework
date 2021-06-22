@@ -24,7 +24,7 @@ namespace HT.Framework
             GUI.enabled = !EditorApplication.isPlaying;
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsOfflineState, out Target.IsOfflineState, "Is OfflineState");
+            Toggle(Target.IsOfflineState, out Target.IsOfflineState, "OfflineState");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -60,7 +60,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Is Offline", GUILayout.Width(LabelWidth));
+                GUILayout.Label("Offline", GUILayout.Width(LabelWidth));
                 inter.Value.IsOffline = EditorGUILayout.Toggle(inter.Value.IsOffline);
                 GUILayout.EndHorizontal();
 

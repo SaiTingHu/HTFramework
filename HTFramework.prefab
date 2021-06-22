@@ -782,6 +782,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d129847ef453fd741b5bedb88b989bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CanControl: 1
+  IsCanOnUGUI: 0
+  AllowOverstepDistance: 1
+  IsLookAtTarget: 0
   XSpeed: 150
   YSpeed: 150
   MSpeed: 50
@@ -794,9 +798,6 @@ MonoBehaviour:
   DampingTime: 3
   X: 270.2
   Y: 54.1
-  IsCanOnUGUI: 0
-  AllowOverstepDistance: 1
-  IsLookAtTarget: 0
 --- !u!114 &114272383585731926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -809,11 +810,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94b666006633b814c88eca582b27d2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CanControl: 1
+  IsCanOnUGUI: 0
+  IsCanByKey: 1
   DampingTime: 1
   XSpeed: 0.1
   YSpeed: 0.1
   ZSpeed: 0.1
-  IsCanOnUGUI: 0
 --- !u!114 &114469327750072166
 MonoBehaviour:
   m_ObjectHideFlags: 0

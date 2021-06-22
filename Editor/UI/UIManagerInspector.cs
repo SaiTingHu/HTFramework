@@ -29,15 +29,15 @@ namespace HT.Framework
             GUI.enabled = !EditorApplication.isPlaying;
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableOverlayUI, out Target.IsEnableOverlayUI, "Is Enable Overlay UI");
+            Toggle(Target.IsEnableOverlayUI, out Target.IsEnableOverlayUI, "Enable Overlay UI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableCameraUI, out Target.IsEnableCameraUI, "Is Enable Camera UI");
+            Toggle(Target.IsEnableCameraUI, out Target.IsEnableCameraUI, "Enable Camera UI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableWorldUI, out Target.IsEnableWorldUI, "Is Enable World UI");
+            Toggle(Target.IsEnableWorldUI, out Target.IsEnableWorldUI, "Enable World UI");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);

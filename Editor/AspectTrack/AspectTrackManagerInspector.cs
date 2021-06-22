@@ -22,13 +22,13 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableAspectTrack, out Target.IsEnableAspectTrack, "Is Enable Track");
+            Toggle(Target.IsEnableAspectTrack, out Target.IsEnableAspectTrack, "Enable Track");
             GUILayout.EndHorizontal();
 
             if (Target.IsEnableAspectTrack)
             {
                 GUILayout.BeginHorizontal();
-                Toggle(Target.IsEnableIntercept, out Target.IsEnableIntercept, "Is Enable Intercept");
+                Toggle(Target.IsEnableIntercept, out Target.IsEnableIntercept, "Enable Intercept");
                 GUILayout.EndHorizontal();
             }
         }

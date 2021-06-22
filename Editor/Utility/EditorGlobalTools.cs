@@ -1070,9 +1070,10 @@ namespace HT.Framework
         private static void OnFinishedDefaultHeaderGUI(Editor editor)
         {
             if (editor.targets != null && editor.targets.Length > 1)
-            {
                 return;
-            }
+
+            if (editor.target is GameObject)
+                return;
 
             if (editor.target is DefaultAsset)
             {
@@ -1091,7 +1092,7 @@ namespace HT.Framework
                     DrawNotepadPlusButton(editor);
                 }
             }
-            else if (editor.target is TextAsset)
+            else
             {
                 DrawNotepadPlusButton(editor);
             }

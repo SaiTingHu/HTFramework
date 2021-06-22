@@ -22,7 +22,7 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableDebugger, out Target.IsEnableDebugger, "Is Enable Debugger");
+            Toggle(Target.IsEnableDebugger, out Target.IsEnableDebugger, "Enable Debugger");
             GUILayout.EndHorizontal();
 
             if (Target.IsEnableDebugger)
@@ -32,7 +32,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                Toggle(Target.IsChinese, out Target.IsChinese, "Is Chinese");
+                Toggle(Target.IsChinese, out Target.IsChinese, "Chinese");
                 GUILayout.EndHorizontal();
             }
         }

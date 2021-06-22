@@ -19,17 +19,17 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsOpenRay, out Target.IsOpenRay, "Is Open Ray");
+            Toggle(Target.IsOpenRay, out Target.IsOpenRay, "Open Ray");
             GUILayout.EndHorizontal();
 
             GUI.enabled = Target.IsOpenRay;
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsOpenPrompt, out Target.IsOpenPrompt, "Is Open Prompt");
+            Toggle(Target.IsOpenPrompt, out Target.IsOpenPrompt, "Open Prompt");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsOpenHighlight, out Target.IsOpenHighlight, "Is Open Highlight");
+            Toggle(Target.IsOpenHighlight, out Target.IsOpenHighlight, "Open Highlight");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

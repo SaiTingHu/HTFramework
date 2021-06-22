@@ -69,7 +69,7 @@ namespace HT.Framework
             GUI.enabled = !EditorApplication.isPlaying;
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableHotfix, out Target.IsEnableHotfix, "Is Enable Hotfix");
+            Toggle(Target.IsEnableHotfix, out Target.IsEnableHotfix, "Enable Hotfix");
             GUILayout.EndHorizontal();
 
             if (Target.IsEnableHotfix)

@@ -19,9 +19,19 @@ namespace HT.Framework
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Is Can Control On UGUI");
+            Toggle(Target.CanControl, out Target.CanControl, "Can Control");
             GUILayout.EndHorizontal();
-            
+
+            GUI.enabled = Target.CanControl;
+
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Can Control On UGUI");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsCanByKey, out Target.IsCanByKey, "Can Control By Key");
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
@@ -45,6 +55,8 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             FloatField(Target.DampingTime, out Target.DampingTime, "      Damping Time");
             GUILayout.EndHorizontal();
+
+            GUI.enabled = true;
         }
     }
 }

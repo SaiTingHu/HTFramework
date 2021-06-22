@@ -10,6 +10,18 @@ namespace HT.Framework
     internal sealed class MousePosition : HTBehaviour
     {
         /// <summary>
+        /// 是否可以控制
+        /// </summary>
+        public bool CanControl = true;
+        /// <summary>
+        /// 在UGUI目标上是否可以控制
+        /// </summary>
+        public bool IsCanOnUGUI = false;
+        /// <summary>
+        /// 是否可以通过按键控制
+        /// </summary>
+        public bool IsCanByKey = true;
+        /// <summary>
         /// 阻尼缓冲时长
         /// </summary>
         public float DampingTime = 1;
@@ -17,11 +29,7 @@ namespace HT.Framework
         /// x轴移动速度，y轴移动速度，z轴移动速度
         /// </summary>
         public float XSpeed = 0.1f, YSpeed = 0.1f, ZSpeed = 0.1f;
-        /// <summary>
-        /// 在UGUI目标上是否可以控制
-        /// </summary>
-        public bool IsCanOnUGUI = false;
-
+        
         /// <summary>
         /// 最终的位置
         /// </summary>
@@ -38,11 +46,7 @@ namespace HT.Framework
         /// 追踪的目标
         /// </summary>
         private Transform _trackTarget;
-
-        /// <summary>
-        /// 是否可以控制
-        /// </summary>
-        public bool CanControl { get; set; } = true;
+        
         /// <summary>
         /// 注视目标
         /// </summary>
@@ -151,7 +155,7 @@ namespace HT.Framework
                 Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * -1);
                 MR.NeedDamping = false;
             }
-            else if (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.UpperLower) != 0)
+            else if (IsCanByKey && (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.UpperLower) != 0))
             {
                 if (_moveTweener != null)
                 {
