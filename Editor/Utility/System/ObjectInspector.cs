@@ -88,32 +88,39 @@ namespace HT.Framework
         /// </summary>
         private void FieldGUI()
         {
-            bool drawerValue = true;
-            int indentLevel = 0;
+            bool drawer = true;
+            int indent = 0;
             for (int i = 0; i < _fields.Count; i++)
             {
                 if (_fields[i].Drawer != null)
                 {
-                    EditorGUI.indentLevel = 0;
-                    indentLevel = 1;
-
-                    if (string.IsNullOrEmpty(_fields[i].Drawer.Style))
+                    if (_fields[i].IsDisplayDrawer)
                     {
-                        GUILayout.BeginHorizontal();
+                        EditorGUI.indentLevel = 0;
+                        indent = 1;
+
+                        if (string.IsNullOrEmpty(_fields[i].Drawer.Style))
+                        {
+                            GUILayout.BeginHorizontal();
+                        }
+                        else
+                        {
+                            GUILayout.BeginHorizontal(_fields[i].Drawer.Style);
+                            GUILayout.Space(10);
+                        }
+                        _fields[i].DrawerValue = EditorGUILayout.Foldout(_fields[i].DrawerValue, _fields[i].Drawer.Name, _fields[i].Drawer.ToggleOnLabelClick);
+                        drawer = _fields[i].DrawerValue;
+                        GUILayout.EndHorizontal();
                     }
                     else
                     {
-                        GUILayout.BeginHorizontal(_fields[i].Drawer.Style);
-                        GUILayout.Space(10);
+                        drawer = false;
                     }
-                    _fields[i].DrawerValue = EditorGUILayout.Foldout(_fields[i].DrawerValue, _fields[i].Drawer.Name, _fields[i].Drawer.ToggleOnLabelClick);
-                    drawerValue = _fields[i].DrawerValue;
-                    GUILayout.EndHorizontal();
                 }
 
-                if (drawerValue)
+                if (drawer)
                 {
-                    EditorGUI.indentLevel = indentLevel;
+                    EditorGUI.indentLevel = indent;
 
                     _fields[i].Painting(this);
                 }
@@ -154,15 +161,16 @@ namespace HT.Framework
         /// </summary>
         private void FieldSceneHandle()
         {
-            bool drawerValue = true;
+            bool drawer = true;
             for (int i = 0; i < _fields.Count; i++)
             {
                 if (_fields[i].Drawer != null)
                 {
-                    drawerValue = _fields[i].DrawerValue;
+                    if (_fields[i].IsDisplayDrawer) drawer = _fields[i].DrawerValue;
+                    else drawer = false;
                 }
 
-                if (drawerValue)
+                if (drawer)
                 {
                     _fields[i].SceneHandle(this);
                 }
@@ -201,8 +209,12 @@ namespace HT.Framework
             public Color UseColor = Color.white;
             public bool IsReadOnly = false;
             public DrawerAttribute Drawer;
+            public MethodInfo DrawerCondition;
             public bool DrawerValue = true;
 
+            /// <summary>
+            /// 是否激活
+            /// </summary>
             public bool IsEnable
             {
                 get
@@ -222,6 +234,9 @@ namespace HT.Framework
                     return !IsReadOnly && condition;
                 }
             }
+            /// <summary>
+            /// 是否显示
+            /// </summary>
             public bool IsDisplay
             {
                 get
@@ -236,6 +251,28 @@ namespace HT.Framework
                         else
                         {
                             condition = (bool)DisplayCondition.Invoke(Property.serializedObject.targetObject, null);
+                        }
+                    }
+                    return condition;
+                }
+            }
+            /// <summary>
+            /// 是否显示整个抽屉组
+            /// </summary>
+            public bool IsDisplayDrawer
+            {
+                get
+                {
+                    bool condition = true;
+                    if (DrawerCondition != null)
+                    {
+                        if (DrawerCondition.IsStatic)
+                        {
+                            condition = (bool)DrawerCondition.Invoke(null, null);
+                        }
+                        else
+                        {
+                            condition = (bool)DrawerCondition.Invoke(Property.serializedObject.targetObject, null);
                         }
                     }
                     return condition;
@@ -318,6 +355,14 @@ namespace HT.Framework
                         else if (iattributes[i] is DrawerAttribute)
                         {
                             Drawer = iattributes[i] as DrawerAttribute;
+                            if (!string.IsNullOrEmpty(Drawer.Condition))
+                            {
+                                DrawerCondition = property.serializedObject.targetObject.GetType().GetMethod(Drawer.Condition, flags);
+                                if (DrawerCondition != null && DrawerCondition.ReturnType != typeof(bool))
+                                {
+                                    DrawerCondition = null;
+                                }
+                            }
                             DrawerValue = Drawer.DefaultOpened;
                         }
                     }
@@ -348,7 +393,7 @@ namespace HT.Framework
                     }
                 }
             }
-
+            
             public void Painting(ObjectInspector inspector)
             {
                 if (IsDisplay)
@@ -428,7 +473,12 @@ namespace HT.Framework
                 {
                     object value = fieldInspector.Field.GetValue(inspector.target);
                     int selectIndex = Array.IndexOf(DAttribute.Values, value);
-                    if (selectIndex < 0) selectIndex = 0;
+                    if (selectIndex < 0)
+                    {
+                        selectIndex = 0;
+                        fieldInspector.Field.SetValue(inspector.target, DAttribute.Values[selectIndex]);
+                        inspector.HasChanged();
+                    }
                     
                     GUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
