@@ -28,10 +28,6 @@ namespace HT.Framework
         /// </summary>
         public float ElapseTime = 1;
         /// <summary>
-        /// 步骤Enter节点开始执行的所有操作的总时间
-        /// </summary>
-        [SerializeField] internal float Totaltime = 0;
-        /// <summary>
         /// 立即执行模式
         /// </summary>
         public bool Instant = false;
@@ -252,6 +248,15 @@ namespace HT.Framework
 #if UNITY_EDITOR
         internal static float Width = 150;
         internal static float Height = 40;
+
+        /// <summary>
+        /// 步骤Enter节点开始执行的所有操作的总时间
+        /// </summary>
+        internal float Totaltime = 0;
+        /// <summary>
+        /// 步骤是否被高级筛查选中
+        /// </summary>
+        internal bool IsSearched = false;
 
         /// <summary>
         /// 步骤助手名称

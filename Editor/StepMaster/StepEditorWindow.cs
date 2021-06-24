@@ -14,7 +14,35 @@ namespace HT.Framework
         private static HTFAction<StepContent> AddStepContentHandler;
         private static HTFFunc<string, string> NewHelperScriptHandler;
         private static HTFFunc<ControlMode, Vector3> GetBestViewHandler;
+        private static Dictionary<string, HTFFunc<StepContent, bool>> AdvancedSearchHandlers = new Dictionary<string, HTFFunc<StepContent, bool>>();
 
+        /// <summary>
+        /// 静态构造函数
+        /// </summary>
+        static StepEditorWindow()
+        {
+            AdvancedSearchHandlers.Add("所有存在空目标的步骤", (stepContent) =>
+            {
+                if (stepContent.TargetGUID == "<None>")
+                {
+                    return true;
+                }
+                else
+                {
+                    return stepContent.Operations.Exists((o) =>
+                    {
+                        return o.TargetGUID == "<None>";
+                    });
+                }
+            });
+            AdvancedSearchHandlers.Add("所有包含[行为]节点的步骤", (stepContent) =>
+            {
+                return stepContent.Operations.Exists((o) =>
+                {
+                    return o.OperationType == StepOperationType.Action || o.OperationType == StepOperationType.ActionArgs;
+                });
+            });
+        }
         /// <summary>
         /// 注册【新增步骤内容】时的自定义处理者
         /// </summary>
@@ -38,6 +66,18 @@ namespace HT.Framework
         public static void RegisterGetBestViewHandler(HTFFunc<ControlMode, Vector3> handler)
         {
             GetBestViewHandler = handler;
+        }
+        /// <summary>
+        /// 注册【步骤列表高级筛查】的自定义筛查方法
+        /// </summary>
+        /// <param name="name">筛查名称</param>
+        /// <param name="handler">筛查方法</param>
+        public static void RegisterAdvancedSearchHandler(string name, HTFFunc<StepContent, bool> handler)
+        {
+            if (AdvancedSearchHandlers.ContainsKey(name))
+                return;
+
+            AdvancedSearchHandlers.Add(name, handler);
         }
         /// <summary>
         /// 打开窗口
@@ -78,9 +118,11 @@ namespace HT.Framework
         private GUIContent _stepGC;
         private GUIContent _stepHelperGC;
         private GUIContent _previewGC;
+        private GUIContent _advancedSearchGC;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
-        private string _stepListFilter = "";
+        private string _stepListFilter = null;
+        private string _stepListAdvancedSearch = null;
         private float _stepListGUIWidth = 340;
         private bool _isMoveTo = false;
         private int _moveToIndex = 1;
@@ -137,6 +179,8 @@ namespace HT.Framework
             _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
             _stepHelperGC = new GUIContent();
             _previewGC = EditorGUIUtility.IconContent("AudioMixerView Icon");
+            _advancedSearchGC = EditorGUIUtility.IconContent("FilterByType");
+            _advancedSearchGC.tooltip = "Advanced Search";
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
             _ct = FindObjectOfType<CameraTarget>();
@@ -448,11 +492,29 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             _stepListFilter = EditorGUILayout.TextField("", _stepListFilter, EditorGlobalTools.Styles.SearchTextField);
-            if (GUILayout.Button("", _stepListFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
+            if (GUILayout.Button("", string.IsNullOrEmpty(_stepListFilter) ? EditorGlobalTools.Styles.SearchCancelButtonEmpty : EditorGlobalTools.Styles.SearchCancelButton))
             {
-                _stepListFilter = "";
+                _stepListFilter = null;
                 GUI.FocusControl(null);
             }
+            GUI.color = string.IsNullOrEmpty(_stepListAdvancedSearch) ? Color.white : Color.yellow;
+            if (GUILayout.Button(_advancedSearchGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20)))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent(GetWord("<None>")), string.IsNullOrEmpty(_stepListAdvancedSearch), () =>
+                {
+                    AdvancedSearchChange(null);
+                });
+                foreach (var handler in AdvancedSearchHandlers)
+                {
+                    gm.AddItem(new GUIContent(handler.Key), _stepListAdvancedSearch == handler.Key, () =>
+                    {
+                        AdvancedSearchChange(handler.Key);
+                    });
+                }
+                gm.ShowAsContext();
+            }
+            GUI.color = Color.white;
             GUILayout.EndHorizontal();
             #endregion
 
@@ -461,26 +523,29 @@ namespace HT.Framework
             for (int i = 0; i < _contentAsset.Content.Count; i++)
             {
                 string showName = StepShowName(_contentAsset.Content[i]);
-                if (showName.Contains(_stepListFilter))
+                if (string.IsNullOrEmpty(_stepListFilter) || showName.Contains(_stepListFilter))
                 {
-                    GUILayout.BeginHorizontal();
-                    if (_isShowAncillary && _contentAsset.Content[i].Ancillary != "")
+                    if (string.IsNullOrEmpty(_stepListAdvancedSearch) || _contentAsset.Content[i].IsSearched)
                     {
-                        GUI.color = Color.yellow;
-                        GUILayout.Label("[" + _contentAsset.Content[i].Ancillary + "]", GUILayout.Height(16));
+                        GUILayout.BeginHorizontal();
+                        if (_isShowAncillary && !string.IsNullOrEmpty(_contentAsset.Content[i].Ancillary))
+                        {
+                            GUI.color = Color.yellow;
+                            GUILayout.Label("[" + _contentAsset.Content[i].Ancillary + "]", GUILayout.Height(16));
+                        }
+                        GUI.color = _contentAsset.Content[i].TargetGUID != "<None>" ? Color.white : Color.gray;
+                        string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
+                        _stepGC.text = i + "." + showName;
+                        _stepGC.tooltip = _contentAsset.Content[i].Prompt;
+                        if (GUILayout.Button(_stepGC, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
+                        {
+                            SelectStepContent(i);
+                            SelectStepOperation(-1);
+                            GUI.FocusControl(null);
+                        }
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
                     }
-                    GUI.color = _contentAsset.Content[i].TargetGUID != "<None>" ? Color.white : Color.gray;
-                    string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
-                    _stepGC.text = i + "." + showName;
-                    _stepGC.tooltip = _contentAsset.Content[i].Prompt;
-                    if (GUILayout.Button(_stepGC, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
-                    {
-                        SelectStepContent(i);
-                        SelectStepOperation(-1);
-                        GUI.FocusControl(null);
-                    }
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
                 }
             }
             GUI.color = Color.white;
@@ -1490,6 +1555,7 @@ namespace HT.Framework
                                     if (0 < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(0);
+                                        SelectStepOperation(-1);
                                         SetStepListScroll(0);
                                         GUI.changed = true;
                                     }
@@ -1500,6 +1566,7 @@ namespace HT.Framework
                                     if (stepIndex < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(stepIndex);
+                                        SelectStepOperation(-1);
                                         SetStepListScroll((float)stepIndex / (_contentAsset.Content.Count - 1));
                                         GUI.changed = true;
                                     }
@@ -1511,6 +1578,7 @@ namespace HT.Framework
                                     if (0 < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(_contentAsset.Content.Count - 1);
+                                        SelectStepOperation(-1);
                                         SetStepListScroll(1);
                                         GUI.changed = true;
                                     }
@@ -1521,6 +1589,7 @@ namespace HT.Framework
                                     if (stepIndex >= 0 && stepIndex < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(stepIndex);
+                                        SelectStepOperation(-1);
                                         SetStepListScroll((float)stepIndex / (_contentAsset.Content.Count - 1));
                                         GUI.changed = true;
                                     }
@@ -2010,6 +2079,27 @@ namespace HT.Framework
         private void SetStepListScroll(float scroll)
         {
             _stepListScroll.Set(0, scroll * (_contentAsset.Content.Count * 20 - position.height));
+        }
+        /// <summary>
+        /// 高级筛查方法改变
+        /// </summary>
+        private void AdvancedSearchChange(string searchName)
+        {
+            SelectStepContent(-1);
+            SelectStepOperation(-1);
+
+            if (_stepListAdvancedSearch == searchName)
+                return;
+           
+            _stepListAdvancedSearch = searchName;
+            if (!string.IsNullOrEmpty(_stepListAdvancedSearch))
+            {
+                for (int i = 0; i < _contentAsset.Content.Count; i++)
+                {
+                    StepContent stepContent = _contentAsset.Content[i];
+                    stepContent.IsSearched = AdvancedSearchHandlers[_stepListAdvancedSearch].Invoke(stepContent);
+                }
+            }
         }
 
         /// <summary>
