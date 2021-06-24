@@ -9,10 +9,10 @@ namespace HT.Framework
     /// </summary>
     public static class YieldInstructioner
     {
-        private static WaitForEndOfFrame _waitForEndOfFrame = new WaitForEndOfFrame();
-        private static WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
-        private static Dictionary<string, WaitForSeconds> _waitForSeconds = new Dictionary<string, WaitForSeconds>();
-        private static Dictionary<string, WaitForSecondsRealtime> _waitForSecondsRealtime = new Dictionary<string, WaitForSecondsRealtime>();
+        private static WaitForEndOfFrame CurrentWaitForEndOfFrame = new WaitForEndOfFrame();
+        private static WaitForFixedUpdate CurrentWaitForFixedUpdate = new WaitForFixedUpdate();
+        private static Dictionary<string, WaitForSeconds> AllWaitForSeconds = new Dictionary<string, WaitForSeconds>();
+        private static Dictionary<string, WaitForSecondsRealtime> AllWaitForSecondsRealtimes = new Dictionary<string, WaitForSecondsRealtime>();
 
         /// <summary>
         /// 获取WaitForEndOfFrame对象
@@ -20,7 +20,7 @@ namespace HT.Framework
         /// <returns>WaitForEndOfFrame对象</returns>
         public static WaitForEndOfFrame GetWaitForEndOfFrame()
         {
-            return _waitForEndOfFrame;
+            return CurrentWaitForEndOfFrame;
         }
         /// <summary>
         /// 获取WaitForFixedUpdate对象
@@ -28,7 +28,7 @@ namespace HT.Framework
         /// <returns>WaitForFixedUpdate对象</returns>
         public static WaitForFixedUpdate GetWaitForFixedUpdate()
         {
-            return _waitForFixedUpdate;
+            return CurrentWaitForFixedUpdate;
         }
         /// <summary>
         /// 获取WaitForSeconds对象
@@ -38,11 +38,11 @@ namespace HT.Framework
         public static WaitForSeconds GetWaitForSeconds(float second)
         {
             string secondStr = second.ToString("F2");
-            if (!_waitForSeconds.ContainsKey(secondStr))
+            if (!AllWaitForSeconds.ContainsKey(secondStr))
             {
-                _waitForSeconds.Add(secondStr, new WaitForSeconds(second));
+                AllWaitForSeconds.Add(secondStr, new WaitForSeconds(second));
             }
-            return _waitForSeconds[secondStr];
+            return AllWaitForSeconds[secondStr];
         }
         /// <summary>
         /// 获取WaitForSecondsRealtime对象
@@ -52,11 +52,11 @@ namespace HT.Framework
         public static WaitForSecondsRealtime GetWaitForSecondsRealtime(float second)
         {
             string secondStr = second.ToString("F2");
-            if (!_waitForSecondsRealtime.ContainsKey(secondStr))
+            if (!AllWaitForSecondsRealtimes.ContainsKey(secondStr))
             {
-                _waitForSecondsRealtime.Add(secondStr, new WaitForSecondsRealtime(second));
+                AllWaitForSecondsRealtimes.Add(secondStr, new WaitForSecondsRealtime(second));
             }
-            return _waitForSecondsRealtime[secondStr];
+            return AllWaitForSecondsRealtimes[secondStr];
         }
         /// <summary>
         /// 获取WaitUntil对象
@@ -75,6 +75,14 @@ namespace HT.Framework
         public static WaitWhile GetWaitWhile(Func<bool> predicate)
         {
             return new WaitWhile(predicate);
+        }
+        /// <summary>
+        /// 清空缓存池
+        /// </summary>
+        public static void ClearPool()
+        {
+            AllWaitForSeconds.Clear();
+            AllWaitForSecondsRealtimes.Clear();
         }
     }
 }

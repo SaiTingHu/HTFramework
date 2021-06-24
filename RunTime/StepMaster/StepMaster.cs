@@ -13,11 +13,6 @@ namespace HT.Framework
     public sealed class StepMaster : InternalModuleBase<IStepMasterHelper>
     {
         /// <summary>
-        /// 步骤跳过时的速度
-        /// </summary>
-        public static int SkipMultiple = 1;
-
-        /// <summary>
         /// 步骤资源
         /// </summary>
         public StepContentAsset ContentAsset;
@@ -66,7 +61,7 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction EndEvent;
 
-        //所有的 StepTarget <步骤目标ID、步骤目标>
+        //所有的 步骤目标 <步骤目标ID、步骤目标>
         private Dictionary<string, StepTarget> _targets = new Dictionary<string, StepTarget>();
         //所有的 自定义执行顺序 <原始步骤ID、目标步骤ID>
         private Dictionary<string, string> _customOrder = new Dictionary<string, string>();
@@ -972,13 +967,13 @@ namespace HT.Framework
                 _currentHelper.OnSkip();
                 if (_currentHelper.SkipLifeTime > 0)
                 {
-                    yield return YieldInstructioner.GetWaitForSeconds(_currentHelper.SkipLifeTime / SkipMultiple);
+                    yield return YieldInstructioner.GetWaitForSeconds(_currentHelper.SkipLifeTime);
                 }
                 _currentHelper.OnTermination();
                 _currentHelper = null;
             }
 
-            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, elapseTime / SkipMultiple));
+            _waitCoroutine = Main.Current.StartCoroutine(WaitCoroutine(ChangeNextStep, elapseTime));
         }
         /// <summary>
         /// 跳过到指定步骤
@@ -1038,13 +1033,13 @@ namespace HT.Framework
                     _currentHelper.OnSkip();
                     if (_currentHelper.SkipLifeTime > 0)
                     {
-                        yield return YieldInstructioner.GetWaitForSeconds(_currentHelper.SkipLifeTime / SkipMultiple);
+                        yield return YieldInstructioner.GetWaitForSeconds(_currentHelper.SkipLifeTime);
                     }
                     _currentHelper.OnTermination();
                     _currentHelper = null;
                 }
 
-                yield return YieldInstructioner.GetWaitForSeconds(elapseTime / SkipMultiple);
+                yield return YieldInstructioner.GetWaitForSeconds(elapseTime);
 
                 _currentStepIndex += 1;
             }

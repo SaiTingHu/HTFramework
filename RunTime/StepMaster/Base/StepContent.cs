@@ -174,7 +174,7 @@ namespace HT.Framework
                             Skip(i);
                         }
                     }
-                }, Operations[stepIndex].ElapseTime / StepMaster.SkipMultiple);
+                }, Operations[stepIndex].ElapseTime);
             }
         }
 

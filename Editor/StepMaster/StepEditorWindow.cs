@@ -113,6 +113,7 @@ namespace HT.Framework
             "Move","Rotate","Scale","Color","Delay"
             ,"Active","Action","ActionArgs","FSM","TextMesh"
             ,"Prompt","CameraFollow","ActiveComponent","Transform","ChangeParent"
+            ,"PlayTimeline"
         };
 
         private string _stepListBGStyle;
@@ -164,7 +165,7 @@ namespace HT.Framework
 
             GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
 
-            StepContentRemovableGUI();
+            StepContentMovableGUI();
         }
         protected override void OnTitleGUI()
         {
@@ -378,6 +379,9 @@ namespace HT.Framework
             AddWord("激活组件", "ActiveComponent");
             AddWord("变换", "Transform");
             AddWord("改变父级", "ChangeParent");
+            AddWord("播放时间线", "PlayTimeline");
+            AddWord("持续的时间", "Duration");
+            AddWord("初始的时间", "Initial Time");
         }
         protected override void OnLanguageChanged()
         {
@@ -1156,7 +1160,7 @@ namespace HT.Framework
         /// <summary>
         /// 步骤内容GUI（可移动内容加连线）
         /// </summary>
-        private void StepContentRemovableGUI()
+        private void StepContentMovableGUI()
         {
             if (_isShowStepOperation && _currentStep != -1)
             {
@@ -1233,8 +1237,12 @@ namespace HT.Framework
                 {
                     StepOperation operation = _currentStepObj.Operations[i];
                     GUI.color = operation.TargetGUID != "<None>" ? Color.white : Color.gray;
-                    string style = _currentOperation == i ? "flow node 0 on" : "flow node 0";
-                    string showName = string.Format("[{0}] {1}\r\n{2}", GetWord(operation.OperationType.ToString()), operation.Name, operation.Instant ? GetWord("Instant") : (operation.ElapseTime.ToString() + "s"));
+                    GUIStyle style = _currentOperation == i ? "flow node 0 on" : "flow node 0";
+                    style.richText = true;
+                    string showName = string.Format("[<color=cyan>{0}</color>] {1}\r\n<color=yellow>{2}</color>"
+                        , GetWord(operation.OperationType.ToString())
+                        , operation.Name
+                        , operation.Instant ? GetWord("Instant") : (operation.ElapseTime.ToString() + "s"));
                     Rect leftRect = operation.LeftPosition;
                     Rect rightRect = operation.RightPosition;
                     Rect operationRect = operation.Position;
@@ -1255,7 +1263,8 @@ namespace HT.Framework
 
                 #region Enter
                 Rect enterRect = _currentStepObj.EnterPosition;
-                GUI.Box(enterRect, GetWord("Enter") + "\r\n" + _currentStepObj.Totaltime.ToString() + "s", "flow node 3");
+                string enterName = string.Format("{0}\r\n{1}s", GetWord("Enter"), _currentStepObj.Totaltime.ToString());
+                GUI.Box(enterRect, enterName, "flow node 3");
                 EditorGUIUtility.AddCursorRect(enterRect, MouseCursor.MoveArrow);
                 #endregion
                 

@@ -3,6 +3,7 @@ using System.Reflection;
 using DG.Tweening;
 using System;
 using UnityEngine.UI;
+using UnityEngine.Playables;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -81,6 +82,9 @@ namespace HT.Framework
                     break;
                 case StepOperationType.ChangeParent:
                     ChangeParentExecute();
+                    break;
+                case StepOperationType.PlayTimeline:
+                    PlayTimelineExecute();
                     break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 Execute 定义！");
@@ -245,6 +249,14 @@ namespace HT.Framework
                 Target.transform.SetParent(parent.transform);
             }
         }
+        private void PlayTimelineExecute()
+        {
+            PlayableDirector director = Target.GetComponent<PlayableDirector>();
+            if (director && director.playableAsset)
+            {
+                director.Play();
+            }
+        }
         #endregion
 
         #region Skip
@@ -297,6 +309,9 @@ namespace HT.Framework
                 case StepOperationType.ChangeParent:
                     ChangeParentSkip();
                     break;
+                case StepOperationType.PlayTimeline:
+                    PlayTimelineSkip();
+                    break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 Skip 定义！");
                     break;
@@ -310,7 +325,7 @@ namespace HT.Framework
             }
             else
             {
-                Target.transform.DOLocalMove(Vector3Value, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                Target.transform.DOLocalMove(Vector3Value, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void RotateSkip()
@@ -330,11 +345,11 @@ namespace HT.Framework
             {
                 if (BoolValue)
                 {
-                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime / StepMaster.SkipMultiple, RotateMode.LocalAxisAdd).SetEase(AnimationEase);
+                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime, RotateMode.LocalAxisAdd).SetEase(AnimationEase);
                 }
                 else
                 {
-                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                    Target.transform.DOLocalRotate(Vector3Value, ElapseTime).SetEase(AnimationEase);
                 }
             }
         }
@@ -346,7 +361,7 @@ namespace HT.Framework
             }
             else
             {
-                Target.transform.DOScale(Vector3Value, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                Target.transform.DOScale(Vector3Value, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void ColorSkip()
@@ -359,7 +374,7 @@ namespace HT.Framework
                     Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
-                renderer.material.DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                renderer.material.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
             }
             if (BoolValue2)
             {
@@ -369,7 +384,7 @@ namespace HT.Framework
                     Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Graphic！无法播放颜色改变动画！");
                     return;
                 }
-                graphic.DOColor(ColorValue, ElapseTime / StepMaster.SkipMultiple).SetEase(AnimationEase);
+                graphic.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void ActiveSkip()
@@ -446,10 +461,9 @@ namespace HT.Framework
             }
             else
             {
-                float time = ElapseTime / StepMaster.SkipMultiple;
-                Target.transform.DOLocalMove(Vector3Value, time).SetEase(AnimationEase);
-                Target.transform.DOLocalRotate(Vector3Value2, time).SetEase(AnimationEase);
-                Target.transform.DOScale(Vector3Value3, time).SetEase(AnimationEase);
+                Target.transform.DOLocalMove(Vector3Value, ElapseTime).SetEase(AnimationEase);
+                Target.transform.DOLocalRotate(Vector3Value2, ElapseTime).SetEase(AnimationEase);
+                Target.transform.DOScale(Vector3Value3, ElapseTime).SetEase(AnimationEase);
             }
         }
         private void ChangeParentSkip()
@@ -458,6 +472,14 @@ namespace HT.Framework
             if (parent != null && parent.gameObject != Target)
             {
                 Target.transform.SetParent(parent.transform);
+            }
+        }
+        private void PlayTimelineSkip()
+        {
+            PlayableDirector director = Target.GetComponent<PlayableDirector>();
+            if (director && director.playableAsset)
+            {
+                director.Play();
             }
         }
         #endregion
@@ -511,6 +533,9 @@ namespace HT.Framework
                     break;
                 case StepOperationType.ChangeParent:
                     ChangeParentSkipImmediate();
+                    break;
+                case StepOperationType.PlayTimeline:
+                    PlayTimelineSkipImmediate();
                     break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 SkipImmediate 定义！");
@@ -637,6 +662,14 @@ namespace HT.Framework
                 Target.transform.SetParent(parent.transform);
             }
         }
+        private void PlayTimelineSkipImmediate()
+        {
+            PlayableDirector director = Target.GetComponent<PlayableDirector>();
+            if (director && director.playableAsset)
+            {
+                director.time = director.duration;
+            }
+        }
         #endregion
 
         #region EditorOnly
@@ -726,6 +759,9 @@ namespace HT.Framework
                     break;
                 case StepOperationType.ChangeParent:
                     ChangeParentGUI(getWord);
+                    break;
+                case StepOperationType.PlayTimeline:
+                    PlayTimelineGUI(getWord);
                     break;
                 default:
                     Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 OnEditorGUI 定义！");
@@ -1335,6 +1371,39 @@ namespace HT.Framework
             }
             #endregion
         }
+        private void PlayTimelineGUI(HTFFunc<string, string> getWord)
+        {
+            PlayableDirector director = null;
+            if (Target)
+            {
+                director = Target.GetComponent<PlayableDirector>();
+            }
+
+            if (director && director.playableAsset)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(getWord("Initial Time") + ":", GUILayout.Width(80));
+                GUILayout.Label(director.initialTime.ToString("F2") + "s");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(getWord("Duration") + ":", GUILayout.Width(80));
+                GUILayout.Label(director.duration.ToString("F2") + "s");
+                GUILayout.EndHorizontal();
+            }
+            else
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(getWord("Initial Time") + ":", GUILayout.Width(80));
+                GUILayout.Label("-");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(getWord("Duration") + ":", GUILayout.Width(80));
+                GUILayout.Label("-");
+                GUILayout.EndHorizontal();
+            }
+        }
 
         internal void InitPreviewTarget(StepContent stepContent)
         {
@@ -1361,6 +1430,7 @@ namespace HT.Framework
                 case StepOperationType.FSM:
                 case StepOperationType.Delay:
                 case StepOperationType.ActiveComponent:
+                case StepOperationType.PlayTimeline:
                     break;
                 case StepOperationType.Transform:
                     TransformPreviewTarget();
@@ -1511,5 +1581,10 @@ namespace HT.Framework
         /// </summary>
         [Remark("改变父级")]
         ChangeParent,
+        /// <summary>
+        /// 播放时间线
+        /// </summary>
+        [Remark("播放时间线")]
+        PlayTimeline
     }
 }
