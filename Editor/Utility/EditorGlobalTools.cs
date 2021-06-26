@@ -1151,7 +1151,7 @@ namespace HT.Framework
                     NotepadPlusPath = value.ToString();
                 }
                 Process process = new Process();
-                process.StartInfo = new ProcessStartInfo(NotepadPlusPath, filePath);
+                process.StartInfo = new ProcessStartInfo(NotepadPlusPath, "\"" + filePath + "\"");
                 process.Start();
             }
             catch
