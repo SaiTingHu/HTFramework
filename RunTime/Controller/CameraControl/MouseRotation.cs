@@ -140,7 +140,7 @@ namespace HT.Framework
                 {
                     if (Distance <= MinDistance || Distance >= MaxDistance)
                     {
-                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel));
+                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * _factor);
                     }
                 }
             }

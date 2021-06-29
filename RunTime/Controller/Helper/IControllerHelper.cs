@@ -106,6 +106,18 @@ namespace HT.Framework
         /// <param name="m">滚轮缩放速度</param>
         void SetRotateSpeed(float x, float y, float m);
         /// <summary>
+        /// 自由控制：设置摄像机旋转时视角Y轴的限制
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        void SetAngleLimit(float min, float max);
+        /// <summary>
+        /// 自由控制：设置摄像机注视距离的最小值和最大值
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        void SetMinMaxDistance(float min, float max);
+        /// <summary>
         /// 自由控制：进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>

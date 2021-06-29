@@ -356,6 +356,26 @@ namespace HT.Framework
             _mouseRotation.MSpeed = m;
         }
         /// <summary>
+        /// 自由控制：设置摄像机旋转时视角Y轴的限制
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        public void SetAngleLimit(float min, float max)
+        {
+            _mouseRotation.YMinAngleLimit = min;
+            _mouseRotation.YMaxAngleLimit = max;
+        }
+        /// <summary>
+        /// 自由控制：设置摄像机注视距离的最小值和最大值
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        public void SetMinMaxDistance(float min, float max)
+        {
+            _mouseRotation.MinDistance = min;
+            _mouseRotation.MaxDistance = max;
+        }
+        /// <summary>
         /// 自由控制：进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>

@@ -314,6 +314,7 @@ namespace HT.Framework
         {
             FreeControlBounds.Clear();
         }
+
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>
@@ -377,6 +378,24 @@ namespace HT.Framework
         public void SetRotateSpeed(Vector3 speed)
         {
             _helper.SetRotateSpeed(speed.x, speed.y, speed.z);
+        }
+        /// <summary>
+        /// 自由控制：设置摄像机旋转时视角Y轴的限制
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        public void SetAngleLimit(float min, float max)
+        {
+            _helper.SetAngleLimit(min, max);
+        }
+        /// <summary>
+        /// 自由控制：设置摄像机注视距离的最小值和最大值
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        public void SetMinMaxDistance(float min, float max)
+        {
+            _helper.SetMinMaxDistance(min, max);
         }
         /// <summary>
         /// 自由控制：进入保持追踪模式
