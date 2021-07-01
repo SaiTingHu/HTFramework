@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.SceneManagement;
 #endif
 
 namespace HT.Framework
@@ -312,15 +313,32 @@ namespace HT.Framework
             }
             else
             {
+#if UNITY_EDITOR
+                if (IsEditorMode)
+                {
+                    LoadSceneParameters parameters = new LoadSceneParameters()
+                    {
+                        loadSceneMode = LoadSceneMode.Additive,
+                        localPhysicsMode = LocalPhysicsMode.None
+                    };
+                    EditorSceneManager.LoadSceneAsyncInPlayMode(info.AssetPath, parameters);
+                }
+                else
+                {
+                    yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
+                    yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                }
+#else
                 yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
-                yield return SceneManager.LoadSceneAsync(info.AssetPath, LoadSceneMode.Additive);
+                yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+#endif
             }
 
             float endTime = Time.realtimeSinceStartup;
 
             Log.Info(string.Format("异步加载场景完成[{0}模式]：{1}\r\n等待耗时：{2}秒  加载耗时：{3}秒"
                 , LoadMode.ToString()
-                , info.AssetPath
+                , info.ResourcePath
                 , waitTime - beginTime
                 , endTime - waitTime));
 

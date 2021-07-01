@@ -16,7 +16,15 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             _target.IsEnableBounds = GUILayout.Toggle(_target.IsEnableBounds, "Is Enable Bounds");
             GUILayout.EndHorizontal();
-            
+
+            GUILayout.BeginHorizontal();
+            _target.EnablePositionControl = GUILayout.Toggle(_target.EnablePositionControl, "Enable Position Control");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            _target.EnableRotationControl = GUILayout.Toggle(_target.EnableRotationControl, "Enable Rotation Control");
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginHorizontal();
             _target.IsCanControlOnUGUI = GUILayout.Toggle(_target.IsCanControlOnUGUI, "Is Can Control On UGUI");
             GUILayout.EndHorizontal();

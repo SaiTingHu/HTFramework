@@ -5,7 +5,7 @@ namespace HT.Framework
     /// </summary>
     public sealed class SceneInfo : ResourceInfoBase
     {
-        public SceneInfo(string assetBundleName, string sceneName) : base(assetBundleName, sceneName, null)
+        public SceneInfo(string assetBundleName, string assetPath, string sceneName) : base(assetBundleName, assetPath, sceneName)
         {
 
         }
