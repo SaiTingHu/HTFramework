@@ -1072,7 +1072,9 @@ namespace HT.Framework
             if (editor.targets != null && editor.targets.Length > 1)
                 return;
 
-            if (editor.target is GameObject || editor.target is MonoScript)
+            if (editor.target is GameObject
+                || editor.target is MonoScript
+                || editor.target is Shader)
                 return;
 
             if (editor.target is DefaultAsset)
