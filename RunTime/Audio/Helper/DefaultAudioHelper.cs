@@ -367,26 +367,6 @@ namespace HT.Framework
             BackgroundSource.Play();
         }
         /// <summary>
-        /// 播放背景音乐
-        /// </summary>
-        /// <param name="clip">音乐剪辑</param>
-        public void PlayBackgroundMusic(AudioClip clip)
-        {
-            if (clip == null)
-                return;
-
-            BackgroundSource.DOKill();
-
-            if (BackgroundSource.isPlaying)
-            {
-                BackgroundSource.Stop();
-            }
-
-            BackgroundSource.clip = clip;
-            BackgroundSource.volume = BackgroundVolume;
-            BackgroundSource.Play();
-        }
-        /// <summary>
         /// 暂停播放背景音乐
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
@@ -412,7 +392,7 @@ namespace HT.Framework
         /// 恢复播放背景音乐
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
-        public void UnPauseBackgroundMusic(bool isGradual = true)
+        public void ResumeBackgroundMusic(bool isGradual = true)
         {
             BackgroundSource.DOKill();
 
@@ -467,27 +447,6 @@ namespace HT.Framework
             _singlePlayDetector = true;
         }
         /// <summary>
-        /// 播放单通道音效
-        /// </summary>
-        /// <param name="clip">音乐剪辑</param>
-        public void PlaySingleSound(AudioClip clip)
-        {
-            if (clip == null)
-                return;
-
-            SingleSource.DOKill();
-
-            if (SingleSource.isPlaying)
-            {
-                SingleSource.Stop();
-            }
-
-            SingleSource.clip = clip;
-            SingleSource.volume = SingleVolume;
-            SingleSource.Play();
-            _singlePlayDetector = true;
-        }
-        /// <summary>
         /// 暂停播放单通道音效
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
@@ -513,7 +472,7 @@ namespace HT.Framework
         /// 恢复播放单通道音效
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
-        public void UnPauseSingleSound(bool isGradual = true)
+        public void ResumeSingleSound(bool isGradual = true)
         {
             SingleSource.DOKill();
 
@@ -557,19 +516,6 @@ namespace HT.Framework
             audio.clip = clip;
             audio.loop = isLoop;
             audio.pitch = speed;
-            audio.Play();
-        }
-        /// <summary>
-        /// 播放多通道音效
-        /// </summary>
-        /// <param name="clip">音乐剪辑</param>
-        public void PlayMultipleSound(AudioClip clip)
-        {
-            if (clip == null)
-                return;
-
-            AudioSource audio = ExtractIdleMultipleAudioSource();
-            audio.clip = clip;
             audio.Play();
         }
         /// <summary>
@@ -659,36 +605,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 播放世界音效
-        /// </summary>
-        /// <param name="attachTarget">附加目标</param>
-        /// <param name="clip">音乐剪辑</param>
-        public void PlayWorldSound(GameObject attachTarget, AudioClip clip)
-        {
-            if (attachTarget == null || clip == null)
-                return;
-
-            if (WorldSources.ContainsKey(attachTarget))
-            {
-                AudioSource audio = WorldSources[attachTarget];
-                audio.DOKill();
-                if (audio.isPlaying)
-                {
-                    audio.Stop();
-                }
-                audio.clip = clip;
-                audio.volume = WorldVolume;
-                audio.Play();
-            }
-            else
-            {
-                AudioSource audio = AudioToolkit.AttachAudioSource(attachTarget, WorldPriority, WorldVolume, 1, 1, Mute);
-                WorldSources.Add(attachTarget, audio);
-                audio.clip = clip;
-                audio.Play();
-            }
-        }
-        /// <summary>
         /// 暂停播放指定的世界音效
         /// </summary>
         /// <param name="attachTarget">附加目标</param>
@@ -722,7 +638,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="attachTarget">附加目标</param>
         /// <param name="isGradual">是否渐进式</param>
-        public void UnPauseWorldSound(GameObject attachTarget, bool isGradual = true)
+        public void ResumeWorldSound(GameObject attachTarget, bool isGradual = true)
         {
             if (attachTarget == null)
                 return;
@@ -807,17 +723,6 @@ namespace HT.Framework
                 return;
 
             OneShootSource.PlayOneShot(clip, volumeScale);
-        }
-        /// <summary>
-        /// 播放OneShoot音效
-        /// </summary>
-        /// <param name="clip">音效剪辑</param>
-        public void PlayOneShoot(AudioClip clip)
-        {
-            if (clip == null)
-                return;
-
-            OneShootSource.PlayOneShot(clip);
         }
 
         /// <summary>

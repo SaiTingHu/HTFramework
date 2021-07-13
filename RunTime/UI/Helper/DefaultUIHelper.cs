@@ -238,7 +238,7 @@ namespace HT.Framework
             {
                 foreach (var ui in WorldUIs)
                 {
-                    ui.Value.OnRefresh();
+                    ui.Value.OnUpdate();
                 }
             }
         }
@@ -316,7 +316,6 @@ namespace HT.Framework
                         if (OverlayUIs.ContainsKey(type))
                         {
                             UILogicBase ui = OverlayUIs[type];
-
                             if (!ui.IsCreated)
                             {
                                 return CreateUIEntity(attribute, type.FullName, ui, _overlayResidentPanel);
@@ -324,14 +323,13 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
                         {
                             UILogicBase ui = CameraUIs[type];
-
                             if (!ui.IsCreated)
                             {
                                 return CreateUIEntity(attribute, type.FullName, ui, _cameraResidentPanel);
@@ -339,7 +337,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.World:
@@ -349,7 +347,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
                         }
                 }
             }
@@ -371,7 +369,6 @@ namespace HT.Framework
                         if (OverlayUIs.ContainsKey(type))
                         {
                             UILogicBase ui = OverlayUIs[type];
-
                             if (!ui.IsCreated)
                             {
                                 return CreateUIEntity(attribute, type.FullName, ui, _overlayTemporaryPanel);
@@ -379,14 +376,13 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
                         {
                             UILogicBase ui = CameraUIs[type];
-
                             if (!ui.IsCreated)
                             {
                                 return CreateUIEntity(attribute, type.FullName, ui, _cameraTemporaryPanel);
@@ -394,7 +390,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.World:
@@ -404,7 +400,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
                         }
                 }
             }
@@ -447,7 +443,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.Camera:
@@ -474,7 +470,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.World:
@@ -484,7 +480,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
                         }
                 }
             }
@@ -538,7 +534,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.Camera:
@@ -576,7 +572,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
                         }
                         break;
                     case UIType.World:
@@ -586,7 +582,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
+                            throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 的域 {1} 并未存在！", type.Name, attribute.WorldUIDomainName));
                         }
                 }
             }
@@ -620,7 +616,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
+                            return null;
                         }
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
@@ -638,7 +634,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
+                            return null;
                         }
                     case UIType.World:
                         if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
@@ -647,7 +643,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
+                            return null;
                         }
                 }
             }
@@ -677,10 +673,6 @@ namespace HT.Framework
                             ui.UIEntity.transform.SetAsLastSibling();
                             ui.OnPlaceTop();
                         }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 并未存在！");
-                        }
                         break;
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
@@ -695,19 +687,11 @@ namespace HT.Framework
                             ui.UIEntity.transform.SetAsLastSibling();
                             ui.OnPlaceTop();
                         }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 并未存在！");
-                        }
                         break;
                     case UIType.World:
                         if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
                             WorldUIs[attribute.WorldUIDomainName].PlaceTop(type);
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
                         break;
                 }
@@ -742,10 +726,6 @@ namespace HT.Framework
                             ui.UIEntity.SetActive(false);
                             ui.OnClose();
                         }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 并未存在！");
-                        }
                         break;
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
@@ -765,19 +745,11 @@ namespace HT.Framework
                             ui.UIEntity.SetActive(false);
                             ui.OnClose();
                         }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 并未存在！");
-                        }
                         break;
                     case UIType.World:
                         if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
                             WorldUIs[attribute.WorldUIDomainName].CloseUI(type);
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
                         break;
                 }
@@ -813,10 +785,6 @@ namespace HT.Framework
                             Main.Kill(ui.UIEntity);
                             ui.UIEntity = null;
                         }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 并未存在！");
-                        }
                         break;
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
@@ -837,19 +805,11 @@ namespace HT.Framework
                             Main.Kill(ui.UIEntity);
                             ui.UIEntity = null;
                         }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 并未存在！");
-                        }
                         break;
                     case UIType.World:
                         if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
                         {
                             WorldUIs[attribute.WorldUIDomainName].DestroyUI(type);
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 的域 " + attribute.WorldUIDomainName + " 并未存在！");
                         }
                         break;
                 }

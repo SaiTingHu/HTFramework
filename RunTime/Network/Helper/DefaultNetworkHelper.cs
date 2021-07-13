@@ -108,7 +108,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Network, "加载通信协议通道失败：通信协议通道类 " + channelTypes[i] + " 必须实现接口：IProtocolChannel！");
+                        throw new HTFrameworkException(HTFrameworkModule.Network, "加载通信协议通道失败：通信协议通道类 " + channelTypes[i] + " 必须继承至基类：ProtocolChannelBase！");
                     }
                 }
                 else

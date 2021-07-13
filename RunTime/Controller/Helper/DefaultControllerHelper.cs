@@ -24,7 +24,7 @@ namespace HT.Framework
         /// <summary>
         /// 控制模式
         /// </summary>
-        public ControlMode TheControlMode { get; set; }
+        public ControlMode Mode { get; set; }
         /// <summary>
         /// 主摄像机
         /// </summary>
@@ -127,19 +127,6 @@ namespace HT.Framework
             get
             {
                 return _mouseRay.Target;
-            }
-        }
-        /// <summary>
-        /// 当前射线击中的目标
-        /// </summary>
-        public GameObject RayTargetObj
-        {
-            get
-            {
-                if (_mouseRay.Target)
-                    return _mouseRay.Target.gameObject;
-                else
-                    return null;
             }
         }
         /// <summary>
@@ -252,19 +239,19 @@ namespace HT.Framework
         /// 助手准备工作
         /// </summary>
         public void OnPreparatory()
-        { }
+        {
+
+        }
         /// <summary>
         /// 刷新助手
         /// </summary>
         public void OnRefresh()
         {
             _mouseRay.OnRefresh();
-            switch (TheControlMode)
+            if (Mode == ControlMode.FreeControl)
             {
-                case ControlMode.FreeControl:
-                    _mousePosition.OnRefresh();
-                    _mouseRotation.OnRefresh();
-                    break;
+                _mousePosition.OnRefresh();
+                _mouseRotation.OnRefresh();
             }
 
             if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))

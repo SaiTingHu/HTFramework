@@ -47,7 +47,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新域
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             foreach (var ui in _worldUIs)
             {
@@ -103,31 +103,30 @@ namespace HT.Framework
             {
                 UILogicBase ui = _worldUIs[type];
 
-                if (!ui.IsCreated)
+                if (ui.IsCreated)
+                    return null;
+
+                if (entity != null)
                 {
-                    if (entity != null)
+                    ui.UIEntity = Main.Clone(entity, _worldResidentPanel);
+                    ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
+                    ui.OnInit();
+                    return null;
+                }
+                else
+                {
+                    return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
                     {
-                        ui.UIEntity = Main.Clone(entity, _worldResidentPanel);
+                        ui.UIEntity = obj;
                         ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
                         ui.OnInit();
-                        return null;
-                    }
-                    else
-                    {
-                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldResidentPanel, null, (obj) =>
-                        {
-                            ui.UIEntity = obj;
-                            ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
-                            ui.OnInit();
-                        }, true);
-                    }
+                    }, true);
                 }
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
             }
-            return null;
         }
         /// <summary>
         /// 预加载非常驻UI
@@ -141,31 +140,30 @@ namespace HT.Framework
             {
                 UILogicBase ui = _worldUIs[type];
 
-                if (!ui.IsCreated)
+                if (ui.IsCreated)
+                    return null;
+
+                if (entity != null)
                 {
-                    if (entity != null)
+                    ui.UIEntity = Main.Clone(entity, _worldTemporaryPanel);
+                    ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
+                    ui.OnInit();
+                    return null;
+                }
+                else
+                {
+                    return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
                     {
-                        ui.UIEntity = Main.Clone(entity, _worldTemporaryPanel);
+                        ui.UIEntity = obj;
                         ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
                         ui.OnInit();
-                        return null;
-                    }
-                    else
-                    {
-                        return Main.m_Resource.LoadPrefab(new PrefabInfo(type.GetCustomAttribute<UIResourceAttribute>()), _worldTemporaryPanel, null, (obj) =>
-                        {
-                            ui.UIEntity = obj;
-                            ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
-                            ui.OnInit();
-                        }, true);
-                    }
+                    }, true);
                 }
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "预加载UI失败：UI对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
             }
-            return null;
         }
         /// <summary>
         /// 打开常驻UI
@@ -181,9 +179,7 @@ namespace HT.Framework
                 UILogicResident ui = _worldUIs[type] as UILogicResident;
 
                 if (ui.IsOpened)
-                {
                     return null;
-                }
 
                 if (!ui.IsCreated)
                 {
@@ -222,7 +218,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
             }
             return null;
         }
@@ -240,9 +236,7 @@ namespace HT.Framework
                 UILogicTemporary ui = _worldUIs[type] as UILogicTemporary;
 
                 if (ui.IsOpened)
-                {
                     return null;
-                }
 
                 if (_currentWorldTemporaryUI != null && _currentWorldTemporaryUI.IsOpened)
                 {
@@ -288,7 +282,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "打开UI失败：UI对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
             }
             return null;
         }
@@ -314,7 +308,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "获取UI失败：UI对象 " + type.Name + " 并未存在，或并未打开！");
+                return null;
             }
         }
         /// <summary>
@@ -334,10 +328,6 @@ namespace HT.Framework
 
                 ui.UIEntity.transform.SetAsLastSibling();
                 ui.OnPlaceTop();
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "置顶UI失败：UI对象 " + type.Name + " 并未存在！");
             }
         }
         /// <summary>
@@ -363,10 +353,6 @@ namespace HT.Framework
                 ui.UIEntity.SetActive(false);
                 ui.OnClose();
             }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "关闭UI失败：UI对象 " + type.Name + " 并未存在！");
-            }
         }
         /// <summary>
         /// 销毁UI
@@ -391,10 +377,6 @@ namespace HT.Framework
                 ui.OnDestroy();
                 Main.Kill(ui.UIEntity);
                 ui.UIEntity = null;
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.UI, "销毁UI失败：UI对象 " + type.Name + " 并未存在！");
             }
         }
     }

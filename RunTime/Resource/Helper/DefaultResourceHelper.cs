@@ -321,7 +321,7 @@ namespace HT.Framework
                         loadSceneMode = LoadSceneMode.Additive,
                         localPhysicsMode = LocalPhysicsMode.None
                     };
-                    EditorSceneManager.LoadSceneAsyncInPlayMode(info.AssetPath, parameters);
+                    yield return EditorSceneManager.LoadSceneAsyncInPlayMode(info.AssetPath, parameters);
                 }
                 else
                 {

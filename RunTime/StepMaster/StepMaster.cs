@@ -781,7 +781,7 @@ namespace HT.Framework
                     }
                 }
 
-                Main.m_Controller.TheControlMode = _currentContent.InitialMode;
+                Main.m_Controller.Mode = _currentContent.InitialMode;
                 Main.m_Controller.SetLookPoint(target.transform.position + _currentContent.ViewOffset, false);
                 Main.m_Controller.SetLookAngle(_currentContent.BestView);
 

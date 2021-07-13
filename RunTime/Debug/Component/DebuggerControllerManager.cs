@@ -42,7 +42,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            _target.TheControlMode = (ControlMode)EnumField(_target.TheControlMode);
+            _target.Mode = (ControlMode)EnumField(_target.Mode);
             GUILayout.EndHorizontal();
         }
     }

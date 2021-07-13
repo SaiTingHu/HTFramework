@@ -11,7 +11,7 @@ namespace HT.Framework
         /// <summary>
         /// 控制模式
         /// </summary>
-        ControlMode TheControlMode { get; set; }
+        ControlMode Mode { get; set; }
         /// <summary>
         /// 主摄像机
         /// </summary>
@@ -48,10 +48,6 @@ namespace HT.Framework
         /// 当前射线击中的目标
         /// </summary>
         MouseRayTargetBase RayTarget { get; }
-        /// <summary>
-        /// 当前射线击中的目标
-        /// </summary>
-        GameObject RayTargetObj { get; }
         /// <summary>
         /// 当前射线击中的点
         /// </summary>

@@ -78,20 +78,12 @@ namespace HT.Framework
             }
 
             //进入默认流程
-            if (_defaultProcedure != "")
+            if (!string.IsNullOrEmpty(_defaultProcedure))
             {
                 Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(_defaultProcedure);
                 if (type != null)
                 {
-                    if (Procedures.ContainsKey(type))
-                    {
-                        CurrentProcedure = Procedures[type];
-                        CurrentProcedure.OnEnter(null);
-                    }
-                    else
-                    {
-                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "进入流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
-                    }
+                    SwitchProcedure(type);
                 }
                 else
                 {

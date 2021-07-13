@@ -28,7 +28,7 @@ namespace HT.Framework
             GUI.enabled = !EditorApplication.isPlaying;
             
             GUILayout.BeginHorizontal();
-            EnumPopup(Target.DefaultControlMode, out Target.DefaultControlMode, "Default ControlMode");
+            EnumPopup(Target.DefaultMode, out Target.DefaultMode, "Default ControlMode");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -70,10 +70,10 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Control Mode: ", GUILayout.Width(LabelWidth));
-            Target.TheControlMode = (ControlMode)EditorGUILayout.EnumPopup(Target.TheControlMode);
+            Target.Mode = (ControlMode)EditorGUILayout.EnumPopup(Target.Mode);
             GUILayout.EndHorizontal();
 
-            if (Target.TheControlMode == ControlMode.FreeControl)
+            if (Target.Mode == ControlMode.FreeControl)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Position Control: ", GUILayout.Width(LabelWidth));

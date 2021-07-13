@@ -37,7 +37,7 @@
         /// </summary>
         internal string GetAssetBundleFullPath(string assetBundleRootPath)
         {
-            return "AssetBundlePath: " + assetBundleRootPath + AssetBundleName + "  AssetPath:" + AssetPath;
+            return string.Format("AssetBundlePath: {0}{1}  AssetPath:{2}", assetBundleRootPath, AssetBundleName, AssetPath);
         }
     }
 }

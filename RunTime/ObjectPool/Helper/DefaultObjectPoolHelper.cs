@@ -126,7 +126,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error("获取对象数量失败：不存在对象池 " + name + " ！");
+                Log.Warning("获取对象数量失败：不存在对象池 " + name + " ！");
                 return 0;
             }
         }

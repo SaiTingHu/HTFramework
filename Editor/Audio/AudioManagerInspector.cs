@@ -102,9 +102,9 @@ namespace HT.Framework
                 {
                     Target.PauseBackgroundMusic();
                 }
-                if (GUILayout.Button("UnPause", EditorStyles.miniButtonMid))
+                if (GUILayout.Button("Resume", EditorStyles.miniButtonMid))
                 {
-                    Target.UnPauseBackgroundMusic();
+                    Target.ResumeBackgroundMusic();
                 }
                 if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
                 {
@@ -159,9 +159,9 @@ namespace HT.Framework
                 {
                     Target.PauseSingleSound();
                 }
-                if (GUILayout.Button("UnPause", EditorStyles.miniButtonMid))
+                if (GUILayout.Button("Resume", EditorStyles.miniButtonMid))
                 {
-                    Target.UnPauseSingleSound();
+                    Target.ResumeSingleSound();
                 }
                 if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
                 {

@@ -164,18 +164,24 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取所有数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
-        
+
         /// <summary>
         /// 获取某一类型的满足匹配条件的第一条数据集
         /// </summary>
         /// <param name="type">数据集类型</param>
         /// <param name="match">匹配条件</param>
+        /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
         /// <returns>数据集</returns>
-        public DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match)
+        public DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match, bool isCut = false)
         {
             if (DataSets.ContainsKey(type))
             {
-                return DataSets[type].Find(match);
+                DataSetBase dataset = DataSets[type].Find(match);
+                if (isCut && dataset)
+                {
+                    DataSets[type].Remove(dataset);
+                }
+                return dataset;
             }
             else
             {
@@ -266,6 +272,10 @@ namespace HT.Framework
         {
             if (DataSets.ContainsKey(type))
             {
+                for (int i = 0; i < DataSets[type].Count; i++)
+                {
+                    Main.Kill(DataSets[type][i]);
+                }
                 DataSets[type].Clear();
             }
             else

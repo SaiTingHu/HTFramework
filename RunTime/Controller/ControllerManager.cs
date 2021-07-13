@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ namespace HT.Framework
         /// <summary>
         /// 默认的控制模式【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal ControlMode DefaultControlMode = ControlMode.FreeControl;
+        [SerializeField] internal ControlMode DefaultMode = ControlMode.FreeControl;
         /// <summary>
         /// Dotween动画的默认缓动类型【请勿在代码中修改】
         /// </summary>
@@ -65,14 +66,29 @@ namespace HT.Framework
         /// <summary>
         /// 控制模式
         /// </summary>
+        [Obsolete("Main.m_Controller.TheControlMode 已经过时，以后将会移除，请使用 Main.m_Controller.Mode 代替！", true)]
         public ControlMode TheControlMode
         {
             set
             {
-                if (_helper.TheControlMode != value)
+                Mode = value;
+            }
+            get
+            {
+                return Mode;
+            }
+        }
+        /// <summary>
+        /// 控制模式
+        /// </summary>
+        public ControlMode Mode
+        {
+            set
+            {
+                if (_helper.Mode != value)
                 {
-                    _helper.TheControlMode = value;
-                    switch (_helper.TheControlMode)
+                    _helper.Mode = value;
+                    switch (_helper.Mode)
                     {
                         case ControlMode.FreeControl:
                             SwitchToFreeControlEvent?.Invoke();
@@ -88,7 +104,7 @@ namespace HT.Framework
             }
             get
             {
-                return _helper.TheControlMode;
+                return _helper.Mode;
             }
         }
         /// <summary>
@@ -198,7 +214,10 @@ namespace HT.Framework
         {
             get
             {
-                return _helper.RayTargetObj;
+                if (_helper.RayTarget != null)
+                    return _helper.RayTarget.gameObject;
+                else
+                    return null;
             }
         }
         /// <summary>
@@ -285,7 +304,7 @@ namespace HT.Framework
         {
             base.OnPreparatory();
 
-            TheControlMode = DefaultControlMode;
+            Mode = DefaultMode;
         }
 
         /// <summary>
