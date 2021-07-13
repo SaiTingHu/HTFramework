@@ -1338,7 +1338,12 @@ namespace HT.Framework
                 EditorGUI.BeginChangeCheck();
                 object value = Property.GetValue(inspector.target);
                 object newValue = value;
-                if (Property.PropertyType == typeof(string))
+                if (Property.PropertyType.IsEnum)
+                {
+                    Enum realValue = EditorGUILayout.EnumPopup(Name, (Enum)value);
+                    if (EditorGUI.EndChangeCheck()) newValue = realValue;
+                }
+                else if (Property.PropertyType == typeof(string))
                 {
                     string realValue = EditorGUILayout.TextField(Name, (string)value);
                     if (EditorGUI.EndChangeCheck()) newValue = realValue;
@@ -1399,7 +1404,11 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 object value = Property.GetValue(inspector.target);
-                if (Property.PropertyType == typeof(string))
+                if (Property.PropertyType.IsEnum)
+                {
+                    EditorGUILayout.EnumPopup(Name, (Enum)value);
+                }
+                else if (Property.PropertyType == typeof(string))
                 {
                     EditorGUILayout.TextField(Name, (string)value);
                 }
