@@ -161,6 +161,9 @@ namespace HT.Framework
         }
         private void CalculateAngle()
         {
+            //将横向旋转值映射到区间[0,360]
+            if (X > 360) X = X % 360;
+            else if (X < 0) X = 360 + X;
             //将纵向旋转限制在视角最低值和最高值之间
             Y = ClampYAngle(Y, YMinAngleLimit, YMaxAngleLimit);
             //将视角距离限制在最小值和最大值之间
