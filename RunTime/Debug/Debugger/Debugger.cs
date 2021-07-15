@@ -828,6 +828,7 @@ namespace HT.Framework
             _words.Add("Hierarchy", "场景内的所有物体");
             _words.Add("Search", "查找");
             _words.Add("Active", "激活");
+            _words.Add("Look at", "看向他");
             _words.Add("Delete", "删除");
             _words.Add("Tag", "标签");
             _words.Add("Layer", "层级");
@@ -1074,7 +1075,7 @@ namespace HT.Framework
                 GUILayout.BeginVertical("Box");
 
                 GUILayout.BeginHorizontal();
-                GUI.enabled = gameObject.Name != "HTFramework";
+                GUI.enabled = !gameObject.IsMain;
                 GUI.contentColor = gameObject.Target.activeSelf ? Color.white : Color.gray;
                 bool active = GUILayout.Toggle(gameObject.Target.activeSelf, GetWord("Active"));
                 if (active != gameObject.Target.activeSelf)
@@ -1082,6 +1083,11 @@ namespace HT.Framework
                     gameObject.Target.SetActive(active);
                 }
                 GUILayout.FlexibleSpace();
+                if (GUILayout.Button(GetWord("Look at")))
+                {
+                    Main.m_Controller.Mode = ControlMode.FreeControl;
+                    Main.m_Controller.SetLookPoint(gameObject.Target.transform.position);
+                }
                 if (GUILayout.Button(GetWord("Delete")))
                 {
                     Main.Kill(gameObject.Target);

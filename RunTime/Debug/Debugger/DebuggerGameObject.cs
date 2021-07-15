@@ -21,6 +21,10 @@ namespace HT.Framework
         /// </summary>
         public string Layer;
         /// <summary>
+        /// 是否是框架主模块
+        /// </summary>
+        public bool IsMain = false;
+        /// <summary>
         /// 是否在层级面板展开
         /// </summary>
         public bool IsExpand = false;
@@ -36,6 +40,9 @@ namespace HT.Framework
         public void Reset()
         {
             Target = null;
+            Name = null;
+            Layer = null;
+            IsMain = false;
             IsExpand = false;
             Parent = null;
             Childrens.Clear();
