@@ -12,9 +12,17 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86073351")]
     internal sealed class FSMInspector : HTFEditor<FSM>
     {
+        private GUIContent _stateGC;
         private Dictionary<string, Type> _stateInstances;
         private string _currentStateName = "<None>";
-        
+
+        protected override void OnDefaultEnable()
+        {
+            base.OnDefaultEnable();
+
+            _stateGC = new GUIContent();
+            _stateGC.image = EditorGUIUtility.IconContent("AnimatorState Icon").image;
+        }
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
@@ -85,8 +93,9 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = Target.DefaultStateName != "";
-            GUILayout.Label("Default: " + Target.DefaultStateName);
+            GUI.enabled = !string.IsNullOrEmpty(Target.DefaultStateName);
+            _stateGC.text = "Default: " + Target.DefaultStateName;
+            GUILayout.Label(_stateGC, GUILayout.Height(EditorGUIUtility.singleLineHeight));
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.StateNames.Count > 0;
@@ -110,8 +119,9 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = Target.FinalStateName != "";
-            GUILayout.Label("Final: " + Target.FinalStateName);
+            GUI.enabled = !string.IsNullOrEmpty(Target.FinalStateName);
+            _stateGC.text = "Final: " + Target.FinalStateName;
+            GUILayout.Label(_stateGC, GUILayout.Height(EditorGUIUtility.singleLineHeight));
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.StateNames.Count > 0;
@@ -144,7 +154,8 @@ namespace HT.Framework
             for (int i = 0; i < Target.StateNames.Count; i++)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(string.Format("{0}.{1}", i + 1, Target.StateNames[i]));
+                _stateGC.text = Target.StateNames[i];
+                GUILayout.Label(_stateGC, GUILayout.Height(EditorGUIUtility.singleLineHeight));
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Edit", EditorStyles.miniButtonLeft))
                 {

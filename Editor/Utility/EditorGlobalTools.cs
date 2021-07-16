@@ -1008,6 +1008,7 @@ namespace HT.Framework
         #region Hierarchy窗口扩展
         private static GUIStyle HierarchyIconStyle;
         private static Texture HTFrameworkLOGO;
+        private static Texture HTFSMIcon;
 
         /// <summary>
         /// 编辑器初始化
@@ -1018,6 +1019,7 @@ namespace HT.Framework
             HierarchyIconStyle.alignment = TextAnchor.MiddleRight;
             HierarchyIconStyle.normal.textColor = Color.cyan;
             HTFrameworkLOGO = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGO.png");
+            HTFSMIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFSMIcon.png");
 
             EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowItemOnGUI;
         }
@@ -1026,12 +1028,16 @@ namespace HT.Framework
         /// </summary>
         private static void OnHierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
         {
-            GameObject main = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            if (main)
+            GameObject instance = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (instance)
             {
-                if (main.GetComponent<Main>())
+                if (instance.GetComponent<Main>())
                 {
                     GUI.Box(selectionRect, HTFrameworkLOGO, HierarchyIconStyle);
+                }
+                else if (instance.GetComponent<FSM>())
+                {
+                    GUI.Box(selectionRect, HTFSMIcon, HierarchyIconStyle);
                 }
             }
         }

@@ -94,7 +94,6 @@ namespace HT.Framework
             window.minSize = new Vector2(800, 600);
             window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
             window._isMinimize = false;
-            window.GetEditorStyle();
             window.Show();
         }
         
@@ -112,6 +111,8 @@ namespace HT.Framework
 
         private StepListShowType _stepListShowType = StepListShowType.Name;
         private string[] _stepListTypes = new string[] { "ID", "Name", "IDAndName" };
+        private string[] _triggers = new string[] { "MouseClick", "ButtonClick", "StateChange", "AutoExecute" };
+        private string[] _initialModes = new string[] { "FreeControl", "FirstPerson", "ThirdPerson" };
         private bool _isShowAncillary = true;
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
@@ -157,9 +158,7 @@ namespace HT.Framework
             ,"Prompt","CameraFollow","ActiveComponent","Transform","ChangeParent"
             ,"PlayTimeline"
         };
-
-        private string _stepListBGStyle;
-
+        
         protected override bool IsEnableTitleGUI
         {
             get
@@ -271,19 +270,7 @@ namespace HT.Framework
             if (GUILayout.Button(GetWord("Setting"), EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                string content = string.Format("{0}/{1}/{2}", GetWord("Style"), GetWord("StepContentList [BG]"), GetWord("Dark"));
-                gm.AddItem(new GUIContent(content), _stepListBGStyle == "PreBackground", () =>
-                {
-                    _stepListBGStyle = "PreBackground";
-                    ApplyEditorStyle();
-                });
-                content = string.Format("{0}/{1}/{2}", GetWord("Style"), GetWord("StepContentList [BG]"), GetWord("Gray"));
-                gm.AddItem(new GUIContent(content), _stepListBGStyle == "HelpBox", () =>
-                {
-                    _stepListBGStyle = "HelpBox";
-                    ApplyEditorStyle();
-                });
-                content = string.Format("{0}/{1}", GetWord("Preview"), GetWord("Stop Preview Current Step"));
+                string content = string.Format("{0}/{1}", GetWord("Preview"), GetWord("Stop Preview Current Step"));
                 gm.AddItem(new GUIContent(content), false, () =>
                 {
                     StopPreviewInStep(_currentStep);
@@ -350,6 +337,10 @@ namespace HT.Framework
             AddWord("身份号和名称", "IDAndName");
             AddWord("附加信息", "Ancillary");
             AddWord("触发方式", "Trigger");
+            AddWord("鼠标点击目标", "MouseClick");
+            AddWord("按钮被点击", "ButtonClick");
+            AddWord("目标状态改变", "StateChange");
+            AddWord("自动执行", "AutoExecute");
             AddWord("脚本助手", "Helper");
             AddWord("移动到", "Move To");
             AddWord("确定", "Sure");
@@ -371,6 +362,9 @@ namespace HT.Framework
             AddWord("查找", "Find");
             AddWord("进入", "Enter");
             AddWord("初始控制模式", "Initial Mode");
+            AddWord("自由视角", "FreeControl");
+            AddWord("第一人称", "FirstPerson");
+            AddWord("第三人称", "ThirdPerson");
             AddWord("最佳视角", "Best View");
             AddWord("获取", "Get");
             AddWord("视点偏移", "View Offset");
@@ -435,6 +429,14 @@ namespace HT.Framework
             {
                 _stepListTypes[i] = GetWord(((StepListShowType)i).ToString());
             }
+            for (int i = 0; i < _triggers.Length; i++)
+            {
+                _triggers[i] = GetWord(((StepTrigger)i).ToString());
+            }
+            for (int i = 0; i < _initialModes.Length; i++)
+            {
+                _initialModes[i] = GetWord(((ControlMode)i).ToString());
+            }
             for (int i = 0; i < _operationTypes.Length; i++)
             {
                 _operationTypes[i] = GetWord(((StepOperationType)i).ToString());
@@ -473,7 +475,7 @@ namespace HT.Framework
         /// </summary>
         private void StepListGUI()
         {
-            GUILayout.BeginVertical(_stepListBGStyle, GUILayout.Width(_stepListGUIWidth));
+            GUILayout.BeginVertical("PreBackground", GUILayout.Width(_stepListGUIWidth));
 
             #region 筛选步骤
             GUILayout.BeginHorizontal("Icon.OutlineBorder");
@@ -833,12 +835,12 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Trigger") + ":", GUILayout.Width(80));
-                    _currentStepObj.Trigger = (StepTrigger)EditorGUILayout.EnumPopup(_currentStepObj.Trigger, GUILayout.Width(100));
+                    _currentStepObj.Trigger = (StepTrigger)EditorGUILayout.Popup((int)_currentStepObj.Trigger, _triggers, GUILayout.Width(100));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Initial Mode") + ":", GUILayout.Width(80));
-                    _currentStepObj.InitialMode = (ControlMode)EditorGUILayout.EnumPopup(_currentStepObj.InitialMode, GUILayout.Width(100));
+                    _currentStepObj.InitialMode = (ControlMode)EditorGUILayout.Popup((int)_currentStepObj.InitialMode, _initialModes, GUILayout.Width(100));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -1902,11 +1904,11 @@ namespace HT.Framework
             }
             if (_isShowTrigger)
             {
-                showName += " [" + content.Trigger.ToString() + "]";
+                showName = string.Format("{0} [{1}]", showName, GetWord(content.Trigger.ToString()));
             }
             if (_isShowHelper && content.Helper != "<None>")
             {
-                showName += " [" + content.Helper + "]";
+                showName = string.Format("{0} [{1}]", showName, content.Helper);
             }
             return showName;
         }
@@ -1988,21 +1990,7 @@ namespace HT.Framework
             position = _recordedPosition;
             _isMinimize = false;
         }
-
-        /// <summary>
-        /// 获取并设置编辑器样式
-        /// </summary>
-        private void GetEditorStyle()
-        {
-            _stepListBGStyle = EditorPrefs.GetString(EditorPrefsTable.StepEditor_Style_StepListBG, "PreBackground");
-        }
-        /// <summary>
-        /// 应用并存储编辑器样式
-        /// </summary>
-        private void ApplyEditorStyle()
-        {
-            EditorPrefs.SetString(EditorPrefsTable.StepEditor_Style_StepListBG, _stepListBGStyle);
-        }
+        
         /// <summary>
         /// 停止指定步骤的所有操作预览
         /// </summary>

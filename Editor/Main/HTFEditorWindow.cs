@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 编辑器窗口基类
+    /// </summary>
     public abstract class HTFEditorWindow : EditorWindow
     {
         private IAdminLoginWindow _adminLoginWindow;

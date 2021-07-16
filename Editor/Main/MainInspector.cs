@@ -12,11 +12,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102956756")]
     internal sealed class MainInspector : InternalModuleInspector<Main, IMainHelper>
     {
-        private static bool _showScriptingDefine = false;
-        private static bool _showMainData = false;
-        private static bool _showLicense = false;
-        private static bool _showParameter = false;
-        private static bool _showSetting = false;
+        private static Page _currentPage = Page.None;
 
         protected override string Intro
         {
@@ -30,6 +26,7 @@ namespace HT.Framework
         {
             base.OnDefaultEnable();
 
+            StyleEnable();
             ScriptingDefineEnable();
             ParameterEnable();
         }
@@ -52,6 +49,29 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
         }
 
+        #region Style
+        private GUIStyle _checked;
+        private GUIStyle _unchecked;
+
+        private void StyleEnable()
+        {
+            _checked = new GUIStyle("SelectionRect");
+            _unchecked = new GUIStyle("Box");
+        }
+
+        /// <summary>
+        /// 获取分页的背景样式
+        /// </summary>
+        /// <param name="page">分页</param>
+        private GUIStyle GetStyle(Page page)
+        {
+            if (_currentPage == page)
+                return _checked;
+            else
+                return _unchecked;
+        }
+        #endregion
+
         #region ScriptingDefine
         private ScriptingDefine _currentScriptingDefine;
         private bool _isNewDefine = false;
@@ -63,14 +83,20 @@ namespace HT.Framework
         }
         private void ScriptingDefineGUI()
         {
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            GUILayout.BeginVertical(GetStyle(Page.ScriptingDefine));
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _showScriptingDefine = EditorGUILayout.Foldout(_showScriptingDefine, "Scripting Define", true);
+            bool oldValue = _currentPage == Page.ScriptingDefine;
+            bool newValue = EditorGUILayout.Foldout(oldValue, "Scripting Define", true);
+            if (newValue != oldValue)
+            {
+                if (newValue) _currentPage = Page.ScriptingDefine;
+                else _currentPage = Page.None;
+            }
             GUILayout.EndHorizontal();
 
-            if (_showScriptingDefine)
+            if (newValue)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Defined");
@@ -239,14 +265,20 @@ namespace HT.Framework
         #region MainData
         private void MainDataGUI()
         {
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            GUILayout.BeginVertical(GetStyle(Page.MainData));
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _showMainData = EditorGUILayout.Foldout(_showMainData, "Main Data", true);
+            bool oldValue = _currentPage == Page.MainData;
+            bool newValue = EditorGUILayout.Foldout(oldValue, "Main Data", true);
+            if (newValue != oldValue)
+            {
+                if (newValue) _currentPage = Page.MainData;
+                else _currentPage = Page.None;
+            }
             GUILayout.EndHorizontal();
 
-            if (_showMainData)
+            if (newValue)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("MainData", GUILayout.Width(LabelWidth));
@@ -285,14 +317,20 @@ namespace HT.Framework
         #region License
         private void LicenseGUI()
         {
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            GUILayout.BeginVertical(GetStyle(Page.License));
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _showLicense = EditorGUILayout.Foldout(_showLicense, "License", true);
+            bool oldValue = _currentPage == Page.License;
+            bool newValue = EditorGUILayout.Foldout(oldValue, "License", true);
+            if (newValue != oldValue)
+            {
+                if (newValue) _currentPage = Page.License;
+                else _currentPage = Page.None;
+            }
             GUILayout.EndHorizontal();
 
-            if (_showLicense)
+            if (newValue)
             {
                 GUILayout.BeginHorizontal();
                 Toggle(Target.IsPermanentLicense, out Target.IsPermanentLicense, "Permanent License");
@@ -443,14 +481,20 @@ namespace HT.Framework
         }
         private void ParameterGUI()
         {
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            GUILayout.BeginVertical(GetStyle(Page.Parameter));
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _showParameter = EditorGUILayout.Foldout(_showParameter, "Parameter", true);
+            bool oldValue = _currentPage == Page.Parameter;
+            bool newValue = EditorGUILayout.Foldout(oldValue, "Parameter", true);
+            if (newValue != oldValue)
+            {
+                if (newValue) _currentPage = Page.Parameter;
+                else _currentPage = Page.None;
+            }
             GUILayout.EndHorizontal();
 
-            if (_showParameter)
+            if (newValue)
             {
                 _parameterList.DoLayoutList();
             }
@@ -462,14 +506,20 @@ namespace HT.Framework
         #region Setting
         private void SettingGUI()
         {
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            GUILayout.BeginVertical(GetStyle(Page.Setting));
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _showSetting = EditorGUILayout.Foldout(_showSetting, "Setting", true);
+            bool oldValue = _currentPage == Page.Setting;
+            bool newValue = EditorGUILayout.Foldout(oldValue, "Setting", true);
+            if (newValue != oldValue)
+            {
+                if (newValue) _currentPage = Page.Setting;
+                else _currentPage = Page.None;
+            }
             GUILayout.EndHorizontal();
 
-            if (_showSetting)
+            if (newValue)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Log", EditorStyles.boldLabel);
@@ -491,5 +541,18 @@ namespace HT.Framework
             GUILayout.EndVertical();
         }
         #endregion
+        
+        /// <summary>
+        /// 分页
+        /// </summary>
+        private enum Page
+        {
+            None,
+            ScriptingDefine,
+            MainData,
+            License,
+            Parameter,
+            Setting
+        }
     }
 }
