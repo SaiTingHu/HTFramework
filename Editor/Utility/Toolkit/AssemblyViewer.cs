@@ -21,8 +21,9 @@ namespace HT.Framework
         private Type _currentType;
         private Vector2 _typeScroll = Vector2.zero;
         private string _typeFilter = "";
+        private string _typeFormatName = "";
         private bool _onlyShowStaticType = false;
-
+        
         private FieldInfo[] _fields;
         private FieldInfo _currentField;
         private MethodInfo[] _methods;
@@ -32,6 +33,7 @@ namespace HT.Framework
         private ParameterInfo[] _parameterInfos;
         private Vector2 _memberScroll = Vector2.zero;
         private string _memberFilter = "";
+        private string _memberFormatName = "";
         private bool _onlyShowStaticMember = false;
         private bool _showField = true;
         private bool _showMethod = true;
@@ -40,17 +42,121 @@ namespace HT.Framework
         private StringBuilder _builder = new StringBuilder();
 
         protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
+        private Assembly CurrentAssembly
+        {
+            get
+            {
+                return _currentAssembly;
+            }
+            set
+            {
+                if (_currentAssembly == value)
+                    return;
+
+                _currentAssembly = value;
+                if (_currentAssembly != null)
+                {
+                    _types = _currentAssembly.GetTypes();
+                }
+                else
+                {
+                    _types = null;
+                }
+                CurrentType = null;
+            }
+        }
+        private Type CurrentType
+        {
+            get
+            {
+                return _currentType;
+            }
+            set
+            {
+                if (_currentType == value)
+                    return;
+
+                _currentType = value;
+                if (_currentType != null)
+                {
+                    _typeFormatName = FormatTypeInfo(_currentType);
+                    _fields = _currentType.GetFields(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    _methods = _currentType.GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    _propertys = _currentType.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                }
+                else
+                {
+                    _fields = null;
+                    _methods = null;
+                    _propertys = null;
+                }
+                CurrentMethod = null;
+                CurrentField = null;
+                CurrentProperty = null;
+            }
+        }
+        private FieldInfo CurrentField
+        {
+            get
+            {
+                return _currentField;
+            }
+            set
+            {
+                if (_currentField == value)
+                    return;
+
+                _currentField = value;
+                if (_currentField != null)
+                {
+                    _memberFormatName = FormatFieldInfo(_currentField);
+                }
+            }
+        }
+        private MethodInfo CurrentMethod
+        {
+            get
+            {
+                return _currentMethod;
+            }
+            set
+            {
+                if (_currentMethod == value)
+                    return;
+
+                _currentMethod = value;
+                if (_currentMethod != null)
+                {
+                    _parameterInfos = _currentMethod.GetParameters();
+                    _memberFormatName = FormatMethodInfo(_currentMethod);
+                }
+            }
+        }
+        private PropertyInfo CurrentProperty
+        {
+            get
+            {
+                return _currentProperty;
+            }
+            set
+            {
+                if (_currentProperty == value)
+                    return;
+
+                _currentProperty = value;
+                if (_currentProperty != null)
+                {
+                    _memberFormatName = FormatPropertyInfo(_currentProperty);
+                }
+            }
+        }
 
         protected override void OnEnable()
         {
             base.OnEnable();
 
             _assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            _currentAssembly = null;
-            _currentType = null;
-            _currentMethod = null;
-            _currentField = null;
-            _currentProperty = null;
+            CurrentAssembly = null;
         }
         protected override void OnTitleGUI()
         {
@@ -112,41 +218,36 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            _assemblyScroll = GUILayout.BeginScrollView(_assemblyScroll, EditorGlobalTools.Styles.Box);
+            _assemblyScroll = GUILayout.BeginScrollView(_assemblyScroll);
 
             for (int i = 0; i < _assemblies.Length; i++)
             {
                 AssemblyName an = _assemblies[i].GetName();
                 if (an.Name.ToLower().Contains(_assemblyFilter.ToLower()))
                 {
-                    GUI.color = _currentAssembly == _assemblies[i] ? Color.cyan : Color.white;
+                    GUI.backgroundColor = CurrentAssembly == _assemblies[i] ? Color.cyan : Color.white;
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(an.Name, EditorStyles.toolbarButton))
+                    if (GUILayout.Button(an.Name))
                     {
-                        _currentAssembly = _assemblies[i];
-                        _types = _currentAssembly.GetTypes();
-                        _currentType = null;
-                        _currentMethod = null;
-                        _currentField = null;
-                        _currentProperty = null;
+                        CurrentAssembly = _assemblies[i];
                         GUI.FocusControl(null);
                     }
                     GUILayout.EndHorizontal();
 
-                    if (_currentAssembly == _assemblies[i])
+                    if (CurrentAssembly == _assemblies[i])
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Version:" + an.Version);
                         GUILayout.FlexibleSpace();
                         if (GUILayout.Button("Open", EditorStyles.miniButton))
                         {
-                            string args = "/Select, " + _currentAssembly.Location;
+                            string args = "/Select, " + CurrentAssembly.Location;
                             ProcessStartInfo psi = new ProcessStartInfo("Explorer.exe", args);
                             Process.Start(psi);
                         }
                         GUILayout.EndHorizontal();
                     }
-                    GUI.color = Color.white;
+                    GUI.backgroundColor = Color.white;
                 }
             }
 
@@ -180,9 +281,9 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            _typeScroll = GUILayout.BeginScrollView(_typeScroll, EditorGlobalTools.Styles.Box);
+            _typeScroll = GUILayout.BeginScrollView(_typeScroll);
 
-            if (_currentAssembly != null)
+            if (_types != null)
             {
                 for (int i = 0; i < _types.Length; i++)
                 {
@@ -193,32 +294,26 @@ namespace HT.Framework
                             continue;
                         }
 
-                        GUI.color = _currentType == _types[i] ? Color.cyan : Color.white;
+                        GUI.backgroundColor = CurrentType == _types[i] ? Color.cyan : Color.white;
                         GUILayout.BeginHorizontal();
-                        if (GUILayout.Button(_types[i].Name, EditorStyles.toolbarButton))
+                        if (GUILayout.Button(_types[i].Name))
                         {
-                            _currentType = _types[i];
-                            _fields = _currentType.GetFields(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                            _methods = _currentType.GetMethods(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                            _propertys = _currentType.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                            _currentMethod = null;
-                            _currentField = null;
-                            _currentProperty = null;
+                            CurrentType = _types[i];
                             GUI.FocusControl(null);
                         }
                         GUILayout.EndHorizontal();
 
-                        if (_currentType == _types[i])
+                        if (CurrentType == _types[i])
                         {
                             GUILayout.BeginHorizontal();
-                            EditorGUILayout.TextField("namespace " + _currentType.Namespace);
+                            EditorGUILayout.TextField("namespace " + CurrentType.Namespace);
                             GUILayout.EndHorizontal();
 
                             GUILayout.BeginHorizontal();
-                            EditorGUILayout.TextField(FormatTypeInfo(_currentType));
+                            EditorGUILayout.TextField(_typeFormatName);
                             GUILayout.EndHorizontal();
                         }
-                        GUI.color = Color.white;
+                        GUI.backgroundColor = Color.white;
                     }
                 }
             }
@@ -256,105 +351,101 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
 
-            _memberScroll = GUILayout.BeginScrollView(_memberScroll, EditorGlobalTools.Styles.Box);
+            _memberScroll = GUILayout.BeginScrollView(_memberScroll);
 
-            if (_currentType != null)
+            if (_showField && _fields != null)
             {
-                if (_showField)
+                for (int i = 0; i < _fields.Length; i++)
                 {
-                    for (int i = 0; i < _fields.Length; i++)
+                    if (!IsRejectField(_fields[i]) && _fields[i].Name.ToLower().Contains(_memberFilter.ToLower()))
                     {
-                        if (!IsRejectField(_fields[i]) && _fields[i].Name.ToLower().Contains(_memberFilter.ToLower()))
+                        if (_onlyShowStaticMember && !_fields[i].IsStatic)
                         {
-                            if (_onlyShowStaticMember && !_fields[i].IsStatic)
-                            {
-                                continue;
-                            }
-
-                            GUI.color = _currentField == _fields[i] ? Color.cyan : Color.white;
-                            GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Field]  " + _fields[i].Name, EditorStyles.toolbarButton))
-                            {
-                                _currentField = _fields[i];
-                                _currentMethod = null;
-                                _currentProperty = null;
-                                GUI.FocusControl(null);
-                            }
-                            GUILayout.EndHorizontal();
-
-                            if (_currentField == _fields[i])
-                            {
-                                GUILayout.BeginHorizontal();
-                                EditorGUILayout.TextField(FormatFieldInfo(_currentField));
-                                GUILayout.EndHorizontal();
-                            }
-                            GUI.color = Color.white;
+                            continue;
                         }
+
+                        GUI.backgroundColor = CurrentField == _fields[i] ? Color.cyan : Color.white;
+                        GUILayout.BeginHorizontal();
+                        if (GUILayout.Button("[Field]  " + _fields[i].Name))
+                        {
+                            CurrentField = _fields[i];
+                            CurrentMethod = null;
+                            CurrentProperty = null;
+                            GUI.FocusControl(null);
+                        }
+                        GUILayout.EndHorizontal();
+
+                        if (CurrentField == _fields[i])
+                        {
+                            GUILayout.BeginHorizontal();
+                            EditorGUILayout.TextField(_memberFormatName);
+                            GUILayout.EndHorizontal();
+                        }
+                        GUI.backgroundColor = Color.white;
                     }
                 }
-                if (_showMethod)
+            }
+            if (_showMethod && _methods != null)
+            {
+                for (int i = 0; i < _methods.Length; i++)
                 {
-                    for (int i = 0; i < _methods.Length; i++)
+                    if (!IsRejectMethod(_methods[i]) && _methods[i].Name.ToLower().Contains(_memberFilter.ToLower()))
                     {
-                        if (!IsRejectMethod(_methods[i]) && _methods[i].Name.ToLower().Contains(_memberFilter.ToLower()))
+                        if (_onlyShowStaticMember && !_methods[i].IsStatic)
                         {
-                            if (_onlyShowStaticMember && !_methods[i].IsStatic)
-                            {
-                                continue;
-                            }
-
-                            GUI.color = _currentMethod == _methods[i] ? Color.cyan : Color.white;
-                            GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Method]  " + _methods[i].Name, EditorStyles.toolbarButton))
-                            {
-                                _currentMethod = _methods[i];
-                                _parameterInfos = _currentMethod.GetParameters();
-                                _currentField = null;
-                                _currentProperty = null;
-                                GUI.FocusControl(null);
-                            }
-                            GUILayout.EndHorizontal();
-
-                            if (_currentMethod == _methods[i])
-                            {
-                                GUILayout.BeginHorizontal();
-                                EditorGUILayout.TextField(FormatMethodInfo(_currentMethod));
-                                GUILayout.EndHorizontal();
-                            }
-                            GUI.color = Color.white;
+                            continue;
                         }
+
+                        GUI.backgroundColor = CurrentMethod == _methods[i] ? Color.cyan : Color.white;
+                        GUILayout.BeginHorizontal();
+                        if (GUILayout.Button("[Method]  " + _methods[i].Name))
+                        {
+                            CurrentMethod = _methods[i];
+                            CurrentField = null;
+                            CurrentProperty = null;
+                            GUI.FocusControl(null);
+                        }
+                        GUILayout.EndHorizontal();
+
+                        if (CurrentMethod == _methods[i])
+                        {
+                            GUILayout.BeginHorizontal();
+                            EditorGUILayout.TextField(_memberFormatName);
+                            GUILayout.EndHorizontal();
+                        }
+                        GUI.backgroundColor = Color.white;
                     }
                 }
-                if (_showProperty)
+            }
+            if (_showProperty && _propertys != null)
+            {
+                for (int i = 0; i < _propertys.Length; i++)
                 {
-                    for (int i = 0; i < _propertys.Length; i++)
+                    if (!IsRejectProperty(_propertys[i]) && _propertys[i].Name.ToLower().Contains(_memberFilter.ToLower()))
                     {
-                        if (!IsRejectProperty(_propertys[i]) && _propertys[i].Name.ToLower().Contains(_memberFilter.ToLower()))
+                        if (_onlyShowStaticMember && !IsStatic(_propertys[i]))
                         {
-                            if (_onlyShowStaticMember && !IsStatic(_propertys[i]))
-                            {
-                                continue;
-                            }
-
-                            GUI.color = _currentProperty == _propertys[i] ? Color.cyan : Color.white;
-                            GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("[Property]  " + _propertys[i].Name, EditorStyles.toolbarButton))
-                            {
-                                _currentProperty = _propertys[i];
-                                _currentMethod = null;
-                                _currentField = null;
-                                GUI.FocusControl(null);
-                            }
-                            GUILayout.EndHorizontal();
-
-                            if (_currentProperty == _propertys[i])
-                            {
-                                GUILayout.BeginHorizontal();
-                                EditorGUILayout.TextField(FormatPropertyInfo(_currentProperty));
-                                GUILayout.EndHorizontal();
-                            }
-                            GUI.color = Color.white;
+                            continue;
                         }
+
+                        GUI.backgroundColor = CurrentProperty == _propertys[i] ? Color.cyan : Color.white;
+                        GUILayout.BeginHorizontal();
+                        if (GUILayout.Button("[Property]  " + _propertys[i].Name))
+                        {
+                            CurrentProperty = _propertys[i];
+                            CurrentMethod = null;
+                            CurrentField = null;
+                            GUI.FocusControl(null);
+                        }
+                        GUILayout.EndHorizontal();
+
+                        if (CurrentProperty == _propertys[i])
+                        {
+                            GUILayout.BeginHorizontal();
+                            EditorGUILayout.TextField(_memberFormatName);
+                            GUILayout.EndHorizontal();
+                        }
+                        GUI.backgroundColor = Color.white;
                     }
                 }
             }

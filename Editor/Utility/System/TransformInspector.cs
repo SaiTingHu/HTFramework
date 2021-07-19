@@ -9,6 +9,7 @@ namespace HT.Framework
     internal sealed class TransformInspector : HTFEditor<Transform>
     {
         private static bool _copyQuaternion = false;
+
         private bool _onlyShowLocal = false;
         private bool _showProperty = true;
         private bool _showHierarchy = false;
@@ -16,6 +17,11 @@ namespace HT.Framework
         private Transform _parent;
         private GUIContent _copy;
         private GUIContent _paste;
+        private string _lockSource;
+        private bool _isLock = false;
+        private bool _isLockPosition = false;
+        private bool _isLockRotation = false;
+        private bool _isLockScale = false;
 
         protected override bool IsEnableRuntimeData => false;
 
@@ -33,6 +39,8 @@ namespace HT.Framework
             _paste = new GUIContent();
             _paste.text = "P";
             _paste.tooltip = "Paste value";
+
+            SetLockState();
         }
         protected override void OnInspectorDefaultGUI()
         {
@@ -51,10 +59,17 @@ namespace HT.Framework
 
             if (_showProperty)
             {
+                if (_isLock)
+                {
+                    EditorGUILayout.HelpBox(_lockSource, MessageType.None);
+                }
+
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 if (!_onlyShowLocal)
                 {
+                    GUI.enabled = !_isLockPosition;
+
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("P", GUILayout.Width(20));
                     EditorGUI.BeginChangeCheck();
@@ -82,6 +97,8 @@ namespace HT.Framework
                     }
                     GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
+
+                    GUI.enabled = !_isLockRotation;
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("R", GUILayout.Width(20));
@@ -132,6 +149,8 @@ namespace HT.Framework
                     GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
 
+                    GUI.enabled = !_isLockScale;
+
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("S", GUILayout.Width(20));
                     GUI.enabled = false;
@@ -142,7 +161,11 @@ namespace HT.Framework
                     GUI.backgroundColor = Color.white;
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
+
+                    GUI.enabled = true;
                 }
+
+                GUI.enabled = !_isLockPosition;
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LP", GUILayout.Width(20));
@@ -171,6 +194,8 @@ namespace HT.Framework
                 }
                 GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
+
+                GUI.enabled = !_isLockRotation;
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LR", GUILayout.Width(20));
@@ -221,6 +246,8 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
+                GUI.enabled = !_isLockScale;
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("LS", GUILayout.Width(20));
                 EditorGUI.BeginChangeCheck();
@@ -249,6 +276,8 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
+                GUI.enabled = true;
+
                 GUILayout.EndVertical();
             }
             #endregion
@@ -266,7 +295,14 @@ namespace HT.Framework
 
             if (_showHierarchy)
             {
+                if (_isLock)
+                {
+                    EditorGUILayout.HelpBox(_lockSource, MessageType.None);
+                }
+
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+
+                GUI.enabled = !_isLock;
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Root: ", GUILayout.Width(LabelWidth));
@@ -286,11 +322,12 @@ namespace HT.Framework
                 GUI.color = Color.white;
                 GUILayout.EndHorizontal();
 
+                GUI.enabled = !_isLock && Target.childCount > 0;
+
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Child Count: ", GUILayout.Width(LabelWidth));
                 GUILayout.Label(Target.childCount.ToString());
                 GUILayout.FlexibleSpace();
-                GUI.enabled = Target.childCount > 0;
                 GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("Detach", EditorStyles.miniButton))
                 {
@@ -302,17 +339,20 @@ namespace HT.Framework
                     }
                 }
                 GUI.backgroundColor = Color.white;
-                GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUI.backgroundColor = Color.yellow;
 
+                GUI.enabled = !_isLock;
+                
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
                 {
                     CreateEmptyParent();
                 }
                 GUILayout.EndHorizontal();
+
+                GUI.enabled = true;
 
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Expand All Children", EditorStyles.miniButtonLeft))
@@ -333,7 +373,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUI.backgroundColor = Color.white;
-
+                
                 GUILayout.EndVertical();
             }
             #endregion
@@ -395,6 +435,30 @@ namespace HT.Framework
                 GUILayout.EndVertical();
             }
             #endregion
+        }
+
+        private void SetLockState()
+        {
+            HTBehaviour[] behaviours = Target.GetComponents<HTBehaviour>();
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                Type type = behaviours[i].GetType();
+                LockTransformAttribute attribute = type.GetCustomAttribute<LockTransformAttribute>();
+                if (attribute != null)
+                {
+                    _lockSource = "Some values locking by " + type.Name + ".";
+                    _isLock = true;
+                    _isLockPosition = attribute.IsLockPosition;
+                    _isLockRotation = attribute.IsLockRotation;
+                    _isLockScale = attribute.IsLockScale;
+                    return;
+                }
+            }
+            _lockSource = null;
+            _isLock = false;
+            _isLockPosition = false;
+            _isLockRotation = false;
+            _isLockScale = false;
         }
         private void CreateEmptyParent()
         {

@@ -9,9 +9,10 @@ namespace HT.Framework
     /// </summary>
     internal sealed class ExecutionOrder : HTFEditorWindow
     {
-        private Texture _classIcon;
         private Dictionary<string, Class> _classes = new Dictionary<string, Class>();
         private List<Function> _functions = new List<Function>();
+        private GUIContent _moduleGC;
+        private GUIContent _csGC;
         private Vector2 _scrollClass;
         private Vector2 _scrollFunction;
 
@@ -20,19 +21,17 @@ namespace HT.Framework
         protected override void OnEnable()
         {
             base.OnEnable();
-
-            _classIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTScriptIcon.png");
-
+            
             _classes.Clear();
-            _classes.Add("LicenserBase", new Class("LicenserBase", true, Color.white));
-            _classes.Add("MainDataBase", new Class("MainDataBase", true, Color.white));
-            _classes.Add("InternalModuleBase", new Class("InternalModuleBase", true, Color.white));
-            _classes.Add("IInternalModuleHelper", new Class("IInternalModuleHelper", true, Color.white));
-            _classes.Add("CustomModuleBase", new Class("CustomModuleBase", true, Color.white));
-            _classes.Add("FSMDataBase", new Class("FSMDataBase", true, Color.white));
-            _classes.Add("FiniteStateBase", new Class("FiniteStateBase", true, Color.white));
-            _classes.Add("ProcedureBase", new Class("ProcedureBase", true, Color.white));
-            _classes.Add("MonoBehaviour", new Class("MonoBehaviour", true, Color.white));
+            _classes.Add("LicenserBase", new Class("Main.Licenser", "LicenserBase", true, Color.white));
+            _classes.Add("MainDataBase", new Class("Main.MainData", "MainDataBase", true, Color.white));
+            _classes.Add("InternalModuleBase", new Class("Internal Module", "InternalModuleBase", true, Color.white));
+            _classes.Add("IInternalModuleHelper", new Class("Internal Module Helper", "IInternalModuleHelper", true, Color.white));
+            _classes.Add("CustomModuleBase", new Class("Custom Module", "CustomModuleBase", true, Color.white));
+            _classes.Add("FSMDataBase", new Class("FSM Data", "FSMDataBase", true, Color.white));
+            _classes.Add("FiniteStateBase", new Class("FSM State", "FiniteStateBase", true, Color.white));
+            _classes.Add("ProcedureBase", new Class("Procedure", "ProcedureBase", true, Color.white));
+            _classes.Add("MonoBehaviour", new Class(null, "MonoBehaviour", true, Color.white));
 
             _functions.Clear();
             _functions.Add(new Function("LicenserBase", "OnInitialization"));
@@ -62,6 +61,9 @@ namespace HT.Framework
             _functions.Add(new Function("FiniteStateBase", "OnTermination"));
             _functions.Add(new Function("FSMDataBase", "OnTermination"));
             _functions.Add(new Function("MonoBehaviour", "OnDestroy"));
+
+            _moduleGC = EditorGUIUtility.IconContent("Prefab Icon");
+            _csGC = EditorGUIUtility.IconContent("cs Script Icon");
         }
         protected override void OnBodyGUI()
         {
@@ -88,12 +90,12 @@ namespace HT.Framework
 
             foreach (var cla in _classes)
             {
-                GUIContent gUIContent = new GUIContent(cla.Value.ClassName);
-                gUIContent.image = _classIcon;
+                GUIContent gc = string.IsNullOrEmpty(cla.Value.ModuleName) ? _csGC : _moduleGC;
+                gc.text = string.IsNullOrEmpty(cla.Value.ModuleName) ? cla.Value.ClassName : cla.Value.ModuleName;
 
                 GUILayout.BeginHorizontal();
                 GUI.color = cla.Value.IsDisplay ? Color.white : Color.gray;
-                cla.Value.IsDisplay = GUILayout.Toggle(cla.Value.IsDisplay, gUIContent, GUILayout.Height(EditorGUIUtility.singleLineHeight), GUILayout.Width(200));
+                cla.Value.IsDisplay = GUILayout.Toggle(cla.Value.IsDisplay, gc, GUILayout.Height(EditorGUIUtility.singleLineHeight), GUILayout.Width(200));
                 cla.Value.DisplayColor = EditorGUILayout.ColorField(cla.Value.DisplayColor, GUILayout.Height(EditorGUIUtility.singleLineHeight), GUILayout.Width(100));
                 GUI.color = Color.white;
                 GUILayout.EndHorizontal();
@@ -125,12 +127,14 @@ namespace HT.Framework
 
         private class Class
         {
+            public string ModuleName;
             public string ClassName;
             public bool IsDisplay;
             public Color DisplayColor;
 
-            public Class(string className, bool isDisplay, Color displayColor)
+            public Class(string moduleName, string className, bool isDisplay, Color displayColor)
             {
+                ModuleName = moduleName;
                 ClassName = className;
                 IsDisplay = isDisplay;
                 DisplayColor = displayColor;

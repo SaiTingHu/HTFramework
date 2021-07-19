@@ -8,6 +8,7 @@ namespace HT.Framework
     /// </summary>
     /// <typeparam name="H">内置模块的助手类型</typeparam>
     [DisallowMultipleComponent]
+    [LockTransform]
     public abstract class InternalModuleBase<H> : HTBehaviour, IModuleManager where H : class, IInternalModuleHelper
     {
         /// <summary>
