@@ -75,6 +75,20 @@ namespace HT.Framework
                 OnRuntimeEnable();
             }
         }
+        private void OnDisable()
+        {
+            _GithubIcon = null;
+            _GiteeIcon = null;
+            _CSDNIcon = null;
+            _serializedPropertys.Clear();
+
+            OnDefaultDisable();
+
+            if (IsEnableRuntimeData && EditorApplication.isPlaying)
+            {
+                OnRuntimeDisable();
+            }
+        }
         public sealed override void OnInspectorGUI()
         {
             if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)
@@ -144,14 +158,24 @@ namespace HT.Framework
             serializedObject.ApplyModifiedProperties();
         }
         /// <summary>
-        /// 默认 Enable 初始化
+        /// 默认 Enable
         /// </summary>
         protected virtual void OnDefaultEnable()
         { }
         /// <summary>
-        /// 运行时 Enable 初始化
+        /// 运行时 Enable
         /// </summary>
         protected virtual void OnRuntimeEnable()
+        { }
+        /// <summary>
+        /// 默认 Disable
+        /// </summary>
+        protected virtual void OnDefaultDisable()
+        { }
+        /// <summary>
+        /// 运行时 Disable
+        /// </summary>
+        protected virtual void OnRuntimeDisable()
         { }
         /// <summary>
         /// 默认 Inspector GUI

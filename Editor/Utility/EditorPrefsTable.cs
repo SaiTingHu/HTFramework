@@ -145,6 +145,10 @@ namespace HT.Framework
         /// ScriptingDefine历史记录
         /// </summary>
         public static readonly string ScriptingDefine_Record = "HT.Framework.ScriptingDefineRecord";
+        /// <summary>
+        /// AssemblyViewer窗口的ILSpy程序启动路径
+        /// </summary>
+        public static readonly string AssemblyViewer_ILSpyPath = "HT.Framework.AssemblyViewer.ILSpyPath";
         #endregion
     }
 }

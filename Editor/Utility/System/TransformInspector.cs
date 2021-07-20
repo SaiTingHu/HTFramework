@@ -436,6 +436,12 @@ namespace HT.Framework
             }
             #endregion
         }
+        protected override void OnDefaultDisable()
+        {
+            base.OnDefaultDisable();
+
+            Tools.hidden = false;
+        }
 
         private void SetLockState()
         {
@@ -451,6 +457,7 @@ namespace HT.Framework
                     _isLockPosition = attribute.IsLockPosition;
                     _isLockRotation = attribute.IsLockRotation;
                     _isLockScale = attribute.IsLockScale;
+                    Tools.hidden = true;
                     return;
                 }
             }
@@ -459,6 +466,7 @@ namespace HT.Framework
             _isLockPosition = false;
             _isLockRotation = false;
             _isLockScale = false;
+            Tools.hidden = false;
         }
         private void CreateEmptyParent()
         {

@@ -16,6 +16,7 @@ namespace HT.Framework
         private Assembly _currentAssembly;
         private Vector2 _assemblyScroll = Vector2.zero;
         private string _assemblyFilter = "";
+        private string _ILSpyPath = null;
 
         private Type[] _types;
         private Type _currentType;
@@ -156,6 +157,7 @@ namespace HT.Framework
             base.OnEnable();
 
             _assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            _ILSpyPath = EditorPrefs.GetString(EditorPrefsTable.AssemblyViewer_ILSpyPath, null);
             CurrentAssembly = null;
         }
         protected override void OnTitleGUI()
@@ -237,14 +239,37 @@ namespace HT.Framework
                     if (CurrentAssembly == _assemblies[i])
                     {
                         GUILayout.BeginHorizontal();
-                        GUILayout.Label("Version:" + an.Version);
+                        GUILayout.Label("Version:", GUILayout.Width(80));
+                        GUILayout.Label(an.Version.ToString());
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Open", EditorStyles.miniButton))
+                        GUI.enabled = !CurrentAssembly.IsDynamic;
+                        if (GUILayout.Button("Open in Explorer", EditorStyles.miniButton, GUILayout.Width(100)))
                         {
                             string args = "/Select, " + CurrentAssembly.Location;
-                            ProcessStartInfo psi = new ProcessStartInfo("Explorer.exe", args);
-                            Process.Start(psi);
+                            ExecutableToolkit.ExecuteExplorer(args);
                         }
+                        GUI.enabled = true;
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("ILSpy Path:", GUILayout.Width(80));
+                        string ilSpyPath = EditorGUILayout.TextField(_ILSpyPath);
+                        if (ilSpyPath != _ILSpyPath)
+                        {
+                            _ILSpyPath = ilSpyPath;
+                            EditorPrefs.SetString(EditorPrefsTable.AssemblyViewer_ILSpyPath, _ILSpyPath);
+                        }
+                        GUILayout.FlexibleSpace();
+                        GUI.enabled = !CurrentAssembly.IsDynamic;
+                        if (GUILayout.Button("Open in ILSpy", EditorStyles.miniButton, GUILayout.Width(100)))
+                        {
+                            bool succeed = ExecutableToolkit.Execute(_ILSpyPath, "\"" + CurrentAssembly.Location + "\"");
+                            if (!succeed)
+                            {
+                                Log.Error("未找到 ILSpy 可执行程序，或本机未安装 ILSpy，ILSpy 官网：http://www.ilspy.net/ 中文版官网：http://www.fishlee.net/soft/ilspy_chs/");
+                            }
+                        }
+                        GUI.enabled = true;
                         GUILayout.EndHorizontal();
                     }
                     GUI.backgroundColor = Color.white;

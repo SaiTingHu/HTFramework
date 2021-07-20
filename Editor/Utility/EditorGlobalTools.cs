@@ -1049,7 +1049,6 @@ namespace HT.Framework
         private static Texture HTFrameworkLOGOTitle;
         private static Texture HTFolderLarge;
         private static Texture HTFolderSmall;
-        private static string NotepadPlusPath = null;
 
         /// <summary>
         /// 编辑器初始化
@@ -1149,22 +1148,10 @@ namespace HT.Framework
         /// </summary>
         private static void EditWithNotepadPlus(string filePath)
         {
-            try
+            bool succeed = ExecutableToolkit.ExecuteRegistry("notepad++.exe", "\"" + filePath + "\"");
+            if (!succeed)
             {
-                if (string.IsNullOrEmpty(NotepadPlusPath))
-                {
-                    string app = "notepad++.exe";
-                    RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\" + app, false);
-                    object value = key.GetValue(string.Empty);
-                    NotepadPlusPath = value.ToString();
-                }
-                Process process = new Process();
-                process.StartInfo = new ProcessStartInfo(NotepadPlusPath, "\"" + filePath + "\"");
-                process.Start();
-            }
-            catch
-            {
-                Log.Error("本机未安装Notepad++，请先下载安装，Notepad++官网：https://notepad-plus-plus.org");
+                Log.Error("未找到 Notepad++ 可执行程序，或本机未安装 Notepad++，Notepad++ 官网：https://notepad-plus-plus.org");
             }
         }
         #endregion
