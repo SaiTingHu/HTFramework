@@ -763,31 +763,33 @@ namespace HT.Framework
         {
             if (_currentContent != null)
             {
-                GameObject target = _currentContent.Target;
-                Collider collider = target.GetComponent<Collider>();
-                if (collider && collider.enabled)
-                {
-                    switch (GuideHighlighting)
-                    {
-                        case MouseRay.HighlightingType.Normal:
-                            target.OpenHighLight();
-                            break;
-                        case MouseRay.HighlightingType.Flash:
-                            target.OpenFlashHighLight();
-                            break;
-                        case MouseRay.HighlightingType.Outline:
-                            target.OpenMeshOutline();
-                            break;
-                    }
-                }
-
-                Main.m_Controller.Mode = _currentContent.InitialMode;
-                Main.m_Controller.SetLookPoint(target.transform.position + _currentContent.ViewOffset, false);
-                Main.m_Controller.SetLookAngle(_currentContent.BestView);
-
                 if (_currentHelper != null)
                 {
                     _currentHelper.OnGuide();
+                }
+                else
+                {
+                    GameObject target = _currentContent.Target;
+                    Collider collider = target.GetComponent<Collider>();
+                    if (collider && collider.enabled)
+                    {
+                        switch (GuideHighlighting)
+                        {
+                            case MouseRay.HighlightingType.Normal:
+                                target.OpenHighLight();
+                                break;
+                            case MouseRay.HighlightingType.Flash:
+                                target.OpenFlashHighLight();
+                                break;
+                            case MouseRay.HighlightingType.Outline:
+                                target.OpenMeshOutline();
+                                break;
+                        }
+                    }
+
+                    Main.m_Controller.Mode = _currentContent.InitialMode;
+                    Main.m_Controller.SetLookPoint(target.transform.position + _currentContent.ViewOffset, false);
+                    Main.m_Controller.SetLookAngle(_currentContent.BestView);
                 }
             }
             else

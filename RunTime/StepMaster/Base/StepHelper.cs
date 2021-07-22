@@ -90,7 +90,26 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnGuide()
         {
+            Collider collider = Target.GetComponent<Collider>();
+            if (collider && collider.enabled)
+            {
+                switch (Main.m_StepMaster.GuideHighlighting)
+                {
+                    case MouseRay.HighlightingType.Normal:
+                        Target.gameObject.OpenHighLight();
+                        break;
+                    case MouseRay.HighlightingType.Flash:
+                        Target.gameObject.OpenFlashHighLight();
+                        break;
+                    case MouseRay.HighlightingType.Outline:
+                        Target.gameObject.OpenMeshOutline();
+                        break;
+                }
+            }
 
+            Main.m_Controller.Mode = Content.InitialMode;
+            Main.m_Controller.SetLookPoint(Target.transform.position + Content.ViewOffset, false);
+            Main.m_Controller.SetLookAngle(Content.BestView);
         }
         /// <summary>
         /// 帧刷新（仅在步骤执行前生效）
