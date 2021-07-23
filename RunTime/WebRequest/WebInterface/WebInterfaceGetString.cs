@@ -13,7 +13,7 @@ namespace HT.Framework
         {
             if (handler == null)
             {
-                Handler?.Invoke("");
+                Handler?.Invoke(null);
             }
             else
             {

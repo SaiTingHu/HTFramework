@@ -44,7 +44,41 @@ namespace HT.Framework
             }
             else
             {
-                return JsonMapper.ToObject(value);
+                JsonData jsonData = null;
+                try
+                {
+                    jsonData = JsonMapper.ToObject(value);
+                }
+                catch
+                {
+                    jsonData = null;
+                }
+                return jsonData;
+            }
+        }
+        /// <summary>
+        /// 字符串转换为Json对象
+        /// </summary>
+        /// <param name="value">字符串</param>
+        /// <returns>Json对象</returns>
+        public static T StringToJson<T>(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return default;
+            }
+            else
+            {
+                T jsonData = default;
+                try
+                {
+                    jsonData = JsonMapper.ToObject<T>(value);
+                }
+                catch
+                {
+                    jsonData = default;
+                }
+                return jsonData;
             }
         }
         /// <summary>
