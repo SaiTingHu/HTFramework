@@ -16,6 +16,9 @@ namespace HT.Framework
         private AnimBool _showProperty;
         private AnimBool _showHierarchy;
         private AnimBool _showCopy;
+        private GUIContent _propertyGC;
+        private GUIContent _hierarchyGC;
+        private GUIContent _copyGC;
         private Transform _parent;
         private Editor _originalEditor;
         private MethodInfo _originalOnSceneGUI;
@@ -89,6 +92,15 @@ namespace HT.Framework
             _showProperty = new AnimBool(false, new UnityAction(Repaint));
             _showHierarchy = new AnimBool(false, new UnityAction(Repaint));
             _showCopy = new AnimBool(false, new UnityAction(Repaint));
+            _propertyGC = new GUIContent();
+            _propertyGC.image = EditorGUIUtility.IconContent("ToolHandleLocal").image;
+            _propertyGC.text = "Property";
+            _hierarchyGC = new GUIContent();
+            _hierarchyGC.image = EditorGUIUtility.IconContent("ToolHandlePivot").image;
+            _hierarchyGC.text = "Hierarchy";
+            _copyGC = new GUIContent();
+            _copyGC.image = EditorGUIUtility.IconContent("ToolHandleCenter").image;
+            _copyGC.text = "Copy";
 
             Type rectTransformEditor = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.RectTransformEditor");
             if (rectTransformEditor != null && targets != null && targets.Length > 0)
@@ -119,10 +131,8 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            GUIContent gc = EditorGUIUtility.IconContent("d_ToolHandleLocal");
-            gc.text = "Property";
             bool oldValue = _currentPage == Page.Property;
-            _showProperty.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            _showProperty.target = EditorGUILayout.Foldout(oldValue, _propertyGC, true);
             if (_showProperty.target != oldValue)
             {
                 if (_showProperty.target) _currentPage = Page.Property;
@@ -132,9 +142,7 @@ namespace HT.Framework
 
             if (EditorGUILayout.BeginFadeGroup(_showProperty.faded))
             {
-                GUILayout.BeginVertical();
                 _originalEditor.OnInspectorGUI();
-                GUILayout.EndVertical();
             }
             EditorGUILayout.EndFadeGroup();
 
@@ -146,10 +154,8 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            gc = EditorGUIUtility.IconContent("d_ToolHandlePivot");
-            gc.text = "Hierarchy";
             oldValue = _currentPage == Page.Hierarchy;
-            _showHierarchy.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            _showHierarchy.target = EditorGUILayout.Foldout(oldValue, _hierarchyGC, true);
             if (_showHierarchy.target != oldValue)
             {
                 if (_showHierarchy.target) _currentPage = Page.Hierarchy;
@@ -160,12 +166,12 @@ namespace HT.Framework
             if (EditorGUILayout.BeginFadeGroup(_showHierarchy.faded))
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Root: ", GUILayout.Width(LabelWidth));
+                GUILayout.Label("Root", GUILayout.Width(LabelWidth));
                 EditorGUILayout.ObjectField(Target.root, typeof(Transform), true);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Parent: ", GUILayout.Width(LabelWidth));
+                GUILayout.Label("Parent", GUILayout.Width(LabelWidth));
                 GUI.color = Target.parent ? Color.white : Color.gray;
                 _parent = EditorGUILayout.ObjectField(Target.parent, typeof(Transform), true) as Transform;
                 if (_parent != Target.parent)
@@ -178,7 +184,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Child Count: ", GUILayout.Width(LabelWidth));
+                GUILayout.Label("Child Count", GUILayout.Width(LabelWidth));
                 GUILayout.Label(Target.childCount.ToString());
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.childCount > 0;
@@ -235,10 +241,8 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            gc = EditorGUIUtility.IconContent("d_ToolHandleCenter");
-            gc.text = "Copy";
             oldValue = _currentPage == Page.Copy;
-            _showCopy.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            _showCopy.target = EditorGUILayout.Foldout(oldValue, _copyGC, true);
             if (_showCopy.target != oldValue)
             {
                 if (_showCopy.target) _currentPage = Page.Copy;
