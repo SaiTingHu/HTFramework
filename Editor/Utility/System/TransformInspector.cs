@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(Transform))]
     internal sealed class TransformInspector : HTFEditor<Transform>
     {
+        private static Page _currentPage = Page.Property;
         private static bool _copyQuaternion = false;
-
+        
         private bool _onlyShowLocal = false;
-        private bool _showProperty = true;
-        private bool _showHierarchy = false;
-        private bool _showCopy = false;
+        private AnimBool _showProperty;
+        private AnimBool _showHierarchy;
+        private AnimBool _showCopy;
         private Transform _parent;
-        private GUIContent _copy;
-        private GUIContent _paste;
         private string _lockSource;
         private bool _isLock = false;
         private bool _isLockPosition = false;
@@ -30,42 +31,47 @@ namespace HT.Framework
             base.OnDefaultEnable();
 
             _onlyShowLocal = EditorPrefs.GetBool(EditorPrefsTable.Transform_OnlyShowLocal, false);
-            _showProperty = EditorPrefs.GetBool(EditorPrefsTable.Transform_Property, true);
-            _showHierarchy = EditorPrefs.GetBool(EditorPrefsTable.Transform_Hierarchy, false);
-            _showCopy = EditorPrefs.GetBool(EditorPrefsTable.Transform_Copy, false);
-            _copy = new GUIContent();
-            _copy.text = "C";
-            _copy.tooltip = "Copy value";
-            _paste = new GUIContent();
-            _paste.text = "P";
-            _paste.tooltip = "Paste value";
+            _showProperty = new AnimBool(false, new UnityAction(Repaint));
+            _showHierarchy = new AnimBool(false, new UnityAction(Repaint));
+            _showCopy = new AnimBool(false, new UnityAction(Repaint));
 
             SetLockState();
+        }
+        protected override void OnDefaultDisable()
+        {
+            base.OnDefaultDisable();
+
+            Tools.hidden = false;
         }
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
+            GUILayout.Space(5);
+
             #region Property
-            GUILayout.BeginHorizontal("MeTransitionHead");
+            GUILayout.BeginVertical(GetBoxStyle(Page.Property));
+
+            GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            bool showProperty = EditorGUILayout.Foldout(_showProperty, "Property", true);
-            if (showProperty != _showProperty)
+            GUIContent gc = EditorGUIUtility.IconContent("d_ToolHandleLocal");
+            gc.text = "Property";
+            bool oldValue = _currentPage == Page.Property;
+            _showProperty.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            if (_showProperty.target != oldValue)
             {
-                _showProperty = showProperty;
-                EditorPrefs.SetBool(EditorPrefsTable.Transform_Property, _showProperty);
+                if (_showProperty.target) _currentPage = Page.Property;
+                else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (_showProperty)
+            if (EditorGUILayout.BeginFadeGroup(_showProperty.faded))
             {
                 if (_isLock)
                 {
                     EditorGUILayout.HelpBox(_lockSource, MessageType.None);
                 }
-
-                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
+                
                 if (!_onlyShowLocal)
                 {
                     GUI.enabled = !_isLockPosition;
@@ -80,22 +86,25 @@ namespace HT.Framework
                         Target.position = pos;
                         HasChanged();
                     }
-                    GUI.backgroundColor = Color.yellow;
-                    if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                    if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
                     {
-                        GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                    if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
-                    {
-                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        GenericMenu gm = new GenericMenu();
+                        gm.AddItem(new GUIContent("Copy"), false, () =>
                         {
-                            Undo.RecordObject(Target, "Paste position value");
-                            Target.position = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
-                            HasChanged();
-                        }
+                            GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
+                            Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                        });
+                        gm.AddItem(new GUIContent("Paste"), false, () =>
+                        {
+                            if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                            {
+                                Undo.RecordObject(Target, "Paste position value");
+                                Target.position = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
+                                HasChanged();
+                            }
+                        });
+                        gm.ShowAsContext();
                     }
-                    GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUI.enabled = !_isLockRotation;
@@ -110,43 +119,46 @@ namespace HT.Framework
                         Target.rotation = Quaternion.Euler(rot);
                         HasChanged();
                     }
-                    GUI.backgroundColor = Color.yellow;
-                    if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                    if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
                     {
-                        if (_copyQuaternion)
-                        {
-                            GUIUtility.systemCopyBuffer = Target.rotation.ToCopyString("F4");
-                            Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                        }
-                        else
-                        {
-                            string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
-                            string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
-                            string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
-
-                            GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
-                            Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                        }
-                    }
-                    if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
-                    {
-                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        GenericMenu gm = new GenericMenu();
+                        gm.AddItem(new GUIContent("Copy"), false, () =>
                         {
                             if (_copyQuaternion)
                             {
-                                Undo.RecordObject(Target, "Paste rotation value");
-                                Target.rotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
-                                HasChanged();
+                                GUIUtility.systemCopyBuffer = Target.rotation.ToCopyString("F4");
+                                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                             }
                             else
                             {
-                                Undo.RecordObject(Target, "Paste rotation value");
-                                Target.rotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
-                                HasChanged();
+                                string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
+                                string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
+                                string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
+
+                                GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                             }
-                        }
+                        });
+                        gm.AddItem(new GUIContent("Paste"), false, () =>
+                        {
+                            if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                            {
+                                if (_copyQuaternion)
+                                {
+                                    Undo.RecordObject(Target, "Paste rotation value");
+                                    Target.rotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+                                    HasChanged();
+                                }
+                                else
+                                {
+                                    Undo.RecordObject(Target, "Paste rotation value");
+                                    Target.rotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
+                                    HasChanged();
+                                }
+                            }
+                        });
+                        gm.ShowAsContext();
                     }
-                    GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUI.enabled = !_isLockScale;
@@ -155,10 +167,7 @@ namespace HT.Framework
                     GUILayout.Label("S", GUILayout.Width(20));
                     GUI.enabled = false;
                     EditorGUILayout.Vector3Field("", Target.lossyScale);
-                    GUI.backgroundColor = Color.yellow;
-                    GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20));
-                    GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20));
-                    GUI.backgroundColor = Color.white;
+                    GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20));
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
@@ -177,22 +186,25 @@ namespace HT.Framework
                     Target.localPosition = localpos;
                     HasChanged();
                 }
-                GUI.backgroundColor = Color.yellow;
-                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
                 {
-                    GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
-                {
-                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
                     {
-                        Undo.RecordObject(Target, "Paste localPosition value");
-                        Target.localPosition = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
-                        HasChanged();
-                    }
+                        GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            Undo.RecordObject(Target, "Paste localPosition value");
+                            Target.localPosition = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
+                            HasChanged();
+                        }
+                    });
+                    gm.ShowAsContext();
                 }
-                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 GUI.enabled = !_isLockRotation;
@@ -207,43 +219,46 @@ namespace HT.Framework
                     Target.localRotation = Quaternion.Euler(localrot);
                     HasChanged();
                 }
-                GUI.backgroundColor = Color.yellow;
-                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
                 {
-                    if (_copyQuaternion)
-                    {
-                        GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                    else
-                    {
-                        string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
-                        string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
-                        string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
-
-                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                }
-                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
-                {
-                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
                     {
                         if (_copyQuaternion)
                         {
-                            Undo.RecordObject(Target, "Paste localRotation value");
-                            Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
-                            HasChanged();
+                            GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
+                            Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                         }
                         else
                         {
-                            Undo.RecordObject(Target, "Paste localRotation value");
-                            Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
-                            HasChanged();
+                            string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
+                            string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
+                            string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
+
+                            GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                            Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                         }
-                    }
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            if (_copyQuaternion)
+                            {
+                                Undo.RecordObject(Target, "Paste localRotation value");
+                                Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+                                HasChanged();
+                            }
+                            else
+                            {
+                                Undo.RecordObject(Target, "Paste localRotation value");
+                                Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
+                                HasChanged();
+                            }
+                        }
+                    });
+                    gm.ShowAsContext();
                 }
-                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 GUI.enabled = !_isLockScale;
@@ -258,50 +273,57 @@ namespace HT.Framework
                     Target.localScale = localsca;
                     HasChanged();
                 }
-                GUI.backgroundColor = Color.yellow;
-                if (GUILayout.Button(_copy, EditorStyles.miniButtonLeft, GUILayout.Width(20)))
+                if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
                 {
-                    GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                if (GUILayout.Button(_paste, EditorStyles.miniButtonRight, GUILayout.Width(20)))
-                {
-                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
                     {
-                        Undo.RecordObject(Target, "Paste localScale value");
-                        Target.localScale = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.one);
-                        HasChanged();
-                    }
+                        GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            Undo.RecordObject(Target, "Paste localScale value");
+                            Target.localScale = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.one);
+                            HasChanged();
+                        }
+                    });
+                    gm.ShowAsContext();
                 }
-                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
                 GUI.enabled = true;
-
-                GUILayout.EndVertical();
             }
+            EditorGUILayout.EndFadeGroup();
+
+            GUILayout.EndVertical();
             #endregion
 
             #region Hierarchy
-            GUILayout.BeginHorizontal("MeTransitionHead");
+            GUILayout.BeginVertical(GetBoxStyle(Page.Hierarchy));
+
+            GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            bool showHierarchy = EditorGUILayout.Foldout(_showHierarchy, "Hierarchy", true);
-            if (showHierarchy != _showHierarchy)
+            gc = EditorGUIUtility.IconContent("d_ToolHandlePivot");
+            gc.text = "Hierarchy";
+            oldValue = _currentPage == Page.Hierarchy;
+            _showHierarchy.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            if (_showHierarchy.target != oldValue)
             {
-                _showHierarchy = showHierarchy;
-                EditorPrefs.SetBool(EditorPrefsTable.Transform_Hierarchy, _showHierarchy);
+                if (_showHierarchy.target) _currentPage = Page.Hierarchy;
+                else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (_showHierarchy)
+            if (EditorGUILayout.BeginFadeGroup(_showHierarchy.faded))
             {
                 if (_isLock)
                 {
                     EditorGUILayout.HelpBox(_lockSource, MessageType.None);
                 }
-
-                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
+                
                 GUI.enabled = !_isLock;
 
                 GUILayout.BeginHorizontal();
@@ -373,26 +395,30 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUI.backgroundColor = Color.white;
-                
-                GUILayout.EndVertical();
             }
+            EditorGUILayout.EndFadeGroup();
+
+            GUILayout.EndVertical();
             #endregion
 
             #region Copy
-            GUILayout.BeginHorizontal("MeTransitionHead");
+            GUILayout.BeginVertical(GetBoxStyle(Page.Copy));
+
+            GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            bool showCopy = EditorGUILayout.Foldout(_showCopy, "Copy", true);
-            if (showCopy != _showCopy)
+            gc = EditorGUIUtility.IconContent("d_ToolHandleCenter");
+            gc.text = "Copy";
+            oldValue = _currentPage == Page.Copy;
+            _showCopy.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            if (_showCopy.target != oldValue)
             {
-                _showCopy = showCopy;
-                EditorPrefs.SetBool(EditorPrefsTable.Transform_Copy, _showCopy);
+                if (_showCopy.target) _currentPage = Page.Copy;
+                else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (_showCopy)
+            if (EditorGUILayout.BeginFadeGroup(_showCopy.faded))
             {
-                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
                 GUI.backgroundColor = Color.yellow;
 
                 GUILayout.BeginHorizontal();
@@ -431,18 +457,13 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");
                 GUILayout.EndHorizontal();
-
-                GUILayout.EndVertical();
             }
+            EditorGUILayout.EndFadeGroup();
+
+            GUILayout.EndVertical();
             #endregion
         }
-        protected override void OnDefaultDisable()
-        {
-            base.OnDefaultDisable();
-
-            Tools.hidden = false;
-        }
-
+        
         private void SetLockState()
         {
             HTBehaviour[] behaviours = Target.GetComponents<HTBehaviour>();
@@ -467,6 +488,13 @@ namespace HT.Framework
             _isLockRotation = false;
             _isLockScale = false;
             Tools.hidden = false;
+        }
+        private GUIStyle GetBoxStyle(Page page)
+        {
+            if (_currentPage == page)
+                return "SelectionRect";
+            else
+                return "Box";
         }
         private void CreateEmptyParent()
         {
@@ -531,6 +559,17 @@ namespace HT.Framework
             fieldNames[0] = char.ToLower(fieldNames[0]);
             string field = string.Format("[ObjectPath(\"{0}\")] private GameObject _{1};", Target.FullName(), new string(fieldNames));
             return field;
+        }
+
+        /// <summary>
+        /// 分页
+        /// </summary>
+        private enum Page
+        {
+            None,
+            Property,
+            Hierarchy,
+            Copy,
         }
     }
 }

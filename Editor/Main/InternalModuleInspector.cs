@@ -17,6 +17,7 @@ namespace HT.Framework
         protected H _helper;
         private InternalModuleBase<H> _module;
         private List<Type> _types;
+        private HTFAction _changeHelper;
 
         protected virtual string Intro
         {
@@ -35,6 +36,7 @@ namespace HT.Framework
             {
                 return typeof(H).IsAssignableFrom(type) && typeof(H) != type;
             });
+            _changeHelper = ChangeHelper;
         }
         protected override void OnRuntimeEnable()
         {
@@ -54,7 +56,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUI.enabled = !EditorApplication.isPlaying && _types.Count > 0;
             GUILayout.Label("Helper", GUILayout.Width(LabelWidth));
-            Button(ChangeHelper, _module.HelperType, EditorStyles.popup);
+            Button(_changeHelper, _module.HelperType, EditorStyles.popup);
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }

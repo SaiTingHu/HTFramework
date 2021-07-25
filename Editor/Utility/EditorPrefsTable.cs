@@ -105,31 +105,6 @@ namespace HT.Framework
         /// </summary>
         public static readonly string Transform_OnlyShowLocal = "HT.Framework.Transform.OnlyShowLocal";
         /// <summary>
-        /// Transform组件Inspector面板配置：是否展开Property
-        /// </summary>
-        public static readonly string Transform_Property = "HT.Framework.Transform.Property";
-        /// <summary>
-        /// Transform组件Inspector面板配置：是否展开Hierarchy
-        /// </summary>
-        public static readonly string Transform_Hierarchy = "HT.Framework.Transform.Hierarchy";
-        /// <summary>
-        /// Transform组件Inspector面板配置：是否展开Copy
-        /// </summary>
-        public static readonly string Transform_Copy = "HT.Framework.Transform.Copy";
-        /// <summary>
-        /// RectTransform组件Inspector面板配置：是否展开Property
-        /// </summary>
-        public static readonly string RectTransform_Property = "HT.Framework.RectTransform.Property";
-        /// <summary>
-        /// RectTransform组件Inspector面板配置：是否展开Hierarchy
-        /// </summary>
-        public static readonly string RectTransform_Hierarchy = "HT.Framework.RectTransform.Hierarchy";
-        /// <summary>
-        /// RectTransform组件Inspector面板配置：是否展开Copy
-        /// </summary>
-        public static readonly string RectTransform_Copy = "HT.Framework.RectTransform.Copy";
-
-        /// <summary>
         /// 快捷工具是否启用
         /// </summary>
         public static readonly string LnkTools_Enable = "HT.Framework.LnkTools.Enable";

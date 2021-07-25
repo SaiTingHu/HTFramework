@@ -6,6 +6,8 @@ namespace HT.Framework
     [CustomEditor(typeof(ECS_Entity))]
     internal sealed class ECS_EntityInspector : HTFEditor<ECS_Entity>
     {
+        private HTFAction _generateID;
+
         protected override bool IsEnableRuntimeData
         {
             get
@@ -14,6 +16,12 @@ namespace HT.Framework
             }
         }
 
+        protected override void OnDefaultEnable()
+        {
+            base.OnDefaultEnable();
+
+            _generateID = GenerateID;
+        }
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
@@ -27,7 +35,7 @@ namespace HT.Framework
                 inspector.Entity = Target;
                 inspector.Show();
             }
-            Button(GenerateID, "Generate ID", EditorGlobalTools.Styles.ButtonRight);
+            Button(_generateID, "Generate ID", EditorGlobalTools.Styles.ButtonRight);
             GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 

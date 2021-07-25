@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.AnimatedValues;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace HT.Framework
 {
@@ -26,9 +28,11 @@ namespace HT.Framework
         {
             base.OnDefaultEnable();
 
-            StyleEnable();
             ScriptingDefineEnable();
+            MainDataEnable();
+            LicenseEnable();
             ParameterEnable();
+            SettingEnable();
         }
         protected override void OnInspectorDefaultGUI()
         {
@@ -50,35 +54,24 @@ namespace HT.Framework
         }
 
         #region Style
-        private GUIStyle _checked;
-        private GUIStyle _unchecked;
-
-        private void StyleEnable()
-        {
-            _checked = new GUIStyle("SelectionRect");
-            _unchecked = new GUIStyle("Box");
-        }
-
-        /// <summary>
-        /// 获取分页的背景样式
-        /// </summary>
-        /// <param name="page">分页</param>
         private GUIStyle GetStyle(Page page)
         {
             if (_currentPage == page)
-                return _checked;
+                return "SelectionRect";
             else
-                return _unchecked;
+                return "Box";
         }
         #endregion
 
         #region ScriptingDefine
+        private AnimBool _scriptingDefineABool;
         private ScriptingDefine _currentScriptingDefine;
         private bool _isNewDefine = false;
         private string _newDefine = "";
 
         private void ScriptingDefineEnable()
         {
+            _scriptingDefineABool = new AnimBool(false, new UnityAction(Repaint));
             _currentScriptingDefine = new ScriptingDefine();
         }
         private void ScriptingDefineGUI()
@@ -88,15 +81,15 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
             bool oldValue = _currentPage == Page.ScriptingDefine;
-            bool newValue = EditorGUILayout.Foldout(oldValue, "Scripting Define", true);
-            if (newValue != oldValue)
+            _scriptingDefineABool.target = EditorGUILayout.Foldout(oldValue, "Scripting Define", true);
+            if (_scriptingDefineABool.target != oldValue)
             {
-                if (newValue) _currentPage = Page.ScriptingDefine;
+                if (_scriptingDefineABool.target) _currentPage = Page.ScriptingDefine;
                 else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (newValue)
+            if (EditorGUILayout.BeginFadeGroup(_scriptingDefineABool.faded))
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Defined");
@@ -175,6 +168,7 @@ namespace HT.Framework
                     }
                 }
             }
+            EditorGUILayout.EndFadeGroup();
 
             GUILayout.EndVertical();
         }
@@ -263,6 +257,12 @@ namespace HT.Framework
         #endregion
 
         #region MainData
+        private AnimBool _mainDataABool;
+
+        private void MainDataEnable()
+        {
+            _mainDataABool = new AnimBool(false, new UnityAction(Repaint));
+        }
         private void MainDataGUI()
         {
             GUILayout.BeginVertical(GetStyle(Page.MainData));
@@ -270,15 +270,15 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
             bool oldValue = _currentPage == Page.MainData;
-            bool newValue = EditorGUILayout.Foldout(oldValue, "Main Data", true);
-            if (newValue != oldValue)
+            _mainDataABool.target = EditorGUILayout.Foldout(oldValue, "Main Data", true);
+            if (_mainDataABool.target != oldValue)
             {
-                if (newValue) _currentPage = Page.MainData;
+                if (_mainDataABool.target) _currentPage = Page.MainData;
                 else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (newValue)
+            if (EditorGUILayout.BeginFadeGroup(_mainDataABool.faded))
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("MainData", GUILayout.Width(LabelWidth));
@@ -309,12 +309,19 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
             }
+            EditorGUILayout.EndFadeGroup();
 
             GUILayout.EndVertical();
         }
         #endregion
 
         #region License
+        private AnimBool _licenseABool;
+
+        private void LicenseEnable()
+        {
+            _licenseABool = new AnimBool(false, new UnityAction(Repaint));
+        }
         private void LicenseGUI()
         {
             GUILayout.BeginVertical(GetStyle(Page.License));
@@ -322,15 +329,15 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
             bool oldValue = _currentPage == Page.License;
-            bool newValue = EditorGUILayout.Foldout(oldValue, "License", true);
-            if (newValue != oldValue)
+            _licenseABool.target = EditorGUILayout.Foldout(oldValue, "License", true);
+            if (_licenseABool.target != oldValue)
             {
-                if (newValue) _currentPage = Page.License;
+                if (_licenseABool.target) _currentPage = Page.License;
                 else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (newValue)
+            if (EditorGUILayout.BeginFadeGroup(_licenseABool.faded))
             {
                 GUILayout.BeginHorizontal();
                 Toggle(Target.IsPermanentLicense, out Target.IsPermanentLicense, "Permanent License");
@@ -368,17 +375,20 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
                 }
             }
+            EditorGUILayout.EndFadeGroup();
 
             GUILayout.EndVertical();
         }
         #endregion
 
         #region Parameter
+        private AnimBool _parameterABool;
         private SerializedProperty _mainParameters;
         private ReorderableList _parameterList;        
 
         private void ParameterEnable()
         {
+            _parameterABool = new AnimBool(false, new UnityAction(Repaint));
             _mainParameters = GetProperty("MainParameters");
             _parameterList = new ReorderableList(serializedObject, _mainParameters, true, false, true, true);
             _parameterList.headerHeight = 2;
@@ -486,24 +496,31 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
             bool oldValue = _currentPage == Page.Parameter;
-            bool newValue = EditorGUILayout.Foldout(oldValue, "Parameter", true);
-            if (newValue != oldValue)
+            _parameterABool.target = EditorGUILayout.Foldout(oldValue, "Parameter", true);
+            if (_parameterABool.target != oldValue)
             {
-                if (newValue) _currentPage = Page.Parameter;
+                if (_parameterABool.target) _currentPage = Page.Parameter;
                 else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (newValue)
+            if (EditorGUILayout.BeginFadeGroup(_parameterABool.faded))
             {
                 _parameterList.DoLayoutList();
             }
+            EditorGUILayout.EndFadeGroup();
 
             GUILayout.EndVertical();
         }
         #endregion
 
         #region Setting
+        private AnimBool _settingABool;
+
+        private void SettingEnable()
+        {
+            _settingABool = new AnimBool(false, new UnityAction(Repaint));
+        }
         private void SettingGUI()
         {
             GUILayout.BeginVertical(GetStyle(Page.Setting));
@@ -511,15 +528,15 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
             bool oldValue = _currentPage == Page.Setting;
-            bool newValue = EditorGUILayout.Foldout(oldValue, "Setting", true);
-            if (newValue != oldValue)
+            _settingABool.target = EditorGUILayout.Foldout(oldValue, "Setting", true);
+            if (_settingABool.target != oldValue)
             {
-                if (newValue) _currentPage = Page.Setting;
+                if (_settingABool.target) _currentPage = Page.Setting;
                 else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (newValue)
+            if (EditorGUILayout.BeginFadeGroup(_settingABool.faded))
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Log", EditorStyles.boldLabel);
@@ -537,6 +554,7 @@ namespace HT.Framework
                 Toggle(Target.IsEnabledLogError, out Target.IsEnabledLogError, "Enabled Log Error");
                 GUILayout.EndHorizontal();
             }
+            EditorGUILayout.EndFadeGroup();
 
             GUILayout.EndVertical();
         }

@@ -7,6 +7,8 @@ namespace HT.Framework
     [CustomEditor(typeof(TaskTarget))]
     internal sealed class TaskTargetInspector : HTFEditor<TaskTarget>
     {
+        private HTFAction _generateID;
+
         protected override bool IsEnableRuntimeData
         {
             get
@@ -15,13 +17,19 @@ namespace HT.Framework
             }
         }
 
+        protected override void OnDefaultEnable()
+        {
+            base.OnDefaultEnable();
+
+            _generateID = GenerateGUID;
+        }
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUILayout.BeginHorizontal();
             GUI.backgroundColor = Color.cyan;
-            Button(GenerateGUID, "Generate GUID");
+            Button(_generateID, "Generate GUID");
             GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 

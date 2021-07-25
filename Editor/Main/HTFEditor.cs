@@ -132,11 +132,13 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
             }
 
+            serializedObject.Update();
+
             if (IsEnableBaseInspectorGUI)
             {
                 base.OnInspectorGUI();
             }
-
+            
             OnInspectorDefaultGUI();
 
             if (IsEnableRuntimeData && EditorApplication.isPlaying)
@@ -234,7 +236,7 @@ namespace HT.Framework
         {
             if (GUILayout.Button(name, options))
             {
-                Undo.RecordObject(target, "click button");
+                Undo.RecordObject(target, "Click button");
                 action();
                 HasChanged();
             }
@@ -246,7 +248,7 @@ namespace HT.Framework
         {
             if (GUILayout.Button(name, style, options))
             {
-                Undo.RecordObject(target, "click button");
+                Undo.RecordObject(target, "Click button");
                 action();
                 HasChanged();
             }

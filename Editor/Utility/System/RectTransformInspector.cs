@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.AnimatedValues;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(RectTransform))]
     internal sealed class RectTransformInspector : HTFEditor<RectTransform>
     {
+        private static Page _currentPage = Page.Property;
         private static bool _copyQuaternion = false;
-        private bool _showProperty = true;
-        private bool _showHierarchy = false;
-        private bool _showCopy = false;
+
+        private AnimBool _showProperty;
+        private AnimBool _showHierarchy;
+        private AnimBool _showCopy;
         private Transform _parent;
         private Editor _originalEditor;
         private MethodInfo _originalOnSceneGUI;
@@ -63,14 +67,7 @@ namespace HT.Framework
         {
             return _originalEditor.UseDefaultMargins();
         }
-
-        private void OnDisable()
-        {
-            if (_originalEditor != null)
-            {
-                DestroyImmediate(_originalEditor);
-            }
-        }
+        
         private void OnSceneGUI()
         {
             if (_originalEditor != null && _originalOnSceneGUI != null)
@@ -89,9 +86,9 @@ namespace HT.Framework
         {
             base.OnDefaultEnable();
 
-            _showProperty = EditorPrefs.GetBool(EditorPrefsTable.RectTransform_Property, true);
-            _showHierarchy = EditorPrefs.GetBool(EditorPrefsTable.RectTransform_Hierarchy, false);
-            _showCopy = EditorPrefs.GetBool(EditorPrefsTable.RectTransform_Copy, false);
+            _showProperty = new AnimBool(false, new UnityAction(Repaint));
+            _showHierarchy = new AnimBool(false, new UnityAction(Repaint));
+            _showCopy = new AnimBool(false, new UnityAction(Repaint));
 
             Type rectTransformEditor = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.RectTransformEditor");
             if (rectTransformEditor != null && targets != null && targets.Length > 0)
@@ -101,44 +98,67 @@ namespace HT.Framework
                 _originalOnHeaderGUI = rectTransformEditor.GetMethod("OnHeaderGUI", BindingFlags.Instance | BindingFlags.NonPublic);
             }
         }
+        protected override void OnDefaultDisable()
+        {
+            base.OnDefaultDisable();
+
+            if (_originalEditor != null)
+            {
+                DestroyImmediate(_originalEditor);
+                _originalEditor = null;
+            }
+        }
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
+            GUILayout.Space(5);
+
             #region Property
-            GUILayout.BeginHorizontal("MeTransitionHead");
+            GUILayout.BeginVertical(GetBoxStyle(Page.Property));
+
+            GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            bool showProperty = EditorGUILayout.Foldout(_showProperty, "Property", true);
-            if (showProperty != _showProperty)
+            GUIContent gc = EditorGUIUtility.IconContent("d_ToolHandleLocal");
+            gc.text = "Property";
+            bool oldValue = _currentPage == Page.Property;
+            _showProperty.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            if (_showProperty.target != oldValue)
             {
-                _showProperty = showProperty;
-                EditorPrefs.SetBool(EditorPrefsTable.RectTransform_Property, _showProperty);
+                if (_showProperty.target) _currentPage = Page.Property;
+                else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (_showProperty)
+            if (EditorGUILayout.BeginFadeGroup(_showProperty.faded))
             {
                 GUILayout.BeginVertical();
                 _originalEditor.OnInspectorGUI();
                 GUILayout.EndVertical();
             }
+            EditorGUILayout.EndFadeGroup();
+
+            GUILayout.EndVertical();
             #endregion
 
             #region Hierarchy
-            GUILayout.BeginHorizontal("MeTransitionHead");
+            GUILayout.BeginVertical(GetBoxStyle(Page.Hierarchy));
+
+            GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            bool showHierarchy = EditorGUILayout.Foldout(_showHierarchy, "Hierarchy", true);
-            if (showHierarchy != _showHierarchy)
+            gc = EditorGUIUtility.IconContent("d_ToolHandlePivot");
+            gc.text = "Hierarchy";
+            oldValue = _currentPage == Page.Hierarchy;
+            _showHierarchy.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            if (_showHierarchy.target != oldValue)
             {
-                _showHierarchy = showHierarchy;
-                EditorPrefs.SetBool(EditorPrefsTable.RectTransform_Hierarchy, _showHierarchy);
+                if (_showHierarchy.target) _currentPage = Page.Hierarchy;
+                else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (_showHierarchy)
+            if (EditorGUILayout.BeginFadeGroup(_showHierarchy.faded))
             {
-                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Root: ", GUILayout.Width(LabelWidth));
                 EditorGUILayout.ObjectField(Target.root, typeof(Transform), true);
@@ -204,26 +224,30 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUI.backgroundColor = Color.white;
-
-                GUILayout.EndVertical();
             }
+            EditorGUILayout.EndFadeGroup();
+
+            GUILayout.EndVertical();
             #endregion
 
             #region Copy
-            GUILayout.BeginHorizontal("MeTransitionHead");
+            GUILayout.BeginVertical(GetBoxStyle(Page.Copy));
+
+            GUILayout.BeginHorizontal();
             GUILayout.Space(12);
-            bool showCopy = EditorGUILayout.Foldout(_showCopy, "Copy", true);
-            if (showCopy != _showCopy)
+            gc = EditorGUIUtility.IconContent("d_ToolHandleCenter");
+            gc.text = "Copy";
+            oldValue = _currentPage == Page.Copy;
+            _showCopy.target = EditorGUILayout.Foldout(oldValue, gc, true);
+            if (_showCopy.target != oldValue)
             {
-                _showCopy = showCopy;
-                EditorPrefs.SetBool(EditorPrefsTable.RectTransform_Copy, _showCopy);
+                if (_showCopy.target) _currentPage = Page.Copy;
+                else _currentPage = Page.None;
             }
             GUILayout.EndHorizontal();
 
-            if (_showCopy)
+            if (EditorGUILayout.BeginFadeGroup(_showCopy.faded))
             {
-                GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
                 GUI.backgroundColor = Color.yellow;
 
                 GUILayout.BeginHorizontal();
@@ -328,10 +352,19 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");
                 GUILayout.EndHorizontal();
-
-                GUILayout.EndVertical();
             }
+            EditorGUILayout.EndFadeGroup();
+
+            GUILayout.EndVertical();
             #endregion
+        }
+
+        private GUIStyle GetBoxStyle(Page page)
+        {
+            if (_currentPage == page)
+                return "SelectionRect";
+            else
+                return "Box";
         }
         private void CreateEmptyParent()
         {
@@ -397,6 +430,17 @@ namespace HT.Framework
             fieldNames[0] = char.ToLower(fieldNames[0]);
             string field = string.Format("[ObjectPath(\"{0}\")] private GameObject _{1};", Target.FullName(), new string(fieldNames));
             return field;
+        }
+
+        /// <summary>
+        /// 分页
+        /// </summary>
+        private enum Page
+        {
+            None,
+            Property,
+            Hierarchy,
+            Copy,
         }
     }
 }
