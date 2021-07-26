@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.AnimatedValues;
 using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace HT.Framework
 {
@@ -14,8 +12,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102956756")]
     internal sealed class MainInspector : InternalModuleInspector<Main, IMainHelper>
     {
-        private static Page _currentPage = Page.None;
-
         protected override string Intro
         {
             get
@@ -28,21 +24,15 @@ namespace HT.Framework
         {
             base.OnDefaultEnable();
 
+            PageEnable();
             ScriptingDefineEnable();
-            MainDataEnable();
-            LicenseEnable();
             ParameterEnable();
-            SettingEnable();
         }
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-            
-            ScriptingDefineGUI();
-            MainDataGUI();
-            LicenseGUI();
-            ParameterGUI();
-            SettingGUI();
+
+            PageGUI();
         }
         protected override void OnInspectorRuntimeGUI()
         {
@@ -53,124 +43,111 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
         }
 
-        #region Style
-        private GUIStyle GetStyle(Page page)
+        #region Page
+        private PagePainter _pagePainter;
+
+        private void PageEnable()
         {
-            if (_currentPage == page)
-                return "SelectionRect";
-            else
-                return "Box";
+            _pagePainter = new PagePainter(this);
+            _pagePainter.AddPage("Scripting Define", EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image, ScriptingDefineGUI);
+            _pagePainter.AddPage("Main Data", EditorGUIUtility.IconContent("SceneViewOrtho").image, MainDataGUI);
+            _pagePainter.AddPage("License", EditorGUIUtility.IconContent("UnityEditor.AnimationWindow").image, LicenseGUI);
+            _pagePainter.AddPage("Parameter", EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image, ParameterGUI);
+            _pagePainter.AddPage("Setting", EditorGUIUtility.IconContent("SettingsIcon").image, SettingGUI);
+        }
+        private void PageGUI()
+        {
+            _pagePainter.Painting();
         }
         #endregion
 
         #region ScriptingDefine
-        private AnimBool _scriptingDefineABool;
         private ScriptingDefine _currentScriptingDefine;
         private bool _isNewDefine = false;
         private string _newDefine = "";
 
         private void ScriptingDefineEnable()
         {
-            _scriptingDefineABool = new AnimBool(false, new UnityAction(Repaint));
             _currentScriptingDefine = new ScriptingDefine();
         }
         private void ScriptingDefineGUI()
         {
-            GUILayout.BeginVertical(GetStyle(Page.ScriptingDefine));
-
             GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            bool oldValue = _currentPage == Page.ScriptingDefine;
-            _scriptingDefineABool.target = EditorGUILayout.Foldout(oldValue, "Scripting Define", true);
-            if (_scriptingDefineABool.target != oldValue)
-            {
-                if (_scriptingDefineABool.target) _currentPage = Page.ScriptingDefine;
-                else _currentPage = Page.None;
-            }
+            GUILayout.Label("Defined");
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            if (EditorGUILayout.BeginFadeGroup(_scriptingDefineABool.faded))
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.TextField(_currentScriptingDefine.Defined);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUI.enabled = _currentScriptingDefine.IsAnyDefined;
+            GUI.backgroundColor = Color.red;
+            if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
+            {
+                _currentScriptingDefine.ClearDefines();
+            }
+            GUI.enabled = true;
+            GUI.backgroundColor = Color.yellow;
+            if (GUILayout.Button("New", EditorStyles.miniButtonMid))
+            {
+                _isNewDefine = !_isNewDefine;
+                _newDefine = "";
+            }
+            if (GUILayout.Button("Apply", EditorStyles.miniButtonRight))
+            {
+                _currentScriptingDefine.Apply();
+            }
+            GUI.backgroundColor = Color.white;
+            GUILayout.EndHorizontal();
+
+            if (_isNewDefine)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Defined");
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.TextField(_currentScriptingDefine.Defined);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUI.enabled = _currentScriptingDefine.IsAnyDefined;
-                GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
+                _newDefine = EditorGUILayout.TextField(_newDefine);
+                if (GUILayout.Button("OK", EditorStyles.miniButtonLeft, GUILayout.Width(30)))
                 {
-                    _currentScriptingDefine.ClearDefines();
-                }
-                GUI.enabled = true;
-                GUI.backgroundColor = Color.yellow;
-                if (GUILayout.Button("New", EditorStyles.miniButtonMid))
-                {
-                    _isNewDefine = !_isNewDefine;
-                    _newDefine = "";
-                }
-                if (GUILayout.Button("Apply", EditorStyles.miniButtonRight))
-                {
-                    _currentScriptingDefine.Apply();
-                }
-                GUI.backgroundColor = Color.white;
-                GUILayout.EndHorizontal();
-
-                if (_isNewDefine)
-                {
-                    GUILayout.BeginHorizontal();
-                    _newDefine = EditorGUILayout.TextField(_newDefine);
-                    if (GUILayout.Button("OK", EditorStyles.miniButtonLeft, GUILayout.Width(30)))
+                    if (_newDefine != "")
                     {
-                        if (_newDefine != "")
-                        {
-                            _currentScriptingDefine.AddDefine(_newDefine);
-                            _isNewDefine = false;
-                            _newDefine = "";
-                        }
-                        else
-                        {
-                            Log.Error("输入的宏定义不能为空！");
-                        }
-                    }
-                    if (GUILayout.Button("NO", EditorStyles.miniButtonRight, GUILayout.Width(30)))
-                    {
+                        _currentScriptingDefine.AddDefine(_newDefine);
                         _isNewDefine = false;
                         _newDefine = "";
                     }
-                    GUILayout.EndHorizontal();
-                    
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Historical record");
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Clear record", EditorStyles.miniButton, GUILayout.Width(80)))
+                    else
                     {
-                        _currentScriptingDefine.ClearDefinesRecord();
-                    }
-                    GUILayout.EndHorizontal();
-
-                    for (int i = 0; i < _currentScriptingDefine.DefinedsRecord.Count; i++)
-                    {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(10);
-                        GUILayout.Label(_currentScriptingDefine.DefinedsRecord[i], "PR PrefabLabel");
-                        GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(30)))
-                        {
-                            _newDefine += _currentScriptingDefine.DefinedsRecord[i] + ";";
-                        }
-                        GUILayout.EndHorizontal();
+                        Log.Error("输入的宏定义不能为空！");
                     }
                 }
-            }
-            EditorGUILayout.EndFadeGroup();
+                if (GUILayout.Button("NO", EditorStyles.miniButtonRight, GUILayout.Width(30)))
+                {
+                    _isNewDefine = false;
+                    _newDefine = "";
+                }
+                GUILayout.EndHorizontal();
 
-            GUILayout.EndVertical();
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Historical record");
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Clear record", EditorStyles.miniButton, GUILayout.Width(80)))
+                {
+                    _currentScriptingDefine.ClearDefinesRecord();
+                }
+                GUILayout.EndHorizontal();
+
+                for (int i = 0; i < _currentScriptingDefine.DefinedsRecord.Count; i++)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(10);
+                    GUILayout.Label(_currentScriptingDefine.DefinedsRecord[i], "PR PrefabLabel");
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(30)))
+                    {
+                        _newDefine += _currentScriptingDefine.DefinedsRecord[i] + ";";
+                    }
+                    GUILayout.EndHorizontal();
+                }
+            }
         }
         
         private sealed class ScriptingDefine
@@ -257,51 +234,70 @@ namespace HT.Framework
         #endregion
 
         #region MainData
-        private AnimBool _mainDataABool;
-
-        private void MainDataEnable()
-        {
-            _mainDataABool = new AnimBool(false, new UnityAction(Repaint));
-        }
         private void MainDataGUI()
         {
-            GUILayout.BeginVertical(GetStyle(Page.MainData));
-
             GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            bool oldValue = _currentPage == Page.MainData;
-            _mainDataABool.target = EditorGUILayout.Foldout(oldValue, "Main Data", true);
-            if (_mainDataABool.target != oldValue)
+            GUILayout.Label("MainData", GUILayout.Width(LabelWidth));
+            if (GUILayout.Button(Target.MainDataType, EditorGlobalTools.Styles.MiniPopup))
             {
-                if (_mainDataABool.target) _currentPage = Page.MainData;
-                else _currentPage = Page.None;
+                GenericMenu gm = new GenericMenu();
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                {
+                    return type.IsSubclassOf(typeof(MainDataBase));
+                });
+                gm.AddItem(new GUIContent("<None>"), Target.MainDataType == "<None>", () =>
+                {
+                    Undo.RecordObject(target, "Set Main Data");
+                    Target.MainDataType = "<None>";
+                    HasChanged();
+                });
+                for (int i = 0; i < types.Count; i++)
+                {
+                    int j = i;
+                    gm.AddItem(new GUIContent(types[j].FullName), Target.MainDataType == types[j].FullName, () =>
+                    {
+                        Undo.RecordObject(target, "Set Main Data");
+                        Target.MainDataType = types[j].FullName;
+                        HasChanged();
+                    });
+                }
+                gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
+        }
+        #endregion
 
-            if (EditorGUILayout.BeginFadeGroup(_mainDataABool.faded))
+        #region License
+        private void LicenseGUI()
+        {
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsPermanentLicense, out Target.IsPermanentLicense, "Permanent License");
+            GUILayout.EndHorizontal();
+
+            if (!Target.IsPermanentLicense)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("MainData", GUILayout.Width(LabelWidth));
-                if (GUILayout.Button(Target.MainDataType, EditorGlobalTools.Styles.MiniPopup))
+                GUILayout.Label("Licenser", GUILayout.Width(LabelWidth));
+                if (GUILayout.Button(Target.LicenserType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
                     List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                     {
-                        return type.IsSubclassOf(typeof(MainDataBase));
+                        return type.IsSubclassOf(typeof(LicenserBase)) && !type.IsAbstract;
                     });
-                    gm.AddItem(new GUIContent("<None>"), Target.MainDataType == "<None>", () =>
+                    gm.AddItem(new GUIContent("<None>"), Target.LicenserType == "<None>", () =>
                     {
-                        Undo.RecordObject(target, "Set Main Data");
-                        Target.MainDataType = "<None>";
+                        Undo.RecordObject(target, "Set Licenser");
+                        Target.LicenserType = "<None>";
                         HasChanged();
                     });
                     for (int i = 0; i < types.Count; i++)
                     {
                         int j = i;
-                        gm.AddItem(new GUIContent(types[j].FullName), Target.MainDataType == types[j].FullName, () =>
+                        gm.AddItem(new GUIContent(types[j].FullName), Target.LicenserType == types[j].FullName, () =>
                         {
-                            Undo.RecordObject(target, "Set Main Data");
-                            Target.MainDataType = types[j].FullName;
+                            Undo.RecordObject(target, "Set Licenser");
+                            Target.LicenserType = types[j].FullName;
                             HasChanged();
                         });
                     }
@@ -309,86 +305,15 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndFadeGroup();
-
-            GUILayout.EndVertical();
-        }
-        #endregion
-
-        #region License
-        private AnimBool _licenseABool;
-
-        private void LicenseEnable()
-        {
-            _licenseABool = new AnimBool(false, new UnityAction(Repaint));
-        }
-        private void LicenseGUI()
-        {
-            GUILayout.BeginVertical(GetStyle(Page.License));
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            bool oldValue = _currentPage == Page.License;
-            _licenseABool.target = EditorGUILayout.Foldout(oldValue, "License", true);
-            if (_licenseABool.target != oldValue)
-            {
-                if (_licenseABool.target) _currentPage = Page.License;
-                else _currentPage = Page.None;
-            }
-            GUILayout.EndHorizontal();
-
-            if (EditorGUILayout.BeginFadeGroup(_licenseABool.faded))
-            {
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsPermanentLicense, out Target.IsPermanentLicense, "Permanent License");
-                GUILayout.EndHorizontal();
-
-                if (!Target.IsPermanentLicense)
-                {
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label("Licenser", GUILayout.Width(LabelWidth));
-                    if (GUILayout.Button(Target.LicenserType, EditorGlobalTools.Styles.MiniPopup))
-                    {
-                        GenericMenu gm = new GenericMenu();
-                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
-                        {
-                            return type.IsSubclassOf(typeof(LicenserBase)) && !type.IsAbstract;
-                        });
-                        gm.AddItem(new GUIContent("<None>"), Target.LicenserType == "<None>", () =>
-                        {
-                            Undo.RecordObject(target, "Set Licenser");
-                            Target.LicenserType = "<None>";
-                            HasChanged();
-                        });
-                        for (int i = 0; i < types.Count; i++)
-                        {
-                            int j = i;
-                            gm.AddItem(new GUIContent(types[j].FullName), Target.LicenserType == types[j].FullName, () =>
-                            {
-                                Undo.RecordObject(target, "Set Licenser");
-                                Target.LicenserType = types[j].FullName;
-                                HasChanged();
-                            });
-                        }
-                        gm.ShowAsContext();
-                    }
-                    GUILayout.EndHorizontal();
-                }
-            }
-            EditorGUILayout.EndFadeGroup();
-
-            GUILayout.EndVertical();
         }
         #endregion
 
         #region Parameter
-        private AnimBool _parameterABool;
         private SerializedProperty _mainParameters;
         private ReorderableList _parameterList;        
 
         private void ParameterEnable()
         {
-            _parameterABool = new AnimBool(false, new UnityAction(Repaint));
             _mainParameters = GetProperty("MainParameters");
             _parameterList = new ReorderableList(serializedObject, _mainParameters, true, false, true, true);
             _parameterList.headerHeight = 2;
@@ -485,92 +410,37 @@ namespace HT.Framework
                 {
                     GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
                     gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
+                    rect.x += 2;
+                    rect.width -= 6;
                     gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
                 }
             };
         }
         private void ParameterGUI()
         {
-            GUILayout.BeginVertical(GetStyle(Page.Parameter));
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            bool oldValue = _currentPage == Page.Parameter;
-            _parameterABool.target = EditorGUILayout.Foldout(oldValue, "Parameter", true);
-            if (_parameterABool.target != oldValue)
-            {
-                if (_parameterABool.target) _currentPage = Page.Parameter;
-                else _currentPage = Page.None;
-            }
-            GUILayout.EndHorizontal();
-
-            if (EditorGUILayout.BeginFadeGroup(_parameterABool.faded))
-            {
-                _parameterList.DoLayoutList();
-            }
-            EditorGUILayout.EndFadeGroup();
-
-            GUILayout.EndVertical();
+            _parameterList.DoLayoutList();
         }
         #endregion
 
         #region Setting
-        private AnimBool _settingABool;
-
-        private void SettingEnable()
-        {
-            _settingABool = new AnimBool(false, new UnityAction(Repaint));
-        }
         private void SettingGUI()
         {
-            GUILayout.BeginVertical(GetStyle(Page.Setting));
-
             GUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            bool oldValue = _currentPage == Page.Setting;
-            _settingABool.target = EditorGUILayout.Foldout(oldValue, "Setting", true);
-            if (_settingABool.target != oldValue)
-            {
-                if (_settingABool.target) _currentPage = Page.Setting;
-                else _currentPage = Page.None;
-            }
+            GUILayout.Label("Log", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            if (EditorGUILayout.BeginFadeGroup(_settingABool.faded))
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Log", EditorStyles.boldLabel);
-                GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsEnabledLogInfo, out Target.IsEnabledLogInfo, "Enabled Log Info");
+            GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsEnabledLogInfo, out Target.IsEnabledLogInfo, "Enabled Log Info");
-                GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsEnabledLogWarning, out Target.IsEnabledLogWarning, "Enabled Log Warning");
+            GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsEnabledLogWarning, out Target.IsEnabledLogWarning, "Enabled Log Warning");
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsEnabledLogError, out Target.IsEnabledLogError, "Enabled Log Error");
-                GUILayout.EndHorizontal();
-            }
-            EditorGUILayout.EndFadeGroup();
-
-            GUILayout.EndVertical();
+            GUILayout.BeginHorizontal();
+            Toggle(Target.IsEnabledLogError, out Target.IsEnabledLogError, "Enabled Log Error");
+            GUILayout.EndHorizontal();
         }
         #endregion
-        
-        /// <summary>
-        /// 分页
-        /// </summary>
-        private enum Page
-        {
-            None,
-            ScriptingDefine,
-            MainData,
-            License,
-            Parameter,
-            Setting
-        }
     }
 }

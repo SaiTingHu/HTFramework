@@ -566,8 +566,8 @@ namespace HT.Framework
                 }
             }
 
-            TaskContentBase.DestroySerializeSubObject(this, content);
             content.Points.Remove(this);
+            TaskContentBase.DestroySerializeSubObject(this, content);
         }
         protected void TaskGameObjectField(ref TaskGameObject taskGameObject, string name, float nameWidth)
         {

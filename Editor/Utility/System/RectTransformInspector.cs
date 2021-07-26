@@ -1,25 +1,16 @@
 ﻿using System;
 using System.Reflection;
 using UnityEditor;
-using UnityEditor.AnimatedValues;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(RectTransform))]
     internal sealed class RectTransformInspector : HTFEditor<RectTransform>
     {
-        private static Page _currentPage = Page.Property;
         private static bool _copyQuaternion = false;
 
-        private AnimBool _showProperty;
-        private AnimBool _showHierarchy;
-        private AnimBool _showCopy;
-        private GUIContent _propertyGC;
-        private GUIContent _hierarchyGC;
-        private GUIContent _copyGC;
-        private Transform _parent;
+        private PagePainter _pagePainter;
         private Editor _originalEditor;
         private MethodInfo _originalOnSceneGUI;
         private MethodInfo _originalOnHeaderGUI;
@@ -89,19 +80,11 @@ namespace HT.Framework
         {
             base.OnDefaultEnable();
 
-            _showProperty = new AnimBool(false, new UnityAction(Repaint));
-            _showHierarchy = new AnimBool(false, new UnityAction(Repaint));
-            _showCopy = new AnimBool(false, new UnityAction(Repaint));
-            _propertyGC = new GUIContent();
-            _propertyGC.image = EditorGUIUtility.IconContent("ToolHandleLocal").image;
-            _propertyGC.text = "Property";
-            _hierarchyGC = new GUIContent();
-            _hierarchyGC.image = EditorGUIUtility.IconContent("ToolHandlePivot").image;
-            _hierarchyGC.text = "Hierarchy";
-            _copyGC = new GUIContent();
-            _copyGC.image = EditorGUIUtility.IconContent("ToolHandleCenter").image;
-            _copyGC.text = "Copy";
-
+            _pagePainter = new PagePainter(this);
+            _pagePainter.AddPage("Property", EditorGUIUtility.IconContent("ToolHandleLocal").image, PropertyGUI);
+            _pagePainter.AddPage("Hierarchy", EditorGUIUtility.IconContent("ToolHandlePivot").image, HierarchyGUI);
+            _pagePainter.AddPage("Copy", EditorGUIUtility.IconContent("ToolHandleCenter").image, CopyGUI);
+            
             Type rectTransformEditor = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.RectTransformEditor");
             if (rectTransformEditor != null && targets != null && targets.Length > 0)
             {
@@ -126,250 +109,188 @@ namespace HT.Framework
 
             GUILayout.Space(5);
 
-            #region Property
-            GUILayout.BeginVertical(GetBoxStyle(Page.Property));
-
+            _pagePainter.Painting();
+        }
+        private void PropertyGUI()
+        {
+            _originalEditor.OnInspectorGUI();
+        }
+        private void HierarchyGUI()
+        {
             GUILayout.BeginHorizontal();
-            GUILayout.Space(12);
-            bool oldValue = _currentPage == Page.Property;
-            _showProperty.target = EditorGUILayout.Foldout(oldValue, _propertyGC, true);
-            if (_showProperty.target != oldValue)
-            {
-                if (_showProperty.target) _currentPage = Page.Property;
-                else _currentPage = Page.None;
-            }
+            GUILayout.Label("Root", GUILayout.Width(LabelWidth));
+            EditorGUILayout.ObjectField(Target.root, typeof(Transform), true);
             GUILayout.EndHorizontal();
 
-            if (EditorGUILayout.BeginFadeGroup(_showProperty.faded))
-            {
-                _originalEditor.OnInspectorGUI();
-            }
-            EditorGUILayout.EndFadeGroup();
-
-            GUILayout.EndVertical();
-            #endregion
-
-            #region Hierarchy
-            GUILayout.BeginVertical(GetBoxStyle(Page.Hierarchy));
-
             GUILayout.BeginHorizontal();
-            GUILayout.Space(12);
-            oldValue = _currentPage == Page.Hierarchy;
-            _showHierarchy.target = EditorGUILayout.Foldout(oldValue, _hierarchyGC, true);
-            if (_showHierarchy.target != oldValue)
+            GUILayout.Label("Parent", GUILayout.Width(LabelWidth));
+            GUI.color = Target.parent ? Color.white : Color.gray;
+            Transform parent = EditorGUILayout.ObjectField(Target.parent, typeof(Transform), true) as Transform;
+            if (parent != Target.parent)
             {
-                if (_showHierarchy.target) _currentPage = Page.Hierarchy;
-                else _currentPage = Page.None;
+                Undo.RecordObject(Target, "Change Parent " + Target.name);
+                Target.SetParent(parent);
+                HasChanged();
             }
+            GUI.color = Color.white;
             GUILayout.EndHorizontal();
 
-            if (EditorGUILayout.BeginFadeGroup(_showHierarchy.faded))
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Child Count", GUILayout.Width(LabelWidth));
+            GUILayout.Label(Target.childCount.ToString());
+            GUILayout.FlexibleSpace();
+            GUI.enabled = Target.childCount > 0;
+            GUI.backgroundColor = Color.red;
+            if (GUILayout.Button("Detach", EditorStyles.miniButton))
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Root", GUILayout.Width(LabelWidth));
-                EditorGUILayout.ObjectField(Target.root, typeof(Transform), true);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Parent", GUILayout.Width(LabelWidth));
-                GUI.color = Target.parent ? Color.white : Color.gray;
-                _parent = EditorGUILayout.ObjectField(Target.parent, typeof(Transform), true) as Transform;
-                if (_parent != Target.parent)
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to detach all children?", "Yes", "No"))
                 {
-                    Undo.RecordObject(Target, "Change Parent " + Target.name);
-                    Target.SetParent(_parent);
+                    Undo.RecordObject(Target, "Detach Children");
+                    Target.DetachChildren();
                     HasChanged();
                 }
-                GUI.color = Color.white;
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Child Count", GUILayout.Width(LabelWidth));
-                GUILayout.Label(Target.childCount.ToString());
-                GUILayout.FlexibleSpace();
-                GUI.enabled = Target.childCount > 0;
-                GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Detach", EditorStyles.miniButton))
-                {
-                    if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to detach all children?", "Yes", "No"))
-                    {
-                        Undo.RecordObject(Target, "Detach Children");
-                        Target.DetachChildren();
-                        HasChanged();
-                    }
-                }
-                GUI.backgroundColor = Color.white;
-                GUI.enabled = true;
-                GUILayout.EndHorizontal();
-
-                GUI.backgroundColor = Color.yellow;
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
-                {
-                    CreateEmptyParent();
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Expand All Children", EditorStyles.miniButtonLeft))
-                {
-                    ExpandAllChildren();
-                }
-                if (GUILayout.Button("Collapse All Children", EditorStyles.miniButtonRight))
-                {
-                    CollapseAllChildren();
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Collapse All", EditorStyles.miniButton))
-                {
-                    CollapseAll();
-                }
-                GUILayout.EndHorizontal();
-
-                GUI.backgroundColor = Color.white;
             }
-            EditorGUILayout.EndFadeGroup();
+            GUI.backgroundColor = Color.white;
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
 
-            GUILayout.EndVertical();
-            #endregion
-
-            #region Copy
-            GUILayout.BeginVertical(GetBoxStyle(Page.Copy));
+            GUI.backgroundColor = Color.yellow;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(12);
-            oldValue = _currentPage == Page.Copy;
-            _showCopy.target = EditorGUILayout.Foldout(oldValue, _copyGC, true);
-            if (_showCopy.target != oldValue)
+            if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
             {
-                if (_showCopy.target) _currentPage = Page.Copy;
-                else _currentPage = Page.None;
+                CreateEmptyParent();
             }
             GUILayout.EndHorizontal();
 
-            if (EditorGUILayout.BeginFadeGroup(_showCopy.faded))
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Expand All Children", EditorStyles.miniButtonLeft))
             {
-                GUI.backgroundColor = Color.yellow;
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Position", EditorStyles.miniButtonLeft))
-                {
-                    GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                if (GUILayout.Button("Copy anchoredPosition", EditorStyles.miniButtonRight))
-                {
-                    GUIUtility.systemCopyBuffer = Target.anchoredPosition.ToCopyString("F2");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-                
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Rotation", EditorStyles.miniButtonLeft))
-                {
-                    if (_copyQuaternion)
-                    {
-                        GUIUtility.systemCopyBuffer = Target.rotation.ToCopyString("F4");
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                    else
-                    {
-                        string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
-                        string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
-                        string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
-
-                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                }
-                if (GUILayout.Button("Copy LocalRotation", EditorStyles.miniButtonRight))
-                {
-                    if (_copyQuaternion)
-                    {
-                        GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                    else
-                    {
-                        string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
-                        string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
-                        string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
-
-                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Scale", EditorStyles.miniButton))
-                {
-                    GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy SizeDelta", EditorStyles.miniButton))
-                {
-                    GUIUtility.systemCopyBuffer = Target.sizeDelta.ToCopyString("F2");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy Name", EditorStyles.miniButtonLeft))
-                {
-                    GUIUtility.systemCopyBuffer = Target.name;
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                if (GUILayout.Button("Copy FullName", EditorStyles.miniButtonRight))
-                {
-                    GUIUtility.systemCopyBuffer = Target.FullName();
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-
-                GUI.backgroundColor = Color.green;
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy To C# Public Field", EditorStyles.miniButton))
-                {
-                    GUIUtility.systemCopyBuffer = ToCSPublicField();
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Copy To C# Private Field", EditorStyles.miniButton))
-                {
-                    GUIUtility.systemCopyBuffer = ToCSPrivateField();
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                }
-                GUILayout.EndHorizontal();
-
-                GUI.backgroundColor = Color.white;
-
-                GUILayout.BeginHorizontal();
-                _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");
-                GUILayout.EndHorizontal();
+                ExpandAllChildren();
             }
-            EditorGUILayout.EndFadeGroup();
+            if (GUILayout.Button("Collapse All Children", EditorStyles.miniButtonRight))
+            {
+                CollapseAllChildren();
+            }
+            GUILayout.EndHorizontal();
 
-            GUILayout.EndVertical();
-            #endregion
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Collapse All", EditorStyles.miniButton))
+            {
+                CollapseAll();
+            }
+            GUILayout.EndHorizontal();
+
+            GUI.backgroundColor = Color.white;
         }
-
-        private GUIStyle GetBoxStyle(Page page)
+        private void CopyGUI()
         {
-            if (_currentPage == page)
-                return "SelectionRect";
-            else
-                return "Box";
+            GUI.backgroundColor = Color.yellow;
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy Position", EditorStyles.miniButtonLeft))
+            {
+                GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            if (GUILayout.Button("Copy anchoredPosition", EditorStyles.miniButtonRight))
+            {
+                GUIUtility.systemCopyBuffer = Target.anchoredPosition.ToCopyString("F2");
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy Rotation", EditorStyles.miniButtonLeft))
+            {
+                if (_copyQuaternion)
+                {
+                    GUIUtility.systemCopyBuffer = Target.rotation.ToCopyString("F4");
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+                else
+                {
+                    string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
+                    string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
+                    string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
+
+                    GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+            }
+            if (GUILayout.Button("Copy LocalRotation", EditorStyles.miniButtonRight))
+            {
+                if (_copyQuaternion)
+                {
+                    GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+                else
+                {
+                    string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
+                    string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
+                    string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
+
+                    GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy Scale", EditorStyles.miniButton))
+            {
+                GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy SizeDelta", EditorStyles.miniButton))
+            {
+                GUIUtility.systemCopyBuffer = Target.sizeDelta.ToCopyString("F2");
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy Name", EditorStyles.miniButtonLeft))
+            {
+                GUIUtility.systemCopyBuffer = Target.name;
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            if (GUILayout.Button("Copy FullName", EditorStyles.miniButtonRight))
+            {
+                GUIUtility.systemCopyBuffer = Target.FullName();
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            GUILayout.EndHorizontal();
+
+            GUI.backgroundColor = Color.green;
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy To C# Public Field", EditorStyles.miniButton))
+            {
+                GUIUtility.systemCopyBuffer = ToCSPublicField();
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Copy To C# Private Field", EditorStyles.miniButton))
+            {
+                GUIUtility.systemCopyBuffer = ToCSPrivateField();
+                Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+            }
+            GUILayout.EndHorizontal();
+
+            GUI.backgroundColor = Color.white;
+
+            GUILayout.BeginHorizontal();
+            _copyQuaternion = GUILayout.Toggle(_copyQuaternion, "Copy Quaternion");
+            GUILayout.EndHorizontal();
         }
+
         private void CreateEmptyParent()
         {
             GameObject parent = new GameObject("EmptyParent");
@@ -434,17 +355,6 @@ namespace HT.Framework
             fieldNames[0] = char.ToLower(fieldNames[0]);
             string field = string.Format("[ObjectPath(\"{0}\")] private GameObject _{1};", Target.FullName(), new string(fieldNames));
             return field;
-        }
-
-        /// <summary>
-        /// 分页
-        /// </summary>
-        private enum Page
-        {
-            None,
-            Property,
-            Hierarchy,
-            Copy,
         }
     }
 }

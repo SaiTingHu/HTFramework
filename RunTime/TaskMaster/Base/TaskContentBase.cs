@@ -324,11 +324,14 @@ namespace HT.Framework
             obj.hideFlags = HideFlags.HideInHierarchy;
             AssetDatabase.AddObjectToAsset(obj, mainAsset);
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(mainAsset));
+            EditorUtility.SetDirty(mainAsset);
         }
         internal static void DestroySerializeSubObject(UnityEngine.Object obj, UnityEngine.Object mainAsset)
         {
             AssetDatabase.RemoveObjectFromAsset(obj);
+            DestroyImmediate(obj);
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(mainAsset));
+            EditorUtility.SetDirty(mainAsset);
         }
 #endif
     }

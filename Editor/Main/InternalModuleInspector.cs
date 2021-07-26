@@ -56,7 +56,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUI.enabled = !EditorApplication.isPlaying && _types.Count > 0;
             GUILayout.Label("Helper", GUILayout.Width(LabelWidth));
-            Button(_changeHelper, _module.HelperType, EditorStyles.popup);
+            Button(_changeHelper, _module.HelperType, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25));
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }

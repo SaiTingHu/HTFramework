@@ -336,6 +336,7 @@ namespace HT.Framework
             _asset.Content.RemoveAt(taskIndex);
             _taskContentList.index = -1;
             _currentContent = null;
+            HasChanged(_asset);
         }
         /// <summary>
         /// 新建任务内容脚本
@@ -432,6 +433,8 @@ namespace HT.Framework
                         {
                             GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
                             gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
+                            rect.x += 2;
+                            rect.width -= 6;
                             gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
 
                             if (_asset.Content[index].IsComplete)
@@ -442,6 +445,10 @@ namespace HT.Framework
                             }
                         }
                     }
+                };
+                _taskContentList.onReorderCallback = (ReorderableList list) =>
+                {
+                    HasChanged(_asset);
                 };
             }
         }
