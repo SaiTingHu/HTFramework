@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,25 +14,25 @@ namespace HT.Framework
         /// <summary>
         /// 任务ID
         /// </summary>
-        public string GUID;
+        public string GUID = "";
         /// <summary>
         /// 任务名称
         /// </summary>
-        public string Name;
+        public string Name = "";
         /// <summary>
-        /// 任务详细介绍
+        /// 任务细节
         /// </summary>
-        public string Details;
+        public string Details = "";
         /// <summary>
         /// 任务目标
         /// </summary>
-        public TaskGameObject Target;
+        public TaskGameObject Target = new TaskGameObject();
         /// <summary>
         /// 所有任务点
         /// </summary>
         public List<TaskPointBase> Points = new List<TaskPointBase>();
         /// <summary>
-        /// 所有任务依赖
+        /// 所有任务点依赖
         /// </summary>
         public List<TaskDepend> Depends = new List<TaskDepend>();
 
@@ -41,36 +40,11 @@ namespace HT.Framework
         /// 是否完成
         /// </summary>
         public bool IsComplete { get; private set; } = false;
-        /// <summary>
-        /// 当前所有未完成的任务点数量
-        /// </summary>
-        public int AllUncompletePointCount
-        {
-            get
-            {
-                int count = 0;
-                for (int i = 0; i < Points.Count; i++)
-                {
-                    if (!Points[i].IsComplete)
-                    {
-                        count += 1;
-                    }
-                }
-                return count;
-            }
-        }
-        
-        public TaskContentBase()
-        {
-            GUID = "";
-            Name = "";
-            Details = "";
-        }
-        
+
         /// <summary>
         /// 任务内容开始
         /// </summary>
-        public virtual void OnStart()
+        protected virtual void OnStart()
         {
             
         }
@@ -84,41 +58,61 @@ namespace HT.Framework
         /// <summary>
         /// 任务内容完成
         /// </summary>
-        public virtual void OnComplete()
+        protected virtual void OnComplete()
         {
             
         }
-        
-        internal void OnAutoComplete()
+
+        /// <summary>
+        /// 任务内容开始
+        /// </summary>
+        internal void Start()
         {
-            if (!IsComplete)
-            {
-                List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
-                List<int> uncompletePointIndexs = new List<int>();
-                for (int i = 0; i < Points.Count; i++)
-                {
-                    if (!Points[i].IsComplete)
-                    {
-                        uncompletePoints.Add(Points[i]);
-                        uncompletePointIndexs.Add(i);
-                    }
-                }
-                while (uncompletePoints.Count > 0)
-                {
-                    for (int i = 0; i < uncompletePoints.Count; i++)
-                    {
-                        if (IsDependComplete(uncompletePointIndexs[i]))
-                        {
-                            uncompletePoints[i].OnAutoComplete();
-                            uncompletePoints.RemoveAt(i);
-                            uncompletePointIndexs.RemoveAt(i);
-                            i -= 1;
-                        }
-                    }
-                }
-                IsComplete = true;
-            }
+            OnStart();
         }
+        /// <summary>
+        /// 任务内容完成
+        /// </summary>
+        internal void Complete()
+        {
+            OnComplete();
+        }
+        /// <summary>
+        /// 任务内容自动完成（未完成的任务点）
+        /// </summary>
+        internal void AutoComplete()
+        {
+            if (IsComplete)
+                return;
+
+            List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
+            List<int> uncompletePointIndexs = new List<int>();
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if (Points[i].IsEnable && !Points[i].IsComplete && !Points[i].IsCompleting)
+                {
+                    uncompletePoints.Add(Points[i]);
+                    uncompletePointIndexs.Add(i);
+                }
+            }
+            while (uncompletePoints.Count > 0)
+            {
+                for (int i = 0; i < uncompletePoints.Count; i++)
+                {
+                    if (IsDependComplete(uncompletePointIndexs[i]))
+                    {
+                        uncompletePoints[i].AutoComplete();
+                        uncompletePoints.RemoveAt(i);
+                        uncompletePointIndexs.RemoveAt(i);
+                        i -= 1;
+                    }
+                }
+            }
+            IsComplete = true;
+        }
+        /// <summary>
+        /// 任务内容开始后，每帧监测
+        /// </summary>
         internal void OnMonitor()
         {
             OnUpdate();
@@ -126,7 +120,7 @@ namespace HT.Framework
             bool isComplete = true;
             for (int i = 0; i < Points.Count; i++)
             {
-                if (Points[i].IsEnable && !Points[i].IsComplete)
+                if (Points[i].IsEnable && !Points[i].IsComplete && !Points[i].IsCompleting)
                 {
                     isComplete = false;
 
@@ -138,10 +132,18 @@ namespace HT.Framework
             }
             IsComplete = isComplete;
         }
+        /// <summary>
+        /// 重置状态
+        /// </summary>
         internal void ReSet()
         {
             IsComplete = false;
         }
+        /// <summary>
+        /// 任务点的所有依赖任务点是否已完成
+        /// </summary>
+        /// <param name="taskPointIndex">任务点</param>
+        /// <returns>依赖任务点是否已完成</returns>
         internal bool IsDependComplete(int taskPointIndex)
         {
             for (int i = 0; i < Depends.Count; i++)
@@ -162,61 +164,85 @@ namespace HT.Framework
         private static readonly int _width = 200;
         private int _height = 0;
 
-        internal void OnEditorGUI()
+        /// <summary>
+        /// 绘制编辑器GUI
+        /// </summary>
+        internal void OnEditorGUI(TaskContentAsset asset, HTFFunc<string, string> getWord)
         {
             GUILayout.BeginVertical("ChannelStripBg", GUILayout.Width(_width), GUILayout.Height(_height));
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Task Property:");
+            GUILayout.Label(getWord("Task Content Property") + ":");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(5);
 
             _height = 20;
 
+            _height += OnBaseGUI(getWord);
+
             _height += OnPropertyGUI();
-            
+
             GUILayout.EndVertical();
         }
-        public virtual int OnPropertyGUI()
+        /// <summary>
+        /// 绘制基础属性
+        /// </summary>
+        /// <returns>绘制高度</returns>
+        private int OnBaseGUI(HTFFunc<string, string> getWord)
         {
             int height = 0;
-            
+
             GUILayout.BeginHorizontal();
-            GUILayout.Label("ID:", GUILayout.Width(50));
+            GUILayout.Label(getWord("ID") + ":", GUILayout.Width(50));
             GUID = EditorGUILayout.TextField(GUID);
             GUILayout.EndHorizontal();
 
             height += 20;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Name:", GUILayout.Width(50));
+            GUILayout.Label(getWord("Name") + ":", GUILayout.Width(50));
             Name = EditorGUILayout.TextField(Name);
             GUILayout.EndHorizontal();
 
             height += 20;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Details:", GUILayout.Width(50));
+            GUILayout.Label(getWord("Details") + ":", GUILayout.Width(50));
             Details = EditorGUILayout.TextField(Details);
             GUILayout.EndHorizontal();
 
             height += 20;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Points:", GUILayout.Width(50));
+            GUILayout.Label(getWord("Points") + ":", GUILayout.Width(50));
             GUILayout.Label(Points.Count.ToString());
             GUILayout.EndHorizontal();
-            
+
             height += 20;
-            
-            TaskGameObjectField(ref Target, "Target:", 50);
+
+            TaskGameObject.DrawField(Target, getWord("Target") + ":", 50, _width, getWord("Copy"), getWord("Paste"));
 
             height += 20;
 
             return height;
         }
-        public bool IsExistDepend(int originalPoint, int dependPoint)
+        /// <summary>
+        /// 绘制属性GUI
+        /// </summary>
+        /// <returns>绘制高度</returns>
+        protected virtual int OnPropertyGUI()
+        {
+            return 0;
+        }
+
+        /// <summary>
+        /// 是否存在依赖关系
+        /// </summary>
+        /// <param name="originalPoint">原始任务点</param>
+        /// <param name="dependPoint">依赖的任务点</param>
+        /// <returns>是否存在</returns>
+        internal bool IsExistDepend(int originalPoint, int dependPoint)
         {
             for (int i = 0; i < Depends.Count; i++)
             {
@@ -227,7 +253,12 @@ namespace HT.Framework
             }
             return false;
         }
-        public void DisconnectDepend(int originalPoint, int dependPoint)
+        /// <summary>
+        /// 断开依赖关系
+        /// </summary>
+        /// <param name="originalPoint">原始任务点</param>
+        /// <param name="dependPoint">依赖的任务点</param>
+        internal void DisconnectDepend(int originalPoint, int dependPoint)
         {
             for (int i = 0; i < Depends.Count; i++)
             {
@@ -238,100 +269,14 @@ namespace HT.Framework
                 }
             }
         }
-        public void ConnectDepend(int originalPoint, int dependPoint)
+        /// <summary>
+        /// 建立依赖关系
+        /// </summary>
+        /// <param name="originalPoint">原始任务点</param>
+        /// <param name="dependPoint">依赖的任务点</param>
+        internal void ConnectDepend(int originalPoint, int dependPoint)
         {
             Depends.Add(new TaskDepend(originalPoint, dependPoint));
-        }
-        protected void TaskGameObjectField(ref TaskGameObject taskGameObject, string name, float nameWidth)
-        {
-            if (taskGameObject == null)
-            {
-                taskGameObject = new TaskGameObject();
-            }
-
-            GUILayout.BeginHorizontal();
-
-            GUIContent gUIContent = new GUIContent(name);
-            gUIContent.tooltip = "GUID: " + taskGameObject.GUID;
-            GUILayout.Label(gUIContent, GUILayout.Width(nameWidth));
-
-            GUI.color = taskGameObject.AgentEntity ? Color.white : Color.gray;
-            GameObject newEntity = EditorGUILayout.ObjectField(taskGameObject.AgentEntity, typeof(GameObject), true, GUILayout.Width(_width - nameWidth - 35)) as GameObject;
-            if (newEntity != taskGameObject.AgentEntity)
-            {
-                if (newEntity != null)
-                {
-                    TaskTarget target = newEntity.GetComponent<TaskTarget>();
-                    if (!target)
-                    {
-                        target = newEntity.AddComponent<TaskTarget>();
-                        EditorUtility.SetDirty(newEntity);
-                    }
-                    if (target.GUID == "<None>")
-                    {
-                        target.GUID = Guid.NewGuid().ToString();
-                    }
-                    taskGameObject.AgentEntity = newEntity;
-                    taskGameObject.GUID = target.GUID;
-                    taskGameObject.Path = newEntity.transform.FullName();
-                }
-            }
-            GUI.color = Color.white;
-
-            if (taskGameObject.AgentEntity == null && taskGameObject.GUID != "<None>")
-            {
-                taskGameObject.AgentEntity = GameObject.Find(taskGameObject.Path);
-                if (taskGameObject.AgentEntity == null)
-                {
-                    TaskTarget[] targets = FindObjectsOfType<TaskTarget>();
-                    foreach (TaskTarget target in targets)
-                    {
-                        if (taskGameObject.GUID == target.GUID)
-                        {
-                            taskGameObject.AgentEntity = target.gameObject;
-                            taskGameObject.Path = target.transform.FullName();
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    TaskTarget target = taskGameObject.AgentEntity.GetComponent<TaskTarget>();
-                    if (!target)
-                    {
-                        target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
-                        target.GUID = taskGameObject.GUID;
-                        EditorUtility.SetDirty(taskGameObject.AgentEntity);
-                    }
-                }
-            }
-
-            gUIContent = EditorGUIUtility.IconContent("TreeEditor.Trash");
-            gUIContent.tooltip = "Delete";
-            GUI.enabled = taskGameObject.GUID != "<None>";
-            if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
-            {
-                taskGameObject.AgentEntity = null;
-                taskGameObject.GUID = "<None>";
-                taskGameObject.Path = "";
-            }
-            GUI.enabled = true;
-
-            GUILayout.EndHorizontal();
-        }
-        internal static void GenerateSerializeSubObject(UnityEngine.Object obj, UnityEngine.Object mainAsset)
-        {
-            obj.hideFlags = HideFlags.HideInHierarchy;
-            AssetDatabase.AddObjectToAsset(obj, mainAsset);
-            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(mainAsset));
-            EditorUtility.SetDirty(mainAsset);
-        }
-        internal static void DestroySerializeSubObject(UnityEngine.Object obj, UnityEngine.Object mainAsset)
-        {
-            AssetDatabase.RemoveObjectFromAsset(obj);
-            DestroyImmediate(obj);
-            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(mainAsset));
-            EditorUtility.SetDirty(mainAsset);
         }
 #endif
     }

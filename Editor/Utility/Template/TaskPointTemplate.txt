@@ -13,11 +13,6 @@ using UnityEditor;
 [TaskPoint("#SCRIPTNAME#")]
 public class #SCRIPTNAME# : TaskPointBase
 {
-	public #SCRIPTNAME#() : base()
-    {
-        
-    }
-
 	protected override void OnStart()
     {
         base.OnStart();
@@ -26,30 +21,25 @@ public class #SCRIPTNAME# : TaskPointBase
     {
         base.OnUpdate();
     }
-	public override void OnGuide()
+	protected override void OnGuide()
     {
         base.OnGuide();
     }
-	public override void OnAutoComplete()
+	protected override IEnumerator OnComplete()
     {
-        if (_isCompleting)
-        {
-            return;
-        }
-
+        yield return base.OnComplete();
+    }
+	protected override void OnAutoComplete()
+    {
         base.OnAutoComplete();
     }
     protected override void OnEnd()
     {
         base.OnEnd();
     }
-    protected override IEnumerator OnBeforeComplete()
-    {
-        yield return base.OnBeforeComplete();
-    }
 
 #if UNITY_EDITOR
-    public override int OnPropertyGUI()
+    protected override int OnPropertyGUI()
     {
         int height = base.OnPropertyGUI();
 

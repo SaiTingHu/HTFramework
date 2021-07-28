@@ -1,5 +1,8 @@
 ﻿using System;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace HT.Framework
 {
@@ -40,5 +43,120 @@ namespace HT.Framework
                 }
             }
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// 绘制字段
+        /// </summary>
+        /// <param name="taskGameObject">目标物体</param>
+        /// <param name="name">绘制名称</param>
+        /// <param name="nameWidth">名称宽度</param>
+        /// <param name="totalWidth">总宽度</param>
+        /// <param name="copy">复制菜单的名称</param>
+        /// <param name="paste">粘贴菜单的名称</param>
+        public static void DrawField(TaskGameObject taskGameObject, string name, float nameWidth, float totalWidth, string copy = "Copy", string paste = "Paste")
+        {
+            if (taskGameObject == null)
+                return;
+
+            GUILayout.BeginHorizontal();
+
+            GUIContent gUIContent = new GUIContent(name);
+            gUIContent.tooltip = "GUID: " + taskGameObject.GUID;
+            if (GUILayout.Button(gUIContent, "Label", GUILayout.Width(nameWidth)))
+            {
+                GenericMenu gm = new GenericMenu();
+                if (taskGameObject.GUID == "<None>")
+                {
+                    gm.AddDisabledItem(new GUIContent(copy));
+                }
+                else
+                {
+                    gm.AddItem(new GUIContent(copy), false, () =>
+                    {
+                        GUIUtility.systemCopyBuffer = taskGameObject.GUID;
+                    });
+                }
+                if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                {
+                    gm.AddDisabledItem(new GUIContent(paste));
+                }
+                else
+                {
+                    gm.AddItem(new GUIContent(paste), false, () =>
+                    {
+                        taskGameObject.GUID = GUIUtility.systemCopyBuffer;
+                    });
+                }
+                gm.ShowAsContext();
+            }
+
+            GUI.color = (taskGameObject.GUID != "<None>") ? Color.white : Color.gray;
+            GameObject newEntity = EditorGUILayout.ObjectField(taskGameObject.AgentEntity, typeof(GameObject), true, GUILayout.Width(totalWidth - nameWidth - 35)) as GameObject;
+            if (newEntity != taskGameObject.AgentEntity)
+            {
+                if (newEntity != null)
+                {
+                    TaskTarget target = newEntity.GetComponent<TaskTarget>();
+                    if (!target)
+                    {
+                        target = newEntity.AddComponent<TaskTarget>();
+                        EditorUtility.SetDirty(newEntity);
+                    }
+                    if (target.GUID == "<None>")
+                    {
+                        target.GUID = Guid.NewGuid().ToString();
+                        EditorUtility.SetDirty(target);
+                    }
+                    taskGameObject.AgentEntity = newEntity;
+                    taskGameObject.GUID = target.GUID;
+                    taskGameObject.Path = newEntity.transform.FullName();
+                }
+            }
+            GUI.color = Color.white;
+
+            if (taskGameObject.AgentEntity == null && taskGameObject.GUID != "<None>")
+            {
+                taskGameObject.AgentEntity = GameObject.Find(taskGameObject.Path);
+                if (taskGameObject.AgentEntity == null)
+                {
+                    TaskTarget[] targets = UnityEngine.Object.FindObjectsOfType<TaskTarget>();
+                    foreach (TaskTarget target in targets)
+                    {
+                        if (taskGameObject.GUID == target.GUID)
+                        {
+                            taskGameObject.AgentEntity = target.gameObject;
+                            taskGameObject.Path = target.transform.FullName();
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    TaskTarget target = taskGameObject.AgentEntity.GetComponent<TaskTarget>();
+                    if (!target)
+                    {
+                        target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
+                        target.GUID = taskGameObject.GUID;
+                        EditorUtility.SetDirty(taskGameObject.AgentEntity);
+                    }
+                }
+            }
+
+            gUIContent = new GUIContent();
+            gUIContent.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
+            gUIContent.tooltip = "Delete";
+            GUI.enabled = taskGameObject.GUID != "<None>";
+            if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            {
+                taskGameObject.AgentEntity = null;
+                taskGameObject.GUID = "<None>";
+                taskGameObject.Path = "";
+            }
+            GUI.enabled = true;
+
+            GUILayout.EndHorizontal();
+        }
+#endif
     }
 }

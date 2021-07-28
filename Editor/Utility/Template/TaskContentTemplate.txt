@@ -13,12 +13,7 @@ using UnityEditor;
 [TaskContent("#SCRIPTNAME#")]
 public class #SCRIPTNAME# : TaskContentBase
 {
-	public #SCRIPTNAME#() : base()
-    {
-        
-    }
-
-	public override void OnStart()
+	protected override void OnStart()
     {
         base.OnStart();
     }
@@ -26,13 +21,13 @@ public class #SCRIPTNAME# : TaskContentBase
     {
         base.OnUpdate();
     }
-    public override void OnComplete()
+    protected override void OnComplete()
     {
         base.OnComplete();
     }
 
 #if UNITY_EDITOR
-    public override int OnPropertyGUI()
+    protected override int OnPropertyGUI()
     {
         int height = base.OnPropertyGUI();
 

@@ -10,7 +10,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
@@ -513,7 +513,7 @@ namespace HT.Framework
             public Vector3 Vector3Value;
             public Color ColorValue;
             public Enum EnumValue;
-            public Object ObjectValue;
+            public UObject ObjectValue;
 
             public Parameter(ParameterInfo parameterInfo)
             {
@@ -521,7 +521,7 @@ namespace HT.Framework
                 Name = parameterInfo.Name;
                 Type = parameterInfo.ParameterType.Name;
                 IsEnum = parameterInfo.ParameterType.IsEnum;
-                IsObject = parameterInfo.ParameterType == typeof(Object) || parameterInfo.ParameterType.IsSubclassOf(typeof(Object));
+                IsObject = parameterInfo.ParameterType == typeof(UObject) || parameterInfo.ParameterType.IsSubclassOf(typeof(UObject));
                 ObjectType = IsObject ? parameterInfo.ParameterType : null;
 
                 if (IsEnum)

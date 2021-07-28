@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityObject = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
@@ -1035,7 +1035,7 @@ namespace HT.Framework
                 Material material = content.Key;
                 if (material != null)
                 {
-                    UnityObject[] dependencies = EditorUtility.CollectDependencies(new UnityObject[] { material });
+                    UObject[] dependencies = EditorUtility.CollectDependencies(new UObject[] { material });
                     foreach (var depend in dependencies)
                     {
                         if (depend is Texture)

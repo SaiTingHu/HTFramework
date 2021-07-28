@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
@@ -12,12 +12,16 @@ namespace HT.Framework
     /// 自定义编辑器行为基类
     /// </summary>
     /// <typeparam name="E">自定义的组件</typeparam>
-    public abstract class HTFEditor<E> : Editor where E : Object
+    public abstract class HTFEditor<E> : Editor where E : UObject
     {
         /// <summary>
         /// 当前目标
         /// </summary>
         protected E Target;
+        /// <summary>
+        /// 当前的所有目标
+        /// </summary>
+        protected E[] Targets;
         private GithubURLAttribute _GithubURL;
         private GiteeURLAttribute _GiteeURL;
         private CSDNBlogURLAttribute _CSDNURL;
@@ -60,6 +64,7 @@ namespace HT.Framework
         private void OnEnable()
         {
             Target = target as E;
+            Targets = targets.ConvertAllAS<E, UObject>();
             _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
             _GiteeURL = GetType().GetCustomAttribute<GiteeURLAttribute>();
             _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();

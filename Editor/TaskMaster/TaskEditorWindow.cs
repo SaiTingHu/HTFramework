@@ -10,49 +10,51 @@ namespace HT.Framework
     /// <summary>
     /// 任务编辑器窗口
     /// </summary>
-    internal sealed class TaskEditorWindow : HTFEditorWindow
+    internal sealed class TaskEditorWindow : HTFEditorWindow, ILocalizeWindow
     {
         public static void ShowWindow(TaskContentAsset contentAsset)
         {
             TaskEditorWindow window = GetWindow<TaskEditorWindow>();
             window.titleContent.image = EditorGUIUtility.IconContent("AnimatorStateMachine Icon").image;
             window.titleContent.text = "Task Editor";
-            window._asset = contentAsset;
+            window._contentAsset = contentAsset;
             window.ReSet();
             window.minSize = new Vector2(800, 600);
             window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
             window.Show();
         }
 
-        private TaskContentAsset _asset;
+        private TaskContentAsset _contentAsset;
         private TaskContentBase _currentContent;
         private Texture _background;
         private ReorderableList _taskContentList;
 
         private bool _isShowContent = true;
         private bool _isShowProperty = true;
+        private bool _isShowPoint = true;
         private Vector2 _contentScroll;
         private int _contentGUIWidth = 250;
         private bool _isBreakDepend = false;
         private GUIContent _addGC;
         private GUIContent _editGC;
         private GUIContent _deleteGC;
-        private GUIContent _helpUrlGC;
+        private HTFFunc<string, string> _getWord;
 
         private string MainAssetPath
         {
             get
             {
-                return AssetDatabase.GetAssetPath(_asset);
+                return AssetDatabase.GetAssetPath(_contentAsset);
             }
         }
         protected override bool IsEnableTitleGUI
         {
             get
             {
-                return false;
+                return true;
             }
         }
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/104317219";
 
         protected override void OnEnable()
         {
@@ -62,22 +64,20 @@ namespace HT.Framework
 
             _addGC = new GUIContent();
             _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
-            _addGC.tooltip = "Add a task";
+            _addGC.tooltip = "Add Task Content";
             _editGC = new GUIContent();
             _editGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             _editGC.tooltip = "Edit Content Script";
             _deleteGC = new GUIContent();
             _deleteGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _deleteGC.tooltip = "Delete";
-            _helpUrlGC = new GUIContent();
-            _helpUrlGC.image = EditorGUIUtility.IconContent("_Help").image;
-            _helpUrlGC.tooltip = "Help";
+            _getWord = GetWord;
 
             EditorApplication.playModeStateChanged += OnPlayModeStateChange;
         }
         private void Update()
         {
-            if (_asset == null)
+            if (_contentAsset == null)
             {
                 Close();
             }
@@ -86,16 +86,41 @@ namespace HT.Framework
         {
             EditorApplication.playModeStateChanged -= OnPlayModeStateChange;
         }
+        protected override void OnGUIReady()
+        {
+            base.OnGUIReady();
+
+            GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
+
+            OnPointGUI();
+            OnDependGUI();
+        }
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
+
+            if (GUILayout.Button(_contentAsset.name, EditorStyles.toolbarButton))
+            {
+                Selection.activeObject = _contentAsset;
+                EditorGUIUtility.PingObject(_contentAsset);
+            }
+            if (GUILayout.Button(GetWord("Regen Task ID"), EditorStyles.toolbarPopup))
+            {
+                TaskRegenIDWindow.ShowWindow(this, _contentAsset, CurrentLanguage);
+            }
+            _isShowContent = GUILayout.Toggle(_isShowContent, GetWord("Task Content"), EditorStyles.toolbarButton);
+            _isShowProperty = GUILayout.Toggle(_isShowProperty, GetWord("Task Content Properties"), EditorStyles.toolbarButton);
+            _isShowPoint = GUILayout.Toggle(_isShowPoint, GetWord("Task Point"), EditorStyles.toolbarButton);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(GetWord("ReSet State"), EditorStyles.toolbarButton))
+            {
+                ReSet();
+            }
+        }
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
             
-            GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
-            
-            OnPointGUI();
-            OnDependGUI();
-            OnTitleGUI();
-
             GUILayout.BeginHorizontal();
             GUILayout.Space(5);
             OnContentGUI();
@@ -108,37 +133,38 @@ namespace HT.Framework
 
             if (GUI.changed)
             {
-                HasChanged(_asset);
+                HasChanged(_contentAsset);
             }
         }
-        /// <summary>
-        /// 标题GUI
-        /// </summary>
-        private new void OnTitleGUI()
+        protected override void GenerateWords()
         {
-            GUILayout.BeginHorizontal(EditorStyles.toolbar);
-            if (GUILayout.Button(_asset.name, EditorStyles.toolbarButton))
-            {
-                Selection.activeObject = _asset;
-                EditorGUIUtility.PingObject(_asset);
-            }
-            if (GUILayout.Button("Regen Task ID", EditorStyles.toolbarPopup))
-            {
-                TaskRegenIDWindow.ShowWindow(this, _asset);
-            }
-            _isShowContent = GUILayout.Toggle(_isShowContent, "Task Content", EditorStyles.toolbarButton);
-            _isShowProperty = GUILayout.Toggle(_isShowProperty, "Property", EditorStyles.toolbarButton);
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("ReSet", EditorStyles.toolbarButton))
-            {
-                ReSet();
-            }
-            if (GUILayout.Button(_helpUrlGC, EditorGlobalTools.Styles.IconButton))
-            {
-                Application.OpenURL(@"https://wanderer.blog.csdn.net/article/details/104317219");
-            }
-            GUILayout.EndHorizontal();
+            base.GenerateWords();
+
+            AddWord("重新生成任务身份号", "Regen Task ID");
+            AddWord("任务内容", "Task Content");
+            AddWord("任务内容的属性", "Task Content Properties");
+            AddWord("任务点", "Task Point");
+            AddWord("重置状态", "ReSet State");
+            AddWord("任务内容列表", "Task Content List");
+            AddWord("<新建任务内容脚本>", "<New Task Content Script>");
+            AddWord("<新建任务点脚本>", "<New Task Point Script>");
+            AddWord("添加任务点", "Add Task Point");
+            AddWord("查找任务点", "Find Task Point");
+            AddWord("任务内容属性", "Task Content Property");
+            AddWord("身份号", "ID");
+            AddWord("名称", "Name");
+            AddWord("细节", "Details");
+            AddWord("任务点", "Points");
+            AddWord("目标", "Target");
+            AddWord("依赖的任务点", "Dependent task point");
+            AddWord("被依赖的任务点", "Be dependent task point");
+            AddWord("编辑任务点脚本", "Edit Point Script");
+            AddWord("删除", "Delete");
+            AddWord("删除任务点", "Delete Point");
+            AddWord("复制", "Copy");
+            AddWord("粘贴", "Paste");
         }
+
         /// <summary>
         /// 任务内容GUI
         /// </summary>
@@ -160,7 +186,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 任务属性GUI
+        /// 任务内容属性GUI
         /// </summary>
         private void OnPropertyGUI()
         {
@@ -168,11 +194,14 @@ namespace HT.Framework
             {
                 if (_currentContent != null)
                 {
-                    _currentContent.OnEditorGUI();
+                    _currentContent.OnEditorGUI(_contentAsset, _getWord);
                 }
                 else
                 {
-                    GUILayout.Label("Please select a Task Content!", EditorStyles.boldLabel);
+                    GUILayout.BeginHorizontal();
+                    string prompt = CurrentLanguage == Language.English ? "Please select a Task Content!" : "请选择一个任务内容！";
+                    GUILayout.Label(prompt, EditorStyles.boldLabel);
+                    GUILayout.EndHorizontal();
                 }
             }
         }
@@ -181,11 +210,14 @@ namespace HT.Framework
         /// </summary>
         private void OnPointGUI()
         {
-            if (_currentContent != null)
+            if (_isShowPoint)
             {
-                for (int i = 0; i < _currentContent.Points.Count; i++)
+                if (_currentContent != null)
                 {
-                    _currentContent.Points[i].OnEditorGUI(_currentContent);
+                    for (int i = 0; i < _currentContent.Points.Count; i++)
+                    {
+                        _currentContent.Points[i].OnEditorGUI(_contentAsset, _currentContent, _getWord);
+                    }
                 }
             }
         }
@@ -194,24 +226,27 @@ namespace HT.Framework
         /// </summary>
         private void OnDependGUI()
         {
-            if (_currentContent != null)
+            if (_isShowPoint)
             {
-                for (int i = 0; i < _currentContent.Depends.Count; i++)
+                if (_currentContent != null)
                 {
-                    TaskDepend depend = _currentContent.Depends[i];
-                    Handles.DrawBezier(_currentContent.Points[depend.OriginalPoint].LeftPosition, _currentContent.Points[depend.DependPoint].RightPosition
-                        , _currentContent.Points[depend.OriginalPoint].LeftTangent, _currentContent.Points[depend.DependPoint].RightTangent, Color.white, null, 3);
-
-                    if (_isBreakDepend)
+                    for (int i = 0; i < _currentContent.Depends.Count; i++)
                     {
-                        Vector2 center = (_currentContent.Points[depend.OriginalPoint].LeftPosition + _currentContent.Points[depend.DependPoint].RightPosition) / 2;
-                        Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
-                        if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
+                        TaskDepend depend = _currentContent.Depends[i];
+                        Handles.DrawBezier(_currentContent.Points[depend.OriginalPoint].LeftPosition, _currentContent.Points[depend.DependPoint].RightPosition
+                            , _currentContent.Points[depend.OriginalPoint].LeftTangent, _currentContent.Points[depend.DependPoint].RightTangent, Color.white, null, 3);
+
+                        if (_isBreakDepend)
                         {
-                            _currentContent.Depends.RemoveAt(i);
-                            break;
+                            Vector2 center = (_currentContent.Points[depend.OriginalPoint].LeftPosition + _currentContent.Points[depend.DependPoint].RightPosition) * 0.5f;
+                            Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
+                            if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
+                            {
+                                _currentContent.Depends.RemoveAt(i);
+                                break;
+                            }
+                            EditorGUIUtility.AddCursorRect(centerRect, MouseCursor.ArrowMinus);
                         }
-                        EditorGUIUtility.AddCursorRect(centerRect, MouseCursor.ArrowMinus);
                     }
                 }
             }
@@ -231,24 +266,29 @@ namespace HT.Framework
                         if (Event.current.button == 1)
                         {
                             GenericMenu gm = new GenericMenu();
-                            gm.AddItem(new GUIContent("<New Task Point Script>"), false, () =>
+                            gm.AddItem(new GUIContent(GetWord("<New Task Point Script>")), false, () =>
                             {
                                 NewTaskPointScript();
                             });
+                            gm.AddSeparator("");
+                            gm.AddItem(new GUIContent(GetWord("Add Task Point") + "/默认"), false, () =>
+                            {
+                                AddPoint(typeof(TaskPointDefault), mousePosition);
+                            });
                             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                             {
-                                return type.IsSubclassOf(typeof(TaskPointBase)) && !type.IsAbstract;
+                                return type.IsSubclassOf(typeof(TaskPointBase)) && !type.IsAbstract && type != typeof(TaskPointDefault);
                             });
                             for (int i = 0; i < types.Count; i++)
                             {
                                 Type type = types[i];
-                                string contentName = type.FullName;
-                                TaskPointAttribute attri = type.GetCustomAttribute<TaskPointAttribute>();
-                                if (attri != null)
+                                string pointName = type.FullName;
+                                TaskPointAttribute attribute = type.GetCustomAttribute<TaskPointAttribute>();
+                                if (attribute != null)
                                 {
-                                    contentName = attri.Name;
+                                    pointName = attribute.Name;
                                 }
-                                gm.AddItem(new GUIContent("Add Task Point/" + contentName), false, () =>
+                                gm.AddItem(new GUIContent(GetWord("Add Task Point") + "/" + pointName), false, () =>
                                 {
                                     AddPoint(type, mousePosition);
                                 });
@@ -257,7 +297,7 @@ namespace HT.Framework
                             for (int i = 0; i < _currentContent.Points.Count; i++)
                             {
                                 TaskPointBase point = _currentContent.Points[i];
-                                gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName("Find Task Point/" + point.Name)), false, () =>
+                                gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(GetWord("Find Task Point") + "/" + point.Name)), false, () =>
                                 {
                                     FindPoint(point);
                                 });
@@ -299,7 +339,7 @@ namespace HT.Framework
 
                 for (int i = 0; i < _currentContent.Points.Count; i++)
                 {
-                    _currentContent.Points[i].OnPointEventHandle(Event.current, _currentContent);
+                    _currentContent.Points[i].OnPointEventHandle(Event.current, _contentAsset, _currentContent, _getWord);
                 }
             }
         }
@@ -309,34 +349,34 @@ namespace HT.Framework
         /// </summary>
         private void AddContent(Type type)
         {
-            TaskContentAttribute tca = type.GetCustomAttribute<TaskContentAttribute>();
+            TaskContentAttribute attribute = type.GetCustomAttribute<TaskContentAttribute>();
             TaskContentBase taskContent = CreateInstance(type) as TaskContentBase;
-            taskContent.GUID = _asset.TaskIDName + _asset.TaskIDSign.ToString();
-            taskContent.Name = (tca != null ? tca.GetLastName() : "New Task  ") + _asset.TaskIDSign.ToString();
-            _asset.TaskIDSign += 1;
-            _asset.Content.Add(taskContent);
-            _taskContentList.index = _asset.Content.Count - 1;
+            taskContent.GUID = _contentAsset.TaskIDName + _contentAsset.TaskIDSign.ToString();
+            taskContent.Name = (attribute != null ? attribute.GetLastName() : "New Task  ") + _contentAsset.TaskIDSign.ToString();
+            _contentAsset.TaskIDSign += 1;
+            _contentAsset.Content.Add(taskContent);
+            _taskContentList.index = _contentAsset.Content.Count - 1;
             _currentContent = taskContent;
 
-            TaskContentBase.GenerateSerializeSubObject(taskContent, _asset);
+            TaskContentAsset.GenerateSerializeSubObject(taskContent, _contentAsset);
         }
         /// <summary>
         /// 删除任务内容
         /// </summary>
         private void DeleteContent(int taskIndex)
         {
-            for (int i = 0; i < _asset.Content[taskIndex].Points.Count; i++)
+            for (int i = 0; i < _contentAsset.Content[taskIndex].Points.Count; i++)
             {
-                TaskContentBase.DestroySerializeSubObject(_asset.Content[taskIndex].Points[i], _asset);
+                TaskContentAsset.DestroySerializeSubObject(_contentAsset.Content[taskIndex].Points[i], _contentAsset);
             }
-            TaskContentBase.DestroySerializeSubObject(_asset.Content[taskIndex], _asset);
+            TaskContentAsset.DestroySerializeSubObject(_contentAsset.Content[taskIndex], _contentAsset);
 
-            _asset.Content[taskIndex].Depends.Clear();
-            _asset.Content[taskIndex].Points.Clear();
-            _asset.Content.RemoveAt(taskIndex);
+            _contentAsset.Content[taskIndex].Depends.Clear();
+            _contentAsset.Content[taskIndex].Points.Clear();
+            _contentAsset.Content.RemoveAt(taskIndex);
             _taskContentList.index = -1;
             _currentContent = null;
-            HasChanged(_asset);
+            HasChanged(_contentAsset);
         }
         /// <summary>
         /// 新建任务内容脚本
@@ -352,33 +392,38 @@ namespace HT.Framework
         {
             if (_taskContentList == null)
             {
-                _taskContentList = new ReorderableList(_asset.Content, typeof(TaskContentBase), true, true, false, false);
+                _taskContentList = new ReorderableList(_contentAsset.Content, typeof(TaskContentBase), true, true, false, false);
                 _taskContentList.drawHeaderCallback = (Rect rect) =>
                 {
                     Rect sub = rect;
                     sub.Set(rect.x, rect.y, 200, rect.height);
-                    GUI.Label(sub, "Task Content List:");
+                    GUI.Label(sub, GetWord("Task Content List") + ":");
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                     if (GUI.Button(sub, _addGC, "InvisibleButton"))
                     {
                         GenericMenu gm = new GenericMenu();
-                        gm.AddItem(new GUIContent("<New Task Content Script>"), false, () =>
+                        gm.AddItem(new GUIContent(GetWord("<New Task Content Script>")), false, () =>
                         {
                             NewTaskContentScript();
                         });
+                        gm.AddSeparator("");
+                        gm.AddItem(new GUIContent("默认"), false, () =>
+                        {
+                            AddContent(typeof(TaskContentDefault));
+                        });
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
-                            return type.IsSubclassOf(typeof(TaskContentBase)) && !type.IsAbstract;
+                            return type.IsSubclassOf(typeof(TaskContentBase)) && !type.IsAbstract && type != typeof(TaskContentDefault);
                         });
                         for (int i = 0; i < types.Count; i++)
                         {
                             Type type = types[i];
                             string contentName = type.FullName;
-                            TaskContentAttribute attri = type.GetCustomAttribute<TaskContentAttribute>();
-                            if (attri != null)
+                            TaskContentAttribute attribute = type.GetCustomAttribute<TaskContentAttribute>();
+                            if (attribute != null)
                             {
-                                contentName = attri.Name;
+                                contentName = attribute.Name;
                             }
                             gm.AddItem(new GUIContent(contentName), false, () =>
                             {
@@ -390,23 +435,23 @@ namespace HT.Framework
                 };
                 _taskContentList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
                 {
-                    if (index >= 0 && index < _asset.Content.Count)
+                    if (index >= 0 && index < _contentAsset.Content.Count)
                     {
                         Rect sub = rect;
-                        GUI.Label(sub, (index + 1).ToString() + "." + _asset.Content[index].Name);
+                        GUI.Label(sub, (index + 1).ToString() + "." + _contentAsset.Content[index].Name);
 
                         if (isActive)
                         {
                             sub.Set(rect.x + rect.width - 40, rect.y, 20, 20);
                             if (GUI.Button(sub, _editGC, "InvisibleButton"))
                             {
-                                MonoScript monoScript = MonoScript.FromScriptableObject(_asset.Content[index]);
+                                MonoScript monoScript = MonoScript.FromScriptableObject(_contentAsset.Content[index]);
                                 AssetDatabase.OpenAsset(monoScript);
                             }
                             sub.Set(rect.x + rect.width - 20, rect.y, 20, 20);
                             if (GUI.Button(sub, _deleteGC, "InvisibleButton"))
                             {
-                                if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete task [" + _asset.Content[index].Name + "]?", "Yes", "No"))
+                                if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete task [" + _contentAsset.Content[index].Name + "]?", "Yes", "No"))
                                 {
                                     DeleteContent(index);
                                 }
@@ -416,9 +461,9 @@ namespace HT.Framework
                 };
                 _taskContentList.onSelectCallback = (ReorderableList list) =>
                 {
-                    if (list.index >= 0 && list.index < _asset.Content.Count)
+                    if (list.index >= 0 && list.index < _contentAsset.Content.Count)
                     {
-                        _currentContent = _asset.Content[list.index];
+                        _currentContent = _contentAsset.Content[list.index];
                     }
                     else
                     {
@@ -427,7 +472,7 @@ namespace HT.Framework
                 };
                 _taskContentList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
                 {
-                    if (index >= 0 && index < _asset.Content.Count)
+                    if (index >= 0 && index < _contentAsset.Content.Count)
                     {
                         if (Event.current.type == EventType.Repaint)
                         {
@@ -437,7 +482,7 @@ namespace HT.Framework
                             rect.width -= 6;
                             gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
 
-                            if (_asset.Content[index].IsComplete)
+                            if (_contentAsset.Content[index].IsComplete)
                             {
                                 GUI.backgroundColor = Color.green;
                                 GUI.Box(rect, "");
@@ -448,7 +493,7 @@ namespace HT.Framework
                 };
                 _taskContentList.onReorderCallback = (ReorderableList list) =>
                 {
-                    HasChanged(_asset);
+                    HasChanged(_contentAsset);
                 };
             }
         }
@@ -458,15 +503,15 @@ namespace HT.Framework
         /// </summary>
         private void AddPoint(Type type, Vector2 position)
         {
-            TaskPointAttribute tpa = type.GetCustomAttribute<TaskPointAttribute>();
+            TaskPointAttribute attribute = type.GetCustomAttribute<TaskPointAttribute>();
             TaskPointBase taskPoint = CreateInstance(type) as TaskPointBase;
             taskPoint.Anchor = new Rect(position.x, position.y, 200, 85);
-            taskPoint.GUID = _asset.TaskPointIDName + _asset.TaskPointIDSign.ToString();
-            taskPoint.Name = (tpa != null ? tpa.GetLastName() : "New Task Point ") + _asset.TaskPointIDSign.ToString();
-            _asset.TaskPointIDSign += 1;
+            taskPoint.GUID = _contentAsset.TaskPointIDName + _contentAsset.TaskPointIDSign.ToString();
+            taskPoint.Name = (attribute != null ? attribute.GetLastName() : "New Task Point ") + _contentAsset.TaskPointIDSign.ToString();
+            _contentAsset.TaskPointIDSign += 1;
             _currentContent.Points.Add(taskPoint);
 
-            TaskContentBase.GenerateSerializeSubObject(taskPoint, _asset);
+            TaskContentAsset.GenerateSerializeSubObject(taskPoint, _contentAsset);
         }
         /// <summary>
         /// 查找任务点
@@ -498,9 +543,9 @@ namespace HT.Framework
         /// </summary>
         private void ReSet()
         {
-            for (int i = 0; i < _asset.Content.Count; i++)
+            for (int i = 0; i < _contentAsset.Content.Count; i++)
             {
-                TaskContentBase taskContent = _asset.Content[i];
+                TaskContentBase taskContent = _contentAsset.Content[i];
                 taskContent.ReSet();
                 for (int j = 0; j < taskContent.Points.Count; j++)
                 {

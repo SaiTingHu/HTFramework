@@ -69,7 +69,7 @@ namespace HT.Framework
                 Page page = _pages[pageName];
 
                 GUILayout.BeginVertical(pageName == CurrentPage ? CheckStyle : UncheckStyle);
-
+                
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(12);
                 bool oldValue = CurrentPage == pageName;

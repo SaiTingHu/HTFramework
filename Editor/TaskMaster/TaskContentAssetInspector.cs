@@ -16,8 +16,16 @@ namespace HT.Framework
             TaskContentAsset asset = EditorUtility.InstanceIDToObject(instanceID) as TaskContentAsset;
             if (asset)
             {
-                TaskEditorWindow.ShowWindow(asset);
-                return true;
+                if (asset.IsExistMissed())
+                {
+                    Log.Error("任务资源存在丢失脚本的对象，请先点击 Clear Missed Task 清空丢失脚本的对象！");
+                    return false;
+                }
+                else
+                {
+                    TaskEditorWindow.ShowWindow(asset);
+                    return true;
+                }
             }
             return false;
         }
@@ -64,7 +72,7 @@ namespace HT.Framework
             if (GUILayout.Button("Export Task Name To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
-                if (path != "")
+                if (!string.IsNullOrEmpty(path))
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
@@ -84,7 +92,7 @@ namespace HT.Framework
             if (GUILayout.Button("Export Task Details To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
-                if (path != "")
+                if (!string.IsNullOrEmpty(path))
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
@@ -103,7 +111,7 @@ namespace HT.Framework
             if (_isExistMissed)
             {
                 GUILayout.BeginHorizontal();
-                GUI.color = Color.red;
+                GUI.backgroundColor = Color.red;
                 if (GUILayout.Button("Clear Missed Task"))
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
@@ -148,8 +156,10 @@ namespace HT.Framework
                     }
                     _isExistMissed = false;
                     HasChanged();
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
                 }
-                GUI.color = Color.white;
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
             }
             else

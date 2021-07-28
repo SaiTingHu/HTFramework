@@ -5,12 +5,17 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(Transform))]
     internal sealed class TransformInspector : HTFEditor<Transform>
     {
         private static bool _copyQuaternion = false;
 
         private PagePainter _pagePainter;
+        private object _rotationGUI;
+        private MethodInfo _onEnable;
+        private MethodInfo _rotationField;
+        private GUIContent _copyPasteGC;
         private bool _onlyShowLocal = false;
         private string _lockSource;
         private bool _isLock = false;
@@ -28,6 +33,17 @@ namespace HT.Framework
             _pagePainter.AddPage("Property", EditorGUIUtility.IconContent("ToolHandleLocal").image, PropertyGUI);
             _pagePainter.AddPage("Hierarchy", EditorGUIUtility.IconContent("ToolHandlePivot").image, HierarchyGUI);
             _pagePainter.AddPage("Copy", EditorGUIUtility.IconContent("ToolHandleCenter").image, CopyGUI);
+            if (_rotationGUI == null)
+            {
+                Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.TransformRotationGUI");
+                _rotationGUI = Activator.CreateInstance(type);
+                _onEnable = type.GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.Public);
+                _rotationField = type.GetMethod("RotationField", new Type[] { });
+            }
+            _onEnable.Invoke(_rotationGUI, new object[] { serializedObject.FindProperty("m_LocalRotation"), new GUIContent() });
+            _copyPasteGC = new GUIContent();
+            _copyPasteGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            _copyPasteGC.tooltip = "Copy or Paste";
             _onlyShowLocal = EditorPrefs.GetBool(EditorPrefsTable.Transform_OnlyShowLocal, false);
 
             SetLockState();
@@ -42,6 +58,11 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            if (!EditorGUIUtility.wideMode)
+            {
+                EditorGUIUtility.wideMode = true;
+            }
+
             GUILayout.Space(5);
 
             _pagePainter.Painting();
@@ -53,21 +74,14 @@ namespace HT.Framework
                 EditorGUILayout.HelpBox(_lockSource, MessageType.None);
             }
 
-            if (!_onlyShowLocal)
+            if (!_onlyShowLocal && Targets.Length == 1)
             {
-                GUI.enabled = !_isLockPosition;
-
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("P", GUILayout.Width(20));
-                EditorGUI.BeginChangeCheck();
-                Vector3 pos = EditorGUILayout.Vector3Field("", Target.position);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(Target, "Move " + Target.name);
-                    Target.position = pos;
-                    HasChanged();
-                }
-                if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+                GUI.enabled = false;
+                EditorGUILayout.Vector3Field("", Target.position);
+                GUI.enabled = true;
+                if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
                 {
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("Copy"), false, () =>
@@ -75,32 +89,17 @@ namespace HT.Framework
                         GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
                         Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                     });
-                    gm.AddItem(new GUIContent("Paste"), false, () =>
-                    {
-                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
-                        {
-                            Undo.RecordObject(Target, "Paste position value");
-                            Target.position = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
-                            HasChanged();
-                        }
-                    });
+                    gm.AddDisabledItem(new GUIContent("Paste"));
                     gm.ShowAsContext();
                 }
                 GUILayout.EndHorizontal();
-
-                GUI.enabled = !_isLockRotation;
-
+                
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("R", GUILayout.Width(20));
-                EditorGUI.BeginChangeCheck();
-                Vector3 rot = EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(Target, "Rotate " + Target.name);
-                    Target.rotation = Quaternion.Euler(rot);
-                    HasChanged();
-                }
-                if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+                GUI.enabled = false;
+                EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
+                GUI.enabled = true;
+                if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
                 {
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("Copy"), false, () =>
@@ -120,70 +119,60 @@ namespace HT.Framework
                             Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                         }
                     });
-                    gm.AddItem(new GUIContent("Paste"), false, () =>
-                    {
-                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
-                        {
-                            if (_copyQuaternion)
-                            {
-                                Undo.RecordObject(Target, "Paste rotation value");
-                                Target.rotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
-                                HasChanged();
-                            }
-                            else
-                            {
-                                Undo.RecordObject(Target, "Paste rotation value");
-                                Target.rotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
-                                HasChanged();
-                            }
-                        }
-                    });
+                    gm.AddDisabledItem(new GUIContent("Paste"));
                     gm.ShowAsContext();
                 }
                 GUILayout.EndHorizontal();
-
-                GUI.enabled = !_isLockScale;
-
+                
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("S", GUILayout.Width(20));
                 GUI.enabled = false;
                 EditorGUILayout.Vector3Field("", Target.lossyScale);
-                GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20));
                 GUI.enabled = true;
+                if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+                {
+                    GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
+                    {
+                        GUIUtility.systemCopyBuffer = Target.lossyScale.ToCopyString("F4");
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    });
+                    gm.AddDisabledItem(new GUIContent("Paste"));
+                    gm.ShowAsContext();
+                }
                 GUILayout.EndHorizontal();
-
-                GUI.enabled = true;
             }
 
             GUI.enabled = !_isLockPosition;
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label("LP", GUILayout.Width(20));
-            EditorGUI.BeginChangeCheck();
-            Vector3 localpos = EditorGUILayout.Vector3Field("", Target.localPosition);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(Target, "Move " + Target.name);
-                Target.localPosition = localpos;
-                HasChanged();
-            }
-            if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            PropertyField("m_LocalPosition", "");
+            if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("Copy"), false, () =>
+                if (Targets.Length == 1)
                 {
-                    GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                });
-                gm.AddItem(new GUIContent("Paste"), false, () =>
-                {
-                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
                     {
-                        Undo.RecordObject(Target, "Paste localPosition value");
-                        Target.localPosition = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
-                        HasChanged();
-                    }
-                });
+                        GUIUtility.systemCopyBuffer = Target.localPosition.ToCopyString("F4");
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            Undo.RecordObject(Target, "Paste localPosition value");
+                            Target.localPosition = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
+                            HasChanged();
+                        }
+                    });
+                }
+                else
+                {
+                    gm.AddDisabledItem(new GUIContent("Copy"));
+                    gm.AddDisabledItem(new GUIContent("Paste"));
+                }
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
@@ -192,93 +181,101 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("LR", GUILayout.Width(20));
-            EditorGUI.BeginChangeCheck();
-            Vector3 localrot = EditorGUILayout.Vector3Field("", Target.localRotation.eulerAngles);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(Target, "Rotate " + Target.name);
-                Target.localRotation = Quaternion.Euler(localrot);
-                HasChanged();
-            }
-            if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            _rotationField.Invoke(_rotationGUI, null);
+            if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("Copy"), false, () =>
+                if (Targets.Length == 1)
                 {
-                    if (_copyQuaternion)
-                    {
-                        GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                    else
-                    {
-                        string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
-                        string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
-                        string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
-
-                        GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
-                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                    }
-                });
-                gm.AddItem(new GUIContent("Paste"), false, () =>
-                {
-                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
                     {
                         if (_copyQuaternion)
                         {
-                            Undo.RecordObject(Target, "Paste localRotation value");
-                            Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
-                            HasChanged();
+                            GUIUtility.systemCopyBuffer = Target.localRotation.ToCopyString("F4");
+                            Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                         }
                         else
                         {
-                            Undo.RecordObject(Target, "Paste localRotation value");
-                            Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
-                            HasChanged();
+                            string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
+                            string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
+                            string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
+
+                            GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                            Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
                         }
-                    }
-                });
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            if (_copyQuaternion)
+                            {
+                                Undo.RecordObject(Target, "Paste localRotation value");
+                                Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+                                HasChanged();
+                            }
+                            else
+                            {
+                                Undo.RecordObject(Target, "Paste localRotation value");
+                                Target.localRotation = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero).ToQuaternion();
+                                HasChanged();
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    gm.AddDisabledItem(new GUIContent("Copy"));
+                    gm.AddDisabledItem(new GUIContent("Paste"));
+                }
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
 
             GUI.enabled = !_isLockScale;
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label("LS", GUILayout.Width(20));
-            EditorGUI.BeginChangeCheck();
-            Vector3 localsca = EditorGUILayout.Vector3Field("", Target.localScale);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(Target, "Scale " + Target.name);
-                Target.localScale = localsca;
-                HasChanged();
-            }
-            if (GUILayout.Button(EditorGUIUtility.IconContent("d_editicon.sml"), "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            PropertyField("m_LocalScale", "");
+            if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
-                gm.AddItem(new GUIContent("Copy"), false, () =>
+                if (Targets.Length == 1)
                 {
-                    GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
-                    Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
-                });
-                gm.AddItem(new GUIContent("Paste"), false, () =>
-                {
-                    if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
                     {
-                        Undo.RecordObject(Target, "Paste localScale value");
-                        Target.localScale = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.one);
-                        HasChanged();
-                    }
-                });
+                        GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
+                        Log.Info("已复制：" + GUIUtility.systemCopyBuffer);
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                        {
+                            Undo.RecordObject(Target, "Paste localScale value");
+                            Target.localScale = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.one);
+                            HasChanged();
+                        }
+                    });
+                }
+                else
+                {
+                    gm.AddDisabledItem(new GUIContent("Copy"));
+                    gm.AddDisabledItem(new GUIContent("Paste"));
+                }
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
-
+            
             GUI.enabled = true;
         }
         private void HierarchyGUI()
         {
+            if (Targets.Length > 1)
+            {
+                EditorGUILayout.HelpBox("Hierarchy page cannot be multi-edited.", MessageType.None);
+                return;
+            }
+
             if (_isLock)
             {
                 EditorGUILayout.HelpBox(_lockSource, MessageType.None);
@@ -358,6 +355,12 @@ namespace HT.Framework
         }
         private void CopyGUI()
         {
+            if (Targets.Length > 1)
+            {
+                EditorGUILayout.HelpBox("Copy page cannot be multi-edited.", MessageType.None);
+                return;
+            }
+
             GUI.backgroundColor = Color.yellow;
 
             GUILayout.BeginHorizontal();
@@ -400,20 +403,23 @@ namespace HT.Framework
 
         private void SetLockState()
         {
-            HTBehaviour[] behaviours = Target.GetComponents<HTBehaviour>();
-            for (int i = 0; i < behaviours.Length; i++)
+            for (int i = 0; i < Targets.Length; i++)
             {
-                Type type = behaviours[i].GetType();
-                LockTransformAttribute attribute = type.GetCustomAttribute<LockTransformAttribute>();
-                if (attribute != null)
+                HTBehaviour[] behaviours = Targets[i].GetComponents<HTBehaviour>();
+                for (int j = 0; j < behaviours.Length; j++)
                 {
-                    _lockSource = "Some values locking by " + type.Name + ".";
-                    _isLock = true;
-                    _isLockPosition = attribute.IsLockPosition;
-                    _isLockRotation = attribute.IsLockRotation;
-                    _isLockScale = attribute.IsLockScale;
-                    Tools.hidden = true;
-                    return;
+                    Type type = behaviours[j].GetType();
+                    LockTransformAttribute attribute = type.GetCustomAttribute<LockTransformAttribute>();
+                    if (attribute != null)
+                    {
+                        _lockSource = "Some values locking by " + type.Name + ".";
+                        _isLock = true;
+                        _isLockPosition = attribute.IsLockPosition;
+                        _isLockRotation = attribute.IsLockRotation;
+                        _isLockScale = attribute.IsLockScale;
+                        Tools.hidden = true;
+                        return;
+                    }
                 }
             }
             _lockSource = null;

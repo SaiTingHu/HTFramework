@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
@@ -12,7 +12,7 @@ namespace HT.Framework
     /// </summary>
     /// <typeparam name="M">内置模块</typeparam>
     /// <typeparam name="H">内置模块的助手</typeparam>
-    public abstract class InternalModuleInspector<M, H> : HTFEditor<M> where M : Object where H : class, IInternalModuleHelper
+    public abstract class InternalModuleInspector<M, H> : HTFEditor<M> where M : UObject where H : class, IInternalModuleHelper
     {
         protected H _helper;
         private InternalModuleBase<H> _module;

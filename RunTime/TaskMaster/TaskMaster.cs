@@ -18,16 +18,18 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsAutoChange = true;
 
-        //所有的 TaskTarget <任务目标ID、任务目标>
+        //所有的 任务目标 <任务目标ID、任务目标>
         private Dictionary<string, TaskTarget> _targets = new Dictionary<string, TaskTarget>();
-        //所有的 任务内容 <任务ID、任务内容>
+        //所有的 任务内容
+        private List<TaskContentBase> _taskContentsList = new List<TaskContentBase>();
+        //所有的 任务内容 <任务内容ID、任务内容>
         private Dictionary<string, TaskContentBase> _taskContents = new Dictionary<string, TaskContentBase>();
-        //所有的 任务点 <任务ID、任务点>
+        //所有的 任务点 <任务点ID、任务点>
         private Dictionary<string, TaskPointBase> _taskPoints = new Dictionary<string, TaskPointBase>();
         //当前的任务内容索引
-        private int _currentContentIndex = -1;
+        private int _currentTaskContentIndex = -1;
         //当前的任务内容
-        private TaskContentBase _currentContent;
+        private TaskContentBase _currentTaskContent;
         //任务控制者运行中
         private bool _running = false;
 
@@ -42,7 +44,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 当前是否是自动切换状态
+        /// 当前是否是自动切换任务内容状态
         /// </summary>
         public bool IsAutoChangeState
         {
@@ -58,35 +60,17 @@ namespace HT.Framework
         {
             get
             {
-                return ContentAsset.Content;
+                return _taskContentsList;
             }
         }
         /// <summary>
-        /// 当前所有未完成的任务内容数量
-        /// </summary>
-        public int AllUncompleteTaskCount
-        {
-            get
-            {
-                int count = 0;
-                foreach (var task in _taskContents)
-                {
-                    if (!task.Value.IsComplete)
-                    {
-                        count += 1;
-                    }
-                }
-                return count;
-            }
-        }
-        /// <summary>
-        /// 当前任务内容
+        /// 当前激活的任务内容
         /// </summary>
         public TaskContentBase CurrentTaskContent
         {
             get
             {
-                return _currentContent;
+                return _currentTaskContent;
             }
         }
 
@@ -96,11 +80,11 @@ namespace HT.Framework
 
             if (_running)
             {
-                if (_currentContent != null)
+                if (_currentTaskContent != null)
                 {
-                    _currentContent.OnMonitor();
+                    _currentTaskContent.OnMonitor();
 
-                    if (_currentContent.IsComplete)
+                    if (_currentTaskContent.IsComplete)
                     {
                         CompleteCurrentTask();
                     }
@@ -112,6 +96,7 @@ namespace HT.Framework
             base.OnTermination();
 
             _targets.Clear();
+            _taskContentsList.Clear();
             _taskContents.Clear();
             _taskPoints.Clear();
         }
@@ -148,138 +133,11 @@ namespace HT.Framework
                 return null;
             }
         }
-        /// <summary>
-        /// 通过ID获取任务点
-        /// </summary>
-        /// <param name="id">任务点ID</param>
-        /// <returns>任务点</returns>
-        public TaskPointBase GetTaskPoint(string id)
-        {
-            if (_taskPoints.ContainsKey(id))
-            {
-                return _taskPoints[id];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// 通过ID设置当前激活的任务内容
-        /// </summary>
-        /// <param name="id">任务内容ID</param>
-        public void SetCurrentTaskContent(string id)
-        {
-            if (_running)
-            {
-                if (_taskContents.ContainsKey(id))
-                {
-                    _currentContentIndex = ContentAsset.Content.IndexOf(_taskContents[id]);
-                    BeginCurrentTask();
-                }
-                else
-                {
-                    Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在ID为 " + id + " 的任务内容！");
-                }
-            }
-        }
-        /// <summary>
-        /// 通过索引设置当前激活的任务内容
-        /// </summary>
-        /// <param name="index">任务内容索引</param>
-        public void SetCurrentTaskContent(int index)
-        {
-            if (_running)
-            {
-                if (index >= 0 && index < ContentAsset.Content.Count)
-                {
-                    _currentContentIndex = index;
-                    BeginCurrentTask();
-                }
-                else
-                {
-                    Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在索引为 " + index + " 的任务内容！");
-                }
-            }
-        }
-        /// <summary>
-        /// 切换到下一个任务内容，根据任务内容列表顺序
-        /// </summary>
-        public void ChangeNextTaskContent()
-        {
-            if (_running)
-            {
-                if (_currentContentIndex < ContentAsset.Content.Count - 1)
-                {
-                    _currentContentIndex += 1;
-                }
-                else
-                {
-                    _currentContentIndex = 0;
-                }
-                BeginCurrentTask();
-            }
-        }
-        /// <summary>
-        /// 完成当前任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
-        /// </summary>
-        public void CompleteCurrentTaskContent()
-        {
-            if (_running)
-            {
-                if (_currentContent != null)
-                {
-                    _currentContent.OnAutoComplete();
-                }
-            }
-        }
-        /// <summary>
-        /// 完成指定的任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
-        /// </summary>
-        public void CompleteTaskContent(string id)
-        {
-            if (_running)
-            {
-                TaskContentBase taskContent = GetTaskContent(id);
-                if (taskContent != null)
-                {
-                    taskContent.OnAutoComplete();
-                }
-            }
-        }
-        /// <summary>
-        /// 完成指定的任务点
-        /// </summary>
-        /// <param name="id">任务点ID</param>
-        /// <param name="completeAction">完成后执行的操作</param>
-        public void CompleteTaskPoint(string id, HTFAction completeAction = null)
-        {
-            if (_running)
-            {
-                TaskPointBase taskPoint = GetTaskPoint(id);
-                if (taskPoint != null)
-                {
-                    taskPoint.Complete(completeAction);
-                }
-            }
-        }
-        /// <summary>
-        /// 指引任务点
-        /// </summary>
-        /// <param name="id">任务点ID</param>
-        public void Guide(string id)
-        {
-            if (_taskPoints.ContainsKey(id))
-            {
-                _taskPoints[id].OnGuide();
-            }
-        }
 
         /// <summary>
         /// 重新编译任务内容，在更改任务资源 ContentAsset 后，必须重新编译一次才可以开始任务流程
         /// </summary>
-        /// <param name="disableTaskIDs">禁用的任务点ID集合（当为null时启用所有任务，禁用的任务不会触发）</param>
+        /// <param name="disableTaskIDs">禁用的任务点ID集合（当为null时启用所有任务，禁用的任务点不会触发）</param>
         public void RecompileTaskContent(HashSet<string> disableTaskIDs = null)
         {
             if (ContentAsset)
@@ -309,6 +167,7 @@ namespace HT.Framework
                 #endregion
 
                 #region 判断任务ID是否重复
+                _taskContentsList.Clear();
                 _taskContents.Clear();
                 _taskPoints.Clear();
                 for (int i = 0; i < ContentAsset.Content.Count; i++)
@@ -321,6 +180,7 @@ namespace HT.Framework
                     else
                     {
                         _taskContents.Add(content.GUID, content);
+                        _taskContentsList.Add(content);
                     }
 
                     for (int j = 0; j < content.Points.Count; j++)
@@ -364,8 +224,8 @@ namespace HT.Framework
                     }
                 }
 
-                _currentContentIndex = 0;
-                _currentContent = null;
+                _currentTaskContentIndex = 0;
+                _currentTaskContent = null;
                 _running = false;
                 #endregion
             }
@@ -379,13 +239,13 @@ namespace HT.Framework
         /// </summary>
         public void Begin()
         {
-            if (!ContentAsset || ContentAsset.Content.Count <= 0 || _taskContents.Count <= 0)
+            if (!ContentAsset || ContentAsset.Content.Count <= 0 || _taskContentsList.Count <= 0)
             {
                 throw new HTFrameworkException(HTFrameworkModule.TaskMaster, "任务控制者：当前无法开始任务流程，请重新编译任务内容 RecompileTaskContent！");
             }
 
-            _currentContentIndex = 0;
-            _currentContent = null;
+            _currentTaskContentIndex = 0;
+            _currentTaskContent = null;
             _running = true;
 
             Main.m_Event.Throw<EventTaskBegin>();
@@ -400,45 +260,146 @@ namespace HT.Framework
         /// </summary>
         public void End()
         {
-            _currentContentIndex = 0;
-            _currentContent = null;
+            _currentTaskContentIndex = 0;
+            _currentTaskContent = null;
             _running = false;
 
             Main.m_Event.Throw<EventTaskEnd>();
         }
 
         /// <summary>
+        /// 通过ID设置当前激活的任务内容
+        /// </summary>
+        /// <param name="id">任务内容ID</param>
+        public void SetCurrentTaskContent(string id)
+        {
+            if (!_running)
+                return;
+
+            if (_taskContents.ContainsKey(id))
+            {
+                if (_taskContents[id].IsComplete)
+                    return;
+
+                _currentTaskContentIndex = _taskContentsList.IndexOf(_taskContents[id]);
+                BeginCurrentTask();
+            }
+            else
+            {
+                Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在ID为 " + id + " 的任务内容！");
+            }
+        }
+        /// <summary>
+        /// 通过索引设置当前激活的任务内容
+        /// </summary>
+        /// <param name="index">任务内容索引</param>
+        public void SetCurrentTaskContent(int index)
+        {
+            if (!_running)
+                return;
+
+            if (index >= 0 && index < _taskContentsList.Count)
+            {
+                if (_taskContentsList[index].IsComplete)
+                    return;
+
+                _currentTaskContentIndex = index;
+                BeginCurrentTask();
+            }
+            else
+            {
+                Log.Warning("任务控制者：设置当前激活的任务内容失败，当前并不存在索引为 " + index + " 的任务内容！");
+            }
+        }
+        /// <summary>
+        /// 切换到下一个任务内容，根据任务内容列表顺序
+        /// </summary>
+        public void ChangeNextTaskContent()
+        {
+            if (!_running)
+                return;
+
+            int index = NextUncompleteTaskContent();
+            if (index != -1)
+            {
+                _currentTaskContentIndex = index;
+                BeginCurrentTask();
+            }
+            else
+            {
+                End();
+            }
+        }
+        /// <summary>
+        /// 完成当前任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
+        /// </summary>
+        public void CompleteCurrentTaskContent()
+        {
+            if (!_running)
+                return;
+
+            if (_currentTaskContent != null)
+            {
+                _currentTaskContent.AutoComplete();
+            }
+        }
+        /// <summary>
+        /// 完成当前任务内容中指定的任务点
+        /// </summary>
+        /// <param name="id">任务点ID</param>
+        public void CompleteCurrentTaskPoint(string id)
+        {
+            if (!_running)
+                return;
+
+            TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
+            if (taskPoint != null && taskPoint.IsEnable && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            {
+                taskPoint.Complete();
+            }
+        }
+        /// <summary>
+        /// 指引当前任务内容中指定的任务点
+        /// </summary>
+        /// <param name="id">任务点ID</param>
+        public void GuidePoint(string id)
+        {
+            if (!_running)
+                return;
+
+            TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
+            if (taskPoint != null && taskPoint.IsEnable && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            {
+                taskPoint.Guide();
+            }
+        }
+        
+        /// <summary>
         /// 当前任务开始
         /// </summary>
         private void BeginCurrentTask()
         {
-            _currentContent = ContentAsset.Content[_currentContentIndex];
-            _currentContent.OnStart();
+            _currentTaskContent = _taskContentsList[_currentTaskContentIndex];
+            _currentTaskContent.Start();
 
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(_currentContent));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(_currentTaskContent));
         }
         /// <summary>
         /// 当前任务完成
         /// </summary>
         private void CompleteCurrentTask()
         {
-            _currentContent.OnComplete();
+            _currentTaskContent.Complete();
 
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(_currentContent));
-            _currentContent = null;
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(_currentTaskContent));
+            _currentTaskContent = null;
 
-            if (AllUncompleteTaskCount > 0)
+            int index = NextUncompleteTaskContent();
+            if (index != -1)
             {
                 if (IsAutoChangeState)
                 {
-                    if (_currentContentIndex < ContentAsset.Content.Count - 1)
-                    {
-                        _currentContentIndex += 1;
-                    }
-                    else
-                    {
-                        _currentContentIndex = 0;
-                    }
+                    _currentTaskContentIndex = index;
                     BeginCurrentTask();
                 }
             }
@@ -446,6 +407,30 @@ namespace HT.Framework
             {
                 End();
             }
+        }
+        /// <summary>
+        /// 获取下一个未完成的任务内容
+        /// </summary>
+        /// <returns>任务内容索引</returns>
+        private int NextUncompleteTaskContent()
+        {
+            int index = _currentTaskContentIndex + 1;
+            for (; index < _taskContentsList.Count; index++)
+            {
+                if (!_taskContentsList[index].IsComplete)
+                {
+                    return index;
+                }
+            }
+            index = 0;
+            for (; index < _currentTaskContentIndex; index++)
+            {
+                if (!_taskContentsList[index].IsComplete)
+                {
+                    return index;
+                }
+            }
+            return -1;
         }
     }
 }

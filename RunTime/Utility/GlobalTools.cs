@@ -634,6 +634,25 @@ namespace HT.Framework
             }
             return convertArray;
         }
+        /// <summary>
+        /// 强制转换数组的类型（使用as强转）
+        /// </summary>
+        /// <typeparam name="TOutput">目标类型</typeparam>
+        /// <typeparam name="TInput">原类型</typeparam>
+        public static TOutput[] ConvertAllAS<TOutput, TInput>(this TInput[] array) where TOutput : class where TInput : class
+        {
+            if (array == null)
+            {
+                return null;
+            }
+
+            TOutput[] convertArray = new TOutput[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                convertArray[i] = array[i] as TOutput;
+            }
+            return convertArray;
+        }
         #endregion
 
         #region 特性工具

@@ -781,6 +781,7 @@ namespace HT.Framework
                             if (target.GUID == "<None>")
                             {
                                 target.GUID = Guid.NewGuid().ToString();
+                                HasChanged(target);
                             }
                             _currentStepObj.Target = contentObj;
                             _currentStepObj.TargetGUID = target.GUID;
@@ -1152,6 +1153,7 @@ namespace HT.Framework
                             if (target.GUID == "<None>")
                             {
                                 target.GUID = Guid.NewGuid().ToString();
+                                HasChanged(target);
                             }
                             _currentOperationObj.Target = operationObj;
                             _currentOperationObj.TargetGUID = target.GUID;

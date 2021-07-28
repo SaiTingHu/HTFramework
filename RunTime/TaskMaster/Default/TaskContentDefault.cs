@@ -5,15 +5,10 @@ namespace HT.Framework
     /// <summary>
     /// 默认的任务内容
     /// </summary>
-    [TaskContent("Default")]
+    [TaskContent("默认")]
     public sealed class TaskContentDefault : TaskContentBase
     {
-        public TaskContentDefault() : base()
-        {
-
-        }
-
-        public override void OnStart()
+        protected override void OnStart()
         {
             base.OnStart();
 
@@ -25,15 +20,15 @@ namespace HT.Framework
 
             Log.Info("任务内容：[" + Name + "]监控中......");
         }
-        public override void OnComplete()
+        protected override void OnComplete()
         {
             base.OnComplete();
 
             Log.Info("任务内容：[" + Name + "]完成!");
         }
-        
+
 #if UNITY_EDITOR
-        public override int OnPropertyGUI()
+        protected override int OnPropertyGUI()
         {
             int height = base.OnPropertyGUI();
 
