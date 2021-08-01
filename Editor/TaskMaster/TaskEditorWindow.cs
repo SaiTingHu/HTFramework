@@ -18,7 +18,10 @@ namespace HT.Framework
             window.titleContent.image = EditorGUIUtility.IconContent("AnimatorStateMachine Icon").image;
             window.titleContent.text = "Task Editor";
             window._contentAsset = contentAsset;
-            window.ReSet();
+            if (!EditorApplication.isPlaying)
+            {
+                window.ReSet();
+            }
             window.minSize = new Vector2(800, 600);
             window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
             window.Show();
@@ -40,20 +43,6 @@ namespace HT.Framework
         private GUIContent _deleteGC;
         private HTFFunc<string, string> _getWord;
 
-        private string MainAssetPath
-        {
-            get
-            {
-                return AssetDatabase.GetAssetPath(_contentAsset);
-            }
-        }
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return true;
-            }
-        }
         protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/104317219";
 
         protected override void OnEnable()
@@ -114,7 +103,17 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             if (GUILayout.Button(GetWord("ReSet State"), EditorStyles.toolbarButton))
             {
-                ReSet();
+                if (EditorApplication.isPlaying)
+                {
+                    if (EditorUtility.DisplayDialog("Prompt", "Currently is playing mode. Are you sure you want to reset status?", "Yes", "No"))
+                    {
+                        ReSet();
+                    }
+                }
+                else
+                {
+                    ReSet();
+                }
             }
         }
         protected override void OnBodyGUI()
