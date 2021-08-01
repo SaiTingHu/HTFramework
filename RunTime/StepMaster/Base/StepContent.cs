@@ -169,7 +169,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用（运行时）
         /// </summary>
-        public bool IsEnableRunTime { get; set; } = true;
+        public bool IsEnableRunTime { get; internal set; } = true;
         #endregion
 
         #region Execute Method

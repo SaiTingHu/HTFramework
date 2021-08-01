@@ -14,7 +14,7 @@ namespace HT.Framework
     [Serializable]
     public sealed class TaskContentAsset : DataSetBase
     {
-        [SerializeField] public List<TaskContentBase> Content = new List<TaskContentBase>();
+        [SerializeField] internal List<TaskContentBase> Content = new List<TaskContentBase>();
         [SerializeField] internal int TaskIDSign = 1;
         [SerializeField] internal string TaskIDName = "Task";
         [SerializeField] internal int TaskPointIDSign = 1;

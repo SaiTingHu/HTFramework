@@ -219,7 +219,7 @@ namespace HT.Framework
                     {
                         if (_taskPoints.ContainsKey(item))
                         {
-                            _taskPoints[item].IsEnable = false;
+                            _taskPoints[item].IsEnableRunTime = false;
                         }
                     }
                 }
@@ -353,7 +353,7 @@ namespace HT.Framework
                 return;
 
             TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
-            if (taskPoint != null && taskPoint.IsEnable && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            if (taskPoint != null && !taskPoint.IsComplete && !taskPoint.IsCompleting)
             {
                 taskPoint.Complete();
             }
@@ -368,7 +368,7 @@ namespace HT.Framework
                 return;
 
             TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
-            if (taskPoint != null && taskPoint.IsEnable && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            if (taskPoint != null && !taskPoint.IsComplete && !taskPoint.IsCompleting)
             {
                 taskPoint.Guide();
             }

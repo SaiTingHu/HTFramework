@@ -14,15 +14,15 @@ namespace HT.Framework
         /// <summary>
         /// 任务ID
         /// </summary>
-        public string GUID = "";
+        [SerializeField] internal string GUID = "";
         /// <summary>
         /// 任务名称
         /// </summary>
-        public string Name = "";
+        [SerializeField] internal string Name = "";
         /// <summary>
         /// 任务细节
         /// </summary>
-        public string Details = "";
+        [SerializeField] internal string Details = "";
         /// <summary>
         /// 任务目标
         /// </summary>
@@ -30,11 +30,11 @@ namespace HT.Framework
         /// <summary>
         /// 所有任务点
         /// </summary>
-        public List<TaskPointBase> Points = new List<TaskPointBase>();
+        [SerializeField] internal List<TaskPointBase> Points = new List<TaskPointBase>();
         /// <summary>
         /// 所有任务点依赖
         /// </summary>
-        public List<TaskDepend> Depends = new List<TaskDepend>();
+        [SerializeField] internal List<TaskDepend> Depends = new List<TaskDepend>();
 
         /// <summary>
         /// 是否完成
@@ -89,7 +89,7 @@ namespace HT.Framework
             List<int> uncompletePointIndexs = new List<int>();
             for (int i = 0; i < Points.Count; i++)
             {
-                if (Points[i].IsEnable && !Points[i].IsComplete && !Points[i].IsCompleting)
+                if (!Points[i].IsComplete && !Points[i].IsCompleting)
                 {
                     uncompletePoints.Add(Points[i]);
                     uncompletePointIndexs.Add(i);
@@ -120,13 +120,20 @@ namespace HT.Framework
             bool isComplete = true;
             for (int i = 0; i < Points.Count; i++)
             {
-                if (Points[i].IsEnable && !Points[i].IsComplete && !Points[i].IsCompleting)
+                if (!Points[i].IsComplete && !Points[i].IsCompleting)
                 {
                     isComplete = false;
 
                     if (IsDependComplete(i))
                     {
-                        Points[i].OnMonitor();
+                        if (Points[i].IsEnable && Points[i].IsEnableRunTime)
+                        {
+                            Points[i].OnMonitor();
+                        }
+                        else
+                        {
+                            Points[i].AutoComplete();
+                        }
                     }
                 }
             }
@@ -151,7 +158,7 @@ namespace HT.Framework
                 if (Depends[i].OriginalPoint == taskPointIndex)
                 {
                     int depend = Depends[i].DependPoint;
-                    if (Points[depend].IsEnable && !Points[depend].IsComplete)
+                    if (!Points[depend].IsComplete)
                     {
                         return false;
                     }

@@ -15,32 +15,32 @@ namespace HT.Framework
         /// <summary>
         /// 任务点ID
         /// </summary>
-        public string GUID = "";
+        [SerializeField] internal string GUID = "";
         /// <summary>
         /// 任务点名称
         /// </summary>
-        public string Name = "";
+        [SerializeField] internal string Name = "";
         /// <summary>
         /// 任务点详细介绍
         /// </summary>
-        public string Details = "";
+        [SerializeField] internal string Details = "";
         /// <summary>
         /// 任务点面板的锚点
         /// </summary>
-        public Rect Anchor = Rect.zero;
+        [SerializeField] internal Rect Anchor = Rect.zero;
         /// <summary>
-        /// 是否在编辑器中锁定
+        /// 是否启用
         /// </summary>
-        [SerializeField] internal bool IsLock = false;
+        [SerializeField] internal bool IsEnable = true;
         /// <summary>
         /// 是否在编辑器中展开
         /// </summary>
         [SerializeField] internal bool IsExpand = true;
 
         /// <summary>
-        /// 是否启用
+        /// 是否启用（运行时）
         /// </summary>
-        public bool IsEnable { get; internal set; } = true;
+        public bool IsEnableRunTime { get; internal set; } = true;
         /// <summary>
         /// 是否开始
         /// </summary>
@@ -174,7 +174,7 @@ namespace HT.Framework
         /// </summary>
         internal void ReSet()
         {
-            IsEnable = true;
+            IsEnableRunTime = true;
             IsStart = false;
             IsComplete = false;
             IsCompleting = false;
@@ -257,7 +257,7 @@ namespace HT.Framework
         /// </summary>
         internal void OnEditorGUI(TaskContentAsset asset, TaskContentBase content, HTFFunc<string, string> getWord)
         {
-            if (!IsEnable)
+            if (!IsEnable || !IsEnableRunTime)
             {
                 GUI.backgroundColor = Color.gray;
             }
@@ -278,8 +278,6 @@ namespace HT.Framework
 
             _height += OnDependGUI(getWord);
 
-            GUI.enabled = !IsLock;
-
             if (IsExpand)
             {
                 _height += OnToolbarGUI(asset, content);
@@ -293,19 +291,17 @@ namespace HT.Framework
                 _height += OnCollapseGUI(getWord);
             }
 
-            GUI.enabled = true;
-
             Anchor.height = _height;
 
             GUILayout.EndArea();
 
-            string icon = IsLock ? "LockIcon-On" : "LockIcon";
+            string icon = IsEnable ? "animationvisibilitytoggleon" : "animationvisibilitytoggleoff";
             GUIContent gUIContent = new GUIContent();
             gUIContent.image = EditorGUIUtility.IconContent(icon).image;
-            gUIContent.tooltip = IsLock ? "Locked" : "Unlocked";
+            gUIContent.tooltip = IsEnable ? "Enable" : "Disable";
             if (GUI.Button(new Rect(Anchor.x + Anchor.width - 40, Anchor.y - 2, 20, 20), gUIContent, "InvisibleButton"))
             {
-                IsLock = !IsLock;
+                IsEnable = !IsEnable;
                 GUI.changed = true;
             }
 
@@ -581,9 +577,6 @@ namespace HT.Framework
                             }
                             else if (Anchor.Contains(e.mousePosition))
                             {
-                                if (IsLock)
-                                    return;
-
                                 GenericMenu gm = new GenericMenu();
                                 gm.AddItem(new GUIContent(getWord("Edit Point Script")), false, () =>
                                 {
