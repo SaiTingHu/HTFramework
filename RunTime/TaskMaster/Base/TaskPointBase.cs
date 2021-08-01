@@ -257,19 +257,19 @@ namespace HT.Framework
         /// </summary>
         internal void OnEditorGUI(TaskContentAsset asset, TaskContentBase content, HTFFunc<string, string> getWord)
         {
-            if (!IsEnable || !IsEnableRunTime)
-            {
-                GUI.backgroundColor = Color.gray;
-            }
-            else if (IsComplete)
+            if (IsComplete)
             {
                 GUI.backgroundColor = Color.green;
+            }
+            else if (!IsEnable)
+            {
+                GUI.backgroundColor = Color.gray;
             }
             else
             {
                 GUI.backgroundColor = IsSelected ? Color.yellow : Color.white;
             }
-            
+
             GUILayout.BeginArea(Anchor, ShowName, "Window");
             
             GUI.backgroundColor = Color.white;

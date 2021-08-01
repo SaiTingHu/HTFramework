@@ -463,7 +463,7 @@ namespace HT.Framework
                         }
                     }
 
-                    content.IsEnableRunTime = disableStepIDs == null || !disableStepIDs.Contains(content.GUID);
+                    content.IsEnableRunTime = (disableStepIDs == null || !disableStepIDs.Contains(content.GUID));
                     _stepContents.Add(content);
                     _stepContentIndexs.Add(content.GUID, _stepContents.Count - 1);
                 }
