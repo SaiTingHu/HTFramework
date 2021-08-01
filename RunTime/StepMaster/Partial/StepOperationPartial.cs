@@ -13,24 +13,24 @@ namespace HT.Framework
     public sealed partial class StepOperation
     {
         #region Value
-        public Vector3 Vector3Value = Vector3.zero;
-        public Vector2 Vector2Value = Vector2.zero;
-        public Color ColorValue = Color.white;
-        public int IntValue = 0;
-        public float FloatValue = 0;
-        public string StringValue = "<None>";
-        public bool BoolValue = false;
-        public Ease AnimationEase = Ease.Linear;
+        [SerializeField] internal Vector3 Vector3Value = Vector3.zero;
+        [SerializeField] internal Vector2 Vector2Value = Vector2.zero;
+        [SerializeField] internal Color ColorValue = Color.white;
+        [SerializeField] internal int IntValue = 0;
+        [SerializeField] internal float FloatValue = 0;
+        [SerializeField] internal string StringValue = "<None>";
+        [SerializeField] internal bool BoolValue = false;
+        [SerializeField] internal Ease AnimationEase = Ease.Linear;
         #endregion
 
         #region Value2
-        public Vector3 Vector3Value2 = Vector3.zero;
-        public string StringValue2 = "<None>";
-        public bool BoolValue2 = false;
+        [SerializeField] internal Vector3 Vector3Value2 = Vector3.zero;
+        [SerializeField] internal string StringValue2 = "<None>";
+        [SerializeField] internal bool BoolValue2 = false;
         #endregion
 
         #region Value3
-        public Vector3 Vector3Value3 = Vector3.zero;
+        [SerializeField] internal Vector3 Vector3Value3 = Vector3.zero;
         #endregion
 
         #region Execute

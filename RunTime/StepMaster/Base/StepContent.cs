@@ -18,7 +18,7 @@ namespace HT.Framework
         /// <summary>
         /// 步骤ID
         /// </summary>
-        public string GUID = "";
+        [SerializeField] internal string GUID = "";
         /// <summary>
         /// Enter节点的锚点
         /// </summary>
@@ -26,49 +26,59 @@ namespace HT.Framework
         /// <summary>
         /// 步骤执行到进入下一步的时间
         /// </summary>
-        public float ElapseTime = 1;
+        [SerializeField] internal float ElapseTime = 1;
         /// <summary>
         /// 立即执行模式
         /// </summary>
-        public bool Instant = false;
+        [SerializeField] internal bool Instant = false;
         /// <summary>
         /// 步骤目标
         /// </summary>
-        public GameObject Target = null;
+        [SerializeField] internal GameObject Target = null;
+        /// <summary>
+        /// 步骤目标的ID
+        /// </summary>
         [SerializeField] internal string TargetGUID = "<None>";
+        /// <summary>
+        /// 步骤目标的路径
+        /// </summary>
         [SerializeField] internal string TargetPath = "<None>";
         /// <summary>
         /// 步骤简述名称
         /// </summary>
-        public string Name = "Step Name";
+        [SerializeField] internal string Name = "Step Name";
         /// <summary>
         /// 步骤触发方式
         /// </summary>
-        public StepTrigger Trigger = StepTrigger.StateChange;
+        [SerializeField] internal StepTrigger Trigger = StepTrigger.StateChange;
         /// <summary>
         /// 步骤详述信息
         /// </summary>
-        public string Prompt = "Step Prompt";
+        [SerializeField] internal string Prompt = "Step Prompt";
         /// <summary>
-        /// 步骤其他信息【目前普遍作为步骤大纲】
+        /// 步骤其他信息
         /// </summary>
-        public string Ancillary = "";
+        [SerializeField] internal string Ancillary = "";
         /// <summary>
         /// 步骤最佳视角【自由控制】
         /// </summary>
-        public Vector3 BestView = new Vector3(90, 30, 2);
+        [SerializeField] internal Vector3 BestView = new Vector3(90, 30, 2);
         /// <summary>
         /// 步骤视点偏移【自由控制】
         /// </summary>
-        public Vector3 ViewOffset = Vector3.zero;
+        [SerializeField] internal Vector3 ViewOffset = Vector3.zero;
         /// <summary>
         /// 步骤最佳位置【第一、第三人称】
         /// </summary>
-        public Vector3 BestPos = Vector3.zero;
+        [SerializeField] internal Vector3 BestPos = Vector3.zero;
         /// <summary>
         /// 步骤初始控制模式
         /// </summary>
-        public ControlMode InitialMode = ControlMode.FreeControl;
+        [SerializeField] internal ControlMode InitialMode = ControlMode.FreeControl;
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        [SerializeField] internal bool IsEnable = true;
         /// <summary>
         /// 步骤助手类名
         /// </summary>
@@ -85,6 +95,81 @@ namespace HT.Framework
         /// 步骤连线列表
         /// </summary>
         [SerializeField] internal List<StepWired> Wireds = new List<StepWired>();
+
+        /// <summary>
+        /// 获取步骤简述名称
+        /// </summary>
+        public string GetName
+        {
+            get
+            {
+                return Name;
+            }
+        }
+        /// <summary>
+        /// 获取步骤详述信息
+        /// </summary>
+        public string GetPrompt
+        {
+            get
+            {
+                return Prompt;
+            }
+        }
+        /// <summary>
+        /// 获取步骤其他信息
+        /// </summary>
+        public string GetAncillary
+        {
+            get
+            {
+                return Ancillary;
+            }
+        }
+        /// <summary>
+        /// 获取步骤最佳视角【自由控制】
+        /// </summary>
+        public Vector3 GetBestView
+        {
+            get
+            {
+                return BestView;
+            }
+        }
+        /// <summary>
+        /// 获取步骤视点偏移【自由控制】
+        /// </summary>
+        public Vector3 GetViewOffset
+        {
+            get
+            {
+                return ViewOffset;
+            }
+        }
+        /// <summary>
+        /// 获取步骤最佳位置【第一、第三人称】
+        /// </summary>
+        public Vector3 GetBestPos
+        {
+            get
+            {
+                return BestPos;
+            }
+        }
+        /// <summary>
+        /// 获取步骤初始控制模式
+        /// </summary>
+        public ControlMode GetInitialMode
+        {
+            get
+            {
+                return InitialMode;
+            }
+        }
+        /// <summary>
+        /// 是否启用（运行时）
+        /// </summary>
+        public bool IsEnableRunTime { get; set; } = true;
         #endregion
 
         #region Execute Method

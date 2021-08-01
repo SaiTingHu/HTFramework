@@ -11,7 +11,7 @@ namespace HT.Framework
     [Serializable]
     public sealed class StepContentAsset : DataSetBase
     {
-        [SerializeField] public List<StepContent> Content = new List<StepContent>();
+        [SerializeField] internal List<StepContent> Content = new List<StepContent>();
         [SerializeField] internal int StepIDSign = 1;
         [SerializeField] internal string StepIDName = "Step";
     }

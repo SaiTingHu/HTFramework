@@ -23,7 +23,7 @@ namespace HT.Framework
         /// <summary>
         /// 步骤的参数
         /// </summary>
-        public List<StepParameter> Parameters { get; internal set; } = null;
+        public List<StepParameter> Parameters { get; private set; } = new List<StepParameter>();
         /// <summary>
         /// 步骤辅助目标
         /// </summary>
@@ -141,15 +141,8 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistParameter(string parameterName, StepParameter.ParameterType parameterType)
         {
-            if (Parameters == null)
-            {
-                return false;
-            }
-            else
-            {
-                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
-                return stepParameter != null;
-            }
+            StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
+            return stepParameter != null;
         }
         /// <summary>
         /// 是否存在指定名称的参数
@@ -158,15 +151,8 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsExistParameter(string parameterName)
         {
-            if (Parameters == null)
-            {
-                return false;
-            }
-            else
-            {
-                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
-                return stepParameter != null;
-            }
+            StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
+            return stepParameter != null;
         }
         /// <summary>
         /// 通过名称、类型获取所有参数
@@ -176,14 +162,11 @@ namespace HT.Framework
         /// <param name="stepParameters">输出的参数列表</param>
         public void GetParameters(string parameterName, StepParameter.ParameterType parameterType, List<StepParameter> stepParameters)
         {
-            if (Parameters != null)
+            for (int i = 0; i < Parameters.Count; i++)
             {
-                for (int i = 0; i < Parameters.Count; i++)
+                if (Parameters[i].Name == parameterName && Parameters[i].Type == parameterType)
                 {
-                    if (Parameters[i].Name == parameterName && Parameters[i].Type == parameterType)
-                    {
-                        stepParameters.Add(Parameters[i]);
-                    }
+                    stepParameters.Add(Parameters[i]);
                 }
             }
         }
@@ -194,14 +177,11 @@ namespace HT.Framework
         /// <param name="stepParameters">输出的参数列表</param>
         public void GetParameters(string parameterName, List<StepParameter> stepParameters)
         {
-            if (Parameters != null)
+            for (int i = 0; i < Parameters.Count; i++)
             {
-                for (int i = 0; i < Parameters.Count; i++)
+                if (Parameters[i].Name == parameterName)
                 {
-                    if (Parameters[i].Name == parameterName)
-                    {
-                        stepParameters.Add(Parameters[i]);
-                    }
+                    stepParameters.Add(Parameters[i]);
                 }
             }
         }
@@ -213,23 +193,15 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public StepParameter GetParameter(string parameterName, StepParameter.ParameterType parameterType)
         {
-            if (Parameters == null)
+            StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
+            if (stepParameter != null)
             {
-                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
-                return null;
+                return stepParameter;
             }
             else
             {
-                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
-                if (stepParameter != null)
-                {
-                    return stepParameter;
-                }
-                else
-                {
-                    Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
-                    return null;
-                }
+                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                return null;
             }
         }
         /// <summary>
@@ -239,23 +211,15 @@ namespace HT.Framework
         /// <returns>参数</returns>
         public StepParameter GetParameter(string parameterName)
         {
-            if (Parameters == null)
+            StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
+            if (stepParameter != null)
             {
-                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
-                return null;
+                return stepParameter;
             }
             else
             {
-                StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
-                if (stepParameter != null)
-                {
-                    return stepParameter;
-                }
-                else
-                {
-                    Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
-                    return null;
-                }
+                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                return null;
             }
         }
         /// <summary>
@@ -266,7 +230,7 @@ namespace HT.Framework
         public string GetStringParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.String);
-            return (stepParameter != null) ? stepParameter.StringValue : "";
+            return (stepParameter != null) ? stepParameter.StringValue : null;
         }
         /// <summary>
         /// 通过名称获取Integer参数

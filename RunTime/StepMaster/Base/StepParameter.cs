@@ -19,8 +19,8 @@ namespace HT.Framework
         public Vector3 Vector3Value;
         public Color ColorValue;
         public GameObject GameObjectValue = null;
-        public string GameObjectGUID = "<None>";
-        public string GameObjectPath = "<None>";
+        [SerializeField] internal string GameObjectGUID = "<None>";
+        [SerializeField] internal string GameObjectPath = "<None>";
         public Texture TextureValue = null;
         public AudioClip AudioClipValue = null;
         public Material MaterialValue = null;

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -8,8 +9,8 @@ namespace HT.Framework
     [Serializable]
     public sealed class StepWired
     {
-        public int Left = 0;
-        public int Right = 0;
+        [SerializeField] internal int Left = 0;
+        [SerializeField] internal int Right = 0;
         
 #if UNITY_EDITOR
         /// <summary>

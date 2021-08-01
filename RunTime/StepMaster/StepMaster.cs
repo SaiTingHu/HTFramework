@@ -65,10 +65,8 @@ namespace HT.Framework
         private Dictionary<string, StepTarget> _targets = new Dictionary<string, StepTarget>();
         //所有的 自定义执行顺序 <原始步骤ID、目标步骤ID>
         private Dictionary<string, string> _customOrder = new Dictionary<string, string>();
-        //所有的 步骤内容
+        //所有的 步骤内容列表
         private List<StepContent> _stepContents = new List<StepContent>();
-        //所有的 步骤启用标记 <步骤ID、启用标记>
-        private Dictionary<string, bool> _stepContentEnables = new Dictionary<string, bool>();
         //所有的 步骤内容 <步骤ID、步骤内容>
         private Dictionary<string, StepContent> _stepContentIDs = new Dictionary<string, StepContent>();
         //所有的 步骤索引 <步骤ID、步骤索引>
@@ -307,7 +305,6 @@ namespace HT.Framework
 
             _targets.Clear();
             _stepContents.Clear();
-            _stepContentEnables.Clear();
             _stepContentIDs.Clear();
             _stepContentIndexs.Clear();
             ClearCustomOrder();
@@ -332,9 +329,9 @@ namespace HT.Framework
         /// <returns>是否启用</returns>
         public bool StepIsEnable(string stepID)
         {
-            if (_stepContentEnables.ContainsKey(stepID))
+            if (_stepContentIDs.ContainsKey(stepID))
             {
-                return _stepContentEnables[stepID];
+                return _stepContentIDs[stepID].IsEnable && _stepContentIDs[stepID].IsEnableRunTime;
             }
             else
             {
@@ -440,81 +437,37 @@ namespace HT.Framework
 
                 #region 生成所有步骤信息
                 _stepContents.Clear();
-                _stepContentEnables.Clear();
                 _stepContentIndexs.Clear();
-                //启用所有步骤
-                if (disableStepIDs == null || disableStepIDs.Count == 0)
+                for (int i = 0; i < ContentAsset.Content.Count; i++)
                 {
-                    for (int i = 0; i < ContentAsset.Content.Count; i++)
+                    StepContent content = ContentAsset.Content[i];
+                    if (_targets.ContainsKey(content.TargetGUID))
                     {
-                        StepContent content = ContentAsset.Content[i];
-                        if (_targets.ContainsKey(content.TargetGUID))
+                        content.Target = _targets[content.TargetGUID].gameObject;
+                    }
+                    else
+                    {
+                        Log.Error(string.Format("步骤控制者：【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
+                    }
+
+                    for (int j = 0; j < content.Operations.Count; j++)
+                    {
+                        StepOperation operation = content.Operations[j];
+                        if (_targets.ContainsKey(operation.TargetGUID))
                         {
-                            content.Target = _targets[content.TargetGUID].gameObject;
+                            operation.Target = _targets[operation.TargetGUID].gameObject;
                         }
                         else
                         {
-                            Log.Error(string.Format("步骤控制者：【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
-                        }
-
-                        for (int j = 0; j < content.Operations.Count; j++)
-                        {
-                            StepOperation operation = content.Operations[j];
-                            if (_targets.ContainsKey(operation.TargetGUID))
-                            {
-                                operation.Target = _targets[operation.TargetGUID].gameObject;
-                            }
-                            else
-                            {
-                                Log.Error(string.Format("步骤控制者：【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
-                            }
-                        }
-
-                        _stepContents.Add(content);
-                        if (!_stepContentEnables.ContainsKey(content.GUID))
-                        {
-                            _stepContentEnables.Add(content.GUID, true);
-                            _stepContentIndexs.Add(content.GUID, _stepContents.Count - 1);
+                            Log.Error(string.Format("步骤控制者：【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
                         }
                     }
-                }
-                //禁用 disableStepIDs 指定的步骤
-                else
-                {
-                    for (int i = 0; i < ContentAsset.Content.Count; i++)
-                    {
-                        StepContent content = ContentAsset.Content[i];
-                        if (_targets.ContainsKey(content.TargetGUID))
-                        {
-                            content.Target = _targets[content.TargetGUID].gameObject;
-                        }
-                        else
-                        {
-                            Log.Error(string.Format("步骤控制者：【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
-                        }
 
-                        for (int j = 0; j < content.Operations.Count; j++)
-                        {
-                            StepOperation operation = content.Operations[j];
-                            if (_targets.ContainsKey(operation.TargetGUID))
-                            {
-                                operation.Target = _targets[operation.TargetGUID].gameObject;
-                            }
-                            else
-                            {
-                                Log.Error(string.Format("步骤控制者：【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
-                            }
-                        }
-
-                        _stepContents.Add(content);
-                        if (!_stepContentEnables.ContainsKey(content.GUID))
-                        {
-                            _stepContentEnables.Add(content.GUID, !disableStepIDs.Contains(content.GUID));
-                            _stepContentIndexs.Add(content.GUID, _stepContents.Count - 1);
-                        }
-                    }
+                    content.IsEnableRunTime = disableStepIDs == null || !disableStepIDs.Contains(content.GUID);
+                    _stepContents.Add(content);
+                    _stepContentIndexs.Add(content.GUID, _stepContents.Count - 1);
                 }
-                
+
                 _currentStepIndex = 0;
                 _currentContent = null;
                 _currentTarget = null;
@@ -724,7 +677,7 @@ namespace HT.Framework
                         _currentHelper = CreateHelper(_currentContent, StepHelperTask.Restore);
                     }
 
-                    RestoreStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+                    RestoreStepEvent?.Invoke(_currentContent, _currentContent.IsEnable && _currentContent.IsEnableRunTime);
 
                     //助手执行恢复
                     if (_currentHelper != null)
@@ -875,9 +828,9 @@ namespace HT.Framework
             {
                 _currentTarget.State = StepTargetState.Normal;
             }
-            
+
             //激活的步骤正常启动，未激活的步骤自动跳过
-            if (_stepContentEnables.ContainsKey(_currentContent.GUID) && _stepContentEnables[_currentContent.GUID])
+            if (_currentContent.IsEnable && _currentContent.IsEnableRunTime)
             {
                 //创建步骤助手
                 _currentHelper = CreateHelper(_currentContent, StepHelperTask.Execute);
@@ -902,7 +855,7 @@ namespace HT.Framework
             _executing = true;
             _currentContent.Execute();
 
-            ExecuteStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+            ExecuteStepEvent?.Invoke(_currentContent, _currentContent.IsEnable && _currentContent.IsEnableRunTime);
 
             //UGUI按钮点击型步骤，取消按钮注册
             if (_currentButton)
@@ -958,7 +911,7 @@ namespace HT.Framework
 
             _currentContent.Skip();
 
-            SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+            SkipStepEvent?.Invoke(_currentContent, _currentContent.IsEnable && _currentContent.IsEnableRunTime);
 
             float elapseTime = _currentContent.Instant ? 0 : (_currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime);
 
@@ -1024,7 +977,7 @@ namespace HT.Framework
 
                 _currentContent.Skip();
 
-                SkipStepEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+                SkipStepEvent?.Invoke(_currentContent, _currentContent.IsEnable && _currentContent.IsEnableRunTime);
 
                 float elapseTime = _currentContent.Instant ? 0 : (_currentHelper != null ? _currentHelper.ElapseTime : _currentContent.ElapseTime);
 
@@ -1090,7 +1043,7 @@ namespace HT.Framework
 
             _currentContent.SkipImmediate();
 
-            SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+            SkipStepImmediateEvent?.Invoke(_currentContent, _currentContent.IsEnable && _currentContent.IsEnableRunTime);
 
             //助手执行跳过，等待生命周期结束后销毁助手
             if (_currentHelper != null)
@@ -1150,7 +1103,7 @@ namespace HT.Framework
 
                 _currentContent.SkipImmediate();
 
-                SkipStepImmediateEvent?.Invoke(_currentContent, _stepContentEnables.ContainsKey(_currentContent.GUID) ? _stepContentEnables[_currentContent.GUID] : false);
+                SkipStepImmediateEvent?.Invoke(_currentContent, _currentContent.IsEnable && _currentContent.IsEnableRunTime);
 
                 //助手执行跳过，等待生命周期结束后销毁助手
                 if (_currentHelper != null)
@@ -1208,16 +1161,17 @@ namespace HT.Framework
                 if (type != null)
                 {
                     StepHelper helper = Activator.CreateInstance(type) as StepHelper;
-                    helper.Parameters = content.Parameters;
-                    for (int i = 0; i < helper.Parameters.Count; i++)
+                    for (int i = 0; i < content.Parameters.Count; i++)
                     {
-                        if (helper.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                        StepParameter parameter = content.Parameters[i];
+                        if (parameter.Type == StepParameter.ParameterType.GameObject)
                         {
-                            if (_targets.ContainsKey(helper.Parameters[i].GameObjectGUID))
+                            if (_targets.ContainsKey(parameter.GameObjectGUID))
                             {
-                                helper.Parameters[i].GameObjectValue = _targets[helper.Parameters[i].GameObjectGUID].gameObject;
+                                parameter.GameObjectValue = _targets[parameter.GameObjectGUID].gameObject;
                             }
                         }
+                        helper.Parameters.Add(parameter);
                     }
                     helper.Content = content;
                     helper.Target = content.Target.GetComponent<StepTarget>();

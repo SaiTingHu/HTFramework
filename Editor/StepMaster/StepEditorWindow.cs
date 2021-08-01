@@ -21,6 +21,10 @@ namespace HT.Framework
         /// </summary>
         static StepEditorWindow()
         {
+            AdvancedSearchHandlers.Add("所有禁用的步骤", (stepContent) =>
+            {
+                return !stepContent.IsEnable;
+            });
             AdvancedSearchHandlers.Add("所有存在空目标的步骤", (stepContent) =>
             {
                 if (stepContent.TargetGUID == "<None>")
@@ -117,6 +121,8 @@ namespace HT.Framework
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
         private GUIContent _stepGC;
+        private GUIContent _enableGC;
+        private GUIContent _disableGC;
         private GUIContent _stepHelperGC;
         private GUIContent _previewGC;
         private GUIContent _advancedSearchGC;
@@ -175,10 +181,19 @@ namespace HT.Framework
             SelectStepContent(_currentStep);
             SelectStepOperation(_currentOperation);
 
-            _stepGC = EditorGUIUtility.IconContent("Avatar Icon");
+            _stepGC = new GUIContent();
+            _stepGC.image = EditorGUIUtility.IconContent("Avatar Icon").image;
+            _enableGC = new GUIContent();
+            _enableGC.image = EditorGUIUtility.IconContent("animationvisibilitytoggleon").image;
+            _enableGC.tooltip = "Enable";
+            _disableGC = new GUIContent();
+            _disableGC.image = EditorGUIUtility.IconContent("animationvisibilitytoggleoff").image;
+            _disableGC.tooltip = "Disable";
             _stepHelperGC = new GUIContent();
-            _previewGC = EditorGUIUtility.IconContent("AudioMixerView Icon");
-            _advancedSearchGC = EditorGUIUtility.IconContent("FilterByType");
+            _previewGC = new GUIContent();
+            _previewGC.image = EditorGUIUtility.IconContent("AudioMixerView Icon").image;
+            _advancedSearchGC = new GUIContent();
+            _advancedSearchGC.image = EditorGUIUtility.IconContent("FilterByType").image;
             _advancedSearchGC.tooltip = "Advanced Search";
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
@@ -500,7 +515,7 @@ namespace HT.Framework
                 GUI.FocusControl(null);
             }
             GUI.color = string.IsNullOrEmpty(_stepListAdvancedSearch) ? Color.white : Color.yellow;
-            if (GUILayout.Button(_advancedSearchGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20)))
+            if (GUILayout.Button(_advancedSearchGC, "InvisibleButton", GUILayout.Width(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent(GetWord("<None>")), string.IsNullOrEmpty(_stepListAdvancedSearch), () =>
@@ -535,7 +550,7 @@ namespace HT.Framework
                             GUI.color = Color.yellow;
                             GUILayout.Label("[" + _contentAsset.Content[i].Ancillary + "]", GUILayout.Height(16));
                         }
-                        GUI.color = _contentAsset.Content[i].TargetGUID != "<None>" ? Color.white : Color.gray;
+                        GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
                         string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
                         _stepGC.text = i + "." + showName;
                         _stepGC.tooltip = _contentAsset.Content[i].Prompt;
@@ -546,6 +561,10 @@ namespace HT.Framework
                             GUI.FocusControl(null);
                         }
                         GUILayout.FlexibleSpace();
+                        if (GUILayout.Button(_contentAsset.Content[i].IsEnable ? _enableGC : _disableGC, "InvisibleButton", GUILayout.Height(16), GUILayout.Width(20)))
+                        {
+                            _contentAsset.Content[i].IsEnable = !_contentAsset.Content[i].IsEnable;
+                        }
                         GUILayout.EndHorizontal();
                     }
                 }
@@ -719,7 +738,7 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
-                    GUI.color = _currentStepObj.Target ? Color.white : Color.gray;
+                    GUI.color = _currentStepObj.TargetGUID != "<None>" ? Color.white : Color.gray;
                     GameObject contentObj = EditorGUILayout.ObjectField(_currentStepObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
@@ -1091,7 +1110,7 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
-                    GUI.color = _currentOperationObj.Target ? Color.white : Color.gray;
+                    GUI.color = _currentOperationObj.TargetGUID != "<None>" ? Color.white : Color.gray;
                     GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
