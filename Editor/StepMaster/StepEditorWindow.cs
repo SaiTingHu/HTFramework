@@ -93,8 +93,8 @@ namespace HT.Framework
             window.titleContent.image = EditorGUIUtility.IconContent("BlendTree Icon").image;
             window.titleContent.text = "Step Editor";
             window._contentAsset = contentAsset;
-            window._currentStep = -1;
-            window._currentOperation = -1;
+            window._currentStepIndex = -1;
+            window._currentOperationIndex = -1;
             window.minSize = new Vector2(800, 600);
             window.maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
             window._isMinimize = false;
@@ -102,8 +102,8 @@ namespace HT.Framework
         }
         
         private StepContentAsset _contentAsset;
-        private int _currentStep = -1;
-        private int _currentOperation = -1;
+        private int _currentStepIndex = -1;
+        private int _currentOperationIndex = -1;
         private StepContent _currentStepObj;
         private StepOperation _currentOperationObj;
         private Texture _background;
@@ -178,8 +178,8 @@ namespace HT.Framework
         {
             base.OnEnable();
 
-            SelectStepContent(_currentStep);
-            SelectStepOperation(_currentOperation);
+            SelectStepContent(_currentStepIndex);
+            SelectStepOperation(_currentOperationIndex);
 
             _stepGC = new GUIContent();
             _stepGC.image = EditorGUIUtility.IconContent("Avatar Icon").image;
@@ -288,7 +288,7 @@ namespace HT.Framework
                 string content = string.Format("{0}/{1}", GetWord("Preview"), GetWord("Stop Preview Current Step"));
                 gm.AddItem(new GUIContent(content), false, () =>
                 {
-                    StopPreviewInStep(_currentStep);
+                    StopPreviewInStep(_currentStepIndex);
                 });
                 content = string.Format("{0}/{1}", GetWord("Preview"), GetWord("Stop Preview All Step"));
                 gm.AddItem(new GUIContent(content), false, () =>
@@ -551,7 +551,7 @@ namespace HT.Framework
                             GUILayout.Label("[" + _contentAsset.Content[i].Ancillary + "]", GUILayout.Height(16));
                         }
                         GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
-                        string style = _currentStep == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
+                        string style = _currentStepIndex == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
                         _stepGC.text = i + "." + showName;
                         _stepGC.tooltip = _contentAsset.Content[i].Prompt;
                         if (GUILayout.Button(_stepGC, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
@@ -579,17 +579,17 @@ namespace HT.Framework
             if (_isMoveTo)
             {
                 GUILayout.BeginHorizontal();
-                GUI.enabled = (_currentStep != -1);
+                GUI.enabled = (_currentStepIndex != -1);
                 GUILayout.Label(GetWord("Move To") + ": ");
                 _moveToIndex = EditorGUILayout.IntField(_moveToIndex);
                 if (GUILayout.Button(GetWord("Sure"), EditorStyles.miniButtonLeft))
                 {
                     if (_moveToIndex >= 0 && _moveToIndex <= _contentAsset.Content.Count - 1)
                     {
-                        _contentAsset.Content.RemoveAt(_currentStep);
-                        _currentStep = _moveToIndex;
-                        _contentAsset.Content.Insert(_currentStep, _currentStepObj);
-                        SetStepListScroll((float)_currentStep / (_contentAsset.Content.Count - 1));
+                        _contentAsset.Content.RemoveAt(_currentStepIndex);
+                        _currentStepIndex = _moveToIndex;
+                        _contentAsset.Content.Insert(_currentStepIndex, _currentStepObj);
+                        SetStepListScroll((float)_currentStepIndex / (_contentAsset.Content.Count - 1));
                     }
                     else
                     {
@@ -612,7 +612,7 @@ namespace HT.Framework
             {
                 AddStepContent();
             }
-            GUI.enabled = (_currentStep != -1);
+            GUI.enabled = (_currentStepIndex != -1);
             if (GUILayout.Button(GetWord("Move Up"), EditorGlobalTools.Styles.ButtonMid))
             {
                 MoveUpStepContent();
@@ -633,7 +633,7 @@ namespace HT.Framework
             GUI.backgroundColor = Color.red;
             if (GUILayout.Button(GetWord("Delete"), EditorGlobalTools.Styles.ButtonRight))
             {
-                DeleteStepContent(_currentStep);
+                DeleteStepContent(_currentStepIndex);
             }
             GUI.backgroundColor = Color.white;
             GUI.enabled = true;
@@ -659,7 +659,7 @@ namespace HT.Framework
         {
             GUILayout.BeginVertical();
 
-            if (_currentStep == -1)
+            if (_currentStepIndex == -1)
             {
                 GUILayout.BeginHorizontal();
                 string prompt = CurrentLanguage == Language.English ? "Please select a Step Content!" : "请选择一个步骤内容！";
@@ -842,7 +842,7 @@ namespace HT.Framework
                         for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                         {
                             int j = i;
-                            gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(_currentStepObj.Operations[j].Name)), _currentOperation == j, () =>
+                            gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(_currentStepObj.Operations[j].Name)), _currentOperationIndex == j, () =>
                             {
                                 SelectStepOperation(j);
 
@@ -1043,7 +1043,7 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
 
                 #region 步骤操作的属性
-                if (_isShowStepOperation && _currentOperation != -1)
+                if (_isShowStepOperation && _currentOperationIndex != -1)
                 {
                     GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(320));
 
@@ -1200,7 +1200,7 @@ namespace HT.Framework
                     GUI.enabled = _currentOperationObj.Target && !_currentOperationObj.PreviewTarget;
                     if (GUILayout.Button(GetWord("Preview"), EditorGlobalTools.Styles.ButtonLeft))
                     {
-                        _currentOperationObj.CreatePreviewTarget(_currentStepObj, _currentOperation);
+                        _currentOperationObj.CreatePreviewTarget(_currentStepObj, _currentOperationIndex);
                     }
                     GUI.enabled = _currentOperationObj.PreviewTarget;
                     if (GUILayout.Button(GetWord("Stop"), EditorGlobalTools.Styles.ButtonRight))
@@ -1223,7 +1223,7 @@ namespace HT.Framework
                     GUI.backgroundColor = Color.red;
                     if (GUILayout.Button(GetWord("Delete")))
                     {
-                        DeleteStepOperation(_currentStepObj, _currentOperation);
+                        DeleteStepOperation(_currentStepObj, _currentOperationIndex);
                     }
                     GUI.backgroundColor = Color.white;
 
@@ -1250,7 +1250,7 @@ namespace HT.Framework
         /// </summary>
         private void StepContentMovableGUI()
         {
-            if (_isShowStepOperation && _currentStep != -1)
+            if (_isShowStepOperation && _currentStepIndex != -1)
             {
                 _stepContentAreaRect.Set(_stepListGUIWidth, 0, position.width - _stepListGUIWidth, position.height);
                 GUILayout.BeginArea(_stepContentAreaRect);
@@ -1325,7 +1325,7 @@ namespace HT.Framework
                 {
                     StepOperation operation = _currentStepObj.Operations[i];
                     GUI.color = operation.TargetGUID != "<None>" ? Color.white : Color.gray;
-                    GUIStyle style = _currentOperation == i ? "flow node 0 on" : "flow node 0";
+                    GUIStyle style = _currentOperationIndex == i ? "flow node 0 on" : "flow node 0";
                     style.richText = true;
                     string showName = string.Format("[<color=cyan>{0}</color>] {1}\r\n<color=yellow>{2}</color>"
                         , GetWord(operation.OperationType.ToString())
@@ -1378,7 +1378,7 @@ namespace HT.Framework
 
                             if (Event.current.button == 1)
                             {
-                                CopyOrPasteStep();
+                                CopyOrPasteStepContent();
                             }
                         }
                         else if (_splitterRect.Contains(Event.current.mousePosition))
@@ -1437,6 +1437,7 @@ namespace HT.Framework
                             else if (Event.current.button == 1)
                             {
                                 GenericMenu gm = new GenericMenu();
+                                CopyStepOperation(gm);
                                 StringToolkit.BeginNoRepeatNaming();
                                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                                 {
@@ -1461,7 +1462,7 @@ namespace HT.Framework
                                 _isWired = true;
                             }
                         }
-                        else if (_stepContentAreaRect.Contains(Event.current.mousePosition) && _currentStep != -1)
+                        else if (_stepContentAreaRect.Contains(Event.current.mousePosition) && _currentStepIndex != -1)
                         {
                             GUI.FocusControl(null);
 
@@ -1559,21 +1560,21 @@ namespace HT.Framework
                         switch (Event.current.keyCode)
                         {
                             case KeyCode.Delete:
-                                if (_currentStep != -1)
+                                if (_currentStepIndex != -1)
                                 {
-                                    if (_currentOperation != -1)
+                                    if (_currentOperationIndex != -1)
                                     {
-                                        DeleteStepOperation(_currentStepObj, _currentOperation);
+                                        DeleteStepOperation(_currentStepObj, _currentOperationIndex);
                                     }
                                     else
                                     {
-                                        DeleteStepContent(_currentStep);
+                                        DeleteStepContent(_currentStepIndex);
                                     }
                                     GUI.changed = true;
                                 }
                                 break;
                             case KeyCode.DownArrow:
-                                if (_currentStep == -1)
+                                if (_currentStepIndex == -1)
                                 {
                                     if (0 < _contentAsset.Content.Count)
                                     {
@@ -1585,7 +1586,7 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    int stepIndex = _currentStep + 1;
+                                    int stepIndex = _currentStepIndex + 1;
                                     if (stepIndex < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(stepIndex);
@@ -1596,7 +1597,7 @@ namespace HT.Framework
                                 }
                                 break;
                             case KeyCode.UpArrow:
-                                if (_currentStep == -1)
+                                if (_currentStepIndex == -1)
                                 {
                                     if (0 < _contentAsset.Content.Count)
                                     {
@@ -1608,7 +1609,7 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    int stepIndex = _currentStep - 1;
+                                    int stepIndex = _currentStepIndex - 1;
                                     if (stepIndex >= 0 && stepIndex < _contentAsset.Content.Count)
                                     {
                                         SelectStepContent(stepIndex);
@@ -1643,7 +1644,7 @@ namespace HT.Framework
         /// </summary>
         private bool ChooseEnter(Vector2 mousePosition)
         {
-            if (_currentStep != -1)
+            if (_currentStepIndex != -1)
             {
                 Rect rect = _currentStepObj.EnterPosition;
                 rect.x += _stepListGUIWidth;
@@ -1656,7 +1657,7 @@ namespace HT.Framework
         /// </summary>
         private bool ChooseOperation(Vector2 mousePosition, out int index)
         {
-            if (_currentStep != -1)
+            if (_currentStepIndex != -1)
             {
                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                 {
@@ -1677,7 +1678,7 @@ namespace HT.Framework
         /// </summary>
         private bool ChooseLeftRight(Vector2 mousePosition)
         {
-            if (_currentStep != -1)
+            if (_currentStepIndex != -1)
             {
                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                 {
@@ -1749,33 +1750,33 @@ namespace HT.Framework
             SetStepListScroll(1);
         }
         /// <summary>
-        /// 上移步骤内容
+        /// 上移当前选中的步骤内容
         /// </summary>
         private void MoveUpStepContent()
         {
-            if (_currentStep > 0)
+            if (_currentStepIndex > 0)
             {
-                _contentAsset.Content.RemoveAt(_currentStep);
-                _currentStep -= 1;
-                _contentAsset.Content.Insert(_currentStep, _currentStepObj);
-                SetStepListScroll((float)_currentStep / (_contentAsset.Content.Count - 1));
+                _contentAsset.Content.RemoveAt(_currentStepIndex);
+                _currentStepIndex -= 1;
+                _contentAsset.Content.Insert(_currentStepIndex, _currentStepObj);
+                SetStepListScroll((float)_currentStepIndex / (_contentAsset.Content.Count - 1));
             }
         }
         /// <summary>
-        /// 下移步骤内容
+        /// 下移当前选中的步骤内容
         /// </summary>
         private void MoveDownStepContent()
         {
-            if (_currentStep < _contentAsset.Content.Count - 1)
+            if (_currentStepIndex < _contentAsset.Content.Count - 1)
             {
-                _contentAsset.Content.RemoveAt(_currentStep);
-                _currentStep += 1;
-                _contentAsset.Content.Insert(_currentStep, _currentStepObj);
-                SetStepListScroll((float)_currentStep / (_contentAsset.Content.Count - 1));
+                _contentAsset.Content.RemoveAt(_currentStepIndex);
+                _currentStepIndex += 1;
+                _contentAsset.Content.Insert(_currentStepIndex, _currentStepObj);
+                SetStepListScroll((float)_currentStepIndex / (_contentAsset.Content.Count - 1));
             }
         }
         /// <summary>
-        /// 克隆步骤内容
+        /// 克隆当前选中的步骤内容
         /// </summary>
         private void CloneStepContent()
         {
@@ -1806,6 +1807,7 @@ namespace HT.Framework
         private void AddStepOperation(StepContent content, Vector2 position)
         {
             GenericMenu gm = new GenericMenu();
+            PasteStepOperation(gm, position);
             foreach (StepOperationType type in Enum.GetValues(typeof(StepOperationType)))
             {
                 gm.AddItem(new GUIContent(GetWord("Add Step Operation") + "/" + GetWord(type.ToString())), false, () =>
@@ -1873,8 +1875,8 @@ namespace HT.Framework
         /// </summary>
         private void SelectStepContent(int currentStep)
         {
-            _currentStep = currentStep;
-            _currentStepObj = (_currentStep != -1 ? _contentAsset.Content[_currentStep] : null);
+            _currentStepIndex = currentStep;
+            _currentStepObj = (_currentStepIndex != -1 ? _contentAsset.Content[_currentStepIndex] : null);
             if (_currentStepObj != null)
             {
                 _currentStepObj.FocusTarget();
@@ -1886,8 +1888,8 @@ namespace HT.Framework
         /// </summary>
         private void SelectStepOperation(int currentOperation)
         {
-            _currentOperation = currentOperation;
-            _currentOperationObj = ((_currentOperation != -1 && _currentStep != -1) ? _currentStepObj.Operations[_currentOperation] : null);
+            _currentOperationIndex = currentOperation;
+            _currentOperationObj = ((_currentOperationIndex != -1 && _currentStepIndex != -1) ? _currentStepObj.Operations[_currentOperationIndex] : null);
             if (_currentOperationObj != null) _currentOperationObj.FocusTarget();
         }
         /// <summary>
@@ -1934,14 +1936,14 @@ namespace HT.Framework
             return showName;
         }
         /// <summary>
-        /// 复制、粘贴步骤
+        /// 复制、粘贴步骤内容
         /// </summary>
-        private void CopyOrPasteStep()
+        private void CopyOrPasteStepContent()
         {
             GenericMenu gm = new GenericMenu();
             string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
 
-            if (_currentStep == -1)
+            if (_currentStepIndex == -1)
             {
                 gm.AddDisabledItem(new GUIContent(GetWord("Copy")));
             }
@@ -1949,24 +1951,24 @@ namespace HT.Framework
             {
                 gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentStepObj.Name), false, () =>
                 {
-                    GUIUtility.systemCopyBuffer = string.Format("{0}|{1}", assetPath, _currentStepObj.GUID);
+                    GUIUtility.systemCopyBuffer = string.Format("StepContent|{0}|{1}", assetPath, _currentStepObj.GUID);
                 });
             }
 
             StepContent stepContent = null;
             string[] buffers = GUIUtility.systemCopyBuffer.Split('|');
-            if (buffers.Length == 2)
+            if (buffers.Length == 3 && buffers[0] == "StepContent")
             {
-                if (buffers[0] == assetPath)
+                if (buffers[1] == assetPath)
                 {
-                    stepContent = _contentAsset.Content.Find((s) => { return s.GUID == buffers[1]; });
+                    stepContent = _contentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
                 }
                 else
                 {
-                    StepContentAsset stepContentAsset = AssetDatabase.LoadAssetAtPath<StepContentAsset>(buffers[0]);
+                    StepContentAsset stepContentAsset = AssetDatabase.LoadAssetAtPath<StepContentAsset>(buffers[1]);
                     if (stepContentAsset)
                     {
-                        stepContent = stepContentAsset.Content.Find((s) => { return s.GUID == buffers[1]; });
+                        stepContent = stepContentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
                     }
                 }
             }
@@ -1989,6 +1991,80 @@ namespace HT.Framework
                 });
             }
 
+            gm.ShowAsContext();
+        }
+        /// <summary>
+        /// 复制步骤操作
+        /// </summary>
+        private void CopyStepOperation(GenericMenu gm)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
+
+            if (_currentOperationIndex == -1)
+            {
+                gm.AddDisabledItem(new GUIContent(GetWord("Copy")));
+            }
+            else
+            {
+                gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentOperationObj.Name), false, () =>
+                {
+                    GUIUtility.systemCopyBuffer = string.Format("StepOperation|{0}|{1}|{2}", assetPath, _currentStepObj.GUID, _currentOperationObj.GUID);
+                });
+            }
+
+            gm.AddSeparator("");
+            gm.ShowAsContext();
+        }
+        /// <summary>
+        /// 粘贴步骤操作
+        /// </summary>
+        private void PasteStepOperation(GenericMenu gm, Vector2 position)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
+
+            StepContent content = null;
+            StepOperation operation = null;
+            string[] buffers = GUIUtility.systemCopyBuffer.Split('|');
+            if (buffers.Length == 4 && buffers[0] == "StepOperation")
+            {
+                if (buffers[1] == assetPath)
+                {
+                    content = _contentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
+                    if (content != null)
+                    {
+                        operation = content.Operations.Find((s) => { return s.GUID == buffers[3]; });
+                    }
+                }
+                else
+                {
+                    StepContentAsset stepContentAsset = AssetDatabase.LoadAssetAtPath<StepContentAsset>(buffers[1]);
+                    if (stepContentAsset)
+                    {
+                        content = stepContentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
+                        if (content != null)
+                        {
+                            operation = content.Operations.Find((s) => { return s.GUID == buffers[3]; });
+                        }
+                    }
+                }
+            }
+
+            if (operation == null)
+            {
+                gm.AddDisabledItem(new GUIContent(GetWord("Paste")));
+            }
+            else
+            {
+                gm.AddItem(new GUIContent(GetWord("Paste") + " " + operation.Name), false, () =>
+                {
+                    StepOperation ope = operation.Clone();
+                    ope.Anchor = position - new Vector2(340, 0);
+                    _currentStepObj.Operations.Add(ope);
+                    SelectStepOperation(_currentStepObj.Operations.Count - 1);
+                });
+            }
+
+            gm.AddSeparator("");
             gm.ShowAsContext();
         }
         /// <summary>

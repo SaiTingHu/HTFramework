@@ -380,6 +380,7 @@ namespace HT.Framework
             content.ViewOffset = ViewOffset;
             content.BestPos = BestPos;
             content.InitialMode = InitialMode;
+            content.IsEnable = IsEnable;
             content.Helper = Helper;
             for (int i = 0; i < Parameters.Count; i++)
             {
