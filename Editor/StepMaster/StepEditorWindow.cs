@@ -435,6 +435,8 @@ namespace HT.Framework
             AddWord("播放时间线", "PlayTimeline");
             AddWord("持续的时间", "Duration");
             AddWord("初始的时间", "Initial Time");
+            AddWord("启用所有步骤", "Enable All Steps");
+            AddWord("禁用所有步骤", "Disable All Steps");
         }
         protected override void OnLanguageChanged()
         {
@@ -1213,12 +1215,7 @@ namespace HT.Framework
                     GUI.backgroundColor = Color.yellow;
                     if (GUILayout.Button(GetWord("Clone")))
                     {
-                        StepOperation operationClone = _currentOperationObj.Clone();
-                        operationClone.Anchor = _currentOperationObj.Anchor + new Vector2(StepOperation.Width + 20, 0);
-                        operationClone.Name += _currentStepObj.Operations.Count.ToString();
-                        _currentStepObj.Operations.Add(operationClone);
-                        SelectStepOperation(_currentStepObj.Operations.Count - 1);
-                        GUI.changed = true;
+                        CloneStepOperation(_currentStepObj, _currentOperationObj);
                     }
                     GUI.backgroundColor = Color.red;
                     if (GUILayout.Button(GetWord("Delete")))
@@ -1378,7 +1375,7 @@ namespace HT.Framework
 
                             if (Event.current.button == 1)
                             {
-                                CopyOrPasteStepContent();
+                                StepListRightMenu();
                             }
                         }
                         else if (_splitterRect.Contains(Event.current.mousePosition))
@@ -1841,6 +1838,18 @@ namespace HT.Framework
             gm.ShowAsContext();
         }
         /// <summary>
+        /// 克隆步骤操作
+        /// </summary>
+        private void CloneStepOperation(StepContent content, StepOperation operation)
+        {
+            StepOperation operationClone = operation.Clone();
+            operationClone.Anchor = operation.Anchor + new Vector2(StepOperation.Width + 20, 0);
+            operationClone.Name += content.Operations.Count.ToString();
+            content.Operations.Add(operationClone);
+            SelectStepOperation(content.Operations.Count - 1);
+            GUI.FocusControl(null);
+        }
+        /// <summary>
         /// 删除步骤操作
         /// </summary>
         private void DeleteStepOperation(StepContent content, int operationIndex)
@@ -1936,9 +1945,9 @@ namespace HT.Framework
             return showName;
         }
         /// <summary>
-        /// 复制、粘贴步骤内容
+        /// 步骤列表右键功能菜单
         /// </summary>
-        private void CopyOrPasteStepContent()
+        private void StepListRightMenu()
         {
             GenericMenu gm = new GenericMenu();
             string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
@@ -1990,6 +1999,23 @@ namespace HT.Framework
                     SetStepListScroll(1);
                 });
             }
+
+            gm.AddSeparator("");
+
+            gm.AddItem(new GUIContent(GetWord("Enable All Steps")), false, () =>
+            {
+                for (int i = 0; i < _contentAsset.Content.Count; i++)
+                {
+                    _contentAsset.Content[i].IsEnable = true;
+                }
+            });
+            gm.AddItem(new GUIContent(GetWord("Disable All Steps")), false, () =>
+            {
+                for (int i = 0; i < _contentAsset.Content.Count; i++)
+                {
+                    _contentAsset.Content[i].IsEnable = false;
+                }
+            });
 
             gm.ShowAsContext();
         }

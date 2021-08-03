@@ -19,10 +19,6 @@ namespace HT.Framework
         /// </summary>
         public PointerEventData.InputButton DragButton = PointerEventData.InputButton.Left;
         /// <summary>
-        /// 拖动模式
-        /// </summary>
-        public UIType Mode = UIType.Overlay;
-        /// <summary>
         /// 水平拖动
         /// </summary>
         public bool Horizontal = true;
@@ -55,35 +51,21 @@ namespace HT.Framework
         /// </summary>
         public float Down = 0;
 
-        private Transform _transform;
         private RectTransform _rectTransform;
         private bool _isDrag = false;
         private Vector3 _delta;
-        private HTFAction _draging;
 
         protected override void Awake()
         {
             base.Awake();
 
-            _transform = DragTarget.transform;
             _rectTransform = DragTarget.rectTransform();
-
-            switch (Mode)
-            {
-                case UIType.Overlay:
-                    _draging = OverlayDraging;
-                    break;
-                case UIType.Camera:
-                case UIType.World:
-                    _draging = WorldDraging;
-                    break;
-            }
         }
         private void Update()
         {
             if (_isDrag)
             {
-                _draging();
+                Draging();
             }
         }
 
@@ -107,23 +89,15 @@ namespace HT.Framework
             _isDrag = false;
         }
         
-        private void WorldDraging()
+        private void Draging()
         {
             if (!Horizontal) _delta.x = 0;
             if (!Vertical) _delta.y = 0;
             _rectTransform.anchoredPosition3D += _delta;
             _delta = Vector3.zero;
-            WorldLimitPos();
+            LimitPos();
         }
-        private void OverlayDraging()
-        {
-            if (!Horizontal) _delta.x = 0;
-            if (!Vertical) _delta.y = 0;
-            _transform.position += _delta;
-            _delta = Vector3.zero;
-            OverlayLimitPos();
-        }
-        private void WorldLimitPos()
+        private void LimitPos()
         {
             Vector2 pos = _rectTransform.anchoredPosition;
             if (HorizontalLimit)
@@ -137,21 +111,6 @@ namespace HT.Framework
                 else if (pos.y > Up) pos.y = Up;
             }
             _rectTransform.anchoredPosition = pos;
-        }
-        private void OverlayLimitPos()
-        {
-            Vector2 pos = _transform.position;
-            if (HorizontalLimit)
-            {
-                if (pos.x < Left) pos.x = Left;
-                else if (pos.x > Right) pos.x = Right;
-            }
-            if (VerticalLimit)
-            {
-                if (pos.y < Down) pos.y = Down;
-                else if (pos.y > Up) pos.y = Up;
-            }
-            _transform.position = pos;
         }
     }
 }

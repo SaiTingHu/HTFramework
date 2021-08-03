@@ -97,6 +97,26 @@ namespace HT.Framework
         [SerializeField] internal List<StepWired> Wireds = new List<StepWired>();
 
         /// <summary>
+        /// 获取步骤ID
+        /// </summary>
+        public string GetID
+        {
+            get
+            {
+                return GUID;
+            }
+        }
+        /// <summary>
+        /// 获取步骤执行到进入下一步的时间
+        /// </summary>
+        public float GetElapseTime
+        {
+            get
+            {
+                return ElapseTime;
+            }
+        }
+        /// <summary>
         /// 获取步骤简述名称
         /// </summary>
         public string GetName
@@ -124,6 +144,16 @@ namespace HT.Framework
             get
             {
                 return Ancillary;
+            }
+        }
+        /// <summary>
+        /// 获取步骤目标
+        /// </summary>
+        public GameObject GetTarget
+        {
+            get
+            {
+                return Target;
             }
         }
         /// <summary>
