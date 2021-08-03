@@ -20,6 +20,17 @@ namespace HT.Framework
         [SerializeField] internal int TaskPointIDSign = 1;
         [SerializeField] internal string TaskPointIDName = "TaskPoint";
 
+        /// <summary>
+        /// 获取任务内容
+        /// </summary>
+        public List<TaskContentBase> GetContent
+        {
+            get
+            {
+                return Content;
+            }
+        }
+
 #if UNITY_EDITOR
         /// <summary>
         /// 生成序列化子对象

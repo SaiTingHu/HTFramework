@@ -14,5 +14,16 @@ namespace HT.Framework
         [SerializeField] internal List<StepContent> Content = new List<StepContent>();
         [SerializeField] internal int StepIDSign = 1;
         [SerializeField] internal string StepIDName = "Step";
+
+        /// <summary>
+        /// 获取步骤内容
+        /// </summary>
+        public List<StepContent> GetContent
+        {
+            get
+            {
+                return Content;
+            }
+        }
     }
 }
