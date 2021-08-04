@@ -21,9 +21,13 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal string Name = "";
         /// <summary>
-        /// 任务点详细介绍
+        /// 任务点细节
         /// </summary>
         [SerializeField] internal string Details = "";
+        /// <summary>
+        /// 任务点目标
+        /// </summary>
+        [SerializeField] internal TaskGameObject Target = new TaskGameObject();
         /// <summary>
         /// 任务点面板的锚点
         /// </summary>
@@ -37,6 +41,46 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsExpand = true;
 
+        /// <summary>
+        /// 获取任务点ID
+        /// </summary>
+        public string GetID
+        {
+            get
+            {
+                return GUID;
+            }
+        }
+        /// <summary>
+        /// 获取任务点名称
+        /// </summary>
+        public string GetName
+        {
+            get
+            {
+                return Name;
+            }
+        }
+        /// <summary>
+        /// 获取任务点细节
+        /// </summary>
+        public string GetDetails
+        {
+            get
+            {
+                return Details;
+            }
+        }
+        /// <summary>
+        /// 获取任务点目标
+        /// </summary>
+        public GameObject GetTarget
+        {
+            get
+            {
+                return Target.Entity;
+            }
+        }
         /// <summary>
         /// 是否启用（运行时）
         /// </summary>
@@ -186,7 +230,6 @@ namespace HT.Framework
         private bool _isWiredRight = false;
         private Rect _leftWiredOrigin;
         private Rect _rightWiredOrigin;
-        private int _height = 0;
 
         /// <summary>
         /// 显示名称
@@ -271,27 +314,31 @@ namespace HT.Framework
             }
 
             GUILayout.BeginArea(Anchor, ShowName, "Window");
-            
+
             GUI.backgroundColor = Color.white;
 
-            _height = 25;
+            int height = 25;
 
-            _height += OnDependGUI(getWord);
+            height += OnDependGUI(getWord);
 
             if (IsExpand)
             {
-                _height += OnToolbarGUI(asset, content);
+                height += OnToolbarGUI(asset, content);
 
-                _height += OnBaseGUI(getWord);
+                height += OnBaseGUI(getWord);
 
-                _height += OnPropertyGUI();
+                height += OnPropertyGUI();
             }
             else
             {
-                _height += OnCollapseGUI(getWord);
+                height += OnCollapseGUI(getWord);
             }
 
-            Anchor.height = _height;
+            if ((int)Anchor.height != height)
+            {
+                Anchor.height = height;
+                GUI.changed = true;
+            }
 
             GUILayout.EndArea();
 
@@ -306,7 +353,7 @@ namespace HT.Framework
             }
 
             gUIContent.image = EditorGUIUtility.IconContent("LookDevPaneOption").image;
-            gUIContent.tooltip = "Expand";
+            gUIContent.tooltip = IsExpand ? "Expand" : "Collapse";
             if (GUI.Button(new Rect(Anchor.x + Anchor.width - 25, Anchor.y, 20, 20), gUIContent, "InvisibleButton"))
             {
                 IsExpand = !IsExpand;
@@ -430,7 +477,11 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
             
             height += 20;
-            
+
+            TaskGameObject.DrawField(Target, getWord("Target") + ":", 50, Anchor.width, getWord("Copy"), getWord("Paste"));
+
+            height += 20;
+
             return height;
         }
         /// <summary>

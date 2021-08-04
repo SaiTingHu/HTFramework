@@ -32,15 +32,15 @@ namespace HT.Framework
         {
             get
             {
-                TaskTarget taskTarget = Main.m_TaskMaster.GetTarget(GUID);
-                if (taskTarget != null)
+                if (AgentEntity == null)
                 {
-                    return taskTarget.gameObject;
+                    if (Main.m_TaskMaster)
+                    {
+                        TaskTarget taskTarget = Main.m_TaskMaster.GetTarget(GUID);
+                        AgentEntity = taskTarget != null ? taskTarget.gameObject : null;
+                    }
                 }
-                else
-                {
-                    return null;
-                }
+                return AgentEntity;
             }
         }
 

@@ -101,7 +101,7 @@ namespace HT.Framework
             if (_pages.ContainsKey(pageName))
                 return;
 
-            _pages.Add(pageName, new Page(CurrentHost, pageName, pageIcon, onPaint));
+            _pages.Add(pageName, new Page(CurrentHost, pageName, pageIcon, onPaint, pageName == CurrentPage));
             _pagesOrder.Add(pageName);
         }
         /// <summary>
@@ -151,14 +151,14 @@ namespace HT.Framework
             /// </summary>
             public HTFAction OnPaint { get; private set; }
             
-            public Page(Editor host, string name, Texture icon, HTFAction onPaint)
+            public Page(Editor host, string name, Texture icon, HTFAction onPaint, bool expanded)
             {
                 Host = host;
                 Name = name;
                 Content = new GUIContent();
                 Content.image = icon;
                 Content.text = name;
-                Expanded = new AnimBool(false, new UnityAction(Host.Repaint));
+                Expanded = new AnimBool(expanded, new UnityAction(Host.Repaint));
                 OnPaint = onPaint;
             }
         }

@@ -26,7 +26,7 @@ namespace HT.Framework
         /// <summary>
         /// 任务目标
         /// </summary>
-        public TaskGameObject Target = new TaskGameObject();
+        [SerializeField] internal TaskGameObject Target = new TaskGameObject();
         /// <summary>
         /// 所有任务点
         /// </summary>
@@ -36,6 +36,56 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal List<TaskDepend> Depends = new List<TaskDepend>();
 
+        /// <summary>
+        /// 获取任务ID
+        /// </summary>
+        public string GetID
+        {
+            get
+            {
+                return GUID;
+            }
+        }
+        /// <summary>
+        /// 获取任务名称
+        /// </summary>
+        public string GetName
+        {
+            get
+            {
+                return Name;
+            }
+        }
+        /// <summary>
+        /// 获取任务细节
+        /// </summary>
+        public string GetDetails
+        {
+            get
+            {
+                return Details;
+            }
+        }
+        /// <summary>
+        /// 获取任务目标
+        /// </summary>
+        public GameObject GetTarget
+        {
+            get
+            {
+                return Target.Entity;
+            }
+        }
+        /// <summary>
+        /// 获取所有任务点
+        /// </summary>
+        public List<TaskPointBase> GetPoints
+        {
+            get
+            {
+                return Points;
+            }
+        }
         /// <summary>
         /// 是否完成
         /// </summary>
@@ -184,11 +234,17 @@ namespace HT.Framework
 
             GUILayout.Space(5);
 
-            _height = 20;
+            int height = 20;
 
-            _height += OnBaseGUI(getWord);
+            height += OnBaseGUI(getWord);
 
-            _height += OnPropertyGUI();
+            height += OnPropertyGUI();
+
+            if (_height != height)
+            {
+                _height = height;
+                GUI.changed = true;
+            }
 
             GUILayout.EndVertical();
         }
