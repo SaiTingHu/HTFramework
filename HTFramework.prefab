@@ -1430,7 +1430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HelperType: HT.Framework.DefaultControllerHelper
-  DefaultControlMode: 0
+  DefaultMode: 0
   DefaultEase: 1
   DefaultAutoPlay: 3
   IsAutoKill: 1
@@ -2083,6 +2083,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HelperType: <None>
   ContentAsset: {fileID: 0}
+  GuideHighlighting: 1
   IsAutoChange: 1
 --- !u!1 &8775430792589470182
 GameObject:
