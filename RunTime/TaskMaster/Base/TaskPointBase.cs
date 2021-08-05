@@ -225,6 +225,7 @@ namespace HT.Framework
         }
 
 #if UNITY_EDITOR
+        protected int _width = 200;
         private string _showName = null;
         private bool _isWired = false;
         private bool _isWiredRight = false;
@@ -334,6 +335,7 @@ namespace HT.Framework
                 height += OnCollapseGUI(getWord);
             }
 
+            Anchor.width = _width;
             if ((int)Anchor.height != height)
             {
                 Anchor.height = height;

@@ -475,18 +475,13 @@ namespace HT.Framework
                     {
                         if (Event.current.type == EventType.Repaint)
                         {
+                            GUI.backgroundColor = _contentAsset.Content[index].IsComplete ? Color.green : Color.white;
                             GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
                             gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
                             rect.x += 2;
                             rect.width -= 6;
                             gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
-
-                            if (_contentAsset.Content[index].IsComplete)
-                            {
-                                GUI.backgroundColor = Color.green;
-                                GUI.Box(rect, "");
-                                GUI.backgroundColor = Color.white;
-                            }
+                            GUI.backgroundColor = Color.white;
                         }
                     }
                 };
@@ -504,7 +499,7 @@ namespace HT.Framework
         {
             TaskPointAttribute attribute = type.GetCustomAttribute<TaskPointAttribute>();
             TaskPointBase taskPoint = CreateInstance(type) as TaskPointBase;
-            taskPoint.Anchor = new Rect(position.x, position.y, 200, 85);
+            taskPoint.Anchor = new Rect(position.x, position.y, 0, 0);
             taskPoint.GUID = _contentAsset.TaskPointIDName + _contentAsset.TaskPointIDSign.ToString();
             taskPoint.Name = (attribute != null ? attribute.GetLastName() : "New Task Point ") + _contentAsset.TaskPointIDSign.ToString();
             _contentAsset.TaskPointIDSign += 1;
@@ -517,7 +512,12 @@ namespace HT.Framework
         /// </summary>
         private void FindPoint(TaskPointBase taskPoint)
         {
-            taskPoint.Anchor.position = new Vector2(position.width / 2 - 150, position.height / 2 - 150);
+            Vector2 target = new Vector2(position.width * 0.5f - taskPoint.Anchor.width * 0.5f, position.height * 0.5f - taskPoint.Anchor.height * 0.5f);
+            Vector2 detail = target - taskPoint.Anchor.position;
+            for (int i = 0; i < _currentContent.Points.Count; i++)
+            {
+                _currentContent.Points[i].Anchor.position += detail;
+            }
         }
         /// <summary>
         /// 新建任务点脚本

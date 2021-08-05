@@ -31,6 +31,12 @@ public class #SCRIPTNAME# : TaskContentBase
     {
         int height = base.OnPropertyGUI();
 
+		GUILayout.BeginHorizontal();
+        GUILayout.Label("[新建任务内容]");
+        GUILayout.EndHorizontal();
+
+        height += 20;
+
         return height;
     }
 #endif

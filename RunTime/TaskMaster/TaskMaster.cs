@@ -14,6 +14,10 @@ namespace HT.Framework
         /// </summary>
         public TaskContentAsset ContentAsset;
         /// <summary>
+        /// 指引目标的高亮方式
+        /// </summary>
+        [SerializeField] internal MouseRay.HighlightingType GuideHighlighting = MouseRay.HighlightingType.Flash;
+        /// <summary>
         /// 是否是自动切换状态，当完成当前任务内容时，自动根据列表顺序切换到下一个任务内容【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal bool IsAutoChange = true;
@@ -100,7 +104,23 @@ namespace HT.Framework
             _taskContents.Clear();
             _taskPoints.Clear();
         }
-        
+
+        /// <summary>
+        /// 根据任务点ID获取任务点的启用标记
+        /// </summary>
+        /// <param name="stepID">任务点ID</param>
+        /// <returns>是否启用</returns>
+        public bool TaskPointIsEnable(string pointID)
+        {
+            if (_taskPoints.ContainsKey(pointID))
+            {
+                return _taskPoints[pointID].IsEnable && _taskPoints[pointID].IsEnableRunTime;
+            }
+            else
+            {
+                return false;
+            }
+        }
         /// <summary>
         /// 通过ID获取任务目标
         /// </summary>

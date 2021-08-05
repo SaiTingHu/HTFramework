@@ -43,6 +43,12 @@ public class #SCRIPTNAME# : TaskPointBase
     {
         int height = base.OnPropertyGUI();
 
+		GUILayout.BeginHorizontal();
+        GUILayout.Label("[新建任务点]");
+        GUILayout.EndHorizontal();
+
+		height += 20;
+
         return height;
     }
 #endif

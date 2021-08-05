@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 步骤操作的目标
+    /// 步骤的目标
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class StepTarget : HTBehaviour
@@ -42,7 +42,7 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 步骤操作目标的状态
+    /// 步骤目标的状态
     /// </summary>
     public enum StepTargetState
     {

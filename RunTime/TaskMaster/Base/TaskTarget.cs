@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 任务游戏物体目标
+    /// 任务的目标
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class TaskTarget : HTBehaviour
@@ -12,5 +12,24 @@ namespace HT.Framework
         /// 任务目标ID
         /// </summary>
         public string GUID = "<None>";
+        /// <summary>
+        /// 任务目标状态
+        /// </summary>
+        public TaskTargetState State = TaskTargetState.Normal;
+    }
+
+    /// <summary>
+    /// 任务目标的状态
+    /// </summary>
+    public enum TaskTargetState
+    {
+        /// <summary>
+        /// 常态
+        /// </summary>
+        Normal,
+        /// <summary>
+        /// 已完成
+        /// </summary>
+        Done
     }
 }

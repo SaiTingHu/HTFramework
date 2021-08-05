@@ -26,6 +26,10 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            EnumPopup(Target.GuideHighlighting, out Target.GuideHighlighting, "Guide Highlighting");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             Toggle(Target.IsAutoChange, out Target.IsAutoChange, "Auto Change");
             GUILayout.EndHorizontal();
         }

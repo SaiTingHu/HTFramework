@@ -196,10 +196,6 @@ namespace HT.Framework
             {
                 return true;
             }
-            else if (Manager.FreeControlBounds.Count == 1)
-            {
-                return Manager.FreeControlBounds[0].Contains(position);
-            }
             else
             {
                 for (int i = 0; i < Manager.FreeControlBounds.Count; i++)

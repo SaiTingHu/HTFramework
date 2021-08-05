@@ -36,6 +36,10 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             TextField(Target.GUID, out Target.GUID, "GUID");
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            EnumPopup(Target.State, out Target.State, "State");
+            GUILayout.EndHorizontal();
         }
         private void GenerateGUID()
         {
