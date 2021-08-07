@@ -26,25 +26,13 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal List<string> States = new List<string>();
         /// <summary>
-        /// 当前激活的所有状态名称【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal List<string> StateNames = new List<string>();
-        /// <summary>
         /// 当前初始状态类名【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal string DefaultState = "";
-        /// <summary>
-        /// 当前初始状态名称【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal string DefaultStateName = "";
+        [SerializeField] internal string DefaultState = null;
         /// <summary>
         /// 当前最终状态类名【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal string FinalState = "";
-        /// <summary>
-        /// 当前最终状态名称【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal string FinalStateName = "";
+        [SerializeField] internal string FinalState = null;
         /// <summary>
         /// 有限状态机名称
         /// </summary>

@@ -17,7 +17,7 @@ namespace HT.Framework
         /// <summary>
         /// 当前的默认流程类名【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal string DefaultProcedure = "";
+        [SerializeField] internal string DefaultProcedure = null;
 
         /// <summary>
         /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
