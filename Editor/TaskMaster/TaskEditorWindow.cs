@@ -35,6 +35,7 @@ namespace HT.Framework
         private bool _isShowContent = true;
         private bool _isShowProperty = true;
         private bool _isShowPoint = true;
+        private bool _isLockID = true;
         private Vector2 _contentScroll;
         private int _contentGUIWidth = 250;
         private bool _isBreakDepend = false;
@@ -115,6 +116,15 @@ namespace HT.Framework
                     ReSet();
                 }
             }
+            if (GUILayout.Button(GetWord("Setting"), EditorStyles.toolbarPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent(GetWord("Lock ID")), _isLockID, () =>
+                {
+                    _isLockID = !_isLockID;
+                });
+                gm.ShowAsContext();
+            }
         }
         protected override void OnBodyGUI()
         {
@@ -150,6 +160,8 @@ namespace HT.Framework
             AddWord("添加任务点", "Add Task Point");
             AddWord("查找任务点", "Find Task Point");
             AddWord("任务内容属性", "Task Content Property");
+            AddWord("设置", "Setting");
+            AddWord("锁定身份号", "Lock ID");
             AddWord("身份号", "ID");
             AddWord("名称", "Name");
             AddWord("细节", "Details");
@@ -193,7 +205,7 @@ namespace HT.Framework
             {
                 if (_currentContent != null)
                 {
-                    _currentContent.OnEditorGUI(_contentAsset, _getWord);
+                    _currentContent.OnEditorGUI(_contentAsset, _getWord, _isLockID);
                 }
                 else
                 {
@@ -215,7 +227,7 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < _currentContent.Points.Count; i++)
                     {
-                        _currentContent.Points[i].OnEditorGUI(_contentAsset, _currentContent, _getWord);
+                        _currentContent.Points[i].OnEditorGUI(_contentAsset, _currentContent, _getWord, _isLockID);
                     }
                 }
             }

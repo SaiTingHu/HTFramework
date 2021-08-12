@@ -120,6 +120,7 @@ namespace HT.Framework
         private bool _isShowAncillary = true;
         private bool _isShowTrigger = false;
         private bool _isShowHelper = false;
+        private bool _isLockID = true;
         private GUIContent _stepGC;
         private GUIContent _enableGC;
         private GUIContent _disableGC;
@@ -285,6 +286,10 @@ namespace HT.Framework
             if (GUILayout.Button(GetWord("Setting"), EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent(GetWord("Lock ID")), _isLockID, () =>
+                {
+                    _isLockID = !_isLockID;
+                });
                 string content = string.Format("{0}/{1}", GetWord("Preview"), GetWord("Stop Preview Current Step"));
                 gm.AddItem(new GUIContent(content), false, () =>
                 {
@@ -336,6 +341,7 @@ namespace HT.Framework
             AddWord("摄像机控制组件", "Camera Control");
             AddWord("步骤操作的属性", "Step Operation Properties");
             AddWord("设置", "Setting");
+            AddWord("锁定身份号", "Lock ID");
             AddWord("最小化", "Minimize");
             AddWord("风格", "Style");
             AddWord("步骤内容列表 [背景]", "StepContentList [BG]");
@@ -694,7 +700,9 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(50));
+                    GUI.enabled = !_isLockID;
                     _currentStepObj.GUID = EditorGUILayout.TextField(_currentStepObj.GUID, GUILayout.Width(130));
+                    GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -1066,7 +1074,9 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(50));
+                    GUI.enabled = !_isLockID;
                     _currentOperationObj.GUID = EditorGUILayout.TextField(_currentOperationObj.GUID, GUILayout.Width(130));
+                    GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();

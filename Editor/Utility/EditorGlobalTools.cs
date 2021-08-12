@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -264,8 +263,8 @@ namespace HT.Framework
         private static void OpenInstallationPath()
         {
             string path = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/"));
-            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
-            System.Diagnostics.Process.Start(psi);
+            ProcessStartInfo psi = new ProcessStartInfo(path);
+            Process.Start(psi);
         }
 
         /// <summary>
@@ -275,8 +274,8 @@ namespace HT.Framework
         private static void OpenDataPathFolder()
         {
             string path = Application.dataPath;
-            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
-            System.Diagnostics.Process.Start(psi);
+            ProcessStartInfo psi = new ProcessStartInfo(path);
+            Process.Start(psi);
         }
 
         /// <summary>
@@ -291,8 +290,8 @@ namespace HT.Framework
                 Directory.CreateDirectory(path);
                 AssetDatabase.Refresh();
             }
-            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
-            System.Diagnostics.Process.Start(psi);
+            ProcessStartInfo psi = new ProcessStartInfo(path);
+            Process.Start(psi);
         }
 
         /// <summary>
@@ -306,8 +305,8 @@ namespace HT.Framework
             {
                 Directory.CreateDirectory(path);
             }
-            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo(path);
-            System.Diagnostics.Process.Start(psi);
+            ProcessStartInfo psi = new ProcessStartInfo(path);
+            Process.Start(psi);
         }
         #endregion
 

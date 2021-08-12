@@ -224,7 +224,7 @@ namespace HT.Framework
         /// <summary>
         /// 绘制编辑器GUI
         /// </summary>
-        internal void OnEditorGUI(TaskContentAsset asset, HTFFunc<string, string> getWord)
+        internal void OnEditorGUI(TaskContentAsset asset, HTFFunc<string, string> getWord, bool isLockID)
         {
             GUILayout.BeginVertical("ChannelStripBg", GUILayout.Width(_width), GUILayout.Height(_height));
 
@@ -236,7 +236,7 @@ namespace HT.Framework
 
             int height = 20;
 
-            height += OnBaseGUI(getWord);
+            height += OnBaseGUI(getWord, isLockID);
 
             height += OnPropertyGUI();
 
@@ -252,13 +252,15 @@ namespace HT.Framework
         /// 绘制基础属性
         /// </summary>
         /// <returns>绘制高度</returns>
-        private int OnBaseGUI(HTFFunc<string, string> getWord)
+        private int OnBaseGUI(HTFFunc<string, string> getWord, bool isLockID)
         {
             int height = 0;
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("ID") + ":", GUILayout.Width(50));
+            GUI.enabled = !isLockID;
             GUID = EditorGUILayout.TextField(GUID);
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             height += 20;
