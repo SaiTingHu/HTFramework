@@ -1445,6 +1445,7 @@ namespace HT.Framework
                             {
                                 GenericMenu gm = new GenericMenu();
                                 CopyStepOperation(gm);
+                                gm.AddSeparator("");
                                 StringToolkit.BeginNoRepeatNaming();
                                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                                 {
@@ -1815,6 +1816,7 @@ namespace HT.Framework
         {
             GenericMenu gm = new GenericMenu();
             PasteStepOperation(gm, position);
+            gm.AddSeparator("");
             foreach (StepOperationType type in Enum.GetValues(typeof(StepOperationType)))
             {
                 gm.AddItem(new GUIContent(GetWord("Add Step Operation") + "/" + GetWord(type.ToString())), false, () =>
@@ -2047,9 +2049,6 @@ namespace HT.Framework
                     GUIUtility.systemCopyBuffer = string.Format("StepOperation|{0}|{1}|{2}", assetPath, _currentStepObj.GUID, _currentOperationObj.GUID);
                 });
             }
-
-            gm.AddSeparator("");
-            gm.ShowAsContext();
         }
         /// <summary>
         /// 粘贴步骤操作
@@ -2099,9 +2098,6 @@ namespace HT.Framework
                     SelectStepOperation(_currentStepObj.Operations.Count - 1);
                 });
             }
-
-            gm.AddSeparator("");
-            gm.ShowAsContext();
         }
         /// <summary>
         /// 最小化窗口

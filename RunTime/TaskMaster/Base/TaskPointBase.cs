@@ -290,12 +290,21 @@ namespace HT.Framework
         /// <summary>
         /// 是否选中（在编辑器中）
         /// </summary>
-        protected bool IsSelected { get; private set; } = false;
+        public bool IsSelected { get; private set; } = false;
         /// <summary>
         /// 是否拖拽中（在编辑器中）
         /// </summary>
-        protected bool IsDraging { get; private set; } = false;
+        public bool IsDraging { get; private set; } = false;
 
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        public virtual TaskPointBase Clone()
+        {
+            TaskPointBase taskPoint = Main.Clone(this);
+            taskPoint.Target = Target.Clone();
+            return taskPoint;
+        }
         /// <summary>
         /// 绘制编辑器GUI
         /// </summary>

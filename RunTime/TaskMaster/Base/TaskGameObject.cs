@@ -157,6 +157,17 @@ namespace HT.Framework
 
             GUILayout.EndHorizontal();
         }
+
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        public TaskGameObject Clone()
+        {
+            TaskGameObject gameObject = new TaskGameObject();
+            gameObject.GUID = GUID;
+            gameObject.Path = Path;
+            return gameObject;
+        }
 #endif
     }
 }

@@ -157,6 +157,7 @@ namespace HT.Framework
             AddWord("任务内容列表", "Task Content List");
             AddWord("<新建任务内容脚本>", "<New Task Content Script>");
             AddWord("<新建任务点脚本>", "<New Task Point Script>");
+            AddWord("添加任务内容", "Add Task Content");
             AddWord("添加任务点", "Add Task Point");
             AddWord("查找任务点", "Find Task Point");
             AddWord("任务内容属性", "Task Content Property");
@@ -174,6 +175,7 @@ namespace HT.Framework
             AddWord("删除任务点", "Delete Point");
             AddWord("复制", "Copy");
             AddWord("粘贴", "Paste");
+            AddWord("克隆", "Clone");
         }
 
         /// <summary>
@@ -269,7 +271,7 @@ namespace HT.Framework
         {
             if (_currentContent != null && Event.current != null)
             {
-                Vector2 mousePosition = Event.current.mousePosition;
+                Vector2 pos = Event.current.mousePosition;
 
                 switch (Event.current.type)
                 {
@@ -282,9 +284,12 @@ namespace HT.Framework
                                 NewTaskPointScript();
                             });
                             gm.AddSeparator("");
+                            CopyTaskPoint(gm);
+                            PasteTaskPoint(gm, pos);
+                            gm.AddSeparator("");
                             gm.AddItem(new GUIContent(GetWord("Add Task Point") + "/默认"), false, () =>
                             {
-                                AddPoint(typeof(TaskPointDefault), mousePosition);
+                                AddPoint(_currentContent, typeof(TaskPointDefault), pos);
                             });
                             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                             {
@@ -301,7 +306,7 @@ namespace HT.Framework
                                 }
                                 gm.AddItem(new GUIContent(GetWord("Add Task Point") + "/" + pointName), false, () =>
                                 {
-                                    AddPoint(type, mousePosition);
+                                    AddPoint(_currentContent, type, pos);
                                 });
                             }
                             StringToolkit.BeginNoRepeatNaming();
@@ -372,6 +377,25 @@ namespace HT.Framework
             TaskContentAsset.GenerateSerializeSubObject(taskContent, _contentAsset);
         }
         /// <summary>
+        /// 克隆任务内容
+        /// </summary>
+        private void CloneContent(TaskContentBase content)
+        {
+            TaskContentBase taskContent = content.Clone();
+            taskContent.Points.Clear();
+            for (int i = 0; i < content.Points.Count; i++)
+            {
+                ClonePoint(taskContent, content.Points[i], content.Points[i].Anchor.position);
+            }
+            taskContent.GUID = _contentAsset.TaskIDName + _contentAsset.TaskIDSign.ToString();
+            _contentAsset.TaskIDSign += 1;
+            _contentAsset.Content.Add(taskContent);
+            _taskContentList.index = _contentAsset.Content.Count - 1;
+            _currentContent = taskContent;
+
+            TaskContentAsset.GenerateSerializeSubObject(taskContent, _contentAsset);
+        }
+        /// <summary>
         /// 删除任务内容
         /// </summary>
         private void DeleteContent(int taskIndex)
@@ -388,6 +412,73 @@ namespace HT.Framework
             _taskContentList.index = -1;
             _currentContent = null;
             HasChanged(_contentAsset);
+        }
+        /// <summary>
+        /// 复制任务内容
+        /// </summary>
+        private void CopyTaskContent(GenericMenu gm)
+        {
+            if (_currentContent == null)
+            {
+                gm.AddDisabledItem(new GUIContent(GetWord("Copy")));
+            }
+            else
+            {
+                string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
+                gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentContent.Name), false, () =>
+                {
+                    GUIUtility.systemCopyBuffer = string.Format("TaskContent|{0}|{1}", assetPath, _currentContent.GUID);
+                });
+            }
+        }
+        /// <summary>
+        /// 粘贴、克隆任务内容
+        /// </summary>
+        private void PasteCloneTaskContent(GenericMenu gm)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
+
+            TaskContentBase content = null;
+            string[] buffers = GUIUtility.systemCopyBuffer.Split('|');
+            if (buffers.Length == 3 && buffers[0] == "TaskContent")
+            {
+                if (buffers[1] == assetPath)
+                {
+                    content = _contentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
+                }
+                else
+                {
+                    TaskContentAsset taskContentAsset = AssetDatabase.LoadAssetAtPath<TaskContentAsset>(buffers[1]);
+                    if (taskContentAsset)
+                    {
+                        content = taskContentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
+                    }
+                }
+            }
+
+            if (content == null)
+            {
+                gm.AddDisabledItem(new GUIContent(GetWord("Paste")));
+            }
+            else
+            {
+                gm.AddItem(new GUIContent(GetWord("Paste") + " " + content.Name), false, () =>
+                {
+                    CloneContent(content);
+                });
+            }
+
+            if (_currentContent == null)
+            {
+                gm.AddDisabledItem(new GUIContent(GetWord("Clone")));
+            }
+            else
+            {
+                gm.AddItem(new GUIContent(GetWord("Clone")), false, () =>
+                {
+                    CloneContent(_currentContent);
+                });
+            }
         }
         /// <summary>
         /// 新建任务内容脚本
@@ -419,7 +510,10 @@ namespace HT.Framework
                             NewTaskContentScript();
                         });
                         gm.AddSeparator("");
-                        gm.AddItem(new GUIContent("默认"), false, () =>
+                        CopyTaskContent(gm);
+                        PasteCloneTaskContent(gm);
+                        gm.AddSeparator("");
+                        gm.AddItem(new GUIContent(GetWord("Add Task Content") + "/默认"), false, () =>
                         {
                             AddContent(typeof(TaskContentDefault));
                         });
@@ -436,7 +530,7 @@ namespace HT.Framework
                             {
                                 contentName = attribute.Name;
                             }
-                            gm.AddItem(new GUIContent(contentName), false, () =>
+                            gm.AddItem(new GUIContent(GetWord("Add Task Content") + "/" + contentName), false, () =>
                             {
                                 AddContent(type);
                             });
@@ -507,15 +601,28 @@ namespace HT.Framework
         /// <summary>
         /// 新增任务点
         /// </summary>
-        private void AddPoint(Type type, Vector2 position)
+        private void AddPoint(TaskContentBase content, Type type, Vector2 pos)
         {
             TaskPointAttribute attribute = type.GetCustomAttribute<TaskPointAttribute>();
             TaskPointBase taskPoint = CreateInstance(type) as TaskPointBase;
-            taskPoint.Anchor = new Rect(position.x, position.y, 0, 0);
+            taskPoint.Anchor = new Rect(pos.x, pos.y, 0, 0);
             taskPoint.GUID = _contentAsset.TaskPointIDName + _contentAsset.TaskPointIDSign.ToString();
             taskPoint.Name = (attribute != null ? attribute.GetLastName() : "New Task Point ") + _contentAsset.TaskPointIDSign.ToString();
             _contentAsset.TaskPointIDSign += 1;
-            _currentContent.Points.Add(taskPoint);
+            content.Points.Add(taskPoint);
+
+            TaskContentAsset.GenerateSerializeSubObject(taskPoint, _contentAsset);
+        }
+        /// <summary>
+        /// 克隆任务点
+        /// </summary>
+        private void ClonePoint(TaskContentBase content, TaskPointBase point, Vector2 pos)
+        {
+            TaskPointBase taskPoint = point.Clone();
+            taskPoint.Anchor = new Rect(pos.x, pos.y, 0, 0);
+            taskPoint.GUID = _contentAsset.TaskPointIDName + _contentAsset.TaskPointIDSign.ToString();
+            _contentAsset.TaskPointIDSign += 1;
+            content.Points.Add(taskPoint);
 
             TaskContentAsset.GenerateSerializeSubObject(taskPoint, _contentAsset);
         }
@@ -529,6 +636,77 @@ namespace HT.Framework
             for (int i = 0; i < _currentContent.Points.Count; i++)
             {
                 _currentContent.Points[i].Anchor.position += detail;
+            }
+        }
+        /// <summary>
+        /// 复制任务点
+        /// </summary>
+        private void CopyTaskPoint(GenericMenu gm)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
+            int number = 0;
+            for (int i = 0; i < _currentContent.Points.Count; i++)
+            {
+                TaskPointBase taskPoint = _currentContent.Points[i];
+                if (taskPoint.IsSelected)
+                {
+                    number += 1;
+                    gm.AddItem(new GUIContent(GetWord("Copy") + " " + taskPoint.Name), false, () =>
+                    {
+                        GUIUtility.systemCopyBuffer = string.Format("TaskPoint|{0}|{1}|{2}", assetPath, _currentContent.GUID, taskPoint.GUID);
+                    });
+                }
+            }
+
+            if (number == 0)
+            {
+                gm.AddDisabledItem(new GUIContent(GetWord("Copy")));
+            }
+        }
+        /// <summary>
+        /// 粘贴任务点
+        /// </summary>
+        private void PasteTaskPoint(GenericMenu gm, Vector2 pos)
+        {
+            string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
+            
+            TaskContentBase content = null;
+            TaskPointBase point = null;
+            string[] buffers = GUIUtility.systemCopyBuffer.Split('|');
+            if (buffers.Length == 4 && buffers[0] == "TaskPoint")
+            {
+                if (buffers[1] == assetPath)
+                {
+                    content = _contentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
+                    if (content)
+                    {
+                        point = content.Points.Find((s) => { return s.GUID == buffers[3]; });
+                    }
+                }
+                else
+                {
+                    TaskContentAsset taskContentAsset = AssetDatabase.LoadAssetAtPath<TaskContentAsset>(buffers[1]);
+                    if (taskContentAsset)
+                    {
+                        content = taskContentAsset.Content.Find((s) => { return s.GUID == buffers[2]; });
+                        if (content)
+                        {
+                            point = content.Points.Find((s) => { return s.GUID == buffers[3]; });
+                        }
+                    }
+                }
+            }
+
+            if (point == null)
+            {
+                gm.AddDisabledItem(new GUIContent(GetWord("Paste")));
+            }
+            else
+            {
+                gm.AddItem(new GUIContent(GetWord("Paste") + " " + point.Name), false, () =>
+                {
+                    ClonePoint(_currentContent, point, pos);
+                });
             }
         }
         /// <summary>

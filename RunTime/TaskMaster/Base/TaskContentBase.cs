@@ -222,6 +222,20 @@ namespace HT.Framework
         private int _height = 0;
 
         /// <summary>
+        /// 克隆
+        /// </summary>
+        public virtual TaskContentBase Clone()
+        {
+            TaskContentBase taskContent = Main.Clone(this);
+            taskContent.Target = Target.Clone();
+            taskContent.Depends.Clear();
+            for (int i = 0; i < Depends.Count; i++)
+            {
+                taskContent.Depends.Add(Depends[i].Clone());
+            }
+            return taskContent;
+        }
+        /// <summary>
         /// 绘制编辑器GUI
         /// </summary>
         internal void OnEditorGUI(TaskContentAsset asset, HTFFunc<string, string> getWord, bool isLockID)

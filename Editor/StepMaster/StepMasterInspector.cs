@@ -12,7 +12,6 @@ namespace HT.Framework
     internal sealed class StepMasterInspector : InternalModuleInspector<StepMaster, IStepMasterHelper>
     {
         private Dictionary<string, StepContent> _stepContentIDs;
-        private Dictionary<string, bool> _stepContentEnables;
         private Dictionary<string, string> _customOrder;
 
         protected override string Intro
@@ -28,7 +27,6 @@ namespace HT.Framework
             base.OnRuntimeEnable();
 
             _stepContentIDs = Target.GetType().GetField("_stepContentIDs", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, StepContent>;
-            _stepContentEnables = Target.GetType().GetField("_stepContentEnables", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, bool>;
             _customOrder = Target.GetType().GetField("_customOrder", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Target) as Dictionary<string, string>;
         }
         protected override void OnInspectorDefaultGUI()
@@ -95,13 +93,13 @@ namespace HT.Framework
                 GUILayout.Label("Disabled Steps: ");
                 GUILayout.EndHorizontal();
 
-                foreach (var step in _stepContentEnables)
+                foreach (var step in _stepContentIDs)
                 {
-                    if (!step.Value)
+                    if (!step.Value.IsEnable || !step.Value.IsEnableRunTime)
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
-                        GUILayout.Label(_stepContentIDs[step.Key].Name);
+                        GUILayout.Label(step.Value.Name);
                         GUILayout.EndHorizontal();
                     }
                 }
