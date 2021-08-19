@@ -18,6 +18,22 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal MouseRay.HighlightingType GuideHighlighting = MouseRay.HighlightingType.Flash;
         /// <summary>
+        /// 默认高亮颜色
+        /// </summary>
+        [SerializeField] internal Color NormalColor = Color.cyan;
+        /// <summary>
+        /// 闪光高亮颜色1
+        /// </summary>
+        [SerializeField] internal Color FlashColor1 = Color.red;
+        /// <summary>
+        /// 闪光高亮颜色2
+        /// </summary>
+        [SerializeField] internal Color FlashColor2 = Color.white;
+        /// <summary>
+        /// 轮廓发光强度
+        /// </summary>
+        [SerializeField] internal float OutlineIntensity = 1;
+        /// <summary>
         /// 是否是自动切换状态，当完成当前任务内容时，自动根据列表顺序切换到下一个任务内容【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal bool IsAutoChange = true;

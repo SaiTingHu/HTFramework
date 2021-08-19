@@ -96,13 +96,13 @@ namespace HT.Framework
                 switch (Main.m_StepMaster.GuideHighlighting)
                 {
                     case MouseRay.HighlightingType.Normal:
-                        Target.gameObject.OpenHighLight();
+                        Target.gameObject.OpenHighLight(Main.m_StepMaster.NormalColor);
                         break;
                     case MouseRay.HighlightingType.Flash:
-                        Target.gameObject.OpenFlashHighLight();
+                        Target.gameObject.OpenFlashHighLight(Main.m_StepMaster.FlashColor1, Main.m_StepMaster.FlashColor2);
                         break;
                     case MouseRay.HighlightingType.Outline:
-                        Target.gameObject.OpenMeshOutline();
+                        Target.gameObject.OpenMeshOutline(Main.m_StepMaster.NormalColor, Main.m_StepMaster.OutlineIntensity);
                         break;
                 }
             }

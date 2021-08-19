@@ -21,6 +21,22 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal MouseRay.HighlightingType GuideHighlighting = MouseRay.HighlightingType.Flash;
         /// <summary>
+        /// 默认高亮颜色
+        /// </summary>
+        [SerializeField] internal Color NormalColor = Color.cyan;
+        /// <summary>
+        /// 闪光高亮颜色1
+        /// </summary>
+        [SerializeField] internal Color FlashColor1 = Color.red;
+        /// <summary>
+        /// 闪光高亮颜色2
+        /// </summary>
+        [SerializeField] internal Color FlashColor2 = Color.white;
+        /// <summary>
+        /// 轮廓发光强度
+        /// </summary>
+        [SerializeField] internal float OutlineIntensity = 1;
+        /// <summary>
         /// 步骤开始事件【任何一个步骤开始后触发，连续跳过步骤时不会触发】
         /// </summary>
         public event HTFAction<StepContent, bool> BeginStepEvent;
@@ -729,13 +745,13 @@ namespace HT.Framework
                         switch (GuideHighlighting)
                         {
                             case MouseRay.HighlightingType.Normal:
-                                target.OpenHighLight();
+                                target.OpenHighLight(NormalColor);
                                 break;
                             case MouseRay.HighlightingType.Flash:
-                                target.OpenFlashHighLight();
+                                target.OpenFlashHighLight(FlashColor1, FlashColor2);
                                 break;
                             case MouseRay.HighlightingType.Outline:
-                                target.OpenMeshOutline();
+                                target.OpenMeshOutline(NormalColor, OutlineIntensity);
                                 break;
                         }
                     }

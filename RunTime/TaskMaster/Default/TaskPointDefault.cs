@@ -14,7 +14,7 @@ namespace HT.Framework
     {
         [SerializeField] private TaskTrigger _trigger = TaskTrigger.MouseClick;
         [SerializeField] private bool _highlighting = true;
-        [SerializeField] private float _duration = 0;
+        [SerializeField] private float _duration = 1;
         private TaskTarget _target;
 
         protected override void OnStart()
@@ -65,13 +65,13 @@ namespace HT.Framework
                     switch (Main.m_TaskMaster.GuideHighlighting)
                     {
                         case MouseRay.HighlightingType.Normal:
-                            GetTarget.OpenHighLight();
+                            GetTarget.OpenHighLight(Main.m_TaskMaster.NormalColor);
                             break;
                         case MouseRay.HighlightingType.Flash:
-                            GetTarget.OpenFlashHighLight();
+                            GetTarget.OpenFlashHighLight(Main.m_TaskMaster.FlashColor1, Main.m_TaskMaster.FlashColor2);
                             break;
                         case MouseRay.HighlightingType.Outline:
-                            GetTarget.OpenMeshOutline();
+                            GetTarget.OpenMeshOutline(Main.m_TaskMaster.NormalColor, Main.m_TaskMaster.OutlineIntensity);
                             break;
                     }
                 }

@@ -684,6 +684,10 @@ MonoBehaviour:
   HelperType: <None>
   ContentAsset: {fileID: 0}
   GuideHighlighting: 1
+  NormalColor: {r: 0, g: 1, b: 1, a: 1}
+  FlashColor1: {r: 1, g: 0, b: 0, a: 1}
+  FlashColor2: {r: 1, g: 1, b: 1, a: 1}
+  OutlineIntensity: 1
 --- !u!1 &1784314892031968
 GameObject:
   m_ObjectHideFlags: 0
@@ -2084,6 +2088,10 @@ MonoBehaviour:
   HelperType: <None>
   ContentAsset: {fileID: 0}
   GuideHighlighting: 1
+  NormalColor: {r: 0, g: 1, b: 1, a: 1}
+  FlashColor1: {r: 1, g: 0, b: 0, a: 1}
+  FlashColor2: {r: 1, g: 1, b: 1, a: 1}
+  OutlineIntensity: 1
   IsAutoChange: 1
 --- !u!1 &8775430792589470182
 GameObject:

@@ -29,6 +29,33 @@ namespace HT.Framework
             EnumPopup(Target.GuideHighlighting, out Target.GuideHighlighting, "Guide Highlighting");
             GUILayout.EndHorizontal();
 
+            switch (Target.GuideHighlighting)
+            {
+                case MouseRay.HighlightingType.Normal:
+                    GUILayout.BeginHorizontal();
+                    ColorField(Target.NormalColor, out Target.NormalColor, "Normal Color");
+                    GUILayout.EndHorizontal();
+                    break;
+                case MouseRay.HighlightingType.Flash:
+                    GUILayout.BeginHorizontal();
+                    ColorField(Target.FlashColor1, out Target.FlashColor1, "Flash Color 1");
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    ColorField(Target.FlashColor2, out Target.FlashColor2, "Flash Color 2");
+                    GUILayout.EndHorizontal();
+                    break;
+                case MouseRay.HighlightingType.Outline:
+                    GUILayout.BeginHorizontal();
+                    ColorField(Target.NormalColor, out Target.NormalColor, "Outline Color");
+                    GUILayout.EndHorizontal();
+
+                    GUILayout.BeginHorizontal();
+                    FloatField(Target.OutlineIntensity, out Target.OutlineIntensity, "Outline Intensity");
+                    GUILayout.EndHorizontal();
+                    break;
+            }
+
             GUILayout.BeginHorizontal();
             Toggle(Target.IsAutoChange, out Target.IsAutoChange, "Auto Change");
             GUILayout.EndHorizontal();
