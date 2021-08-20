@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UObject = UnityEngine.Object;
 using UReorderableList = UnityEditorInternal.ReorderableList;
@@ -15,15 +14,17 @@ namespace HT.Framework
     /// </summary>
     [CanEditMultipleObjects]
     [CustomEditor(typeof(UObject), true)]
-    internal sealed class ObjectInspector : Editor
+    internal sealed class ObjectInspector : HTFEditor<UObject>
     {
         private List<FieldInspector> _fields = new List<FieldInspector>();
         private List<PropertyInspector> _properties = new List<PropertyInspector>();
         private List<EventInspector> _events = new List<EventInspector>();
         private List<MethodInspector> _methods = new List<MethodInspector>();
-
-        private void OnEnable()
+        
+        protected override void OnDefaultEnable()
         {
+            base.OnDefaultEnable();
+
             try
             {
                 using (SerializedProperty iterator = serializedObject.GetIterator())
@@ -68,16 +69,14 @@ namespace HT.Framework
             }
             catch { }
         }
-        public override void OnInspectorGUI()
+        protected override void OnInspectorDefaultGUI()
         {
-            serializedObject.Update();
-
+            base.OnInspectorDefaultGUI();
+            
             FieldGUI();
             PropertyGUI();
             EventGUI();
             MethodGUI();
-
-            serializedObject.ApplyModifiedProperties();
         }
         private void OnSceneGUI()
         {
@@ -176,23 +175,7 @@ namespace HT.Framework
                 }
             }
         }
-        /// <summary>
-        /// 标记目标已改变
-        /// </summary>
-        private void HasChanged()
-        {
-            EditorUtility.SetDirty(target);
-
-            if (EditorApplication.isPlaying)
-                return;
-
-            Component component = target as Component;
-            if (component != null && component.gameObject.scene != null)
-            {
-                EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
-            }
-        }
-
+        
         #region Field
         /// <summary>
         /// 字段检视器
@@ -399,7 +382,7 @@ namespace HT.Framework
                 if (IsDisplay)
                 {
                     GUI.color = UseColor;
-                    if (Painters.Count > 0)
+                    if (Painters.Count > 0 && inspector.targets.Length == 1)
                     {
                         GUI.enabled = IsEnable;
                         for (int i = 0; i < Painters.Count; i++)
@@ -419,7 +402,10 @@ namespace HT.Framework
                         else
                         {
                             GUI.enabled = IsEnable;
+                            GUILayout.BeginHorizontal();
                             EditorGUILayout.PropertyField(Property, new GUIContent(Label), true);
+                            inspector.DrawCopyPaste(Property);
+                            GUILayout.EndHorizontal();
                             GUI.enabled = true;
                         }
                     }
@@ -1316,6 +1302,9 @@ namespace HT.Framework
 
             public void Painting(ObjectInspector inspector)
             {
+                if (inspector.targets.Length > 1)
+                    return;
+
                 if (!Property.CanRead)
                     return;
 
@@ -1472,6 +1461,9 @@ namespace HT.Framework
 
             public void Painting(ObjectInspector inspector)
             {
+                if (inspector.targets.Length > 1)
+                    return;
+
                 MulticastDelegate multicast = Field.GetValue(inspector.target) as MulticastDelegate;
                 Delegate[] delegates = multicast != null ? multicast.GetInvocationList() : null;
 
@@ -1513,6 +1505,9 @@ namespace HT.Framework
 
             public void Painting(ObjectInspector inspector)
             {
+                if (inspector.targets.Length > 1)
+                    return;
+
                 GUI.enabled = Attribute.Mode == ButtonAttribute.EnableMode.Always
                 || (Attribute.Mode == ButtonAttribute.EnableMode.Editor && !EditorApplication.isPlaying)
                 || (Attribute.Mode == ButtonAttribute.EnableMode.Playmode && EditorApplication.isPlaying);

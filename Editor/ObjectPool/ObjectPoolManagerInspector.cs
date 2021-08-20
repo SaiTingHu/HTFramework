@@ -9,23 +9,15 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86610600")]
     internal sealed class ObjectPoolManagerInspector : InternalModuleInspector<ObjectPoolManager, IObjectPoolHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Object pool manager, it manages all object pools and can register new object pools!";
-            }
-        }
-        
+        protected override string Intro => "Object pool manager, it manages all object pools and can register new object pools!";
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            IntField(Target.Limit, out Target.Limit, "Limit");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(ObjectPoolManager.Limit), "Limit");
 
             GUI.enabled = true;
         }

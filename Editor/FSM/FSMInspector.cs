@@ -225,20 +225,11 @@ namespace HT.Framework
             EditorGUILayout.HelpBox("Finite state machine!", MessageType.Info);
             GUILayout.EndHorizontal();
 
+            PropertyField(nameof(FSM.IsAutoRegister), "Auto Register");
+            PropertyField(nameof(FSM.Name), "Name");
+            PropertyField(nameof(FSM.Group), "Group");
+            
             GUILayout.BeginHorizontal();
-            Toggle(Target.IsAutoRegister, out Target.IsAutoRegister, "Auto Register");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            TextField(Target.Name, out Target.Name, "Name");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            TextField(Target.Group, out Target.Group, "Group");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUI.color = Target.Data == "<None>" ? Color.gray : Color.white;
             GUILayout.Label("Data", GUILayout.Width(LabelWidth));
             if (GUILayout.Button(Target.Data, EditorGlobalTools.Styles.MiniPopup))
             {
@@ -265,7 +256,6 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
-            GUI.color = Color.white;
             GUILayout.EndHorizontal();
             
             _stateList.DoLayoutList();

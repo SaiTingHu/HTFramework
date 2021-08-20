@@ -27,13 +27,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用标题UI
         /// </summary>
-        protected virtual bool IsEnableTitleGUI
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool IsEnableTitleGUI => true;
         /// <summary>
         /// 是否是管理员模式
         /// </summary>
@@ -51,7 +45,7 @@ namespace HT.Framework
         /// <summary>
         /// 管理员密码
         /// </summary>
-        protected virtual string Password { get; } = "1+A/HydBW5UMiL9xsRLN2A==";
+        protected virtual string Password => "1+A/HydBW5UMiL9xsRLN2A==";
         /// <summary>
         /// 管理员模式颜色
         /// </summary>
@@ -81,15 +75,15 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用韩语本地化
         /// </summary>
-        protected virtual bool IsEnableKorean { get; } = false;
+        protected virtual bool IsEnableKorean => false;
         /// <summary>
         /// 是否启用日语本地化
         /// </summary>
-        protected virtual bool IsEnableJapanese { get; } = false;
+        protected virtual bool IsEnableJapanese => false;
         /// <summary>
         /// 帮助链接
         /// </summary>
-        protected virtual string HelpUrl { get; } = null;
+        protected virtual string HelpUrl => null;
 
         protected virtual void OnEnable()
         {

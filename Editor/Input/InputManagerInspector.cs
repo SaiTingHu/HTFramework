@@ -11,13 +11,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89001848")]
     internal sealed class InputManagerInspector : InternalModuleInspector<InputManager, IInputHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Input manager, this is a cross platform input solution!";
-            }
-        }
+        protected override string Intro => "Input manager, this is a cross platform input solution!";
 
         protected override void OnInspectorDefaultGUI()
         {

@@ -8,13 +8,7 @@ namespace HT.Framework
     {
         private HTFAction _generateID;
 
-        protected override bool IsEnableRuntimeData
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableRuntimeData => false;
 
         protected override void OnDefaultEnable()
         {
@@ -62,13 +56,8 @@ namespace HT.Framework
             GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
             PropertyField("_name", "Name");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
             PropertyField("_id", "ID");
-            GUILayout.EndHorizontal();
         }
         private void GenerateID()
         {

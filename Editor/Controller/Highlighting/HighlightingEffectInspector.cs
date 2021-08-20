@@ -12,13 +12,7 @@ namespace HT.Framework
         private HTFAction _speed;
         private HTFAction _quality;
 
-        protected override bool IsEnableRuntimeData
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableRuntimeData => false;
 
         protected override void OnDefaultEnable()
         {

@@ -9,27 +9,17 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/85617377")]
     internal sealed class AspectTrackManagerInspector : InternalModuleInspector<AspectTrackManager, IAspectTrackHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Aspect Track Manager, you can track code calls anywhere in the program, or intercept him.";
-            }
-        }
+        protected override string Intro => "Aspect Track Manager, you can track code calls anywhere in the program, or intercept him.";
 
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableAspectTrack, out Target.IsEnableAspectTrack, "Enable Track");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(AspectTrackManager.IsEnableAspectTrack), "Enable Track");
 
             if (Target.IsEnableAspectTrack)
             {
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsEnableIntercept, out Target.IsEnableIntercept, "Enable Intercept");
-                GUILayout.EndHorizontal();
+                PropertyField(nameof(AspectTrackManager.IsEnableIntercept), "Enable Intercept");
             }
         }
         protected override void OnInspectorRuntimeGUI()

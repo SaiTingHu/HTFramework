@@ -9,56 +9,31 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/104317219")]
     internal sealed class TaskMasterInspector : InternalModuleInspector<TaskMaster, ITaskMasterHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Task Master, the tasks controller!";
-            }
-        }
+        protected override string Intro => "Task Master, the tasks controller!";
 
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
-            GUILayout.BeginHorizontal();
-            ObjectField(Target.ContentAsset, out Target.ContentAsset, false, "Asset");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.GuideHighlighting, out Target.GuideHighlighting, "Guide Highlighting");
-            GUILayout.EndHorizontal();
-
+            PropertyField(nameof(TaskMaster.ContentAsset), "Asset");
+            PropertyField(nameof(TaskMaster.GuideHighlighting), "Guide Highlighting");
+            
             switch (Target.GuideHighlighting)
             {
                 case MouseRay.HighlightingType.Normal:
-                    GUILayout.BeginHorizontal();
-                    ColorField(Target.NormalColor, out Target.NormalColor, "Normal Color");
-                    GUILayout.EndHorizontal();
+                    PropertyField(nameof(TaskMaster.NormalColor), "Normal Color");
                     break;
                 case MouseRay.HighlightingType.Flash:
-                    GUILayout.BeginHorizontal();
-                    ColorField(Target.FlashColor1, out Target.FlashColor1, "Flash Color 1");
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    ColorField(Target.FlashColor2, out Target.FlashColor2, "Flash Color 2");
-                    GUILayout.EndHorizontal();
+                    PropertyField(nameof(TaskMaster.FlashColor1), "Flash Color 1");
+                    PropertyField(nameof(TaskMaster.FlashColor2), "Flash Color 2");
                     break;
                 case MouseRay.HighlightingType.Outline:
-                    GUILayout.BeginHorizontal();
-                    ColorField(Target.NormalColor, out Target.NormalColor, "Outline Color");
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.BeginHorizontal();
-                    FloatField(Target.OutlineIntensity, out Target.OutlineIntensity, "Outline Intensity");
-                    GUILayout.EndHorizontal();
+                    PropertyField(nameof(TaskMaster.NormalColor), "Outline Color");
+                    PropertyField(nameof(TaskMaster.OutlineIntensity), "Outline Intensity");
                     break;
             }
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsAutoChange, out Target.IsAutoChange, "Auto Change");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(TaskMaster.IsAutoChange), "Auto Change");
         }
         protected override void OnInspectorRuntimeGUI()
         {

@@ -12,13 +12,7 @@ namespace HT.Framework
     {
         private Dictionary<string, bool> _systemFoldouts;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "ECS Manager, this is a ECS based development mode!";
-            }
-        }
+        protected override string Intro => "ECS Manager, this is a ECS based development mode!";
 
         protected override void OnRuntimeEnable()
         {

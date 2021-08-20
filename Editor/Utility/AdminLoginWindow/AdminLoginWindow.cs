@@ -24,13 +24,7 @@ namespace HT.Framework
         private HTFAction<string> _checkAction;
         private string _password = "";
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableTitleGUI => false;
 
         protected override void OnBodyGUI()
         {

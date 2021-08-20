@@ -35,13 +35,7 @@ namespace HT.Framework
         private string _hotfixEnvironmentPath = "/Hotfix/Environment/HotfixEnvironment.cs";
         private string _hotfixAssemblyDefinitionPath = "/Hotfix/Hotfix.asmdef";
 
-        protected override string Intro
-        {
-            get
-            {
-                return "Hotfix manager, help you implement basic hot fixes in your game!";
-            }
-        }
+        protected override string Intro => "Hotfix manager, help you implement basic hot fixes in your game!";
 
         protected override void OnDefaultEnable()
         {
@@ -68,9 +62,7 @@ namespace HT.Framework
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableHotfix, out Target.IsEnableHotfix, "Enable Hotfix");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(HotfixManager.IsEnableHotfix), "Enable Hotfix");
 
             if (Target.IsEnableHotfix)
             {
@@ -81,18 +73,14 @@ namespace HT.Framework
                 GUILayout.Label("HotfixDll AssetBundleName");
                 GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                TextField(Target.HotfixDllAssetBundleName, out Target.HotfixDllAssetBundleName, "");
-                GUILayout.EndHorizontal();
-
+                PropertyField(nameof(HotfixManager.HotfixDllAssetBundleName), "");
+                
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("HotfixDll AssetsPath");
                 GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                TextField(Target.HotfixDllAssetsPath, out Target.HotfixDllAssetsPath, "");
-                GUILayout.EndHorizontal();
-
+                PropertyField(nameof(HotfixManager.HotfixDllAssetsPath), "");
+                
                 GUILayout.EndVertical();
                 #endregion
 

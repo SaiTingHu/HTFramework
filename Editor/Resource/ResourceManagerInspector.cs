@@ -9,23 +9,15 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88852698")]
     internal sealed class ResourceManagerInspector : InternalModuleInspector<ResourceManager, IResourceHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Resource Manager, use this to complete the loading and unloading of resources!";
-            }
-        }
-        
+        protected override string Intro => "Resource Manager, use this to complete the loading and unloading of resources!";
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.Mode, out Target.Mode, "Load Mode");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(ResourceManager.Mode), "Load Mode");
 
             if (Target.Mode == ResourceLoadMode.Resource)
             {
@@ -45,13 +37,8 @@ namespace HT.Framework
             }
             else if (Target.Mode == ResourceLoadMode.AssetBundle)
             {
-                GUILayout.BeginHorizontal();
-                TextField(Target.AssetBundleManifestName, out Target.AssetBundleManifestName, "Manifest Name");
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsEditorMode, out Target.IsEditorMode, "Editor Mode");
-                GUILayout.EndHorizontal();
+                PropertyField(nameof(ResourceManager.AssetBundleManifestName), "Manifest Name");
+                PropertyField(nameof(ResourceManager.IsEditorMode), "Editor Mode");
             }
 
             GUI.enabled = true;

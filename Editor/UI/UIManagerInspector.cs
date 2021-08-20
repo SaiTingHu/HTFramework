@@ -18,13 +18,7 @@ namespace HT.Framework
         private bool _overlayUIFoldout = true;
         private bool _cameraUIFoldout = true;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "UI Manager, this is the master controller for all UIs!";
-            }
-        }
+        protected override string Intro => "UI Manager, this is the master controller for all UIs!";
 
         protected override void OnDefaultEnable()
         {
@@ -146,18 +140,10 @@ namespace HT.Framework
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableOverlayUI, out Target.IsEnableOverlayUI, "Enable Overlay UI");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableCameraUI, out Target.IsEnableCameraUI, "Enable Camera UI");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableWorldUI, out Target.IsEnableWorldUI, "Enable World UI");
-            GUILayout.EndHorizontal();
-
+            PropertyField(nameof(UIManager.IsEnableOverlayUI), "Enable Overlay UI");
+            PropertyField(nameof(UIManager.IsEnableCameraUI), "Enable Camera UI");
+            PropertyField(nameof(UIManager.IsEnableWorldUI), "Enable World UI");
+            
             _uiList.DoLayoutList();
 
             GUI.enabled = true;

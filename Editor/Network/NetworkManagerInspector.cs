@@ -18,13 +18,7 @@ namespace HT.Framework
         private SerializedProperty _channelTypes;
         private ReorderableList _channelTypeList;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "Network Manager, help you implementing basic network client with socket!";
-            }
-        }
+        protected override string Intro => "Network Manager, help you implementing basic network client with socket!";
 
         protected override void OnDefaultEnable()
         {
@@ -127,22 +121,11 @@ namespace HT.Framework
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            TextField(Target.ServerIP, out Target.ServerIP, "Server IP");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            IntField(Target.ServerPort, out Target.ServerPort, "Server Port");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            TextField(Target.ClientIP, out Target.ClientIP, "Client IP");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            IntField(Target.ClientPort, out Target.ClientPort, "Client Port");
-            GUILayout.EndHorizontal();
-
+            PropertyField(nameof(NetworkManager.ServerIP), "Server IP");
+            PropertyField(nameof(NetworkManager.ServerPort), "Server Port");
+            PropertyField(nameof(NetworkManager.ClientIP), "Client IP");
+            PropertyField(nameof(NetworkManager.ClientPort), "Client Port");
+            
             _channelTypeList.DoLayoutList();
 
             GUI.enabled = true;

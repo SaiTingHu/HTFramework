@@ -9,13 +9,7 @@ namespace HT.Framework
     {
         private HTFAction _generateID;
 
-        protected override bool IsEnableRuntimeData
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableRuntimeData => false;
 
         protected override void OnDefaultEnable()
         {
@@ -33,13 +27,8 @@ namespace HT.Framework
             GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            TextField(Target.GUID, out Target.GUID, "GUID");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.State, out Target.State, "State");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(StepTarget.GUID), "GUID");
+            PropertyField(nameof(StepTarget.State), "State");
         }
         private void GenerateGUID()
         {

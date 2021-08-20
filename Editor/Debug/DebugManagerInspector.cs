@@ -9,31 +9,18 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102570194")]
     internal sealed class DebugManagerInspector : InternalModuleInspector<DebugManager, IDebugHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Debug Manager, this is a runtime debugger for games!";
-            }
-        }
+        protected override string Intro => "Debug Manager, this is a runtime debugger for games!";
 
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableDebugger, out Target.IsEnableDebugger, "Enable Debugger");
-            GUILayout.EndHorizontal();
-
+            PropertyField(nameof(DebugManager.IsEnableDebugger), "Enable Debugger");
+            
             if (Target.IsEnableDebugger)
             {
-                GUILayout.BeginHorizontal();
-                ObjectField(Target.DebuggerSkin, out Target.DebuggerSkin, false, "Debugger Skin");
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsChinese, out Target.IsChinese, "Chinese");
-                GUILayout.EndHorizontal();
+                PropertyField(nameof(DebugManager.DebuggerSkin), "Debugger Skin");
+                PropertyField(nameof(DebugManager.IsChinese), "Use Chinese");
             }
         }
         protected override void OnInspectorRuntimeGUI()

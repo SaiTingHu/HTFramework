@@ -9,13 +9,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/91492838")]
     internal sealed class CoroutinerManagerInspector : InternalModuleInspector<CoroutinerManager, ICoroutinerHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Coroutiner Manager, a unified scheduler for the coroutines, including execution and destruction, as well as viewing the status of all coroutines!";
-            }
-        }
+        protected override string Intro => "Coroutiner Manager, a unified scheduler for the coroutines, including execution and destruction, as well as viewing the status of all coroutines!";
 
         protected override void OnInspectorDefaultGUI()
         {

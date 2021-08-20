@@ -12,46 +12,27 @@ namespace HT.Framework
     internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager, IControllerHelper>
     {
         private List<BoxBoundsHandle> _handles = new List<BoxBoundsHandle>();
-        
-        protected override string Intro
-        {
-            get
-            {
-                return "Controller Manager, it encapsulation free view controller, first person controller, third person controller, etc!";
-            }
-        }
+
+        protected override string Intro => "Controller Manager, it encapsulation free view controller, first person controller, third person controller, etc!";
 
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
+
+            PropertyField(nameof(ControllerManager.DefaultMode), "Default ControlMode");
+            PropertyField(nameof(ControllerManager.DefaultEase), "Default Ease");
+            PropertyField(nameof(ControllerManager.DefaultAutoPlay), "Default Auto Play");
+            PropertyField(nameof(ControllerManager.IsAutoKill), "Tweener Auto Kill");
             
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.DefaultMode, out Target.DefaultMode, "Default ControlMode");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.DefaultEase, out Target.DefaultEase, "Default Ease");
-            GUILayout.EndHorizontal();
-            
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.DefaultAutoPlay, out Target.DefaultAutoPlay, "Default Auto Play");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsAutoKill, out Target.IsAutoKill, "Tweener Auto Kill");
-            GUILayout.EndHorizontal();
-
             GUI.enabled = true;
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableBounds, out Target.IsEnableBounds, "Enable Bounds");
-            GUILayout.EndHorizontal();
-
+            PropertyField(nameof(ControllerManager.IsEnableBounds), "Enable Bounds");
+            
             if (Target.IsEnableBounds)
             {
-                PropertyField("FreeControlBounds");
+                PropertyField(nameof(ControllerManager.FreeControlBounds), "Free Control Bounds");
             }
         }
         protected override void OnInspectorRuntimeGUI()

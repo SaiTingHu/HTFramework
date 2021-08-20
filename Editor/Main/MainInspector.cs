@@ -12,13 +12,7 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102956756")]
     internal sealed class MainInspector : InternalModuleInspector<Main, IMainHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "HTFramework Main Module!";
-            }
-        }
+        protected override string Intro => "HTFramework Main Module!";
 
         protected override void OnDefaultEnable()
         {
@@ -270,9 +264,7 @@ namespace HT.Framework
         #region License
         private void LicenseGUI()
         {
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsPermanentLicense, out Target.IsPermanentLicense, "Permanent License");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(Main.IsPermanentLicense), "Permanent License");
 
             if (!Target.IsPermanentLicense)
             {
@@ -429,17 +421,9 @@ namespace HT.Framework
             GUILayout.Label("Log", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnabledLogInfo, out Target.IsEnabledLogInfo, "Enabled Log Info");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnabledLogWarning, out Target.IsEnabledLogWarning, "Enabled Log Warning");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnabledLogError, out Target.IsEnabledLogError, "Enabled Log Error");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(Main.IsEnabledLogInfo), "Enabled Log Info");
+            PropertyField(nameof(Main.IsEnabledLogWarning), "Enabled Log Warning");
+            PropertyField(nameof(Main.IsEnabledLogError), "Enabled Log Error");
         }
         #endregion
     }

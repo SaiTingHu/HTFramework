@@ -899,6 +899,56 @@ namespace HT.Framework
             return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f");
         }
         /// <summary>
+        /// Vector3转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Vector3值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Vector3 value, string format)
+        {
+            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f");
+        }
+        /// <summary>
+        /// Vector4转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Vector4值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Vector4 value, string format)
+        {
+            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
+        }
+        /// <summary>
+        /// Vector2Int转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Vector2Int值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Vector2Int value)
+        {
+            return StringToolkit.Concat(value.x.ToString(), ",", value.y.ToString());
+        }
+        /// <summary>
+        /// Vector3Int转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Vector3Int值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Vector3Int value)
+        {
+            return StringToolkit.Concat(value.x.ToString(), ",", value.y.ToString(), ",", value.z.ToString());
+        }
+        /// <summary>
+        /// Quaternion转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Quaternion值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Quaternion value, string format)
+        {
+            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
+        }
+        /// <summary>
         /// 标准Paste字符串转换为Vector2
         /// </summary>
         /// <param name="value">Paste字符串</param>
@@ -918,16 +968,6 @@ namespace HT.Framework
                 }
             }
             return defaultValue;
-        }
-        /// <summary>
-        /// Vector3转换为标准Copy字符串
-        /// </summary>
-        /// <param name="value">Vector3值</param>
-        /// <param name="format">格式</param>
-        /// <returns>Copy字符串</returns>
-        public static string ToCopyString(this Vector3 value, string format)
-        {
-            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f");
         }
         /// <summary>
         /// 标准Paste字符串转换为Vector3
@@ -952,14 +992,65 @@ namespace HT.Framework
             return defaultValue;
         }
         /// <summary>
-        /// Quaternion转换为标准Copy字符串
+        /// 标准Paste字符串转换为Vector4
         /// </summary>
-        /// <param name="value">Quaternion值</param>
-        /// <param name="format">格式</param>
-        /// <returns>Copy字符串</returns>
-        public static string ToCopyString(this Quaternion value, string format)
+        /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>Vector4值</returns>
+        public static Vector4 ToPasteVector4(this string value, Vector4 defaultValue = default)
         {
-            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
+            string[] vector4 = value.Split(',');
+            if (vector4.Length == 4)
+            {
+                float x, y, z, w;
+                vector4[0] = vector4[0].Replace("f", "");
+                vector4[1] = vector4[1].Replace("f", "");
+                vector4[2] = vector4[2].Replace("f", "");
+                vector4[3] = vector4[3].Replace("f", "");
+                if (float.TryParse(vector4[0], out x) && float.TryParse(vector4[1], out y) && float.TryParse(vector4[2], out z) && float.TryParse(vector4[3], out w))
+                {
+                    return new Vector4(x, y, z, w);
+                }
+            }
+            return defaultValue;
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为Vector2Int
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>Vector2Int值</returns>
+        public static Vector2Int ToPasteVector2Int(this string value, Vector2Int defaultValue = default)
+        {
+            string[] vector2 = value.Split(',');
+            if (vector2.Length == 2)
+            {
+                int x, y;
+                if (int.TryParse(vector2[0], out x) && int.TryParse(vector2[1], out y))
+                {
+                    return new Vector2Int(x, y);
+                }
+            }
+            return defaultValue;
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为Vector3Int
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>Vector3Int值</returns>
+        public static Vector3Int ToPasteVector3Int(this string value, Vector3Int defaultValue = default)
+        {
+            string[] vector3 = value.Split(',');
+            if (vector3.Length == 3)
+            {
+                int x, y, z;
+                if (int.TryParse(vector3[0], out x) && int.TryParse(vector3[1], out y) && int.TryParse(vector3[2], out z))
+                {
+                    return new Vector3Int(x, y, z);
+                }
+            }
+            return defaultValue;
         }
         /// <summary>
         /// 标准Paste字符串转换为Quaternion

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
@@ -14,13 +13,7 @@ namespace HT.Framework
         private bool _isShowEvent2 = false;
         private bool _isShowEvent3 = false;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "Event Manager, this is a global event system, you can subscribe any events, also custom events!";
-            }
-        }
+        protected override string Intro => "Event Manager, this is a global event system, you can subscribe any events, also custom events!";
         
         protected override void OnInspectorRuntimeGUI()
         {

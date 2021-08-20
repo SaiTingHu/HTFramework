@@ -47,13 +47,7 @@ namespace HT.Framework
         private int _colorIndex;
         private float _colorPos;
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableTitleGUI => false;
 
         protected override void OnEnable()
         {

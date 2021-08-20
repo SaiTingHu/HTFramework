@@ -81,13 +81,7 @@ namespace HT.Framework
         private bool _isCanBuild = false;
         private bool _isShowBuildABButton = false;
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableTitleGUI => false;
 
         protected override void OnEnable()
         {

@@ -19,13 +19,7 @@ namespace HT.Framework
         private List<Type> _types;
         private HTFAction _changeHelper;
 
-        protected virtual string Intro
-        {
-            get
-            {
-                return null;
-            }
-        }
+        protected virtual string Intro => null;
 
         protected override void OnDefaultEnable()
         {

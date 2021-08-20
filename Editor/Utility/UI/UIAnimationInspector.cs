@@ -10,35 +10,35 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
-            PropertyField("TheAnimationType", "Animation Type");
-            PropertyField("TheEase", "Ease");
-            PropertyField("TheLoopType", "Loop Type");
+            PropertyField(nameof(UIAnimation.TheAnimationType), "Animation Type");
+            PropertyField(nameof(UIAnimation.TheEase), "Ease");
+            PropertyField(nameof(UIAnimation.TheLoopType), "Loop Type");
 
             if (Target.TheAnimationType == UIAnimationType.Move)
             {
-                PropertyField("TheTargetVector3", "Target Position");
+                PropertyField(nameof(UIAnimation.TheTargetVector3), "Target Position");
             }
             else if (Target.TheAnimationType == UIAnimationType.Rotate)
             {
-                PropertyField("TheRotateMode", "Rotate Mode");
-                PropertyField("TheTargetVector3", "Target Rotation");
+                PropertyField(nameof(UIAnimation.TheRotateMode), "Rotate Mode");
+                PropertyField(nameof(UIAnimation.TheTargetVector3), "Target Rotation");
             }
             else if (Target.TheAnimationType == UIAnimationType.Scale)
             {
-                PropertyField("TheTargetVector3", "Target Scale");
+                PropertyField(nameof(UIAnimation.TheTargetVector3), "Target Scale");
             }
             else if (Target.TheAnimationType == UIAnimationType.Color)
             {
-                PropertyField("TheTargetColor", "Target Color");
+                PropertyField(nameof(UIAnimation.TheTargetColor), "Target Color");
             }
             else if (Target.TheAnimationType == UIAnimationType.Transparency)
             {
-                PropertyField("TheTargetFloat", "Target Transparency");
+                PropertyField(nameof(UIAnimation.TheTargetFloat), "Target Transparency");
             }
 
-            PropertyField("TheTime", "Time");
-            PropertyField("TheLoops", "Loops");
-            PropertyField("PlayOnStart");
+            PropertyField(nameof(UIAnimation.TheTime), "Time");
+            PropertyField(nameof(UIAnimation.TheLoops), "Loops");
+            PropertyField(nameof(UIAnimation.PlayOnStart), "Play On Start");
         }
         protected override void OnInspectorRuntimeGUI()
         {

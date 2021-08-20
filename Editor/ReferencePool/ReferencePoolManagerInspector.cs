@@ -9,23 +9,15 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/87191712")]
     internal sealed class ReferencePoolManagerInspector : InternalModuleInspector<ReferencePoolManager, IReferencePoolHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "Reference pool manager, it manages all reference pools and can register new reference pools!";
-            }
-        }
-        
+        protected override string Intro => "Reference pool manager, it manages all reference pools and can register new reference pools!";
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            IntField(Target.Limit, out Target.Limit, "Limit");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(ReferencePoolManager.Limit), "Limit");
 
             GUI.enabled = true;
         }

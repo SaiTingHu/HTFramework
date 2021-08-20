@@ -24,13 +24,7 @@ namespace HT.Framework
         private int _startIndex = 1;
         private int _indexIncrement = 1;
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableTitleGUI => false;
 
         protected override void OnBodyGUI()
         {

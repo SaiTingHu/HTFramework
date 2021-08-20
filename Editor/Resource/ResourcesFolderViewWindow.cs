@@ -10,13 +10,7 @@ namespace HT.Framework
         private List<ResourceFolder> _resourcesFolders = new List<ResourceFolder>();
         private Vector2 _scroll;
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableTitleGUI => false;
 
         public void Init()
         {

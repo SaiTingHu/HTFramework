@@ -9,14 +9,8 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89395574")]
     internal sealed class DataSetManagerInspector : InternalModuleInspector<DataSetManager, IDataSetHelper>
     {
-        protected override string Intro
-        {
-            get
-            {
-                return "DataSet Manager, manage of all dataSet, you can create, modify, delete any dataSets!";
-            }
-        }
-        
+        protected override string Intro => "DataSet Manager, manage of all dataSet, you can create, modify, delete any dataSets!";
+
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

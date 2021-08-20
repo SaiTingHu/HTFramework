@@ -15,24 +15,16 @@ namespace HT.Framework
         private bool _worldAudioFoldout = true;
         private bool _oneShootAudioFoldout = true;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "Audio Manager, manage all audio playback, pause, stop, etc.";
-            }
-        }
-        
+        protected override string Intro => "Audio Manager, manage all audio playback, pause, stop, etc.";
+
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
-            
-            GUILayout.BeginHorizontal();
-            Toggle(Target.MuteDefault, out Target.MuteDefault, "Mute");
-            GUILayout.EndHorizontal();
 
+            PropertyField(nameof(AudioManager.MuteDefault), "Mute");
+            
             GUILayout.BeginHorizontal();
             IntSlider(Target.BackgroundPriorityDefault, out Target.BackgroundPriorityDefault, 0, 256, "Background Priority");
             GUILayout.EndHorizontal();

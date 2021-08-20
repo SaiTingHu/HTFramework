@@ -22,6 +22,11 @@ namespace HT.Framework
         /// 当前的所有目标
         /// </summary>
         protected E[] Targets;
+        /// <summary>
+        /// 复制、粘贴按钮的GUIContent
+        /// </summary>
+        protected GUIContent CopyPasteGC;
+        
         private GithubURLAttribute _GithubURL;
         private GiteeURLAttribute _GiteeURL;
         private CSDNBlogURLAttribute _CSDNURL;
@@ -33,23 +38,11 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用运行时调试数据
         /// </summary>
-        protected virtual bool IsEnableRuntimeData
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool IsEnableRuntimeData => true;
         /// <summary>
         /// 是否启用基础属性展示
         /// </summary>
-        protected virtual bool IsEnableBaseInspectorGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected virtual bool IsEnableBaseInspectorGUI => false;
         /// <summary>
         /// 控件标签的标准宽度
         /// </summary>
@@ -72,6 +65,9 @@ namespace HT.Framework
             _GiteeIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
             _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
             _serializedPropertys.Clear();
+            CopyPasteGC = new GUIContent();
+            CopyPasteGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            CopyPasteGC.tooltip = "Copy or Paste";
 
             OnDefaultEnable();
 
@@ -199,7 +195,10 @@ namespace HT.Framework
         /// </summary>
         protected void HasChanged()
         {
-            EditorUtility.SetDirty(target);
+            for (int i = 0; i < targets.Length; i++)
+            {
+                EditorUtility.SetDirty(targets[i]);
+            }
 
             if (EditorApplication.isPlaying)
                 return;
@@ -263,7 +262,6 @@ namespace HT.Framework
         /// </summary>
         protected void Toggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = value ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, options);
             if (EditorGUI.EndChangeCheck())
@@ -276,14 +274,12 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个Toggle
         /// </summary>
         protected void Toggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
         {
-            GUI.color = value ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, style, options);
             if (EditorGUI.EndChangeCheck())
@@ -296,7 +292,6 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个IntSlider
@@ -375,7 +370,6 @@ namespace HT.Framework
         /// </summary>
         protected void TextField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = !string.IsNullOrEmpty(value) ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             string newValue = EditorGUILayout.TextField(name, value, options);
             if (EditorGUI.EndChangeCheck())
@@ -388,14 +382,12 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个PasswordField
         /// </summary>
         protected void PasswordField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = !string.IsNullOrEmpty(value) ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             string newValue = EditorGUILayout.PasswordField(name, value, options);
             if (EditorGUI.EndChangeCheck())
@@ -408,14 +400,12 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个ObjectField
         /// </summary>
         protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UnityEngine.Object
         {
-            GUI.color = value ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects, options) as T;
             if (EditorGUI.EndChangeCheck())
@@ -428,7 +418,6 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个Vector2Field
@@ -502,65 +491,212 @@ namespace HT.Framework
                 outValue = value;
             }
         }
+
         /// <summary>
-        /// 制作一个PropertyField
+        /// 制作一个序列化属性字段
         /// </summary>
-        protected void PropertyField(string propertyName, string name, params GUILayoutOption[] options)
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, bool isLine = true, params GUILayoutOption[] options)
         {
-            SerializedProperty serializedProperty = GetProperty(propertyName);
-            if (serializedProperty != null)
-            {
-                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), true, options);
-            }
-            else
-            {
-                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
-            }
-        }
-        /// <summary>
-        /// 制作一个PropertyField
-        /// </summary>
-        protected void PropertyField(string propertyName, params GUILayoutOption[] options)
-        {
+            if (isLine) GUILayout.BeginHorizontal();
+
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, true, options);
+                DrawCopyPaste(serializedProperty);
             }
             else
             {
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
+
+            if (isLine) GUILayout.EndHorizontal();
         }
         /// <summary>
-        /// 制作一个PropertyField
+        /// 制作一个序列化属性字段
         /// </summary>
-        protected void PropertyField(string propertyName, string name, bool includeChildren, params GUILayoutOption[] options)
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="name">显示名称</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, string name, bool isLine = true, params GUILayoutOption[] options)
         {
+            if (isLine) GUILayout.BeginHorizontal();
+
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
             {
-                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), includeChildren, options);
+                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), true, options);
+                DrawCopyPaste(serializedProperty);
             }
             else
             {
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
+
+            if (isLine) GUILayout.EndHorizontal();
         }
         /// <summary>
-        /// 制作一个PropertyField
+        /// 制作一个序列化属性字段
         /// </summary>
-        protected void PropertyField(string propertyName, bool includeChildren, params GUILayoutOption[] options)
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="includeChildren">包含子级</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, bool includeChildren, bool isLine = true, params GUILayoutOption[] options)
         {
+            if (isLine) GUILayout.BeginHorizontal();
+
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, includeChildren, options);
+                DrawCopyPaste(serializedProperty);
             }
             else
             {
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
+
+            if (isLine) GUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 制作一个序列化属性字段
+        /// </summary>
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="name">显示名称</param>
+        /// <param name="includeChildren">包含子级</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, string name, bool includeChildren, bool isLine = true, params GUILayoutOption[] options)
+        {
+            if (isLine) GUILayout.BeginHorizontal();
+
+            SerializedProperty serializedProperty = GetProperty(propertyName);
+            if (serializedProperty != null)
+            {
+                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), includeChildren, options);
+                DrawCopyPaste(serializedProperty);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+            }
+
+            if (isLine) GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 在属性字段的后面绘制复制、粘贴按钮（目前仅支持 Vector2 和 Vector3 类型的属性）
+        /// </summary>
+        /// <param name="property">属性</param>
+        protected void DrawCopyPaste(SerializedProperty property)
+        {
+            if (!IsSupportCopyPaste(property))
+                return;
+
+            if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            {
+                GenericMenu gm = new GenericMenu();
+                if (Targets.Length == 1)
+                {
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
+                    {
+                        CopyValue(property);
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        PasteValue(property);
+                    });
+                }
+                else
+                {
+                    gm.AddDisabledItem(new GUIContent("Copy"));
+                    gm.AddDisabledItem(new GUIContent("Paste"));
+                }
+                gm.ShowAsContext();
+            }
+        }
+        /// <summary>
+        /// 属性的类型是否支持复制粘贴
+        /// </summary>
+        private bool IsSupportCopyPaste(SerializedProperty property)
+        {
+            if (property.propertyType == SerializedPropertyType.Vector2
+                || property.propertyType == SerializedPropertyType.Vector3
+                || property.propertyType == SerializedPropertyType.Vector4
+                || property.propertyType == SerializedPropertyType.Vector2Int
+                || property.propertyType == SerializedPropertyType.Vector3Int
+                || property.propertyType == SerializedPropertyType.Quaternion)
+                return true;
+            return false;
+        }
+        /// <summary>
+        /// 复制属性的值
+        /// </summary>
+        private void CopyValue(SerializedProperty property)
+        {
+            if (property.propertyType == SerializedPropertyType.Vector2)
+            {
+                GUIUtility.systemCopyBuffer = property.vector2Value.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3)
+            {
+                GUIUtility.systemCopyBuffer = property.vector3Value.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector4)
+            {
+                GUIUtility.systemCopyBuffer = property.vector4Value.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector2Int)
+            {
+                GUIUtility.systemCopyBuffer = property.vector2IntValue.ToCopyString();
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3Int)
+            {
+                GUIUtility.systemCopyBuffer = property.vector3IntValue.ToCopyString();
+            }
+            else if (property.propertyType == SerializedPropertyType.Quaternion)
+            {
+                GUIUtility.systemCopyBuffer = property.quaternionValue.ToCopyString("F4");
+            }
+        }
+        /// <summary>
+        /// 粘贴值到属性
+        /// </summary>
+        private void PasteValue(SerializedProperty property)
+        {
+            if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                return;
+
+            if (property.propertyType == SerializedPropertyType.Vector2)
+            {
+                property.vector2Value = GUIUtility.systemCopyBuffer.ToPasteVector2(Vector3.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3)
+            {
+                property.vector3Value = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector4)
+            {
+                property.vector4Value = GUIUtility.systemCopyBuffer.ToPasteVector4(Vector4.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector2Int)
+            {
+                property.vector2IntValue = GUIUtility.systemCopyBuffer.ToPasteVector2Int(Vector2Int.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3Int)
+            {
+                property.vector3IntValue = GUIUtility.systemCopyBuffer.ToPasteVector3Int(Vector3Int.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Quaternion)
+            {
+                property.quaternionValue = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+            }
+            property.serializedObject.ApplyModifiedProperties();
         }
     }
 }

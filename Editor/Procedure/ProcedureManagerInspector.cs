@@ -19,13 +19,7 @@ namespace HT.Framework
         private SerializedProperty _procedures;
         private ReorderableList _procedureList;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "Procedure Manager, this is the beginning and the end of everything!";
-            }
-        }
+        protected override string Intro => "Procedure Manager, this is the beginning and the end of everything!";
 
         protected override void OnDefaultEnable()
         {
