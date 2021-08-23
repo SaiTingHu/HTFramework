@@ -53,12 +53,7 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            if (!EditorGUIUtility.wideMode)
-            {
-                EditorGUIUtility.wideMode = true;
-            }
-
+            
             GUILayout.Space(5);
 
             _pagePainter.Painting();

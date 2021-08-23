@@ -92,6 +92,11 @@ namespace HT.Framework
         }
         public sealed override void OnInspectorGUI()
         {
+            if (!EditorGUIUtility.wideMode)
+            {
+                EditorGUIUtility.wideMode = true;
+            }
+
             if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)
             {
                 GUILayout.BeginHorizontal();

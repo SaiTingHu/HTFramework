@@ -21,7 +21,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("InputDevice ", GUILayout.Width(LabelWidth));
-            if (GUILayout.Button(Target.InputDeviceType, EditorStyles.popup))
+            if (GUILayout.Button(Target.InputDeviceType, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
             {
                 GenericMenu gm = new GenericMenu();
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
