@@ -246,6 +246,25 @@ namespace HT.Framework
     }
 
     /// <summary>
+    /// 预览检视器
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public sealed class PreviewAttribute : InspectorAttribute
+    {
+        public float Size { get; private set; }
+
+        /// <summary>
+        /// 预览检视器
+        /// </summary>
+        /// <param name="size">预览框的大小</param>
+        public PreviewAttribute(float size = 100)
+        {
+            Size = size;
+        }
+    }
+
+    /// <summary>
     /// 通用菜单检视器（支持 string 类型）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]

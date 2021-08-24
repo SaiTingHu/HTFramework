@@ -58,17 +58,18 @@ namespace HT.Framework
         {
             Target = target as E;
             Targets = targets.ConvertAllAS<E, UObject>();
-            _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
-            _GiteeURL = GetType().GetCustomAttribute<GiteeURLAttribute>();
-            _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
-            _GithubIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
-            _GiteeIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
-            _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
-            _serializedPropertys.Clear();
             CopyPasteGC = new GUIContent();
             CopyPasteGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             CopyPasteGC.tooltip = "Copy or Paste";
 
+            _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
+            _GiteeURL = GetType().GetCustomAttribute<GiteeURLAttribute>();
+            _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
+            if (_GithubURL != null) _GithubIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
+            if (_GiteeURL != null) _GiteeIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
+            if (_CSDNURL != null) _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
+            _serializedPropertys.Clear();
+            
             OnDefaultEnable();
 
             if (IsEnableRuntimeData && EditorApplication.isPlaying)

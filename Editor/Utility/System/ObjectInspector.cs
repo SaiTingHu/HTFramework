@@ -20,7 +20,9 @@ namespace HT.Framework
         private List<PropertyInspector> _properties = new List<PropertyInspector>();
         private List<EventInspector> _events = new List<EventInspector>();
         private List<MethodInspector> _methods = new List<MethodInspector>();
-        
+
+        protected override bool IsEnableRuntimeData => false;
+
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
@@ -194,6 +196,8 @@ namespace HT.Framework
             public DrawerAttribute Drawer;
             public MethodInfo DrawerCondition;
             public bool DrawerValue = true;
+            public bool HasPreview = false;
+            public float PreviewSize = 0;
 
             /// <summary>
             /// 是否激活
@@ -331,6 +335,11 @@ namespace HT.Framework
                         {
                             IsReadOnly = true;
                         }
+                        else if (iattributes[i] is PreviewAttribute)
+                        {
+                            HasPreview = true;
+                            PreviewSize = iattributes[i].Cast<PreviewAttribute>().Size;
+                        }
                         else if (iattributes[i] is GenericMenuAttribute)
                         {
                             Painters.Add(new GenericMenuPainter(iattributes[i]));
@@ -396,7 +405,9 @@ namespace HT.Framework
                         if (Property.name == "m_Script")
                         {
                             GUI.enabled = false;
+                            GUILayout.BeginHorizontal();
                             EditorGUILayout.PropertyField(Property);
+                            GUILayout.EndHorizontal();
                             GUI.enabled = true;
                         }
                         else
@@ -410,6 +421,16 @@ namespace HT.Framework
                         }
                     }
                     GUI.color = Color.white;
+
+                    if (HasPreview)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(EditorGUIUtility.labelWidth);
+                        Texture2D preview = Property.propertyType == SerializedPropertyType.ObjectReference ? AssetPreview.GetAssetPreview(Property.objectReferenceValue) : null;
+                        GUIContent gc = preview != null ? new GUIContent(preview) : new GUIContent("No Preview");
+                        EditorGUILayout.LabelField(gc, EditorStyles.helpBox, GUILayout.Width(PreviewSize), GUILayout.Height(PreviewSize));
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
 
