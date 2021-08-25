@@ -98,14 +98,16 @@ namespace HT.Framework
         /// <summary>
         /// 打开自己
         /// </summary>
-        protected virtual void Open()
+        protected void Open()
         {
+            Main.m_UI.OpenUI(GetType());
         }
         /// <summary>
         /// 关闭自己
         /// </summary>
-        protected virtual void Close()
+        protected void Close()
         {
+            Main.m_UI.CloseUI(GetType());
         }
     }
 }

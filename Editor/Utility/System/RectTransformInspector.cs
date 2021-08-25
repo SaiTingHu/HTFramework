@@ -16,6 +16,7 @@ namespace HT.Framework
         private MethodInfo _originalOnHeaderGUI;
 
         protected override bool IsEnableRuntimeData => false;
+        protected override bool IsWideMode => false;
 
         public override void DrawPreview(Rect previewArea)
         {

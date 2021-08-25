@@ -189,14 +189,7 @@ namespace HT.Framework
                         GUI.enabled = !ui.Value.IsOpened;
                         if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
                         {
-                            if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
-                            {
-                                Target.OpenResidentUI(ui.Key);
-                            }
-                            else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
-                            {
-                                Target.OpenTemporaryUI(ui.Key);
-                            }
+                            Target.OpenUI(ui.Key);
                         }
                         GUI.enabled = ui.Value.IsOpened;
                         if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
@@ -234,14 +227,7 @@ namespace HT.Framework
                         GUI.enabled = !ui.Value.IsOpened;
                         if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
                         {
-                            if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
-                            {
-                                Target.OpenResidentUI(ui.Key);
-                            }
-                            else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
-                            {
-                                Target.OpenTemporaryUI(ui.Key);
-                            }
+                            Target.OpenUI(ui.Key);
                         }
                         GUI.enabled = ui.Value.IsOpened;
                         if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))

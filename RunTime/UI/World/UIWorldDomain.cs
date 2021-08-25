@@ -8,19 +8,19 @@ namespace HT.Framework
     /// <summary>
     /// 世界UI的域
     /// </summary>
-    public sealed class UIWorldDomain
+    public class UIWorldDomain
     {
         //域的名称
-        private string _name;
+        protected string _name;
         //当前打开的World类型的非常驻UI（非常驻UI同时只能打开一个）
-        private UILogicTemporary _currentWorldTemporaryUI;
+        protected UILogicTemporary _currentWorldTemporaryUI;
         //所有World类型的UI
-        private Dictionary<Type, UILogicBase> _worldUIs = new Dictionary<Type, UILogicBase>();
+        protected Dictionary<Type, UILogicBase> _worldUIs = new Dictionary<Type, UILogicBase>();
 
-        private Transform _worldUIRoot;
-        private RectTransform _worldUIRootRect;
-        private Transform _worldResidentPanel;
-        private Transform _worldTemporaryPanel;
+        protected Transform _worldUIRoot;
+        protected RectTransform _worldUIRootRect;
+        protected Transform _worldResidentPanel;
+        protected Transform _worldTemporaryPanel;
 
         /// <summary>
         /// 域的UI根节点
@@ -67,9 +67,7 @@ namespace HT.Framework
                 UILogicBase uiLogic = ui.Value;
 
                 if (!uiLogic.IsCreated)
-                {
                     continue;
-                }
 
                 uiLogic.OnDestroy();
                 Main.Kill(uiLogic.UIEntity);
@@ -244,6 +242,7 @@ namespace HT.Framework
                     _currentWorldTemporaryUI.OnClose();
                     _currentWorldTemporaryUI = null;
                 }
+                _currentWorldTemporaryUI = ui;
 
                 if (!ui.IsCreated)
                 {
@@ -251,11 +250,9 @@ namespace HT.Framework
                     {
                         ui.UIEntity = Main.Clone(entity, _worldTemporaryPanel);
                         ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
-                        ui.UIEntity.transform.SetAsLastSibling();
                         ui.UIEntity.SetActive(true);
                         ui.OnInit();
                         ui.OnOpen(args);
-                        _currentWorldTemporaryUI = ui;
                         return null;
                     }
                     else
@@ -264,20 +261,16 @@ namespace HT.Framework
                         {
                             ui.UIEntity = obj;
                             ui.UIEntity.SetLayerIncludeChildren(_worldUIRoot.gameObject.layer);
-                            ui.UIEntity.transform.SetAsLastSibling();
                             ui.UIEntity.SetActive(true);
                             ui.OnInit();
                             ui.OnOpen(args);
-                            _currentWorldTemporaryUI = ui;
                         }, true);
                     }
                 }
                 else
                 {
-                    ui.UIEntity.transform.SetAsLastSibling();
                     ui.UIEntity.SetActive(true);
                     ui.OnOpen(args);
-                    _currentWorldTemporaryUI = ui;
                 }
             }
             else
@@ -322,9 +315,7 @@ namespace HT.Framework
                 UILogicResident ui = _worldUIs[type] as UILogicResident;
 
                 if (!ui.IsOpened)
-                {
                     return;
-                }
 
                 ui.UIEntity.transform.SetAsLastSibling();
                 ui.OnPlaceTop();
@@ -341,14 +332,10 @@ namespace HT.Framework
                 UILogicBase ui = _worldUIs[type];
 
                 if (!ui.IsCreated)
-                {
                     return;
-                }
 
                 if (!ui.IsOpened)
-                {
                     return;
-                }
 
                 ui.UIEntity.SetActive(false);
                 ui.OnClose();
@@ -365,15 +352,8 @@ namespace HT.Framework
                 UILogicBase ui = _worldUIs[type];
 
                 if (!ui.IsCreated)
-                {
                     return;
-                }
-
-                if (ui.IsOpened)
-                {
-                    return;
-                }
-
+                
                 ui.OnDestroy();
                 Main.Kill(ui.UIEntity);
                 ui.UIEntity = null;

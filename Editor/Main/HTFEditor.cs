@@ -44,6 +44,10 @@ namespace HT.Framework
         /// </summary>
         protected virtual bool IsEnableBaseInspectorGUI => false;
         /// <summary>
+        /// 是否启用宽模式
+        /// </summary>
+        protected virtual bool IsWideMode => true;
+        /// <summary>
         /// 控件标签的标准宽度
         /// </summary>
         protected float LabelWidth
@@ -93,9 +97,9 @@ namespace HT.Framework
         }
         public sealed override void OnInspectorGUI()
         {
-            if (!EditorGUIUtility.wideMode)
+            if (EditorGUIUtility.wideMode != IsWideMode)
             {
-                EditorGUIUtility.wideMode = true;
+                EditorGUIUtility.wideMode = IsWideMode;
             }
 
             if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)

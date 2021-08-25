@@ -66,21 +66,6 @@ namespace HT.Framework
         /// <summary>
         /// 控制模式
         /// </summary>
-        [Obsolete("Main.m_Controller.TheControlMode 已经过时，以后将会移除，请使用 Main.m_Controller.Mode 代替！", true)]
-        public ControlMode TheControlMode
-        {
-            set
-            {
-                Mode = value;
-            }
-            get
-            {
-                return Mode;
-            }
-        }
-        /// <summary>
-        /// 控制模式
-        /// </summary>
         public ControlMode Mode
         {
             set

@@ -114,80 +114,64 @@ namespace HT.Framework
         }
         
         /// <summary>
-        /// 预加载常驻UI
+        /// 预加载UI
         /// </summary>
-        /// <typeparam name="T">常驻UI逻辑类</typeparam>
+        /// <typeparam name="T">UI逻辑类</typeparam>
         /// <returns>加载协程</returns>
-        public Coroutine PreloadingResidentUI<T>() where T : UILogicResident
+        public Coroutine PreloadingUI<T>() where T : UILogicBase
         {
-            return _helper.PreloadingResidentUI(typeof(T));
+            return PreloadingUI(typeof(T));
         }
         /// <summary>
-        /// 预加载常驻UI
+        /// 预加载UI
         /// </summary>
-        /// <param name="type">常驻UI逻辑类</param>
+        /// <param name="type">UI逻辑类</param>
         /// <returns>加载协程</returns>
-        public Coroutine PreloadingResidentUI(Type type)
+        public Coroutine PreloadingUI(Type type)
         {
-            return _helper.PreloadingResidentUI(type);
+            if (type.IsAbstract)
+                return null;
+
+            if (type.IsSubclassOf(typeof(UILogicResident)))
+            {
+                return _helper.PreloadingResidentUI(type);
+            }
+            else if (type.IsSubclassOf(typeof(UILogicTemporary)))
+            {
+                return _helper.PreloadingTemporaryUI(type);
+            }
+            return null;
         }
         /// <summary>
-        /// 预加载非常驻UI
+        /// 打开UI
         /// </summary>
-        /// <typeparam name="T">非常驻UI逻辑类</typeparam>
-        /// <returns>加载协程</returns>
-        public Coroutine PreloadingTemporaryUI<T>() where T : UILogicTemporary
-        {
-            return _helper.PreloadingTemporaryUI(typeof(T));
-        }
-        /// <summary>
-        /// 预加载非常驻UI
-        /// </summary>
-        /// <param name="type">非常驻UI逻辑类</param>
-        /// <returns>加载协程</returns>
-        public Coroutine PreloadingTemporaryUI(Type type)
-        {
-            return _helper.PreloadingTemporaryUI(type);
-        }
-        /// <summary>
-        /// 打开常驻UI
-        /// </summary>
-        /// <typeparam name="T">常驻UI逻辑类</typeparam>
+        /// <typeparam name="T">UI逻辑类</typeparam>
         /// <param name="args">可选参数</param>
         /// <returns>加载协程</returns>
-        public Coroutine OpenResidentUI<T>(params object[] args) where T : UILogicResident
+        public Coroutine OpenUI<T>(params object[] args) where T : UILogicBase
         {
-            return _helper.OpenResidentUI(typeof(T), args);
+            return OpenUI(typeof(T), args);
         }
         /// <summary>
-        /// 打开常驻UI
+        /// 打开UI
         /// </summary>
-        /// <param name="type">常驻UI逻辑类</param>
+        /// <param name="type">UI逻辑类</param>
         /// <param name="args">可选参数</param>
         /// <returns>加载协程</returns>
-        public Coroutine OpenResidentUI(Type type, params object[] args)
+        public Coroutine OpenUI(Type type, params object[] args)
         {
-            return _helper.OpenResidentUI(type, args);
-        }
-        /// <summary>
-        /// 打开非常驻UI
-        /// </summary>
-        /// <typeparam name="T">非常驻UI逻辑类</typeparam>
-        /// <param name="args">可选参数</param>
-        /// <returns>加载协程</returns>
-        public Coroutine OpenTemporaryUI<T>(params object[] args) where T : UILogicTemporary
-        {
-            return _helper.OpenTemporaryUI(typeof(T), args);
-        }
-        /// <summary>
-        /// 打开非常驻UI
-        /// </summary>
-        /// <param name="type">非常驻UI逻辑类</param>
-        /// <param name="args">可选参数</param>
-        /// <returns>加载协程</returns>
-        public Coroutine OpenTemporaryUI(Type type, params object[] args)
-        {
-            return _helper.OpenTemporaryUI(type, args);
+            if (type.IsAbstract)
+                return null;
+
+            if (type.IsSubclassOf(typeof(UILogicResident)))
+            {
+                return _helper.OpenResidentUI(type, args);
+            }
+            else if (type.IsSubclassOf(typeof(UILogicTemporary)))
+            {
+                return _helper.OpenTemporaryUI(type, args);
+            }
+            return null;
         }
         /// <summary>
         /// 获取已经打开的UI
@@ -196,7 +180,7 @@ namespace HT.Framework
         /// <returns>UI逻辑对象</returns>
         public T GetOpenedUI<T>() where T : UILogicBase
         {
-            return _helper.GetOpenedUI(typeof(T)) as T;
+            return GetOpenedUI(typeof(T)) as T;
         }
         /// <summary>
         /// 获取已经打开的UI
@@ -205,7 +189,14 @@ namespace HT.Framework
         /// <returns>UI逻辑对象</returns>
         public UILogicBase GetOpenedUI(Type type)
         {
-            return _helper.GetOpenedUI(type);
+            if (type.IsAbstract)
+                return null;
+
+            if (type.IsSubclassOf(typeof(UILogicBase)))
+            {
+                return _helper.GetOpenedUI(type);
+            }
+            return null;
         }
         /// <summary>
         /// 置顶常驻UI
@@ -213,7 +204,7 @@ namespace HT.Framework
         /// <typeparam name="T">常驻UI逻辑类</typeparam>
         public void PlaceTopUI<T>() where T : UILogicResident
         {
-            _helper.PlaceTopUI(typeof(T));
+            PlaceTopUI(typeof(T));
         }
         /// <summary>
         /// 置顶常驻UI
@@ -221,7 +212,13 @@ namespace HT.Framework
         /// <param name="type">常驻UI逻辑类</param>
         public void PlaceTopUI(Type type)
         {
-            _helper.PlaceTopUI(type);
+            if (type.IsAbstract)
+                return;
+
+            if (type.IsSubclassOf(typeof(UILogicResident)))
+            {
+                _helper.PlaceTopUI(type);
+            }
         }
         /// <summary>
         /// 关闭UI
@@ -229,7 +226,7 @@ namespace HT.Framework
         /// <typeparam name="T">UI逻辑类</typeparam>
         public void CloseUI<T>() where T : UILogicBase
         {
-            _helper.CloseUI(typeof(T));
+            CloseUI(typeof(T));
         }
         /// <summary>
         /// 关闭UI
@@ -237,7 +234,13 @@ namespace HT.Framework
         /// <param name="type">UI逻辑类</param>
         public void CloseUI(Type type)
         {
-            _helper.CloseUI(type);
+            if (type.IsAbstract)
+                return;
+
+            if (type.IsSubclassOf(typeof(UILogicBase)))
+            {
+                _helper.CloseUI(type);
+            }
         }
         /// <summary>
         /// 销毁UI
@@ -245,7 +248,7 @@ namespace HT.Framework
         /// <typeparam name="T">UI逻辑类</typeparam>
         public void DestroyUI<T>() where T : UILogicBase
         {
-            _helper.DestroyUI(typeof(T));
+            DestroyUI(typeof(T));
         }
         /// <summary>
         /// 销毁UI
@@ -253,7 +256,13 @@ namespace HT.Framework
         /// <param name="type">UI逻辑类</param>
         public void DestroyUI(Type type)
         {
-            _helper.DestroyUI(type);
+            if (type.IsAbstract)
+                return;
+
+            if (type.IsSubclassOf(typeof(UILogicBase)))
+            {
+                _helper.DestroyUI(type);
+            }
         }
     }
 }
