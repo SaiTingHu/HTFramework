@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using UnityEngine;
 using UObject = UnityEngine.Object;
 
@@ -1031,14 +1032,73 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 返回到主线程
+        /// 将执行委托排到主线程调用（在子线程中）
         /// </summary>
-        /// <param name="action">返回到主线程执行的操作</param>
+        /// <param name="action">执行委托</param>
         public void QueueOnMainThread(HTFAction action)
         {
             _isCanDoQueue = false;
             _actionQueue.Add(action);
             _isCanDoQueue = true;
+        }
+        /// <summary>
+        /// 将执行委托排到子线程调用（在主线程中）
+        /// </summary>
+        /// <param name="action">执行委托</param>
+        /// <param name="backToMainThread">执行委托完成后，返回到主线程中回调的委托</param>
+        /// <returns>是否执行成功</returns>
+        public bool QueueOnSubThread(HTFAction<object> action, HTFAction backToMainThread = null)
+        {
+            WaitCallback callback = (args) =>
+            {
+                try
+                {
+                    action?.Invoke(args);
+                }
+                catch (Exception e)
+                {
+                    string error = string.Format("子线程执行中出现异常，子线程方法：{0}.{1}，异常信息：{2}", action.Target.GetType().FullName, action.Method.Name, e.Message);
+                    Log.Error(error);
+                }
+                finally
+                {
+                    if (backToMainThread != null)
+                    {
+                        QueueOnMainThread(backToMainThread);
+                    }
+                }
+            };
+            return ThreadPool.QueueUserWorkItem(callback);
+        }
+        /// <summary>
+        /// 将执行委托排到子线程调用（在主线程中）
+        /// </summary>
+        /// <param name="action">执行委托</param>
+        /// <param name="state">委托的参数</param>
+        /// <param name="backToMainThread">执行委托完成后，返回到主线程中回调的委托</param>
+        /// <returns>是否执行成功</returns>
+        public bool QueueOnSubThread(HTFAction<object> action, object state, HTFAction backToMainThread = null)
+        {
+            WaitCallback callback = (args) =>
+            {
+                try
+                {
+                    action?.Invoke(args);
+                }
+                catch (Exception e)
+                {
+                    string error = string.Format("子线程执行中出现异常，子线程方法：{0}.{1}，异常信息：{2}", action.Target.GetType().FullName, action.Method.Name, e.Message);
+                    Log.Error(error);
+                }
+                finally
+                {
+                    if (backToMainThread != null)
+                    {
+                        QueueOnMainThread(backToMainThread);
+                    }
+                }
+            };
+            return ThreadPool.QueueUserWorkItem(callback, state);
         }
         #endregion
 
