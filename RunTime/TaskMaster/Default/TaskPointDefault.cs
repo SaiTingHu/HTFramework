@@ -28,6 +28,10 @@ namespace HT.Framework
             else
             {
                 _target = GetTarget.GetComponent<TaskTarget>();
+                if (_trigger == TaskTrigger.StateChange)
+                {
+                    _target.State = TaskTargetState.Normal;
+                }
             }
         }
         protected override void OnUpdate()
