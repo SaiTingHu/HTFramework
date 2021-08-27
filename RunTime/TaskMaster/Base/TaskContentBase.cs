@@ -170,20 +170,23 @@ namespace HT.Framework
             bool isComplete = true;
             for (int i = 0; i < Points.Count; i++)
             {
-                if (!Points[i].IsComplete && !Points[i].IsCompleting)
-                {
-                    isComplete = false;
+                if (Points[i].IsComplete)
+                    continue;
 
-                    if (IsDependComplete(i))
+                isComplete = false;
+
+                if (Points[i].IsCompleting)
+                    continue;
+
+                if (IsDependComplete(i))
+                {
+                    if (Points[i].IsEnable && Points[i].IsEnableRunTime)
                     {
-                        if (Points[i].IsEnable && Points[i].IsEnableRunTime)
-                        {
-                            Points[i].OnMonitor();
-                        }
-                        else
-                        {
-                            Points[i].AutoComplete();
-                        }
+                        Points[i].OnMonitor();
+                    }
+                    else
+                    {
+                        Points[i].AutoComplete();
                     }
                 }
             }
