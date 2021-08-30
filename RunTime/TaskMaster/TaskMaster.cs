@@ -367,9 +367,9 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 完成当前任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
+        /// 自动完成当前任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
         /// </summary>
-        public void CompleteCurrentTaskContent()
+        public void AutoCompleteCurrentTaskContent()
         {
             if (!_running)
                 return;

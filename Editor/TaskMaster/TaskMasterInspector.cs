@@ -49,9 +49,9 @@ namespace HT.Framework
                 GUILayout.Label("Current Task: " + (Target.CurrentTaskContent != null ? Target.CurrentTaskContent.Name : "<None>"));
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.CurrentTaskContent != null;
-                if (GUILayout.Button("Complete", EditorStyles.miniButton))
+                if (GUILayout.Button("Auto Complete", EditorStyles.miniButton))
                 {
-                    Target.CompleteCurrentTaskContent();
+                    Target.AutoCompleteCurrentTaskContent();
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
