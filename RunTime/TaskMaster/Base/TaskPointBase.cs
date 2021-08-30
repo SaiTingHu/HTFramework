@@ -703,6 +703,21 @@ namespace HT.Framework
                         GUI.changed = true;
                     }
                     break;
+                case EventType.KeyDown:
+                    switch (e.keyCode)
+                    {
+                        case KeyCode.Delete:
+                            if (IsSelected)
+                            {
+                                if (EditorUtility.DisplayDialog("Delete Task Point", "Are you sure you want to delete task point [" + Name + "]?", "Yes", "No"))
+                                {
+                                    DeletePoint(asset, content);
+                                    GUI.changed = true;
+                                }
+                            }
+                            break;
+                    }
+                    break;
             }
         }
         /// <summary>

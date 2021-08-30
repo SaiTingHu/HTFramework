@@ -12,6 +12,20 @@ namespace HT.Framework
     /// </summary>
     internal sealed class TaskEditorWindow : HTFEditorWindow, ILocalizeWindow
     {
+        private static HTFFunc<string, string> NewTaskPointScriptHandler;
+
+        /// <summary>
+        /// 注册【新建任务点脚本】时的自定义处理者
+        /// </summary>
+        /// <param name="handler">自定义处理者</param>
+        public static void RegisterNewTaskPointScriptHandler(HTFFunc<string, string> handler)
+        {
+            NewTaskPointScriptHandler = handler;
+        }
+        /// <summary>
+        /// 打开窗口
+        /// </summary>
+        /// <param name="contentAsset">任务资源</param>
         public static void ShowWindow(TaskContentAsset contentAsset)
         {
             TaskEditorWindow window = GetWindow<TaskEditorWindow>();
@@ -176,6 +190,10 @@ namespace HT.Framework
             AddWord("复制", "Copy");
             AddWord("粘贴", "Paste");
             AddWord("克隆", "Clone");
+            AddWord("全部折叠", "Collapse All");
+            AddWord("全部展开", "Expand All");
+            AddWord("全部启用", "Enable All");
+            AddWord("全部禁用", "Disable All");
         }
 
         /// <summary>
@@ -279,14 +297,6 @@ namespace HT.Framework
                         if (Event.current.button == 1)
                         {
                             GenericMenu gm = new GenericMenu();
-                            gm.AddItem(new GUIContent(GetWord("<New Task Point Script>")), false, () =>
-                            {
-                                NewTaskPointScript();
-                            });
-                            gm.AddSeparator("");
-                            CopyTaskPoint(gm);
-                            PasteTaskPoint(gm, pos);
-                            gm.AddSeparator("");
                             gm.AddItem(new GUIContent(GetWord("Add Task Point") + "/默认"), false, () =>
                             {
                                 AddPoint(_currentContent, typeof(TaskPointDefault), pos);
@@ -318,6 +328,52 @@ namespace HT.Framework
                                     FindPoint(point);
                                 });
                             }
+                            gm.AddSeparator("");
+                            CopyTaskPoint(gm);
+                            PasteTaskPoint(gm, pos);
+                            gm.AddSeparator("");
+                            gm.AddItem(new GUIContent(GetWord("Collapse All")), false, () =>
+                            {
+                                for (int i = 0; i < _currentContent.Points.Count; i++)
+                                {
+                                    TaskPointBase point = _currentContent.Points[i];
+                                    point.IsExpand = false;
+                                }
+                                GUI.changed = true;
+                            });
+                            gm.AddItem(new GUIContent(GetWord("Expand All")), false, () =>
+                            {
+                                for (int i = 0; i < _currentContent.Points.Count; i++)
+                                {
+                                    TaskPointBase point = _currentContent.Points[i];
+                                    point.IsExpand = true;
+                                }
+                                GUI.changed = true;
+                            });
+                            gm.AddSeparator("");
+                            gm.AddItem(new GUIContent(GetWord("Enable All")), false, () =>
+                            {
+                                for (int i = 0; i < _currentContent.Points.Count; i++)
+                                {
+                                    TaskPointBase point = _currentContent.Points[i];
+                                    point.IsEnable = true;
+                                }
+                                GUI.changed = true;
+                            });
+                            gm.AddItem(new GUIContent(GetWord("Disable All")), false, () =>
+                            {
+                                for (int i = 0; i < _currentContent.Points.Count; i++)
+                                {
+                                    TaskPointBase point = _currentContent.Points[i];
+                                    point.IsEnable = false;
+                                }
+                                GUI.changed = true;
+                            });
+                            gm.AddSeparator("");
+                            gm.AddItem(new GUIContent(GetWord("<New Task Point Script>")), false, () =>
+                            {
+                                NewTaskPointScript();
+                            });
                             gm.ShowAsContext();
                         }
                         break;
@@ -505,14 +561,6 @@ namespace HT.Framework
                     if (GUI.Button(sub, _addGC, "InvisibleButton"))
                     {
                         GenericMenu gm = new GenericMenu();
-                        gm.AddItem(new GUIContent(GetWord("<New Task Content Script>")), false, () =>
-                        {
-                            NewTaskContentScript();
-                        });
-                        gm.AddSeparator("");
-                        CopyTaskContent(gm);
-                        PasteCloneTaskContent(gm);
-                        gm.AddSeparator("");
                         gm.AddItem(new GUIContent(GetWord("Add Task Content") + "/默认"), false, () =>
                         {
                             AddContent(typeof(TaskContentDefault));
@@ -535,6 +583,14 @@ namespace HT.Framework
                                 AddContent(type);
                             });
                         }
+                        gm.AddSeparator("");
+                        CopyTaskContent(gm);
+                        PasteCloneTaskContent(gm);
+                        gm.AddSeparator("");
+                        gm.AddItem(new GUIContent(GetWord("<New Task Content Script>")), false, () =>
+                        {
+                            NewTaskContentScript();
+                        });
                         gm.ShowAsContext();
                     }
                 };
@@ -714,7 +770,7 @@ namespace HT.Framework
         /// </summary>
         private void NewTaskPointScript()
         {
-            EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_TaskPoint_Folder, "TaskPoint", "TaskPointTemplate");
+            EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_TaskPoint_Folder, "TaskPoint", "TaskPointTemplate", NewTaskPointScriptHandler);
         }
 
         /// <summary>
