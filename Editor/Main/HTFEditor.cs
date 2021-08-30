@@ -203,11 +203,19 @@ namespace HT.Framework
         /// <summary>
         /// 标记目标已改变
         /// </summary>
-        protected void HasChanged()
+        /// <param name="markTarget">是否仅标记单个 target</param>
+        protected void HasChanged(bool markTarget = false)
         {
-            for (int i = 0; i < targets.Length; i++)
+            if (markTarget)
             {
-                EditorUtility.SetDirty(targets[i]);
+                EditorUtility.SetDirty(target);
+            }
+            else
+            {
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    EditorUtility.SetDirty(targets[i]);
+                }
             }
 
             if (EditorApplication.isPlaying)

@@ -973,7 +973,7 @@ namespace HT.Framework
                         {
                             Undo.RecordObject(inspector.target, "Move Handler");
                             fieldInspector.Field.SetValue(inspector.target, newValue);
-                            inspector.HasChanged();
+                            inspector.HasChanged(true);
                         }
                         if (MAttribute.Display != null)
                         {
@@ -993,7 +993,7 @@ namespace HT.Framework
                         {
                             Undo.RecordObject(inspector.target, "Move Handler");
                             fieldInspector.Field.SetValue(inspector.target, newValue);
-                            inspector.HasChanged();
+                            inspector.HasChanged(true);
                         }
                         if (MAttribute.Display != null)
                         {
@@ -1031,7 +1031,7 @@ namespace HT.Framework
                         {
                             Undo.RecordObject(inspector.target, "Radius Handler");
                             fieldInspector.Field.SetValue(inspector.target, newValue);
-                            inspector.HasChanged();
+                            inspector.HasChanged(true);
                         }
                         if (RAttribute.Display != null)
                         {
@@ -1053,7 +1053,7 @@ namespace HT.Framework
                         {
                             Undo.RecordObject(inspector.target, "Radius Handler");
                             fieldInspector.Field.SetValue(inspector.target, newValue);
-                            inspector.HasChanged();
+                            inspector.HasChanged(true);
                         }
                         if (RAttribute.Display != null)
                         {
@@ -1095,7 +1095,7 @@ namespace HT.Framework
                             value.center = BoundsHandle.center;
                             value.size = BoundsHandle.size;
                             fieldInspector.Field.SetValue(inspector.target, value);
-                            inspector.HasChanged();
+                            inspector.HasChanged(true);
                         }
                         if (BAttribute.Display != null)
                         {
