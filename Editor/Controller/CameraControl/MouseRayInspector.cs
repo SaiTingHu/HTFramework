@@ -49,9 +49,6 @@ namespace HT.Framework
                 PropertyField(nameof(MouseRay.BGPosOffset), "BG Pos Offset");
                 PropertyField(nameof(MouseRay.BGWidthOffset), "BG Width Offset");
             }
-
-            PropertyField(nameof(MouseRay.ScreenWidthHalf), "Screen Width Half");
-            PropertyField(nameof(MouseRay.ScreenHeightHalf), "Screen Height Half");
         }
     }
 }
