@@ -869,7 +869,6 @@ MonoBehaviour:
   BGPosOffset: {x: 0, y: 0}
   BGWidthOffset: 40
   ScreenWidthHalf: 640
-  ScreenHeightHalf: 360
 --- !u!1 &1797080342905102
 GameObject:
   m_ObjectHideFlags: 0

@@ -72,6 +72,10 @@ namespace HT.Framework
         /// </summary>
         public float BGWidthOffset = 40;
         /// <summary>
+        /// 设定的屏幕宽度的一半
+        /// </summary>
+        public int ScreenWidthHalf = 640;
+        /// <summary>
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI位置)
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
@@ -231,16 +235,11 @@ namespace HT.Framework
             {
                 _rayHitBGPos.Set(pos.x + BGPosOffset.x, pos.y + BGPosOffset.y);
                 _rayHitBGSize.Set(RayHitText.rectTransform.sizeDelta.x + BGWidthOffset, RayHitBG.rectTransform.sizeDelta.y);
-
-                float halfWidth = Screen.width * 0.5f;
-                float halfHeight = Screen.height * 0.5f;
-                float minX = -halfWidth + _rayHitBGSize.x * 0.5f;
-                float maxX = halfWidth - _rayHitBGSize.x * 0.5f;
-                float minY = -halfHeight + _rayHitBGSize.y * 0.5f;
-                float maxY = halfHeight - _rayHitBGSize.y * 0.5f;
-                _rayHitBGPos.x = Mathf.Clamp(_rayHitBGPos.x, minX, maxX);
-                _rayHitBGPos.y = Mathf.Clamp(_rayHitBGPos.y, minY, maxY);
                 
+                float minX = -ScreenWidthHalf + _rayHitBGSize.x * RayHitBG.rectTransform.pivot.x;
+                float maxX = ScreenWidthHalf - _rayHitBGSize.x * (1 - RayHitBG.rectTransform.pivot.x);
+                _rayHitBGPos.x = Mathf.Clamp(_rayHitBGPos.x, minX, maxX);
+
                 RayHitBG.rectTransform.anchoredPosition = _rayHitBGPos;
                 RayHitBG.rectTransform.sizeDelta = _rayHitBGSize;
             }
