@@ -60,6 +60,15 @@ namespace HT.Framework
             ApplyObjectPath(fsmData, fsmData.StateMachine.gameObject, fieldInfos);
         }
         /// <summary>
+        /// 应用FSM参数的对象路径定义
+        /// </summary>
+        /// <param name="fsmArgs">FSM参数实例</param>
+        /// <param name="fieldInfos">所有自动化字段</param>
+        public static void ApplyObjectPath(FSMArgsBase fsmArgs, FieldInfo[] fieldInfos)
+        {
+            ApplyObjectPath(fsmArgs, fsmArgs.StateMachine.gameObject, fieldInfos);
+        }
+        /// <summary>
         /// 应用FSM状态的对象路径定义
         /// </summary>
         /// <param name="fsmState">FSM状态实例</param>
@@ -130,6 +139,15 @@ namespace HT.Framework
         public static void ApplyDataBinding(FSMDataBase fsmData, FieldInfo[] fieldInfos)
         {
             ApplyDataBinding(fsmData, fsmData, fieldInfos);
+        }
+        /// <summary>
+        /// 应用FSM参数的数据绑定
+        /// </summary>
+        /// <param name="fsmArgs">FSM参数实例</param>
+        /// <param name="fieldInfos">所有自动化字段</param>
+        public static void ApplyDataBinding(FSMArgsBase fsmArgs, FieldInfo[] fieldInfos)
+        {
+            ApplyDataBinding(fsmArgs, fsmArgs.StateMachine.CurrentData, fieldInfos);
         }
         /// <summary>
         /// 应用FSM状态的数据绑定

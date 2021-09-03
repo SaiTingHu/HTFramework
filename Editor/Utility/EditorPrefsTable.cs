@@ -32,6 +32,14 @@ namespace HT.Framework
         /// </summary>
         public static readonly string Script_FiniteState_Folder = "HT.Framework.Script.FiniteState";
         /// <summary>
+        /// 新建FSMArgs脚本的文件夹
+        /// </summary>
+        public static readonly string Script_FSMArgs_Folder = "HT.Framework.Script.FSMArgs";
+        /// <summary>
+        /// 新建FSMData脚本的文件夹
+        /// </summary>
+        public static readonly string Script_FSMData_Folder = "HT.Framework.Script.FSMData";
+        /// <summary>
         /// 新建Procedure脚本的文件夹
         /// </summary>
         public static readonly string Script_Procedure_Folder = "HT.Framework.Script.Procedure";

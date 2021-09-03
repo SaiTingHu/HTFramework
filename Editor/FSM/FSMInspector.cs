@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(FSM))]
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
@@ -22,10 +23,14 @@ namespace HT.Framework
         private SerializedProperty _states;
         private ReorderableList _stateList;
         private Dictionary<string, string> _stateNames;
+        private Editor _argsEditor;
 
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
+
+            if (Targets.Length > 1)
+                return;
 
             _stateGC = new GUIContent();
             _stateGC.image = EditorGUIUtility.IconContent("AnimatorState Icon").image;
@@ -219,6 +224,12 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
+            if (Targets.Length > 1)
+            {
+                EditorGUILayout.HelpBox("FSM cannot be multi-edited.", MessageType.None);
+                return;
+            }
+
             GUI.enabled = !EditorApplication.isPlaying;
 
             GUILayout.BeginHorizontal();
@@ -231,7 +242,7 @@ namespace HT.Framework
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Data", GUILayout.Width(LabelWidth));
-            if (GUILayout.Button(Target.Data, EditorGlobalTools.Styles.MiniPopup))
+            if (GUILayout.Button(Target.Data, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("<None>"), Target.Data == "<None>", () =>
@@ -240,6 +251,11 @@ namespace HT.Framework
                     Target.Data = "<None>";
                     HasChanged();
                 });
+                gm.AddItem(new GUIContent("<New Data Script>"), false, () =>
+                {
+                    EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_FSMData_Folder, "FSMData", "FSMDataTemplate");
+                });
+                gm.AddSeparator("");
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
                     return type.IsSubclassOf(typeof(FSMDataBase)) && !type.IsAbstract;
@@ -261,10 +277,15 @@ namespace HT.Framework
             _stateList.DoLayoutList();
 
             GUI.enabled = true;
+
+            OnArgsGUI();
         }
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
+
+            if (Targets.Length > 1)
+                return;
 
             GUILayout.BeginHorizontal();
             string currentStateName = "<None>";
@@ -305,6 +326,75 @@ namespace HT.Framework
                 Target.Final();
             }
             GUILayout.EndHorizontal();
+        }
+        private void OnArgsGUI()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Args", GUILayout.Width(LabelWidth));
+            string argsName = Target.Args != null ? Target.Args.GetType().FullName : "<None>";
+            if (GUILayout.Button(argsName, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("<None>"), Target.Args == null, () =>
+                {
+                    if (_argsEditor != null)
+                    {
+                        DestroyImmediate(_argsEditor);
+                        _argsEditor = null;
+                    }
+                    if (Target.Args != null)
+                    {
+                        DestroyImmediate(Target.Args);
+                        Target.Args = null;
+                        HasChanged();
+                    }
+                });
+                gm.AddItem(new GUIContent("<New Args Script>"), false, () =>
+                {
+                    EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_FSMArgs_Folder, "FSMArgs", "FSMArgsTemplate");
+                });
+                gm.AddSeparator("");
+                Type argsType = Target.Args != null ? Target.Args.GetType() : null;
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                {
+                    return type.IsSubclassOf(typeof(FSMArgsBase)) && !type.IsAbstract;
+                });
+                for (int i = 0; i < types.Count; i++)
+                {
+                    int j = i;
+                    gm.AddItem(new GUIContent(types[j].FullName), argsType == types[j], () =>
+                    {
+                        if (argsType != types[j])
+                        {
+                            if (_argsEditor != null)
+                            {
+                                DestroyImmediate(_argsEditor);
+                                _argsEditor = null;
+                            }
+                            if (Target.Args != null)
+                            {
+                                DestroyImmediate(Target.Args);
+                                Target.Args = null;
+                                HasChanged();
+                            }
+
+                            Target.Args = CreateInstance(types[j]) as FSMArgsBase;
+                            HasChanged();
+                        }
+                    });
+                }
+                gm.ShowAsContext();
+            }
+            GUILayout.EndHorizontal();
+            
+            if (Target.Args != null)
+            {
+                if (_argsEditor == null)
+                {
+                    _argsEditor = CreateEditor(Target.Args);
+                }
+                _argsEditor.OnInspectorGUI();
+            }
         }
     }
 }

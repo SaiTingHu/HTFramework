@@ -948,6 +948,7 @@ namespace HT.Framework
                         {
                             NewHelperScript();
                         });
+                        gm.AddSeparator("");
                         foreach (Type type in types)
                         {
                             CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();

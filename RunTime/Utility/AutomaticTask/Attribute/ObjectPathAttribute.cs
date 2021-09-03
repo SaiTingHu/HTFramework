@@ -4,7 +4,7 @@ namespace HT.Framework
 {
     /// <summary>
     /// 【自动化任务】对象路径定义，将根据设置的路径查找子对象用以初始化
-    /// （仅可用于 EntityLogicBase、UILogicBase、HTBehaviour、FiniteStateBase、FSMDataBase 子类中定义的非静态字段）
+    /// （仅可用于 EntityLogicBase、UILogicBase、HTBehaviour、FiniteStateBase、FSMDataBase、FSMArgsBase 子类中定义的非静态字段）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public sealed class ObjectPathAttribute : Attribute

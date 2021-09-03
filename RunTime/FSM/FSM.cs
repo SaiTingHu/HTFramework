@@ -34,6 +34,10 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal string FinalState = null;
         /// <summary>
+        /// 有限状态机参数【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal FSMArgsBase Args;
+        /// <summary>
         /// 有限状态机名称
         /// </summary>
         public string Name = "New Finite State Machine";
@@ -124,6 +128,11 @@ namespace HT.Framework
             _isAutomate = CurrentData != null ? CurrentData.IsAutomate : false;
             _isSupportedDataDriver = CurrentData != null ? CurrentData.IsSupportedDataDriver : false;
 
+            if (Args != null)
+            {
+                Args.StateMachine = this;
+            }
+
             DoAutomaticTask();
         }
         private void Start()
@@ -188,6 +197,16 @@ namespace HT.Framework
         /// 当前数据
         /// </summary>
         public FSMDataBase CurrentData { get; private set; }
+        /// <summary>
+        /// 当前参数
+        /// </summary>
+        public FSMArgsBase CurrentArgs
+        {
+            get
+            {
+                return Args;
+            }
+        }
 
         /// <summary>
         /// 获取状态
@@ -371,6 +390,11 @@ namespace HT.Framework
             {
                 DoAutomaticTaskOfData(CurrentData);
 
+                if (Args != null)
+                {
+                    DoAutomaticTaskOfArgs(Args);
+                }
+
                 foreach (var state in _stateInstances)
                 {
                     DoAutomaticTaskOfState(state.Key, state.Value);
@@ -390,6 +414,22 @@ namespace HT.Framework
                 if (_isSupportedDataDriver)
                 {
                     AutomaticTask.ApplyDataBinding(fsmData, fieldInfos);
+                }
+            }
+        }
+        /// <summary>
+        /// 进行自动化任务（参数）
+        /// </summary>
+        private void DoAutomaticTaskOfArgs(FSMArgsBase fsmArgs)
+        {
+            if (_isAutomate)
+            {
+                FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(fsmArgs.GetType());
+                AutomaticTask.ApplyObjectPath(fsmArgs, fieldInfos);
+
+                if (_isSupportedDataDriver)
+                {
+                    AutomaticTask.ApplyDataBinding(fsmArgs, fieldInfos);
                 }
             }
         }
