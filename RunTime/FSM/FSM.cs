@@ -18,10 +18,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsAutoRegister = true;
         /// <summary>
-        /// 有限状态机数据类型【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal string Data = "<None>";
-        /// <summary>
         /// 当前激活的所有状态类名【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal List<string> States = new List<string>();
@@ -33,6 +29,10 @@ namespace HT.Framework
         /// 当前最终状态类名【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string FinalState = null;
+        /// <summary>
+        /// 有限状态机数据类型【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal string Data = "<None>";
         /// <summary>
         /// 有限状态机参数【请勿在代码中修改】
         /// </summary>

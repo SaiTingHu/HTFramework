@@ -229,6 +229,15 @@ namespace HT.Framework
             };
             _stateNames = new Dictionary<string, string>();
 
+            if (Target.Args == null)
+            {
+                FSMArgsBase args = Target.GetComponent<FSMArgsBase>();
+                if (args != null)
+                {
+                    Target.Args = args;
+                    HasChanged();
+                }
+            }
             if (Target.Args != null)
             {
                 Target.Args.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
@@ -253,7 +262,9 @@ namespace HT.Framework
             PropertyField(nameof(FSM.IsAutoRegister), "Auto Register");
             PropertyField(nameof(FSM.Name), "Name");
             PropertyField(nameof(FSM.Group), "Group");
-            
+
+            _stateList.DoLayoutList();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Data", GUILayout.Width(LabelWidth));
             if (GUILayout.Button(Target.Data, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
@@ -288,8 +299,6 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
             
-            _stateList.DoLayoutList();
-
             GUI.enabled = true;
 
             OnArgsGUI();
@@ -408,7 +417,14 @@ namespace HT.Framework
                 {
                     _argsEditor = CreateEditor(Target.Args);
                 }
+
+                GUILayout.BeginVertical("Icon.InfiniteTrack");
+                GUILayout.Space(5);
+
                 _argsEditor.OnInspectorGUI();
+
+                GUILayout.Space(5);
+                GUILayout.EndVertical();
             }
         }
     }
