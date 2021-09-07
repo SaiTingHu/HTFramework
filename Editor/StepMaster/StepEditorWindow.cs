@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
 
 namespace HT.Framework
@@ -713,38 +714,7 @@ namespace HT.Framework
                     _currentStepObj.Instant = GUILayout.Toggle(_currentStepObj.Instant, GetWord("Instant"), GUILayout.Width(65));
                     GUILayout.EndHorizontal();
 
-                    #region 步骤目标物体丢失，根据目标GUID重新搜寻
-                    if (!_currentStepObj.Target)
-                    {
-                        if (_currentStepObj.TargetGUID != "<None>")
-                        {
-                            _currentStepObj.Target = GameObject.Find(_currentStepObj.TargetPath);
-                            if (!_currentStepObj.Target)
-                            {
-                                StepTarget[] targets = FindObjectsOfType<StepTarget>();
-                                foreach (StepTarget target in targets)
-                                {
-                                    if (target.GUID == _currentStepObj.TargetGUID && !target.GetComponent<StepPreview>())
-                                    {
-                                        _currentStepObj.Target = target.gameObject;
-                                        _currentStepObj.TargetPath = target.transform.FullName();
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                StepTarget target = _currentStepObj.Target.GetComponent<StepTarget>();
-                                if (!target)
-                                {
-                                    target = _currentStepObj.Target.AddComponent<StepTarget>();
-                                    target.GUID = _currentStepObj.TargetGUID;
-                                    HasChanged(_currentStepObj.Target);
-                                }
-                            }
-                        }
-                    }
-                    #endregion
+                    SearchStepTarget(_currentStepObj);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
@@ -1088,38 +1058,7 @@ namespace HT.Framework
                     _currentOperationObj.Instant = GUILayout.Toggle(_currentOperationObj.Instant, GetWord("Instant"), GUILayout.Width(65));
                     GUILayout.EndHorizontal();
 
-                    #region 步骤目标物体丢失，根据目标GUID重新搜寻
-                    if (!_currentOperationObj.Target)
-                    {
-                        if (_currentOperationObj.TargetGUID != "<None>")
-                        {
-                            _currentOperationObj.Target = GameObject.Find(_currentOperationObj.TargetPath);
-                            if (!_currentOperationObj.Target)
-                            {
-                                StepTarget[] targets = FindObjectsOfType<StepTarget>();
-                                foreach (StepTarget target in targets)
-                                {
-                                    if (target.GUID == _currentOperationObj.TargetGUID && !target.GetComponent<StepPreview>())
-                                    {
-                                        _currentOperationObj.Target = target.gameObject;
-                                        _currentOperationObj.TargetPath = target.transform.FullName();
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                StepTarget target = _currentOperationObj.Target.GetComponent<StepTarget>();
-                                if (!target)
-                                {
-                                    target = _currentOperationObj.Target.AddComponent<StepTarget>();
-                                    target.GUID = _currentOperationObj.TargetGUID;
-                                    HasChanged(_currentOperationObj.Target);
-                                }
-                            }
-                        }
-                    }
-                    #endregion
+                    SearchStepTarget(_currentOperationObj);
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
@@ -2197,6 +2136,124 @@ namespace HT.Framework
         private void SetStepListScroll(float scroll)
         {
             _stepListScroll.Set(0, scroll * (_contentAsset.Content.Count * 20 - position.height));
+        }
+        /// <summary>
+        /// 在场景中搜索步骤目标
+        /// </summary>
+        private void SearchStepTarget(StepContent content)
+        {
+            if (content.TargetGUID == "<None>")
+                return;
+
+            if (content.Target != null)
+                return;
+
+            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage != null)
+            {
+                content.Target = prefabStage.prefabContentsRoot.FindChildren(content.TargetPath);
+                if (content.Target == null)
+                {
+                    StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
+                    foreach (StepTarget target in targets)
+                    {
+                        if (target.GUID == content.TargetGUID && !target.GetComponent<StepPreview>())
+                        {
+                            content.Target = target.gameObject;
+                            content.TargetPath = target.transform.FullName();
+                            content.TargetPath = content.TargetPath.Substring(content.TargetPath.IndexOf("/") + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                content.Target = GameObject.Find(content.TargetPath);
+                if (content.Target == null)
+                {
+                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
+                    foreach (StepTarget target in targets)
+                    {
+                        if (target.GUID == content.TargetGUID && !target.GetComponent<StepPreview>())
+                        {
+                            content.Target = target.gameObject;
+                            content.TargetPath = target.transform.FullName();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (content.Target != null)
+            {
+                StepTarget target = content.Target.GetComponent<StepTarget>();
+                if (!target)
+                {
+                    target = content.Target.AddComponent<StepTarget>();
+                    target.GUID = content.TargetGUID;
+                    HasChanged(content.Target);
+                }
+            }
+        }
+        /// <summary>
+        /// 在场景中搜索步骤（操作）目标
+        /// </summary>
+        private void SearchStepTarget(StepOperation operation)
+        {
+            if (operation.TargetGUID == "<None>")
+                return;
+
+            if (operation.Target != null)
+                return;
+            
+            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage != null)
+            {
+                operation.Target = prefabStage.prefabContentsRoot.FindChildren(operation.TargetPath);
+                if (operation.Target == null)
+                {
+                    StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
+                    foreach (StepTarget target in targets)
+                    {
+                        if (target.GUID == operation.TargetGUID && !target.GetComponent<StepPreview>())
+                        {
+                            operation.Target = target.gameObject;
+                            operation.TargetPath = target.transform.FullName();
+                            operation.TargetPath = operation.TargetPath.Substring(operation.TargetPath.IndexOf("/") + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                operation.Target = GameObject.Find(operation.TargetPath);
+                if (operation.Target == null)
+                {
+                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
+                    foreach (StepTarget target in targets)
+                    {
+                        if (target.GUID == operation.TargetGUID && !target.GetComponent<StepPreview>())
+                        {
+                            operation.Target = target.gameObject;
+                            operation.TargetPath = target.transform.FullName();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (operation.Target != null)
+            {
+                StepTarget target = operation.Target.GetComponent<StepTarget>();
+                if (!target)
+                {
+                    target = operation.Target.AddComponent<StepTarget>();
+                    target.GUID = operation.TargetGUID;
+                    HasChanged(operation.Target);
+                }
+            }
         }
         /// <summary>
         /// 高级筛查方法改变

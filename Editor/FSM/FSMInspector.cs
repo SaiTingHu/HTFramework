@@ -219,6 +219,11 @@ namespace HT.Framework
                 }
             };
             _stateNames = new Dictionary<string, string>();
+
+            if (Target.Args != null)
+            {
+                Target.Args.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
+            }
         }
         protected override void OnInspectorDefaultGUI()
         {
@@ -344,7 +349,7 @@ namespace HT.Framework
                     }
                     if (Target.Args != null)
                     {
-                        DestroyImmediate(Target.Args);
+                        Undo.DestroyObjectImmediate(Target.Args);
                         Target.Args = null;
                         HasChanged();
                     }
@@ -373,12 +378,13 @@ namespace HT.Framework
                             }
                             if (Target.Args != null)
                             {
-                                DestroyImmediate(Target.Args);
+                                Undo.DestroyObjectImmediate(Target.Args);
                                 Target.Args = null;
                                 HasChanged();
                             }
 
-                            Target.Args = CreateInstance(types[j]) as FSMArgsBase;
+                            Target.Args = Undo.AddComponent(Target.gameObject, types[j]) as FSMArgsBase;
+                            Target.Args.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
                             HasChanged();
                         }
                     });

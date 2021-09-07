@@ -2,6 +2,7 @@
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 #endif
 
 namespace HT.Framework
@@ -115,7 +116,54 @@ namespace HT.Framework
             }
             GUI.color = Color.white;
 
-            if (taskGameObject.AgentEntity == null && taskGameObject.GUID != "<None>")
+            SearchTaskTarget(taskGameObject);
+
+            gUIContent = new GUIContent();
+            gUIContent.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
+            gUIContent.tooltip = "Delete";
+            GUI.enabled = taskGameObject.GUID != "<None>";
+            if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            {
+                taskGameObject.AgentEntity = null;
+                taskGameObject.GUID = "<None>";
+                taskGameObject.Path = "";
+            }
+            GUI.enabled = true;
+
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 在场景中搜索任务目标
+        /// </summary>
+        private static void SearchTaskTarget(TaskGameObject taskGameObject)
+        {
+            if (taskGameObject.GUID == "<None>")
+                return;
+
+            if (taskGameObject.AgentEntity != null)
+                return;
+
+            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage != null)
+            {
+                taskGameObject.AgentEntity = prefabStage.prefabContentsRoot.FindChildren(taskGameObject.Path);
+                if (taskGameObject.AgentEntity == null)
+                {
+                    TaskTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<TaskTarget>(true);
+                    foreach (TaskTarget target in targets)
+                    {
+                        if (taskGameObject.GUID == target.GUID)
+                        {
+                            taskGameObject.AgentEntity = target.gameObject;
+                            taskGameObject.Path = target.transform.FullName();
+                            taskGameObject.Path = taskGameObject.Path.Substring(taskGameObject.Path.IndexOf("/") + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
             {
                 taskGameObject.AgentEntity = GameObject.Find(taskGameObject.Path);
                 if (taskGameObject.AgentEntity == null)
@@ -131,31 +179,18 @@ namespace HT.Framework
                         }
                     }
                 }
-                else
+            }
+
+            if (taskGameObject.AgentEntity != null)
+            {
+                TaskTarget target = taskGameObject.AgentEntity.GetComponent<TaskTarget>();
+                if (!target)
                 {
-                    TaskTarget target = taskGameObject.AgentEntity.GetComponent<TaskTarget>();
-                    if (!target)
-                    {
-                        target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
-                        target.GUID = taskGameObject.GUID;
-                        EditorUtility.SetDirty(taskGameObject.AgentEntity);
-                    }
+                    target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
+                    target.GUID = taskGameObject.GUID;
+                    EditorUtility.SetDirty(taskGameObject.AgentEntity);
                 }
             }
-
-            gUIContent = new GUIContent();
-            gUIContent.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
-            gUIContent.tooltip = "Delete";
-            GUI.enabled = taskGameObject.GUID != "<None>";
-            if (GUILayout.Button(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
-            {
-                taskGameObject.AgentEntity = null;
-                taskGameObject.GUID = "<None>";
-                taskGameObject.Path = "";
-            }
-            GUI.enabled = true;
-
-            GUILayout.EndHorizontal();
         }
 
         /// <summary>

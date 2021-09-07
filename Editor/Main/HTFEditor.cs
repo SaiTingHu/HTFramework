@@ -716,5 +716,77 @@ namespace HT.Framework
             }
             property.serializedObject.ApplyModifiedProperties();
         }
+
+        /// <summary>
+        /// 创建可脚本化对象，并作为此主对象的子对象
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <returns>对象实例</returns>
+        protected T CreateSubScriptableObject<T>() where T : ScriptableObject
+        {
+            return CreateSubScriptableObject(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 创建可脚本化对象，并作为此主对象的子对象
+        /// </summary>
+        /// <param name="type">对象类型</param>
+        /// <returns>对象实例</returns>
+        protected ScriptableObject CreateSubScriptableObject(Type type)
+        {
+            if (Targets.Length > 1)
+                return null;
+
+            ScriptableObject obj = CreateInstance(type);
+            obj.name = type.FullName;
+            if (Target is Component)
+            {
+                Component component = Target as Component;
+                GameObject prefab = ScriptableToolkit.GetBelongPrefab(component.gameObject);
+                if (prefab != null)
+                {
+                    ScriptableToolkit.SaveSubScriptableObject(obj, prefab);
+                    return obj;
+                }
+                else
+                {
+                    return obj;
+                }
+            }
+            else
+            {
+                ScriptableToolkit.SaveSubScriptableObject(obj, Target);
+                return obj;
+            }
+        }
+        /// <summary>
+        /// 销毁可脚本化对象
+        /// </summary>
+        /// <param name="obj">对象</param>
+        protected void DestroySubScriptableObject(ScriptableObject obj)
+        {
+            if (Targets.Length > 1)
+                return;
+
+            if (obj == null)
+                return;
+
+            if (Target is Component)
+            {
+                Component component = Target as Component;
+                GameObject prefab = ScriptableToolkit.GetBelongPrefab(component.gameObject);
+                if (prefab != null)
+                {
+                    ScriptableToolkit.DestroySubScriptableObject(obj, prefab);
+                }
+                else
+                {
+                    DestroyImmediate(obj);
+                }
+            }
+            else
+            {
+                ScriptableToolkit.DestroySubScriptableObject(obj, Target);
+            }
+        }
     }
 }

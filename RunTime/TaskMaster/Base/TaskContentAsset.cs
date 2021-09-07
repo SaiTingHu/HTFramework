@@ -39,7 +39,7 @@ namespace HT.Framework
         /// <param name="mainAsset">主对象</param>
         internal static void GenerateSerializeSubObject(UnityEngine.Object obj, UnityEngine.Object mainAsset)
         {
-            obj.hideFlags = HideFlags.HideInHierarchy;
+            obj.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
             AssetDatabase.AddObjectToAsset(obj, mainAsset);
 
             string assetPath = AssetDatabase.GetAssetPath(mainAsset);
