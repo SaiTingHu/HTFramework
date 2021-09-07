@@ -143,19 +143,28 @@ namespace HT.Framework
                     if (!_stateNames.ContainsKey(stateType))
                     {
                         Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(stateType);
-                        string stateName = type.FullName;
-                        FiniteStateNameAttribute fsmAtt = type.GetCustomAttribute<FiniteStateNameAttribute>();
-                        if (fsmAtt != null)
+                        if (type != null)
                         {
-                            stateName = fsmAtt.Name;
+                            string stateName = type.FullName;
+                            FiniteStateNameAttribute fsmAtt = type.GetCustomAttribute<FiniteStateNameAttribute>();
+                            if (fsmAtt != null)
+                            {
+                                stateName = fsmAtt.Name;
+                            }
+                            _stateNames.Add(stateType, stateName);
                         }
-                        _stateNames.Add(stateType, stateName);
+                        else
+                        {
+                            _stateNames.Add(stateType, "<Missing>");
+                        }
                     }
 
                     Rect subrect = rect;
                     subrect.Set(rect.x, rect.y + 2, rect.width, 16);
                     _stateGC.text = _stateNames[stateType];
+                    GUI.color = _stateGC.text != "<Missing>" ? Color.white : Color.red;
                     GUI.Label(subrect, _stateGC);
+                    GUI.color = Color.white;
 
                     int size = 20;
                     if (Target.FinalState == stateType)
