@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -135,15 +136,17 @@ namespace HT.Framework
         /// </summary>
         /// <param name="target">目标</param>
         /// <param name="callback">点击事件回调</param>
-        void AddClickListener(GameObject target, HTFAction callback);
+        void AddClickListener(GameObject target, UnityAction callback);
         /// <summary>
         /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
         /// </summary>
         /// <param name="target">目标</param>
-        void RemoveClickListener(GameObject target);
+        /// <param name="callback">点击事件回调</param>
+        void RemoveClickListener(GameObject target, UnityAction callback);
         /// <summary>
-        /// 清空所有点击事件
+        /// 为挂载 MouseRayTargetBase 的目标移除所有的鼠标左键点击事件
         /// </summary>
-        void ClearClickListener();
+        /// <param name="target">目标</param>
+        void RemoveAllClickListener(GameObject target);
     }
 }

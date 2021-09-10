@@ -152,9 +152,7 @@ namespace HT.Framework
         private void RaycastHiting(GameObject target)
         {
             if (_rayTarget == target)
-            {
                 return;
-            }
 
             if (_rayTarget)
             {

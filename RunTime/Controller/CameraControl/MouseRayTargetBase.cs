@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace HT.Framework
 {
@@ -24,5 +25,9 @@ namespace HT.Framework
         /// 是否开启高亮，当目标被射线捕获时
         /// </summary>
         public bool IsOpenHighlight = true;
+        /// <summary>
+        /// 鼠标左键点击事件
+        /// </summary>
+        public UnityEvent OnMouseClick;
     }
 }

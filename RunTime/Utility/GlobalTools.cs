@@ -879,49 +879,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 世界坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
-        /// </summary>
-        /// <param name="position">世界坐标</param>
-        /// <param name="reference">参照物（要赋值的UGUI控件的根物体）</param>
-        /// <param name="uIType">UI类型</param>
-        /// <returns>基于参照物的局部UGUI坐标</returns>
-        public static Vector2 WorldToUGUIPosition(this Vector3 position, RectTransform reference = null, UIType uIType = UIType.Overlay)
-        {
-            Vector3 screenPos;
-            Vector2 anchoredPos = Vector2.zero;
-            switch (uIType)
-            {
-                case UIType.Overlay:
-                    screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
-                    if (screenPos.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        screenPos.z = 0;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
-                    }
-                    break;
-                case UIType.Camera:
-                    screenPos = Main.m_UI.UICamera.WorldToScreenPoint(position);
-                    if (screenPos.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        screenPos.z = 0;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, screenPos, Main.m_UI.UICamera, out anchoredPos);
-                    }
-                    break;
-                case UIType.World:
-                    anchoredPos = position;
-                    break;
-            }
-            return anchoredPos;
-        }
-        /// <summary>
         /// 屏幕坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
         /// </summary>
         /// <param name="position">屏幕坐标</param>
@@ -931,33 +888,25 @@ namespace HT.Framework
         public static Vector2 ScreenToUGUIPosition(this Vector3 position, RectTransform reference = null, UIType uIType = UIType.Overlay)
         {
             Vector2 anchoredPos = Vector2.zero;
-            switch (uIType)
+            if (position.z < 0)
             {
-                case UIType.Overlay:
-                    if (position.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        position.z = 0;
+                anchoredPos.Set(-100000, -100000);
+            }
+            else
+            {
+                position.z = 0;
+                switch (uIType)
+                {
+                    case UIType.Overlay:
                         RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
-                    }
-                    break;
-                case UIType.Camera:
-                    if (position.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        position.z = 0;
+                        break;
+                    case UIType.Camera:
                         RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
-                    }
-                    break;
-                case UIType.World:
-                    anchoredPos = position;
-                    break;
+                        break;
+                    case UIType.World:
+                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference, position, Main.m_Controller.MainCamera, out anchoredPos);
+                        break;
+                }
             }
             return anchoredPos;
         }

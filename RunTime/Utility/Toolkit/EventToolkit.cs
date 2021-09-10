@@ -104,7 +104,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="target">目标</param>
         /// <param name="callback">点击事件回调</param>
-        public static void AddClickListener(this GameObject target, HTFAction callback)
+        public static void AddClickListener(this GameObject target, UnityAction callback)
         {
             Main.m_Controller.AddClickListener(target, callback);
         }
@@ -112,9 +112,18 @@ namespace HT.Framework
         /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
         /// </summary>
         /// <param name="target">目标</param>
-        public static void RemoveClickListener(this GameObject target)
+        /// <param name="callback">点击事件回调</param>
+        public static void RemoveClickListener(this GameObject target, UnityAction callback)
         {
-            Main.m_Controller.RemoveClickListener(target);
+            Main.m_Controller.RemoveClickListener(target, callback);
+        }
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标移除所有的鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        public static void RemoveAllClickListener(this GameObject target)
+        {
+            Main.m_Controller.RemoveAllClickListener(target);
         }
     }
 }

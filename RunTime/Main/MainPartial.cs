@@ -92,10 +92,15 @@ namespace HT.Framework
             obj.transform.SetParent(original.transform.parent);
             if (isUI)
             {
-                obj.rectTransform().anchoredPosition3D = original.rectTransform().anchoredPosition3D;
-                obj.rectTransform().sizeDelta = original.rectTransform().sizeDelta;
-                obj.rectTransform().anchorMin = original.rectTransform().anchorMin;
-                obj.rectTransform().anchorMax = original.rectTransform().anchorMax;
+                RectTransform rect = obj.rectTransform();
+                RectTransform originalRect = original.rectTransform();
+                rect.anchoredPosition3D = originalRect.anchoredPosition3D;
+                rect.sizeDelta = originalRect.sizeDelta;
+                rect.offsetMin = originalRect.offsetMin;
+                rect.offsetMax = originalRect.offsetMax;
+                rect.anchorMin = originalRect.anchorMin;
+                rect.anchorMax = originalRect.anchorMax;
+                rect.pivot = originalRect.pivot;
             }
             else
             {

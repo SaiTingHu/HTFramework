@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -426,13 +427,13 @@ namespace HT.Framework
         {
             _helper.SetMouseRayFocusImage(background, content, uIType);
         }
-
+        
         /// <summary>
         /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
         /// </summary>
         /// <param name="target">目标</param>
         /// <param name="callback">点击事件回调</param>
-        public void AddClickListener(GameObject target, HTFAction callback)
+        public void AddClickListener(GameObject target, UnityAction callback)
         {
             _helper.AddClickListener(target, callback);
         }
@@ -440,16 +441,18 @@ namespace HT.Framework
         /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
         /// </summary>
         /// <param name="target">目标</param>
-        public void RemoveClickListener(GameObject target)
+        /// <param name="callback">点击事件回调</param>
+        public void RemoveClickListener(GameObject target, UnityAction callback)
         {
-            _helper.RemoveClickListener(target);
+            _helper.RemoveClickListener(target, callback);
         }
         /// <summary>
-        /// 清空所有点击事件
+        /// 为挂载 MouseRayTargetBase 的目标移除所有的鼠标左键点击事件
         /// </summary>
-        public void ClearClickListener()
+        /// <param name="target">目标</param>
+        public void RemoveAllClickListener(GameObject target)
         {
-            _helper.ClearClickListener();
+            _helper.RemoveAllClickListener(target);
         }
     }
 

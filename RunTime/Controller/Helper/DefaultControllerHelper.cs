@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -15,7 +15,6 @@ namespace HT.Framework
         private MouseRotation _mouseRotation;
         private MouseRay _mouseRay;
         private HighlightingEffect _highlightingEffect;
-        private Dictionary<MouseRayTargetBase, HTFAction> _mouseClickTargets = new Dictionary<MouseRayTargetBase, HTFAction>();
 
         /// <summary>
         /// 操作控制器
@@ -258,10 +257,7 @@ namespace HT.Framework
             {
                 if (RayTarget != null)
                 {
-                    if (_mouseClickTargets.ContainsKey(RayTarget))
-                    {
-                        _mouseClickTargets[RayTarget]?.Invoke();
-                    }
+                    RayTarget.OnMouseClick.Invoke();
                 }
             }
             if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeftDoubleClick))
@@ -281,7 +277,7 @@ namespace HT.Framework
         /// </summary>
         public void OnTermination()
         {
-            ClearClickListener();
+            
         }
         /// <summary>
         /// 暂停助手
@@ -409,7 +405,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="target">目标</param>
         /// <param name="callback">点击事件回调</param>
-        public void AddClickListener(GameObject target, HTFAction callback)
+        public void AddClickListener(GameObject target, UnityAction callback)
         {
             if (target == null || callback == null)
                 return;
@@ -417,17 +413,30 @@ namespace HT.Framework
             MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
             if (mouseRayTargetBase)
             {
-                if (!_mouseClickTargets.ContainsKey(mouseRayTargetBase))
-                {
-                    _mouseClickTargets.Add(mouseRayTargetBase, callback);
-                }
+                mouseRayTargetBase.OnMouseClick.AddListener(callback);
             }
         }
         /// <summary>
         /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
         /// </summary>
         /// <param name="target">目标</param>
-        public void RemoveClickListener(GameObject target)
+        /// <param name="callback">点击事件回调</param>
+        public void RemoveClickListener(GameObject target, UnityAction callback)
+        {
+            if (target == null || callback == null)
+                return;
+
+            MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
+            if (mouseRayTargetBase)
+            {
+                mouseRayTargetBase.OnMouseClick.RemoveListener(callback);
+            }
+        }
+        /// <summary>
+        /// 为挂载 MouseRayTargetBase 的目标移除所有的鼠标左键点击事件
+        /// </summary>
+        /// <param name="target">目标</param>
+        public void RemoveAllClickListener(GameObject target)
         {
             if (target == null)
                 return;
@@ -435,18 +444,8 @@ namespace HT.Framework
             MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
             if (mouseRayTargetBase)
             {
-                if (_mouseClickTargets.ContainsKey(mouseRayTargetBase))
-                {
-                    _mouseClickTargets.Remove(mouseRayTargetBase);
-                }
+                mouseRayTargetBase.OnMouseClick.RemoveAllListeners();
             }
-        }
-        /// <summary>
-        /// 清空所有点击事件
-        /// </summary>
-        public void ClearClickListener()
-        {
-            _mouseClickTargets.Clear();
         }
     }
 }
