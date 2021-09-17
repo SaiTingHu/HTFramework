@@ -41,6 +41,8 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsExpand = true;
 
+        private TaskTarget _target;
+
         /// <summary>
         /// 获取任务点ID
         /// </summary>
@@ -79,6 +81,26 @@ namespace HT.Framework
             get
             {
                 return Target.Entity;
+            }
+        }
+        /// <summary>
+        /// 获取任务点目标
+        /// </summary>
+        public TaskTarget GetTaskTarget
+        {
+            get
+            {
+                if (GetTarget == null)
+                {
+                    Log.Error("任务点 " + GetName + " 的目标为空，这是不被允许的！");
+                    return null;
+                }
+
+                if (_target == null)
+                {
+                    _target = GetTarget.GetComponent<TaskTarget>();
+                }
+                return _target;
             }
         }
         /// <summary>
@@ -163,6 +185,15 @@ namespace HT.Framework
         {
             yield return OnComplete();
 
+            if (GetTaskTarget != null)
+            {
+                GetTaskTarget.OnTaskPointComplete.Invoke();
+                if (!GetTaskTarget.CompletingTime.Approximately(0))
+                {
+                    yield return YieldInstructioner.GetWaitForSeconds(GetTaskTarget.CompletingTime);
+                }
+            }
+
             IsComplete = true;
             IsCompleting = false;
 
@@ -182,6 +213,11 @@ namespace HT.Framework
                 return;
 
             OnAutoComplete();
+
+            if (GetTaskTarget != null)
+            {
+                GetTaskTarget.OnTaskPointAutoComplete.Invoke();
+            }
 
             IsComplete = true;
 

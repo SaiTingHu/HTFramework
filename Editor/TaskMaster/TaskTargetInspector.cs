@@ -29,6 +29,9 @@ namespace HT.Framework
 
             PropertyField(nameof(TaskTarget.GUID), "GUID");
             PropertyField(nameof(TaskTarget.State), "State");
+            PropertyField(nameof(TaskTarget.CompletingTime), "Completing Time");
+            PropertyField(nameof(TaskTarget.OnTaskPointComplete), "On TaskPoint Complete");
+            PropertyField(nameof(TaskTarget.OnTaskPointAutoComplete), "On TaskPoint AutoComplete");
         }
         private void GenerateGUID()
         {

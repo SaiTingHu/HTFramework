@@ -380,6 +380,21 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 自动完成当前任务内容中指定的任务点
+        /// </summary>
+        /// <param name="id">任务点ID</param>
+        public void AutoCompleteCurrentTaskPoint(string id)
+        {
+            if (!_running)
+                return;
+
+            TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
+            if (taskPoint != null && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            {
+                taskPoint.AutoComplete();
+            }
+        }
+        /// <summary>
         /// 完成当前任务内容中指定的任务点
         /// </summary>
         /// <param name="id">任务点ID</param>

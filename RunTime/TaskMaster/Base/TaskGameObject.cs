@@ -59,7 +59,7 @@ namespace HT.Framework
         {
             if (taskGameObject == null)
                 return;
-
+            
             GUILayout.BeginHorizontal();
 
             GUIContent gUIContent = new GUIContent(name);
@@ -118,7 +118,7 @@ namespace HT.Framework
 
             SearchTaskTarget(taskGameObject);
 
-            gUIContent = new GUIContent();
+            gUIContent.text = null;
             gUIContent.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             gUIContent.tooltip = "Delete";
             GUI.enabled = taskGameObject.GUID != "<None>";
@@ -192,7 +192,7 @@ namespace HT.Framework
                 }
             }
         }
-
+        
         /// <summary>
         /// 克隆
         /// </summary>

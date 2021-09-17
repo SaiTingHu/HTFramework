@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace HT.Framework
 {
@@ -16,6 +17,18 @@ namespace HT.Framework
         /// 任务目标状态
         /// </summary>
         public TaskTargetState State = TaskTargetState.Normal;
+        /// <summary>
+        /// 以此为目标物体的任务点执行【完成】回调时所需的时间
+        /// </summary>
+        public float CompletingTime = 0;
+        /// <summary>
+        /// 当以此为目标物体的任务点【完成】时回调
+        /// </summary>
+        public UnityEvent OnTaskPointComplete;
+        /// <summary>
+        /// 当以此为目标物体的任务点【自动完成】时回调
+        /// </summary>
+        public UnityEvent OnTaskPointAutoComplete;
     }
 
     /// <summary>

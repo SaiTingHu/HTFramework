@@ -15,22 +15,16 @@ namespace HT.Framework
         [SerializeField] private TaskTrigger _trigger = TaskTrigger.MouseClick;
         [SerializeField] private bool _highlighting = true;
         [SerializeField] private float _duration = 1;
-        private TaskTarget _target;
-
+        
         protected override void OnStart()
         {
             base.OnStart();
 
-            if (GetTarget == null)
+            if (GetTaskTarget != null)
             {
-                Log.Error("任务点 " + GetName + " 的目标为空，这是不被允许的！");
-            }
-            else
-            {
-                _target = GetTarget.GetComponent<TaskTarget>();
                 if (_trigger == TaskTrigger.StateChange)
                 {
-                    _target.State = TaskTargetState.Normal;
+                    GetTaskTarget.State = TaskTargetState.Normal;
                 }
             }
         }
@@ -50,7 +44,7 @@ namespace HT.Framework
                     }
                     break;
                 case TaskTrigger.StateChange:
-                    if (_target != null && _target.State == TaskTargetState.Done)
+                    if (GetTaskTarget != null && GetTaskTarget.State == TaskTargetState.Done)
                     {
                         Complete();
                     }
