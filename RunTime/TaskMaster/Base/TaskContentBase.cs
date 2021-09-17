@@ -230,12 +230,6 @@ namespace HT.Framework
         public virtual TaskContentBase Clone()
         {
             TaskContentBase taskContent = Main.Clone(this);
-            taskContent.Target = Target.Clone();
-            taskContent.Depends.Clear();
-            for (int i = 0; i < Depends.Count; i++)
-            {
-                taskContent.Depends.Add(Depends[i].Clone());
-            }
             return taskContent;
         }
         /// <summary>

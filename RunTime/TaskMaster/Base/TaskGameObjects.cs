@@ -255,25 +255,6 @@ namespace HT.Framework
                 _removeGC.tooltip = "Remove select TaskGameObject";
             }
         }
-
-        /// <summary>
-        /// 克隆
-        /// </summary>
-        public TaskGameObjects Clone()
-        {
-            TaskGameObjects gameObjects = new TaskGameObjects();
-            gameObjects.GUIDs = new List<string>();
-            for (int i = 0; i < GUIDs.Count; i++)
-            {
-                gameObjects.GUIDs.Add(GUIDs[i]);
-            }
-            gameObjects.Paths = new List<string>();
-            for (int i = 0; i < Paths.Count; i++)
-            {
-                gameObjects.Paths.Add(Paths[i]);
-            }
-            return gameObjects;
-        }
 #endif
     }
 }

@@ -17,16 +17,5 @@ namespace HT.Framework
             OriginalPoint = originalPoint;
             DependPoint = dependPoint;
         }
-
-#if UNITY_EDITOR
-        /// <summary>
-        /// 克隆
-        /// </summary>
-        public TaskDepend Clone()
-        {
-            TaskDepend depend = new TaskDepend(OriginalPoint, DependPoint);
-            return depend;
-        }
-#endif
     }
 }

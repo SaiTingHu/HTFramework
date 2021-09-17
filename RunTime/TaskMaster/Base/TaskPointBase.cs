@@ -338,7 +338,6 @@ namespace HT.Framework
         public virtual TaskPointBase Clone()
         {
             TaskPointBase taskPoint = Main.Clone(this);
-            taskPoint.Target = Target.Clone();
             return taskPoint;
         }
         /// <summary>
