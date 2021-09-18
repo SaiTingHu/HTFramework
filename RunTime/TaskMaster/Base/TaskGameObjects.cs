@@ -78,7 +78,9 @@ namespace HT.Framework
 
             taskGameObjects._reorderableList.DoLayoutList();
 
-            return 20 + taskGameObjects.GUIDs.Count * 22;
+            int count = taskGameObjects.GUIDs.Count;
+            if (count <= 0) count = 1;
+            return 20 + count * 22;
         }
 
         /// <summary>
