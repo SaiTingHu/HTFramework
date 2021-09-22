@@ -244,6 +244,11 @@ namespace HT.Framework
                     _gameObjects.Add(null);
                 }
             }
+            while (_gameObjects.Count != GUIDs.Count)
+            {
+                if (_gameObjects.Count < GUIDs.Count) _gameObjects.Add(null);
+                else if (_gameObjects.Count > GUIDs.Count) _gameObjects.RemoveAt(_gameObjects.Count - 1);
+            }
             if (_addGC == null)
             {
                 _addGC = new GUIContent();
