@@ -169,6 +169,24 @@ namespace HT.Framework
                 return null;
             }
         }
+        /// <summary>
+        /// 随机获取一个当前任务内容中未完成的、已激活的（依赖已完成）任务点
+        /// </summary>
+        /// <returns>任务点</returns>
+        public TaskPointBase GetActivatedTaskPoint()
+        {
+            if (CurrentTaskContent == null)
+                return null;
+
+            for (int i = 0; i < CurrentTaskContent.Points.Count; i++)
+            {
+                if (!CurrentTaskContent.Points[i].IsComplete && !CurrentTaskContent.Points[i].IsCompleting && CurrentTaskContent.IsDependComplete(i))
+                {
+                    return CurrentTaskContent.Points[i];
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// 重新编译任务内容，在更改任务资源 ContentAsset 后，必须重新编译一次才可以开始任务流程
@@ -389,7 +407,7 @@ namespace HT.Framework
                 return;
 
             TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
-            if (taskPoint != null && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            if (taskPoint != null)
             {
                 taskPoint.AutoComplete();
             }
@@ -404,7 +422,7 @@ namespace HT.Framework
                 return;
 
             TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
-            if (taskPoint != null && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            if (taskPoint != null)
             {
                 taskPoint.Complete();
             }
@@ -424,7 +442,21 @@ namespace HT.Framework
                 taskPoint.Guide();
             }
         }
-        
+        /// <summary>
+        /// 指引指定的任务点
+        /// </summary>
+        /// <param name="taskPoint">任务点</param>
+        public void GuidePoint(TaskPointBase taskPoint)
+        {
+            if (!_running)
+                return;
+
+            if (taskPoint != null && !taskPoint.IsComplete && !taskPoint.IsCompleting)
+            {
+                taskPoint.Guide();
+            }
+        }
+
         /// <summary>
         /// 当前任务开始
         /// </summary>

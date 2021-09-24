@@ -60,8 +60,6 @@ namespace HT.Framework
         private string _displayName;
         private ReorderableList _reorderableList;
         private List<GameObject> _gameObjects;
-        private GUIContent _addGC;
-        private GUIContent _removeGC;
 
         /// <summary>
         /// 绘制字段
@@ -161,17 +159,22 @@ namespace HT.Framework
 
                     if (!EditorApplication.isPlaying)
                     {
+                        GUIContent gc = new GUIContent();
+                        gc.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
+                        gc.tooltip = "Add a new TaskGameObject";
                         sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
-                        if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                        if (GUI.Button(sub, gc, "InvisibleButton"))
                         {
                             GUIDs.Add("<None>");
                             Paths.Add("");
                             _gameObjects.Add(null);
                         }
 
+                        gc.image = EditorGUIUtility.IconContent("d_Toolbar Minus").image;
+                        gc.tooltip = "Remove select TaskGameObject";
                         sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                         GUI.enabled = _reorderableList.index >= 0 && _reorderableList.index < GUIDs.Count;
-                        if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                        if (GUI.Button(sub, gc, "InvisibleButton"))
                         {
                             GUIDs.RemoveAt(_reorderableList.index);
                             Paths.RemoveAt(_reorderableList.index);
@@ -248,18 +251,6 @@ namespace HT.Framework
             {
                 if (_gameObjects.Count < GUIDs.Count) _gameObjects.Add(null);
                 else if (_gameObjects.Count > GUIDs.Count) _gameObjects.RemoveAt(_gameObjects.Count - 1);
-            }
-            if (_addGC == null)
-            {
-                _addGC = new GUIContent();
-                _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
-                _addGC.tooltip = "Add a new TaskGameObject";
-            }
-            if (_removeGC == null)
-            {
-                _removeGC = new GUIContent();
-                _removeGC.image = EditorGUIUtility.IconContent("d_Toolbar Minus").image;
-                _removeGC.tooltip = "Remove select TaskGameObject";
             }
         }
 #endif
