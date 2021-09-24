@@ -77,6 +77,11 @@ namespace HT.Framework
         public void OnPreparatory()
         {
             Device.OnStartUp();
+
+            Main.Current.ApplicationFocusEvent += (isFocus) =>
+            {
+                ResetAll();
+            };
         }
         /// <summary>
         /// 刷新助手
