@@ -669,7 +669,8 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
+                Log.Error("获取参数失败：当前不存在参数 " + parameterName + "！");
+                return null;
             }
         }
         /// <summary>
@@ -686,7 +687,8 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Main, "当前不存在参数：" + parameterName + "！");
+                Log.Error("获取参数失败：当前不存在参数 " + parameterName + "！");
+                return null;
             }
         }
         /// <summary>

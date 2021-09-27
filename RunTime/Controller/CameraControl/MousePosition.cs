@@ -55,10 +55,6 @@ namespace HT.Framework
         /// 操作控制器
         /// </summary>
         public ControllerManager Manager { get; set; }
-        /// <summary>
-        /// 旋转控制器
-        /// </summary>
-        public MouseRotation MR { get; set; }
         
         /// <summary>
         /// 平移注视视野
@@ -153,7 +149,6 @@ namespace HT.Framework
                 }
                 Target.transform.Translate(transform.right * Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * -1);
                 Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * -1);
-                MR.NeedDamping = false;
             }
             else if (IsCanByKey && (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.UpperLower) != 0))
             {
@@ -165,11 +160,6 @@ namespace HT.Framework
                 Target.transform.Translate(transform.right * Main.m_Input.GetAxis(InputAxisType.Horizontal) * XSpeed);
                 Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.Vertical) * ZSpeed);
                 Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.UpperLower) * YSpeed);
-                MR.NeedDamping = false;
-            }
-            else
-            {
-                MR.NeedDamping = true;
             }
         }
         private void ApplyPosition()

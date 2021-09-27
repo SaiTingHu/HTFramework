@@ -224,7 +224,6 @@ namespace HT.Framework
             _highlightingEffect = MainCamera.GetComponent<HighlightingEffect>();
 
             _mousePosition.Target = _cameraTarget;
-            _mousePosition.MR = _mouseRotation;
             _mousePosition.Manager = Module as ControllerManager;
             _mouseRotation.Target = _cameraTarget;
             _mouseRotation.Manager = Module as ControllerManager;
