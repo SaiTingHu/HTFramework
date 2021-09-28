@@ -8,11 +8,12 @@
         /// <summary>
         /// 任务内容对象
         /// </summary>
-        public TaskContentBase TaskContent;
+        public TaskContentBase TaskContent { get; private set; }
 
         /// <summary>
         /// 填充数据，所有属性、字段的初始化工作可以在这里完成
         /// </summary>
+        /// <param name="taskContent">任务内容对象</param>
         public EventTaskContentStart Fill(TaskContentBase taskContent)
         {
             TaskContent = taskContent;

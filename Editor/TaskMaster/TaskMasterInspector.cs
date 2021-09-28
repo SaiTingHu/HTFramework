@@ -32,8 +32,6 @@ namespace HT.Framework
                     PropertyField(nameof(TaskMaster.OutlineIntensity), "Outline Intensity");
                     break;
             }
-
-            PropertyField(nameof(TaskMaster.IsAutoChange), "Auto Change");
         }
         protected override void OnInspectorRuntimeGUI()
         {

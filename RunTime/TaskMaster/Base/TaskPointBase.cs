@@ -168,6 +168,15 @@ namespace HT.Framework
         /// </summary>
         public void Complete()
         {
+            if (!IsStart)
+            {
+                IsStart = true;
+
+                OnStart();
+
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
+            }
+
             if (IsComplete)
                 return;
 
@@ -199,13 +208,22 @@ namespace HT.Framework
 
             OnEnd();
 
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, false));
         }
         /// <summary>
         /// 自动完成任务点
         /// </summary>
         internal void AutoComplete()
         {
+            if (!IsStart)
+            {
+                IsStart = true;
+
+                OnStart();
+
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
+            }
+
             if (IsComplete)
                 return;
 
@@ -223,11 +241,11 @@ namespace HT.Framework
 
             OnEnd();
 
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, true));
         }
 
         /// <summary>
-        /// 任务点开始后，每帧监测
+        /// 任务点的前置依赖完成后，每帧监测
         /// </summary>
         internal void OnMonitor()
         {
@@ -247,6 +265,15 @@ namespace HT.Framework
         /// </summary>
         internal void Guide()
         {
+            if (!IsStart)
+                return;
+
+            if (IsComplete)
+                return;
+
+            if (IsCompleting)
+                return;
+
             OnGuide();
         }
         /// <summary>

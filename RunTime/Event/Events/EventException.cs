@@ -7,9 +7,18 @@ namespace HT.Framework
     /// </summary>
     public sealed class EventException : EventHandlerBase
     {
-        public string LogString;
-        public string StackTrace;
-        public LogType TheType;
+        /// <summary>
+        /// 异常日志
+        /// </summary>
+        public string LogString { get; private set; }
+        /// <summary>
+        /// 堆栈跟踪信息
+        /// </summary>
+        public string StackTrace { get; private set; }
+        /// <summary>
+        /// 日志类型
+        /// </summary>
+        public LogType TheType { get; private set; }
 
         /// <summary>
         /// 填充数据，所有属性、字段的初始化工作可以在这里完成

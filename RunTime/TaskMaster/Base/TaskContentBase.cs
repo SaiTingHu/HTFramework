@@ -87,6 +87,10 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 是否开始
+        /// </summary>
+        public bool IsStart { get; private set; } = false;
+        /// <summary>
         /// 是否完成
         /// </summary>
         public bool IsComplete { get; private set; } = false;
@@ -112,28 +116,50 @@ namespace HT.Framework
         {
             
         }
-
-        /// <summary>
-        /// 任务内容开始
-        /// </summary>
-        internal void Start()
-        {
-            OnStart();
-        }
+        
         /// <summary>
         /// 任务内容完成
         /// </summary>
         internal void Complete()
         {
+            if (!IsStart)
+            {
+                IsStart = true;
+
+                OnStart();
+
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
+            }
+
+            if (IsComplete)
+                return;
+
+            IsComplete = true;
+
             OnComplete();
+            
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this));
         }
         /// <summary>
-        /// 任务内容自动完成（未完成的任务点）
+        /// 任务内容自动完成（未完成的任务点会自动完成）
         /// </summary>
         internal void AutoComplete()
         {
+            if (!IsStart)
+            {
+                IsStart = true;
+
+                OnStart();
+
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
+            }
+
             if (IsComplete)
                 return;
+
+            IsComplete = true;
+
+            OnComplete();
 
             List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
             List<int> uncompletePointIndexs = new List<int>();
@@ -158,13 +184,24 @@ namespace HT.Framework
                     }
                 }
             }
-            IsComplete = true;
+
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this));
         }
         /// <summary>
         /// 任务内容开始后，每帧监测
         /// </summary>
-        internal void OnMonitor()
+        /// <returns>所有任务点是否已完成</returns>
+        internal bool OnMonitor()
         {
+            if (!IsStart)
+            {
+                IsStart = true;
+
+                OnStart();
+
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
+            }
+
             OnUpdate();
 
             bool isComplete = true;
@@ -190,13 +227,14 @@ namespace HT.Framework
                     }
                 }
             }
-            IsComplete = isComplete;
+            return isComplete;
         }
         /// <summary>
         /// 重置状态
         /// </summary>
         internal void ReSet()
         {
+            IsStart = false;
             IsComplete = false;
         }
         /// <summary>
