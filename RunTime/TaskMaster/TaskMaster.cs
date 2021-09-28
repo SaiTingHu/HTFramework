@@ -52,6 +52,8 @@ namespace HT.Framework
         private TaskContentBase _currentTaskContent;
         //任务控制者运行中
         private bool _running = false;
+        //任务控制者暂停中
+        private bool _pause = false;
 
         /// <summary>
         /// 当前是否运行中
@@ -61,6 +63,20 @@ namespace HT.Framework
             get
             {
                 return _running;
+            }
+        }
+        /// <summary>
+        /// 暂停任务控制者
+        /// </summary>
+        public bool Pause
+        {
+            get
+            {
+                return _pause;
+            }
+            set
+            {
+                _pause = value;
             }
         }
         /// <summary>
@@ -100,6 +116,9 @@ namespace HT.Framework
 
             if (_running)
             {
+                if (Pause)
+                    return;
+
                 if (_currentTaskContent != null)
                 {
                     _currentTaskContent.OnMonitor();
@@ -119,6 +138,18 @@ namespace HT.Framework
             _taskContentsList.Clear();
             _taskContents.Clear();
             _taskPoints.Clear();
+        }
+        public override void OnPause()
+        {
+            base.OnPause();
+
+            Pause = true;
+        }
+        public override void OnResume()
+        {
+            base.OnResume();
+
+            Pause = false;
         }
 
         /// <summary>
@@ -281,6 +312,7 @@ namespace HT.Framework
                 _currentTaskContentIndex = 0;
                 _currentTaskContent = null;
                 _running = false;
+                Pause = false;
                 #endregion
             }
             else
@@ -301,6 +333,7 @@ namespace HT.Framework
             _currentTaskContentIndex = 0;
             _currentTaskContent = null;
             _running = true;
+            Pause = false;
 
             Main.m_Event.Throw<EventTaskBegin>();
 
@@ -317,6 +350,7 @@ namespace HT.Framework
             _currentTaskContentIndex = 0;
             _currentTaskContent = null;
             _running = false;
+            Pause = false;
 
             Main.m_Event.Throw<EventTaskEnd>();
         }
@@ -328,6 +362,9 @@ namespace HT.Framework
         public void SetCurrentTaskContent(string id)
         {
             if (!_running)
+                return;
+
+            if (Pause)
                 return;
 
             if (_taskContents.ContainsKey(id))
@@ -352,6 +389,9 @@ namespace HT.Framework
             if (!_running)
                 return;
 
+            if (Pause)
+                return;
+
             if (index >= 0 && index < _taskContentsList.Count)
             {
                 if (_taskContentsList[index].IsComplete)
@@ -373,6 +413,9 @@ namespace HT.Framework
             if (!_running)
                 return;
 
+            if (Pause)
+                return;
+
             int index = NextUncompleteTaskContent();
             if (index != -1)
             {
@@ -392,6 +435,9 @@ namespace HT.Framework
             if (!_running)
                 return;
 
+            if (Pause)
+                return;
+
             if (_currentTaskContent != null)
             {
                 _currentTaskContent.AutoComplete();
@@ -404,6 +450,9 @@ namespace HT.Framework
         public void AutoCompleteCurrentTaskPoint(string id)
         {
             if (!_running)
+                return;
+
+            if (Pause)
                 return;
 
             TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
@@ -419,6 +468,9 @@ namespace HT.Framework
         public void CompleteCurrentTaskPoint(string id)
         {
             if (!_running)
+                return;
+
+            if (Pause)
                 return;
 
             TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });

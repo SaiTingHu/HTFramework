@@ -201,7 +201,7 @@ namespace HT.Framework
         {
             base.OnInitialization();
 
-            _pauseWait = new WaitUntil(() => { return !_pause; });
+            _pauseWait = new WaitUntil(() => { return !Pause; });
         }
         public override void OnRefresh()
         {
@@ -209,7 +209,7 @@ namespace HT.Framework
 
             if (_running)
             {
-                if (_pause)
+                if (Pause)
                     return;
 
                 if (!_executing)
@@ -489,8 +489,8 @@ namespace HT.Framework
                 _currentTarget = null;
                 _currentHelper = null;
                 _running = false;
-                _pause = false;
                 _executing = false;
+                Pause = false;
 
                 ClearCustomOrder();
                 #endregion
@@ -515,8 +515,8 @@ namespace HT.Framework
             _currentTarget = null;
             _currentHelper = null;
             _running = true;
-            _pause = false;
             _executing = false;
+            Pause = false;
 
             BeginEvent?.Invoke();
 
@@ -536,8 +536,8 @@ namespace HT.Framework
             _currentContent = null;
             _currentTarget = null;
             _running = false;
-            _pause = false;
             _executing = false;
+            Pause = false;
 
             StopSkip();
 
@@ -558,7 +558,7 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
-                if (_pause)
+                if (Pause)
                     return false;
 
                 if (_currentHelper != null && !_currentHelper.IsAllowSkip)
@@ -581,7 +581,7 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
-                if (_pause)
+                if (Pause)
                     return false;
 
                 if (_currentHelper != null && !_currentHelper.IsAllowSkip)
@@ -610,7 +610,7 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
-                if (_pause)
+                if (Pause)
                     return false;
 
                 if (_currentHelper != null && !_currentHelper.IsAllowSkip)
@@ -633,7 +633,7 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
-                if (_pause)
+                if (Pause)
                     return false;
 
                 if (_currentHelper != null && !_currentHelper.IsAllowSkip)
@@ -670,7 +670,7 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
-                if (_pause)
+                if (Pause)
                     return false;
 
                 if (!_stepContentIndexs.ContainsKey(stepID))
@@ -773,7 +773,7 @@ namespace HT.Framework
         {
             if (_running && !_executing)
             {
-                if (_pause)
+                if (Pause)
                     return;
 
                 if (_currentContent.Trigger == StepTrigger.StateChange)
