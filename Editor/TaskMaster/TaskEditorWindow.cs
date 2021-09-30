@@ -32,6 +32,8 @@ namespace HT.Framework
             window.titleContent.image = EditorGUIUtility.IconContent("AnimatorStateMachine Icon").image;
             window.titleContent.text = "Task Editor";
             window._contentAsset = contentAsset;
+            window._currentContent = null;
+            window._taskContentList = null;
             if (!EditorApplication.isPlaying)
             {
                 window.ReSet();

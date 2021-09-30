@@ -47,14 +47,7 @@ namespace HT.Framework
         {
             base.OnDefaultEnable();
 
-            _taskContentCount = Target.Content.Count;
-            for (int i = 0; i < Target.Content.Count; i++)
-            {
-                if (Target.Content[i] != null)
-                {
-                    _taskPointCount += Target.Content[i].Points.Count;
-                }
-            }
+            RefreshCount();
         }
         protected override void OnInspectorDefaultGUI()
         {
@@ -171,6 +164,29 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
             }
 
+            GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.yellow;
+            if (GUILayout.Button("Import Task From Other", EditorGlobalTools.Styles.ButtonLeft))
+            {
+                string path = EditorUtility.OpenFilePanel("Import Task From Other", Application.dataPath, "asset");
+                if (!string.IsNullOrEmpty(path))
+                {
+                    ImportTaskFromOther(path);
+                }
+            }
+            GUI.enabled = Target.Content.Count > 0;
+            GUI.backgroundColor = Color.red;
+            if (GUILayout.Button("Clear Task", EditorGlobalTools.Styles.ButtonRight))
+            {
+                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to clear all task? It is not allow regrets!", "Yes", "No"))
+                {
+                    ClearTask();
+                }
+            }
+            GUI.backgroundColor = Color.white;
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+
             _scroll = GUILayout.BeginScrollView(_scroll);
             for (int i = 0; i < Target.Content.Count; i++)
             {
@@ -224,6 +240,90 @@ namespace HT.Framework
             base.OnHeaderGUI();
 
             GUI.Label(new Rect(45, 25, 110, 20), "TaskContentAsset", "AssetLabel");
+        }
+
+        /// <summary>
+        /// 刷新任务数量
+        /// </summary>
+        private void RefreshCount()
+        {
+            _taskContentCount = Target.Content.Count;
+            for (int i = 0; i < Target.Content.Count; i++)
+            {
+                if (Target.Content[i] != null)
+                {
+                    _taskPointCount += Target.Content[i].Points.Count;
+                }
+            }
+        }
+        /// <summary>
+        /// 从其他资源导入任务
+        /// </summary>
+        private void ImportTaskFromOther(string path)
+        {
+            string assetPath = "Assets" + path.Replace(Application.dataPath, "");
+            TaskContentAsset asset = AssetDatabase.LoadAssetAtPath<TaskContentAsset>(assetPath);
+            if (asset && asset != Target)
+            {
+                for (int i = 0; i < asset.Content.Count; i++)
+                {
+                    EditorUtility.DisplayProgressBar("Import......", i + "/" + asset.Content.Count, (float)i / asset.Content.Count);
+                    CloneContent(asset.Content[i]);
+                }
+                HasChanged();
+                RefreshCount();
+                EditorUtility.ClearProgressBar();
+            }
+        }
+        /// <summary>
+        /// 清空所有任务
+        /// </summary>
+        private void ClearTask()
+        {
+            for (int i = 0; i < Target.Content.Count; i++)
+            {
+                EditorUtility.DisplayProgressBar("Clear......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
+                TaskContentBase content = Target.Content[i];
+                for (int j = 0; j < content.Points.Count; j++)
+                {
+                    TaskContentAsset.DestroySerializeSubObject(content.Points[j], Target);
+                }
+                TaskContentAsset.DestroySerializeSubObject(content, Target);
+            }
+            Target.Content.Clear();
+            HasChanged();
+            RefreshCount();
+            EditorUtility.ClearProgressBar();
+        }
+        /// <summary>
+        /// 克隆任务内容
+        /// </summary>
+        private void CloneContent(TaskContentBase content)
+        {
+            TaskContentBase taskContent = content.Clone();
+            taskContent.Points.Clear();
+            for (int i = 0; i < content.Points.Count; i++)
+            {
+                ClonePoint(taskContent, content.Points[i], content.Points[i].Anchor.position);
+            }
+            taskContent.GUID = Target.TaskIDName + Target.TaskIDSign.ToString();
+            Target.TaskIDSign += 1;
+            Target.Content.Add(taskContent);
+
+            TaskContentAsset.GenerateSerializeSubObject(taskContent, Target);
+        }
+        /// <summary>
+        /// 克隆任务点
+        /// </summary>
+        private void ClonePoint(TaskContentBase content, TaskPointBase point, Vector2 pos)
+        {
+            TaskPointBase taskPoint = point.Clone();
+            taskPoint.Anchor = new Rect(pos.x, pos.y, 0, 0);
+            taskPoint.GUID = Target.TaskPointIDName + Target.TaskPointIDSign.ToString();
+            Target.TaskPointIDSign += 1;
+            content.Points.Add(taskPoint);
+
+            TaskContentAsset.GenerateSerializeSubObject(taskPoint, Target);
         }
     }
 }

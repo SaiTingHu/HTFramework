@@ -101,7 +101,7 @@ namespace HT.Framework
             if (GUILayout.Button("Import Step From Other", EditorGlobalTools.Styles.ButtonLeft))
             {
                 string path = EditorUtility.OpenFilePanel("Import Step From Other", Application.dataPath, "asset");
-                if (path != "")
+                if (!string.IsNullOrEmpty(path))
                 {
                     string assetPath = "Assets" + path.Replace(Application.dataPath, "");
                     StepContentAsset asset = AssetDatabase.LoadAssetAtPath<StepContentAsset>(assetPath);
