@@ -174,7 +174,7 @@ namespace HT.Framework
 
                 OnStart();
 
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, false));
             }
 
             if (IsComplete)
@@ -208,7 +208,7 @@ namespace HT.Framework
 
             OnEnd();
 
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, false));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, IsEnable && IsEnableRunTime, false));
         }
         /// <summary>
         /// 自动完成任务点
@@ -221,7 +221,7 @@ namespace HT.Framework
 
                 OnStart();
 
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, true));
             }
 
             if (IsComplete)
@@ -241,7 +241,7 @@ namespace HT.Framework
 
             OnEnd();
 
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, true));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, IsEnable && IsEnableRunTime, true));
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace HT.Framework
 
                 OnStart();
 
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this));
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, false));
             }
 
             OnUpdate();
@@ -623,11 +623,13 @@ namespace HT.Framework
                         {
                             _isWired = true;
                             _isWiredRight = false;
+                            e.Use();
                         }
                         else if (_rightWiredOrigin.Contains(e.mousePosition))
                         {
                             _isWired = true;
                             _isWiredRight = true;
+                            e.Use();
                         }
                         else if (Anchor.Contains(e.mousePosition))
                         {
@@ -635,6 +637,7 @@ namespace HT.Framework
                             IsSelected = true;
                             GUI.changed = true;
                             GUI.FocusControl(null);
+                            e.Use();
                         }
                         else
                         {
@@ -671,6 +674,7 @@ namespace HT.Framework
                                             {
                                                 content.ConnectDepend(index, m);
                                             }
+                                            e.Use();
                                         });
                                     }
                                 }
@@ -696,6 +700,7 @@ namespace HT.Framework
                                             {
                                                 content.ConnectDepend(m, index);
                                             }
+                                            e.Use();
                                         });
                                     }
                                 }
@@ -708,6 +713,7 @@ namespace HT.Framework
                                 {
                                     MonoScript monoScript = MonoScript.FromScriptableObject(this);
                                     AssetDatabase.OpenAsset(monoScript);
+                                    e.Use();
                                 });
                                 gm.AddItem(new GUIContent(getWord("Delete Point")), false, () =>
                                 {
@@ -715,6 +721,7 @@ namespace HT.Framework
                                     {
                                         DeletePoint(asset, content);
                                         GUI.changed = true;
+                                        e.Use();
                                     }
                                 });
                                 OnRightClickMenu(gm);
@@ -747,6 +754,7 @@ namespace HT.Framework
                                         content.ConnectDepend(originIndex, chooseIndex);
                                 }
                             }
+                            e.Use();
                         }
 
                         _isWired = false;

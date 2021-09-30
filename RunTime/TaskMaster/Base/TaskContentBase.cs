@@ -128,7 +128,7 @@ namespace HT.Framework
 
                 OnStart();
 
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this, false));
             }
 
             if (IsComplete)
@@ -138,7 +138,7 @@ namespace HT.Framework
 
             OnComplete();
             
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this, false));
         }
         /// <summary>
         /// 任务内容自动完成（未完成的任务点会自动完成）
@@ -151,7 +151,7 @@ namespace HT.Framework
 
                 OnStart();
 
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this, true));
             }
 
             if (IsComplete)
@@ -185,7 +185,7 @@ namespace HT.Framework
                 }
             }
 
-            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this));
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this, true));
         }
         /// <summary>
         /// 任务内容开始后，每帧监测
@@ -199,7 +199,7 @@ namespace HT.Framework
 
                 OnStart();
 
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this, false));
             }
 
             OnUpdate();
