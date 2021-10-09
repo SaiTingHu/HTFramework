@@ -54,7 +54,7 @@ namespace HT.Framework
                     else return 1;
                 });
 
-                SceneView.onSceneGUIDelegate += OnLnkToolsGUI;
+                SceneView.duringSceneGui += OnLnkToolsGUI;
             }
         }
         /// <summary>

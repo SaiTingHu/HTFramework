@@ -165,7 +165,7 @@ namespace HT.Framework
             if (IsSelectedCurrentBuildTarget())
             {
                 GUI.color = Color.gray;
-                GUI.Button(new Rect(position.width - 238, position.height - 31, 110, 18), "Build");
+                GUI.Button(new Rect(position.width - 237, position.height - 31, 110, 18), "Build");
                 GUI.Button(new Rect(position.width - 124, position.height - 31, 110, 18), "Build And Run");
                 GUI.color = Color.white;
             }

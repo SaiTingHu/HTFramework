@@ -207,11 +207,11 @@ namespace HT.Framework
                 if (_content.Parameters[i].Type == StepParameter.ParameterType.GameObject)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(40));
+                    GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(45));
                     string guid = _content.Parameters[i].GameObjectGUID;
                     EditorGUILayout.TextField(guid == "<None>" ? GetWord(guid) : guid);
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(45)))
                     {
                         _content.Parameters[i].GameObjectValue = null;
                         _content.Parameters[i].GameObjectGUID = "<None>";

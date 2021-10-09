@@ -283,7 +283,7 @@ namespace HT.Framework
 
             GUILayout.Space(5);
 
-            int height = 20;
+            int height = 30;
 
             height += OnBaseGUI(getWord, isLockID);
 
@@ -313,21 +313,21 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             height += 20;
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Name") + ":", GUILayout.Width(50));
             Name = EditorGUILayout.TextField(Name);
             GUILayout.EndHorizontal();
 
             height += 20;
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Details") + ":", GUILayout.Width(50));
             Details = EditorGUILayout.TextField(Details);
             GUILayout.EndHorizontal();
 
             height += 20;
-
+            
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Points") + ":", GUILayout.Width(50));
             GUILayout.Label(Points.Count.ToString());

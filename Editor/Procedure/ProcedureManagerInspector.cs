@@ -32,7 +32,7 @@ namespace HT.Framework
             _removeGC.image = EditorGUIUtility.IconContent("d_Toolbar Minus").image;
             _removeGC.tooltip = "Remove select procedure";
             _defaultGC = new GUIContent();
-            _defaultGC.image = EditorGUIUtility.IconContent("TimelineEditModeRippleON").image;
+            _defaultGC.image = EditorGUIUtility.IconContent("SceneLoadIn").image;
             _defaultGC.tooltip = "Default procedure";
             _editGC = new GUIContent();
             _editGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
@@ -149,7 +149,7 @@ namespace HT.Framework
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
+                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "Box";
                     gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
                     rect.x += 2;
                     rect.width -= 6;

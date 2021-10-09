@@ -640,7 +640,7 @@ namespace HT.Framework
                         if (Event.current.type == EventType.Repaint)
                         {
                             GUI.backgroundColor = _contentAsset.Content[index].IsComplete ? Color.green : Color.white;
-                            GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
+                            GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "Box";
                             gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
                             rect.x += 2;
                             rect.width -= 6;

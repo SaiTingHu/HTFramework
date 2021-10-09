@@ -123,7 +123,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Historical record");
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Clear record", EditorStyles.miniButton, GUILayout.Width(80)))
+                if (GUILayout.Button("Clear record", EditorStyles.miniButton, GUILayout.Width(90)))
                 {
                     _currentScriptingDefine.ClearDefinesRecord();
                 }
@@ -135,7 +135,7 @@ namespace HT.Framework
                     GUILayout.Space(10);
                     GUILayout.Label(_currentScriptingDefine.DefinedsRecord[i], "PR PrefabLabel");
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(30)))
+                    if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(40)))
                     {
                         _newDefine += _currentScriptingDefine.DefinedsRecord[i] + ";";
                     }
@@ -400,7 +400,7 @@ namespace HT.Framework
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
+                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "Box";
                     gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
                     rect.x += 2;
                     rect.width -= 6;

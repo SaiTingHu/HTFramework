@@ -243,7 +243,7 @@ namespace HT.Framework
                         GUILayout.Label(an.Version.ToString());
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !CurrentAssembly.IsDynamic;
-                        if (GUILayout.Button("Open in Explorer", EditorStyles.miniButton, GUILayout.Width(100)))
+                        if (GUILayout.Button("Open in Explorer", EditorStyles.miniButton, GUILayout.Width(110)))
                         {
                             string args = "/Select, " + CurrentAssembly.Location;
                             ExecutableToolkit.ExecuteExplorer(args);
@@ -261,7 +261,7 @@ namespace HT.Framework
                         }
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !CurrentAssembly.IsDynamic;
-                        if (GUILayout.Button("Open in ILSpy", EditorStyles.miniButton, GUILayout.Width(100)))
+                        if (GUILayout.Button("Open in ILSpy", EditorStyles.miniButton, GUILayout.Width(110)))
                         {
                             bool succeed = ExecutableToolkit.Execute(_ILSpyPath, "\"" + CurrentAssembly.Location + "\"");
                             if (!succeed)

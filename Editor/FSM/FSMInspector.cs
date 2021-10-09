@@ -41,10 +41,10 @@ namespace HT.Framework
             _removeGC.image = EditorGUIUtility.IconContent("d_Toolbar Minus").image;
             _removeGC.tooltip = "Remove select state";
             _defaultGC = new GUIContent();
-            _defaultGC.image = EditorGUIUtility.IconContent("TimelineEditModeRippleON").image;
+            _defaultGC.image = EditorGUIUtility.IconContent("SceneLoadIn").image;
             _defaultGC.tooltip = "Default state";
             _finalGC = new GUIContent();
-            _finalGC.image = EditorGUIUtility.IconContent("TimelineEditModeReplaceON").image;
+            _finalGC.image = EditorGUIUtility.IconContent("SceneLoadOut").image;
             _finalGC.tooltip = "Final state";
             _editGC = new GUIContent();
             _editGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
@@ -220,7 +220,7 @@ namespace HT.Framework
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "CN EntryBackodd";
+                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "Box";
                     gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
                     rect.x += 2;
                     rect.width -= 6;
@@ -418,7 +418,9 @@ namespace HT.Framework
                     _argsEditor = CreateEditor(Target.Args);
                 }
 
-                GUILayout.BeginVertical("Icon.InfiniteTrack");
+                GUILayout.Label("", "RL DragHandle", GUILayout.ExpandWidth(true));
+
+                GUILayout.BeginVertical();
                 GUILayout.Space(5);
 
                 _argsEditor.OnInspectorGUI();

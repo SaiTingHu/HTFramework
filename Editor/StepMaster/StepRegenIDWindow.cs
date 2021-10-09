@@ -13,8 +13,8 @@ namespace HT.Framework
             window.titleContent.text = "Regen Step ID";
             window._stepEditorWindow = stepEditorWindow;
             window._contentAsset = contentAsset;
-            window.minSize = new Vector2(200, 110);
-            window.maxSize = new Vector2(200, 110);
+            window.minSize = new Vector2(200, 120);
+            window.maxSize = new Vector2(200, 120);
             window.position = new Rect(stepEditorWindow.position.x + 50, stepEditorWindow.position.y + 50, 200, 110);
             window.Show();
         }

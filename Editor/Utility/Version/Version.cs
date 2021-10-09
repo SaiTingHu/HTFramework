@@ -31,7 +31,7 @@ namespace HT.Framework
         /// <summary>
         /// 版本号支持的Unity版本
         /// </summary>
-        public string UnityVersions = "2018.3.0 or higher";
+        public string UnityVersions = "2019.4.30";
         /// <summary>
         /// 版本号支持的运行时编码.Net版本
         /// </summary>

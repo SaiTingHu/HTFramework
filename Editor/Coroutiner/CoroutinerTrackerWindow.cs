@@ -120,7 +120,7 @@ namespace HT.Framework
                         }
                         GUI.enabled = true;
                         GUILayout.EndHorizontal();
-
+                        
                         if (Event.current != null && Event.current.rawType == EventType.MouseDown)
                         {
                             Rect rect = GUILayoutUtility.GetLastRect();
@@ -131,6 +131,8 @@ namespace HT.Framework
                             }
                         }
                         index2 += 1;
+
+                        GUILayout.Space(2);
                     }
                     GUI.color = _bgColor;
                 }

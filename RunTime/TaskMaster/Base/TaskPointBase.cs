@@ -389,7 +389,7 @@ namespace HT.Framework
 
             GUI.backgroundColor = Color.white;
 
-            int height = 25;
+            int height = 30;
 
             height += OnDependGUI(getWord);
 
@@ -419,15 +419,15 @@ namespace HT.Framework
             GUIContent gUIContent = new GUIContent();
             gUIContent.image = EditorGUIUtility.IconContent(icon).image;
             gUIContent.tooltip = IsEnable ? "Enable" : "Disable";
-            if (GUI.Button(new Rect(Anchor.x + Anchor.width - 40, Anchor.y - 2, 20, 20), gUIContent, "InvisibleButton"))
+            if (GUI.Button(new Rect(Anchor.x + Anchor.width - 40, Anchor.y, 20, 20), gUIContent, "InvisibleButton"))
             {
                 IsEnable = !IsEnable;
                 GUI.changed = true;
             }
 
-            gUIContent.image = EditorGUIUtility.IconContent("LookDevPaneOption").image;
+            gUIContent.image = EditorGUIUtility.IconContent("Exposure").image;
             gUIContent.tooltip = IsExpand ? "Expand" : "Collapse";
-            if (GUI.Button(new Rect(Anchor.x + Anchor.width - 25, Anchor.y, 20, 20), gUIContent, "InvisibleButton"))
+            if (GUI.Button(new Rect(Anchor.x + Anchor.width - 22, Anchor.y, 20, 20), gUIContent, "InvisibleButton"))
             {
                 IsExpand = !IsExpand;
                 GUI.changed = true;

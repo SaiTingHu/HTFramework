@@ -101,7 +101,7 @@ namespace HT.Framework
         {
             if (_colorPos <= 1)
             {
-                _colorPos += 0.01f;
+                _colorPos += 0.005f;
             }
             else
             {
@@ -127,7 +127,7 @@ namespace HT.Framework
 
             GUI.Label(new Rect(80, 100, 100, 20), "Version: " + _versionNumber);
             GUI.backgroundColor = Color.cyan;
-            if (GUI.Button(new Rect(200, 100, 100, 16), "Version History", EditorGlobalTools.Styles.MiniPopup))
+            if (GUI.Button(new Rect(200, 100, 110, 16), "Version History", EditorGlobalTools.Styles.MiniPopup))
             {
                 VersionViewer.OpenWindow(_versionInfo);
             }
@@ -164,7 +164,7 @@ namespace HT.Framework
 
             GUILayout.BeginVertical(GUILayout.Height(100));
             _scroll = GUILayout.BeginScrollView(_scroll);
-            GUILayout.Label(_versionInfo.CurrentVersion.ReleaseNotes);
+            EditorGUILayout.TextArea(_versionInfo.CurrentVersion.ReleaseNotes);
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
             

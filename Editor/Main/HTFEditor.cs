@@ -30,9 +30,9 @@ namespace HT.Framework
         private GithubURLAttribute _GithubURL;
         private GiteeURLAttribute _GiteeURL;
         private CSDNBlogURLAttribute _CSDNURL;
-        private Texture _GithubIcon;
-        private Texture _GiteeIcon;
-        private Texture _CSDNIcon;
+        private GUIContent _GithubGC;
+        private GUIContent _GiteeGC;
+        private GUIContent _CSDNGC;
         private Dictionary<string, SerializedProperty> _serializedPropertys = new Dictionary<string, SerializedProperty>();
 
         /// <summary>
@@ -69,9 +69,24 @@ namespace HT.Framework
             _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
             _GiteeURL = GetType().GetCustomAttribute<GiteeURLAttribute>();
             _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
-            if (_GithubURL != null) _GithubIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
-            if (_GiteeURL != null) _GiteeIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
-            if (_CSDNURL != null) _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
+            if (_GithubURL != null)
+            {
+                _GithubGC = new GUIContent();
+                _GithubGC.image = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
+                _GithubGC.tooltip = "Github";
+            }
+            if (_GiteeURL != null)
+            {
+                _GiteeGC = new GUIContent();
+                _GiteeGC.image = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
+                _GiteeGC.tooltip = "Gitee";
+            }
+            if (_CSDNURL != null)
+            {
+                _CSDNGC = new GUIContent();
+                _CSDNGC.image = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
+                _CSDNGC.tooltip = "CSDN";
+            }
             _serializedPropertys.Clear();
             
             OnDefaultEnable();
@@ -83,9 +98,6 @@ namespace HT.Framework
         }
         private void OnDisable()
         {
-            _GithubIcon = null;
-            _GiteeIcon = null;
-            _CSDNIcon = null;
             _serializedPropertys.Clear();
 
             OnDefaultDisable();
@@ -110,7 +122,7 @@ namespace HT.Framework
                 if (_GiteeURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_GiteeURL.URL);
-                    if (GUILayout.Button(_GiteeIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(_GiteeGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         Application.OpenURL(_GiteeURL.URL);
                     }
@@ -121,7 +133,7 @@ namespace HT.Framework
                 if (_GithubURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_GithubURL.URL);
-                    if (GUILayout.Button(_GithubIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(_GithubGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         Application.OpenURL(_GithubURL.URL);
                     }
@@ -132,7 +144,7 @@ namespace HT.Framework
                 if (_CSDNURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_CSDNURL.URL);
-                    if (GUILayout.Button(_CSDNIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(_CSDNGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         Application.OpenURL(_CSDNURL.URL);
                     }

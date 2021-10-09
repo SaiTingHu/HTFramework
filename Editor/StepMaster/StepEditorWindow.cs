@@ -184,7 +184,7 @@ namespace HT.Framework
             SelectStepOperation(_currentOperationIndex);
 
             _stepGC = new GUIContent();
-            _stepGC.image = EditorGUIUtility.IconContent("Avatar Icon").image;
+            _stepGC.image = EditorGUIUtility.IconContent("AnimatorStateTransition Icon").image;
             _enableGC = new GUIContent();
             _enableGC.image = EditorGUIUtility.IconContent("animationvisibilitytoggleon").image;
             _enableGC.tooltip = "Enable";
@@ -193,7 +193,7 @@ namespace HT.Framework
             _disableGC.tooltip = "Disable";
             _stepHelperGC = new GUIContent();
             _previewGC = new GUIContent();
-            _previewGC.image = EditorGUIUtility.IconContent("AudioMixerView Icon").image;
+            _previewGC.image = EditorGUIUtility.IconContent("TrailRenderer Icon").image;
             _advancedSearchGC = new GUIContent();
             _advancedSearchGC.image = EditorGUIUtility.IconContent("FilterByType").image;
             _advancedSearchGC.tooltip = "Advanced Search";
@@ -502,7 +502,9 @@ namespace HT.Framework
             GUILayout.BeginVertical("PreBackground", GUILayout.Width(_stepListGUIWidth));
 
             #region 筛选步骤
-            GUILayout.BeginHorizontal("Icon.OutlineBorder");
+            GUILayout.Space(5);
+
+            GUILayout.BeginHorizontal("TE NodeBoxSelected");
             GUILayout.Label(GetWord("Step Content List"), EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
@@ -554,23 +556,23 @@ namespace HT.Framework
                     if (string.IsNullOrEmpty(_stepListAdvancedSearch) || _contentAsset.Content[i].IsSearched)
                     {
                         GUILayout.BeginHorizontal();
+                        GUI.color = Color.white;
+                        GUILayout.Label(_stepGC, GUILayout.Height(20), GUILayout.Width(20));
                         if (_isShowAncillary && !string.IsNullOrEmpty(_contentAsset.Content[i].Ancillary))
                         {
                             GUI.color = Color.yellow;
                             GUILayout.Label("[" + _contentAsset.Content[i].Ancillary + "]", GUILayout.Height(16));
                         }
                         GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
-                        string style = _currentStepIndex == i ? "InsertionMarker" : EditorGlobalTools.Styles.Label;
-                        _stepGC.text = i + "." + showName;
-                        _stepGC.tooltip = _contentAsset.Content[i].Prompt;
-                        if (GUILayout.Button(_stepGC, style, GUILayout.Height(16), GUILayout.ExpandWidth(true)))
+                        string style = _currentStepIndex == i ? "SelectionRect" : "PrefixLabel";
+                        if (GUILayout.Button(i + "." + showName, style, GUILayout.Height(20), GUILayout.ExpandWidth(true)))
                         {
                             SelectStepContent(i);
                             SelectStepOperation(-1);
                             GUI.FocusControl(null);
                         }
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button(_contentAsset.Content[i].IsEnable ? _enableGC : _disableGC, "InvisibleButton", GUILayout.Height(16), GUILayout.Width(20)))
+                        if (GUILayout.Button(_contentAsset.Content[i].IsEnable ? _enableGC : _disableGC, "InvisibleButton", GUILayout.Height(20), GUILayout.Width(20)))
                         {
                             _contentAsset.Content[i].IsEnable = !_contentAsset.Content[i].IsEnable;
                         }
@@ -682,9 +684,9 @@ namespace HT.Framework
                 #region 步骤的属性
                 if (_isShowStepContent)
                 {
-                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(420));
+                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(210), GUILayout.Height(450));
 
-                    GUILayout.BeginHorizontal("Icon.OutlineBorder");
+                    GUILayout.BeginHorizontal("TE NodeBoxSelected");
                     GUILayout.Label(GetWord("Step Content Properties"), EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
@@ -696,13 +698,13 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Name") + ":", GUILayout.Width(50));
-                    _currentStepObj.Name = EditorGUILayout.TextField(_currentStepObj.Name, GUILayout.Width(130));
+                    _currentStepObj.Name = EditorGUILayout.TextField(_currentStepObj.Name, GUILayout.Width(135));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(50));
                     GUI.enabled = !_isLockID;
-                    _currentStepObj.GUID = EditorGUILayout.TextField(_currentStepObj.GUID, GUILayout.Width(130));
+                    _currentStepObj.GUID = EditorGUILayout.TextField(_currentStepObj.GUID, GUILayout.Width(135));
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
@@ -719,12 +721,12 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
                     GUI.color = _currentStepObj.TargetGUID != "<None>" ? Color.white : Color.gray;
-                    GameObject contentObj = EditorGUILayout.ObjectField(_currentStepObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
+                    GameObject contentObj = EditorGUILayout.ObjectField(_currentStepObj.Target, typeof(GameObject), true, GUILayout.Width(135)) as GameObject;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(45)))
                     {
                         GenericMenu gm = new GenericMenu();
                         if (_currentStepObj.TargetGUID == "<None>")
@@ -751,9 +753,9 @@ namespace HT.Framework
                         }
                         gm.ShowAsContext();
                     }
-                    GUILayout.Label(_currentStepObj.TargetGUID == "<None>" ? GetWord(_currentStepObj.TargetGUID) : _currentStepObj.TargetGUID, GUILayout.Width(100));
+                    GUILayout.Label(_currentStepObj.TargetGUID == "<None>" ? GetWord(_currentStepObj.TargetGUID) : _currentStepObj.TargetGUID, GUILayout.Width(90));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(45)))
                     {
                         contentObj = _currentStepObj.Target = null;
                         _currentStepObj.TargetGUID = "<None>";
@@ -792,23 +794,23 @@ namespace HT.Framework
                     GUILayout.BeginVertical("Tooltip");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("Prompt") + ":", GUILayout.Width(180));
+                    GUILayout.Label(GetWord("Prompt") + ":", GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.Prompt = EditorGUILayout.TextArea(_currentStepObj.Prompt, GUILayout.Width(180));
+                    _currentStepObj.Prompt = EditorGUILayout.TextArea(_currentStepObj.Prompt, GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("Ancillary") + ":", GUILayout.Width(180));
+                    GUILayout.Label(GetWord("Ancillary") + ":", GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.Ancillary = EditorGUILayout.TextArea(_currentStepObj.Ancillary, GUILayout.Width(180));
+                    _currentStepObj.Ancillary = EditorGUILayout.TextArea(_currentStepObj.Ancillary, GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("Operation") + ": " + _currentStepObj.Operations.Count, GUILayout.Width(130));
+                    GUILayout.Label(GetWord("Operation") + ": " + _currentStepObj.Operations.Count, GUILayout.Width(135));
                     if (GUILayout.Button(GetWord("Find"), EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(50)))
                     {
                         GUI.FocusControl(null);
@@ -834,12 +836,12 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("Trigger") + ":", GUILayout.Width(80));
+                    GUILayout.Label(GetWord("Trigger") + ":", GUILayout.Width(85));
                     _currentStepObj.Trigger = (StepTrigger)EditorGUILayout.Popup((int)_currentStepObj.Trigger, _triggers, GUILayout.Width(100));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("Initial Mode") + ":", GUILayout.Width(80));
+                    GUILayout.Label(GetWord("Initial Mode") + ":", GUILayout.Width(85));
                     _currentStepObj.InitialMode = (ControlMode)EditorGUILayout.Popup((int)_currentStepObj.InitialMode, _initialModes, GUILayout.Width(100));
                     GUILayout.EndHorizontal();
 
@@ -865,7 +867,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.BestView = EditorGUILayout.Vector3Field("", _currentStepObj.BestView, GUILayout.Width(180));
+                    _currentStepObj.BestView = EditorGUILayout.Vector3Field("", _currentStepObj.BestView, GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -880,7 +882,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.ViewOffset = EditorGUILayout.Vector3Field("", _currentStepObj.ViewOffset, GUILayout.Width(180));
+                    _currentStepObj.ViewOffset = EditorGUILayout.Vector3Field("", _currentStepObj.ViewOffset, GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -895,14 +897,14 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.BestPos = EditorGUILayout.Vector3Field("", _currentStepObj.BestPos, GUILayout.Width(180));
+                    _currentStepObj.BestPos = EditorGUILayout.Vector3Field("", _currentStepObj.BestPos, GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Helper") + ":", GUILayout.Width(55));
                     _stepHelperGC.text = _currentStepObj.Helper == "<None>" ? GetWord(_currentStepObj.Helper) : _currentStepObj.Helper;
                     _stepHelperGC.tooltip = _currentStepObj.HelperName;
-                    if (GUILayout.Button(_stepHelperGC, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(95)))
+                    if (GUILayout.Button(_stepHelperGC, EditorGlobalTools.Styles.MiniPopup, GUILayout.Width(90)))
                     {
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
@@ -933,7 +935,7 @@ namespace HT.Framework
                         gm.ShowAsContext();
                     }
                     GUI.enabled = _currentStepObj.Helper != "<None>";
-                    if (GUILayout.Button(GetWord("Edit"), EditorStyles.miniButton, GUILayout.Width(30)))
+                    if (GUILayout.Button(GetWord("Edit"), EditorStyles.miniButton, GUILayout.Width(35)))
                     {
                         OpenHelperScript(_currentStepObj.Helper);
                     }
@@ -969,7 +971,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(130));
 
-                    GUILayout.BeginHorizontal("Icon.OutlineBorder");
+                    GUILayout.BeginHorizontal("TE NodeBoxSelected");
                     GUILayout.Label(GetWord("Camera Control"), EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
@@ -1026,9 +1028,9 @@ namespace HT.Framework
                 #region 步骤操作的属性
                 if (_isShowStepOperation && _currentOperationIndex != -1)
                 {
-                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(320));
+                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(210), GUILayout.Height(340));
 
-                    GUILayout.BeginHorizontal("Icon.OutlineBorder");
+                    GUILayout.BeginHorizontal("TE NodeBoxSelected");
                     GUILayout.Label(GetWord("Step Operation Properties"), EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
@@ -1040,13 +1042,13 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Name") + ":", GUILayout.Width(50));
-                    _currentOperationObj.Name = EditorGUILayout.TextField(_currentOperationObj.Name, GUILayout.Width(130));
+                    _currentOperationObj.Name = EditorGUILayout.TextField(_currentOperationObj.Name, GUILayout.Width(135));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(50));
                     GUI.enabled = !_isLockID;
-                    _currentOperationObj.GUID = EditorGUILayout.TextField(_currentOperationObj.GUID, GUILayout.Width(130));
+                    _currentOperationObj.GUID = EditorGUILayout.TextField(_currentOperationObj.GUID, GUILayout.Width(135));
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
@@ -1063,12 +1065,12 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Target") + ":", GUILayout.Width(50));
                     GUI.color = _currentOperationObj.TargetGUID != "<None>" ? Color.white : Color.gray;
-                    GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(130)) as GameObject;
+                    GameObject operationObj = EditorGUILayout.ObjectField(_currentOperationObj.Target, typeof(GameObject), true, GUILayout.Width(135)) as GameObject;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(45)))
                     {
                         GenericMenu gm = new GenericMenu();
                         if (_currentOperationObj.TargetGUID == "<None>")
@@ -1095,9 +1097,9 @@ namespace HT.Framework
                         }
                         gm.ShowAsContext();
                     }
-                    GUILayout.Label(_currentOperationObj.TargetGUID == "<None>" ? GetWord(_currentOperationObj.TargetGUID) : _currentOperationObj.TargetGUID, GUILayout.Width(100));
+                    GUILayout.Label(_currentOperationObj.TargetGUID == "<None>" ? GetWord(_currentOperationObj.TargetGUID) : _currentOperationObj.TargetGUID, GUILayout.Width(90));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(45)))
                     {
                         operationObj = _currentOperationObj.Target = null;
                         _currentOperationObj.TargetGUID = "<None>";
@@ -1137,7 +1139,7 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Type") + ":", GUILayout.Width(50));
-                    _currentOperationObj.OperationType = (StepOperationType)EditorGUILayout.Popup((int)_currentOperationObj.OperationType, _operationTypes, GUILayout.Width(130));
+                    _currentOperationObj.OperationType = (StepOperationType)EditorGUILayout.Popup((int)_currentOperationObj.OperationType, _operationTypes, GUILayout.Width(135));
                     GUILayout.EndHorizontal();
 
                     _currentOperationObj.OnEditorGUI(_getWord);
