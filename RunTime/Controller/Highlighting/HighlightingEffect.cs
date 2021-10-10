@@ -195,14 +195,6 @@ namespace HT.Framework
         }
         private void Start()
         {
-            //不支持后期特效
-            if (!SystemInfo.supportsImageEffects)
-            {
-                Log.Warning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
-                enabled = false;
-                return;
-            }
-
             //不支持渲染纹理格式
             if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
             {
