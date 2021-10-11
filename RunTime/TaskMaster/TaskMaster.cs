@@ -198,7 +198,7 @@ namespace HT.Framework
                 if (TaskPointIsEnable(CurrentTaskContent.Points[i].GUID)
                     && !CurrentTaskContent.Points[i].IsComplete
                     && !CurrentTaskContent.Points[i].IsCompleting
-                    && CurrentTaskContent.IsDependComplete(i))
+                    && CurrentTaskContent.IsDependCompleteIgnoreDisabled(i))
                 {
                     return CurrentTaskContent.Points[i];
                 }

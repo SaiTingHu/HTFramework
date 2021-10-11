@@ -257,6 +257,26 @@ namespace HT.Framework
             }
             return true;
         }
+        /// <summary>
+        /// 任务点的所有依赖任务点是否已完成（忽略未启用的步骤）
+        /// </summary>
+        /// <param name="taskPointIndex">任务点</param>
+        /// <returns>依赖任务点是否已完成</returns>
+        internal bool IsDependCompleteIgnoreDisabled(int taskPointIndex)
+        {
+            for (int i = 0; i < Depends.Count; i++)
+            {
+                if (Depends[i].OriginalPoint == taskPointIndex)
+                {
+                    int depend = Depends[i].DependPoint;
+                    if (Points[depend].IsEnable && Points[depend].IsEnableRunTime && !Points[depend].IsComplete)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
 #if UNITY_EDITOR
         private static readonly int _width = 200;

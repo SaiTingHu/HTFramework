@@ -44,6 +44,14 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
+                GUILayout.Label("Is Running: " + Target.IsRunning);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                Target.Pause = EditorGUILayout.Toggle("Pause", Target.Pause);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
                 GUILayout.Label("Current Task: " + (Target.CurrentTaskContent != null ? Target.CurrentTaskContent.Name : "<None>"));
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.CurrentTaskContent != null;
