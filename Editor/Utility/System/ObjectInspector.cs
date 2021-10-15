@@ -344,6 +344,10 @@ namespace HT.Framework
                         {
                             Painters.Add(new GenericMenuPainter(iattributes[i]));
                         }
+                        else if (iattributes[i] is GenericTableAttribute)
+                        {
+                            Painters.Add(new GenericTablePainter(iattributes[i]));
+                        }
                         else if (iattributes[i] is DrawerAttribute)
                         {
                             Drawer = iattributes[i] as DrawerAttribute;
@@ -724,7 +728,9 @@ namespace HT.Framework
             public FilePathPainter(InspectorAttribute attribute) : base(attribute)
             {
                 FAttribute = attribute as FilePathAttribute;
-                OpenGC = EditorGUIUtility.IconContent("Folder Icon");
+                OpenGC = new GUIContent();
+                OpenGC.image = EditorGUIUtility.IconContent("Folder Icon").image;
+                OpenGC.tooltip = "Browse file path";
             }
 
             public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
@@ -774,7 +780,9 @@ namespace HT.Framework
             public FolderPathPainter(InspectorAttribute attribute) : base(attribute)
             {
                 FAttribute = attribute as FolderPathAttribute;
-                OpenGC = EditorGUIUtility.IconContent("Folder Icon");
+                OpenGC = new GUIContent();
+                OpenGC.image = EditorGUIUtility.IconContent("Folder Icon").image;
+                OpenGC.tooltip = "Browse folder path";
             }
 
             public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
@@ -930,6 +938,43 @@ namespace HT.Framework
                 else
                 {
                     ChooseMenu.Invoke(fieldInspector.Property.serializedObject.targetObject, new object[] { value });
+                }
+            }
+        }
+        /// <summary>
+        /// 字段绘制器 - 通用表格
+        /// </summary>
+        private sealed class GenericTablePainter : FieldPainter
+        {
+            public GenericTableAttribute GAttribute;
+            public GUIContent OpenGC;
+
+            public GenericTablePainter(InspectorAttribute attribute) : base(attribute)
+            {
+                GAttribute = attribute as GenericTableAttribute;
+                OpenGC = new GUIContent();
+                OpenGC.image = EditorGUIUtility.IconContent("Clipboard").image;
+                OpenGC.tooltip = "Edit with GenericTableWindow";
+            }
+
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                IEnumerable<object> list = fieldInspector.Field.GetValue(inspector.target) as IEnumerable<object>;
+                if (fieldInspector.Field.FieldType.IsArray || list != null)
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.PropertyField(fieldInspector.Property, new GUIContent(fieldInspector.Label), true);
+                    if (GUILayout.Button(OpenGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    {
+                        GenericTableWindow.OpenWindow(inspector.target, fieldInspector.Field.Name);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                else
+                {
+                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used GenericTable! because the types don't match!", MessageType.Error);
+                    GUILayout.EndHorizontal();
                 }
             }
         }

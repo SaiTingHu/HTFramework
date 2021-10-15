@@ -106,10 +106,8 @@ namespace HT.Framework
 
         protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
 
-        public override void Initialization()
+        public void Initialization()
         {
-            base.Initialization();
-
             _assembliesPath = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/")) + "/Data/Managed";
 
             _assemblies.Add(typeof(Type).Assembly.Location);

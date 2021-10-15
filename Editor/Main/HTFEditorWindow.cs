@@ -194,13 +194,6 @@ namespace HT.Framework
             OnBodyGUI();
         }
         /// <summary>
-        /// 初始化
-        /// </summary>
-        public virtual void Initialization()
-        {
-
-        }
-        /// <summary>
         /// 准备开始绘制UI
         /// </summary>
         protected virtual void OnGUIReady()
