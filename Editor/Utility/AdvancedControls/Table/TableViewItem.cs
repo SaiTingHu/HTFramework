@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 表格视图元素
     /// </summary>
     /// <typeparam name="T">数据类型</typeparam>
-    public sealed class TableViewItem<T> : TreeViewItem where T : class
+    public sealed class TableViewItem<T> : TreeViewItem where T : class, new()
     {
         /// <summary>
         /// 元素的数据

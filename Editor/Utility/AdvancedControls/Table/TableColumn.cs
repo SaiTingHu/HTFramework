@@ -7,7 +7,7 @@ namespace HT.Framework
     /// 表格视图列元素
     /// </summary>
     /// <typeparam name="T">数据类型</typeparam>
-    public sealed class TableColumn<T> : MultiColumnHeaderState.Column
+    public sealed class TableColumn<T> : MultiColumnHeaderState.Column where T : class, new()
     {
         /// <summary>
         /// 绘制列元素的方法

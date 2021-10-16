@@ -9,7 +9,7 @@ namespace HT.Framework
     /// 表格视图
     /// </summary>
     /// <typeparam name="T">数据类型</typeparam>
-    public sealed class TableView<T> : TreeView where T : class
+    public sealed class TableView<T> : TreeView where T : class, new()
     {
         /// <summary>
         /// 表格数据
@@ -46,6 +46,10 @@ namespace HT.Framework
                 rowHeight = value;
             }
         }
+        /// <summary>
+        /// 是否启用上下文右键点击
+        /// </summary>
+        public bool IsEnableContextClick { get; set; } = true;
 
         /// <summary>
         /// 表格视图
@@ -108,6 +112,40 @@ namespace HT.Framework
                 TableColumn<T> column = multiColumnHeader.GetColumn(index) as TableColumn<T>;
                 column.DrawCell?.Invoke(cellRect, item.Data, args.row, args.selected, args.focused);
             }
+        }
+        /// <summary>
+        /// 上下文右键点击
+        /// </summary>
+        protected override void ContextClicked()
+        {
+            if (!IsEnableContextClick)
+                return;
+
+            List<TableViewItem<T>> selectedItems = new List<TableViewItem<T>>();
+            foreach (var itemID in GetSelection())
+            {
+                TableViewItem<T> item = _items.Find((it) => { return it.id == itemID; });
+                if (item != null) selectedItems.Add(item);
+            }
+
+            GenericMenu menu = new GenericMenu();
+            menu.AddItem(new GUIContent("Add row"), false, () =>
+            {
+                AddData(new T());
+            });
+            if (selectedItems.Count > 0)
+            {
+                menu.AddItem(new GUIContent("Delete selected rows"), false, () =>
+                {
+                    DeleteDatas(selectedItems);
+                });
+            }
+            menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Clear rows"), false, () =>
+            {
+                ClearData();
+            });
+            menu.ShowAsContext();
         }
 
         /// <summary>
@@ -173,9 +211,10 @@ namespace HT.Framework
             Reload();
         }
         /// <summary>
-        /// 移除数据
+        /// 删除数据
         /// </summary>
-        public void RemoveData(T data)
+        /// <param name="data">数据</param>
+        public void DeleteData(T data)
         {
             if (!_datas.Contains(data))
                 return;
@@ -185,6 +224,19 @@ namespace HT.Framework
             if (item != null)
             {
                 _items.Remove(item);
+            }
+            Reload();
+        }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="items">数据元素</param>
+        public void DeleteDatas(List<TableViewItem<T>> items)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                _datas.Remove(items[i].Data);
+                _items.Remove(items[i]);
             }
             Reload();
         }

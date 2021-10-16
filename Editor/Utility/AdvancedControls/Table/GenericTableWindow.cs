@@ -30,7 +30,7 @@ namespace HT.Framework
         private UObject _target;
         private string _targetName;
 
-        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/108117002";
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/120796924";
 
         private void Initialization(UObject target, string fieldName)
         {
@@ -59,6 +59,7 @@ namespace HT.Framework
             }
 
             _tableView = new TableView<object>(datas, columns);
+            _tableView.IsEnableContextClick = false;
             _target = target;
             _targetName = string.Format("{1}.{2} ({0})", _target.name, _target.GetType().FullName, fieldName);
         }
