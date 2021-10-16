@@ -20,6 +20,8 @@ namespace HT.Framework
         public static void OpenWindow(UObject target, string fieldName)
         {
             GenericTableWindow window = GetWindow<GenericTableWindow>();
+            window.titleContent.image = EditorGUIUtility.IconContent("ScriptableObject Icon").image;
+            window.titleContent.text = "Generic Table";
             window.Initialization(target, fieldName);
         }
 
