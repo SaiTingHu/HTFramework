@@ -33,7 +33,7 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal Rect Anchor = Rect.zero;
         /// <summary>
-        /// 是否启用
+        /// 是否启用，未启用时任务点将自动完成
         /// </summary>
         [SerializeField] internal bool IsEnable = true;
         /// <summary>
@@ -104,7 +104,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 是否启用（运行时）
+        /// 是否启用，未启用时任务点将自动完成（运行时）
         /// </summary>
         public bool IsEnableRunTime { get; set; } = true;
         /// <summary>
@@ -118,7 +118,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否完成中
         /// </summary>
-        internal bool IsCompleting { get; private set; } = false;
+        public bool IsCompleting { get; private set; } = false;
 
         /// <summary>
         /// 任务点开始
@@ -266,7 +266,13 @@ namespace HT.Framework
         internal void Guide()
         {
             if (!IsStart)
-                return;
+            {
+                IsStart = true;
+
+                OnStart();
+
+                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, false));
+            }
 
             if (IsComplete)
                 return;
@@ -317,7 +323,7 @@ namespace HT.Framework
         {
             get
             {
-                return new Vector2(Anchor.x + 15, Anchor.y + 30);
+                return new Vector2(Anchor.x + 15, Anchor.y + 32);
             }
         }
         /// <summary>
@@ -327,7 +333,7 @@ namespace HT.Framework
         {
             get
             {
-                return new Vector2(Anchor.x + Anchor.width - 15, Anchor.y + 30);
+                return new Vector2(Anchor.x + Anchor.width - 15, Anchor.y + 32);
             }
         }
         /// <summary>
@@ -337,7 +343,7 @@ namespace HT.Framework
         {
             get
             {
-                return new Vector2(Anchor.x - 200, Anchor.y + 30);
+                return new Vector2(Anchor.x - 200, Anchor.y + 32);
             }
         }
         /// <summary>
@@ -347,7 +353,7 @@ namespace HT.Framework
         {
             get
             {
-                return new Vector2(Anchor.x + Anchor.width + 200, Anchor.y + 30);
+                return new Vector2(Anchor.x + Anchor.width + 200, Anchor.y + 32);
             }
         }
         /// <summary>
@@ -385,7 +391,10 @@ namespace HT.Framework
                 GUI.backgroundColor = IsSelected ? Color.yellow : Color.white;
             }
 
-            GUILayout.BeginArea(Anchor, ShowName, "Window");
+            GUIContent gUIContent = new GUIContent();
+            gUIContent.text = ShowName;
+            gUIContent.tooltip = ShowName;
+            GUILayout.BeginArea(Anchor, gUIContent, "Window");
 
             GUI.backgroundColor = Color.white;
 
@@ -416,7 +425,7 @@ namespace HT.Framework
             GUILayout.EndArea();
 
             string icon = IsEnable ? "animationvisibilitytoggleon" : "animationvisibilitytoggleoff";
-            GUIContent gUIContent = new GUIContent();
+            gUIContent.text = null;
             gUIContent.image = EditorGUIUtility.IconContent(icon).image;
             gUIContent.tooltip = IsEnable ? "Enable" : "Disable";
             if (GUI.Button(new Rect(Anchor.x + Anchor.width - 40, Anchor.y, 20, 20), gUIContent, "InvisibleButton"))
@@ -425,6 +434,7 @@ namespace HT.Framework
                 GUI.changed = true;
             }
 
+            gUIContent.text = null;
             gUIContent.image = EditorGUIUtility.IconContent("Exposure").image;
             gUIContent.tooltip = IsExpand ? "Expand" : "Collapse";
             if (GUI.Button(new Rect(Anchor.x + Anchor.width - 22, Anchor.y, 20, 20), gUIContent, "InvisibleButton"))
@@ -450,7 +460,14 @@ namespace HT.Framework
             gUIContent.tooltip = getWord("Dependent task point");
             GUILayout.Box(gUIContent, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20));
             _leftWiredOrigin = GUILayoutUtility.GetLastRect();
-            
+
+            GUILayout.FlexibleSpace();
+
+            bool enable = IsEnable && IsEnableRunTime;
+            GUI.color = enable ? Color.cyan : Color.red;
+            GUILayout.Label(getWord(enable ? "ENABLE" : "DISABLED"));
+            GUI.color = Color.white;
+
             GUILayout.FlexibleSpace();
 
             gUIContent.tooltip = getWord("Be dependent task point");
@@ -637,7 +654,6 @@ namespace HT.Framework
                             IsSelected = true;
                             GUI.changed = true;
                             GUI.FocusControl(null);
-                            e.Use();
                         }
                         else
                         {

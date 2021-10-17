@@ -1234,7 +1234,7 @@ namespace HT.Framework
                     if (_isBreakWired)
                     {
                         Vector2 center = (leftAnchor + rightAnchor) / 2;
-                        Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
+                        Rect centerRect = new Rect(center.x - 10, center.y - 10, 20, 20);
                         if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
                         {
                             _currentStepObj.Wireds.RemoveAt(i);

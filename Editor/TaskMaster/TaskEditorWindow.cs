@@ -196,6 +196,8 @@ namespace HT.Framework
             AddWord("全部展开", "Expand All");
             AddWord("全部启用", "Enable All");
             AddWord("全部禁用", "Disable All");
+            AddWord("已启用", "ENABLE");
+            AddWord("已禁用", "DISABLED");
         }
 
         /// <summary>
@@ -272,7 +274,7 @@ namespace HT.Framework
                         if (_isBreakDepend)
                         {
                             Vector2 center = (_currentContent.Points[depend.OriginalPoint].LeftPosition + _currentContent.Points[depend.DependPoint].RightPosition) * 0.5f;
-                            Rect centerRect = new Rect(center.x - 8, center.y - 8, 20, 20);
+                            Rect centerRect = new Rect(center.x - 10, center.y - 10, 20, 20);
                             if (GUI.Button(centerRect, "", EditorGlobalTools.Styles.OLMinus))
                             {
                                 _currentContent.Depends.RemoveAt(i);
