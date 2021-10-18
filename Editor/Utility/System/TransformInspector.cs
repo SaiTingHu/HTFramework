@@ -263,25 +263,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUI.enabled = true;
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Expand All Children", EditorStyles.miniButtonLeft))
-            {
-                ExpandAllChildren();
-            }
-            if (GUILayout.Button("Collapse All Children", EditorStyles.miniButtonRight))
-            {
-                CollapseAllChildren();
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Collapse All", EditorStyles.miniButton))
-            {
-                CollapseAll();
-            }
-            GUILayout.EndHorizontal();
-
+            
             GUI.backgroundColor = Color.white;
         }
         private void CopyGUI()
@@ -367,37 +349,6 @@ namespace HT.Framework
             Target.SetParent(parent.transform);
             Selection.activeGameObject = parent;
             EditorGUIUtility.PingObject(parent);
-        }
-        private void ExpandAllChildren()
-        {
-            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
-            EditorWindow window = EditorWindow.GetWindow(type);
-            MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
-            int id = Target.gameObject.GetInstanceID();
-            method.Invoke(window, new object[] { id, true });
-        }
-        private void CollapseAllChildren()
-        {
-            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
-            EditorWindow window = EditorWindow.GetWindow(type);
-            MethodInfo method = window.GetType().GetMethod("SetExpandedRecursive", BindingFlags.Public | BindingFlags.Instance);
-            int id = Target.gameObject.GetInstanceID();
-            method.Invoke(window, new object[] { id, false });
-        }
-        private void CollapseAll()
-        {
-            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
-            EditorWindow window = EditorWindow.GetWindow(type);
-            object hierarchy = window.GetType().GetProperty("sceneHierarchy", BindingFlags.Public | BindingFlags.Instance).GetValue(window);
-            int[] expandedIDs = hierarchy.GetType().GetMethod("GetExpandedIDs", BindingFlags.Public | BindingFlags.Instance).Invoke(hierarchy, null) as int[];
-            MethodInfo method = hierarchy.GetType().GetMethod("ExpandTreeViewItem", BindingFlags.NonPublic | BindingFlags.Instance);
-            object[] args = new object[2];
-            args[1] = false;
-            for (int i = 0; i < expandedIDs.Length; i++)
-            {
-                args[0] = expandedIDs[i];
-                method.Invoke(hierarchy, args);
-            }
         }
         private int ClampAngle(float angle)
         {

@@ -162,24 +162,21 @@ namespace HT.Framework
             OnComplete();
 
             List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
-            List<int> uncompletePointIndexs = new List<int>();
             for (int i = 0; i < Points.Count; i++)
             {
                 if (!Points[i].IsComplete && !Points[i].IsCompleting)
                 {
                     uncompletePoints.Add(Points[i]);
-                    uncompletePointIndexs.Add(i);
                 }
             }
             while (uncompletePoints.Count > 0)
             {
                 for (int i = 0; i < uncompletePoints.Count; i++)
                 {
-                    if (IsDependComplete(uncompletePointIndexs[i]))
+                    if (uncompletePoints[i].IsDependComplete())
                     {
                         uncompletePoints[i].AutoComplete();
                         uncompletePoints.RemoveAt(i);
-                        uncompletePointIndexs.RemoveAt(i);
                         i -= 1;
                     }
                 }
@@ -215,7 +212,7 @@ namespace HT.Framework
                 if (Points[i].IsCompleting)
                     continue;
 
-                if (IsDependComplete(i))
+                if (Points[i].IsDependComplete())
                 {
                     if (Points[i].IsEnable && Points[i].IsEnableRunTime)
                     {
@@ -238,40 +235,41 @@ namespace HT.Framework
             IsComplete = false;
         }
         /// <summary>
-        /// 任务点的所有依赖任务点是否已完成
+        /// 获取一个未完成的、已激活的（前置依赖已完成）任务点
         /// </summary>
-        /// <param name="taskPointIndex">任务点</param>
-        /// <returns>依赖任务点是否已完成</returns>
-        internal bool IsDependComplete(int taskPointIndex)
+        /// <returns>任务点</returns>
+        internal TaskPointBase GetActivatedTaskPoint()
         {
-            for (int i = 0; i < Depends.Count; i++)
+            for (int i = 0; i < Points.Count; i++)
             {
-                if (Depends[i].OriginalPoint == taskPointIndex)
+                TaskPointBase point = Points[i];
+                if (!point.IsEnable || !point.IsEnableRunTime || point.IsComplete || point.IsCompleting)
+                    continue;
+
+                if (IsDependComplete(point))
                 {
-                    int depend = Depends[i].DependPoint;
-                    if (!Points[depend].IsComplete)
-                    {
-                        return false;
-                    }
+                    return point;
                 }
             }
-            return true;
+            return null;
         }
         /// <summary>
-        /// 任务点的所有依赖任务点是否已完成（忽略未启用的步骤）
+        /// 任务点的深层前置依赖是否已完成（忽略未启用的）
         /// </summary>
-        /// <param name="taskPointIndex">任务点</param>
-        /// <returns>依赖任务点是否已完成</returns>
-        internal bool IsDependCompleteIgnoreDisabled(int taskPointIndex)
+        internal bool IsDependComplete(TaskPointBase taskPoint)
         {
-            for (int i = 0; i < Depends.Count; i++)
+            foreach (var point in taskPoint.LastPoints)
             {
-                if (Depends[i].OriginalPoint == taskPointIndex)
+                if (point.IsEnable && point.IsEnableRunTime && !point.IsComplete)
                 {
-                    int depend = Depends[i].DependPoint;
-                    if (Points[depend].IsEnable && Points[depend].IsEnableRunTime && !Points[depend].IsComplete)
+                    return false;
+                }
+                else
+                {
+                    if (point.LastPoints.Count > 0)
                     {
-                        return false;
+                        bool value = IsDependComplete(point);
+                        if (!value) return false;
                     }
                 }
             }
@@ -351,6 +349,21 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Points") + ":", GUILayout.Width(50));
             GUILayout.Label(Points.Count.ToString());
+            int disabled = 0;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if (!Points[i].IsEnable || !Points[i].IsEnableRunTime)
+                {
+                    disabled += 1;
+                }
+            }
+            if (disabled > 0)
+            {
+                GUILayout.FlexibleSpace();
+                GUI.color = Color.red;
+                GUILayout.Label(getWord("DISABLED") + ":" + disabled.ToString());
+                GUI.color = Color.white;
+            }
             GUILayout.EndHorizontal();
 
             height += 20;

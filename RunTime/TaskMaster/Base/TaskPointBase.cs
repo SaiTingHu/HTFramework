@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 using System.Reflection;
@@ -119,6 +120,14 @@ namespace HT.Framework
         /// 是否完成中
         /// </summary>
         public bool IsCompleting { get; private set; } = false;
+        /// <summary>
+        /// 前置任务点
+        /// </summary>
+        internal HashSet<TaskPointBase> LastPoints { get; private set; } = new HashSet<TaskPointBase>();
+        /// <summary>
+        /// 后续任务点
+        /// </summary>
+        internal HashSet<TaskPointBase> NextPoints { get; private set; } = new HashSet<TaskPointBase>();
 
         /// <summary>
         /// 任务点开始
@@ -291,6 +300,21 @@ namespace HT.Framework
             IsStart = false;
             IsComplete = false;
             IsCompleting = false;
+            LastPoints.Clear();
+            NextPoints.Clear();
+        }
+        /// <summary>
+        /// 任务点的前置依赖是否已完成
+        /// </summary>
+        /// <returns>依赖任务点是否已完成</returns>
+        internal bool IsDependComplete()
+        {
+            foreach (var point in LastPoints)
+            {
+                if (!point.IsComplete)
+                    return false;
+            }
+            return true;
         }
 
 #if UNITY_EDITOR

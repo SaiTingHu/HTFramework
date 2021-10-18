@@ -193,17 +193,7 @@ namespace HT.Framework
             if (CurrentTaskContent == null)
                 return null;
 
-            for (int i = 0; i < CurrentTaskContent.Points.Count; i++)
-            {
-                if (TaskPointIsEnable(CurrentTaskContent.Points[i].GUID)
-                    && !CurrentTaskContent.Points[i].IsComplete
-                    && !CurrentTaskContent.Points[i].IsCompleting
-                    && CurrentTaskContent.IsDependCompleteIgnoreDisabled(i))
-                {
-                    return CurrentTaskContent.Points[i];
-                }
-            }
-            return null;
+            return CurrentTaskContent.GetActivatedTaskPoint();
         }
 
         /// <summary>
@@ -293,6 +283,17 @@ namespace HT.Framework
                         {
                             _taskPoints[item].IsEnableRunTime = false;
                         }
+                    }
+                }
+
+                foreach (var item in _taskContents)
+                {
+                    TaskContentBase taskContent = item.Value;
+                    for (int i = 0; i < taskContent.Depends.Count; i++)
+                    {
+                        TaskDepend depend = taskContent.Depends[i];
+                        taskContent.Points[depend.OriginalPoint].LastPoints.Add(taskContent.Points[depend.DependPoint]);
+                        taskContent.Points[depend.DependPoint].NextPoints.Add(taskContent.Points[depend.OriginalPoint]);
                     }
                 }
 
