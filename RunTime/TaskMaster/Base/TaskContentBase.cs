@@ -143,7 +143,8 @@ namespace HT.Framework
         /// <summary>
         /// 任务内容自动完成（未完成的任务点会自动完成）
         /// </summary>
-        internal void AutoComplete()
+        /// <returns>是否成功</returns>
+        internal bool AutoComplete()
         {
             if (!IsStart)
             {
@@ -155,7 +156,13 @@ namespace HT.Framework
             }
 
             if (IsComplete)
-                return;
+                return false;
+
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if (Points[i].IsCompleting)
+                    return false;
+            }
 
             IsComplete = true;
 
@@ -183,6 +190,7 @@ namespace HT.Framework
             }
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this, true));
+            return true;
         }
         /// <summary>
         /// 任务内容开始后，每帧监测

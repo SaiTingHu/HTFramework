@@ -222,7 +222,8 @@ namespace HT.Framework
         /// <summary>
         /// 自动完成任务点
         /// </summary>
-        internal void AutoComplete()
+        /// <returns>是否成功</returns>
+        internal bool AutoComplete()
         {
             if (!IsStart)
             {
@@ -234,10 +235,10 @@ namespace HT.Framework
             }
 
             if (IsComplete)
-                return;
+                return false;
 
             if (IsCompleting)
-                return;
+                return false;
 
             OnAutoComplete();
 
@@ -251,6 +252,7 @@ namespace HT.Framework
             OnEnd();
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, IsEnable && IsEnableRunTime, true));
+            return true;
         }
 
         /// <summary>

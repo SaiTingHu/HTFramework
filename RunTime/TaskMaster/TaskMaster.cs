@@ -339,43 +339,46 @@ namespace HT.Framework
 
             Main.m_Event.Throw<EventTaskEnd>();
         }
-        
+
         /// <summary>
         /// 自动完成当前任务内容，任务内容未完成的任务点会根据依赖关系依次调用自动完成
         /// </summary>
-        public void AutoCompleteCurrentTaskContent()
+        /// <returns>是否成功</returns>
+        public bool AutoCompleteCurrentTaskContent()
         {
             if (!_running)
-                return;
+                return false;
 
             if (Pause)
-                return;
+                return false;
 
             if (_currentTaskContent == null)
-                return;
+                return false;
 
-            _currentTaskContent.AutoComplete();
+            return _currentTaskContent.AutoComplete();
         }
         /// <summary>
         /// 自动完成当前任务内容中指定的任务点
         /// </summary>
         /// <param name="id">任务点ID</param>
-        public void AutoCompleteCurrentTaskPoint(string id)
+        /// <returns>是否成功</returns>
+        public bool AutoCompleteCurrentTaskPoint(string id)
         {
             if (!_running)
-                return;
+                return false;
 
             if (Pause)
-                return;
+                return false;
 
             if (_currentTaskContent == null)
-                return;
+                return false;
 
             TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
             if (taskPoint != null)
             {
-                taskPoint.AutoComplete();
+                return taskPoint.AutoComplete();
             }
+            return false;
         }
         /// <summary>
         /// 指引当前任务内容中指定的任务点
