@@ -80,11 +80,11 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 ## 内置工具
 
-- [Unity Asset Bundle Browser tool](https://docs.unity3d.com/Manual/AssetBundles-Browser.html)。
+- [AssetBundle Browser 1.7.0](https://docs.unity3d.com/Manual/AssetBundles-Browser.html)。
 
-- [Dotween Free](http://dotween.demigiant.com/)。
+- [Dotween Free 1.2.632](http://dotween.demigiant.com/)。
 
-- [LitJson](https://github.com/LitJSON/litjson)。
+- [LitJson 0.17.0](https://github.com/LitJSON/litjson)。
 
 ## 演示代码
 

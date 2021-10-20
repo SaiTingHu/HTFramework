@@ -78,7 +78,7 @@ namespace HT.Framework
 
             int count = taskGameObjects.GUIDs.Count;
             if (count <= 0) count = 1;
-            return 20 + count * 22;
+            return 50 + count * 22;
         }
 
         /// <summary>
