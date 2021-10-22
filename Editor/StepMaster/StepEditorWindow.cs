@@ -1155,11 +1155,13 @@ namespace HT.Framework
                     if (GUILayout.Button(GetWord("Preview"), EditorGlobalTools.Styles.ButtonLeft))
                     {
                         _currentOperationObj.CreatePreviewTarget(_currentStepObj, _currentOperationIndex);
+                        SearchStepPreview();
                     }
                     GUI.enabled = _currentOperationObj.PreviewTarget;
                     if (GUILayout.Button(GetWord("Stop"), EditorGlobalTools.Styles.ButtonRight))
                     {
                         _currentOperationObj.DeletePreviewTarget();
+                        ClearSearchStepPreview();
                     }
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
@@ -2075,6 +2077,7 @@ namespace HT.Framework
                     content.Operations[i].DeletePreviewTarget();
                 }
             }
+            ClearSearchStepPreview();
         }
         /// <summary>
         /// 停止所有步骤的所有操作预览
@@ -2089,6 +2092,30 @@ namespace HT.Framework
                     content.Operations[j].DeletePreviewTarget();
                 }
             }
+            ClearSearchStepPreview();
+        }
+        /// <summary>
+        /// 筛选步骤预览目标
+        /// </summary>
+        private void SearchStepPreview()
+        {
+            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+            PropertyInfo propertyInfo = type.GetProperty("lastInteractedHierarchyWindow", BindingFlags.Static | BindingFlags.Public);
+            EditorWindow window = propertyInfo.GetValue(null) as EditorWindow;
+            MethodInfo methodInfo = type.GetMethod("SetSearchFilter", BindingFlags.Instance | BindingFlags.NonPublic);
+            object[] args = new object[] { "StepPreview", SearchableEditorWindow.SearchMode.Type, true, true };
+            methodInfo.Invoke(window, args);
+        }
+        /// <summary>
+        /// 清除筛选步骤预览目标
+        /// </summary>
+        private void ClearSearchStepPreview()
+        {
+            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.SceneHierarchyWindow");
+            PropertyInfo propertyInfo = type.GetProperty("lastInteractedHierarchyWindow", BindingFlags.Static | BindingFlags.Public);
+            EditorWindow window = propertyInfo.GetValue(null) as EditorWindow;
+            MethodInfo methodInfo = type.GetMethod("ClearSearchFilter", BindingFlags.Instance | BindingFlags.NonPublic);
+            methodInfo.Invoke(window, null);
         }
 
         /// <summary>

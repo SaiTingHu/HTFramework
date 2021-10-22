@@ -108,7 +108,8 @@ namespace HT.Framework
             {
                 PreviewTarget = Main.CloneGameObject(Target, Target.rectTransform());
                 PreviewTarget.name = "[Preview]" + Target.name + " - " + Name;
-                PreviewTarget.AddComponent<StepPreview>();
+                if (!PreviewTarget.GetComponent<StepPreview>())
+                    PreviewTarget.AddComponent<StepPreview>();
                 SetPreviewTransform(stepContent, operationIndex);
                 InitPreviewTarget(stepContent);
                 FocusTarget();

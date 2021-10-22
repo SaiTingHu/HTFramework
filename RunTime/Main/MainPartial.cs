@@ -169,10 +169,6 @@ namespace HT.Framework
         {
             OnRefresh();
         }
-        private void FixedUpdate()
-        {
-            LogicFixedLoopRefresh();
-        }
         private void OnGUI()
         {
             LicenseOnGUI();
@@ -983,41 +979,7 @@ namespace HT.Framework
         /// </summary>
         public bool IsEnabledLogError = true;
         #endregion
-
-        #region LogicLoop
-        /// <summary>
-        /// 主逻辑循环
-        /// </summary>
-        public event HTFAction LogicLoop;
-
-        private void LogicLoopRefresh()
-        {
-            if (Pause)
-            {
-                return;
-            }
-
-            LogicLoop?.Invoke();
-        }
-        #endregion
-
-        #region LogicFixedLoop
-        /// <summary>
-        /// 主逻辑循环（固定帧）
-        /// </summary>
-        public event HTFAction LogicFixedLoop;
-
-        private void LogicFixedLoopRefresh()
-        {
-            if (Pause)
-            {
-                return;
-            }
-
-            LogicFixedLoop?.Invoke();
-        }
-        #endregion
-
+        
         #region Utility
         private List<HTFAction> _actionQueue = new List<HTFAction>();
         private List<HTFAction> _actionExecuteQueue = new List<HTFAction>();

@@ -1,4 +1,5 @@
-﻿#if UNITY_EDITOR
+﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 
@@ -7,6 +8,7 @@ namespace HT.Framework
     /// <summary>
     /// 步骤预览目标
     /// </summary>
+    [DisallowMultipleComponent]
     internal sealed class StepPreview : HTBehaviour
     {
 #if UNITY_EDITOR

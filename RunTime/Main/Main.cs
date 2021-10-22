@@ -39,7 +39,6 @@
         {
             base.OnRefresh();
 
-            LogicLoopRefresh();
             UtilityRefresh();
             ModuleRefresh();
         }
