@@ -503,7 +503,8 @@ namespace HT.Framework
         /// <summary>
         /// 开始步骤流程
         /// </summary>
-        public void Begin()
+        /// <param name="isBeginFirstStep">自动开始第一步</param>
+        public void Begin(bool isBeginFirstStep = true)
         {
             if (!ContentAsset || ContentAsset.Content.Count <= 0 || _stepContents.Count <= 0)
             {
@@ -520,7 +521,10 @@ namespace HT.Framework
 
             BeginEvent?.Invoke();
 
-            BeginCurrentStep();
+            if (isBeginFirstStep)
+            {
+                BeginCurrentStep();
+            }
         }
         /// <summary>
         /// 结束步骤流程
@@ -591,7 +595,7 @@ namespace HT.Framework
                     return false;
 
                 int index = _stepContentIndexs[stepID];
-                if (index <= _currentStepIndex || index > _stepContents.Count - 1)
+                if (index < _currentStepIndex || index > _stepContents.Count - 1)
                     return false;
 
                 Main.Current.StartCoroutine(SkipStepCoroutine(index));
@@ -643,7 +647,7 @@ namespace HT.Framework
                     return false;
 
                 int index = _stepContentIndexs[stepID];
-                if (index <= _currentStepIndex || index > _stepContents.Count - 1)
+                if (index < _currentStepIndex || index > _stepContents.Count - 1)
                     return false;
 
                 SkipStepImmediateCoroutine(index);
@@ -1098,7 +1102,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        _currentButton = _currentContent.Target.GetComponent<Button>();
+                        _currentButton = _currentTarget.GetComponent<Button>();
                         if (_currentButton)
                         {
                             _currentButton.onClick.Invoke();
