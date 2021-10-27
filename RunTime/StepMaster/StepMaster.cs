@@ -212,6 +212,9 @@ namespace HT.Framework
                 if (Pause)
                     return;
 
+                if (_currentContent == null)
+                    return;
+
                 if (!_executing)
                 {
                     if (_currentHelper != null && _currentHelper.IsEnableUpdate)
@@ -227,7 +230,7 @@ namespace HT.Framework
                             {
                                 if (Main.m_Controller.RayTarget)
                                 {
-                                    if (Main.m_Controller.RayTargetObj == _currentContent.Target)
+                                    if (Main.m_Controller.RayTargetObj == _currentTarget.gameObject)
                                     {
                                         _execute = true;
                                     }
@@ -254,7 +257,7 @@ namespace HT.Framework
                         case StepTrigger.ButtonClick:
                             if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
                             {
-                                if (Main.m_Controller.RayTarget && Main.m_Controller.RayTargetObj != _currentContent.Target && Main.m_Controller.RayTarget.IsStepTarget)
+                                if (Main.m_Controller.RayTarget && Main.m_Controller.RayTargetObj != _currentTarget.gameObject && Main.m_Controller.RayTarget.IsStepTarget)
                                 {
                                     if (_currentHelper != null)
                                     {
@@ -277,7 +280,7 @@ namespace HT.Framework
                         case StepTrigger.StateChange:
                             if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeft))
                             {
-                                if (Main.m_Controller.RayTarget && Main.m_Controller.RayTargetObj != _currentContent.Target && Main.m_Controller.RayTarget.IsStepTarget)
+                                if (Main.m_Controller.RayTarget && Main.m_Controller.RayTargetObj != _currentTarget.gameObject && Main.m_Controller.RayTarget.IsStepTarget)
                                 {
                                     if (_currentHelper != null)
                                     {
@@ -976,7 +979,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        _currentButton = _currentContent.Target.GetComponent<Button>();
+                        _currentButton = _currentTarget.GetComponent<Button>();
                         if (_currentButton)
                         {
                             _currentButton.onClick.Invoke();
