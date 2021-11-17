@@ -43,7 +43,7 @@ namespace HT.Framework
         //所有的 任务点 <任务点ID、任务点>
         private Dictionary<string, TaskPointBase> _taskPoints = new Dictionary<string, TaskPointBase>();
         //当前的任务内容索引
-        private int _currentTaskContentIndex = -1;
+        private int _currentTaskContentIndex = 0;
         //当前的任务内容
         private TaskContentBase _currentTaskContent;
         //任务控制者运行中
@@ -59,6 +59,10 @@ namespace HT.Framework
             get
             {
                 return _running;
+            }
+            private set
+            {
+                _running = value;
             }
         }
         /// <summary>
@@ -86,6 +90,20 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 当前激活的任务内容索引
+        /// </summary>
+        public int CurrentTaskContentIndex
+        {
+            get
+            {
+                return _currentTaskContentIndex;
+            }
+            private set
+            {
+                _currentTaskContentIndex = value;
+            }
+        }
+        /// <summary>
         /// 当前激活的任务内容
         /// </summary>
         public TaskContentBase CurrentTaskContent
@@ -94,22 +112,53 @@ namespace HT.Framework
             {
                 return _currentTaskContent;
             }
+            set
+            {
+                if (_currentTaskContent == value)
+                    return;
+
+                if (_currentTaskContent != null)
+                {
+                    _currentTaskContent.EndContent();
+                    _currentTaskContent = null;
+                }
+                _currentTaskContent = value;
+                if (_currentTaskContent != null)
+                {
+                    CurrentTaskContentIndex = AllTaskContent.IndexOf(_currentTaskContent);
+                    _currentTaskContent.StartContent();
+                }
+                else
+                {
+                    CurrentTaskContentIndex = 0;
+                }
+            }
         }
 
         public override void OnRefresh()
         {
             base.OnRefresh();
 
-            if (_running)
-            {
-                if (Pause)
-                    return;
+            if (Pause)
+                return;
 
-                if (_currentTaskContent != null)
+            if (IsRunning)
+            {
+                if (CurrentTaskContent != null)
                 {
-                    if (_currentTaskContent.OnMonitor())
+                    if (CurrentTaskContent.MonitorContent())
                     {
-                        CompleteCurrentTask();
+                        CurrentTaskContent.Complete();
+
+                        CurrentTaskContentIndex += 1;
+                        if (CurrentTaskContentIndex < _taskContentsList.Count)
+                        {
+                            CurrentTaskContent = _taskContentsList[CurrentTaskContentIndex];
+                        }
+                        else
+                        {
+                            End();
+                        }
                     }
                 }
             }
@@ -297,9 +346,9 @@ namespace HT.Framework
                     }
                 }
 
-                _currentTaskContentIndex = 0;
-                _currentTaskContent = null;
-                _running = false;
+                CurrentTaskContentIndex = 0;
+                CurrentTaskContent = null;
+                IsRunning = false;
                 Pause = false;
                 #endregion
             }
@@ -311,30 +360,34 @@ namespace HT.Framework
         /// <summary>
         /// 开始任务流程
         /// </summary>
-        public void Begin()
+        /// <param name="isBeginFirstTask">自动开始第一个任务内容</param>
+        public void Begin(bool isBeginFirstTask = true)
         {
             if (!ContentAsset || ContentAsset.Content.Count <= 0 || _taskContentsList.Count <= 0)
             {
                 throw new HTFrameworkException(HTFrameworkModule.TaskMaster, "任务控制者：当前无法开始任务流程，请重新编译任务内容 RecompileTaskContent！");
             }
 
-            _currentTaskContentIndex = 0;
-            _currentTaskContent = null;
-            _running = true;
+            CurrentTaskContentIndex = 0;
+            CurrentTaskContent = null;
+            IsRunning = true;
             Pause = false;
 
             Main.m_Event.Throw<EventTaskBegin>();
 
-            BeginCurrentTask();
+            if (isBeginFirstTask)
+            {
+                CurrentTaskContent = _taskContentsList[CurrentTaskContentIndex];
+            }
         }
         /// <summary>
         /// 结束任务流程
         /// </summary>
         public void End()
         {
-            _currentTaskContentIndex = 0;
-            _currentTaskContent = null;
-            _running = false;
+            CurrentTaskContentIndex = 0;
+            CurrentTaskContent = null;
+            IsRunning = false;
             Pause = false;
 
             Main.m_Event.Throw<EventTaskEnd>();
@@ -346,16 +399,16 @@ namespace HT.Framework
         /// <returns>是否成功</returns>
         public bool AutoCompleteCurrentTaskContent()
         {
-            if (!_running)
+            if (!IsRunning)
                 return false;
 
             if (Pause)
                 return false;
 
-            if (_currentTaskContent == null)
+            if (CurrentTaskContent == null)
                 return false;
 
-            return _currentTaskContent.AutoComplete();
+            return CurrentTaskContent.AutoComplete();
         }
         /// <summary>
         /// 自动完成当前任务内容中指定的任务点
@@ -364,16 +417,16 @@ namespace HT.Framework
         /// <returns>是否成功</returns>
         public bool AutoCompleteCurrentTaskPoint(string id)
         {
-            if (!_running)
+            if (!IsRunning)
                 return false;
 
             if (Pause)
                 return false;
 
-            if (_currentTaskContent == null)
+            if (CurrentTaskContent == null)
                 return false;
 
-            TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
+            TaskPointBase taskPoint = CurrentTaskContent.Points.Find((p) => { return p.GUID == id; });
             if (taskPoint != null)
             {
                 return taskPoint.AutoComplete();
@@ -386,19 +439,19 @@ namespace HT.Framework
         /// <param name="id">任务点ID</param>
         public void GuideCurrentTaskPoint(string id)
         {
-            if (!_running)
+            if (!IsRunning)
                 return;
 
             if (Pause)
                 return;
 
-            if (_currentTaskContent == null)
+            if (CurrentTaskContent == null)
                 return;
 
-            TaskPointBase taskPoint = _currentTaskContent.Points.Find((p) => { return p.GUID == id; });
+            TaskPointBase taskPoint = CurrentTaskContent.Points.Find((p) => { return p.GUID == id; });
             if (taskPoint != null)
             {
-                taskPoint.Guide();
+                taskPoint.GuidePoint();
             }
         }
         /// <summary>
@@ -407,44 +460,18 @@ namespace HT.Framework
         /// <param name="taskPoint">任务点</param>
         public void GuideCurrentTaskPoint(TaskPointBase taskPoint)
         {
-            if (!_running)
+            if (!IsRunning)
                 return;
 
             if (Pause)
                 return;
 
-            if (_currentTaskContent == null)
+            if (CurrentTaskContent == null)
                 return;
 
-            if (_currentTaskContent.Points.Contains(taskPoint) && taskPoint != null)
+            if (CurrentTaskContent.Points.Contains(taskPoint) && taskPoint != null)
             {
-                taskPoint.Guide();
-            }
-        }
-
-        /// <summary>
-        /// 当前任务内容开始
-        /// </summary>
-        private void BeginCurrentTask()
-        {
-            _currentTaskContent = _taskContentsList[_currentTaskContentIndex];
-        }
-        /// <summary>
-        /// 当前任务内容完成
-        /// </summary>
-        private void CompleteCurrentTask()
-        {
-            _currentTaskContent.Complete();
-            _currentTaskContent = null;
-
-            _currentTaskContentIndex += 1;
-            if (_currentTaskContentIndex < _taskContentsList.Count)
-            {
-                BeginCurrentTask();
-            }
-            else
-            {
-                End();
+                taskPoint.GuidePoint();
             }
         }
     }

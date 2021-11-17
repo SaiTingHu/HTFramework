@@ -116,21 +116,69 @@ namespace HT.Framework
         {
             
         }
+        /// <summary>
+        /// 任务内容结束
+        /// </summary>
+        protected virtual void OnEnd()
+        { 
         
+        }
+
+        /// <summary>
+        /// 任务内容开始
+        /// </summary>
+        internal void StartContent()
+        {
+            if (IsStart)
+                return;
+
+            IsStart = true;
+
+            OnStart();
+
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
+        }
+        /// <summary>
+        /// 任务内容开始后，每帧监测
+        /// </summary>
+        /// <returns>所有任务点是否已完成</returns>
+        internal bool MonitorContent()
+        {
+            OnUpdate();
+
+            if (IsComplete)
+                return true;
+
+            bool isComplete = true;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if (Points[i].IsComplete)
+                    continue;
+
+                isComplete = false;
+
+                if (Points[i].IsCompleting)
+                    continue;
+
+                if (Points[i].IsDependComplete())
+                {
+                    if (Points[i].IsEnable && Points[i].IsEnableRunTime)
+                    {
+                        Points[i].MonitorPoint();
+                    }
+                    else
+                    {
+                        Points[i].AutoComplete();
+                    }
+                }
+            }
+            return isComplete;
+        }
         /// <summary>
         /// 任务内容完成
         /// </summary>
         internal void Complete()
         {
-            if (!IsStart)
-            {
-                IsStart = true;
-
-                OnStart();
-
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this, false));
-            }
-
             if (IsComplete)
                 return;
 
@@ -146,15 +194,6 @@ namespace HT.Framework
         /// <returns>是否成功</returns>
         internal bool AutoComplete()
         {
-            if (!IsStart)
-            {
-                IsStart = true;
-
-                OnStart();
-
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this, true));
-            }
-
             if (IsComplete)
                 return false;
 
@@ -193,47 +232,15 @@ namespace HT.Framework
             return true;
         }
         /// <summary>
-        /// 任务内容开始后，每帧监测
+        /// 任务内容结束
         /// </summary>
-        /// <returns>所有任务点是否已完成</returns>
-        internal bool OnMonitor()
+        internal void EndContent()
         {
-            if (!IsStart)
-            {
-                IsStart = true;
+            IsStart = false;
 
-                OnStart();
-
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this, false));
-            }
-
-            OnUpdate();
-
-            bool isComplete = true;
-            for (int i = 0; i < Points.Count; i++)
-            {
-                if (Points[i].IsComplete)
-                    continue;
-
-                isComplete = false;
-
-                if (Points[i].IsCompleting)
-                    continue;
-
-                if (Points[i].IsDependComplete())
-                {
-                    if (Points[i].IsEnable && Points[i].IsEnableRunTime)
-                    {
-                        Points[i].OnMonitor();
-                    }
-                    else
-                    {
-                        Points[i].AutoComplete();
-                    }
-                }
-            }
-            return isComplete;
+            OnEnd();
         }
+
         /// <summary>
         /// 重置状态
         /// </summary>

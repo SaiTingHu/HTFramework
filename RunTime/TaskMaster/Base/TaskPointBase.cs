@@ -173,18 +173,50 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 任务点开始
+        /// </summary>
+        /// <param name="isAuto">是否自动完成</param>
+        private void StartPoint(bool isAuto)
+        {
+            if (IsStart)
+                return;
+
+            IsStart = true;
+
+            OnStart();
+
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, isAuto));
+        }
+        /// <summary>
+        /// 任务点的前置依赖完成后，每帧监测
+        /// </summary>
+        internal void MonitorPoint()
+        {
+            StartPoint(false);
+
+            OnUpdate();
+        }
+        /// <summary>
+        /// 任务点指引
+        /// </summary>
+        internal void GuidePoint()
+        {
+            StartPoint(false);
+
+            if (IsComplete)
+                return;
+
+            if (IsCompleting)
+                return;
+
+            OnGuide();
+        }
+        /// <summary>
         /// 完成任务点
         /// </summary>
         public void Complete()
         {
-            if (!IsStart)
-            {
-                IsStart = true;
-
-                OnStart();
-
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, false));
-            }
+            StartPoint(false);
 
             if (IsComplete)
                 return;
@@ -215,7 +247,7 @@ namespace HT.Framework
             IsComplete = true;
             IsCompleting = false;
 
-            OnEnd();
+            EndPoint();
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, IsEnable && IsEnableRunTime, false));
         }
@@ -225,14 +257,7 @@ namespace HT.Framework
         /// <returns>是否成功</returns>
         internal bool AutoComplete()
         {
-            if (!IsStart)
-            {
-                IsStart = true;
-
-                OnStart();
-
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, true));
-            }
+            StartPoint(true);
 
             if (IsComplete)
                 return false;
@@ -249,50 +274,21 @@ namespace HT.Framework
 
             IsComplete = true;
 
-            OnEnd();
+            EndPoint();
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointComplete>().Fill(this, IsEnable && IsEnableRunTime, true));
             return true;
         }
-
         /// <summary>
-        /// 任务点的前置依赖完成后，每帧监测
+        /// 任务点结束
         /// </summary>
-        internal void OnMonitor()
+        private void EndPoint()
         {
-            if (!IsStart)
-            {
-                IsStart = true;
+            IsStart = false;
 
-                OnStart();
-
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, false));
-            }
-
-            OnUpdate();
+            OnEnd();
         }
-        /// <summary>
-        /// 任务点指引
-        /// </summary>
-        internal void Guide()
-        {
-            if (!IsStart)
-            {
-                IsStart = true;
 
-                OnStart();
-
-                Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, false));
-            }
-
-            if (IsComplete)
-                return;
-
-            if (IsCompleting)
-                return;
-
-            OnGuide();
-        }
         /// <summary>
         /// 重置状态
         /// </summary>
