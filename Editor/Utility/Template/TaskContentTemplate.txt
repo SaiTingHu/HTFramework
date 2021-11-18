@@ -25,6 +25,10 @@ public class #SCRIPTNAME# : TaskContentBase
     {
         base.OnComplete();
     }
+    protected override void OnEnd()
+    {
+        base.OnEnd();
+    }
 
 #if UNITY_EDITOR
     protected override int OnPropertyGUI()
