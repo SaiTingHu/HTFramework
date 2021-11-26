@@ -170,20 +170,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 自由控制：摄像机是否始终保持注视目标
-        /// </summary>
-        public bool IsLookAtTarget
-        {
-            get
-            {
-                return _helper.IsLookAtTarget;
-            }
-            set
-            {
-                _helper.IsLookAtTarget = value;
-            }
-        }
-        /// <summary>
         /// 当前射线击中的目标
         /// </summary>
         public MouseRayTargetBase RayTarget

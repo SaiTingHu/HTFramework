@@ -31,10 +31,6 @@ namespace HT.Framework
         public float XSpeed = 0.1f, YSpeed = 0.1f, ZSpeed = 0.1f;
         
         /// <summary>
-        /// 最终的位置
-        /// </summary>
-        private Vector3 _finalPosition;
-        /// <summary>
         /// 阻尼缓动模式时的动画缓存
         /// </summary>
         private Tweener _moveTweener;

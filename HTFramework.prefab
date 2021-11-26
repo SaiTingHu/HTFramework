@@ -790,7 +790,6 @@ MonoBehaviour:
   CanControl: 1
   IsCanOnUGUI: 0
   AllowOverstepDistance: 1
-  IsLookAtTarget: 0
   XSpeed: 150
   YSpeed: 150
   MSpeed: 50

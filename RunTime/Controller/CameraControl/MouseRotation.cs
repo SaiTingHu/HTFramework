@@ -21,10 +21,6 @@ namespace HT.Framework
         /// </summary>
         public bool AllowOverstepDistance = true;
         /// <summary>
-        /// 是否始终保持注视目标，即使在视角切换时
-        /// </summary>
-        public bool IsLookAtTarget = true;
-        /// <summary>
         /// x轴旋转速度，y轴旋转速度，滚轮缩放速度
         /// </summary>
         public float XSpeed = 150, YSpeed = 150, MSpeed = 30;
@@ -62,10 +58,6 @@ namespace HT.Framework
         public float Y = 30.0f;
         
         /// <summary>
-        /// 注视点（注视目标的准确位置，经过偏移后的位置）
-        /// </summary>
-        private Vector3 _targetPoint;
-        /// <summary>
         /// 系数
         /// </summary>
         private float _factor = 0.02f;
@@ -75,10 +67,6 @@ namespace HT.Framework
         private Quaternion _rotation;
         private Vector3 _position;
         private Vector3 _disVector;
-        /// <summary>
-        /// 最终的位置
-        /// </summary>
-        private Vector3 _finalPosition;
         
         /// <summary>
         /// 注视目标
@@ -152,12 +140,6 @@ namespace HT.Framework
 
             //切换视角
             SwitchAngle(NeedDamping);
-
-            //摄像机一直保持注视目标点
-            if (IsLookAtTarget)
-            {
-                transform.LookAt(Target.transform.position);
-            }
         }
         private void CalculateAngle()
         {

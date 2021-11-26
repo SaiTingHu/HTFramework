@@ -18,7 +18,6 @@ namespace HT.Framework
 
             PropertyField(nameof(MouseRotation.IsCanOnUGUI), "Can Control On UGUI");
             PropertyField(nameof(MouseRotation.AllowOverstepDistance), "Allow Overstep Distance");
-            PropertyField(nameof(MouseRotation.IsLookAtTarget), "LookAt Target");
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Speed", EditorStyles.boldLabel);

@@ -42,10 +42,6 @@ namespace HT.Framework
         /// </summary>
         bool AllowOverstepDistance { get; set; }
         /// <summary>
-        /// 自由控制：摄像机是否始终保持注视目标
-        /// </summary>
-        bool IsLookAtTarget { get; set; }
-        /// <summary>
         /// 当前射线击中的目标
         /// </summary>
         MouseRayTargetBase RayTarget { get; }
