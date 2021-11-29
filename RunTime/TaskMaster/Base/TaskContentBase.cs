@@ -87,6 +87,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 获取所有任务点依赖
+        /// </summary>
+        public List<TaskDepend> GetDepends
+        {
+            get
+            {
+                return Depends;
+            }
+        }
+        /// <summary>
         /// 是否开始
         /// </summary>
         public bool IsStart { get; private set; } = false;

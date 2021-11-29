@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 namespace HT.Framework
 {
@@ -9,8 +8,8 @@ namespace HT.Framework
     [Serializable]
     public sealed class TaskDepend
     {
-        [SerializeField] internal int OriginalPoint = 0;
-        [SerializeField] internal int DependPoint = 0;
+        public int OriginalPoint = 0;
+        public int DependPoint = 0;
 
         public TaskDepend(int originalPoint, int dependPoint)
         {

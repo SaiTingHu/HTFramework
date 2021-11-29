@@ -58,10 +58,6 @@ namespace HT.Framework
         public float Y = 30.0f;
         
         /// <summary>
-        /// 系数
-        /// </summary>
-        private float _factor = 0.02f;
-        /// <summary>
         /// 目标位置
         /// </summary>
         private Quaternion _rotation;
@@ -117,18 +113,18 @@ namespace HT.Framework
 
             if (Main.m_Input.GetButton(InputButtonType.MouseRight))
             {
-                X += Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * _factor;
-                Y -= Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * _factor;
+                X += Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * Time.deltaTime;
+                Y -= Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * Time.deltaTime;
             }
             if (Main.m_Input.GetAxisRaw(InputAxisType.MouseScrollWheel) != 0)
             {
-                Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * _factor;
+                Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * Time.deltaTime;
 
                 if (AllowOverstepDistance)
                 {
                     if (Distance <= MinDistance || Distance >= MaxDistance)
                     {
-                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * _factor);
+                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * Time.deltaTime);
                     }
                 }
             }

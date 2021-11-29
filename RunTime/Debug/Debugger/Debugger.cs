@@ -783,7 +783,7 @@ namespace HT.Framework
                 log.Type = "Info";
                 _infoLogCount += 1;
             }
-            log.Name = "[" + GetWord(log.Type) + "] [" + log.Time + "] " + log.Message;
+            log.Name = string.Format("[{0}] [{1}] {2}", GetWord(log.Type), log.Time, log.Message);
             _consoleLogs.Add(log);
 
             if (_warningLogCount > 0)
