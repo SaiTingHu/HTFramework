@@ -8,8 +8,12 @@ namespace HT.Framework
     /// </summary>
     public abstract class BindableType<T>
     {
+        /// <summary>
+        /// 数据值改变
+        /// </summary>
+        public HTFAction<T> OnValueChanged;
+
         protected T _value;
-        protected HTFAction<T> _onValueChanged;
         protected HashSet<UIBehaviour> _bindedControls = new HashSet<UIBehaviour>();
 
         /// <summary>
@@ -24,7 +28,7 @@ namespace HT.Framework
             set
             {
                 _value = value;
-                _onValueChanged?.Invoke(_value);
+                OnValueChanged?.Invoke(_value);
             }
         }
         

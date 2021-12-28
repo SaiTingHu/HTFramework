@@ -37,7 +37,7 @@ namespace HT.Framework
                     return;
 
                 _value = value;
-                _onValueChanged?.Invoke(_value);
+                OnValueChanged?.Invoke(_value);
             }
         }
 
@@ -80,14 +80,14 @@ namespace HT.Framework
                 InputField inputField = control as InputField;
                 inputField.text = Value.ToString();
                 inputField.onValueChanged.AddListener(_callbackString);
-                _onValueChanged += (value) => { if (inputField) inputField.text = value.ToString(); };
+                OnValueChanged += (value) => { if (inputField) inputField.text = value.ToString(); };
                 _bindedControls.Add(control);
             }
             else if (control is Text)
             {
                 Text text = control as Text;
                 text.text = Value.ToString();
-                _onValueChanged += (value) => { if (text) text.text = value.ToString(); };
+                OnValueChanged += (value) => { if (text) text.text = value.ToString(); };
                 _bindedControls.Add(control);
             }
             else if (control is Slider)
@@ -95,7 +95,7 @@ namespace HT.Framework
                 Slider slider = control as Slider;
                 slider.value = Value;
                 slider.onValueChanged.AddListener(_callbackFloat);
-                _onValueChanged += (value) => { if (slider) slider.value = value; };
+                OnValueChanged += (value) => { if (slider) slider.value = value; };
                 _bindedControls.Add(control);
             }
             else if (control is Dropdown)
@@ -103,7 +103,7 @@ namespace HT.Framework
                 Dropdown dropdown = control as Dropdown;
                 dropdown.value = Value;
                 dropdown.onValueChanged.AddListener(_callbackInt);
-                _onValueChanged += (value) => { if (dropdown) dropdown.value = value; };
+                OnValueChanged += (value) => { if (dropdown) dropdown.value = value; };
                 _bindedControls.Add(control);
             }
             else
@@ -139,7 +139,7 @@ namespace HT.Framework
                     dropdown.onValueChanged.RemoveListener(_callbackInt);
                 }
             }
-            _onValueChanged = null;
+            OnValueChanged = null;
             _bindedControls.Clear();
         }
     }

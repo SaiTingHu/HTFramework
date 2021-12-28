@@ -35,7 +35,7 @@ namespace HT.Framework
                     return;
 
                 _value = value;
-                _onValueChanged?.Invoke(_value);
+                OnValueChanged?.Invoke(_value);
             }
         }
 
@@ -66,21 +66,21 @@ namespace HT.Framework
                 Toggle toggle = control as Toggle;
                 toggle.isOn = Value;
                 toggle.onValueChanged.AddListener(_callback);
-                _onValueChanged += (value) => { if (toggle) toggle.isOn = value; };
+                OnValueChanged += (value) => { if (toggle) toggle.isOn = value; };
                 _bindedControls.Add(control);
             }
             else if (control is Button)
             {
                 Button button = control as Button;
                 button.interactable = Value;
-                _onValueChanged += (value) => { if (button) button.interactable = value; };
+                OnValueChanged += (value) => { if (button) button.interactable = value; };
                 _bindedControls.Add(control);
             }
             else if (control is Text)
             {
                 Text text = control as Text;
                 text.text = Value.ToString();
-                _onValueChanged += (value) => { if (text) text.text = value.ToString(); };
+                OnValueChanged += (value) => { if (text) text.text = value.ToString(); };
                 _bindedControls.Add(control);
             }
             else
@@ -106,7 +106,7 @@ namespace HT.Framework
                     toggle.onValueChanged.RemoveListener(_callback);
                 }
             }
-            _onValueChanged = null;
+            OnValueChanged = null;
             _bindedControls.Clear();
         }
     }

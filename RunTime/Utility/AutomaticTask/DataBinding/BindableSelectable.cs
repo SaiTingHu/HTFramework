@@ -41,7 +41,7 @@ namespace HT.Framework
                     return;
 
                 _value = newValue;
-                _onValueChanged?.Invoke(_value);
+                OnValueChanged?.Invoke(_value);
             }
         }
         /// <summary>
@@ -110,14 +110,14 @@ namespace HT.Framework
                 }
                 dropdown.value = Value;
                 dropdown.onValueChanged.AddListener(_callback);
-                _onValueChanged += (value) => { if (dropdown) dropdown.value = value; };
+                OnValueChanged += (value) => { if (dropdown) dropdown.value = value; };
                 _bindedControls.Add(control);
             }
             else if (control is Text)
             {
                 Text text = control as Text;
                 text.text = ValueString;
-                _onValueChanged += (value) => { if (text) text.text = ValueString; };
+                OnValueChanged += (value) => { if (text) text.text = ValueString; };
                 _bindedControls.Add(control);
             }
             else
@@ -143,7 +143,7 @@ namespace HT.Framework
                     dropdown.onValueChanged.RemoveListener(_callback);
                 }
             }
-            _onValueChanged = null;
+            OnValueChanged = null;
             _bindedControls.Clear();
         }
     }

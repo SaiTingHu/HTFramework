@@ -31,7 +31,7 @@ namespace HT.Framework
                     return;
 
                 _value = value;
-                _onValueChanged?.Invoke(_value);
+                OnValueChanged?.Invoke(_value);
             }
         }
 
@@ -62,14 +62,14 @@ namespace HT.Framework
                 InputField inputField = control as InputField;
                 inputField.text = Value;
                 inputField.onValueChanged.AddListener(_callback);
-                _onValueChanged += (value) => { if (inputField) inputField.text = value; };
+                OnValueChanged += (value) => { if (inputField) inputField.text = value; };
                 _bindedControls.Add(control);
             }
             else if (control is Text)
             {
                 Text text = control as Text;
                 text.text = Value;
-                _onValueChanged += (value) => { if (text) text.text = value; };
+                OnValueChanged += (value) => { if (text) text.text = value; };
                 _bindedControls.Add(control);
             }
             else
@@ -95,7 +95,7 @@ namespace HT.Framework
                     inputField.onValueChanged.RemoveListener(_callback);
                 }
             }
-            _onValueChanged = null;
+            OnValueChanged = null;
             _bindedControls.Clear();
         }
     }
