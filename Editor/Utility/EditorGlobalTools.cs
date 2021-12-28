@@ -898,7 +898,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector2 value, string format)
         {
-            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f");
+            return string.Format("Vector2({0}f,{1}f)", value.x.ToString(format), value.y.ToString(format));
         }
         /// <summary>
         /// Vector3转换为标准Copy字符串
@@ -908,7 +908,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector3 value, string format)
         {
-            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f");
+            return string.Format("Vector3({0}f,{1}f,{2}f)", value.x.ToString(format), value.y.ToString(format), value.z.ToString(format));
         }
         /// <summary>
         /// Vector4转换为标准Copy字符串
@@ -918,27 +918,25 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector4 value, string format)
         {
-            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
+            return string.Format("Vector4({0}f,{1}f,{2}f,{3}f)", value.x.ToString(format), value.y.ToString(format), value.z.ToString(format), value.w.ToString(format));
         }
         /// <summary>
         /// Vector2Int转换为标准Copy字符串
         /// </summary>
         /// <param name="value">Vector2Int值</param>
-        /// <param name="format">格式</param>
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector2Int value)
         {
-            return StringToolkit.Concat(value.x.ToString(), ",", value.y.ToString());
+            return string.Format("Vector2Int({0},{1})", value.x, value.y);
         }
         /// <summary>
         /// Vector3Int转换为标准Copy字符串
         /// </summary>
         /// <param name="value">Vector3Int值</param>
-        /// <param name="format">格式</param>
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector3Int value)
         {
-            return StringToolkit.Concat(value.x.ToString(), ",", value.y.ToString(), ",", value.z.ToString());
+            return string.Format("Vector3Int({0},{1},{2})", value.x, value.y, value.z);
         }
         /// <summary>
         /// Quaternion转换为标准Copy字符串
@@ -948,7 +946,30 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Quaternion value, string format)
         {
-            return StringToolkit.Concat(value.x.ToString(format), "f,", value.y.ToString(format), "f,", value.z.ToString(format), "f,", value.w.ToString(format), "f");
+            return string.Format("Quaternion({0}f,{1}f,{2}f,{3}f)", value.x.ToString(format), value.y.ToString(format), value.z.ToString(format), value.w.ToString(format));
+        }
+        /// <summary>
+        /// Bounds转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Bounds值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Bounds value, string format)
+        {
+            return string.Format("Bounds({0}f,{1}f,{2}f,{3}f,{4}f,{5}f)"
+                , value.center.x.ToString(format), value.center.y.ToString(format), value.center.z.ToString(format)
+                , value.size.x.ToString(format), value.size.y.ToString(format), value.size.z.ToString(format));
+        }
+        /// <summary>
+        /// BoundsInt转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">BoundsInt值</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this BoundsInt value)
+        {
+            return string.Format("BoundsInt({0},{1},{2},{3},{4},{5})"
+                , value.position.x, value.position.y, value.position.z
+                , value.size.x, value.size.y, value.size.z);
         }
         /// <summary>
         /// 标准Paste字符串转换为Vector2
@@ -958,15 +979,21 @@ namespace HT.Framework
         /// <returns>Vector2值</returns>
         public static Vector2 ToPasteVector2(this string value, Vector2 defaultValue = default)
         {
-            string[] vector2 = value.Split(',');
-            if (vector2.Length == 2)
+            if (value.StartsWith("Vector2("))
             {
-                float x, y;
-                vector2[0] = vector2[0].Replace("f", "");
-                vector2[1] = vector2[1].Replace("f", "");
-                if (float.TryParse(vector2[0], out x) && float.TryParse(vector2[1], out y))
+                value = value.Replace("Vector2(", "");
+                value = value.Replace(")", "");
+
+                string[] vector2 = value.Split(',');
+                if (vector2.Length == 2)
                 {
-                    return new Vector2(x, y);
+                    float x, y;
+                    vector2[0] = vector2[0].Replace("f", "");
+                    vector2[1] = vector2[1].Replace("f", "");
+                    if (float.TryParse(vector2[0], out x) && float.TryParse(vector2[1], out y))
+                    {
+                        return new Vector2(x, y);
+                    }
                 }
             }
             return defaultValue;
@@ -979,16 +1006,22 @@ namespace HT.Framework
         /// <returns>Vector3值</returns>
         public static Vector3 ToPasteVector3(this string value, Vector3 defaultValue = default)
         {
-            string[] vector3 = value.Split(',');
-            if (vector3.Length == 3)
+            if (value.StartsWith("Vector3("))
             {
-                float x, y, z;
-                vector3[0] = vector3[0].Replace("f", "");
-                vector3[1] = vector3[1].Replace("f", "");
-                vector3[2] = vector3[2].Replace("f", "");
-                if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
+                value = value.Replace("Vector3(", "");
+                value = value.Replace(")", "");
+
+                string[] vector3 = value.Split(',');
+                if (vector3.Length == 3)
                 {
-                    return new Vector3(x, y, z);
+                    float x, y, z;
+                    vector3[0] = vector3[0].Replace("f", "");
+                    vector3[1] = vector3[1].Replace("f", "");
+                    vector3[2] = vector3[2].Replace("f", "");
+                    if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
+                    {
+                        return new Vector3(x, y, z);
+                    }
                 }
             }
             return defaultValue;
@@ -1001,17 +1034,23 @@ namespace HT.Framework
         /// <returns>Vector4值</returns>
         public static Vector4 ToPasteVector4(this string value, Vector4 defaultValue = default)
         {
-            string[] vector4 = value.Split(',');
-            if (vector4.Length == 4)
+            if (value.StartsWith("Vector4("))
             {
-                float x, y, z, w;
-                vector4[0] = vector4[0].Replace("f", "");
-                vector4[1] = vector4[1].Replace("f", "");
-                vector4[2] = vector4[2].Replace("f", "");
-                vector4[3] = vector4[3].Replace("f", "");
-                if (float.TryParse(vector4[0], out x) && float.TryParse(vector4[1], out y) && float.TryParse(vector4[2], out z) && float.TryParse(vector4[3], out w))
+                value = value.Replace("Vector4(", "");
+                value = value.Replace(")", "");
+
+                string[] vector4 = value.Split(',');
+                if (vector4.Length == 4)
                 {
-                    return new Vector4(x, y, z, w);
+                    float x, y, z, w;
+                    vector4[0] = vector4[0].Replace("f", "");
+                    vector4[1] = vector4[1].Replace("f", "");
+                    vector4[2] = vector4[2].Replace("f", "");
+                    vector4[3] = vector4[3].Replace("f", "");
+                    if (float.TryParse(vector4[0], out x) && float.TryParse(vector4[1], out y) && float.TryParse(vector4[2], out z) && float.TryParse(vector4[3], out w))
+                    {
+                        return new Vector4(x, y, z, w);
+                    }
                 }
             }
             return defaultValue;
@@ -1024,13 +1063,19 @@ namespace HT.Framework
         /// <returns>Vector2Int值</returns>
         public static Vector2Int ToPasteVector2Int(this string value, Vector2Int defaultValue = default)
         {
-            string[] vector2 = value.Split(',');
-            if (vector2.Length == 2)
+            if (value.StartsWith("Vector2Int("))
             {
-                int x, y;
-                if (int.TryParse(vector2[0], out x) && int.TryParse(vector2[1], out y))
+                value = value.Replace("Vector2Int(", "");
+                value = value.Replace(")", "");
+
+                string[] vector2 = value.Split(',');
+                if (vector2.Length == 2)
                 {
-                    return new Vector2Int(x, y);
+                    int x, y;
+                    if (int.TryParse(vector2[0], out x) && int.TryParse(vector2[1], out y))
+                    {
+                        return new Vector2Int(x, y);
+                    }
                 }
             }
             return defaultValue;
@@ -1043,13 +1088,19 @@ namespace HT.Framework
         /// <returns>Vector3Int值</returns>
         public static Vector3Int ToPasteVector3Int(this string value, Vector3Int defaultValue = default)
         {
-            string[] vector3 = value.Split(',');
-            if (vector3.Length == 3)
+            if (value.StartsWith("Vector3Int("))
             {
-                int x, y, z;
-                if (int.TryParse(vector3[0], out x) && int.TryParse(vector3[1], out y) && int.TryParse(vector3[2], out z))
+                value = value.Replace("Vector3Int(", "");
+                value = value.Replace(")", "");
+
+                string[] vector3 = value.Split(',');
+                if (vector3.Length == 3)
                 {
-                    return new Vector3Int(x, y, z);
+                    int x, y, z;
+                    if (int.TryParse(vector3[0], out x) && int.TryParse(vector3[1], out y) && int.TryParse(vector3[2], out z))
+                    {
+                        return new Vector3Int(x, y, z);
+                    }
                 }
             }
             return defaultValue;
@@ -1062,17 +1113,83 @@ namespace HT.Framework
         /// <returns>Quaternion值</returns>
         public static Quaternion ToPasteQuaternion(this string value, Quaternion defaultValue = default)
         {
-            string[] quaternion = value.Split(',');
-            if (quaternion.Length == 4)
+            if (value.StartsWith("Quaternion("))
             {
-                float x, y, z, w;
-                quaternion[0] = quaternion[0].Replace("f", "");
-                quaternion[1] = quaternion[1].Replace("f", "");
-                quaternion[2] = quaternion[2].Replace("f", "");
-                quaternion[3] = quaternion[3].Replace("f", "");
-                if (float.TryParse(quaternion[0], out x) && float.TryParse(quaternion[1], out y) && float.TryParse(quaternion[2], out z) && float.TryParse(quaternion[3], out w))
+                value = value.Replace("Quaternion(", "");
+                value = value.Replace(")", "");
+
+                string[] quaternion = value.Split(',');
+                if (quaternion.Length == 4)
                 {
-                    return new Quaternion(x, y, z, w);
+                    float x, y, z, w;
+                    quaternion[0] = quaternion[0].Replace("f", "");
+                    quaternion[1] = quaternion[1].Replace("f", "");
+                    quaternion[2] = quaternion[2].Replace("f", "");
+                    quaternion[3] = quaternion[3].Replace("f", "");
+                    if (float.TryParse(quaternion[0], out x) && float.TryParse(quaternion[1], out y) && float.TryParse(quaternion[2], out z) && float.TryParse(quaternion[3], out w))
+                    {
+                        return new Quaternion(x, y, z, w);
+                    }
+                }
+            }
+            return defaultValue;
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为Bounds
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>Bounds值</returns>
+        public static Bounds ToPasteBounds(this string value, Bounds defaultValue = default)
+        {
+            if (value.StartsWith("Bounds("))
+            {
+                value = value.Replace("Bounds(", "");
+                value = value.Replace(")", "");
+
+                string[] bounds = value.Split(',');
+                if (bounds.Length == 6)
+                {
+                    float centerX, centerY, centerZ;
+                    float sizeX, sizeY, sizeZ;
+                    bounds[0] = bounds[0].Replace("f", "");
+                    bounds[1] = bounds[1].Replace("f", "");
+                    bounds[2] = bounds[2].Replace("f", "");
+                    bounds[3] = bounds[3].Replace("f", "");
+                    bounds[4] = bounds[4].Replace("f", "");
+                    bounds[5] = bounds[5].Replace("f", "");
+                    if (float.TryParse(bounds[0], out centerX) && float.TryParse(bounds[1], out centerY) && float.TryParse(bounds[2], out centerZ)
+                        && float.TryParse(bounds[3], out sizeX) && float.TryParse(bounds[4], out sizeY) && float.TryParse(bounds[5], out sizeZ))
+                    {
+                        return new Bounds(new Vector3(centerX, centerY, centerZ), new Vector3(sizeX, sizeY, sizeZ));
+                    }
+                }
+            }
+            return defaultValue;
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为BoundsInt
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>BoundsInt值</returns>
+        public static BoundsInt ToPasteBoundsInt(this string value, BoundsInt defaultValue = default)
+        {
+            if (value.StartsWith("BoundsInt("))
+            {
+                value = value.Replace("BoundsInt(", "");
+                value = value.Replace(")", "");
+
+                string[] bounds = value.Split(',');
+                if (bounds.Length == 6)
+                {
+                    int centerX, centerY, centerZ;
+                    int sizeX, sizeY, sizeZ;
+                    if (int.TryParse(bounds[0], out centerX) && int.TryParse(bounds[1], out centerY) && int.TryParse(bounds[2], out centerZ)
+                        && int.TryParse(bounds[3], out sizeX) && int.TryParse(bounds[4], out sizeY) && int.TryParse(bounds[5], out sizeZ))
+                    {
+                        return new BoundsInt(new Vector3Int(centerX, centerY, centerZ), new Vector3Int(sizeX, sizeY, sizeZ));
+                    }
                 }
             }
             return defaultValue;

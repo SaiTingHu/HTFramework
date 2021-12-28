@@ -620,7 +620,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 在属性字段的后面绘制复制、粘贴按钮（目前仅支持 Vector2 和 Vector3 类型的属性）
+        /// 在属性字段的后面绘制复制、粘贴按钮
         /// </summary>
         /// <param name="property">属性</param>
         protected void DrawCopyPaste(SerializedProperty property)
@@ -660,7 +660,9 @@ namespace HT.Framework
                 || property.propertyType == SerializedPropertyType.Vector4
                 || property.propertyType == SerializedPropertyType.Vector2Int
                 || property.propertyType == SerializedPropertyType.Vector3Int
-                || property.propertyType == SerializedPropertyType.Quaternion)
+                || property.propertyType == SerializedPropertyType.Quaternion
+                || property.propertyType == SerializedPropertyType.Bounds
+                || property.propertyType == SerializedPropertyType.BoundsInt)
                 return true;
             return false;
         }
@@ -692,6 +694,14 @@ namespace HT.Framework
             else if (property.propertyType == SerializedPropertyType.Quaternion)
             {
                 GUIUtility.systemCopyBuffer = property.quaternionValue.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Bounds)
+            {
+                GUIUtility.systemCopyBuffer = property.boundsValue.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.BoundsInt)
+            {
+                GUIUtility.systemCopyBuffer = property.boundsIntValue.ToCopyString();
             }
         }
         /// <summary>
@@ -725,6 +735,14 @@ namespace HT.Framework
             else if (property.propertyType == SerializedPropertyType.Quaternion)
             {
                 property.quaternionValue = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+            }
+            else if (property.propertyType == SerializedPropertyType.Bounds)
+            {
+                property.boundsValue = GUIUtility.systemCopyBuffer.ToPasteBounds();
+            }
+            else if (property.propertyType == SerializedPropertyType.BoundsInt)
+            {
+                property.boundsIntValue = GUIUtility.systemCopyBuffer.ToPasteBoundsInt();
             }
             property.serializedObject.ApplyModifiedProperties();
         }
