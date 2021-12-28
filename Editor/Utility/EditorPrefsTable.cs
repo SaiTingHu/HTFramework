@@ -132,6 +132,11 @@ namespace HT.Framework
         /// AssemblyViewer窗口的ILSpy程序启动路径
         /// </summary>
         public static readonly string AssemblyViewer_ILSpyPath = "HT.Framework.AssemblyViewer.ILSpyPath";
+
+        /// <summary>
+        /// Collider配置：是否绘制碰撞盒范围
+        /// </summary>
+        public static readonly string Collider_ShowBounds = "HT.Framework.Collider.ShowBounds";
         #endregion
     }
 }

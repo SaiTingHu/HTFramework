@@ -100,11 +100,11 @@ namespace HT.Framework
                         }
                         else
                         {
-                            string x = ClampAngle(Target.rotation.eulerAngles.x).ToString();
-                            string y = ClampAngle(Target.rotation.eulerAngles.y).ToString();
-                            string z = ClampAngle(Target.rotation.eulerAngles.z).ToString();
-
-                            GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                            float x = ClampAngle(Target.rotation.eulerAngles.x);
+                            float y = ClampAngle(Target.rotation.eulerAngles.y);
+                            float z = ClampAngle(Target.rotation.eulerAngles.z);
+                            Vector3 angle = new Vector3(x, y, z);
+                            GUIUtility.systemCopyBuffer = angle.ToCopyString("F1");
                         }
                     });
                     gm.AddDisabledItem(new GUIContent("Paste"));
@@ -155,11 +155,11 @@ namespace HT.Framework
                         }
                         else
                         {
-                            string x = ClampAngle(Target.localRotation.eulerAngles.x).ToString();
-                            string y = ClampAngle(Target.localRotation.eulerAngles.y).ToString();
-                            string z = ClampAngle(Target.localRotation.eulerAngles.z).ToString();
-
-                            GUIUtility.systemCopyBuffer = x + "f," + y + "f," + z + "f";
+                            float x = ClampAngle(Target.localRotation.eulerAngles.x);
+                            float y = ClampAngle(Target.localRotation.eulerAngles.y);
+                            float z = ClampAngle(Target.localRotation.eulerAngles.z);
+                            Vector3 angle = new Vector3(x, y, z);
+                            GUIUtility.systemCopyBuffer = angle.ToCopyString("F1");
                         }
                     });
                     gm.AddItem(new GUIContent("Paste"), false, () =>
@@ -350,12 +350,12 @@ namespace HT.Framework
             Selection.activeGameObject = parent;
             EditorGUIUtility.PingObject(parent);
         }
-        private int ClampAngle(float angle)
+        private float ClampAngle(float angle)
         {
             if (angle > 180) angle -= 360;
             else if (angle < -180) angle += 360;
 
-            return (int)angle;
+            return angle;
         }
         private string ToCSPublicField()
         {
