@@ -25,6 +25,14 @@ namespace HT.Framework
         private Dictionary<string, string> _stateNames;
         private Editor _argsEditor;
 
+        private void OnDestroy()
+        {
+            if (_argsEditor != null)
+            {
+                DestroyImmediate(_argsEditor);
+                _argsEditor = null;
+            }
+        }
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();

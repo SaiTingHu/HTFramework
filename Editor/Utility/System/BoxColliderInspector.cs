@@ -26,6 +26,15 @@ namespace HT.Framework
                 }
             }
         }
+        private void OnDestroy()
+        {
+            _originalOnEnable = null;
+            if (_originalEditor != null)
+            {
+                DestroyImmediate(_originalEditor);
+                _originalEditor = null;
+            }
+        }
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();

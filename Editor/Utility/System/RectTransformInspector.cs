@@ -70,6 +70,16 @@ namespace HT.Framework
                 _originalOnSceneGUI.Invoke(_originalEditor, null);
             }
         }
+        private void OnDestroy()
+        {
+            _originalOnSceneGUI = null;
+            _originalOnHeaderGUI = null;
+            if (_originalEditor != null)
+            {
+                DestroyImmediate(_originalEditor);
+                _originalEditor = null;
+            }
+        }
         protected override void OnHeaderGUI()
         {
             if (_originalEditor != null && _originalOnHeaderGUI != null)
