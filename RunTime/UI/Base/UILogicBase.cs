@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using UnityEngine;
 
 namespace HT.Framework
@@ -40,7 +39,7 @@ namespace HT.Framework
         {
             get
             {
-                return Array.Exists(GetType().GetInterfaces(), t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IDataDriver<>));
+                return this is IDataDriver;
             }
         }
         /// <summary>
@@ -84,16 +83,14 @@ namespace HT.Framework
         /// </summary>
         public virtual void OnDestroy()
         {
-            if (IsAutomate && IsSupportedDataDriver)
-            {
-                AutomaticTask.ClearDataBinding(this);
-            }
+            
         }
         /// <summary>
         /// UI逻辑刷新
         /// </summary>
         public virtual void OnUpdate()
         {
+
         }
         /// <summary>
         /// 打开自己

@@ -3,11 +3,8 @@
     /// <summary>
     /// 数据驱动器的接口
     /// </summary>
-    public interface IDataDriver<T> where T : class
+    public interface IDataDriver
     {
-        /// <summary>
-        /// 数据
-        /// </summary>
-        T Data { get; set; }
+
     }
 }

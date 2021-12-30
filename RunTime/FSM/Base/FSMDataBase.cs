@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace HT.Framework
+﻿namespace HT.Framework
 {
     /// <summary>
     /// 有限状态机数据基类
@@ -18,7 +16,7 @@ namespace HT.Framework
         {
             get
             {
-                return Array.Exists(GetType().GetInterfaces(), t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IDataDriver<>));
+                return this is IDataDriver;
             }
         }
         /// <summary>

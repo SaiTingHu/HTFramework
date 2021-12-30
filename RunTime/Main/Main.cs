@@ -5,26 +5,12 @@
     /// </summary>
     public sealed partial class Main : InternalModuleBase<IMainHelper>
     {
-        /// <summary>
-        /// 当前主程序
-        /// </summary>
-        public static Main Current { get; private set; }
-
         public override void OnInitialization()
         {
             base.OnInitialization();
             
-            if (Current == null)
-            {
-                Current = this;
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Main, "框架致命错误：不能存在两个及以上Main主模块！");
-            }
-
             LicenseInitialization();
-            MainDataInitialization();
+            DataModelInitialization();
             ModuleInitialization();
         }
         public override void OnPreparatory()
@@ -32,7 +18,7 @@
             base.OnPreparatory();
 
             LicensePreparatory();
-            MainDataPreparatory();
+            DataModelPreparatory();
             ModulePreparatory();
         }
         public override void OnRefresh()

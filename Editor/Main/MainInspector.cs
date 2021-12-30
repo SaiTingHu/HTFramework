@@ -20,6 +20,7 @@ namespace HT.Framework
 
             PageEnable();
             ScriptingDefineEnable();
+            DataModelEnable();
             ParameterEnable();
         }
         protected override void OnInspectorDefaultGUI()
@@ -44,7 +45,7 @@ namespace HT.Framework
         {
             _pagePainter = new PagePainter(this);
             _pagePainter.AddPage("Scripting Define", EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image, ScriptingDefineGUI);
-            _pagePainter.AddPage("Main Data", EditorGUIUtility.IconContent("SceneViewOrtho").image, MainDataGUI);
+            _pagePainter.AddPage("Data Model", EditorGUIUtility.IconContent("SceneViewOrtho").image, DataModelGUI);
             _pagePainter.AddPage("License", EditorGUIUtility.IconContent("UnityEditor.AnimationWindow").image, LicenseGUI);
             _pagePainter.AddPage("Parameter", EditorGUIUtility.IconContent("UnityEditor.HierarchyWindow").image, ParameterGUI);
             _pagePainter.AddPage("Setting", EditorGUIUtility.IconContent("SettingsIcon").image, SettingGUI);
@@ -102,7 +103,7 @@ namespace HT.Framework
                 _newDefine = EditorGUILayout.TextField(_newDefine);
                 if (GUILayout.Button("OK", EditorStyles.miniButtonLeft, GUILayout.Width(30)))
                 {
-                    if (_newDefine != "")
+                    if (!string.IsNullOrEmpty(_newDefine))
                     {
                         _currentScriptingDefine.AddDefine(_newDefine);
                         _isNewDefine = false;
@@ -146,37 +147,48 @@ namespace HT.Framework
         
         private sealed class ScriptingDefine
         {
-            private BuildTargetGroup _buildTargetGroup = BuildTargetGroup.Standalone;
-
+            /// <summary>
+            /// 宏定义记录
+            /// </summary>
             public List<string> DefinedsRecord { get; } = new List<string>();
+            /// <summary>
+            /// 宏定义
+            /// </summary>
             public List<string> Defineds { get; } = new List<string>();
+            /// <summary>
+            /// 宏定义记录
+            /// </summary>
             public string DefinedRecord { get; private set; } = "";
+            /// <summary>
+            /// 宏定义
+            /// </summary>
             public string Defined { get; private set; } = "";
+            /// <summary>
+            /// 是否存在任意宏定义
+            /// </summary>
             public bool IsAnyDefined
             {
                 get
                 {
-                    return Defined != "";
+                    return !string.IsNullOrEmpty(Defined);
                 }
             }
 
             public ScriptingDefine()
             {
-                AddDefineRecord(EditorPrefs.GetString(EditorPrefsTable.ScriptingDefine_Record, ""));
+                AddDefineRecord(EditorPrefs.GetString(EditorPrefsTable.ScriptingDefine_Record, null));
 
-                _buildTargetGroup = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                AddDefine(PlayerSettings.GetScriptingDefineSymbolsForGroup(_buildTargetGroup));
+                BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+                AddDefine(PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup));
             }
-            public bool IsDefined(string define)
-            {
-                return Defineds.Contains(define);
-            }
+
+            /// <summary>
+            /// 添加宏定义
+            /// </summary>
             public void AddDefine(string define)
             {
-                if (string.IsNullOrEmpty(define) || define == "")
-                {
+                if (string.IsNullOrEmpty(define))
                     return;
-                }
 
                 string[] defines = define.Split(';');
                 for (int i = 0; i < defines.Length; i++)
@@ -189,29 +201,36 @@ namespace HT.Framework
                 }
                 AddDefineRecord(define);
             }
+            /// <summary>
+            /// 清空所有宏定义
+            /// </summary>
             public void ClearDefines()
             {
                 Defined = "";
                 Defineds.Clear();
             }
+            /// <summary>
+            /// 应用宏定义
+            /// </summary>
             public void Apply()
             {
-                _buildTargetGroup = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(_buildTargetGroup, Defined);
+                BuildTargetGroup buildTargetGroup = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, Defined);
             }
-
+            /// <summary>
+            /// 清空宏定义记录
+            /// </summary>
             public void ClearDefinesRecord()
             {
                 DefinedRecord = "";
                 DefinedsRecord.Clear();
                 EditorPrefs.SetString(EditorPrefsTable.ScriptingDefine_Record, DefinedRecord);
             }
+
             private void AddDefineRecord(string define)
             {
-                if (string.IsNullOrEmpty(define) || define == "")
-                {
+                if (string.IsNullOrEmpty(define))
                     return;
-                }
 
                 string[] defines = define.Split(';');
                 for (int i = 0; i < defines.Length; i++)
@@ -227,37 +246,107 @@ namespace HT.Framework
         }
         #endregion
 
-        #region MainData
-        private void MainDataGUI()
+        #region DataModel
+        private GUIContent _addGC;
+        private GUIContent _removeGC;
+        private GUIContent _editGC;
+        private SerializedProperty _dataModelTypes;
+        private ReorderableList _dataModelList;
+
+        private void DataModelEnable()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("MainData", GUILayout.Width(LabelWidth));
-            if (GUILayout.Button(Target.MainDataType, EditorGlobalTools.Styles.MiniPopup))
+            _addGC = new GUIContent();
+            _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
+            _addGC.tooltip = "Add a new DataModel";
+            _removeGC = new GUIContent();
+            _removeGC.image = EditorGUIUtility.IconContent("d_Toolbar Minus").image;
+            _removeGC.tooltip = "Remove select DataModel";
+            _editGC = new GUIContent();
+            _editGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            _editGC.tooltip = "Edit DataModel script";
+
+            _dataModelTypes = GetProperty("DataModelTypes");
+            _dataModelList = new ReorderableList(serializedObject, _dataModelTypes, true, true, false, false);
+            _dataModelList.drawHeaderCallback = (Rect rect) =>
             {
-                GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                Rect sub = rect;
+                sub.Set(rect.x, rect.y, 200, rect.height);
+                GUI.Label(sub, "Data Models:");
+
+                if (!EditorApplication.isPlaying)
                 {
-                    return type.IsSubclassOf(typeof(MainDataBase));
-                });
-                gm.AddItem(new GUIContent("<None>"), Target.MainDataType == "<None>", () =>
-                {
-                    Undo.RecordObject(target, "Set Main Data");
-                    Target.MainDataType = "<None>";
-                    HasChanged();
-                });
-                for (int i = 0; i < types.Count; i++)
-                {
-                    int j = i;
-                    gm.AddItem(new GUIContent(types[j].FullName), Target.MainDataType == types[j].FullName, () =>
+                    sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
+                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
                     {
-                        Undo.RecordObject(target, "Set Main Data");
-                        Target.MainDataType = types[j].FullName;
+                        GenericMenu gm = new GenericMenu();
+                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                        {
+                            return type.IsSubclassOf(typeof(DataModelBase));
+                        });
+                        for (int i = 0; i < types.Count; i++)
+                        {
+                            int j = i;
+                            if (Target.DataModelTypes.Contains(types[j].FullName))
+                            {
+                                gm.AddDisabledItem(new GUIContent(types[j].FullName), true);
+                            }
+                            else
+                            {
+                                gm.AddItem(new GUIContent(types[j].FullName), false, () =>
+                                {
+                                    Undo.RecordObject(target, "Add Data Model");
+                                    Target.DataModelTypes.Add(types[j].FullName);
+                                    HasChanged();
+                                });
+                            }
+                        }
+                        gm.ShowAsContext();
+                    }
+
+                    sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
+                    GUI.enabled = _dataModelList.index >= 0 && _dataModelList.index < Target.DataModelTypes.Count;
+                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    {
+                        Undo.RecordObject(target, "Remove Data Model");
+                        Target.DataModelTypes.RemoveAt(_dataModelList.index);
                         HasChanged();
-                    });
+                    }
+                    GUI.enabled = true;
                 }
-                gm.ShowAsContext();
-            }
-            GUILayout.EndHorizontal();
+            };
+            _dataModelList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                if (index >= 0 && index < Target.DataModelTypes.Count)
+                {
+                    Rect subrect = rect;
+                    subrect.Set(rect.x, rect.y + 2, rect.width, 16);
+                    GUI.Label(subrect, Target.DataModelTypes[index]);
+
+                    if (isActive && isFocused)
+                    {
+                        subrect.Set(rect.x + rect.width - 20, rect.y, 20, 20);
+                        if (GUI.Button(subrect, _editGC, "InvisibleButton"))
+                        {
+                            MonoScriptToolkit.OpenMonoScript(Target.DataModelTypes[index]);
+                        }
+                    }
+                }
+            };
+            _dataModelList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                if (Event.current.type == EventType.Repaint)
+                {
+                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "Box";
+                    gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
+                    rect.x += 2;
+                    rect.width -= 6;
+                    gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
+                }
+            };
+        }
+        private void DataModelGUI()
+        {
+            _dataModelList.DoLayoutList();
         }
         #endregion
 

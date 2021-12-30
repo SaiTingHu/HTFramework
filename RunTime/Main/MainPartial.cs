@@ -21,6 +21,11 @@ namespace HT.Framework
     [InternalModule(HTFrameworkModule.Main)]
     public sealed partial class Main : InternalModuleBase<IMainHelper>
     {
+        /// <summary>
+        /// 当前主程序
+        /// </summary>
+        public static Main Current { get; private set; }
+
         #region Static Method
         /// <summary>
         /// 克隆实例
@@ -158,6 +163,15 @@ namespace HT.Framework
         protected override void Awake()
         {
             base.Awake();
+
+            if (Current == null)
+            {
+                Current = this;
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Main, "框架致命错误：不能存在两个及以上Main主模块！");
+            }
 
             OnInitialization();
         }
@@ -535,59 +549,98 @@ namespace HT.Framework
         }
         #endregion
 
-        #region MainData
+        #region DataModel
         /// <summary>
-        /// 当前主要数据类名【请勿在代码中修改】
+        /// 当前环境的所有数据模型【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal string MainDataType = "<None>";
+        [SerializeField] internal List<string> DataModelTypes = new List<string>();
 
-        private MainDataBase _mainData;
+        private Dictionary<Type, DataModelBase> _dataModels = new Dictionary<Type, DataModelBase>();
 
-        private void MainDataInitialization()
+        private void DataModelInitialization()
         {
-            if (MainDataType != "<None>")
+            for (int i = 0; i < DataModelTypes.Count; i++)
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(MainDataType);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(DataModelTypes[i]);
                 if (type != null)
                 {
-                    if (type.IsSubclassOf(typeof(MainDataBase)))
+                    if (type.IsSubclassOf(typeof(DataModelBase)))
                     {
-                        _mainData = Activator.CreateInstance(type) as MainDataBase;
-                        _mainData.OnInitialization();
+                        DataModelBase dataModel = Activator.CreateInstance(type) as DataModelBase;
+                        _dataModels.Add(type, dataModel);
+                        dataModel.OnInitialization();
                     }
                     else
                     {
-                        Log.Error(string.Format("创建全局数据类失败：数据类 {0} 必须继承至基类：MainDataBase！", MainDataType));
+                        Log.Error(string.Format("创建数据模型失败：数据模型类 {0} 必须继承至基类：DataModelBase！", DataModelTypes[i]));
                     }
                 }
                 else
                 {
-                    Log.Error(string.Format("创建全局数据类失败：丢失数据类 {0}！", MainDataType));
+                    Log.Error(string.Format("创建数据模型失败：丢失数据模型类 {0}！", DataModelTypes[i]));
                 }
             }
         }
-        private void MainDataPreparatory()
+        private void DataModelPreparatory()
         {
-            if (_mainData != null)
+            foreach (var dataModel in _dataModels)
             {
-                _mainData.OnPreparatory();
+                dataModel.Value.OnPreparatory();
             }
         }
 
         /// <summary>
-        /// 获取全局主要数据
+        /// 获取数据模型
         /// </summary>
-        /// <typeparam name="T">数据类</typeparam>
-        /// <returns>主要数据对象</returns>
-        public T GetMainData<T>() where T : MainDataBase
+        /// <typeparam name="T">数据模型类</typeparam>
+        /// <returns>数据模型对象</returns>
+        public T GetDataModel<T>() where T : DataModelBase
         {
-            if (_mainData != null)
+            return GetDataModel(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 获取数据模型
+        /// </summary>
+        /// <param name="type">数据模型类</param>
+        /// <returns>数据模型对象</returns>
+        public DataModelBase GetDataModel(Type type)
+        {
+            if (_dataModels.ContainsKey(type))
             {
-                return _mainData as T;
+                return _dataModels[type];
             }
             else
             {
                 return null;
+            }
+        }
+        /// <summary>
+        /// 清空指定数据模型的数据绑定
+        /// </summary>
+        /// <typeparam name="T">数据模型类</typeparam>
+        public void ClearDataBinding<T>() where T : DataModelBase
+        {
+            ClearDataBinding(typeof(T));
+        }
+        /// <summary>
+        /// 清空指定数据模型的数据绑定
+        /// </summary>
+        /// <param name="type">数据模型类</param>
+        public void ClearDataBinding(Type type)
+        {
+            if (_dataModels.ContainsKey(type))
+            {
+                AutomaticTask.ClearDataBinding(_dataModels[type]);
+            }
+        }
+        /// <summary>
+        /// 清空所有数据模型的数据绑定
+        /// </summary>
+        public void ClearAllDataBinding()
+        {
+            foreach (var dataModel in _dataModels)
+            {
+                AutomaticTask.ClearDataBinding(dataModel.Value);
             }
         }
         #endregion

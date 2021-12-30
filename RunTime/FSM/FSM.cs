@@ -178,11 +178,6 @@ namespace HT.Framework
                 CurrentData.OnTermination();
             }
 
-            if (_isAutomate && _isSupportedDataDriver)
-            {
-                AutomaticTask.ClearDataBinding(CurrentData);
-            }
-
             if (Main.m_FSM.IsExistFSM(Name))
             {
                 Main.m_FSM.UnRegisterFSM(this);

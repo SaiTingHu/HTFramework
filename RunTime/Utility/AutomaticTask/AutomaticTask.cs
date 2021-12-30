@@ -87,9 +87,9 @@ namespace HT.Framework
         {
             for (int i = 0; i < fieldInfos.Length; i++)
             {
-                if (fieldInfos[i].IsDefined(typeof(ObjectPathAttribute), true))
+                if (fieldInfos[i].IsDefined(typeof(InjectPathAttribute), true))
                 {
-                    string path = fieldInfos[i].GetCustomAttribute<ObjectPathAttribute>().Path;
+                    string path = fieldInfos[i].GetCustomAttribute<InjectPathAttribute>().Path;
                     Type type = fieldInfos[i].FieldType;
                     if (type == typeof(GameObject))
                     {
@@ -105,84 +105,19 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 应用UI逻辑类的数据绑定
-        /// </summary>
-        /// <param name="uILogicBase">UI逻辑实例</param>
-        /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyDataBinding(UILogicBase uILogicBase, FieldInfo[] fieldInfos)
-        {
-            ApplyDataBinding(uILogicBase, uILogicBase, fieldInfos);
-        }
-        /// <summary>
-        /// 应用实体逻辑类的数据绑定
-        /// </summary>
-        /// <param name="entityLogicBase">实体逻辑实例</param>
-        /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyDataBinding(EntityLogicBase entityLogicBase, FieldInfo[] fieldInfos)
-        {
-            ApplyDataBinding(entityLogicBase, entityLogicBase, fieldInfos);
-        }
-        /// <summary>
-        /// 应用HT行为类的数据绑定
-        /// </summary>
-        /// <param name="behaviour">HT行为类实例</param>
-        /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyDataBinding(HTBehaviour behaviour, FieldInfo[] fieldInfos)
-        {
-            ApplyDataBinding(behaviour, behaviour, fieldInfos);
-        }
-        /// <summary>
-        /// 应用FSM数据的数据绑定
-        /// </summary>
-        /// <param name="fsmData">FSM数据实例</param>
-        /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyDataBinding(FSMDataBase fsmData, FieldInfo[] fieldInfos)
-        {
-            ApplyDataBinding(fsmData, fsmData, fieldInfos);
-        }
-        /// <summary>
-        /// 应用FSM参数的数据绑定
-        /// </summary>
-        /// <param name="fsmArgs">FSM参数实例</param>
-        /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyDataBinding(FSMArgsBase fsmArgs, FieldInfo[] fieldInfos)
-        {
-            ApplyDataBinding(fsmArgs, fsmArgs.StateMachine.CurrentData, fieldInfos);
-        }
-        /// <summary>
-        /// 应用FSM状态的数据绑定
-        /// </summary>
-        /// <param name="fsmState">FSM状态实例</param>
-        /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyDataBinding(FiniteStateBase fsmState, FieldInfo[] fieldInfos)
-        {
-            ApplyDataBinding(fsmState, fsmState.StateMachine.CurrentData, fieldInfos);
-        }
-        /// <summary>
         /// 应用数据绑定
         /// </summary>
         /// <param name="instance">目标实例</param>
-        /// <param name="dataInstance">数据Data实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        private static void ApplyDataBinding(object instance, object dataInstance, FieldInfo[] fieldInfos)
+        public static void ApplyDataBinding(object instance, FieldInfo[] fieldInfos)
         {
-            //初始化数据 Data
-            PropertyInfo dataInfo = dataInstance.GetType().GetProperty("Data", Flags);
-            Type dataType = dataInfo.PropertyType;
-            object dataValue = dataInfo.GetValue(dataInstance);
-            if (dataValue == null)
-            {
-                dataValue = Activator.CreateInstance(dataType);
-                dataInfo.SetValue(dataInstance, dataValue);
-            }
-
             Type type = instance.GetType();
             Dictionary<string, FieldInfo> targetFieldsCache = new Dictionary<string, FieldInfo>();
             object[] args = new object[1];
 
             for (int i = 0; i < fieldInfos.Length; i++)
             {
-                if (!fieldInfos[i].IsDefined(typeof(DataBindingAttribute), false))
+                if (!fieldInfos[i].IsDefined(typeof(DataBindingAttribute), true))
                     continue;
 
                 if (!fieldInfos[i].FieldType.IsSubclassOf(typeof(UIBehaviour)))
@@ -191,41 +126,55 @@ namespace HT.Framework
                     continue;
                 }
 
-                //获取绑定的目标数据字段
-                string target = fieldInfos[i].GetCustomAttribute<DataBindingAttribute>().Target;
-                FieldInfo targetField = null;
-                if (targetFieldsCache.ContainsKey(target))
+                //获取绑定的目标数据模型
+                DataBindingAttribute attribute = fieldInfos[i].GetCustomAttribute<DataBindingAttribute>();
+                if (attribute.TargetType == null)
                 {
-                    targetField = targetFieldsCache[target];
+                    Log.Error(string.Format("自动化任务：数据绑定失败，字段 {0}.{1} 绑定的目标数据模型类不存在！", type.FullName, fieldInfos[i].Name));
+                    continue;
+                }
+                DataModelBase dataModel = Main.Current.GetDataModel(attribute.TargetType);
+                if (dataModel == null)
+                {
+                    Log.Error(string.Format("自动化任务：数据绑定失败，数据模型类 {0} 未添加至当前环境！", attribute.TargetType.FullName));
+                    continue;
+                }
+
+                //获取绑定的目标数据模型的数据字段
+                string fieldName = attribute.TargetType.FullName + "." + attribute.TargetField;
+                FieldInfo dataField = null;
+                if (targetFieldsCache.ContainsKey(fieldName))
+                {
+                    dataField = targetFieldsCache[fieldName];
                 }
                 else
                 {
-                    targetField = dataType.GetField(target, Flags);
-                    if (targetField != null)
+                    dataField = attribute.TargetType.GetField(attribute.TargetField, Flags);
+                    if (dataField != null)
                     {
-                        targetFieldsCache.Add(target, targetField);
+                        targetFieldsCache.Add(fieldName, dataField);
                     }
                 }
-
-                if (targetField == null)
+                if (dataField == null)
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，未找到字段 {0}.{1} 绑定的目标数据字段 {2}.{3}！", type.FullName, fieldInfos[i].Name, dataType.FullName, target));
+                    Log.Error(string.Format("自动化任务：数据绑定失败，未找到字段 {0}.{1} 绑定的目标数据字段 {2}！", type.FullName, fieldInfos[i].Name, fieldName));
                     continue;
                 }
-                if (!(targetField.FieldType.BaseType.IsGenericType && targetField.FieldType.BaseType.GetGenericTypeDefinition() == typeof(BindableType<>)))
+                if (!(dataField.FieldType.BaseType.IsGenericType && dataField.FieldType.BaseType.GetGenericTypeDefinition() == typeof(BindableType<>)))
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，目标数据字段 {0}.{1} 并不是可绑定的数据类型 BindableType！", dataType.FullName, target));
+                    Log.Error(string.Format("自动化任务：数据绑定失败，目标数据字段 {0} 并不是可绑定的数据类型 BindableType！", fieldName));
                     continue;
                 }
 
                 //初始化目标数据字段
-                object targetValue = targetField.GetValue(dataValue);
-                if (targetValue == null)
+                object dataValue = dataField.GetValue(dataModel);
+                if (dataValue == null)
                 {
-                    targetValue = Activator.CreateInstance(targetField.FieldType);
-                    targetField.SetValue(dataValue, targetValue);
+                    dataValue = Activator.CreateInstance(dataField.FieldType);
+                    dataField.SetValue(dataModel, dataValue);
                 }
 
+                //获取UI控件
                 object controlValue = fieldInfos[i].GetValue(instance);
                 if (controlValue == null)
                 {
@@ -233,32 +182,25 @@ namespace HT.Framework
                     continue;
                 }
 
-                //绑定控件
-                MethodInfo binding = targetField.FieldType.GetMethod("Binding", Flags);
+                //绑定UI控件
+                MethodInfo binding = dataField.FieldType.GetMethod("Binding", Flags);
                 args[0] = controlValue;
-                binding.Invoke(targetValue, args);
+                binding.Invoke(dataValue, args);
             }
         }
         /// <summary>
         /// 清空数据绑定
         /// </summary>
-        /// <param name="dataInstance">数据Data实例</param>
-        public static void ClearDataBinding(object dataInstance)
+        /// <param name="dataModel">数据模型实例</param>
+        public static void ClearDataBinding(DataModelBase dataModel)
         {
-            //清空数据 Data
-            PropertyInfo dataInfo = dataInstance.GetType().GetProperty("Data", Flags);
-            Type dataType = dataInfo.PropertyType;
-            object dataValue = dataInfo.GetValue(dataInstance);
-            if (dataValue == null)
-                return;
-
-            FieldInfo[] fieldInfos = dataType.GetFields(Flags);
+            FieldInfo[] fieldInfos = dataModel.GetType().GetFields(Flags);
             for (int i = 0; i < fieldInfos.Length; i++)
             {
                 if (!(fieldInfos[i].FieldType.BaseType.IsGenericType && fieldInfos[i].FieldType.BaseType.GetGenericTypeDefinition() == typeof(BindableType<>)))
                     continue;
 
-                object fieldValue = fieldInfos[i].GetValue(dataValue);
+                object fieldValue = fieldInfos[i].GetValue(dataModel);
                 if (fieldValue == null)
                     continue;
 
@@ -266,8 +208,6 @@ namespace HT.Framework
                 MethodInfo unbind = fieldInfos[i].FieldType.GetMethod("Unbind", Flags);
                 unbind.Invoke(fieldValue, null);
             }
-
-            dataInfo.SetValue(dataInstance, null);
         }
     }
 }

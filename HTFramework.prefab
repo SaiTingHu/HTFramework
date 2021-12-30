@@ -442,7 +442,7 @@ MonoBehaviour:
   HelperType: <None>
   IsPermanentLicense: 1
   LicenserType: <None>
-  MainDataType: <None>
+  DataModelTypes: []
   MainParameters: []
   IsEnabledLogInfo: 1
   IsEnabledLogWarning: 1
