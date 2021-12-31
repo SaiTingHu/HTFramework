@@ -52,6 +52,8 @@ namespace HT.Framework
         private bool _isShowProperty = true;
         private bool _isShowPoint = true;
         private bool _isLockID = true;
+        private bool _isExpandOnlySelected = false;
+        private bool _isShowPointFullName = false;
         private Vector2 _contentScroll;
         private int _contentGUIWidth = 250;
         private bool _isBreakDepend = false;
@@ -68,6 +70,8 @@ namespace HT.Framework
 
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
+            _isExpandOnlySelected = EditorPrefs.GetBool(EditorPrefsTable.TaskEditorWindow_ExpandOnlySelected, false);
+            _isShowPointFullName = EditorPrefs.GetBool(EditorPrefsTable.TaskEditorWindow_ShowPointFullName, false);
             _addGC = new GUIContent();
             _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
             _addGC.tooltip = "Add Task Content";
@@ -139,6 +143,16 @@ namespace HT.Framework
                 {
                     _isLockID = !_isLockID;
                 });
+                gm.AddItem(new GUIContent(GetWord("Expand Point Only Selected")), _isExpandOnlySelected, () =>
+                {
+                    _isExpandOnlySelected = !_isExpandOnlySelected;
+                    EditorPrefs.SetBool(EditorPrefsTable.TaskEditorWindow_ExpandOnlySelected, _isExpandOnlySelected);
+                });
+                gm.AddItem(new GUIContent(GetWord("Show Point Full Name")), _isShowPointFullName, () =>
+                {
+                    _isShowPointFullName = !_isShowPointFullName;
+                    EditorPrefs.SetBool(EditorPrefsTable.TaskEditorWindow_ShowPointFullName, _isShowPointFullName);
+                });
                 gm.ShowAsContext();
             }
         }
@@ -179,6 +193,8 @@ namespace HT.Framework
             AddWord("任务内容属性", "Task Content Property");
             AddWord("设置", "Setting");
             AddWord("锁定身份号", "Lock ID");
+            AddWord("仅在选中时展开任务点", "Expand Point Only Selected");
+            AddWord("显示任务点全名", "Show Point Full Name");
             AddWord("身份号", "ID");
             AddWord("名称", "Name");
             AddWord("细节", "Details");
@@ -251,7 +267,7 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < _currentContent.Points.Count; i++)
                     {
-                        _currentContent.Points[i].OnEditorGUI(_contentAsset, _currentContent, _getWord, _isLockID);
+                        _currentContent.Points[i].OnEditorGUI(_contentAsset, _currentContent, _getWord, _isLockID, _isExpandOnlySelected, _isShowPointFullName);
                     }
                 }
             }
@@ -336,24 +352,32 @@ namespace HT.Framework
                             CopyTaskPoint(gm);
                             PasteTaskPoint(gm, pos);
                             gm.AddSeparator("");
-                            gm.AddItem(new GUIContent(GetWord("Collapse All")), false, () =>
+                            if (_isExpandOnlySelected)
                             {
-                                for (int i = 0; i < _currentContent.Points.Count; i++)
-                                {
-                                    TaskPointBase point = _currentContent.Points[i];
-                                    point.IsExpand = false;
-                                }
-                                GUI.changed = true;
-                            });
-                            gm.AddItem(new GUIContent(GetWord("Expand All")), false, () =>
+                                gm.AddDisabledItem(new GUIContent(GetWord("Collapse All")));
+                                gm.AddDisabledItem(new GUIContent(GetWord("Expand All")));
+                            }
+                            else
                             {
-                                for (int i = 0; i < _currentContent.Points.Count; i++)
+                                gm.AddItem(new GUIContent(GetWord("Collapse All")), false, () =>
                                 {
-                                    TaskPointBase point = _currentContent.Points[i];
-                                    point.IsExpand = true;
-                                }
-                                GUI.changed = true;
-                            });
+                                    for (int i = 0; i < _currentContent.Points.Count; i++)
+                                    {
+                                        TaskPointBase point = _currentContent.Points[i];
+                                        point.IsExpand = false;
+                                    }
+                                    GUI.changed = true;
+                                });
+                                gm.AddItem(new GUIContent(GetWord("Expand All")), false, () =>
+                                {
+                                    for (int i = 0; i < _currentContent.Points.Count; i++)
+                                    {
+                                        TaskPointBase point = _currentContent.Points[i];
+                                        point.IsExpand = true;
+                                    }
+                                    GUI.changed = true;
+                                });
+                            }
                             gm.AddSeparator("");
                             gm.AddItem(new GUIContent(GetWord("Enable All")), false, () =>
                             {

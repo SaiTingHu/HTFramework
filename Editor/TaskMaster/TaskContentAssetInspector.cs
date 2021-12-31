@@ -62,6 +62,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUI.enabled = !_isExistMissed;
             if (GUILayout.Button("Export Task Name To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
@@ -79,9 +80,11 @@ namespace HT.Framework
                     EditorUtility.ClearProgressBar();
                 }
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUI.enabled = !_isExistMissed;
             if (GUILayout.Button("Export Task Details To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("保存数据文件", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
@@ -99,6 +102,7 @@ namespace HT.Framework
                     EditorUtility.ClearProgressBar();
                 }
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             if (_isExistMissed)
@@ -196,6 +200,12 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(i + "." + content.Name);
                     GUILayout.FlexibleSpace();
+                    GUI.enabled = !_isExistMissed;
+                    if (GUILayout.Button("Reorder"))
+                    {
+                        ReorderPoints(content);
+                    }
+                    GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
                     for (int j = 0; j < content.Points.Count; j++)
@@ -274,6 +284,13 @@ namespace HT.Framework
                 RefreshCount();
                 EditorUtility.ClearProgressBar();
             }
+        }
+        /// <summary>
+        /// 重新排序任务点
+        /// </summary>
+        private void ReorderPoints(TaskContentBase content)
+        {
+            TaskPointReorderWindow.ShowWindow(content);
         }
         /// <summary>
         /// 清空所有任务

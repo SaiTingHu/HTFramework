@@ -60,6 +60,7 @@ namespace HT.Framework
 
             _states = GetProperty("States");
             _stateList = new ReorderableList(serializedObject, _states, true, true, false, false);
+            _stateList.footerHeight = 0;
             _stateList.drawHeaderCallback = (Rect rect) =>
             {
                 Rect sub = rect;

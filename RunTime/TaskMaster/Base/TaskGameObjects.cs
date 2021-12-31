@@ -78,7 +78,7 @@ namespace HT.Framework
 
             int count = taskGameObjects.GUIDs.Count;
             if (count <= 0) count = 1;
-            return 50 + count * 22;
+            return 25 + count * 22;
         }
 
         /// <summary>
@@ -151,6 +151,7 @@ namespace HT.Framework
             {
                 _reorderableList = new ReorderableList(GUIDs, typeof(string), true, true, false, false);
                 _reorderableList.elementHeight = 22;
+                _reorderableList.footerHeight = 0;
                 _reorderableList.drawHeaderCallback = (Rect rect) =>
                 {
                     Rect sub = rect;

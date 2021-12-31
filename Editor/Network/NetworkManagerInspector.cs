@@ -36,6 +36,7 @@ namespace HT.Framework
 
             _channelTypes = GetProperty("ChannelTypes");
             _channelTypeList = new ReorderableList(serializedObject, _channelTypes, true, true, false, false);
+            _channelTypeList.footerHeight = 0;
             _channelTypeList.drawHeaderCallback = (Rect rect) =>
             {
                 Rect sub = rect;

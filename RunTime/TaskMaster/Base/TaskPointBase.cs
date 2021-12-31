@@ -398,7 +398,7 @@ namespace HT.Framework
         /// <summary>
         /// 绘制编辑器GUI
         /// </summary>
-        internal void OnEditorGUI(TaskContentAsset asset, TaskContentBase content, HTFFunc<string, string> getWord, bool isLockID)
+        internal void OnEditorGUI(TaskContentAsset asset, TaskContentBase content, HTFFunc<string, string> getWord, bool isLockID, bool isExpandOnlySelected, bool isShowFullName)
         {
             if (IsComplete)
             {
@@ -413,16 +413,15 @@ namespace HT.Framework
                 GUI.backgroundColor = IsSelected ? Color.yellow : Color.white;
             }
 
-            GUIContent gUIContent = new GUIContent();
-            gUIContent.text = ShowName;
-            gUIContent.tooltip = ShowName;
-            GUILayout.BeginArea(Anchor, gUIContent, "Window");
+            GUILayout.BeginArea(Anchor, ShowName, "Window");
 
             GUI.backgroundColor = Color.white;
 
             int height = 30;
 
             height += OnDependGUI(getWord);
+
+            if (isExpandOnlySelected) IsExpand = IsSelected;
 
             if (IsExpand)
             {
@@ -446,7 +445,15 @@ namespace HT.Framework
 
             GUILayout.EndArea();
 
+            if (IsSelected && isShowFullName)
+            {
+                GUI.contentColor = Color.yellow;
+                GUI.Label(new Rect(Anchor.x, Anchor.y - 30, Anchor.width, 30), ShowName);
+                GUI.contentColor = Color.white;
+            }
+
             string icon = IsEnable ? "animationvisibilitytoggleon" : "animationvisibilitytoggleoff";
+            GUIContent gUIContent = new GUIContent();
             gUIContent.text = null;
             gUIContent.image = EditorGUIUtility.IconContent(icon).image;
             gUIContent.tooltip = IsEnable ? "Enable" : "Disable";
@@ -459,11 +466,13 @@ namespace HT.Framework
             gUIContent.text = null;
             gUIContent.image = EditorGUIUtility.IconContent("Exposure").image;
             gUIContent.tooltip = IsExpand ? "Expand" : "Collapse";
+            GUI.enabled = !isExpandOnlySelected;
             if (GUI.Button(new Rect(Anchor.x + Anchor.width - 22, Anchor.y, 20, 20), gUIContent, "InvisibleButton"))
             {
                 IsExpand = !IsExpand;
                 GUI.changed = true;
             }
+            GUI.enabled = true;
 
             OnWiredGUI();
         }

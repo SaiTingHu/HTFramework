@@ -40,6 +40,7 @@ namespace HT.Framework
 
             _procedures = GetProperty("ActivatedProcedures");
             _procedureList = new ReorderableList(serializedObject, _procedures, true, true, false, false);
+            _procedureList.footerHeight = 0;
             _procedureList.drawHeaderCallback = (Rect rect) =>
             {
                 Rect sub = rect;

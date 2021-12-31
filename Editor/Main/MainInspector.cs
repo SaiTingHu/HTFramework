@@ -267,6 +267,7 @@ namespace HT.Framework
 
             _dataModelTypes = GetProperty("DataModelTypes");
             _dataModelList = new ReorderableList(serializedObject, _dataModelTypes, true, true, false, false);
+            _dataModelList.footerHeight = 0;
             _dataModelList.drawHeaderCallback = (Rect rect) =>
             {
                 Rect sub = rect;

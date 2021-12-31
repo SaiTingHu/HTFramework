@@ -33,6 +33,7 @@ namespace HT.Framework
 
             _entityList = new ReorderableList(Target.DefineEntityNames, typeof(string), true, true, false, false);
             _entityList.elementHeight = 45;
+            _entityList.footerHeight = 0;
             _entityList.drawHeaderCallback = (Rect rect) =>
             {
                 Rect sub = rect;

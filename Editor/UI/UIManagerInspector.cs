@@ -33,6 +33,7 @@ namespace HT.Framework
 
             _uiList = new ReorderableList(Target.DefineUINames, typeof(string), true, true, false, false);
             _uiList.elementHeight = 45;
+            _uiList.footerHeight = 0;
             _uiList.drawHeaderCallback = (Rect rect) =>
             {
                 Rect sub = rect;
