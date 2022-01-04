@@ -616,11 +616,11 @@ namespace HT.Framework
             {
                 if (_isWiredRight)
                 {
-                    Handles.DrawBezier(RightPosition, Event.current.mousePosition, RightTangent, Event.current.mousePosition, Color.white, null, 3);
+                    Handles.DrawBezier(RightPosition, Event.current.mousePosition, RightTangent, Event.current.mousePosition, Color.yellow, null, 3);
                 }
                 else
                 {
-                    Handles.DrawBezier(LeftPosition, Event.current.mousePosition, LeftTangent, Event.current.mousePosition, Color.white, null, 3);
+                    Handles.DrawBezier(LeftPosition, Event.current.mousePosition, LeftTangent, Event.current.mousePosition, Color.yellow, null, 3);
                 }
             }
         }

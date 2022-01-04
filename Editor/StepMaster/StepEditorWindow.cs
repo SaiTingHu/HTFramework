@@ -1231,7 +1231,7 @@ namespace HT.Framework
                         leftTangent = _currentStepObj.Operations[wired.Left].Anchor + offset;
                         rightTangent = _currentStepObj.Operations[wired.Right].Anchor - offset;
                     }
-                    Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
+                    Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 3);
 
                     if (_isBreakWired)
                     {
@@ -1257,7 +1257,7 @@ namespace HT.Framework
                         Vector2 leftTangent = _currentStepObj.Operations[_wiredOriginIndex].Anchor + offset;
                         Vector2 rightTangent = Event.current.mousePosition;
 
-                        Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
+                        Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.yellow, null, 3);
                     }
                     else
                     {
@@ -1266,7 +1266,7 @@ namespace HT.Framework
                         Vector2 leftTangent = _currentStepObj.Operations[_wiredOriginIndex].Anchor - offset;
                         Vector2 rightTangent = Event.current.mousePosition;
 
-                        Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.white, null, 5);
+                        Handles.DrawBezier(leftAnchor, rightAnchor, leftTangent, rightTangent, Color.yellow, null, 3);
                     }
                 }
                 #endregion

@@ -24,66 +24,66 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 应用UI逻辑类的对象路径定义
+        /// 应用UI逻辑类的依赖注入
         /// </summary>
         /// <param name="uILogicBase">UI逻辑实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyObjectPath(UILogicBase uILogicBase, FieldInfo[] fieldInfos)
+        public static void ApplyInject(UILogicBase uILogicBase, FieldInfo[] fieldInfos)
         {
-            ApplyObjectPath(uILogicBase, uILogicBase.UIEntity, fieldInfos);
+            ApplyInject(uILogicBase, uILogicBase.UIEntity, fieldInfos);
         }
         /// <summary>
-        /// 应用实体逻辑类的对象路径定义
+        /// 应用实体逻辑类的依赖注入
         /// </summary>
         /// <param name="entityLogicBase">实体逻辑实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyObjectPath(EntityLogicBase entityLogicBase, FieldInfo[] fieldInfos)
+        public static void ApplyInject(EntityLogicBase entityLogicBase, FieldInfo[] fieldInfos)
         {
-            ApplyObjectPath(entityLogicBase, entityLogicBase.Entity, fieldInfos);
+            ApplyInject(entityLogicBase, entityLogicBase.Entity, fieldInfos);
         }
         /// <summary>
-        /// 应用HT行为类的对象路径定义
+        /// 应用HT行为类的依赖注入
         /// </summary>
         /// <param name="behaviour">HT行为类实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyObjectPath(HTBehaviour behaviour, FieldInfo[] fieldInfos)
+        public static void ApplyInject(HTBehaviour behaviour, FieldInfo[] fieldInfos)
         {
-            ApplyObjectPath(behaviour, behaviour.gameObject, fieldInfos);
+            ApplyInject(behaviour, behaviour.gameObject, fieldInfos);
         }
         /// <summary>
-        /// 应用FSM数据的对象路径定义
+        /// 应用FSM数据的依赖注入
         /// </summary>
         /// <param name="fsmData">FSM数据实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyObjectPath(FSMDataBase fsmData, FieldInfo[] fieldInfos)
+        public static void ApplyInject(FSMDataBase fsmData, FieldInfo[] fieldInfos)
         {
-            ApplyObjectPath(fsmData, fsmData.StateMachine.gameObject, fieldInfos);
+            ApplyInject(fsmData, fsmData.StateMachine.gameObject, fieldInfos);
         }
         /// <summary>
-        /// 应用FSM参数的对象路径定义
+        /// 应用FSM参数的依赖注入
         /// </summary>
         /// <param name="fsmArgs">FSM参数实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyObjectPath(FSMArgsBase fsmArgs, FieldInfo[] fieldInfos)
+        public static void ApplyInject(FSMArgsBase fsmArgs, FieldInfo[] fieldInfos)
         {
-            ApplyObjectPath(fsmArgs, fsmArgs.StateMachine.gameObject, fieldInfos);
+            ApplyInject(fsmArgs, fsmArgs.StateMachine.gameObject, fieldInfos);
         }
         /// <summary>
-        /// 应用FSM状态的对象路径定义
+        /// 应用FSM状态的依赖注入
         /// </summary>
         /// <param name="fsmState">FSM状态实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyObjectPath(FiniteStateBase fsmState, FieldInfo[] fieldInfos)
+        public static void ApplyInject(FiniteStateBase fsmState, FieldInfo[] fieldInfos)
         {
-            ApplyObjectPath(fsmState, fsmState.StateMachine.gameObject, fieldInfos);
+            ApplyInject(fsmState, fsmState.StateMachine.gameObject, fieldInfos);
         }
         /// <summary>
-        /// 应用对象路径定义
+        /// 应用依赖注入
         /// </summary>
         /// <param name="instance">目标实例</param>
         /// <param name="entity">目标在场景中的实体</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        private static void ApplyObjectPath(object instance, GameObject entity, FieldInfo[] fieldInfos)
+        private static void ApplyInject(object instance, GameObject entity, FieldInfo[] fieldInfos)
         {
             for (int i = 0; i < fieldInfos.Length; i++)
             {
@@ -99,6 +99,18 @@ namespace HT.Framework
                     {
                         GameObject obj = entity.FindChildren(path);
                         fieldInfos[i].SetValue(instance, obj != null ? obj.GetComponent(type) : null);
+                    }
+                }
+                else if (fieldInfos[i].IsDefined(typeof(InjectUIAttribute), true))
+                {
+                    Type type = fieldInfos[i].FieldType;
+                    if (type.IsSubclassOf(typeof(UILogicBase)) && !type.IsAbstract)
+                    {
+                        fieldInfos[i].SetValue(instance, Main.m_UI.GetUI(type));
+                    }
+                    else
+                    {
+                        Log.Error(string.Format("自动化任务：依赖注入（UI）失败，字段 {0} 必须为UI逻辑类对象（UILogicBase），且不能为抽象类！", fieldInfos[i].Name));
                     }
                 }
             }

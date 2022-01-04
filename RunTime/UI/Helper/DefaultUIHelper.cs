@@ -538,6 +538,51 @@ namespace HT.Framework
             return null;
         }
         /// <summary>
+        /// 获取UI
+        /// </summary>
+        /// <param name="type">UI逻辑类</param>
+        /// <returns>UI逻辑对象</returns>
+        public UILogicBase GetUI(Type type)
+        {
+            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            if (attribute != null)
+            {
+                switch (attribute.EntityType)
+                {
+                    case UIType.Overlay:
+                        if (OverlayUIs.ContainsKey(type))
+                        {
+                            UILogicBase ui = OverlayUIs[type];
+                            return ui;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    case UIType.Camera:
+                        if (CameraUIs.ContainsKey(type))
+                        {
+                            UILogicBase ui = CameraUIs[type];
+                            return ui;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    case UIType.World:
+                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
+                        {
+                            return WorldUIs[attribute.WorldUIDomainName].GetUI(type);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                }
+            }
+            return null;
+        }
+        /// <summary>
         /// 置顶常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>

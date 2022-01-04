@@ -85,6 +85,12 @@ namespace HT.Framework
         /// <returns>UI逻辑对象</returns>
         UILogicBase GetOpenedUI(Type type);
         /// <summary>
+        /// 获取UI
+        /// </summary>
+        /// <param name="type">UI逻辑类</param>
+        /// <returns>UI逻辑对象</returns>
+        UILogicBase GetUI(Type type);
+        /// <summary>
         /// 置顶常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>

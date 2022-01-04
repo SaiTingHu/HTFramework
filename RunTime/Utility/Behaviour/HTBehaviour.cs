@@ -30,7 +30,7 @@ namespace HT.Framework
             if (IsAutomate)
             {
                 FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(GetType());
-                AutomaticTask.ApplyObjectPath(this, fieldInfos);
+                AutomaticTask.ApplyInject(this, fieldInfos);
 
                 if (IsSupportedDataDriver)
                 {

@@ -199,6 +199,31 @@ namespace HT.Framework
             return null;
         }
         /// <summary>
+        /// 获取UI
+        /// </summary>
+        /// <typeparam name="T">UI逻辑类</typeparam>
+        /// <returns>UI逻辑对象</returns>
+        internal T GetUI<T>() where T : UILogicBase
+        {
+            return GetUI(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 获取UI
+        /// </summary>
+        /// <param name="type">UI逻辑类</param>
+        /// <returns>UI逻辑对象</returns>
+        internal UILogicBase GetUI(Type type)
+        {
+            if (type.IsAbstract)
+                return null;
+
+            if (type.IsSubclassOf(typeof(UILogicBase)))
+            {
+                return _helper.GetUI(type);
+            }
+            return null;
+        }
+        /// <summary>
         /// 置顶常驻UI
         /// </summary>
         /// <typeparam name="T">常驻UI逻辑类</typeparam>

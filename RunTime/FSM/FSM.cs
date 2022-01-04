@@ -404,7 +404,7 @@ namespace HT.Framework
             if (_isAutomate)
             {
                 FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(fsmData.GetType());
-                AutomaticTask.ApplyObjectPath(fsmData, fieldInfos);
+                AutomaticTask.ApplyInject(fsmData, fieldInfos);
 
                 if (_isSupportedDataDriver)
                 {
@@ -420,7 +420,7 @@ namespace HT.Framework
             if (_isAutomate)
             {
                 FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(fsmArgs.GetType());
-                AutomaticTask.ApplyObjectPath(fsmArgs, fieldInfos);
+                AutomaticTask.ApplyInject(fsmArgs, fieldInfos);
 
                 if (_isSupportedDataDriver)
                 {
@@ -436,7 +436,7 @@ namespace HT.Framework
             if (_isAutomate)
             {
                 FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(type);
-                AutomaticTask.ApplyObjectPath(finiteState, fieldInfos);
+                AutomaticTask.ApplyInject(finiteState, fieldInfos);
 
                 if (_isSupportedDataDriver)
                 {

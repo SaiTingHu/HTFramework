@@ -305,6 +305,23 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 获取UI
+        /// </summary>
+        /// <param name="type">UI逻辑类</param>
+        /// <returns>UI逻辑对象</returns>
+        public UILogicBase GetUI(Type type)
+        {
+            if (_worldUIs.ContainsKey(type))
+            {
+                UILogicBase ui = _worldUIs[type];
+                return ui;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
         /// 置顶常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
