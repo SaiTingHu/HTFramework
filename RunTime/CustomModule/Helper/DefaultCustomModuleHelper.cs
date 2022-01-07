@@ -21,7 +21,7 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
@@ -38,40 +38,40 @@ namespace HT.Framework
 
             foreach (var module in CustomModules)
             {
-                module.Value.OnInitialization();
+                module.Value.OnInit();
             }
         }
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             foreach (var module in CustomModules)
             {
-                module.Value.OnPreparatory();
+                module.Value.OnReady();
             }
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             foreach (var module in CustomModules)
             {
                 if (module.Value.IsRunning)
                 {
-                    module.Value.OnRefresh();
+                    module.Value.OnUpdate();
                 }
             }
         }
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             foreach (var module in CustomModules)
             {
-                module.Value.OnTermination();
+                module.Value.OnTerminate();
             }
 
             CustomModules.Clear();

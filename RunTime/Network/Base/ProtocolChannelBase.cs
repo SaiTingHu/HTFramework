@@ -84,7 +84,7 @@ namespace HT.Framework
         /// <summary>
         /// 初始化通道
         /// </summary>
-        public virtual void OnInitialization()
+        public virtual void OnInit()
         {
             _isEnableThread = true;
 
@@ -110,7 +110,7 @@ namespace HT.Framework
         /// <summary>
         /// 终结通道
         /// </summary>
-        public virtual void OnTermination()
+        public virtual void OnTerminate()
         {
             _isEnableThread = false;
 

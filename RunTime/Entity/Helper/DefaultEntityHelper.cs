@@ -57,7 +57,7 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             _module = Module as EntityManager;
             _entityRoot = _module.transform.Find("EntityRoot");
@@ -92,14 +92,14 @@ namespace HT.Framework
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             foreach (var entities in Entities)
             {
@@ -115,7 +115,7 @@ namespace HT.Framework
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             _defineEntities.Clear();
 

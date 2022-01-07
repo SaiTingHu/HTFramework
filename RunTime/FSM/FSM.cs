@@ -169,13 +169,13 @@ namespace HT.Framework
 
             foreach (var state in _stateInstances)
             {
-                state.Value.OnTermination();
+                state.Value.OnTerminate();
             }
             _stateInstances.Clear();
 
             if (CurrentData != null)
             {
-                CurrentData.OnTermination();
+                CurrentData.OnTerminate();
             }
 
             if (Main.m_FSM.IsExistFSM(Name))
@@ -314,7 +314,7 @@ namespace HT.Framework
                     return;
                 }
 
-                _stateInstances[type].OnTermination();
+                _stateInstances[type].OnTerminate();
                 _stateInstances.Remove(type);
             }
             else

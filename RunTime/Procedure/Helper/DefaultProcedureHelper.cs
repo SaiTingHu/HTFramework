@@ -36,7 +36,7 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             ProcedureManager manager = Module as ProcedureManager;
 
@@ -69,7 +69,7 @@ namespace HT.Framework
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             //流程初始化
             foreach (var procedure in Procedures)
@@ -94,7 +94,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             if (CurrentProcedure != null)
             {
@@ -114,7 +114,7 @@ namespace HT.Framework
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             Procedures.Clear();
             ProcedureTypes.Clear();

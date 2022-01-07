@@ -32,9 +32,9 @@ namespace HT.Framework
             }
         }
 
-        public override void OnInitialization()
+        public override void OnInit()
         {
-            base.OnInitialization();
+            base.OnInit();
 
             _helper.SetLoader(Mode, IsEditorMode, AssetBundleManifestName);
         }

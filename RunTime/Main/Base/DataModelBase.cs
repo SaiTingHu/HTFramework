@@ -8,14 +8,14 @@
         /// <summary>
         /// 数据初始化
         /// </summary>
-        public virtual void OnInitialization()
+        public virtual void OnInit()
         { 
         
         }
         /// <summary>
         /// 数据准备
         /// </summary>
-        public virtual void OnPreparatory()
+        public virtual void OnReady()
         { 
         
         }

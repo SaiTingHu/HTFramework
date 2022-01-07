@@ -13,22 +13,22 @@
         /// <summary>
         /// 初始化模块
         /// </summary>
-        public virtual void OnInitialization()
+        public virtual void OnInit()
         { }
         /// <summary>
         /// 模块准备工作
         /// </summary>
-        public virtual void OnPreparatory()
+        public virtual void OnReady()
         { }
         /// <summary>
-        /// 刷新模块
+        /// 更新模块
         /// </summary>
-        public virtual void OnRefresh()
+        public virtual void OnUpdate()
         { }
         /// <summary>
         /// 终结模块
         /// </summary>
-        public virtual void OnTermination()
+        public virtual void OnTerminate()
         { }
         /// <summary>
         /// 暂停模块

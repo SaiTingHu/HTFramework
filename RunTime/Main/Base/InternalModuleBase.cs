@@ -23,7 +23,7 @@ namespace HT.Framework
         /// <summary>
         /// 初始化模块
         /// </summary>
-        public virtual void OnInitialization()
+        public virtual void OnInit()
         {
             if (HelperType != "<None>")
             {
@@ -48,37 +48,37 @@ namespace HT.Framework
 
             if (_helper != null)
             {
-                _helper.OnInitialization();
+                _helper.OnInit();
             }
         }
         /// <summary>
         /// 模块准备工作
         /// </summary>
-        public virtual void OnPreparatory()
+        public virtual void OnReady()
         {
             if (_helper != null)
             {
-                _helper.OnPreparatory();
+                _helper.OnReady();
             }
         }
         /// <summary>
         /// 刷新模块
         /// </summary>
-        public virtual void OnRefresh()
+        public virtual void OnUpdate()
         {
             if (_helper != null)
             {
-                _helper.OnRefresh();
+                _helper.OnUpdate();
             }
         }
         /// <summary>
         /// 终结模块
         /// </summary>
-        public virtual void OnTermination()
+        public virtual void OnTerminate()
         {
             if (_helper != null)
             {
-                _helper.OnTermination();
+                _helper.OnTerminate();
             }
         }
         /// <summary>

@@ -101,7 +101,7 @@ namespace HT.Framework
         #endregion
 
         #region Lifecycle Function
-        public void OnInitialization(GUISkin skin, bool isChinese)
+        public void OnInit(GUISkin skin, bool isChinese)
         {
             Application.logMessageReceived += OnLogMessageReceived;
 
@@ -117,7 +117,7 @@ namespace HT.Framework
 
             GenerateWords();
         }
-        public void OnTermination()
+        public void OnTerminate()
         {
             Application.logMessageReceived -= OnLogMessageReceived;
         }

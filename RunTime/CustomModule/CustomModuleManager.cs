@@ -33,7 +33,7 @@
         {
             if (_helper.CustomModules.ContainsKey(moduleName))
             {
-                _helper.CustomModules[moduleName].OnTermination();
+                _helper.CustomModules[moduleName].OnTerminate();
                 _helper.CustomModules.Remove(moduleName);
             }
         }

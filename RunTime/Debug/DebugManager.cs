@@ -32,15 +32,15 @@ namespace HT.Framework
             }
         }
 
-        public override void OnInitialization()
+        public override void OnInit()
         {
-            base.OnInitialization();
+            base.OnInit();
             
             _helper.OnInitDebugger(DebuggerSkin, IsChinese);
         }
-        public override void OnRefresh()
+        public override void OnUpdate()
         {
-            base.OnRefresh();
+            base.OnUpdate();
 
             if (useGUILayout != IsEnableDebugger)
             {

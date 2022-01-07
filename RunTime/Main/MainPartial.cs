@@ -173,15 +173,15 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.Main, "框架致命错误：不能存在两个及以上Main主模块！");
             }
 
-            OnInitialization();
+            OnInit();
         }
         private void Start()
         {
-            OnPreparatory();
+            OnReady();
         }
         private void Update()
         {
-            OnRefresh();
+            OnUpdate();
         }
         private void OnGUI()
         {
@@ -191,7 +191,7 @@ namespace HT.Framework
         {
             base.OnDestroy();
 
-            OnTermination();
+            OnTerminate();
         }
         private void OnApplicationFocus(bool focus)
         {
@@ -334,7 +334,7 @@ namespace HT.Framework
             }
         }
 
-        private void ModuleInitialization()
+        private void ModuleInit()
         {
             IModuleManager[] modules = transform.GetComponentsInChildren<IModuleManager>(true);
             for (int i = 0; i < modules.Length; i++)
@@ -387,17 +387,17 @@ namespace HT.Framework
 
             foreach (var internalModule in _internalModules)
             {
-                internalModule.Value.OnInitialization();
+                internalModule.Value.OnInit();
             }
         }
-        private void ModulePreparatory()
+        private void ModuleReady()
         {
             foreach (var internalModule in _internalModules)
             {
-                internalModule.Value.OnPreparatory();
+                internalModule.Value.OnReady();
             }
         }
-        private void ModuleRefresh()
+        private void ModuleUpdate()
         {
             if (Pause)
             {
@@ -406,14 +406,14 @@ namespace HT.Framework
 
             foreach (var internalModule in _internalModules)
             {
-                internalModule.Value.OnRefresh();
+                internalModule.Value.OnUpdate();
             }
         }
-        private void ModuleTermination()
+        private void ModuleTerminate()
         {
             foreach (var internalModule in _internalModules)
             {
-                internalModule.Value.OnTermination();
+                internalModule.Value.OnTerminate();
             }
         }
         private void ModulePause()
@@ -470,7 +470,7 @@ namespace HT.Framework
         private bool _isLicenseEnd = false;
         private bool _isLicensePass = false;
 
-        private void LicenseInitialization()
+        private void LicenseInit()
         {
             if (IsPermanentLicense)
             {
@@ -487,7 +487,7 @@ namespace HT.Framework
                         if (type.IsSubclassOf(typeof(LicenserBase)))
                         {
                             _licenser = Activator.CreateInstance(type) as LicenserBase;
-                            _licenser.OnInitialization();
+                            _licenser.OnInit();
                         }
                         else
                         {
@@ -513,7 +513,7 @@ namespace HT.Framework
                 _isLicensePass = false;
             }
         }
-        private void LicensePreparatory()
+        private void LicenseReady()
         {
             if (_licenser != null)
             {
@@ -557,7 +557,7 @@ namespace HT.Framework
 
         private Dictionary<Type, DataModelBase> _dataModels = new Dictionary<Type, DataModelBase>();
 
-        private void DataModelInitialization()
+        private void DataModelInit()
         {
             for (int i = 0; i < DataModelTypes.Count; i++)
             {
@@ -568,7 +568,7 @@ namespace HT.Framework
                     {
                         DataModelBase dataModel = Activator.CreateInstance(type) as DataModelBase;
                         _dataModels.Add(type, dataModel);
-                        dataModel.OnInitialization();
+                        dataModel.OnInit();
                     }
                     else
                     {
@@ -581,11 +581,11 @@ namespace HT.Framework
                 }
             }
         }
-        private void DataModelPreparatory()
+        private void DataModelReady()
         {
             foreach (var dataModel in _dataModels)
             {
-                dataModel.Value.OnPreparatory();
+                dataModel.Value.OnReady();
             }
         }
 
@@ -1038,7 +1038,7 @@ namespace HT.Framework
         private List<HTFAction> _actionExecuteQueue = new List<HTFAction>();
         private bool _isCanDoQueue = false;
 
-        private void UtilityRefresh()
+        private void UtilityUpdate()
         {
             if (_isCanDoQueue)
             {

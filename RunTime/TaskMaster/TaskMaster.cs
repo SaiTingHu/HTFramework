@@ -135,9 +135,9 @@ namespace HT.Framework
             }
         }
 
-        public override void OnRefresh()
+        public override void OnUpdate()
         {
-            base.OnRefresh();
+            base.OnUpdate();
 
             if (Pause)
                 return;
@@ -163,9 +163,9 @@ namespace HT.Framework
                 }
             }
         }
-        public override void OnTermination()
+        public override void OnTerminate()
         {
-            base.OnTermination();
+            base.OnTerminate();
 
             _targets.Clear();
             _taskContentsList.Clear();

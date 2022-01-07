@@ -56,8 +56,8 @@ public class #SCRIPTNAME# : FiniteStateBase
 	/// <summary>
 	/// 状态终结
 	/// </summary>
-    public override void OnTermination()
+    public override void OnTerminate()
     {
-        base.OnTermination();
+        base.OnTerminate();
     }
 }

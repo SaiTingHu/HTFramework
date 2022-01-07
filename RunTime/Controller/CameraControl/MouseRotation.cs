@@ -93,9 +93,9 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 刷新
+        /// 更新
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             //控制
             Control();

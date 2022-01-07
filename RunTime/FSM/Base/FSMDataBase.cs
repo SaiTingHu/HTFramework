@@ -42,7 +42,7 @@
         /// <summary>
         /// 所属状态机销毁，数据销毁
         /// </summary>
-        public virtual void OnTermination()
+        public virtual void OnTerminate()
         { }
     }
 }

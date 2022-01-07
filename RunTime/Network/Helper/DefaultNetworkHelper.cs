@@ -45,32 +45,32 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
 
         }
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
 
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
 
         }
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             foreach (var channel in ProtocolChannels)
             {
-                channel.Value.OnTermination();
+                channel.Value.OnTerminate();
             }
 
             ProtocolChannels.Clear();
@@ -119,7 +119,7 @@ namespace HT.Framework
 
             foreach (var channel in ProtocolChannels)
             {
-                channel.Value.OnInitialization();
+                channel.Value.OnInit();
                 channel.Value.SendMessageEvent += (cha) =>
                 {
                     SendMessageEvent?.Invoke(cha);

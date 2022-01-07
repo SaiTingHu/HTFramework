@@ -259,9 +259,9 @@ namespace HT.Framework
             }
         }
 
-        public override void OnInitialization()
+        public override void OnInit()
         {
-            base.OnInitialization();
+            base.OnInit();
 
             DOTween.defaultEaseType = DefaultEase;
             DOTween.defaultAutoPlay = DefaultAutoPlay;
@@ -272,9 +272,9 @@ namespace HT.Framework
                 RayEvent?.Invoke(target, point, point2D);
             };
         }
-        public override void OnPreparatory()
+        public override void OnReady()
         {
-            base.OnPreparatory();
+            base.OnReady();
 
             Mode = DefaultMode;
         }

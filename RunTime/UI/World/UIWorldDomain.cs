@@ -60,7 +60,7 @@ namespace HT.Framework
         /// <summary>
         /// 销毁域
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             foreach (var ui in _worldUIs)
             {

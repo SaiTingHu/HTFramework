@@ -197,15 +197,15 @@ namespace HT.Framework
             }
         }
 
-        public override void OnInitialization()
+        public override void OnInit()
         {
-            base.OnInitialization();
+            base.OnInit();
 
             _pauseWait = new WaitUntil(() => { return !Pause; });
         }
-        public override void OnRefresh()
+        public override void OnUpdate()
         {
-            base.OnRefresh();
+            base.OnUpdate();
 
             if (_running)
             {
@@ -318,9 +318,9 @@ namespace HT.Framework
                 }
             }
         }
-        public override void OnTermination()
+        public override void OnTerminate()
         {
-            base.OnTermination();
+            base.OnTerminate();
 
             _targets.Clear();
             _stepContents.Clear();

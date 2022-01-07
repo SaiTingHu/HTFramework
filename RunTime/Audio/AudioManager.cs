@@ -232,9 +232,9 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<string> SingleSoundEndOfPlayEvent;
         
-        public override void OnInitialization()
+        public override void OnInit()
         {
-            base.OnInitialization();
+            base.OnInit();
 
             _helper.SingleSoundEndOfPlayEvent += (value) =>
             {

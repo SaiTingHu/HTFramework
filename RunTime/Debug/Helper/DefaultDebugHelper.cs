@@ -41,21 +41,21 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             _module = Module as DebugManager;
         }
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
 
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             if (_debugger != null)
             {
@@ -70,11 +70,11 @@ namespace HT.Framework
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             if (_debugger != null)
             {
-                _debugger.OnTermination();
+                _debugger.OnTerminate();
                 _debugger = null;
             }
         }
@@ -103,7 +103,7 @@ namespace HT.Framework
             if (_module.IsEnableDebugger)
             {
                 _debugger = new Debugger();
-                _debugger.OnInitialization(debuggerSkin, isChinese);
+                _debugger.OnInit(debuggerSkin, isChinese);
             }
         }
         /// <summary>

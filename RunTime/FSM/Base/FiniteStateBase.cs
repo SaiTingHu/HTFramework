@@ -40,7 +40,7 @@
         /// <summary>
         /// 终止状态
         /// </summary>
-        public virtual void OnTermination()
+        public virtual void OnTerminate()
         { }
     }
 }

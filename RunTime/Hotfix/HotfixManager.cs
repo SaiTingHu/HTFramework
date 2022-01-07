@@ -47,9 +47,9 @@ namespace HT.Framework
             }
         }
 
-        public override void OnRefresh()
+        public override void OnUpdate()
         {
-            base.OnRefresh();
+            base.OnUpdate();
 
             if (IsEnableHotfix)
             {

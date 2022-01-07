@@ -22,7 +22,7 @@ namespace HT.Framework
             GenericTableWindow window = GetWindow<GenericTableWindow>();
             window.titleContent.image = EditorGUIUtility.IconContent("ScriptableObject Icon").image;
             window.titleContent.text = "Generic Table";
-            window.Initialization(target, fieldName);
+            window.OnInit(target, fieldName);
         }
 
         private const int Border = 10;
@@ -34,7 +34,7 @@ namespace HT.Framework
 
         protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/120796924";
 
-        private void Initialization(UObject target, string fieldName)
+        private void OnInit(UObject target, string fieldName)
         {
             FieldInfo fieldInfo = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (fieldInfo == null)

@@ -13,19 +13,19 @@
         /// <summary>
         /// 初始化助手
         /// </summary>
-        void OnInitialization();
+        void OnInit();
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        void OnPreparatory();
+        void OnReady();
         /// <summary>
-        /// 刷新助手
+        /// 更新助手
         /// </summary>
-        void OnRefresh();
+        void OnUpdate();
         /// <summary>
         /// 终结助手
         /// </summary>
-        void OnTermination();
+        void OnTerminate();
         /// <summary>
         /// 暂停助手
         /// </summary>

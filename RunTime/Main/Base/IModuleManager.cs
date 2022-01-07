@@ -8,19 +8,19 @@
         /// <summary>
         /// 初始化模块
         /// </summary>
-        void OnInitialization();
+        void OnInit();
         /// <summary>
         /// 模块准备工作
         /// </summary>
-        void OnPreparatory();
+        void OnReady();
         /// <summary>
-        /// 刷新模块
+        /// 更新模块
         /// </summary>
-        void OnRefresh();
+        void OnUpdate();
         /// <summary>
         /// 终结模块
         /// </summary>
-        void OnTermination();
+        void OnTerminate();
         /// <summary>
         /// 暂停模块
         /// </summary>

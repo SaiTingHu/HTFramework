@@ -5,34 +5,34 @@
     /// </summary>
     public sealed partial class Main : InternalModuleBase<IMainHelper>
     {
-        public override void OnInitialization()
+        public override void OnInit()
         {
-            base.OnInitialization();
+            base.OnInit();
             
-            LicenseInitialization();
-            DataModelInitialization();
-            ModuleInitialization();
+            LicenseInit();
+            DataModelInit();
+            ModuleInit();
         }
-        public override void OnPreparatory()
+        public override void OnReady()
         {
-            base.OnPreparatory();
+            base.OnReady();
 
-            LicensePreparatory();
-            DataModelPreparatory();
-            ModulePreparatory();
+            LicenseReady();
+            DataModelReady();
+            ModuleReady();
         }
-        public override void OnRefresh()
+        public override void OnUpdate()
         {
-            base.OnRefresh();
+            base.OnUpdate();
 
-            UtilityRefresh();
-            ModuleRefresh();
+            UtilityUpdate();
+            ModuleUpdate();
         }
-        public override void OnTermination()
+        public override void OnTerminate()
         {
-            base.OnTermination();
+            base.OnTerminate();
 
-            ModuleTermination();
+            ModuleTerminate();
         }
         public override void OnPause()
         {
