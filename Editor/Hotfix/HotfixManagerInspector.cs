@@ -163,14 +163,14 @@ namespace HT.Framework
         private void SetHotfixAssemblyDefinition(string filePath)
         {
             string contentOld = File.ReadAllText(filePath);
-            JsonData json = GlobalTools.StringToJson(contentOld);
+            JsonData json = JsonToolkit.StringToJson(contentOld);
             json["name"] = "Hotfix";
             json["includePlatforms"] = new JsonData();
             json["includePlatforms"].Add("Editor");
             json["references"] = new JsonData();
             json["references"].Add("HTFramework.RunTime");
             json["autoReferenced"] = false;
-            string contentNew = GlobalTools.JsonToString(json);
+            string contentNew = JsonToolkit.JsonToString(json);
 
             if (contentOld != contentNew)
             {
@@ -190,7 +190,7 @@ namespace HT.Framework
             json["references"].Add("HTFramework.RunTime");
             json["autoReferenced"] = false;
 
-            File.WriteAllText(filePath, GlobalTools.JsonToString(json));
+            File.WriteAllText(filePath, JsonToolkit.JsonToString(json));
             AssetDatabase.Refresh();
             AssemblyDefinitionImporter importer = AssetImporter.GetAtPath("Assets" + _hotfixAssemblyDefinitionPath) as AssemblyDefinitionImporter;
             importer.SaveAndReimport();
