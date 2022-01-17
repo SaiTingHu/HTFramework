@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace HT.Framework
         private Main _main;
         private bool _isDeveloperMode = false;
         private bool _isEnableLnkTools = false;
+        private string _vscodePath;
+        private string _ilspyPath;
 
         public override string Name
         {
@@ -30,6 +33,8 @@ namespace HT.Framework
 
             _isDeveloperMode = Unsupported.IsDeveloperMode();
             _isEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, true);
+            _vscodePath = EditorPrefs.GetString(EditorPrefsTable.VSCodePath, null);
+            _ilspyPath = EditorPrefs.GetString(EditorPrefsTable.ILSpyPath, null);
         }
         public override void OnSettingGUI()
         {
@@ -53,6 +58,42 @@ namespace HT.Framework
                     _isEnableLnkTools = isEnableLnkTools;
                     EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Enable, _isEnableLnkTools);
                     EditorApplication.delayCall += EditorGlobalTools.CoerciveCompile;
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            string vscodePath = EditorGUILayout.TextField("VSCode Path", _vscodePath);
+            if (vscodePath != _vscodePath)
+            {
+                _vscodePath = vscodePath;
+                EditorPrefs.SetString(EditorPrefsTable.VSCodePath, _vscodePath);
+            }
+            if (GUILayout.Button("Browse", EditorStyles.miniButton, GUILayout.Width(80)))
+            {
+                string path = EditorUtility.OpenFilePanel("Select VSCode Path", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "exe");
+                if (path.Length != 0)
+                {
+                    _vscodePath = path;
+                    EditorPrefs.SetString(EditorPrefsTable.VSCodePath, _vscodePath);
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            string ilspyPath = EditorGUILayout.TextField("ILSpy Path", _ilspyPath);
+            if (ilspyPath != _ilspyPath)
+            {
+                _ilspyPath = ilspyPath;
+                EditorPrefs.SetString(EditorPrefsTable.ILSpyPath, _ilspyPath);
+            }
+            if (GUILayout.Button("Browse", EditorStyles.miniButton, GUILayout.Width(80)))
+            {
+                string path = EditorUtility.OpenFilePanel("Select ILSpy Path", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "exe");
+                if (path.Length != 0)
+                {
+                    _ilspyPath = path;
+                    EditorPrefs.SetString(EditorPrefsTable.ILSpyPath, _ilspyPath);
                 }
             }
             GUILayout.EndHorizontal();

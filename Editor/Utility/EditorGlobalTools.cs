@@ -1305,12 +1305,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    DrawNotepadPlusButton(editor);
+                    DrawVSCodeButton(editor);
                 }
             }
             else
             {
-                DrawNotepadPlusButton(editor);
+                DrawVSCodeButton(editor);
             }
         }
         /// <summary>
@@ -1340,27 +1340,29 @@ namespace HT.Framework
             return rect.width > rect.height;
         }
         /// <summary>
-        /// 绘制 Edit with Notepad++ 按钮
+        /// 绘制 Edit with VSCode 按钮
         /// </summary>
-        private static void DrawNotepadPlusButton(Editor editor)
+        private static void DrawVSCodeButton(Editor editor)
         {
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Edit with Notepad++", EditorStyles.miniButton))
+            if (GUILayout.Button("Edit with VSCode", EditorStyles.miniButton))
             {
-                EditWithNotepadPlus(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
+                EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
             }
             EditorGUILayout.EndHorizontal();
         }
         /// <summary>
-        /// 打开 Edit with Notepad++ 编辑
+        /// 打开 VSCode 编辑
         /// </summary>
-        private static void EditWithNotepadPlus(string filePath)
+        private static void EditWithVSCode(string filePath)
         {
-            bool succeed = ExecutableToolkit.ExecuteRegistry("notepad++.exe", "\"" + filePath + "\"");
+            string vscodePath = EditorPrefs.GetString(EditorPrefsTable.VSCodePath, null);
+            bool succeed = ExecutableToolkit.Execute(vscodePath, "\"" + filePath + "\"");
             if (!succeed)
             {
-                Log.Error("未找到 Notepad++ 可执行程序，或本机未安装 Notepad++，Notepad++ 官网：https://notepad-plus-plus.org");
+                EditorApplication.ExecuteMenuItem("HTFramework/HTFramework Settings...");
+                Log.Error("请在 Setter 面板设置 VSCode 的启动路径，如未安装 VSCode，请进入官网下载：https://code.visualstudio.com/");
             }
         }
         #endregion

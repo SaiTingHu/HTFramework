@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using UnityEditor;
@@ -16,7 +15,6 @@ namespace HT.Framework
         private Assembly _currentAssembly;
         private Vector2 _assemblyScroll = Vector2.zero;
         private string _assemblyFilter = "";
-        private string _ILSpyPath = null;
 
         private Type[] _types;
         private Type _currentType;
@@ -157,7 +155,6 @@ namespace HT.Framework
             base.OnEnable();
 
             _assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            _ILSpyPath = EditorPrefs.GetString(EditorPrefsTable.AssemblyViewer_ILSpyPath, null);
             CurrentAssembly = null;
         }
         protected override void OnTitleGUI()
@@ -252,21 +249,16 @@ namespace HT.Framework
                         GUILayout.EndHorizontal();
 
                         GUILayout.BeginHorizontal();
-                        GUILayout.Label("ILSpy Path:", GUILayout.Width(80));
-                        string ilSpyPath = EditorGUILayout.TextField(_ILSpyPath);
-                        if (ilSpyPath != _ILSpyPath)
-                        {
-                            _ILSpyPath = ilSpyPath;
-                            EditorPrefs.SetString(EditorPrefsTable.AssemblyViewer_ILSpyPath, _ILSpyPath);
-                        }
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !CurrentAssembly.IsDynamic;
                         if (GUILayout.Button("Open in ILSpy", EditorStyles.miniButton, GUILayout.Width(110)))
                         {
-                            bool succeed = ExecutableToolkit.Execute(_ILSpyPath, "\"" + CurrentAssembly.Location + "\"");
+                            string ilspyPath = EditorPrefs.GetString(EditorPrefsTable.ILSpyPath, null);
+                            bool succeed = ExecutableToolkit.Execute(ilspyPath, "\"" + CurrentAssembly.Location + "\"");
                             if (!succeed)
                             {
-                                Log.Error("未找到 ILSpy 可执行程序，或本机未安装 ILSpy，ILSpy 官网：http://www.ilspy.net/ 中文版官网：http://www.fishlee.net/soft/ilspy_chs/");
+                                EditorApplication.ExecuteMenuItem("HTFramework/HTFramework Settings...");
+                                Log.Error("请在 Setter 面板设置 ILSpy 的启动路径，如未安装 ILSpy，请进入官网下载：http://www.ilspy.net/ 中文版官网：http://www.fishlee.net/soft/ilspy_chs/");
                             }
                         }
                         GUI.enabled = true;

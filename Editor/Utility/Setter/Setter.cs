@@ -54,7 +54,7 @@ namespace HT.Framework
             _editGUIContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             _editGUIContent.tooltip = "Edit Module";
 
-            _currentItem = -1;
+            _currentItem = 0;
 
             _itemFilter = "";
         }

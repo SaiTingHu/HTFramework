@@ -121,6 +121,14 @@ namespace HT.Framework
         /// </summary>
         public static readonly string LnkTools_Expansion = "HT.Framework.LnkTools.Expansion";
         /// <summary>
+        /// VSCode的启动路径
+        /// </summary>
+        public static readonly string VSCodePath = "HT.Framework.VSCodePath";
+        /// <summary>
+        /// ILSpy的启动路径
+        /// </summary>
+        public static readonly string ILSpyPath = "HT.Framework.ILSpyPath";
+        /// <summary>
         /// About窗口：是否在启动时自动打开
         /// </summary>
         public static readonly string About_IsShowOnStart = "HT.Framework.About.IsShowOnStart";
@@ -128,11 +136,7 @@ namespace HT.Framework
         /// ScriptingDefine历史记录
         /// </summary>
         public static readonly string ScriptingDefine_Record = "HT.Framework.ScriptingDefineRecord";
-        /// <summary>
-        /// AssemblyViewer窗口的ILSpy程序启动路径
-        /// </summary>
-        public static readonly string AssemblyViewer_ILSpyPath = "HT.Framework.AssemblyViewer.ILSpyPath";
-
+        
         /// <summary>
         /// TaskEditorWindow配置：是否仅在选中时展开任务点
         /// </summary>
