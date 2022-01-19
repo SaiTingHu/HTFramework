@@ -278,7 +278,7 @@ namespace HT.Framework
             GUI.enabled = Entity != null;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Target:", GUILayout.Width(60));
-            GUIContent content = Target != null ? new GUIContent(EditorGUIUtility.ObjectContent(Target, Target.GetType())) : new GUIContent("<None>");
+            GUIContent content = Target != null ? EditorGUIUtility.ObjectContent(Target, Target.GetType()) : new GUIContent("<None>");
             if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();

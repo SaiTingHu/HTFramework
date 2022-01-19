@@ -250,7 +250,7 @@ namespace HT.Framework
         /// <summary>
         /// 运行场景
         /// </summary>
-        [MenuItem("HTFramework/Editor/Run &2", false, 102)]
+        [MenuItem("HTFramework/Editor/Run &3", false, 102)]
         private static void RunScene()
         {
             EditorApplication.isPlaying = !EditorApplication.isPlaying;
@@ -339,11 +339,150 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Tools 【优先级104】
+        #region Naming 【优先级104】
+        /// <summary>
+        /// 标准化命名
+        /// </summary>
+        [MenuItem("HTFramework/Naming/Standardizing Naming &2", false, 104)]
+        private static void StandardizingNaming()
+        {
+            if (Selection.objects.Length <= 0)
+                return;
+
+            string path = EditorPrefs.GetString(EditorPrefsTable.StandardizingNaming_Config, null);
+            if (string.IsNullOrEmpty(path))
+            {
+                Log.Error("请先设置标准化命名配置数据集，才能使用标准化命名！");
+                OpenStandardizingNamingWindow();
+                return;
+            }
+            StandardizingNamingData data = AssetDatabase.LoadAssetAtPath<StandardizingNamingData>(path);
+            if (data == null)
+            {
+                Log.Error("请先设置标准化命名配置数据集，才能使用标准化命名！");
+                OpenStandardizingNamingWindow();
+                return;
+            }
+
+            for (int i = 0; i < Selection.objects.Length; i++)
+            {
+                if (Selection.objects[i] is GameObject)
+                {
+                    GameObject obj = Selection.objects[i] as GameObject;
+                    string objPath = AssetDatabase.GetAssetPath(obj);
+                    if (string.IsNullOrEmpty(objPath))
+                    {
+                        HierarchyElementNaming(data, obj);
+                    }
+                }
+                else
+                {
+                    ProjectElementNaming(data, Selection.objects[i]);
+                }
+            }
+        }
+        private static void HierarchyElementNaming(StandardizingNamingData data, GameObject obj)
+        {
+            for (int i = 0; i < data.HierarchyNamingSigns.Count; i++)
+            {
+                NamingSign namingSign = data.HierarchyNamingSigns[i];
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(namingSign.FullName);
+                if (type != null && obj.GetComponent(type))
+                {
+                    string newName = namingSign.Sign.Replace(data.NameMatch, obj.name);
+                    obj.name = newName;
+                    EditorUtility.SetDirty(obj);
+                    break;
+                }
+            }
+        }
+        private static void ProjectElementNaming(StandardizingNamingData data, UnityEngine.Object obj)
+        {
+            for (int i = 0; i < data.ProjectNamingSigns.Count; i++)
+            {
+                NamingSign namingSign = data.ProjectNamingSigns[i];
+                if (obj.GetType().FullName == namingSign.FullName)
+                {
+                    string newName = namingSign.Sign.Replace(data.NameMatch, obj.name);
+                    string oldPath = AssetDatabase.GetAssetPath(obj);
+                    AssetDatabase.RenameAsset(oldPath, newName);
+                    EditorUtility.SetDirty(obj);
+                    break;
+                }
+            }
+        }
+        /// <summary>
+        /// 打开标准化命名配置窗口
+        /// </summary>
+        [MenuItem("HTFramework/Naming/Standardizing Naming Config", false, 105)]
+        private static void OpenStandardizingNamingWindow()
+        {
+            StandardizingNamingWindow window = EditorWindow.GetWindow<StandardizingNamingWindow>();
+            window.titleContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            window.titleContent.text = "Standardizing Naming";
+            window.minSize = new Vector2(300, 80);
+            window.maxSize = new Vector2(300, 80);
+            window.Show();
+        }
+        #endregion
+
+        #region Tools 【优先级105】
+        /// <summary>
+        /// 打开 Assets Master
+        /// </summary>
+        [MenuItem("HTFramework/Tools/Assets Master", false, 105)]
+        private static void OpenAssetsMaster()
+        {
+            AssetsMaster master = EditorWindow.GetWindow<AssetsMaster>();
+            master.titleContent.image = EditorGUIUtility.IconContent("d_WelcomeScreen.AssetStoreLogo").image;
+            master.titleContent.text = "Assets Master";
+            master.minSize = new Vector2(1000, 600);
+            master.SearchAssetsInOpenedScene();
+            master.Show();
+        }
+
+        /// <summary>
+        /// 打开 Assembly Viewer
+        /// </summary>
+        [MenuItem("HTFramework/Tools/Assembly Viewer", false, 106)]
+        private static void OpenAssemblyViewer()
+        {
+            AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
+            viewer.titleContent.image = EditorGUIUtility.IconContent("Assembly Icon").image;
+            viewer.titleContent.text = "Assembly Viewer";
+            viewer.Show();
+        }
+
+        /// <summary>
+        /// 打开 Custom Executer
+        /// </summary>
+        [MenuItem("HTFramework/Tools/Custom Executer", false, 107)]
+        private static void OpenCustomExecuter()
+        {
+            CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
+            tools.titleContent.image = EditorGUIUtility.IconContent("LightProbeProxyVolume Icon").image;
+            tools.titleContent.text = "Custom Executer";
+            tools.minSize = new Vector2(500, 600);
+            tools.Initialization();
+            tools.Show();
+        }
+
+        /// <summary>
+        /// 打开 Extended Inspector
+        /// </summary>
+        [MenuItem("HTFramework/Tools/Extended Inspector", false, 108)]
+        private static void OpenExtendedInspector()
+        {
+            ExtendedInspectorWindow window = EditorWindow.GetWindow<ExtendedInspectorWindow>();
+            window.titleContent.image = EditorGUIUtility.IconContent("d_UnityEditor.InspectorWindow").image;
+            window.titleContent.text = "Extended Inspector";
+            window.Show();
+        }
+
         /// <summary>
         /// 合并多个模型网格
         /// </summary>
-        [MenuItem("HTFramework/Tools/Mesh/Mesh Combines", false, 104)]
+        [MenuItem("HTFramework/Tools/Mesh Combines", false, 109)]
         private static void MeshCombines()
         {
             if (Selection.gameObjects.Length <= 1)
@@ -388,74 +527,6 @@ namespace HT.Framework
             AssetDatabase.SaveAssets();
 
             EditorUtility.ClearProgressBar();
-        }
-        
-        /// <summary>
-        /// 展示模型信息
-        /// </summary>
-        [MenuItem("HTFramework/Tools/Mesh/Mesh Info", false, 105)]
-        private static void ShowMeshInfo()
-        {
-            for (int i = 0; i < Selection.gameObjects.Length; i++)
-            {
-                MeshFilter filter = Selection.gameObjects[i].GetComponent<MeshFilter>();
-                if (filter)
-                {
-                    Log.Info("Mesh [" + filter.name + "] : vertices " + filter.sharedMesh.vertexCount + ", triangles " + (filter.sharedMesh.triangles.Length / 3));
-                }
-            }
-        }
-
-        /// <summary>
-        /// 打开 Assets Master
-        /// </summary>
-        [MenuItem("HTFramework/Tools/Assets Master", false, 106)]
-        private static void OpenAssetsMaster()
-        {
-            AssetsMaster master = EditorWindow.GetWindow<AssetsMaster>();
-            master.titleContent.image = EditorGUIUtility.IconContent("d_WelcomeScreen.AssetStoreLogo").image;
-            master.titleContent.text = "Assets Master";
-            master.minSize = new Vector2(1000, 600);
-            master.SearchAssetsInOpenedScene();
-            master.Show();
-        }
-
-        /// <summary>
-        /// 打开 Assembly Viewer
-        /// </summary>
-        [MenuItem("HTFramework/Tools/Assembly Viewer", false, 107)]
-        private static void OpenAssemblyViewer()
-        {
-            AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
-            viewer.titleContent.image = EditorGUIUtility.IconContent("Assembly Icon").image;
-            viewer.titleContent.text = "Assembly Viewer";
-            viewer.Show();
-        }
-
-        /// <summary>
-        /// 打开 Custom Executer
-        /// </summary>
-        [MenuItem("HTFramework/Tools/Custom Executer", false, 108)]
-        private static void OpenCustomExecuter()
-        {
-            CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
-            tools.titleContent.image = EditorGUIUtility.IconContent("LightProbeProxyVolume Icon").image;
-            tools.titleContent.text = "Custom Executer";
-            tools.minSize = new Vector2(500, 600);
-            tools.Initialization();
-            tools.Show();
-        }
-
-        /// <summary>
-        /// 打开 Extended Inspector
-        /// </summary>
-        [MenuItem("HTFramework/Tools/Extended Inspector", false, 109)]
-        private static void OpenExtendedInspector()
-        {
-            ExtendedInspectorWindow window = EditorWindow.GetWindow<ExtendedInspectorWindow>();
-            window.titleContent.image = EditorGUIUtility.IconContent("d_UnityEditor.InspectorWindow").image;
-            window.titleContent.text = "Extended Inspector";
-            window.Show();
         }
         #endregion
 

@@ -136,7 +136,11 @@ namespace HT.Framework
         /// ScriptingDefine历史记录
         /// </summary>
         public static readonly string ScriptingDefine_Record = "HT.Framework.ScriptingDefineRecord";
-        
+        /// <summary>
+        /// StandardizingNaming的配置数据集路径
+        /// </summary>
+        public static readonly string StandardizingNaming_Config = "HT.Framework.StandardizingNaming.Config";
+
         /// <summary>
         /// TaskEditorWindow配置：是否仅在选中时展开任务点
         /// </summary>
