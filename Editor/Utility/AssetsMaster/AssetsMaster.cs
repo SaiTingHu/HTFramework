@@ -30,11 +30,11 @@ namespace HT.Framework
         private bool _isIncludeUGUI = true;
         private bool _isIncludeMonoScript = false;
 
-        private List<Material> _materialsSort = new List<Material>();
-        private List<Texture> _texturesSort = new List<Texture>();
-        private List<Mesh> _meshesSort = new List<Mesh>();
-        private List<Type> _scriptsSort = new List<Type>();
-        private List<GameObject> _missingSort = new List<GameObject>();
+        private List<Material> _materialsDisplay = new List<Material>();
+        private List<Texture> _texturesDisplay = new List<Texture>();
+        private List<Mesh> _meshesDisplay = new List<Mesh>();
+        private List<Type> _scriptsDisplay = new List<Type>();
+        private List<GameObject> _missingDisplay = new List<GameObject>();
         private Dictionary<Material, MaterialContent> _materials = new Dictionary<Material, MaterialContent>();
         private Dictionary<Texture, TextureContent> _textures = new Dictionary<Texture, TextureContent>();
         private Dictionary<Mesh, MeshContent> _meshes = new Dictionary<Mesh, MeshContent>();
@@ -60,6 +60,18 @@ namespace HT.Framework
         private string _filterName = "";
         private int _totalMeshVertices = 0;
         private int _textureAlarmCount = 0;
+
+        private int _materialIndex;
+        private int _materialTotalIndex;
+        private int _textureIndex;
+        private int _textureTotalIndex;
+        private int _meshIndex;
+        private int _meshTotalIndex;
+        private int _monoScriptIndex;
+        private int _monoScriptTotalIndex;
+        private int _missingIndex;
+        private int _missingTotalIndex;
+        private int _pageAmount = 20;
         #endregion
 
         #region Lifecycle Function
@@ -195,12 +207,21 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Search:", GUILayout.Width(60));
-            _filterName = EditorGUILayout.TextField("", _filterName, EditorGlobalTools.Styles.SearchTextField, GUILayout.Width(200));
+            _filterName = EditorGUILayout.TextField("", _filterName, EditorGlobalTools.Styles.SearchTextField, GUILayout.Width(300));
             if (GUILayout.Button("", _filterName != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
             {
                 _filterName = "";
+                ApplyFilter();
+                ApplyIndex();
                 GUI.FocusControl(null);
             }
+            GUI.enabled = _filterName != "";
+            if (GUILayout.Button("Search", EditorStyles.miniButton))
+            {
+                ApplyFilter();
+                ApplyIndex();
+            }
+            GUI.enabled = true;
             GUILayout.FlexibleSpace();
             if (_type == AssetType.Texture)
             {
@@ -222,17 +243,17 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            GUILayout.Label(_materials.Count.ToString(), GUILayout.Width(_previewWidth));
+            GUILayout.Label(_materialsDisplay.Count.ToString(), GUILayout.Width(_previewWidth));
             if (GUILayout.Button(_sortGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return string.Compare(a.name, b.name); });
+                    _materialsDisplay.Sort((a, b) => { return string.Compare(a.name, b.name); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return string.Compare(b.name, a.name); });
+                    _materialsDisplay.Sort((a, b) => { return string.Compare(b.name, a.name); });
                 });
                 gm.ShowAsContext();
             }
@@ -242,11 +263,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return string.Compare(_materials[a].ShaderName, _materials[b].ShaderName); });
+                    _materialsDisplay.Sort((a, b) => { return string.Compare(_materials[a].ShaderName, _materials[b].ShaderName); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return string.Compare(_materials[b].ShaderName, _materials[a].ShaderName); });
+                    _materialsDisplay.Sort((a, b) => { return string.Compare(_materials[b].ShaderName, _materials[a].ShaderName); });
                 });
                 gm.ShowAsContext();
             }
@@ -256,11 +277,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return _materials[a].TextureCount - _materials[b].TextureCount; });
+                    _materialsDisplay.Sort((a, b) => { return _materials[a].TextureCount - _materials[b].TextureCount; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return _materials[b].TextureCount - _materials[a].TextureCount; });
+                    _materialsDisplay.Sort((a, b) => { return _materials[b].TextureCount - _materials[a].TextureCount; });
                 });
                 gm.ShowAsContext();
             }
@@ -270,11 +291,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return _materials[a].RenderQueue - _materials[b].RenderQueue; });
+                    _materialsDisplay.Sort((a, b) => { return _materials[a].RenderQueue - _materials[b].RenderQueue; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return _materials[b].RenderQueue - _materials[a].RenderQueue; });
+                    _materialsDisplay.Sort((a, b) => { return _materials[b].RenderQueue - _materials[a].RenderQueue; });
                 });
                 gm.ShowAsContext();
             }
@@ -284,11 +305,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return _materials[a].InGameObjects.Count - _materials[b].InGameObjects.Count; });
+                    _materialsDisplay.Sort((a, b) => { return _materials[a].InGameObjects.Count - _materials[b].InGameObjects.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _materialsSort.Sort((a, b) => { return _materials[b].InGameObjects.Count - _materials[a].InGameObjects.Count; });
+                    _materialsDisplay.Sort((a, b) => { return _materials[b].InGameObjects.Count - _materials[a].InGameObjects.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -299,12 +320,13 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _materialGUIScroll = GUILayout.BeginScrollView(_materialGUIScroll);
 
-            string filter = _filterName.ToLower();
-            for (int i = 0; i < _materialsSort.Count; i++)
+            int start = (_materialIndex - 1) * _pageAmount;
+            int end = start + _pageAmount;
+            for (int i = start; i < end && i < _materialsDisplay.Count; i++)
             {
-                if (_materialsSort[i] != null && _materialsSort[i].name.ToLower().Contains(filter))
+                if (_materialsDisplay[i] != null)
                 {
-                    MaterialContent content = _materials[_materialsSort[i]];
+                    MaterialContent content = _materials[_materialsDisplay[i]];
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(AssetPreview.GetAssetPreview(content.Mat), EditorGlobalTools.Styles.IconButton, GUILayout.Width(_previewWidth), GUILayout.Height(_previewHeight)))
                     {
@@ -328,6 +350,62 @@ namespace HT.Framework
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUI.enabled = _materialIndex > 1;
+            if (GUILayout.Button("<<", EditorStyles.miniButton))
+            {
+                _materialIndex = 1;
+            }
+            if (GUILayout.Button("<", EditorStyles.miniButton))
+            {
+                _materialIndex -= 1;
+            }
+            GUI.enabled = true;
+            GUILayout.Label(_materialIndex + "/" + _materialTotalIndex);
+            GUI.enabled = _materialIndex < _materialTotalIndex;
+            if (GUILayout.Button(">", EditorStyles.miniButton))
+            {
+                _materialIndex += 1;
+            }
+            if (GUILayout.Button(">>", EditorStyles.miniButton))
+            {
+                _materialIndex = _materialTotalIndex;
+            }
+            GUI.enabled = true;
+            if (GUILayout.Button("Amount", EditorGlobalTools.Styles.MiniPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("10"), _pageAmount == 10, () =>
+                {
+                    _pageAmount = 10;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("20"), _pageAmount == 20, () =>
+                {
+                    _pageAmount = 20;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("30"), _pageAmount == 30, () =>
+                {
+                    _pageAmount = 30;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("40"), _pageAmount == 40, () =>
+                {
+                    _pageAmount = 40;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("50"), _pageAmount == 50, () =>
+                {
+                    _pageAmount = 50;
+                    ApplyIndex();
+                });
+                gm.ShowAsContext();
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
         /// <summary>
         /// 贴图列表GUI
@@ -336,22 +414,22 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            GUILayout.Label(_textures.Count.ToString(), GUILayout.Width(_previewWidth));
+            GUILayout.Label(_texturesDisplay.Count.ToString(), GUILayout.Width(_previewWidth));
             if (GUILayout.Button(_sortGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return string.Compare(a.name, b.name); });
+                    _texturesDisplay.Sort((a, b) => { return string.Compare(a.name, b.name); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return string.Compare(b.name, a.name); });
+                    _texturesDisplay.Sort((a, b) => { return string.Compare(b.name, a.name); });
                 });
                 gm.AddSeparator("");
                 gm.AddItem(new GUIContent("Alarm Value"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[b].AlarmLevel - _textures[a].AlarmLevel; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[b].AlarmLevel - _textures[a].AlarmLevel; });
                 });
                 gm.ShowAsContext();
             }
@@ -361,11 +439,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[a].Size - _textures[b].Size; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[a].Size - _textures[b].Size; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[b].Size - _textures[a].Size; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[b].Size - _textures[a].Size; });
                 });
                 gm.ShowAsContext();
             }
@@ -375,11 +453,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return Convert.ToInt32(_textures[a].IsCrunched) - Convert.ToInt32(_textures[b].IsCrunched); });
+                    _texturesDisplay.Sort((a, b) => { return Convert.ToInt32(_textures[a].IsCrunched) - Convert.ToInt32(_textures[b].IsCrunched); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return Convert.ToInt32(_textures[b].IsCrunched) - Convert.ToInt32(_textures[a].IsCrunched); });
+                    _texturesDisplay.Sort((a, b) => { return Convert.ToInt32(_textures[b].IsCrunched) - Convert.ToInt32(_textures[a].IsCrunched); });
                 });
                 gm.ShowAsContext();
             }
@@ -389,11 +467,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[a].MipMapCount - _textures[b].MipMapCount; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[a].MipMapCount - _textures[b].MipMapCount; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[b].MipMapCount - _textures[a].MipMapCount; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[b].MipMapCount - _textures[a].MipMapCount; });
                 });
                 gm.ShowAsContext();
             }
@@ -403,11 +481,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[a].InMaterials.Count - _textures[b].InMaterials.Count; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[a].InMaterials.Count - _textures[b].InMaterials.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[b].InMaterials.Count - _textures[a].InMaterials.Count; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[b].InMaterials.Count - _textures[a].InMaterials.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -417,11 +495,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[a].InGameObjects.Count - _textures[b].InGameObjects.Count; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[a].InGameObjects.Count - _textures[b].InGameObjects.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _texturesSort.Sort((a, b) => { return _textures[b].InGameObjects.Count - _textures[a].InGameObjects.Count; });
+                    _texturesDisplay.Sort((a, b) => { return _textures[b].InGameObjects.Count - _textures[a].InGameObjects.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -432,12 +510,13 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _textureGUIScroll = GUILayout.BeginScrollView(_textureGUIScroll);
 
-            string filter = _filterName.ToLower();
-            for (int i = 0; i < _texturesSort.Count; i++)
+            int start = (_textureIndex - 1) * _pageAmount;
+            int end = start + _pageAmount;
+            for (int i = start; i < end && i < _texturesDisplay.Count; i++)
             {
-                if (_texturesSort[i] != null && _texturesSort[i].name.ToLower().Contains(filter))
+                if (_texturesDisplay[i] != null)
                 {
-                    TextureContent content = _textures[_texturesSort[i]];
+                    TextureContent content = _textures[_texturesDisplay[i]];
                     GUILayout.BeginHorizontal();
                     GUI.enabled = content.IsKnown;
                     if (GUILayout.Button(AssetPreview.GetAssetPreview(content.Tex), EditorGlobalTools.Styles.IconButton, GUILayout.Width(_previewWidth), GUILayout.Height(_previewHeight)))
@@ -473,6 +552,62 @@ namespace HT.Framework
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUI.enabled = _textureIndex > 1;
+            if (GUILayout.Button("<<", EditorStyles.miniButton))
+            {
+                _textureIndex = 1;
+            }
+            if (GUILayout.Button("<", EditorStyles.miniButton))
+            {
+                _textureIndex -= 1;
+            }
+            GUI.enabled = true;
+            GUILayout.Label(_textureIndex + "/" + _textureTotalIndex);
+            GUI.enabled = _textureIndex < _textureTotalIndex;
+            if (GUILayout.Button(">", EditorStyles.miniButton))
+            {
+                _textureIndex += 1;
+            }
+            if (GUILayout.Button(">>", EditorStyles.miniButton))
+            {
+                _textureIndex = _textureTotalIndex;
+            }
+            GUI.enabled = true;
+            if (GUILayout.Button("Amount", EditorGlobalTools.Styles.MiniPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("10"), _pageAmount == 10, () =>
+                {
+                    _pageAmount = 10;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("20"), _pageAmount == 20, () =>
+                {
+                    _pageAmount = 20;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("30"), _pageAmount == 30, () =>
+                {
+                    _pageAmount = 30;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("40"), _pageAmount == 40, () =>
+                {
+                    _pageAmount = 40;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("50"), _pageAmount == 50, () =>
+                {
+                    _pageAmount = 50;
+                    ApplyIndex();
+                });
+                gm.ShowAsContext();
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
         /// <summary>
         /// 网格列表GUI
@@ -481,17 +616,17 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            GUILayout.Label(_meshes.Count.ToString(), GUILayout.Width(_previewWidth));
+            GUILayout.Label(_meshesDisplay.Count.ToString(), GUILayout.Width(_previewWidth));
             if (GUILayout.Button(_sortGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return string.Compare(a.name, b.name); });
+                    _meshesDisplay.Sort((a, b) => { return string.Compare(a.name, b.name); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return string.Compare(b.name, a.name); });
+                    _meshesDisplay.Sort((a, b) => { return string.Compare(b.name, a.name); });
                 });
                 gm.ShowAsContext();
             }
@@ -501,11 +636,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[a].VertexCount - _meshes[b].VertexCount; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[a].VertexCount - _meshes[b].VertexCount; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[b].VertexCount - _meshes[a].VertexCount; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[b].VertexCount - _meshes[a].VertexCount; });
                 });
                 gm.ShowAsContext();
             }
@@ -515,11 +650,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[a].InStaticBatching.Count - _meshes[b].InStaticBatching.Count; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[a].InStaticBatching.Count - _meshes[b].InStaticBatching.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[b].InStaticBatching.Count - _meshes[a].InStaticBatching.Count; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[b].InStaticBatching.Count - _meshes[a].InStaticBatching.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -529,11 +664,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[a].InSkinned.Count - _meshes[b].InSkinned.Count; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[a].InSkinned.Count - _meshes[b].InSkinned.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[b].InSkinned.Count - _meshes[a].InSkinned.Count; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[b].InSkinned.Count - _meshes[a].InSkinned.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -543,11 +678,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[a].InGameObjects.Count - _meshes[b].InGameObjects.Count; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[a].InGameObjects.Count - _meshes[b].InGameObjects.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _meshesSort.Sort((a, b) => { return _meshes[b].InGameObjects.Count - _meshes[a].InGameObjects.Count; });
+                    _meshesDisplay.Sort((a, b) => { return _meshes[b].InGameObjects.Count - _meshes[a].InGameObjects.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -558,12 +693,13 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _meshGUIScroll = GUILayout.BeginScrollView(_meshGUIScroll);
 
-            string filter = _filterName.ToLower();
-            for (int i = 0; i < _meshesSort.Count; i++)
+            int start = (_meshIndex - 1) * _pageAmount;
+            int end = start + _pageAmount;
+            for (int i = start; i < end && i < _meshesDisplay.Count; i++)
             {
-                if (_meshesSort[i] != null && _meshesSort[i].name.ToLower().Contains(filter))
+                if (_meshesDisplay[i] != null)
                 {
-                    MeshContent content = _meshes[_meshesSort[i]];
+                    MeshContent content = _meshes[_meshesDisplay[i]];
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(_meshGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(_previewWidth), GUILayout.Height(_previewHeight)))
                     {
@@ -594,6 +730,62 @@ namespace HT.Framework
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUI.enabled = _meshIndex > 1;
+            if (GUILayout.Button("<<", EditorStyles.miniButton))
+            {
+                _meshIndex = 1;
+            }
+            if (GUILayout.Button("<", EditorStyles.miniButton))
+            {
+                _meshIndex -= 1;
+            }
+            GUI.enabled = true;
+            GUILayout.Label(_meshIndex + "/" + _meshTotalIndex);
+            GUI.enabled = _meshIndex < _meshTotalIndex;
+            if (GUILayout.Button(">", EditorStyles.miniButton))
+            {
+                _meshIndex += 1;
+            }
+            if (GUILayout.Button(">>", EditorStyles.miniButton))
+            {
+                _meshIndex = _meshTotalIndex;
+            }
+            GUI.enabled = true;
+            if (GUILayout.Button("Amount", EditorGlobalTools.Styles.MiniPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("10"), _pageAmount == 10, () =>
+                {
+                    _pageAmount = 10;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("20"), _pageAmount == 20, () =>
+                {
+                    _pageAmount = 20;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("30"), _pageAmount == 30, () =>
+                {
+                    _pageAmount = 30;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("40"), _pageAmount == 40, () =>
+                {
+                    _pageAmount = 40;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("50"), _pageAmount == 50, () =>
+                {
+                    _pageAmount = 50;
+                    ApplyIndex();
+                });
+                gm.ShowAsContext();
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
         /// <summary>
         /// 脚本列表GUI
@@ -602,17 +794,17 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            GUILayout.Label(_scripts.Count.ToString(), GUILayout.Width(_previewWidth));
+            GUILayout.Label(_scriptsDisplay.Count.ToString(), GUILayout.Width(_previewWidth));
             if (GUILayout.Button(_sortGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _scriptsSort.Sort((a, b) => { return string.Compare(_scripts[a].Script.name, _scripts[b].Script.name); });
+                    _scriptsDisplay.Sort((a, b) => { return string.Compare(_scripts[a].Script.name, _scripts[b].Script.name); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _scriptsSort.Sort((a, b) => { return string.Compare(_scripts[b].Script.name, _scripts[a].Script.name); });
+                    _scriptsDisplay.Sort((a, b) => { return string.Compare(_scripts[b].Script.name, _scripts[a].Script.name); });
                 });
                 gm.ShowAsContext();
             }
@@ -622,11 +814,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _scriptsSort.Sort((a, b) => { return string.Compare(_scripts[a].Assembly, _scripts[b].Assembly); });
+                    _scriptsDisplay.Sort((a, b) => { return string.Compare(_scripts[a].Assembly, _scripts[b].Assembly); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _scriptsSort.Sort((a, b) => { return string.Compare(_scripts[b].Assembly, _scripts[a].Assembly); });
+                    _scriptsDisplay.Sort((a, b) => { return string.Compare(_scripts[b].Assembly, _scripts[a].Assembly); });
                 });
                 gm.ShowAsContext();
             }
@@ -636,11 +828,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _scriptsSort.Sort((a, b) => { return _scripts[a].InGameObjects.Count - _scripts[b].InGameObjects.Count; });
+                    _scriptsDisplay.Sort((a, b) => { return _scripts[a].InGameObjects.Count - _scripts[b].InGameObjects.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _scriptsSort.Sort((a, b) => { return _scripts[b].InGameObjects.Count - _scripts[a].InGameObjects.Count; });
+                    _scriptsDisplay.Sort((a, b) => { return _scripts[b].InGameObjects.Count - _scripts[a].InGameObjects.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -651,11 +843,12 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _monoScriptGUIScroll = GUILayout.BeginScrollView(_monoScriptGUIScroll);
 
-            string filter = _filterName.ToLower();
-            for (int i = 0; i < _scriptsSort.Count; i++)
+            int start = (_monoScriptIndex - 1) * _pageAmount;
+            int end = start + _pageAmount;
+            for (int i = start; i < end && i < _scriptsDisplay.Count; i++)
             {
-                MonoScriptContent content = _scripts[_scriptsSort[i]];
-                if (content.Script && content.Script.name.ToLower().Contains(filter))
+                MonoScriptContent content = _scripts[_scriptsDisplay[i]];
+                if (content.Script)
                 {
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(content.IsMono ? _scriptGC : _scriptObjGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(_previewWidth), GUILayout.Height(_previewHeight)))
@@ -676,6 +869,62 @@ namespace HT.Framework
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUI.enabled = _monoScriptIndex > 1;
+            if (GUILayout.Button("<<", EditorStyles.miniButton))
+            {
+                _monoScriptIndex = 1;
+            }
+            if (GUILayout.Button("<", EditorStyles.miniButton))
+            {
+                _monoScriptIndex -= 1;
+            }
+            GUI.enabled = true;
+            GUILayout.Label(_monoScriptIndex + "/" + _monoScriptTotalIndex);
+            GUI.enabled = _monoScriptIndex < _monoScriptTotalIndex;
+            if (GUILayout.Button(">", EditorStyles.miniButton))
+            {
+                _monoScriptIndex += 1;
+            }
+            if (GUILayout.Button(">>", EditorStyles.miniButton))
+            {
+                _monoScriptIndex = _monoScriptTotalIndex;
+            }
+            GUI.enabled = true;
+            if (GUILayout.Button("Amount", EditorGlobalTools.Styles.MiniPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("10"), _pageAmount == 10, () =>
+                {
+                    _pageAmount = 10;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("20"), _pageAmount == 20, () =>
+                {
+                    _pageAmount = 20;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("30"), _pageAmount == 30, () =>
+                {
+                    _pageAmount = 30;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("40"), _pageAmount == 40, () =>
+                {
+                    _pageAmount = 40;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("50"), _pageAmount == 50, () =>
+                {
+                    _pageAmount = 50;
+                    ApplyIndex();
+                });
+                gm.ShowAsContext();
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
         /// <summary>
         /// 丢失资产列表GUI
@@ -684,17 +933,17 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            GUILayout.Label(_missing.Count.ToString(), GUILayout.Width(_previewWidth));
+            GUILayout.Label(_missingDisplay.Count.ToString(), GUILayout.Width(_previewWidth));
             if (GUILayout.Button(_sortGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _missingSort.Sort((a, b) => { return string.Compare(a.name, b.name); });
+                    _missingDisplay.Sort((a, b) => { return string.Compare(a.name, b.name); });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _missingSort.Sort((a, b) => { return string.Compare(b.name, a.name); });
+                    _missingDisplay.Sort((a, b) => { return string.Compare(b.name, a.name); });
                 });
                 gm.ShowAsContext();
             }
@@ -704,11 +953,11 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Ascending"), false, () =>
                 {
-                    _missingSort.Sort((a, b) => { return _missing[a].MissingInfos.Count - _missing[b].MissingInfos.Count; });
+                    _missingDisplay.Sort((a, b) => { return _missing[a].MissingInfos.Count - _missing[b].MissingInfos.Count; });
                 });
                 gm.AddItem(new GUIContent("Descending"), false, () =>
                 {
-                    _missingSort.Sort((a, b) => { return _missing[b].MissingInfos.Count - _missing[a].MissingInfos.Count; });
+                    _missingDisplay.Sort((a, b) => { return _missing[b].MissingInfos.Count - _missing[a].MissingInfos.Count; });
                 });
                 gm.ShowAsContext();
             }
@@ -719,12 +968,13 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             _missingGUIScroll = GUILayout.BeginScrollView(_missingGUIScroll);
 
-            string filter = _filterName.ToLower();
-            for (int i = 0; i < _missingSort.Count; i++)
+            int start = (_missingIndex - 1) * _pageAmount;
+            int end = start + _pageAmount;
+            for (int i = start; i < end && i < _missingDisplay.Count; i++)
             {
-                if (_missingSort[i] != null && _missingSort[i].name.ToLower().Contains(filter))
+                if (_missingDisplay[i] != null)
                 {
-                    MissingContent content = _missing[_missingSort[i]];
+                    MissingContent content = _missing[_missingDisplay[i]];
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button(_prefabGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(_previewWidth), GUILayout.Height(_previewHeight)))
                     {
@@ -745,6 +995,62 @@ namespace HT.Framework
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUI.enabled = _missingIndex > 1;
+            if (GUILayout.Button("<<", EditorStyles.miniButton))
+            {
+                _missingIndex = 1;
+            }
+            if (GUILayout.Button("<", EditorStyles.miniButton))
+            {
+                _missingIndex -= 1;
+            }
+            GUI.enabled = true;
+            GUILayout.Label(_missingIndex + "/" + _missingTotalIndex);
+            GUI.enabled = _missingIndex < _missingTotalIndex;
+            if (GUILayout.Button(">", EditorStyles.miniButton))
+            {
+                _missingIndex += 1;
+            }
+            if (GUILayout.Button(">>", EditorStyles.miniButton))
+            {
+                _missingIndex = _missingTotalIndex;
+            }
+            GUI.enabled = true;
+            if (GUILayout.Button("Amount", EditorGlobalTools.Styles.MiniPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("10"), _pageAmount == 10, () =>
+                {
+                    _pageAmount = 10;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("20"), _pageAmount == 20, () =>
+                {
+                    _pageAmount = 20;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("30"), _pageAmount == 30, () =>
+                {
+                    _pageAmount = 30;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("40"), _pageAmount == 40, () =>
+                {
+                    _pageAmount = 40;
+                    ApplyIndex();
+                });
+                gm.AddItem(new GUIContent("50"), _pageAmount == 50, () =>
+                {
+                    _pageAmount = 50;
+                    ApplyIndex();
+                });
+                gm.ShowAsContext();
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
         #endregion
 
@@ -765,6 +1071,9 @@ namespace HT.Framework
             SearchTextureInMaterial();
 
             GetTotalMeshVertices();
+
+            ApplyFilter();
+            ApplyIndex();
         }
         /// <summary>
         /// 清空所有资产
@@ -776,11 +1085,22 @@ namespace HT.Framework
             _totalMeshVertices = 0;
             _textureAlarmCount = 0;
 
-            _materialsSort.Clear();
-            _texturesSort.Clear();
-            _meshesSort.Clear();
-            _scriptsSort.Clear();
-            _missingSort.Clear();
+            _materialIndex = 1;
+            _materialTotalIndex = 1;
+            _textureIndex = 1;
+            _textureTotalIndex = 1;
+            _meshIndex = 1;
+            _meshTotalIndex = 1;
+            _monoScriptIndex = 1;
+            _monoScriptTotalIndex = 1;
+            _missingIndex = 1;
+            _missingTotalIndex = 1;
+
+            _materialsDisplay.Clear();
+            _texturesDisplay.Clear();
+            _meshesDisplay.Clear();
+            _scriptsDisplay.Clear();
+            _missingDisplay.Clear();
             _materials.Clear();
             _textures.Clear();
             _meshes.Clear();
@@ -1070,6 +1390,97 @@ namespace HT.Framework
                 _totalMeshVertices += mesh.Value.Me.vertexCount * mesh.Value.InGameObjects.Count;
             }
         }
+
+        /// <summary>
+        /// 应用名称筛选
+        /// </summary>
+        private void ApplyFilter()
+        {
+            _materialsDisplay.Clear();
+            _texturesDisplay.Clear();
+            _meshesDisplay.Clear();
+            _scriptsDisplay.Clear();
+            _missingDisplay.Clear();
+
+            if (_filterName == "")
+            {
+                foreach (var item in _materials)
+                {
+                    _materialsDisplay.Add(item.Key);
+                }
+                foreach (var item in _textures)
+                {
+                    _texturesDisplay.Add(item.Key);
+                }
+                foreach (var item in _meshes)
+                {
+                    _meshesDisplay.Add(item.Key);
+                }
+                foreach (var item in _scripts)
+                {
+                    _scriptsDisplay.Add(item.Key);
+                }
+                foreach (var item in _missing)
+                {
+                    _missingDisplay.Add(item.Key);
+                }
+            }
+            else
+            {
+                _filterName = _filterName.ToLower();
+                foreach (var item in _materials)
+                {
+                    if (item.Key.name.ToLower().Contains(_filterName))
+                    {
+                        _materialsDisplay.Add(item.Key);
+                    }
+                }
+                foreach (var item in _textures)
+                {
+                    if (item.Key.name.ToLower().Contains(_filterName))
+                    {
+                        _texturesDisplay.Add(item.Key);
+                    }
+                }
+                foreach (var item in _meshes)
+                {
+                    if (item.Key.name.ToLower().Contains(_filterName))
+                    {
+                        _meshesDisplay.Add(item.Key);
+                    }
+                }
+                foreach (var item in _scripts)
+                {
+                    if (item.Value.Script.name.ToLower().Contains(_filterName))
+                    {
+                        _scriptsDisplay.Add(item.Key);
+                    }
+                }
+                foreach (var item in _missing)
+                {
+                    if (item.Key.name.ToLower().Contains(_filterName))
+                    {
+                        _missingDisplay.Add(item.Key);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 应用显示分页
+        /// </summary>
+        private void ApplyIndex()
+        {
+            _materialIndex = 1;
+            _materialTotalIndex = _materialsDisplay.Count / _pageAmount + (_materialsDisplay.Count % _pageAmount > 0 ? 1 : 0);
+            _textureIndex = 1;
+            _textureTotalIndex = _texturesDisplay.Count / _pageAmount + (_texturesDisplay.Count % _pageAmount > 0 ? 1 : 0);
+            _meshIndex = 1;
+            _meshTotalIndex = _meshesDisplay.Count / _pageAmount + (_meshesDisplay.Count % _pageAmount > 0 ? 1 : 0);
+            _monoScriptIndex = 1;
+            _monoScriptTotalIndex = _scriptsDisplay.Count / _pageAmount + (_scriptsDisplay.Count % _pageAmount > 0 ? 1 : 0);
+            _missingIndex = 1;
+            _missingTotalIndex = _missingDisplay.Count / _pageAmount + (_missingDisplay.Count % _pageAmount > 0 ? 1 : 0);
+        }
         #endregion
 
         #region Get Asset Function
@@ -1088,7 +1499,6 @@ namespace HT.Framework
                 MaterialContent materialContent = new MaterialContent(material);
                 if (obj != null) materialContent.InGameObjects.Add(obj);
                 _materials.Add(material, materialContent);
-                _materialsSort.Add(material);
                 return materialContent;
             }
         }
@@ -1107,7 +1517,6 @@ namespace HT.Framework
                 TextureContent textureContent = new TextureContent(texture);
                 if (obj != null) textureContent.InGameObjects.Add(obj);
                 _textures.Add(texture, textureContent);
-                _texturesSort.Add(texture);
 
                 bool isAlarm = false;
                 if (IsMarkTextureWidth)
@@ -1165,7 +1574,6 @@ namespace HT.Framework
                 MeshContent meshContent = new MeshContent(mesh);
                 if (obj != null) meshContent.InGameObjects.Add(obj);
                 _meshes.Add(mesh, meshContent);
-                _meshesSort.Add(mesh);
                 return meshContent;
             }
         }
@@ -1185,7 +1593,6 @@ namespace HT.Framework
                 MonoScriptContent monoScriptContent = new MonoScriptContent(mono);
                 monoScriptContent.InGameObjects.Add(mono.gameObject);
                 _scripts.Add(type, monoScriptContent);
-                _scriptsSort.Add(type);
                 return monoScriptContent;
             }
         }
@@ -1205,7 +1612,6 @@ namespace HT.Framework
                 MonoScriptContent monoScriptContent = new MonoScriptContent(scriptObj);
                 monoScriptContent.InGameObjects.Add(obj);
                 _scripts.Add(type, monoScriptContent);
-                _scriptsSort.Add(type);
                 return monoScriptContent;
             }
         }
@@ -1224,7 +1630,6 @@ namespace HT.Framework
                 MissingContent missingContent = new MissingContent(target);
                 missingContent.MissingInfos.Add(missingType);
                 _missing.Add(target, missingContent);
-                _missingSort.Add(target);
                 return missingContent;
             }
         }
