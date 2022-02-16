@@ -38,7 +38,15 @@ namespace HT.Framework
 
             _helper.SetLoader(Mode, IsEditorMode, AssetBundleManifestName);
         }
-        
+
+        /// <summary>
+        /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
+        /// </summary>
+        /// <param name="path">AssetBundle资源根路径</param>
+        public void SetAssetBundlePath(string path)
+        {
+            _helper.SetAssetBundlePath(path);
+        }
         /// <summary>
         /// 通过名称获取指定的AssetBundle
         /// </summary>
@@ -99,36 +107,48 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
-        /// </summary>
-        /// <param name="path">AssetBundle资源根路径</param>
-        public void SetAssetBundlePath(string path)
-        {
-            _helper.SetAssetBundlePath(path);
-        }
-        /// <summary>
-        /// 卸载资源（卸载AssetBundle）
+        /// 卸载资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
-        public void UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
+        /// <returns>卸载协程</returns>
+        public Coroutine UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
         {
-            _helper.UnLoadAsset(assetBundleName, unloadAllLoadedObjects);
+            return Main.Current.StartCoroutine(_helper.UnLoadAsset(assetBundleName, unloadAllLoadedObjects));
         }
         /// <summary>
-        /// 卸载所有资源（卸载AssetBundle）
+        /// 卸载所有资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
-        public void UnLoadAllAsset(bool unloadAllLoadedObjects = false)
+        /// <returns>卸载协程</returns>
+        public Coroutine UnLoadAllAsset(bool unloadAllLoadedObjects = false)
         {
-            _helper.UnLoadAllAsset(unloadAllLoadedObjects);
+            return Main.Current.StartCoroutine(_helper.UnLoadAllAsset(unloadAllLoadedObjects));
         }
         /// <summary>
-        /// 清理内存，释放空闲内存
+        /// 卸载场景（异步）
         /// </summary>
-        public void ClearMemory()
+        /// <param name="info">场景配置信息</param>
+        /// <returns>卸载协程</returns>
+        public Coroutine UnLoadScene(SceneInfo info)
         {
-            _helper.ClearMemory();
+            return Main.Current.StartCoroutine(_helper.UnLoadScene(info));
+        }
+        /// <summary>
+        /// 卸载所有场景（异步）
+        /// </summary>
+        /// <returns>卸载协程</returns>
+        public Coroutine UnLoadAllScene()
+        {
+            return Main.Current.StartCoroutine(_helper.UnLoadAllScene());
+        }
+        /// <summary>
+        /// 清理内存，释放空闲内存（异步）
+        /// </summary>
+        /// <returns>协程</returns>
+        public Coroutine ClearMemory()
+        {
+            return Main.Current.StartCoroutine(_helper.ClearMemory());
         }
     }
 

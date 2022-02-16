@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace HT.Framework
 {
@@ -37,6 +38,10 @@ namespace HT.Framework
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
         Dictionary<string, Hash128> AssetBundleHashs { get; }
+        /// <summary>
+        /// 已加载的所有场景【场景名称、场景】
+        /// </summary>
+        Dictionary<string, Scene> Scenes { get; }
 
         /// <summary>
         /// 设置加载器
@@ -77,19 +82,33 @@ namespace HT.Framework
         /// <returns>加载协程迭代器</returns>
         IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> loadingAction, HTFAction loadDoneAction);
         /// <summary>
-        /// 卸载资源（卸载AssetBundle）
+        /// 卸载资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
-        void UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false);
+        /// <returns>卸载协程迭代器</returns>
+        IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false);
         /// <summary>
-        /// 卸载所有资源（卸载AssetBundle）
+        /// 卸载所有资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
-        void UnLoadAllAsset(bool unloadAllLoadedObjects = false);
+        /// <returns>卸载协程迭代器</returns>
+        IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects = false);
         /// <summary>
-        /// 清理内存，释放空闲内存
+        /// 卸载场景（异步）
         /// </summary>
-        void ClearMemory();
+        /// <param name="info">资源信息标记</param>
+        /// <returns>卸载协程迭代器</returns>
+        IEnumerator UnLoadScene(SceneInfo info);
+        /// <summary>
+        /// 卸载所有场景（异步）
+        /// </summary>
+        /// <returns>卸载协程迭代器</returns>
+        IEnumerator UnLoadAllScene();
+        /// <summary>
+        /// 清理内存，释放空闲内存（异步）
+        /// </summary>
+        /// <returns>协程迭代器</returns>
+        IEnumerator ClearMemory();
     }
 }

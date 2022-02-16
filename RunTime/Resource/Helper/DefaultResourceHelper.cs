@@ -57,7 +57,11 @@ namespace HT.Framework
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
         public Dictionary<string, Hash128> AssetBundleHashs { get; private set; } = new Dictionary<string, Hash128>();
-        
+        /// <summary>
+        /// 已加载的所有场景【场景名称、场景】
+        /// </summary>
+        public Dictionary<string, Scene> Scenes { get; private set; } = new Dictionary<string, Scene>();
+
         /// <summary>
         /// 初始化助手
         /// </summary>
@@ -291,6 +295,12 @@ namespace HT.Framework
         /// <returns>加载协程迭代器</returns>
         public IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> loadingAction, HTFAction loadDoneAction)
         {
+            if (Scenes.ContainsKey(info.ResourcePath))
+            {
+                Log.Warning(string.Format("加载场景失败：名为 {0} 的场景已加载！", info.ResourcePath));
+                yield break;
+            }
+
             float beginTime = Time.realtimeSinceStartup;
 
             //单线加载，如果其他地方在加载资源，则等待
@@ -321,14 +331,20 @@ namespace HT.Framework
                         loadSceneMode = LoadSceneMode.Additive,
                         localPhysicsMode = LocalPhysicsMode.None
                     };
+                    Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
+                    Scenes.Add(info.ResourcePath, scene);
                     yield return EditorSceneManager.LoadSceneAsyncInPlayMode(info.AssetPath, parameters);
                 }
                 else
                 {
+                    Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
+                    Scenes.Add(info.ResourcePath, scene);
                     yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
                     yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
                 }
 #else
+                Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
+                Scenes.Add(info.ResourcePath, scene);
                 yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
                 yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
 #endif
@@ -348,15 +364,16 @@ namespace HT.Framework
             _isLoading = false;
         }
         /// <summary>
-        /// 卸载资源（卸载AssetBundle）
+        /// 卸载资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
-        public void UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
+        /// <returns>卸载协程迭代器</returns>
+        public IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
         {
             if (LoadMode == ResourceLoadMode.Resource)
             {
-                Resources.UnloadUnusedAssets();
+                yield return Resources.UnloadUnusedAssets();
             }
             else
             {
@@ -369,17 +386,19 @@ namespace HT.Framework
                 {
                     AssetBundleHashs.Remove(assetBundleName);
                 }
+                yield return null;
             }
         }
         /// <summary>
-        /// 卸载所有资源（卸载AssetBundle）
+        /// 卸载所有资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
-        public void UnLoadAllAsset(bool unloadAllLoadedObjects = false)
+        /// <returns>卸载协程迭代器</returns>
+        public IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects = false)
         {
             if (LoadMode == ResourceLoadMode.Resource)
             {
-                Resources.UnloadUnusedAssets();
+                yield return Resources.UnloadUnusedAssets();
             }
             else
             {
@@ -390,14 +409,58 @@ namespace HT.Framework
                 AssetBundles.Clear();
                 AssetBundleHashs.Clear();
                 AssetBundle.UnloadAllAssetBundles(unloadAllLoadedObjects);
+                yield return null;
             }
         }
         /// <summary>
-        /// 清理内存，释放空闲内存
+        /// 卸载场景（异步）
         /// </summary>
-        public void ClearMemory()
+        /// <param name="info">资源信息标记</param>
+        /// <returns>卸载协程迭代器</returns>
+        public IEnumerator UnLoadScene(SceneInfo info)
         {
-            Resources.UnloadUnusedAssets();
+            if (!Scenes.ContainsKey(info.ResourcePath))
+            {
+                Log.Warning(string.Format("卸载场景失败：名为 {0} 的场景还未加载！", info.ResourcePath));
+                yield break;
+            }
+
+            if (LoadMode == ResourceLoadMode.Resource)
+            {
+                yield return null;
+            }
+            else
+            {
+                Scenes.Remove(info.ResourcePath);
+                yield return SceneManager.UnloadSceneAsync(info.ResourcePath);
+            }
+        }
+        /// <summary>
+        /// 卸载所有场景（异步）
+        /// </summary>
+        /// <returns>卸载协程迭代器</returns>
+        public IEnumerator UnLoadAllScene()
+        {
+            if (LoadMode == ResourceLoadMode.Resource)
+            {
+                yield return null;
+            }
+            else
+            {
+                foreach (var scene in Scenes)
+                {
+                    yield return SceneManager.UnloadSceneAsync(scene.Key);
+                }
+                Scenes.Clear();
+            }
+        }
+        /// <summary>
+        /// 清理内存，释放空闲内存（异步）
+        /// </summary>
+        /// <returns>协程迭代器</returns>
+        public IEnumerator ClearMemory()
+        {
+            yield return Resources.UnloadUnusedAssets();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -411,7 +474,7 @@ namespace HT.Framework
         /// <returns>克隆后的预制体</returns>
         private GameObject ClonePrefab(GameObject prefabTem, Transform parent, bool isUI)
         {
-            GameObject prefab = UnityEngine.Object.Instantiate(prefabTem) as GameObject;
+            GameObject prefab = UnityEngine.Object.Instantiate(prefabTem);
 
             if (parent)
             {
