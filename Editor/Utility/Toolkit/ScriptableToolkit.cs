@@ -7,7 +7,7 @@ namespace HT.Framework
     /// <summary>
     /// 脚本化工具箱
     /// </summary>
-    internal static class ScriptableToolkit
+    public static class ScriptableToolkit
     {
         /// <summary>
         /// 获取一个游戏对象所属的预制体，当为空时，则此对象不是预制体

@@ -7,7 +7,7 @@ namespace HT.Framework
     /// <summary>
     /// 可执行程序工具箱
     /// </summary>
-    internal static class ExecutableToolkit
+    public static class ExecutableToolkit
     {
         /// <summary>
         /// 打开一个可执行程序

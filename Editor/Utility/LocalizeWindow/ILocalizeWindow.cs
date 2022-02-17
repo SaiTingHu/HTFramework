@@ -3,7 +3,7 @@
     /// <summary>
     /// 拥有本地化模式的窗口
     /// </summary>
-    internal interface ILocalizeWindow
+    public interface ILocalizeWindow
     {
         
     }

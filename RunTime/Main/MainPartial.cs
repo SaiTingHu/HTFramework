@@ -7,9 +7,12 @@ using System.Threading;
 using UnityEngine;
 using UObject = UnityEngine.Object;
 
-[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
+[assembly: InternalsVisibleTo("HTFramework.Editor")]
+[assembly: InternalsVisibleTo("HTFramework.AI.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.RunTime")]
+[assembly: InternalsVisibleTo("HTFramework.ILHotfix.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.ILHotfix.RunTime")]
+[assembly: InternalsVisibleTo("HTFramework.GC.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.GC.RunTime")]
 
 namespace HT.Framework

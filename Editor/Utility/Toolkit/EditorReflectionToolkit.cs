@@ -7,7 +7,7 @@ namespace HT.Framework
     /// <summary>
     /// 编辑器反射工具箱
     /// </summary>
-    internal static class EditorReflectionToolkit
+    public static class EditorReflectionToolkit
     {
         /// <summary>
         /// 当前的热更新程序集
@@ -16,7 +16,9 @@ namespace HT.Framework
         /// <summary>
         /// 当前的编辑器程序集
         /// </summary>
-        private static HashSet<string> EditorAssemblies = new HashSet<string>() { "Assembly-CSharp-Editor", "UnityEditor" };
+        private static HashSet<string> EditorAssemblies = new HashSet<string>() {
+            "Assembly-CSharp-Editor", "HTFramework.Editor", "HTFramework.AI.Editor", "HTFramework.ILHotfix.Editor", "HTFramework.GC.Editor",
+            "UnityEditor", "UnityEditorInternal" };
 
         /// <summary>
         /// 从当前程序域的热更新程序集中获取所有类型

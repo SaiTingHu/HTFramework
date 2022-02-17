@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 通用表格绘制器
     /// </summary>
-    internal sealed class GenericTableWindow : HTFEditorWindow
+    public sealed class GenericTableWindow : HTFEditorWindow
     {
         /// <summary>
         /// 打开通用表格绘制器
