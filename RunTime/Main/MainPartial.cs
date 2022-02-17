@@ -7,6 +7,7 @@ using System.Threading;
 using UnityEngine;
 using UObject = UnityEngine.Object;
 
+[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
 [assembly: InternalsVisibleTo("HTFramework.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.RunTime")]

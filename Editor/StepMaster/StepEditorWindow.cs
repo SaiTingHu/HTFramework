@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 步骤编辑器窗口
     /// </summary>
-    internal sealed class StepEditorWindow : HTFEditorWindow, ILocalizeWindow
+    public sealed class StepEditorWindow : HTFEditorWindow, ILocalizeWindow
     {
         private static HTFAction<StepContent> AddStepContentHandler;
         private static HTFFunc<string, string> NewHelperScriptHandler;

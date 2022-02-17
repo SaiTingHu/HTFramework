@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 任务编辑器窗口
     /// </summary>
-    internal sealed class TaskEditorWindow : HTFEditorWindow, ILocalizeWindow
+    public sealed class TaskEditorWindow : HTFEditorWindow, ILocalizeWindow
     {
         private static HTFFunc<string, string> NewTaskPointScriptHandler;
 
