@@ -45,7 +45,7 @@ namespace HT.Framework
         /// <summary>
         /// 管理员密码
         /// </summary>
-        protected virtual string Password => "1+A/HydBW5UMiL9xsRLN2A==";
+        protected virtual string Password => "I9JenlkXm6L7dBSt/dS7Pg==";
         /// <summary>
         /// 管理员模式颜色
         /// </summary>
