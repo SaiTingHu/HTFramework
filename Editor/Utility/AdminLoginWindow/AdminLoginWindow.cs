@@ -14,7 +14,7 @@ namespace HT.Framework
             window._parent = parent;
             window._checkAction = checkAction;
             window.titleContent.text = "Admin Login";
-            window.position = new Rect(parent.Cast<HTFEditorWindow>().position.center - new Vector2(125, 0), new Vector2(250, 50));
+            window.position = new Rect(parent.Cast<HTFEditorWindow>().position.center - new Vector2(125, 25), new Vector2(250, 50));
             window.minSize = new Vector2(250, 50);
             window.maxSize = new Vector2(250, 50);
             window.Show();

@@ -16,6 +16,10 @@ namespace HT.Framework
         /// </summary>
         private List<T> _datas;
         /// <summary>
+        /// 当前选择的表格数据
+        /// </summary>
+        private List<T> _selectionDatas;
+        /// <summary>
         /// 根元素
         /// </summary>
         private TableViewItem<T> _rootItem;
@@ -28,9 +32,22 @@ namespace HT.Framework
         /// </summary>
         private List<TreeViewItem> _drawItems;
         /// <summary>
+        /// 搜索控件
+        /// </summary>
+        private SearchField _searchField;
+        /// <summary>
         /// 元素ID标记
         /// </summary>
         private int _idSign = 0;
+
+        /// <summary>
+        /// 当选择项改变
+        /// </summary>
+        public event HTFAction<List<T>> OnSelectionChanged;
+        /// <summary>
+        /// 搜索数据时的方法
+        /// </summary>
+        public HTFFunc<T, string, bool> OnSearch;
 
         /// <summary>
         /// 行高度
@@ -50,6 +67,14 @@ namespace HT.Framework
         /// 是否启用上下文右键点击
         /// </summary>
         public bool IsEnableContextClick { get; set; } = true;
+        /// <summary>
+        /// 是否允许多选
+        /// </summary>
+        public bool IsCanMultiSelect { get; set; } = true;
+        /// <summary>
+        /// 是否启用搜索框
+        /// </summary>
+        public bool IsEnableSearch { get; set; } = false;
 
         /// <summary>
         /// 表格视图
@@ -67,6 +92,7 @@ namespace HT.Framework
             multiColumnHeader.visibleColumnsChanged += OnVisibleColumnsChanged;
 
             _datas = datas;
+            _selectionDatas = new List<T>();
             _rootItem = new TableViewItem<T>(-1, -1, null);
             _items = new List<TableViewItem<T>>();
             for (var i = 0; i < _datas.Count; i++)
@@ -75,6 +101,7 @@ namespace HT.Framework
                 _idSign += 1;
             }
             _drawItems = new List<TreeViewItem>();
+            _searchField = new SearchField();
 
             Reload();
         }
@@ -91,9 +118,22 @@ namespace HT.Framework
         protected override IList<TreeViewItem> BuildRows(TreeViewItem root)
         {
             _drawItems.Clear();
-            for (int i = 0; i < _items.Count; i++)
+            if (hasSearch && OnSearch != null)
             {
-                _drawItems.Add(_items[i]);
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    if (OnSearch(_items[i].Data, searchString))
+                    {
+                        _drawItems.Add(_items[i]);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    _drawItems.Add(_items[i]);
+                }
             }
             return _drawItems;
         }
@@ -121,11 +161,11 @@ namespace HT.Framework
             if (!IsEnableContextClick)
                 return;
 
-            List<TableViewItem<T>> selectedItems = new List<TableViewItem<T>>();
+            List<T> selectedItems = new List<T>();
             foreach (var itemID in GetSelection())
             {
                 TableViewItem<T> item = _items.Find((it) => { return it.id == itemID; });
-                if (item != null) selectedItems.Add(item);
+                if (item != null) selectedItems.Add(item.Data);
             }
 
             GenericMenu menu = new GenericMenu();
@@ -146,6 +186,51 @@ namespace HT.Framework
                 ClearData();
             });
             menu.ShowAsContext();
+        }
+        /// <summary>
+        /// 当选择项改变
+        /// </summary>
+        protected override void SelectionChanged(IList<int> selectedIds)
+        {
+            base.SelectionChanged(selectedIds);
+
+            _selectionDatas.Clear();
+            foreach (var itemID in selectedIds)
+            {
+                TableViewItem<T> item = _items.Find((it) => { return it.id == itemID; });
+                if (item != null) _selectionDatas.Add(item.Data);
+            }
+
+            OnSelectionChanged?.Invoke(_selectionDatas);
+        }
+        /// <summary>
+        /// 是否允许多选
+        /// </summary>
+        protected override bool CanMultiSelect(TreeViewItem item)
+        {
+            return IsCanMultiSelect;
+        }
+        /// <summary>
+        /// 绘制表格视图
+        /// </summary>
+        /// <param name="rect">绘制区域</param>
+        public override void OnGUI(Rect rect)
+        {
+            if (IsEnableSearch)
+            {
+                Rect sub = new Rect(rect.x, rect.y, 60, 16);
+                EditorGUI.LabelField(sub, "Search: ");
+                sub.Set(rect.x + 60, rect.y, rect.width - 60, 18);
+                searchString = _searchField.OnGUI(sub, searchString);
+
+                rect.y += 18;
+                rect.height -= 18;
+                base.OnGUI(rect);
+            }
+            else
+            {
+                base.OnGUI(rect);
+            }
         }
 
         /// <summary>
@@ -211,6 +296,24 @@ namespace HT.Framework
             Reload();
         }
         /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <param name="datas">数据</param>
+        public void AddDatas(List<T> datas)
+        {
+            for (int i = 0; i < datas.Count; i++)
+            {
+                T data = datas[i];
+                if (_datas.Contains(data))
+                    continue;
+
+                _datas.Add(data);
+                _items.Add(new TableViewItem<T>(_idSign, 0, data));
+                _idSign += 1;
+            }
+            Reload();
+        }
+        /// <summary>
         /// 删除数据
         /// </summary>
         /// <param name="data">数据</param>
@@ -230,13 +333,21 @@ namespace HT.Framework
         /// <summary>
         /// 删除数据
         /// </summary>
-        /// <param name="items">数据元素</param>
-        public void DeleteDatas(List<TableViewItem<T>> items)
+        /// <param name="datas">数据</param>
+        public void DeleteDatas(List<T> datas)
         {
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < datas.Count; i++)
             {
-                _datas.Remove(items[i].Data);
-                _items.Remove(items[i]);
+                T data = datas[i];
+                if (!_datas.Contains(data))
+                    continue;
+
+                _datas.Remove(data);
+                TableViewItem<T> item = _items.Find((t) => { return t.Data == data; });
+                if (item != null)
+                {
+                    _items.Remove(item);
+                }
             }
             Reload();
         }
