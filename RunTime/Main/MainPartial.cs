@@ -1035,8 +1035,12 @@ namespace HT.Framework
         /// 是否启用错误日志打印
         /// </summary>
         public bool IsEnabledLogError = true;
+        /// <summary>
+        /// 是否允许将场景添加到发布界面
+        /// </summary>
+        public bool IsAllowSceneAddBuild = false;
         #endregion
-        
+
         #region Utility
         private List<HTFAction> _actionQueue = new List<HTFAction>();
         private List<HTFAction> _actionExecuteQueue = new List<HTFAction>();

@@ -519,6 +519,12 @@ namespace HT.Framework
             PropertyField(nameof(Main.IsEnabledLogInfo), "Enabled Log Info");
             PropertyField(nameof(Main.IsEnabledLogWarning), "Enabled Log Warning");
             PropertyField(nameof(Main.IsEnabledLogError), "Enabled Log Error");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Build", EditorStyles.boldLabel);
+            GUILayout.EndHorizontal();
+
+            PropertyField(nameof(Main.IsAllowSceneAddBuild), "Allow Scene Add Build");
         }
         #endregion
     }

@@ -78,6 +78,7 @@ namespace HT.Framework
         private MethodInfo _updateMethod;
         private MethodInfo _calculateSelectedBuildTarget;
         private PropertyInfo _activeBuildTargetGroup;
+        private bool _isCanAddScene = false;
         private bool _isCanBuild = false;
         private bool _isShowBuildABButton = false;
 
@@ -106,10 +107,13 @@ namespace HT.Framework
         {
             base.OnBodyGUI();
 
-            if (EditorBuildSettings.scenes != null && EditorBuildSettings.scenes.Length > 0)
+            if (!_isCanAddScene)
             {
-                EditorBuildSettings.scenes = null;
-                Log.Warning("只允许构建包含框架主体的场景！如有多场景切换的需求，请将其他场景打入AB包！");
+                if (EditorBuildSettings.scenes != null && EditorBuildSettings.scenes.Length > 0)
+                {
+                    EditorBuildSettings.scenes = null;
+                    Log.Warning("只允许构建包含框架主体的场景！如有多场景切换的需求，请将其他场景打入AB包！");
+                }
             }
 
             if (!_isCanBuild)
@@ -193,28 +197,30 @@ namespace HT.Framework
         }
         private void Check()
         {
+            _isCanAddScene = false;
+            _isCanBuild = false;
+
+            Main main = FindObjectOfType<Main>();
+            if (main == null)
+            {
+                Log.Error("当前无法构建项目：请先打开包含框架主体的场景！");
+                return;
+            }
+
+            _isCanAddScene = main.IsAllowSceneAddBuild;
+
             for (int i = 0; i < CheckBuildPreconditions.Count; i++)
             {
                 if (!CheckBuildPreconditions[i]())
                 {
-                    _isCanBuild = false;
                     Log.Error("当前无法构建项目：未满足允许项目构建的前置条件！");
                     return;
                 }
             }
 
-            Main main = FindObjectOfType<Main>();
-            if (main == null)
-            {
-                _isCanBuild = false;
-                Log.Error("当前无法构建项目：请先打开包含框架主体的场景！");
-                return;
-            }
-
             ProcedureManager procedure = main.GetComponentByChild<ProcedureManager>("Procedure");
             if (procedure != null && procedure.ActivatedProcedures.Count <= 0)
             {
-                _isCanBuild = false;
                 Log.Error("当前无法构建项目：请添加至少一个流程！");
                 return;
             }
@@ -226,7 +232,6 @@ namespace HT.Framework
                 {
                     if (entity.DefineEntityTargets[i] == null)
                     {
-                        _isCanBuild = false;
                         Log.Error("当前无法构建项目：实体管理器丢失了至少一个预定义对象！");
                         return;
                     }
@@ -240,7 +245,6 @@ namespace HT.Framework
                 {
                     if (ui.DefineUIEntitys[i] == null)
                     {
-                        _isCanBuild = false;
                         Log.Error("当前无法构建项目：UI管理器丢失了至少一个预定义对象！");
                         return;
                     }

@@ -319,7 +319,16 @@ namespace HT.Framework
 
             if (LoadMode == ResourceLoadMode.Resource)
             {
-                throw new HTFrameworkException(HTFrameworkModule.Resource, "加载场景失败：场景加载不允许使用Resource模式！");
+                if (Main.Current.IsAllowSceneAddBuild)
+                {
+                    Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
+                    Scenes.Add(info.ResourcePath, scene);
+                    yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, "加载场景失败：若要在Resource模式下加载其他场景，请在Main模块的检视面板勾选 Allow Scene Add Build！");
+                }
             }
             else
             {
@@ -425,15 +434,8 @@ namespace HT.Framework
                 yield break;
             }
 
-            if (LoadMode == ResourceLoadMode.Resource)
-            {
-                yield return null;
-            }
-            else
-            {
-                Scenes.Remove(info.ResourcePath);
-                yield return SceneManager.UnloadSceneAsync(info.ResourcePath);
-            }
+            Scenes.Remove(info.ResourcePath);
+            yield return SceneManager.UnloadSceneAsync(info.ResourcePath);
         }
         /// <summary>
         /// 卸载所有场景（异步）
@@ -441,18 +443,11 @@ namespace HT.Framework
         /// <returns>卸载协程迭代器</returns>
         public IEnumerator UnLoadAllScene()
         {
-            if (LoadMode == ResourceLoadMode.Resource)
+            foreach (var scene in Scenes)
             {
-                yield return null;
+                yield return SceneManager.UnloadSceneAsync(scene.Key);
             }
-            else
-            {
-                foreach (var scene in Scenes)
-                {
-                    yield return SceneManager.UnloadSceneAsync(scene.Key);
-                }
-                Scenes.Clear();
-            }
+            Scenes.Clear();
         }
         /// <summary>
         /// 清理内存，释放空闲内存（异步）

@@ -447,6 +447,7 @@ MonoBehaviour:
   IsEnabledLogInfo: 1
   IsEnabledLogWarning: 1
   IsEnabledLogError: 1
+  IsAllowSceneAddBuild: 0
 --- !u!1 &1704541190228656
 GameObject:
   m_ObjectHideFlags: 0
