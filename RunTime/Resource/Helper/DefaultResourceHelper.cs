@@ -149,13 +149,13 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">资源类型</typeparam>
         /// <param name="info">资源信息标记</param>
-        /// <param name="loadingAction">加载中事件</param>
-        /// <param name="loadDoneAction">加载完成事件</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
         /// <param name="isPrefab">是否是加载预制体</param>
         /// <param name="parent">预制体加载完成后的父级</param>
         /// <param name="isUI">是否是加载UI</param>
         /// <returns>加载协程迭代器</returns>
-        public IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object
+        public IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object
         {
             float beginTime = Time.realtimeSinceStartup;
 
@@ -180,9 +180,10 @@ namespace HT.Framework
                 ResourceRequest request = Resources.LoadAsync<T>(info.ResourcePath);
                 while (!request.isDone)
                 {
-                    loadingAction?.Invoke(request.progress);
+                    onLoading?.Invoke(request.progress);
                     yield return null;
                 }
+                onLoading?.Invoke(1);
                 asset = request.asset;
                 if (asset)
                 {
@@ -193,7 +194,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：Resources文件夹中不存在资源 " + info.ResourcePath + "！");
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：Resources文件夹中不存在资源 {0}！", info.ResourcePath));
                 }
             }
             else
@@ -201,7 +202,7 @@ namespace HT.Framework
 #if UNITY_EDITOR
                 if (IsEditorMode)
                 {
-                    loadingAction?.Invoke(1);
+                    onLoading?.Invoke(1);
                     yield return null;
 
                     asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
@@ -214,12 +215,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：路径中不存在资源 " + info.AssetPath + "！");
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：路径中不存在资源 {0}！", info.AssetPath));
                     }
                 }
                 else
                 {
-                    yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
+                    yield return LoadAssetBundleAsync(info.AssetBundleName, onLoading);
 
                     if (AssetBundles.ContainsKey(info.AssetBundleName))
                     {
@@ -233,12 +234,12 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
                         }
                     }
                 }
 #else
-                yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
+                yield return LoadAssetBundleAsync(info.AssetBundleName, onLoading);
 
                 if (AssetBundles.ContainsKey(info.AssetBundleName))
                 {
@@ -252,7 +253,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Resource, "加载资源失败：AB包 " + info.AssetBundleName + " 中不存在资源 " + info.AssetPath + " ！");
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
                     }
                 }
 #endif
@@ -275,11 +276,11 @@ namespace HT.Framework
                     asset.Cast<DataSetBase>().Fill(dataSet.Data);
                 }
 
-                loadDoneAction?.Invoke(asset as T);
+                onLoadDone?.Invoke(asset as T);
             }
             else
             {
-                loadDoneAction?.Invoke(null);
+                onLoadDone?.Invoke(null);
             }
             asset = null;
 
@@ -290,10 +291,10 @@ namespace HT.Framework
         /// 加载场景（异步）
         /// </summary>
         /// <param name="info">资源信息标记</param>
-        /// <param name="loadingAction">加载中事件</param>
-        /// <param name="loadDoneAction">加载完成事件</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
         /// <returns>加载协程迭代器</returns>
-        public IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> loadingAction, HTFAction loadDoneAction)
+        public IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> onLoading, HTFAction onLoadDone)
         {
             if (Scenes.ContainsKey(info.ResourcePath))
             {
@@ -323,7 +324,13 @@ namespace HT.Framework
                 {
                     Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
                     Scenes.Add(info.ResourcePath, scene);
-                    yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                    AsyncOperation ao = SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                    while (!ao.isDone)
+                    {
+                        onLoading?.Invoke(ao.progress);
+                        yield return null;
+                    }
+                    onLoading?.Invoke(1);
                 }
                 else
                 {
@@ -342,20 +349,38 @@ namespace HT.Framework
                     };
                     Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
                     Scenes.Add(info.ResourcePath, scene);
-                    yield return EditorSceneManager.LoadSceneAsyncInPlayMode(info.AssetPath, parameters);
+                    AsyncOperation ao = EditorSceneManager.LoadSceneAsyncInPlayMode(info.AssetPath, parameters);
+                    while (!ao.isDone)
+                    {
+                        onLoading?.Invoke(ao.progress);
+                        yield return null;
+                    }
+                    onLoading?.Invoke(1);
                 }
                 else
                 {
                     Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
                     Scenes.Add(info.ResourcePath, scene);
-                    yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
-                    yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                    yield return LoadAssetBundleAsync(info.AssetBundleName, onLoading);
+                    AsyncOperation ao = SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                    while (!ao.isDone)
+                    {
+                        onLoading?.Invoke(ao.progress);
+                        yield return null;
+                    }
+                    onLoading?.Invoke(1);
                 }
 #else
                 Scene scene = SceneManager.GetSceneByPath(info.AssetPath);
                 Scenes.Add(info.ResourcePath, scene);
-                yield return LoadAssetBundleAsync(info.AssetBundleName, loadingAction);
-                yield return SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                yield return LoadAssetBundleAsync(info.AssetBundleName, onLoading);
+                AsyncOperation ao = SceneManager.LoadSceneAsync(info.ResourcePath, LoadSceneMode.Additive);
+                while (!ao.isDone)
+                {
+                    onLoading?.Invoke(ao.progress);
+                    yield return null;
+                }
+                onLoading?.Invoke(1);
 #endif
             }
 
@@ -367,7 +392,7 @@ namespace HT.Framework
                 , waitTime - beginTime
                 , endTime - waitTime));
 
-            loadDoneAction?.Invoke();
+            onLoadDone?.Invoke();
 
             //本线路加载资源结束
             _isLoading = false;
@@ -607,10 +632,10 @@ namespace HT.Framework
         /// 异步加载AB包（提供进度回调）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
-        /// <param name="loadingAction">加载中事件</param>
+        /// <param name="onLoading">加载中事件</param>
         /// <param name="isManifest">是否是加载清单</param>
         /// <returns>协程迭代器</returns>
-        private IEnumerator LoadAssetBundleAsync(string assetBundleName, HTFAction<float> loadingAction, bool isManifest = false)
+        private IEnumerator LoadAssetBundleAsync(string assetBundleName, HTFAction<float> onLoading, bool isManifest = false)
         {
             if (!AssetBundles.ContainsKey(assetBundleName))
             {
@@ -621,7 +646,7 @@ namespace HT.Framework
                     request.SendWebRequest();
                     while (!request.isDone)
                     {
-                        loadingAction?.Invoke(request.downloadProgress);
+                        onLoading?.Invoke(request.downloadProgress);
                         yield return null;
                     }
                     if (!request.isNetworkError && !request.isHttpError)
@@ -642,6 +667,7 @@ namespace HT.Framework
                     }
                 }
             }
+            onLoading?.Invoke(1);
             yield return null;
         }
         /// <summary>

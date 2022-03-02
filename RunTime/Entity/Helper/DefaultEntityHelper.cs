@@ -163,10 +163,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">实体逻辑类</param>
         /// <param name="entityName">实体指定名称（为 <None> 时默认使用实体逻辑类名称）</param>
-        /// <param name="loadingAction">创建实体过程进度回调</param>
-        /// <param name="loadDoneAction">创建实体完成回调</param>
+        /// <param name="onLoading">创建实体过程进度回调</param>
+        /// <param name="onLoadDone">创建实体完成回调</param>
         /// <returns>加载协程</returns>
-        public Coroutine CreateEntity(Type type, string entityName, HTFAction<float> loadingAction, HTFAction<EntityLogicBase> loadDoneAction)
+        public Coroutine CreateEntity(Type type, string entityName, HTFAction<float> onLoading, HTFAction<EntityLogicBase> onLoadDone)
         {
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
@@ -177,8 +177,8 @@ namespace HT.Framework
                     {
                         EntityLogicBase entityLogic = GenerateEntity(type, ObjectPools[type].Dequeue(), entityName == "<None>" ? type.Name : entityName);
 
-                        loadingAction?.Invoke(1);
-                        loadDoneAction?.Invoke(entityLogic);
+                        onLoading?.Invoke(1);
+                        onLoadDone?.Invoke(entityLogic);
                         return null;
                     }
                     else
@@ -187,17 +187,17 @@ namespace HT.Framework
                         {
                             EntityLogicBase entityLogic = GenerateEntity(type, Main.Clone(_defineEntities[type.FullName], _entitiesGroup[type].transform), entityName == "<None>" ? type.Name : entityName);
 
-                            loadingAction?.Invoke(1);
-                            loadDoneAction?.Invoke(entityLogic);
+                            onLoading?.Invoke(1);
+                            onLoadDone?.Invoke(entityLogic);
                             return null;
                         }
                         else
                         {
-                            return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
+                            return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, onLoading, (obj) =>
                             {
                                 EntityLogicBase entityLogic = GenerateEntity(type, obj, entityName == "<None>" ? type.Name : entityName);
 
-                                loadDoneAction?.Invoke(entityLogic);
+                                onLoadDone?.Invoke(entityLogic);
                             });
                         }
                     }

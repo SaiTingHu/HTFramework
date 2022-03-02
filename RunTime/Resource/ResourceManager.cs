@@ -62,48 +62,48 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">资源类型</typeparam>
         /// <param name="info">资源配置信息</param>
-        /// <param name="loadingAction">资源加载中回调</param>
-        /// <param name="loadDoneAction">资源加载完成回调</param>
+        /// <param name="onLoading">资源加载中回调</param>
+        /// <param name="onLoadDone">资源加载完成回调</param>
         /// <returns>加载协程</returns>
-        public Coroutine LoadAsset<T>(AssetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : Object
+        public Coroutine LoadAsset<T>(AssetInfo info, HTFAction<float> onLoading = null, HTFAction<T> onLoadDone = null) where T : Object
         {
-            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, loadingAction, loadDoneAction, false, null, false));
+            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, onLoading, onLoadDone, false, null, false));
         }
         /// <summary>
         /// 加载数据集（异步）
         /// </summary>
         /// <typeparam name="T">数据集类型</typeparam>
         /// <param name="info">数据集配置信息</param>
-        /// <param name="loadingAction">数据集加载中回调</param>
-        /// <param name="loadDoneAction">数据集加载完成回调</param>
+        /// <param name="onLoading">数据集加载中回调</param>
+        /// <param name="onLoadDone">数据集加载完成回调</param>
         /// <returns>加载协程</returns>
-        public Coroutine LoadDataSet<T>(DataSetInfo info, HTFAction<float> loadingAction = null, HTFAction<T> loadDoneAction = null) where T : DataSetBase
+        public Coroutine LoadDataSet<T>(DataSetInfo info, HTFAction<float> onLoading = null, HTFAction<T> onLoadDone = null) where T : DataSetBase
         {
-            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, loadingAction, loadDoneAction, false, null, false));
+            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, onLoading, onLoadDone, false, null, false));
         }
         /// <summary>
         /// 加载预制体（异步）
         /// </summary>
         /// <param name="info">预制体配置信息</param>
         /// <param name="parent">预制体的预设父物体</param>
-        /// <param name="loadingAction">预制体加载中回调</param>
-        /// <param name="loadDoneAction">预制体加载完成回调</param>
+        /// <param name="onLoading">预制体加载中回调</param>
+        /// <param name="onLoadDone">预制体加载完成回调</param>
         /// <param name="isUI">预制体是否是UI</param>
         /// <returns>加载协程</returns>
-        public Coroutine LoadPrefab(PrefabInfo info, Transform parent, HTFAction<float> loadingAction = null, HTFAction<GameObject> loadDoneAction = null, bool isUI = false)
+        public Coroutine LoadPrefab(PrefabInfo info, Transform parent, HTFAction<float> onLoading = null, HTFAction<GameObject> onLoadDone = null, bool isUI = false)
         {
-            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, loadingAction, loadDoneAction, true, parent, isUI));
+            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(info, onLoading, onLoadDone, true, parent, isUI));
         }
         /// <summary>
         /// 加载场景（异步）
         /// </summary>
         /// <param name="info">场景配置信息</param>
-        /// <param name="loadingAction">场景加载中回调</param>
-        /// <param name="loadDoneAction">场景加载完成回调</param>
+        /// <param name="onLoading">场景加载中回调</param>
+        /// <param name="onLoadDone">场景加载完成回调</param>
         /// <returns>加载协程</returns>
-        public Coroutine LoadScene(SceneInfo info, HTFAction<float> loadingAction = null, HTFAction loadDoneAction = null)
+        public Coroutine LoadScene(SceneInfo info, HTFAction<float> onLoading = null, HTFAction onLoadDone = null)
         {
-            return Main.Current.StartCoroutine(_helper.LoadSceneAsync(info, loadingAction, loadDoneAction));
+            return Main.Current.StartCoroutine(_helper.LoadSceneAsync(info, onLoading, onLoadDone));
         }
 
         /// <summary>

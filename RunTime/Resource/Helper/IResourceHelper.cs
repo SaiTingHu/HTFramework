@@ -66,21 +66,21 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">资源类型</typeparam>
         /// <param name="info">资源信息标记</param>
-        /// <param name="loadingAction">加载中事件</param>
-        /// <param name="loadDoneAction">加载完成事件</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
         /// <param name="isPrefab">是否是加载预制体</param>
         /// <param name="parent">预制体加载完成后的父级</param>
         /// <param name="isUI">是否是加载UI</param>
         /// <returns>加载协程迭代器</returns>
-        IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> loadingAction, HTFAction<T> loadDoneAction, bool isPrefab, Transform parent, bool isUI) where T : Object;
+        IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : Object;
         /// <summary>
         /// 加载场景（异步）
         /// </summary>
         /// <param name="info">资源信息标记</param>
-        /// <param name="loadingAction">加载中事件</param>
-        /// <param name="loadDoneAction">加载完成事件</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
         /// <returns>加载协程迭代器</returns>
-        IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> loadingAction, HTFAction loadDoneAction);
+        IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> onLoading, HTFAction onLoadDone);
         /// <summary>
         /// 卸载资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
