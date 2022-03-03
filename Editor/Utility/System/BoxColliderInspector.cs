@@ -26,15 +26,6 @@ namespace HT.Framework
                 }
             }
         }
-        private void OnDestroy()
-        {
-            _originalOnEnable = null;
-            if (_originalEditor != null)
-            {
-                DestroyImmediate(_originalEditor);
-                _originalEditor = null;
-            }
-        }
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
@@ -47,6 +38,17 @@ namespace HT.Framework
                 _originalOnEnable.Invoke(_originalEditor, null);
             }
             _isShowBounds = EditorPrefs.GetBool(EditorPrefsTable.Collider_ShowBounds, false);
+        }
+        protected override void OnDefaultDisable()
+        {
+            base.OnDefaultDisable();
+
+            _originalOnEnable = null;
+            if (_originalEditor != null)
+            {
+                DestroyImmediate(_originalEditor);
+                _originalEditor = null;
+            }
         }
         protected override void OnInspectorDefaultGUI()
         {

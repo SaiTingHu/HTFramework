@@ -73,7 +73,6 @@ namespace HT.Framework
         }
 
         private BuildPlayerWindow _buildPlayerWindow;
-        private MethodInfo _onDisableMethod;
         private MethodInfo _onGUIMethod;
         private MethodInfo _updateMethod;
         private MethodInfo _calculateSelectedBuildTarget;
@@ -88,9 +87,7 @@ namespace HT.Framework
         {
             base.OnEnable();
 
-            BuildPlayerWindow[] buildPlayerWindows = Resources.FindObjectsOfTypeAll<BuildPlayerWindow>();
-            _buildPlayerWindow = buildPlayerWindows.Length > 0 ? buildPlayerWindows[0] : CreateInstance<BuildPlayerWindow>();
-            _onDisableMethod = _buildPlayerWindow.GetType().GetMethod("OnDisable", BindingFlags.Instance | BindingFlags.NonPublic);
+            _buildPlayerWindow = CreateInstance<BuildPlayerWindow>();
             _onGUIMethod = _buildPlayerWindow.GetType().GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic);
             _updateMethod = _buildPlayerWindow.GetType().GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic);
             _calculateSelectedBuildTarget = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.EditorUserBuildSettingsUtils").GetMethod("CalculateSelectedBuildTarget", BindingFlags.Static | BindingFlags.Public);
@@ -101,7 +98,15 @@ namespace HT.Framework
         }
         private void OnDisable()
         {
-            _onDisableMethod.Invoke(_buildPlayerWindow, null);
+            _onGUIMethod = null;
+            _updateMethod = null;
+            _calculateSelectedBuildTarget = null;
+            _activeBuildTargetGroup = null;
+            if (_buildPlayerWindow != null)
+            {
+                DestroyImmediate(_buildPlayerWindow);
+                _buildPlayerWindow = null;
+            }
         }
         protected override void OnBodyGUI()
         {
