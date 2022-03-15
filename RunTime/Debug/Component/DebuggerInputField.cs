@@ -15,31 +15,14 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.interactable = GUILayout.Toggle(_target.interactable, "Interactable");
-            _target.readOnly = GUILayout.Toggle(_target.readOnly, "Read Only");
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Text: ");
-            _target.text = GUILayout.TextArea(_target.text);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Character Limit: ");
-            _target.characterLimit = IntField(_target.characterLimit);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Content Type: ");
-            GUILayout.EndHorizontal();
-
-            _target.contentType = (InputField.ContentType)EnumField(_target.contentType);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Line Type: ");
-            GUILayout.EndHorizontal();
-
-            _target.lineType = (InputField.LineType)EnumField(_target.lineType);
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.interactable = BoolField("Interactable", _target.interactable);
+            _target.readOnly = BoolField("Read Only", _target.readOnly);
+            _target.text = StringField("Text", _target.text);
+            _target.characterLimit = IntField("Character Limit", _target.characterLimit);
+            _target.contentType = (InputField.ContentType)EnumField("Content Type", _target.contentType);
+            _target.lineType = (InputField.LineType)EnumField("Line Type", _target.lineType);
         }
     }
 }

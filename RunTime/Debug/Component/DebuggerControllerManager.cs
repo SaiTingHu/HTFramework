@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace HT.Framework
 {
     [CustomDebugger(typeof(ControllerManager))]
@@ -13,37 +11,13 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            _target.IsEnableBounds = GUILayout.Toggle(_target.IsEnableBounds, "Is Enable Bounds");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.EnablePositionControl = GUILayout.Toggle(_target.EnablePositionControl, "Enable Position Control");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.EnableRotationControl = GUILayout.Toggle(_target.EnableRotationControl, "Enable Rotation Control");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.IsCanControlOnUGUI = GUILayout.Toggle(_target.IsCanControlOnUGUI, "Is Can Control On UGUI");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.EnableHighlightingEffect = GUILayout.Toggle(_target.EnableHighlightingEffect, "Enable Highlighting Effect");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.EnableMouseRay = GUILayout.Toggle(_target.EnableMouseRay, "Enable MouseRay");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Control Mode: ", GUILayout.Width(100));
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.Mode = (ControlMode)EnumField(_target.Mode);
-            GUILayout.EndHorizontal();
+            _target.IsEnableBounds = BoolField("Is Enable Bounds", _target.IsEnableBounds);
+            _target.EnablePositionControl = BoolField("Enable Position Control", _target.EnablePositionControl);
+            _target.EnableRotationControl = BoolField("Enable Rotation Control", _target.EnableRotationControl);
+            _target.IsCanControlOnUGUI = BoolField("Is Can Control On UGUI", _target.IsCanControlOnUGUI);
+            _target.EnableHighlightingEffect = BoolField("Enable Highlighting Effect", _target.EnableHighlightingEffect);
+            _target.EnableMouseRay = BoolField("Enable MouseRay", _target.EnableMouseRay);
+            _target.Mode = (ControlMode)EnumField("Control Mode", _target.Mode);
         }
     }
 }

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace HT.Framework
 {
     [CustomDebugger(typeof(WebRequestManager))]
@@ -13,9 +11,7 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            _target.IsOfflineState = GUILayout.Toggle(_target.IsOfflineState, "Is Offline State");
-            GUILayout.EndHorizontal();
+            _target.IsOfflineState = BoolField("Is Offline State", _target.IsOfflineState);
         }
     }
 }

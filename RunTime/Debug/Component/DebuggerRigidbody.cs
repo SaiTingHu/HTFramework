@@ -13,13 +13,12 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            _target.useGravity = GUILayout.Toggle(_target.useGravity, "Use Gravity");
-            _target.isKinematic = GUILayout.Toggle(_target.isKinematic, "Is Kinematic");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Velocity:", GUILayout.Width(60));
-            _target.velocity = Vector3Field(_target.velocity);
-            GUILayout.EndHorizontal();
+            _target.mass = FloatField("Mass", _target.mass);
+            _target.drag = FloatField("Drag", _target.drag);
+            _target.angularDrag = FloatField("Angular Drag", _target.angularDrag);
+            _target.useGravity = BoolField("Use Gravity", _target.useGravity);
+            _target.isKinematic = BoolField("Is Kinematic", _target.isKinematic);
+            _target.velocity = Vector3Field("Velocity", _target.velocity);
         }
     }
 }

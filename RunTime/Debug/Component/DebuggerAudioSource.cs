@@ -14,11 +14,21 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
+
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            ObjectFieldReadOnly("Clip", _target.clip);
+            _target.mute = BoolField("Mute", _target.mute);
+            _target.playOnAwake = BoolField("Play On Awake", _target.playOnAwake);
+            _target.loop = BoolField("Loop", _target.loop);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Clip: ");
-            GUILayout.Label(_target.clip ? _target.clip.name : "None");
+            GUILayout.Label("Volume", GUILayout.Width(120));
+            _target.volume = GUILayout.HorizontalSlider(_target.volume, 0, 1);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("3D Blend", GUILayout.Width(120));
+            _target.spatialBlend = GUILayout.HorizontalSlider(_target.spatialBlend, 0, 1);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -38,23 +48,6 @@ namespace HT.Framework
             {
                 _target.Stop();
             }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.mute = GUILayout.Toggle(_target.mute, "Mute");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.loop = GUILayout.Toggle(_target.loop, "Loop");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Volume: ");
-            _target.volume = FloatField(_target.volume);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.volume = GUILayout.HorizontalSlider(_target.volume, 0, 1);
             GUILayout.EndHorizontal();
         }
     }

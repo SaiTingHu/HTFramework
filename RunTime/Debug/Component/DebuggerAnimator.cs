@@ -14,12 +14,14 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Speed: ");
-            _target.speed = FloatField(_target.speed);
-            GUILayout.EndHorizontal();
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            ObjectFieldReadOnly("Controller", _target.runtimeAnimatorController);
+            ObjectFieldReadOnly("Avatar", _target.avatar);
+            _target.applyRootMotion = BoolField("Apply Root Motion", _target.applyRootMotion);
+            _target.updateMode = (AnimatorUpdateMode)EnumField("Update Mode", _target.updateMode);
+            _target.cullingMode = (AnimatorCullingMode)EnumField("Culling Mode", _target.cullingMode);
+            _target.speed = FloatField("Speed", _target.speed);
         }
     }
 }

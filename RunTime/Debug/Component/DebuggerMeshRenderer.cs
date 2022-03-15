@@ -15,16 +15,11 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.receiveShadows = GUILayout.Toggle(_target.receiveShadows, "Receive Shadows");
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Cast Shadows: ");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.shadowCastingMode = (ShadowCastingMode)EnumField(_target.shadowCastingMode);
-            GUILayout.EndHorizontal();
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.receiveShadows = BoolField("Receive Shadows", _target.receiveShadows);
+            _target.shadowCastingMode = (ShadowCastingMode)EnumField("Cast Shadows", _target.shadowCastingMode);
+            MaterialsFieldReadOnly("Materials", _target.sharedMaterials);
         }
     }
 }

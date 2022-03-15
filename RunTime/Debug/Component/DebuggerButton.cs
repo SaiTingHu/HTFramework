@@ -24,8 +24,9 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.interactable = GUILayout.Toggle(_target.interactable, "Interactable");
+
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.interactable = BoolField("Interactable", _target.interactable);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("OnClick Event Count: " + _onClickEventCount);

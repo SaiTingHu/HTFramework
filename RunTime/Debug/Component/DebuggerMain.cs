@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Main))]
@@ -13,21 +11,10 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            _target.Pause = GUILayout.Toggle(_target.Pause, "Pause");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.IsEnabledLogInfo = GUILayout.Toggle(_target.IsEnabledLogInfo, "Enabled LogInfo");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.IsEnabledLogWarning = GUILayout.Toggle(_target.IsEnabledLogWarning, "Enabled LogWarning");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.IsEnabledLogError = GUILayout.Toggle(_target.IsEnabledLogError, "Enabled LogError");
-            GUILayout.EndHorizontal();
+            _target.Pause = BoolField("Pause", _target.Pause);
+            _target.IsEnabledLogInfo = BoolField("Enabled LogInfo", _target.IsEnabledLogInfo);
+            _target.IsEnabledLogWarning = BoolField("Enabled LogWarning", _target.IsEnabledLogWarning);
+            _target.IsEnabledLogError = BoolField("Enabled LogError", _target.IsEnabledLogError);
         }
     }
 }

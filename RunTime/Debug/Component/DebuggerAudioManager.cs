@@ -13,32 +13,30 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            _target.Mute = GUILayout.Toggle(_target.Mute, "Mute");
-            GUILayout.EndHorizontal();
+            _target.Mute = BoolField("Mute", _target.Mute);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Background Volume: ", GUILayout.Width(180));
+            GUILayout.Label("Background Volume", GUILayout.Width(120));
             _target.BackgroundVolume = GUILayout.HorizontalSlider(_target.BackgroundVolume, 0f, 1f);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Single Volume: ", GUILayout.Width(180));
+            GUILayout.Label("Single Volume", GUILayout.Width(120));
             _target.SingleVolume = GUILayout.HorizontalSlider(_target.SingleVolume, 0f, 1f);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Multiple Volume: ", GUILayout.Width(180));
+            GUILayout.Label("Multiple Volume", GUILayout.Width(120));
             _target.MultipleVolume = GUILayout.HorizontalSlider(_target.MultipleVolume, 0f, 1f);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("World Volume: ", GUILayout.Width(180));
+            GUILayout.Label("World Volume", GUILayout.Width(120));
             _target.WorldVolume = GUILayout.HorizontalSlider(_target.WorldVolume, 0f, 1f);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("OneShoot Volume: ", GUILayout.Width(180));
+            GUILayout.Label("OneShoot Volume", GUILayout.Width(120));
             _target.OneShootVolume = GUILayout.HorizontalSlider(_target.OneShootVolume, 0f, 1f);
             GUILayout.EndHorizontal();
         }

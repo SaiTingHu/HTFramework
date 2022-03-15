@@ -13,9 +13,8 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Current Procedure: " + _target.CurrentProcedure);
-            GUILayout.EndHorizontal();
+            string content = _target.CurrentProcedure != null ? _target.CurrentProcedure.GetType().FullName : "<None>";
+            StringFieldReadOnly("Current Procedure", content);
 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Last Procedure"))

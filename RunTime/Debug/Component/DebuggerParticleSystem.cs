@@ -34,13 +34,8 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Particles: " + _target.particleCount);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _mainModule.loop = GUILayout.Toggle(_mainModule.loop, "Loop");
-            GUILayout.EndHorizontal();
+            IntField("Particles", _target.particleCount);
+            _mainModule.loop = BoolField("Loop", _mainModule.loop);
         }
     }
 }

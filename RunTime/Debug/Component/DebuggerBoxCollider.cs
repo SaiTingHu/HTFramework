@@ -14,18 +14,12 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.isTrigger = GUILayout.Toggle(_target.isTrigger, "Is Trigger");
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Center: ", GUILayout.Width(60));
-            _target.center = Vector3Field(_target.center);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Size: ", GUILayout.Width(60));
-            _target.size = Vector3Field(_target.size);
-            GUILayout.EndHorizontal();
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.isTrigger = BoolField("Is Trigger", _target.isTrigger);
+            ObjectFieldReadOnly("Material", _target.sharedMaterial);
+            _target.center = Vector3Field("Center", _target.center);
+            _target.size = Vector3Field("Size", _target.size);
         }
     }
 }

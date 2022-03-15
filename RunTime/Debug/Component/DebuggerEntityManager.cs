@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace HT.Framework
 {
     [CustomDebugger(typeof(EntityManager))]
@@ -13,9 +11,7 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            _target.IsHideAll = GUILayout.Toggle(_target.IsHideAll, "Is Hide All");
-            GUILayout.EndHorizontal();
+            _target.IsHideAll = BoolField("Is Hide All", _target.IsHideAll);
         }
     }
 }

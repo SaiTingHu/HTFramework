@@ -15,11 +15,16 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.interactable = GUILayout.Toggle(_target.interactable, "Interactable");
+
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.interactable = BoolField("Interactable", _target.interactable);
+            _target.direction = (Slider.Direction)EnumField("Direction", _target.direction);
+            _target.minValue = FloatField("Min Value", _target.minValue);
+            _target.maxValue = FloatField("Max Value", _target.maxValue);
+            _target.wholeNumbers = BoolField("Whole Numbers", _target.wholeNumbers);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Value: ");
+            GUILayout.Label("Value", GUILayout.Width(120));
             _target.value = GUILayout.HorizontalSlider(_target.value, _target.minValue, _target.maxValue);
             GUILayout.EndHorizontal();
         }

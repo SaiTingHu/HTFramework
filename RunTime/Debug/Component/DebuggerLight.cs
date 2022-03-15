@@ -14,28 +14,19 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            GUILayout.Label("Type: " + _target.type);
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Intensity: ");
-            _target.intensity = FloatField(_target.intensity);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Range: ");
-            _target.range = FloatField(_target.range);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Spot Angle: ");
-            _target.spotAngle = FloatField(_target.spotAngle);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Shadow: ");
-            _target.shadows = (LightShadows)EnumField(_target.shadows);
-            GUILayout.EndHorizontal();
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.type = (LightType)EnumField("Type", _target.type);
+            if (_target.type != LightType.Directional)
+            {
+                _target.range = FloatField("Range", _target.range);
+            }
+            if (_target.type == LightType.Spot)
+            {
+                _target.spotAngle = FloatField("Spot Angle", _target.spotAngle);
+            }
+            _target.intensity = FloatField("Intensity", _target.intensity);
+            _target.shadows = (LightShadows)EnumField("Shadow Type", _target.shadows);
         }
     }
 }

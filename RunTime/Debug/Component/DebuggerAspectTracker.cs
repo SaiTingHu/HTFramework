@@ -13,16 +13,11 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            _target.IsEnableAspectTrack = GUILayout.Toggle(_target.IsEnableAspectTrack, "Is Enable Track");
-            GUILayout.EndHorizontal();
+            _target.IsEnableAspectTrack = BoolField("Is Enable Track", _target.IsEnableAspectTrack);
+            _target.IsEnableIntercept = BoolField("Is Enable Intercept", _target.IsEnableIntercept);
 
             GUILayout.BeginHorizontal();
-            _target.IsEnableIntercept = GUILayout.Toggle(_target.IsEnableIntercept, "Is Enable Intercept");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Intercept Conditions: ");
+            GUILayout.Label("Intercept Conditions");
             GUILayout.EndHorizontal();
 
             foreach (var condition in _target.InterceptConditions)
