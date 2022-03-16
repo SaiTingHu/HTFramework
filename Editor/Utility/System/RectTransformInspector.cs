@@ -303,7 +303,7 @@ namespace HT.Framework
             string fieldName = Target.name.Trim().Replace(" ", "");
             char[] fieldNames = fieldName.ToCharArray();
             fieldNames[0] = char.ToLower(fieldNames[0]);
-            string field = string.Format("[ObjectPath(\"{0}\")] private GameObject _{1};", Target.FullName(), new string(fieldNames));
+            string field = string.Format("[InjectPath(\"{0}\")] private GameObject _{1};", Target.FullName(), new string(fieldNames));
             return field;
         }
     }
