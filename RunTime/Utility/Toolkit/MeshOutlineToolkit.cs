@@ -18,7 +18,7 @@ namespace HT.Framework
         /// <param name="intensity">强度</param>
         public static void OpenMeshOutline(this GameObject target, float intensity = 1)
         {
-            OpenMeshOutline(target, Color.yellow, intensity);
+            OpenMeshOutline(target, Color.yellow, intensity, false, 1);
         }
         /// <summary>
         /// 开启网格轮廓高亮，使用指定颜色
@@ -27,6 +27,29 @@ namespace HT.Framework
         /// <param name="color">高亮颜色</param>
         /// <param name="intensity">强度</param>
         public static void OpenMeshOutline(this GameObject target, Color color, float intensity = 1)
+        {
+            OpenMeshOutline(target, color, intensity, false, 1);
+        }
+        /// <summary>
+        /// 开启网格轮廓高亮，使用闪烁效果
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="color">高亮颜色</param>
+        /// <param name="intensity">强度</param>
+        /// <param name="freq">闪烁频率</param>
+        public static void OpenMeshOutline(this GameObject target, Color color, float intensity, float freq)
+        {
+            OpenMeshOutline(target, color, intensity, true, freq);
+        }
+        /// <summary>
+        /// 开启网格轮廓高亮
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="color">高亮颜色</param>
+        /// <param name="intensity">强度</param>
+        /// <param name="isFlash">是否闪烁</param>
+        /// <param name="freq">闪烁频率</param>
+        public static void OpenMeshOutline(this GameObject target, Color color, float intensity, bool isFlash, float freq)
         {
             if (target == null)
                 return;
@@ -45,7 +68,7 @@ namespace HT.Framework
             target.ClearMeshOutlineInChildren();
             target.ClearMeshOutlineInParent();
 
-            mo.Open(color, intensity);
+            mo.Open(color, intensity, isFlash, freq);
         }
         /// <summary>
         /// 重置高亮网格轮廓

@@ -7,6 +7,7 @@ namespace HT.Framework
     [DefaultExecutionOrder(-700)]
     internal sealed class MeshOutlineObject : HTBehaviour
     {
+        private const float DoublePI = 2f * Mathf.PI;
         private static Material GetOpaqueMaterial()
         {
             Material mat = new Material(OpaqueShader);
@@ -47,8 +48,11 @@ namespace HT.Framework
         private List<MeshOutlineRenderer> MeshOutlineRenderers = new List<MeshOutlineRenderer>();
         private bool _isInit = false;
         private bool _isOpened = false;
-        private Color _outlineColor = Color.yellow;
-        private float _outlineIntensity = 1f;
+        private Color _color = Color.yellow;
+        private float _maxIntensity = 1;
+        private float _intensity = 1;
+        private bool _isFlash = false;
+        private float _flashFrequency = 2;
 
         /// <summary>
         /// 重置轮廓
@@ -69,8 +73,10 @@ namespace HT.Framework
         /// 开启轮廓高亮
         /// </summary>
         /// <param name="color">高亮颜色</param>
+        /// <param name="intensity">强度</param>
         /// <param name="isFlash">是否闪烁</param>
-        public void Open(Color color, float intensity)
+        /// <param name="freq">闪烁频率</param>
+        public void Open(Color color, float intensity, bool isFlash, float freq)
         {
             if (!_isInit)
             {
@@ -88,23 +94,29 @@ namespace HT.Framework
                 }
             }
 
-            if (color != _outlineColor)
+            if (color != _color)
             {
-                _outlineColor = color;
+                _color = color;
                 for (int i = 0; i < MeshOutlineRenderers.Count; i++)
                 {
-                    MeshOutlineRenderers[i].SetOutlineColor(_outlineColor);
+                    MeshOutlineRenderers[i].SetOutlineColor(_color);
                 }
             }
 
-            if (!_outlineIntensity.Approximately(intensity))
+            if (!_intensity.Approximately(intensity))
             {
-                _outlineIntensity = intensity;
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                _intensity = _maxIntensity = intensity;
+                if (!isFlash)
                 {
-                    MeshOutlineRenderers[i].SetOutlineIntensity(_outlineIntensity);
+                    for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                    {
+                        MeshOutlineRenderers[i].SetOutlineIntensity(_intensity);
+                    }
                 }
             }
+
+            _isFlash = isFlash;
+            _flashFrequency = freq;
         }
         /// <summary>
         /// 关闭轮廓高亮
@@ -132,6 +144,20 @@ namespace HT.Framework
         private void OnDisable()
         {
             Close();
+        }
+        private void Update()
+        {
+            if (_isOpened)
+            {
+                if (_isFlash)
+                {
+                    _intensity = Mathf.Lerp(0, _maxIntensity, 0.5f * Mathf.Sin(Time.realtimeSinceStartup * _flashFrequency * DoublePI) + 0.5f);
+                    for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                    {
+                        MeshOutlineRenderers[i].SetOutlineIntensity(_intensity);
+                    }
+                }
+            }
         }
         private void CacheRenderers(Renderer[] renderers)
         {
