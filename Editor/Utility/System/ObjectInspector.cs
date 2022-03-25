@@ -31,14 +31,17 @@ namespace HT.Framework
             {
                 using (SerializedProperty iterator = serializedObject.GetIterator())
                 {
+                    HashSet<string> fieldPaths = new HashSet<string>();
                     while (iterator.NextVisible(true))
                     {
                         SerializedProperty property = serializedObject.FindProperty(iterator.name);
-                        if (property != null)
+                        if (property != null && !fieldPaths.Contains(property.propertyPath))
                         {
+                            fieldPaths.Add(property.propertyPath);
                             _fields.Add(new FieldInspector(property));
                         }
                     }
+                    fieldPaths.Clear();
                 }
 
                 List<PropertyInfo> properties = target.GetType().GetProperties((property) =>
