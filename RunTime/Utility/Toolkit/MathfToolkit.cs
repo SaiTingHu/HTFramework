@@ -52,6 +52,45 @@ namespace HT.Framework
         /// <summary>
         /// 随机执行一个Action
         /// </summary>
+        /// <param name="action1">Action1</param>
+        /// <param name="action2">Action2</param>
+        public static void RandomExecute(HTFAction action1, HTFAction action2)
+        {
+            int value = UnityEngine.Random.Range(0, 10);
+            if (value < 5)
+            {
+                action1?.Invoke();
+            }
+            else
+            {
+                action2?.Invoke();
+            }
+        }
+        /// <summary>
+        /// 随机执行一个Action
+        /// </summary>
+        /// <param name="action1">Action1</param>
+        /// <param name="action2">Action2</param>
+        /// <param name="action3">Action3</param>
+        public static void RandomExecute(HTFAction action1, HTFAction action2, HTFAction action3)
+        {
+            int value = UnityEngine.Random.Range(0, 9);
+            if (value < 3)
+            {
+                action1?.Invoke();
+            }
+            else if (value < 6)
+            {
+                action2?.Invoke();
+            }
+            else
+            {
+                action3?.Invoke();
+            }
+        }
+        /// <summary>
+        /// 随机执行一个Action
+        /// </summary>
         /// <param name="values">Action数组</param>
         public static void RandomExecute(params HTFAction[] values)
         {
