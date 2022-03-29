@@ -16,24 +16,24 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("CustomModules: " + _helper.CustomModules.Count);
+            GUILayout.Label("CustomModules: " + _helper.GetAllCustomModule().Count);
             GUILayout.EndHorizontal();
 
-            foreach (var item in _helper.CustomModules)
+            foreach (var item in _helper.GetAllCustomModule())
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label(item.Key + "[" + item.Value.GetType().FullName + "]");
+                GUILayout.Label(item.Name + "[" + item.GetType().FullName + "]");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(40);
-                if (item.Value.IsRunning)
+                if (item.IsRunning)
                 {
                     GUILayout.Label("[Running]");
                     if (GUILayout.Button("Stop", EditorStyles.miniButton, GUILayout.Width(40)))
                     {
-                        item.Value.IsRunning = false;
+                        item.IsRunning = false;
                     }
                 }
                 else
@@ -41,7 +41,7 @@ namespace HT.Framework
                     GUILayout.Label("[Stopped]");
                     if (GUILayout.Button("Run", EditorStyles.miniButton, GUILayout.Width(40)))
                     {
-                        item.Value.IsRunning = true;
+                        item.IsRunning = true;
                     }
                 }
                 GUILayout.EndHorizontal();

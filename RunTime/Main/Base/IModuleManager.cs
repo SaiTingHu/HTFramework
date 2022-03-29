@@ -6,6 +6,11 @@
     public interface IModuleManager
     {
         /// <summary>
+        /// 模块的优先级（越小越优先）
+        /// </summary>
+        int Priority { get; }
+
+        /// <summary>
         /// 初始化模块
         /// </summary>
         void OnInit();

@@ -6,6 +6,14 @@
     public abstract class CustomModuleBase : IModuleManager
     {
         /// <summary>
+        /// 模块名称
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 模块的优先级（越小越优先）
+        /// </summary>
+        public virtual int Priority { get; } = 0;
+        /// <summary>
         /// 是否运行中
         /// </summary>
         public virtual bool IsRunning { get; set; }

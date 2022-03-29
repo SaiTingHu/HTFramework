@@ -306,6 +306,7 @@ namespace HT.Framework
         public static WebRequestManager m_WebRequest { get; private set; }
 
         private Dictionary<HTFrameworkModule, IModuleManager> _internalModules = new Dictionary<HTFrameworkModule, IModuleManager>();
+        private List<IModuleManager> _internalModulesList = new List<IModuleManager>();
         private bool _isPause = false;
 
         /// <summary>
@@ -320,9 +321,7 @@ namespace HT.Framework
             set
             {
                 if (_isPause == value)
-                {
                     return;
-                }
 
                 _isPause = value;
                 if (_isPause)
@@ -351,6 +350,7 @@ namespace HT.Framework
                         if (attribute.ModuleName != HTFrameworkModule.Main)
                         {
                             _internalModules.Add(attribute.ModuleName, modules[i]);
+                            _internalModulesList.Add(modules[i]);
                         }
                     }
                     else
@@ -389,49 +389,49 @@ namespace HT.Framework
             m_UI = GetInternalModule(HTFrameworkModule.UI) as UIManager;
             m_WebRequest = GetInternalModule(HTFrameworkModule.WebRequest) as WebRequestManager;
 
-            foreach (var internalModule in _internalModules)
+            _internalModulesList.Sort((a, b) => { return a.Priority.CompareTo(b.Priority); });
+
+            for (int i = 0; i < _internalModulesList.Count; i++)
             {
-                internalModule.Value.OnInit();
+                _internalModulesList[i].OnInit();
             }
         }
         private void ModuleReady()
         {
-            foreach (var internalModule in _internalModules)
+            for (int i = 0; i < _internalModulesList.Count; i++)
             {
-                internalModule.Value.OnReady();
+                _internalModulesList[i].OnReady();
             }
         }
         private void ModuleUpdate()
         {
             if (Pause)
-            {
                 return;
-            }
 
-            foreach (var internalModule in _internalModules)
+            for (int i = 0; i < _internalModulesList.Count; i++)
             {
-                internalModule.Value.OnUpdate();
+                _internalModulesList[i].OnUpdate();
             }
         }
         private void ModuleTerminate()
         {
-            foreach (var internalModule in _internalModules)
+            for (int i = 0; i < _internalModulesList.Count; i++)
             {
-                internalModule.Value.OnTerminate();
+                _internalModulesList[i].OnTerminate();
             }
         }
         private void ModulePause()
         {
-            foreach (var internalModule in _internalModules)
+            for (int i = 0; i < _internalModulesList.Count; i++)
             {
-                internalModule.Value.OnPause();
+                _internalModulesList[i].OnPause();
             }
         }
         private void ModuleResume()
         {
-            foreach (var internalModule in _internalModules)
+            for (int i = 0; i < _internalModulesList.Count; i++)
             {
-                internalModule.Value.OnResume();
+                _internalModulesList[i].OnResume();
             }
         }
 

@@ -16,6 +16,10 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal string HelperType = "<None>";
         /// <summary>
+        /// 模块的优先级（越小越优先）
+        /// </summary>
+        public virtual int Priority { get; } = 0;
+        /// <summary>
         /// 内置模块助手
         /// </summary>
         protected H _helper { get; private set; }

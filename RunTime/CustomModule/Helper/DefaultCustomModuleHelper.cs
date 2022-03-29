@@ -13,10 +13,9 @@ namespace HT.Framework
         /// 自定义模块管理器
         /// </summary>
         public IModuleManager Module { get; set; }
-        /// <summary>
-        /// 所有自定义模块
-        /// </summary>
-        public Dictionary<string, CustomModuleBase> CustomModules { get; private set; } = new Dictionary<string, CustomModuleBase>();
+        
+        private Dictionary<string, CustomModuleBase> _customModules = new Dictionary<string, CustomModuleBase>();
+        private List<CustomModuleBase> _customModulesList = new List<CustomModuleBase>();
 
         /// <summary>
         /// 初始化助手
@@ -30,15 +29,20 @@ namespace HT.Framework
             for (int i = 0; i < types.Count; i++)
             {
                 CustomModuleAttribute att = types[i].GetCustomAttribute<CustomModuleAttribute>();
-                if (att != null && att.IsEnable && !CustomModules.ContainsKey(att.ModuleName))
+                if (att != null && att.IsEnable && !_customModules.ContainsKey(att.ModuleName))
                 {
-                    CustomModules.Add(att.ModuleName, Activator.CreateInstance(types[i]) as CustomModuleBase);
+                    CustomModuleBase customModule = Activator.CreateInstance(types[i]) as CustomModuleBase;
+                    customModule.Name = att.ModuleName;
+                    _customModules.Add(att.ModuleName, customModule);
+                    _customModulesList.Add(customModule);
                 }
             }
 
-            foreach (var module in CustomModules)
+            _customModulesList.Sort((a, b) => { return a.Priority.CompareTo(b.Priority); });
+
+            for (int i = 0; i < _customModulesList.Count; i++)
             {
-                module.Value.OnInit();
+                _customModulesList[i].OnInit();
             }
         }
         /// <summary>
@@ -46,9 +50,9 @@ namespace HT.Framework
         /// </summary>
         public void OnReady()
         {
-            foreach (var module in CustomModules)
+            for (int i = 0; i < _customModulesList.Count; i++)
             {
-                module.Value.OnReady();
+                _customModulesList[i].OnReady();
             }
         }
         /// <summary>
@@ -56,11 +60,11 @@ namespace HT.Framework
         /// </summary>
         public void OnUpdate()
         {
-            foreach (var module in CustomModules)
+            for (int i = 0; i < _customModulesList.Count; i++)
             {
-                if (module.Value.IsRunning)
+                if (_customModulesList[i].IsRunning)
                 {
-                    module.Value.OnUpdate();
+                    _customModulesList[i].OnUpdate();
                 }
             }
         }
@@ -69,21 +73,22 @@ namespace HT.Framework
         /// </summary>
         public void OnTerminate()
         {
-            foreach (var module in CustomModules)
+            for (int i = 0; i < _customModulesList.Count; i++)
             {
-                module.Value.OnTerminate();
+                _customModulesList[i].OnTerminate();
             }
 
-            CustomModules.Clear();
+            _customModules.Clear();
+            _customModulesList.Clear();
         }
         /// <summary>
         /// 暂停助手
         /// </summary>
         public void OnPause()
         {
-            foreach (var module in CustomModules)
+            for (int i = 0; i < _customModulesList.Count; i++)
             {
-                module.Value.OnPause();
+                _customModulesList[i].OnPause();
             }
         }
         /// <summary>
@@ -91,9 +96,46 @@ namespace HT.Framework
         /// </summary>
         public void OnResume()
         {
-            foreach (var module in CustomModules)
+            for (int i = 0; i < _customModulesList.Count; i++)
             {
-                module.Value.OnResume();
+                _customModulesList[i].OnResume();
+            }
+        }
+
+        /// <summary>
+        /// 获取指定的自定义模块
+        /// </summary>
+        /// <param name="name">模块名称</param>
+        /// <returns>模块实例</returns>
+        public CustomModuleBase GetCustomModule(string name)
+        {
+            if (_customModules.ContainsKey(name))
+            {
+                return _customModules[name];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 获取所有的自定义模块
+        /// </summary>
+        public List<CustomModuleBase> GetAllCustomModule()
+        {
+            return _customModulesList;
+        }
+        /// <summary>
+        /// 终止指定的自定义模块
+        /// </summary>
+        /// <param name="name">模块名称</param>
+        public void TerminationModule(string name)
+        {
+            if (_customModules.ContainsKey(name))
+            {
+                _customModules[name].OnTerminate();
+                _customModulesList.Remove(_customModules[name]);
+                _customModules.Remove(name);
             }
         }
     }

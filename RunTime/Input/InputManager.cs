@@ -12,7 +12,17 @@ namespace HT.Framework
         /// 输入设备类型【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string InputDeviceType = "";
-        
+
+        /// <summary>
+        /// 模块的优先级（越小越优先）
+        /// </summary>
+        public override int Priority
+        {
+            get
+            {
+                return -1;
+            }
+        }
         /// <summary>
         /// 是否启用输入设备
         /// </summary>

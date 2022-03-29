@@ -1,4 +1,6 @@
-﻿namespace HT.Framework
+﻿using System.Collections.Generic;
+
+namespace HT.Framework
 {
     /// <summary>
     /// 自定义模块管理器
@@ -15,15 +17,15 @@
         {
             get
             {
-                if (_helper.CustomModules.ContainsKey(moduleName))
-                {
-                    return _helper.CustomModules[moduleName];
-                }
-                else
-                {
-                    return null;
-                }
+                return _helper.GetCustomModule(moduleName);
             }
+        }
+        /// <summary>
+        /// 获取所有的自定义模块
+        /// </summary>
+        public List<CustomModuleBase> GetAllCustomModule()
+        {
+            return _helper.GetAllCustomModule();
         }
         /// <summary>
         /// 终止指定的自定义模块
@@ -31,11 +33,7 @@
         /// <param name="moduleName">模块名称</param>
         public void TerminationModule(string moduleName)
         {
-            if (_helper.CustomModules.ContainsKey(moduleName))
-            {
-                _helper.CustomModules[moduleName].OnTerminate();
-                _helper.CustomModules.Remove(moduleName);
-            }
+            _helper.TerminationModule(moduleName);
         }
     }
 }
