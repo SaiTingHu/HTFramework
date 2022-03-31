@@ -28,54 +28,60 @@ namespace HT.Framework
         /// </summary>
         /// <param name="uILogicBase">UI逻辑实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyInject(UILogicBase uILogicBase, FieldInfo[] fieldInfos)
+        /// <returns>完成注入的数量</returns>
+        public static int ApplyInject(UILogicBase uILogicBase, FieldInfo[] fieldInfos)
         {
-            ApplyInject(uILogicBase, uILogicBase.UIEntity, fieldInfos);
+            return ApplyInject(uILogicBase, uILogicBase.UIEntity, fieldInfos);
         }
         /// <summary>
         /// 应用实体逻辑类的依赖注入
         /// </summary>
         /// <param name="entityLogicBase">实体逻辑实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyInject(EntityLogicBase entityLogicBase, FieldInfo[] fieldInfos)
+        /// <returns>完成注入的数量</returns>
+        public static int ApplyInject(EntityLogicBase entityLogicBase, FieldInfo[] fieldInfos)
         {
-            ApplyInject(entityLogicBase, entityLogicBase.Entity, fieldInfos);
+            return ApplyInject(entityLogicBase, entityLogicBase.Entity, fieldInfos);
         }
         /// <summary>
         /// 应用HT行为类的依赖注入
         /// </summary>
         /// <param name="behaviour">HT行为类实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyInject(HTBehaviour behaviour, FieldInfo[] fieldInfos)
+        /// <returns>完成注入的数量</returns>
+        public static int ApplyInject(HTBehaviour behaviour, FieldInfo[] fieldInfos)
         {
-            ApplyInject(behaviour, behaviour.gameObject, fieldInfos);
+            return ApplyInject(behaviour, behaviour.gameObject, fieldInfos);
         }
         /// <summary>
         /// 应用FSM数据的依赖注入
         /// </summary>
         /// <param name="fsmData">FSM数据实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyInject(FSMDataBase fsmData, FieldInfo[] fieldInfos)
+        /// <returns>完成注入的数量</returns>
+        public static int ApplyInject(FSMDataBase fsmData, FieldInfo[] fieldInfos)
         {
-            ApplyInject(fsmData, fsmData.StateMachine.gameObject, fieldInfos);
+            return ApplyInject(fsmData, fsmData.StateMachine.gameObject, fieldInfos);
         }
         /// <summary>
         /// 应用FSM参数的依赖注入
         /// </summary>
         /// <param name="fsmArgs">FSM参数实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyInject(FSMArgsBase fsmArgs, FieldInfo[] fieldInfos)
+        /// <returns>完成注入的数量</returns>
+        public static int ApplyInject(FSMArgsBase fsmArgs, FieldInfo[] fieldInfos)
         {
-            ApplyInject(fsmArgs, fsmArgs.StateMachine.gameObject, fieldInfos);
+            return ApplyInject(fsmArgs, fsmArgs.StateMachine.gameObject, fieldInfos);
         }
         /// <summary>
         /// 应用FSM状态的依赖注入
         /// </summary>
         /// <param name="fsmState">FSM状态实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyInject(FiniteStateBase fsmState, FieldInfo[] fieldInfos)
+        /// <returns>完成注入的数量</returns>
+        public static int ApplyInject(FiniteStateBase fsmState, FieldInfo[] fieldInfos)
         {
-            ApplyInject(fsmState, fsmState.StateMachine.gameObject, fieldInfos);
+            return ApplyInject(fsmState, fsmState.StateMachine.gameObject, fieldInfos);
         }
         /// <summary>
         /// 应用依赖注入
@@ -83,8 +89,10 @@ namespace HT.Framework
         /// <param name="instance">目标实例</param>
         /// <param name="entity">目标在场景中的实体</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        private static void ApplyInject(object instance, GameObject entity, FieldInfo[] fieldInfos)
+        /// <returns>完成注入的数量</returns>
+        private static int ApplyInject(object instance, GameObject entity, FieldInfo[] fieldInfos)
         {
+            int count = 0;
             for (int i = 0; i < fieldInfos.Length; i++)
             {
                 if (fieldInfos[i].IsDefined(typeof(InjectPathAttribute), true))
@@ -100,6 +108,11 @@ namespace HT.Framework
                         GameObject obj = entity.FindChildren(path);
                         fieldInfos[i].SetValue(instance, obj != null ? obj.GetComponent(type) : null);
                     }
+                    else
+                    {
+                        Log.Error(string.Format("自动化任务：依赖注入（Path）失败，字段 {0} 的类型不被支持！", fieldInfos[i].Name));
+                    }
+                    count += 1;
                 }
                 else if (fieldInfos[i].IsDefined(typeof(InjectUIAttribute), true))
                 {
@@ -112,8 +125,10 @@ namespace HT.Framework
                     {
                         Log.Error(string.Format("自动化任务：依赖注入（UI）失败，字段 {0} 必须为UI逻辑类对象（UILogicBase），且不能为抽象类！", fieldInfos[i].Name));
                     }
+                    count += 1;
                 }
             }
+            return count;
         }
 
         /// <summary>
@@ -121,8 +136,11 @@ namespace HT.Framework
         /// </summary>
         /// <param name="instance">目标实例</param>
         /// <param name="fieldInfos">所有自动化字段</param>
-        public static void ApplyDataBinding(object instance, FieldInfo[] fieldInfos)
+        /// <returns>完成绑定的数量</returns>
+        public static int ApplyDataBinding(object instance, FieldInfo[] fieldInfos)
         {
+            int count = 0;
+
             Type type = instance.GetType();
             Dictionary<string, FieldInfo> targetFieldsCache = new Dictionary<string, FieldInfo>();
             object[] args = new object[1];
@@ -131,6 +149,8 @@ namespace HT.Framework
             {
                 if (!fieldInfos[i].IsDefined(typeof(DataBindingAttribute), true))
                     continue;
+
+                count += 1;
 
                 if (!fieldInfos[i].FieldType.IsSubclassOf(typeof(UIBehaviour)))
                 {
@@ -199,6 +219,8 @@ namespace HT.Framework
                 args[0] = controlValue;
                 binding.Invoke(dataValue, args);
             }
+
+            return count;
         }
         /// <summary>
         /// 清空数据绑定

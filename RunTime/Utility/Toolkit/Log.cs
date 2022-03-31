@@ -8,9 +8,9 @@ namespace HT.Framework
     public static class Log
     {
 #if UNITY_EDITOR
-        private static readonly string InfoPrefix = "<b><color=cyan>[HTFramework.Info]</color></b> ";
-        private static readonly string WarningPrefix = "<b><color=yellow>[HTFramework.Warning]</color></b> ";
-        private static readonly string ErrorPrefix = "<b><color=red>[HTFramework.Error]</color></b> ";
+        private const string InfoPrefix = "<b><color=cyan>[HTFramework.Info]</color></b> ";
+        private const string WarningPrefix = "<b><color=yellow>[HTFramework.Warning]</color></b> ";
+        private const string ErrorPrefix = "<b><color=red>[HTFramework.Error]</color></b> ";
 #endif
 
         /// <summary>

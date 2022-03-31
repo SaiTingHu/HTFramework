@@ -8,20 +8,20 @@ namespace HT.Framework
     /// </summary>
     public static class MonoScriptToolkit
     {
-        private static Dictionary<string, string> _monoScripts = new Dictionary<string, string>();
+        private static Dictionary<string, string> MonoScripts = new Dictionary<string, string>();
         
         static MonoScriptToolkit()
         {
-            _monoScripts.Clear();
+            MonoScripts.Clear();
             string[] paths = AssetDatabase.GetAllAssetPaths();
             for (int i = 0; i < paths.Length; i++)
             {
                 if (paths[i].EndsWith(".cs"))
                 {
                     string className = paths[i].Substring(paths[i].LastIndexOf("/") + 1).Replace(".cs", "");
-                    if (!_monoScripts.ContainsKey(className))
+                    if (!MonoScripts.ContainsKey(className))
                     {
-                        _monoScripts.Add(className, paths[i]);
+                        MonoScripts.Add(className, paths[i]);
                     }
                 }
             }
@@ -33,7 +33,7 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public static bool IsExistMonoScriptName(string name)
         {
-            return _monoScripts.ContainsKey(name);
+            return MonoScripts.ContainsKey(name);
         }
         /// <summary>
         /// 打开并编辑MonoScript脚本对象
@@ -42,15 +42,15 @@ namespace HT.Framework
         public static void OpenMonoScript(string scriptFileName)
         {
             string name = scriptFileName;
-            if (!_monoScripts.ContainsKey(name))
+            if (!MonoScripts.ContainsKey(name))
             {
                 string[] names = name.Split('.');
                 name = names[names.Length - 1];
             }
 
-            if (_monoScripts.ContainsKey(name))
+            if (MonoScripts.ContainsKey(name))
             {
-                MonoScript monoScript = AssetDatabase.LoadAssetAtPath<MonoScript>(_monoScripts[name]);
+                MonoScript monoScript = AssetDatabase.LoadAssetAtPath<MonoScript>(MonoScripts[name]);
                 if (monoScript)
                 {
                     AssetDatabase.OpenAsset(monoScript);

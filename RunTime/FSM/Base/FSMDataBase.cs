@@ -10,7 +10,7 @@
         /// </summary>
         public FSM StateMachine { get; internal set; }
         /// <summary>
-        /// 是否支持数据驱动
+        /// 是否支持数据驱动（数据、状态、参数）
         /// </summary>
         public bool IsSupportedDataDriver
         {
@@ -20,7 +20,7 @@
             }
         }
         /// <summary>
-        /// 是否启用自动化，这将造成反射的性能消耗
+        /// 是否启用自动化，这将造成反射的性能消耗（数据、状态、参数）
         /// </summary>
         public virtual bool IsAutomate => false;
 
