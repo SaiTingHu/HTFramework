@@ -238,6 +238,11 @@ namespace HT.Framework
         }
         private void Update()
         {
+            if (EditorApplication.isCompiling)
+            {
+                Close();
+            }
+
             if (_stepEditorWindow == null || _contentAsset == null || _content == null)
             {
                 Close();
