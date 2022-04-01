@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEditor;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEngine;
 
 namespace HT.Framework
@@ -90,7 +91,7 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.red;
                 if (GUILayout.Button(GetWord("Delete"), EditorStyles.miniButtonRight))
                 {
-                    _content.Parameters.RemoveAt(i);
+                    DeleteParameter(i);
                     continue;
                 }
                 GUI.backgroundColor = Color.white;
@@ -127,38 +128,7 @@ namespace HT.Framework
                         stepParameter.ColorValue = EditorGUILayout.ColorField(stepParameter.ColorValue);
                         break;
                     case StepParameter.ParameterType.GameObject:
-                        #region 目标物体丢失，根据目标GUID重新搜寻
-                        if (!stepParameter.GameObjectValue)
-                        {
-                            if (stepParameter.GameObjectGUID != "<None>")
-                            {
-                                stepParameter.GameObjectValue = GameObject.Find(stepParameter.GameObjectPath);
-                                if (!stepParameter.GameObjectValue)
-                                {
-                                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
-                                    foreach (StepTarget target in targets)
-                                    {
-                                        if (target.GUID == stepParameter.GameObjectGUID && !target.GetComponent<StepPreview>())
-                                        {
-                                            stepParameter.GameObjectValue = target.gameObject;
-                                            stepParameter.GameObjectPath = target.transform.FullName();
-                                            break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    StepTarget target = stepParameter.GameObjectValue.GetComponent<StepTarget>();
-                                    if (!target)
-                                    {
-                                        target = stepParameter.GameObjectValue.AddComponent<StepTarget>();
-                                        target.GUID = stepParameter.GameObjectGUID;
-                                        HasChanged(stepParameter.GameObjectValue);
-                                    }
-                                }
-                            }
-                        }
-                        #endregion
+                        SearchParameterTarget(stepParameter);
 
                         GUI.color = stepParameter.GameObjectValue ? Color.white : Color.gray;
                         GameObject objValue = EditorGUILayout.ObjectField(stepParameter.GameObjectValue, typeof(GameObject), true) as GameObject;
@@ -178,6 +148,7 @@ namespace HT.Framework
                                 if (target.GUID == "<None>")
                                 {
                                     target.GUID = Guid.NewGuid().ToString();
+                                    HasChanged(target);
                                 }
                                 stepParameter.GameObjectValue = objValue;
                                 stepParameter.GameObjectGUID = target.GUID;
@@ -230,14 +201,14 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(GetWord("Add"), EditorGlobalTools.Styles.ButtonLeft))
             {
-                _content.Parameters.Add(new StepParameter());
+                AddParameter();
             }
             if (GUILayout.Button(GetWord("Clear"), EditorGlobalTools.Styles.ButtonRight))
             {
                 string prompt = CurrentLanguage == Language.English ? "Are you sure delete all parameter？" : "你确定要删除所有的参数吗？";
                 if (EditorUtility.DisplayDialog(GetWord("Prompt"), prompt, GetWord("Yes"), GetWord("No")))
                 {
-                    _content.Parameters.Clear();
+                    ClearParameter();
                 }
             }
             GUILayout.FlexibleSpace();
@@ -270,6 +241,96 @@ namespace HT.Framework
             if (_stepEditorWindow == null || _contentAsset == null || _content == null)
             {
                 Close();
+            }
+        }
+
+        /// <summary>
+        /// 新增参数
+        /// </summary>
+        private void AddParameter()
+        {
+            StepParameter parameter = new StepParameter();
+            if (_content.Parameters.Count > 0)
+            {
+                parameter.Type = _content.Parameters[_content.Parameters.Count - 1].Type;
+                parameter.Name = _content.Parameters[_content.Parameters.Count - 1].Name;
+            }
+            _content.Parameters.Add(parameter);
+        }
+        /// <summary>
+        /// 删除参数
+        /// </summary>
+        private void DeleteParameter(int index)
+        {
+            _content.Parameters.RemoveAt(index);
+        }
+        /// <summary>
+        /// 清空参数
+        /// </summary>
+        private void ClearParameter()
+        {
+            _content.Parameters.Clear();
+        }
+        /// <summary>
+        /// 在场景中搜索参数目标
+        /// </summary>
+        private void SearchParameterTarget(StepParameter para)
+        {
+            if (para.Type != StepParameter.ParameterType.GameObject)
+                return;
+
+            if (para.GameObjectGUID == "<None>")
+                return;
+
+            if (para.GameObjectValue != null)
+                return;
+
+            PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage != null)
+            {
+                para.GameObjectValue = prefabStage.prefabContentsRoot.FindChildren(para.GameObjectPath);
+                if (para.GameObjectValue == null)
+                {
+                    StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
+                    foreach (StepTarget target in targets)
+                    {
+                        if (target.GUID == para.GameObjectGUID && !target.GetComponent<StepPreview>())
+                        {
+                            para.GameObjectValue = target.gameObject;
+                            para.GameObjectPath = target.transform.FullName();
+                            para.GameObjectPath = para.GameObjectPath.Substring(para.GameObjectPath.IndexOf("/") + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                para.GameObjectValue = GameObject.Find(para.GameObjectPath);
+                if (para.GameObjectValue == null)
+                {
+                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
+                    foreach (StepTarget target in targets)
+                    {
+                        if (target.GUID == para.GameObjectGUID && !target.GetComponent<StepPreview>())
+                        {
+                            para.GameObjectValue = target.gameObject;
+                            para.GameObjectPath = target.transform.FullName();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (para.GameObjectValue != null)
+            {
+                StepTarget target = para.GameObjectValue.GetComponent<StepTarget>();
+                if (!target)
+                {
+                    target = para.GameObjectValue.AddComponent<StepTarget>();
+                    target.GUID = para.GameObjectGUID;
+                    HasChanged(para.GameObjectValue);
+                }
             }
         }
     }

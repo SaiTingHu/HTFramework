@@ -774,7 +774,7 @@ namespace HT.Framework
             GUILayout.Label(getWord("Move To") + ":", GUILayout.Width(80));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localPosition;
             }
@@ -804,7 +804,7 @@ namespace HT.Framework
             GUILayout.Label(getWord("Rotate To") + ":", GUILayout.Width(80));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localRotation.eulerAngles;
             }
@@ -858,7 +858,7 @@ namespace HT.Framework
             GUILayout.Label(getWord("Scale To") + ":", GUILayout.Width(80));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localScale;
             }
@@ -947,7 +947,7 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Set Active") + ":", GUILayout.Width(80));
-            if (GUILayout.Button(BoolValue ? "true" : "false", "MiniPopup", GUILayout.Width(105)))
+            if (GUILayout.Button(BoolValue ? "true" : "false", EditorStyles.popup, GUILayout.Width(105)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("true"), BoolValue, () =>
@@ -968,7 +968,7 @@ namespace HT.Framework
             GUI.enabled = Target;
             GUILayout.Label(getWord("Action") + ":", GUILayout.Width(50));
             string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
-            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(135)))
+            if (GUILayout.Button(value, EditorStyles.popup, GUILayout.Width(135)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -999,7 +999,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Action") + ":", GUILayout.Width(50));
             string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
-            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(135)))
+            if (GUILayout.Button(value, EditorStyles.popup, GUILayout.Width(135)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -1036,7 +1036,7 @@ namespace HT.Framework
             GUILayout.Label(getWord("Look Point") + ":");
             GUILayout.FlexibleSpace();
             GUI.enabled = EditorApplication.isPlaying;
-            if (GUILayout.Button(getWord("Get"), "Minibuttonleft"))
+            if (GUILayout.Button(getWord("Get"), "Buttonleft"))
             {
                 if (Main.m_Controller)
                 {
@@ -1044,18 +1044,25 @@ namespace HT.Framework
                 }
             }
             GUI.enabled = true;
-            if (GUILayout.Button(getWord("Paste"), "Minibuttonright"))
+            if (GUILayout.Button(getWord("Paste"), "Buttonright"))
             {
-                string[] vector3 = GUIUtility.systemCopyBuffer.Split(',');
-                if (vector3.Length == 3)
+                string value = GUIUtility.systemCopyBuffer;
+                if (value.StartsWith("Vector3("))
                 {
-                    float x, y, z;
-                    vector3[0] = vector3[0].Replace("f", "");
-                    vector3[1] = vector3[1].Replace("f", "");
-                    vector3[2] = vector3[2].Replace("f", "");
-                    if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
+                    value = value.Replace("Vector3(", "");
+                    value = value.Replace(")", "");
+
+                    string[] vector3 = value.Split(',');
+                    if (vector3.Length == 3)
                     {
-                        Vector3Value = new Vector3(x, y, z);
+                        float x, y, z;
+                        vector3[0] = vector3[0].Replace("f", "");
+                        vector3[1] = vector3[1].Replace("f", "");
+                        vector3[2] = vector3[2].Replace("f", "");
+                        if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
+                        {
+                            Vector3Value = new Vector3(x, y, z);
+                        }
                     }
                 }
             }
@@ -1069,7 +1076,7 @@ namespace HT.Framework
             GUILayout.Label(getWord("Look Angle") + ":");
             GUILayout.FlexibleSpace();
             GUI.enabled = EditorApplication.isPlaying;
-            if (GUILayout.Button(getWord("Get"), "Minibuttonleft"))
+            if (GUILayout.Button(getWord("Get"), "Buttonleft"))
             {
                 if (Main.m_Controller)
                 {
@@ -1078,19 +1085,26 @@ namespace HT.Framework
                 }
             }
             GUI.enabled = true;
-            if (GUILayout.Button(getWord("Paste"), "Minibuttonright"))
+            if (GUILayout.Button(getWord("Paste"), "Buttonright"))
             {
-                string[] vector3 = GUIUtility.systemCopyBuffer.Split(',');
-                if (vector3.Length == 3)
+                string value = GUIUtility.systemCopyBuffer;
+                if (value.StartsWith("Vector3("))
                 {
-                    float x, y, z;
-                    vector3[0] = vector3[0].Replace("f", "");
-                    vector3[1] = vector3[1].Replace("f", "");
-                    vector3[2] = vector3[2].Replace("f", "");
-                    if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
+                    value = value.Replace("Vector3(", "");
+                    value = value.Replace(")", "");
+
+                    string[] vector3 = value.Split(',');
+                    if (vector3.Length == 3)
                     {
-                        Vector2Value = new Vector3(x, y);
-                        FloatValue = z;
+                        float x, y, z;
+                        vector3[0] = vector3[0].Replace("f", "");
+                        vector3[1] = vector3[1].Replace("f", "");
+                        vector3[2] = vector3[2].Replace("f", "");
+                        if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
+                        {
+                            Vector2Value = new Vector3(x, y);
+                            FloatValue = z;
+                        }
                     }
                 }
             }
@@ -1135,7 +1149,7 @@ namespace HT.Framework
             GUI.enabled = Target;
             GUILayout.Label(getWord("State") + ":", GUILayout.Width(50));
             string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
-            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(135)))
+            if (GUILayout.Button(value, EditorStyles.popup, GUILayout.Width(135)))
             {
                 FSM fsm = Target.GetComponent<FSM>();
                 if (fsm)
@@ -1180,7 +1194,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Component") + ":", GUILayout.Width(80));
             string value = StringValue == "<None>" ? getWord(StringValue) : StringValue;
-            if (GUILayout.Button(value, "MiniPopup", GUILayout.Width(105)))
+            if (GUILayout.Button(value, EditorStyles.popup, GUILayout.Width(105)))
             {
                 GenericMenu gm = new GenericMenu();
                 Component[] monos = Target.GetComponents<Component>();
@@ -1201,7 +1215,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Set Active") + ":", GUILayout.Width(80));
-            if (GUILayout.Button(BoolValue ? "true" : "false", "MiniPopup", GUILayout.Width(105)))
+            if (GUILayout.Button(BoolValue ? "true" : "false", EditorStyles.popup, GUILayout.Width(105)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("true"), BoolValue, () =>
@@ -1259,7 +1273,7 @@ namespace HT.Framework
             BoolValue = GUILayout.Toggle(BoolValue, getWord("Transformation"));
             GUILayout.FlexibleSpace();
             GUI.enabled = Target;
-            if (GUILayout.Button(getWord("Get"), "Minibutton", GUILayout.Width(60)))
+            if (GUILayout.Button(getWord("Get"), GUILayout.Width(60)))
             {
                 Vector3Value = Target.transform.localPosition;
                 Vector3Value2 = Target.transform.localRotation.eulerAngles;
@@ -1340,7 +1354,7 @@ namespace HT.Framework
             }
             GUILayout.Label(StringValue == "<None>" ? getWord(StringValue) : StringValue, GUILayout.Width(90));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button(getWord("Clear"), EditorStyles.miniButton, GUILayout.Width(45)))
+            if (GUILayout.Button(getWord("Clear"), GUILayout.Width(45)))
             {
                 parent = GameObjectValue = null;
                 StringValue = "<None>";
