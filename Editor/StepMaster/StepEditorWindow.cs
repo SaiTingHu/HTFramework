@@ -600,7 +600,7 @@ namespace HT.Framework
                         _contentAsset.Content.RemoveAt(_currentStepIndex);
                         _currentStepIndex = _moveToIndex;
                         _contentAsset.Content.Insert(_currentStepIndex, _currentStepObj);
-                        SetStepListScroll((float)_currentStepIndex / (_contentAsset.Content.Count - 1));
+                        SetStepListScroll((float)_currentStepIndex / _contentAsset.Content.Count);
                     }
                     else
                     {
@@ -1543,7 +1543,7 @@ namespace HT.Framework
                                     {
                                         SelectStepContent(stepIndex);
                                         SelectStepOperation(-1);
-                                        SetStepListScroll((float)stepIndex / (_contentAsset.Content.Count - 1));
+                                        SetStepListScroll((float)stepIndex / _contentAsset.Content.Count);
                                         GUI.changed = true;
                                     }
                                 }
@@ -1566,7 +1566,7 @@ namespace HT.Framework
                                     {
                                         SelectStepContent(stepIndex);
                                         SelectStepOperation(-1);
-                                        SetStepListScroll((float)stepIndex / (_contentAsset.Content.Count - 1));
+                                        SetStepListScroll((float)stepIndex / _contentAsset.Content.Count);
                                         GUI.changed = true;
                                     }
                                 }
@@ -1711,7 +1711,7 @@ namespace HT.Framework
                 _contentAsset.Content.RemoveAt(_currentStepIndex);
                 _currentStepIndex -= 1;
                 _contentAsset.Content.Insert(_currentStepIndex, _currentStepObj);
-                SetStepListScroll((float)_currentStepIndex / (_contentAsset.Content.Count - 1));
+                SetStepListScroll((float)_currentStepIndex / _contentAsset.Content.Count);
             }
         }
         /// <summary>
@@ -1724,7 +1724,7 @@ namespace HT.Framework
                 _contentAsset.Content.RemoveAt(_currentStepIndex);
                 _currentStepIndex += 1;
                 _contentAsset.Content.Insert(_currentStepIndex, _currentStepObj);
-                SetStepListScroll((float)_currentStepIndex / (_contentAsset.Content.Count - 1));
+                SetStepListScroll((float)_currentStepIndex / _contentAsset.Content.Count);
             }
         }
         /// <summary>
@@ -2164,7 +2164,7 @@ namespace HT.Framework
         /// </summary>
         private void SetStepListScroll(float scroll)
         {
-            _stepListScroll.Set(0, scroll * (_contentAsset.Content.Count * 20 - position.height));
+            _stepListScroll.Set(0, scroll * (_contentAsset.Content.Count * 20));
         }
         /// <summary>
         /// 在场景中搜索步骤目标
