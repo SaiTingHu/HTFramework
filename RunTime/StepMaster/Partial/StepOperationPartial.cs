@@ -95,6 +95,7 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
+                Target.transform.DOComplete();
                 Target.transform.localPosition = Vector3Value;
             }
             else
@@ -106,6 +107,7 @@ namespace HT.Framework
         {
             if (BoolValue2)
             {
+                Target.transform.DOComplete();
                 if (BoolValue)
                 {
                     Target.transform.localRotation = (Target.transform.localRotation.eulerAngles + Vector3Value).ToQuaternion();
@@ -131,6 +133,7 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
+                Target.transform.DOComplete();
                 Target.transform.localScale = Vector3Value;
             }
             else
@@ -230,6 +233,7 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
+                Target.transform.DOComplete();
                 Target.transform.localPosition = Vector3Value;
                 Target.transform.localRotation = Vector3Value2.ToQuaternion();
                 Target.transform.localScale = Vector3Value3;
@@ -246,6 +250,7 @@ namespace HT.Framework
             StepTarget parent = Main.m_StepMaster.GetTarget(StringValue);
             if (parent != null && parent.gameObject != Target)
             {
+                Target.transform.DOComplete();
                 Target.transform.SetParent(parent.transform);
             }
         }
@@ -321,6 +326,7 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
+                Target.transform.DOComplete();
                 Target.transform.localPosition = Vector3Value;
             }
             else
@@ -332,6 +338,7 @@ namespace HT.Framework
         {
             if (BoolValue2)
             {
+                Target.transform.DOComplete();
                 if (BoolValue)
                 {
                     Target.transform.localRotation = (Target.transform.localRotation.eulerAngles + Vector3Value).ToQuaternion();
@@ -357,6 +364,7 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
+                Target.transform.DOComplete();
                 Target.transform.localScale = Vector3Value;
             }
             else
@@ -455,6 +463,7 @@ namespace HT.Framework
         {
             if (BoolValue)
             {
+                Target.transform.DOComplete();
                 Target.transform.localPosition = Vector3Value;
                 Target.transform.localRotation = Vector3Value2.ToQuaternion();
                 Target.transform.localScale = Vector3Value3;
@@ -471,6 +480,7 @@ namespace HT.Framework
             StepTarget parent = Main.m_StepMaster.GetTarget(StringValue);
             if (parent != null && parent.gameObject != Target)
             {
+                Target.transform.DOComplete();
                 Target.transform.SetParent(parent.transform);
             }
         }
