@@ -120,9 +120,27 @@ namespace HT.Framework
                         break;
                     case StepParameter.ParameterType.Vector2:
                         stepParameter.Vector2Value = EditorGUILayout.Vector2Field("", stepParameter.Vector2Value);
+                        DrawCopyPaste(
+                        () =>
+                        {
+                            return stepParameter.Vector2Value.ToCopyString("F4");
+                        },
+                        (str) =>
+                        {
+                            stepParameter.Vector2Value = str.ToPasteVector2();
+                        });
                         break;
                     case StepParameter.ParameterType.Vector3:
                         stepParameter.Vector3Value = EditorGUILayout.Vector3Field("", stepParameter.Vector3Value);
+                        DrawCopyPaste(
+                        () =>
+                        {
+                            return stepParameter.Vector3Value.ToCopyString("F4");
+                        },
+                        (str) =>
+                        {
+                            stepParameter.Vector3Value = str.ToPasteVector3();
+                        });
                         break;
                     case StepParameter.ParameterType.Color:
                         stepParameter.ColorValue = EditorGUILayout.ColorField(stepParameter.ColorValue);

@@ -23,6 +23,7 @@ namespace HT.Framework
         private object[] _linkLabelParameter;
 
         private GUIContent _helpGC;
+        private GUIContent _copyPasteGC;
 
         /// <summary>
         /// 是否启用标题UI
@@ -103,6 +104,9 @@ namespace HT.Framework
                 _helpGC.image = EditorGUIUtility.IconContent("_Help").image;
                 _helpGC.tooltip = "Help";
             }
+            _copyPasteGC = new GUIContent();
+            _copyPasteGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            _copyPasteGC.tooltip = "Copy or Paste";
         }
         protected void OnGUI()
         {
@@ -339,6 +343,33 @@ namespace HT.Framework
                 {
                     EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
                 }
+            }
+        }
+        /// <summary>
+        /// 绘制复制、粘贴按钮
+        /// </summary>
+        /// <param name="copy">复制回调</param>
+        /// <param name="paste">粘贴回调</param>
+        protected void DrawCopyPaste(HTFFunc<string> copy, HTFAction<string> paste)
+        {
+            if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("Copy"), false, () =>
+                {
+                    if (copy != null)
+                    {
+                        GUIUtility.systemCopyBuffer = copy();
+                    }
+                });
+                gm.AddItem(new GUIContent("Paste"), false, () =>
+                {
+                    if (paste != null)
+                    {
+                        paste(GUIUtility.systemCopyBuffer);
+                    }
+                });
+                gm.ShowAsContext();
             }
         }
         /// <summary>
