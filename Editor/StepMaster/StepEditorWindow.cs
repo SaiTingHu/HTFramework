@@ -380,6 +380,7 @@ namespace HT.Framework
             AddWord("粘贴", "Paste");
             AddWord("清除", "Clear");
             AddWord("提示", "Prompt");
+            AddWord("是否显示", "Is Display");
             AddWord("操作", "Operation");
             AddWord("查找", "Find");
             AddWord("进入", "Enter");
@@ -794,11 +795,12 @@ namespace HT.Framework
                     GUILayout.BeginVertical("Tooltip");
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("Prompt") + ":", GUILayout.Width(185));
+                    GUILayout.Label(GetWord("Prompt") + ":", GUILayout.Width(105));
+                    _currentStepObj.IsDisplayPrompt = GUILayout.Toggle(_currentStepObj.IsDisplayPrompt, GetWord("Is Display"), GUILayout.Width(80));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.Prompt = EditorGUILayout.TextArea(_currentStepObj.Prompt, GUILayout.Width(185));
+                    _currentStepObj.Prompt = EditorGUILayout.TextField(_currentStepObj.Prompt, GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
@@ -806,7 +808,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.Ancillary = EditorGUILayout.TextArea(_currentStepObj.Ancillary, GUILayout.Width(185));
+                    _currentStepObj.Ancillary = EditorGUILayout.TextField(_currentStepObj.Ancillary, GUILayout.Width(185));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();

@@ -56,6 +56,10 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal string Prompt = "Step Prompt";
         /// <summary>
+        /// 是否展示步骤详述信息
+        /// </summary>
+        [SerializeField] internal bool IsDisplayPrompt = false;
+        /// <summary>
         /// 步骤其他信息
         /// </summary>
         [SerializeField] internal string Ancillary = "";
@@ -134,6 +138,16 @@ namespace HT.Framework
             get
             {
                 return Prompt;
+            }
+        }
+        /// <summary>
+        /// 获取是否展示步骤详述信息
+        /// </summary>
+        public bool GetIsDisplayPrompt
+        {
+            get
+            {
+                return IsDisplayPrompt;
             }
         }
         /// <summary>
@@ -405,6 +419,7 @@ namespace HT.Framework
             content.Name = Name;
             content.Trigger = Trigger;
             content.Prompt = Prompt;
+            content.IsDisplayPrompt = IsDisplayPrompt;
             content.Ancillary = Ancillary;
             content.BestView = BestView;
             content.ViewOffset = ViewOffset;
