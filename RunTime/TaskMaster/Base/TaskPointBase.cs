@@ -27,6 +27,10 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal string Details = "";
         /// <summary>
+        /// 是否展示任务点细节
+        /// </summary>
+        [SerializeField] internal bool IsDisplayDetails = false;
+        /// <summary>
         /// 任务点目标
         /// </summary>
         [SerializeField] internal TaskGameObject Target = new TaskGameObject();
@@ -73,6 +77,16 @@ namespace HT.Framework
             get
             {
                 return Details;
+            }
+        }
+        /// <summary>
+        /// 获取是否展示任务点细节
+        /// </summary>
+        public bool GetIsDisplayDetails
+        {
+            get
+            {
+                return IsDisplayDetails;
             }
         }
         /// <summary>
@@ -628,6 +642,13 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
             
+            height += 20;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(55);
+            IsDisplayDetails = GUILayout.Toggle(IsDisplayDetails, getWord("Is Display Details"), GUILayout.Width(120));
+            GUILayout.EndHorizontal();
+
             height += 20;
 
             TaskGameObject.DrawField(Target, getWord("Target") + ":", 50, Anchor.width, getWord("Copy"), getWord("Paste"));

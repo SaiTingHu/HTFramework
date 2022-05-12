@@ -198,6 +198,7 @@ namespace HT.Framework
             AddWord("身份号", "ID");
             AddWord("名称", "Name");
             AddWord("细节", "Details");
+            AddWord("是否显示细节提示", "Is Display Details");
             AddWord("任务点", "Points");
             AddWord("目标", "Target");
             AddWord("依赖的任务点", "Dependent task point");
