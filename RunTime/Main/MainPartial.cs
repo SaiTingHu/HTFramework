@@ -1044,21 +1044,27 @@ namespace HT.Framework
         #region Utility
         private List<HTFAction> _actionQueue = new List<HTFAction>();
         private List<HTFAction> _actionExecuteQueue = new List<HTFAction>();
-        private bool _isCanDoQueue = false;
+        private object _mutex = new object();
 
         private void UtilityUpdate()
         {
-            if (_isCanDoQueue)
+            if (_actionQueue.Count > 0)
             {
+                lock (_mutex)
+                {
+                    _actionExecuteQueue.Clear();
+                    _actionExecuteQueue.AddRange(_actionQueue);
+                    _actionQueue.Clear();
+                }
+            }
+            if (_actionExecuteQueue.Count > 0)
+            {
+                for (int i = 0; i < _actionExecuteQueue.Count; i++)
+                {
+                    _actionExecuteQueue[i]();
+                }
                 _actionExecuteQueue.Clear();
-                _actionExecuteQueue.AddRange(_actionQueue);
-                _actionQueue.Clear();
             }
-            for (int i = 0; i < _actionExecuteQueue.Count; i++)
-            {
-                _actionExecuteQueue[i]();
-            }
-            _actionExecuteQueue.Clear();
         }
 
         /// <summary>
@@ -1067,9 +1073,10 @@ namespace HT.Framework
         /// <param name="action">执行委托</param>
         public void QueueOnMainThread(HTFAction action)
         {
-            _isCanDoQueue = false;
-            _actionQueue.Add(action);
-            _isCanDoQueue = true;
+            lock (_mutex)
+            {
+                _actionQueue.Add(action);
+            }
         }
         /// <summary>
         /// 将执行委托排到子线程调用（在主线程中）
