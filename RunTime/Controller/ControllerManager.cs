@@ -53,7 +53,17 @@ namespace HT.Framework
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
-        
+
+        /// <summary>
+        /// 模块的优先级（越小越优先）
+        /// </summary>
+        public override int Priority
+        {
+            get
+            {
+                return -1;
+            }
+        }
         /// <summary>
         /// 主摄像机
         /// </summary>

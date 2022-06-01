@@ -20,7 +20,7 @@ namespace HT.Framework
         {
             get
             {
-                return -1;
+                return -2;
             }
         }
         /// <summary>
