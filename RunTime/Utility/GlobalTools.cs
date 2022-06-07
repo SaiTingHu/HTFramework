@@ -905,20 +905,20 @@ namespace HT.Framework
 
         #region 系统工具
         /// <summary>
-        /// 获取本机Mac地址
+        /// 获取本机物理地址
         /// </summary>
-        /// <param name="name">网卡的名称</param>
-        /// <returns>Mac地址</returns>
-        public static string GetMacAddress(string name = "本地连接")
+        /// <returns>物理地址</returns>
+        public static string GetMacAddress()
         {
             try
             {
                 NetworkInterface[] nis = NetworkInterface.GetAllNetworkInterfaces();
                 for (int i = 0; i < nis.Length; i++)
                 {
-                    if (nis[i].Name == name)
+                    string address = nis[i].GetPhysicalAddress().ToString();
+                    if (!string.IsNullOrEmpty(address))
                     {
-                        return nis[i].GetPhysicalAddress().ToString();
+                        return address;
                     }
                 }
                 return null;

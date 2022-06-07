@@ -248,18 +248,9 @@ namespace HT.Framework
 
         #region Editor 【优先级102】
         /// <summary>
-        /// 运行场景
-        /// </summary>
-        [MenuItem("HTFramework/Editor/Run &3", false, 102)]
-        private static void RunScene()
-        {
-            EditorApplication.isPlaying = !EditorApplication.isPlaying;
-        }
-        
-        /// <summary>
         /// 打开编辑器安装路径
         /// </summary>
-        [MenuItem("HTFramework/Editor/Open Installation Path", false, 103)]
+        [MenuItem("HTFramework/Editor/Open Installation Path", false, 102)]
         private static void OpenInstallationPath()
         {
             string path = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/"));
@@ -270,7 +261,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开DataPath文件夹
         /// </summary>
-        [MenuItem("HTFramework/Editor/Open DataPath Folder", false, 104)]
+        [MenuItem("HTFramework/Editor/Open DataPath Folder", false, 103)]
         private static void OpenDataPathFolder()
         {
             string path = Application.dataPath;
@@ -281,7 +272,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开StreamingAssets文件夹
         /// </summary>
-        [MenuItem("HTFramework/Editor/Open StreamingAssets Folder", false, 105)]
+        [MenuItem("HTFramework/Editor/Open StreamingAssets Folder", false, 104)]
         private static void OpenStreamingAssetsFolder()
         {
             string path = Application.streamingAssetsPath;
@@ -297,7 +288,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开PersistentData文件夹
         /// </summary>
-        [MenuItem("HTFramework/Editor/Open PersistentData Folder", false, 106)]
+        [MenuItem("HTFramework/Editor/Open PersistentData Folder", false, 105)]
         private static void OpenPersistentDataFolder()
         {
             string path = Application.persistentDataPath;
