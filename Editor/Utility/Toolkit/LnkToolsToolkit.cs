@@ -13,8 +13,8 @@ namespace HT.Framework
     internal static class LnkToolsToolkit
     {
         private static bool IsEnableLnkTools = false;
-        private static bool IsExpansionLnkTools = false;
         private static List<LnkTools> LnkToolss = new List<LnkTools>();
+        private static float Height;
 
         static LnkToolsToolkit()
         {
@@ -27,7 +27,6 @@ namespace HT.Framework
         private static void OnInitLnkTools()
         {
             IsEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, true);
-            IsExpansionLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Expansion, true);
 
             if (IsEnableLnkTools)
             {
@@ -40,8 +39,7 @@ namespace HT.Framework
                     {
                         if (methods[j].IsDefined(typeof(LnkToolsAttribute), false))
                         {
-                            LnkToolsAttribute attribute = methods[j].GetCustomAttribute<LnkToolsAttribute>();
-                            LnkTools lnkTools = new LnkTools(attribute.Tooltip, new Color(attribute.R, attribute.G, attribute.B, attribute.A), attribute.Mode, attribute.Priority, methods[j]);
+                            LnkTools lnkTools = new LnkTools(methods[j]);
                             LnkToolss.Add(lnkTools);
                         }
                     }
@@ -54,6 +52,8 @@ namespace HT.Framework
                     else return 1;
                 });
 
+                Height = (Mathf.Ceil(LnkToolss.Count / 2f) + 1) * 22 + 3;
+
                 SceneView.duringSceneGui += OnLnkToolsGUI;
             }
         }
@@ -65,65 +65,64 @@ namespace HT.Framework
             Handles.BeginGUI();
 
             Rect rect = Rect.zero;
-            int h = sceneView.in2DMode ? 5 : 120;
+            float x = sceneView.position.width - 80;
+            float y = sceneView.in2DMode ? 5 : 120;
 
-            if (IsExpansionLnkTools)
-            {
-                rect.Set(sceneView.position.width - 135, h, 130, (LnkToolss.Count + 1) * 22 + 8);
-                GUI.Box(rect, "");
-            }
+            rect.Set(x, y, 75, Height);
+            GUI.Box(rect, "LnkTools", "Window");
 
-            rect.Set(sceneView.position.width - 130, h + 5, 120, 20);
-            bool expansion = GUI.Toggle(rect, IsExpansionLnkTools, "LnkTools", "Prebutton");
-            if (expansion != IsExpansionLnkTools)
+            int index = 1;
+            int height = 22;
+            for (int i = 0; i < LnkToolss.Count; i++)
             {
-                IsExpansionLnkTools = expansion;
-                EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Expansion, IsExpansionLnkTools);
-            }
-            rect.y += 22;
-
-            if (IsExpansionLnkTools)
-            {
-                for (int i = 0; i < LnkToolss.Count; i++)
+                if (LnkToolss[i].Mode == LnkToolsMode.OnlyRuntime)
                 {
-                    if (LnkToolss[i].Mode == LnkToolsMode.OnlyRuntime)
-                    {
-                        GUI.enabled = EditorApplication.isPlaying;
-                    }
-                    else if (LnkToolss[i].Mode == LnkToolsMode.OnlyEditor)
-                    {
-                        GUI.enabled = !EditorApplication.isPlaying;
-                    }
-                    else
-                    {
-                        GUI.enabled = true;
-                    }
-
-                    GUI.backgroundColor = LnkToolss[i].BGColor;
-                    if (GUI.Button(rect, LnkToolss[i].Tooltip))
-                    {
-                        LnkToolss[i].Method.Invoke(null, null);
-                    }
-                    GUI.backgroundColor = Color.white;
-                    rect.y += 22;
+                    GUI.enabled = EditorApplication.isPlaying;
                 }
-                GUI.enabled = true;
+                else if (LnkToolss[i].Mode == LnkToolsMode.OnlyEditor)
+                {
+                    GUI.enabled = !EditorApplication.isPlaying;
+                }
+                else
+                {
+                    GUI.enabled = true;
+                }
+
+                if (index == 1)
+                {
+                    rect.Set(x + 5, y + height, 30, 20);
+                    index = 2;
+                }
+                else if (index == 2)
+                {
+                    rect.Set(x + 40, y + height, 30, 20);
+                    height += 22;
+                    index = 1;
+                }
+
+                GUI.backgroundColor = LnkToolss[i].BGColor;
+                if (GUI.Button(rect, LnkToolss[i].Content))
+                {
+                    LnkToolss[i].Method.Invoke(null, null);
+                }
+                GUI.backgroundColor = Color.white;
             }
-            
+            GUI.enabled = true;
+
             Handles.EndGUI();
         }
 
-        [LnkTools("Save Scene", 0, 1, 0, 1, LnkToolsMode.OnlyEditor, -5)]
+        [LnkTools("Save Scene", 0, 1, 0, 1, "SaveAs", LnkToolsMode.OnlyEditor, -5)]
         private static void SaveScene()
         {
             EditorApplication.ExecuteMenuItem("File/Save");
         }
-        [LnkTools("Save Project", 0, 1, 0, 1, LnkToolsMode.OnlyEditor, -4)]
+        [LnkTools("Save Project", 0, 1, 0, 1, "SaveAs", LnkToolsMode.OnlyEditor, -4)]
         private static void SaveProject()
         {
             EditorApplication.ExecuteMenuItem("File/Save Project");
         }
-        [LnkTools("Set Ray Target", 1, 0.92f, 0.016f, 1, LnkToolsMode.OnlyEditor, -3)]
+        [LnkTools("Set Mouse Ray Target", 1, 0.92f, 0.016f, 1, "PhysicsRaycaster Icon", LnkToolsMode.OnlyEditor, -3)]
         private static void SetMouseRayTarget()
         {
             if (Selection.gameObjects.Length > 0)
@@ -132,7 +131,7 @@ namespace HT.Framework
                 EditorApplication.ExecuteMenuItem("HTFramework/Batch/Set Mouse Ray Target");
             }
         }
-        [LnkTools("Set Ray UI Target", 1, 0.92f, 0.016f, 1, LnkToolsMode.OnlyEditor, -2)]
+        [LnkTools("Set Mouse Ray UI Target", 1, 0.92f, 0.016f, 1, "GraphicRaycaster Icon", LnkToolsMode.OnlyEditor, -2)]
         private static void SetMouseRayUITarget()
         {
             if (Selection.gameObjects.Length > 0)
@@ -140,7 +139,7 @@ namespace HT.Framework
                 EditorApplication.ExecuteMenuItem("HTFramework/Batch/Set Mouse Ray UI Target");
             }
         }
-        [LnkTools("Look At", LnkToolsMode.OnlyRuntime, -1)]
+        [LnkTools("Look At Selected Object", "LookAtConstraint Icon", LnkToolsMode.OnlyRuntime, -1)]
         private static void LookAt()
         {
             if (Main.m_Controller != null)
@@ -162,18 +161,23 @@ namespace HT.Framework
 
         private class LnkTools
         {
-            public string Tooltip;
+            public GUIContent Content;
             public Color BGColor;
             public LnkToolsMode Mode;
             public int Priority;
             public MethodInfo Method;
 
-            public LnkTools(string tooltip, Color bgColor, LnkToolsMode mode, int priority, MethodInfo method)
+            public LnkTools(MethodInfo method)
             {
-                Tooltip = tooltip;
-                BGColor = bgColor;
-                Mode = mode;
-                Priority = priority;
+                LnkToolsAttribute attribute = method.GetCustomAttribute<LnkToolsAttribute>();
+                GUIContent icon = EditorGUIUtility.IconContent(attribute.BuiltinIcon);
+
+                Content = new GUIContent();
+                Content.image = icon != null ? icon.image : null;
+                Content.tooltip = attribute.Tooltip;
+                BGColor = new Color(attribute.R, attribute.G, attribute.B, attribute.A);
+                Mode = attribute.Mode;
+                Priority = attribute.Priority;
                 Method = method;
             }
         }

@@ -117,10 +117,6 @@ namespace HT.Framework
         /// </summary>
         public static readonly string LnkTools_Enable = "HT.Framework.LnkTools.Enable";
         /// <summary>
-        /// 快捷工具是否展开
-        /// </summary>
-        public static readonly string LnkTools_Expansion = "HT.Framework.LnkTools.Expansion";
-        /// <summary>
         /// VSCode的启动路径
         /// </summary>
         public static readonly string VSCodePath = "HT.Framework.VSCodePath";

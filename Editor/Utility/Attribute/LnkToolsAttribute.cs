@@ -29,31 +29,37 @@ namespace HT.Framework
         /// </summary>
         public float A { get; private set; }
         /// <summary>
+        /// 工具使用的内置图标
+        /// </summary>
+        public string BuiltinIcon { get; private set; }
+        /// <summary>
         /// 快捷工具触发类型
         /// </summary>
         public LnkToolsMode Mode { get; private set; }
         /// <summary>
-        /// 工具优先级
+        /// 工具优先级（越小越靠前）
         /// </summary>
         public int Priority { get; private set; }
-        
-        public LnkToolsAttribute(string tooltip, LnkToolsMode mode = LnkToolsMode.AllMode, int priority = int.MaxValue)
+
+        public LnkToolsAttribute(string tooltip, string builtinIcon = "CustomTool", LnkToolsMode mode = LnkToolsMode.AllMode, int priority = int.MaxValue)
         {
             Tooltip = tooltip;
             R = 1;
             G = 1;
             B = 1;
             A = 1;
+            BuiltinIcon = builtinIcon;
             Mode = mode;
             Priority = priority;
         }
-        public LnkToolsAttribute(string tooltip, float r, float g, float b, float a, LnkToolsMode mode = LnkToolsMode.AllMode, int priority = int.MaxValue)
+        public LnkToolsAttribute(string tooltip, float r, float g, float b, float a, string builtinIcon = "CustomTool", LnkToolsMode mode = LnkToolsMode.AllMode, int priority = int.MaxValue)
         {
             Tooltip = tooltip;
             R = r;
             G = g;
             B = b;
             A = a;
+            BuiltinIcon = builtinIcon;
             Mode = mode;
             Priority = priority;
         }
