@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
@@ -19,6 +21,55 @@ namespace HT.Framework
         /// UpperLower轴线值
         /// </summary>
         private float _upperLowerValue = 0;
+        /// <summary>
+        /// 上一次选中的输入框
+        /// </summary>
+        private InputField _lastInput;
+        /// <summary>
+        /// 上一次选中的UI控件
+        /// </summary>
+        private GameObject _lastSelected;
+
+        /// <summary>
+        /// 当前选中的UI控件
+        /// </summary>
+        private GameObject CurrentSelected
+        {
+            get
+            {
+                if (EventSystem.current)
+                {
+                    return EventSystem.current.currentSelectedGameObject;
+                }
+                return null;
+            }
+        }
+        /// <summary>
+        /// 当前是否有任一输入框控件处于焦点中
+        /// </summary>
+        private bool IsAnyInputFocused
+        {
+            get
+            {
+                if (CurrentSelected == null)
+                {
+                    _lastSelected = null;
+                    _lastInput = null;
+                    return false;
+                }
+                else
+                {
+                    if (_lastSelected == CurrentSelected)
+                    {
+                        return _lastInput ? _lastInput.isFocused : false;
+                    }
+
+                    _lastSelected = CurrentSelected;
+                    _lastInput = _lastSelected.GetComponent<InputField>();
+                    return _lastInput ? _lastInput.isFocused : false;
+                }
+            }
+        }
 
         public override void OnStartUp()
         {
@@ -67,14 +118,24 @@ namespace HT.Framework
             SetAxis(InputAxisType.MouseX, Input.GetAxis("Mouse X"));
             SetAxis(InputAxisType.MouseY, Input.GetAxis("Mouse Y"));
             SetAxis(InputAxisType.MouseScrollWheel, Input.GetAxis("Mouse ScrollWheel"));
-            SetAxis(InputAxisType.Horizontal, Input.GetAxis("Horizontal"));
-            SetAxis(InputAxisType.Vertical, Input.GetAxis("Vertical"));
 
-            if (Input.GetKey(KeyCode.Q)) _upperLowerValue -= Time.deltaTime;
-            else if (Input.GetKey(KeyCode.E)) _upperLowerValue += Time.deltaTime;
-            else _upperLowerValue = 0;
-            SetAxis(InputAxisType.UpperLower, Mathf.Clamp(_upperLowerValue, -1, 1));
+            if (IsAnyInputFocused)
+            {
+                SetAxis(InputAxisType.Horizontal, 0);
+                SetAxis(InputAxisType.Vertical, 0);
+                SetAxis(InputAxisType.UpperLower, 0);
+            }
+            else
+            {
+                SetAxis(InputAxisType.Horizontal, Input.GetAxis("Horizontal"));
+                SetAxis(InputAxisType.Vertical, Input.GetAxis("Vertical"));
 
+                if (Input.GetKey(KeyCode.Q)) _upperLowerValue -= Time.deltaTime;
+                else if (Input.GetKey(KeyCode.E)) _upperLowerValue += Time.deltaTime;
+                else _upperLowerValue = 0;
+                SetAxis(InputAxisType.UpperLower, Mathf.Clamp(_upperLowerValue, -1, 1));
+            }
+            
             SetVirtualMousePosition(Input.mousePosition);
         }
         public override void OnShutdown()

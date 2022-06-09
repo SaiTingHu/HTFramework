@@ -988,10 +988,9 @@ namespace HT.Framework
                     foreach (MethodInfo mi in mis)
                     {
                         if (mi.Name.Contains("set_") || mi.Name.Contains("get_") || mi.GetParameters().Length > 0 || mi.ReturnType.Name != "Void")
-                        {
                             continue;
-                        }
-                        gm.AddItem(new GUIContent(mono.GetType().Name + "/" + mi.Name + "()"), StringValue == mi.Name, () =>
+
+                        gm.AddItem(new GUIContent($"{mono.GetType().Name}/{mi.Name}()"), StringValue == mi.Name, () =>
                         {
                             StringValue = mi.Name;
                         });
@@ -1019,11 +1018,10 @@ namespace HT.Framework
                     foreach (MethodInfo mi in mis)
                     {
                         ParameterInfo[] pis = mi.GetParameters();
-                        if (mi.Name.Contains("set_") || mi.Name.Contains("get_") || pis.Length != 1 || pis[0].ParameterType.Name != "String" || mi.ReturnType.Name != "Void")
-                        {
+                        if (mi.Name.Contains("set_") || mi.Name.Contains("get_") || pis.Length != 1 || pis[0].ParameterType != typeof(string) || mi.ReturnType.Name != "Void")
                             continue;
-                        }
-                        gm.AddItem(new GUIContent(mono.GetType().Name + "/" + mi.Name + "(string)"), StringValue == mi.Name, () =>
+                        
+                        gm.AddItem(new GUIContent($"{mono.GetType().Name}/{mi.Name}(string)"), StringValue == mi.Name, () =>
                         {
                             StringValue = mi.Name;
                         });
