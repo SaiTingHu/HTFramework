@@ -58,7 +58,7 @@ namespace HT.Framework
                             int j = i;
                             if (Target.ChannelTypes.Contains(types[j].FullName))
                             {
-                                gm.AddDisabledItem(new GUIContent(types[j].FullName));
+                                gm.AddDisabledItem(new GUIContent(types[j].FullName), true);
                             }
                             else
                             {

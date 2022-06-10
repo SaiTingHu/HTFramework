@@ -85,7 +85,7 @@ namespace HT.Framework
                                 int n = m;
                                 if (Target.DefineUINames.Contains(types[n].FullName))
                                 {
-                                    gm.AddDisabledItem(new GUIContent(types[n].FullName));
+                                    gm.AddDisabledItem(new GUIContent(types[n].FullName), Target.DefineUINames[j] == types[n].FullName);
                                 }
                                 else
                                 {

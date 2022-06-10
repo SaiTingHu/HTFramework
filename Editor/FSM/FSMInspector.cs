@@ -89,7 +89,7 @@ namespace HT.Framework
 
                             if (Target.States.Contains(types[j].FullName))
                             {
-                                gm.AddDisabledItem(new GUIContent(stateName));
+                                gm.AddDisabledItem(new GUIContent(stateName), true);
                             }
                             else
                             {
