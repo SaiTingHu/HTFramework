@@ -21,6 +21,9 @@ namespace HT.Framework
         private bool _isLockPosition = false;
         private bool _isLockRotation = false;
         private bool _isLockScale = false;
+        private GUIContent _lpGC;
+        private GUIContent _lrGC;
+        private GUIContent _lsGC;
 
         protected override bool IsEnableRuntimeData => false;
 
@@ -41,6 +44,15 @@ namespace HT.Framework
             }
             _onEnable.Invoke(_rotationGUI, new object[] { serializedObject.FindProperty("m_LocalRotation"), new GUIContent() });
             _onlyShowLocal = EditorPrefs.GetBool(EditorPrefsTable.Transform_OnlyShowLocal, false);
+            _lpGC = new GUIContent();
+            _lpGC.text = "LP";
+            _lpGC.tooltip = "Local Position";
+            _lrGC = new GUIContent();
+            _lrGC.text = "LR";
+            _lrGC.tooltip = "Local Rotation";
+            _lsGC = new GUIContent();
+            _lsGC.text = "LS";
+            _lsGC.tooltip = "Local Scale";
 
             SetLockState();
         }
@@ -133,14 +145,66 @@ namespace HT.Framework
             GUI.enabled = !_isLockPosition;
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("LP", GUILayout.Width(20));
+            if (GUILayout.Button(_lpGC, "Label", GUILayout.Width(20)))
+            {
+                if (Targets.Length == 1)
+                {
+                    GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Reset LocalPosition But Ignore Child"), false, () =>
+                    {
+                        Undo.RecordObject(Target, "Reset LocalPosition But Ignore Child");
+                        Vector3 dir = Vector3.zero - Target.localPosition;
+                        Target.localPosition = Vector3.zero;
+                        HasChanged();
+
+                        for (int i = 0; i < Target.childCount; i++)
+                        {
+                            Transform child = Target.GetChild(i);
+                            Undo.RecordObject(child, "Reset LocalPosition But Ignore Child");
+                            child.position -= dir;
+                            EditorUtility.SetDirty(child);
+                        }
+                    });
+                    gm.ShowAsContext();
+                }
+            }
             PropertyField("m_LocalPosition", "");
             GUILayout.EndHorizontal();
 
             GUI.enabled = !_isLockRotation;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("LR", GUILayout.Width(20));
+            if (GUILayout.Button(_lrGC, "Label", GUILayout.Width(20)))
+            {
+                if (Targets.Length == 1)
+                {
+                    GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Reset LocalRotation But Ignore Child"), false, () =>
+                    {
+                        Vector3[] pos = new Vector3[Target.childCount];
+                        Quaternion[] rot = new Quaternion[Target.childCount];
+                        for (int i = 0; i < Target.childCount; i++)
+                        {
+                            pos[i] = Target.GetChild(i).position;
+                            rot[i] = Target.GetChild(i).rotation;
+                        }
+
+                        Undo.RecordObject(Target, "Reset LocalRotation But Ignore Child");
+                        Target.localRotation = Quaternion.identity;
+                        HasChanged();
+
+                        for (int i = 0; i < Target.childCount; i++)
+                        {
+                            Transform child = Target.GetChild(i);
+                            Undo.RecordObject(child, "Reset LocalRotation But Ignore Child");
+                            child.position = pos[i];
+                            child.rotation = rot[i];
+                            EditorUtility.SetDirty(child);
+                        }
+                    });
+                    gm.ShowAsContext();
+                }
+            }
             _rotationField.Invoke(_rotationGUI, null);
             if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
             {
@@ -193,7 +257,37 @@ namespace HT.Framework
             GUI.enabled = !_isLockScale;
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("LS", GUILayout.Width(20));
+            if (GUILayout.Button(_lsGC, "Label", GUILayout.Width(20)))
+            {
+                if (Targets.Length == 1)
+                {
+                    GenericMenu gm = new GenericMenu();
+                    gm.AddItem(new GUIContent("Reset LocalScale But Ignore Child"), false, () =>
+                    {
+                        Vector3[] pos = new Vector3[Target.childCount];
+                        Vector3[] scale = new Vector3[Target.childCount];
+                        for (int i = 0; i < Target.childCount; i++)
+                        {
+                            pos[i] = Target.GetChild(i).position;
+                            scale[i] = Target.GetChild(i).lossyScale;
+                        }
+
+                        Undo.RecordObject(Target, "Reset LocalScale But Ignore Child");
+                        Target.localScale = Vector3.one;
+                        HasChanged();
+
+                        for (int i = 0; i < Target.childCount; i++)
+                        {
+                            Transform child = Target.GetChild(i);
+                            Undo.RecordObject(child, "Reset LocalScale But Ignore Child");
+                            child.position = pos[i];
+                            child.localScale = scale[i];
+                            EditorUtility.SetDirty(child);
+                        }
+                    });
+                    gm.ShowAsContext();
+                }
+            }
             PropertyField("m_LocalScale", "");
             GUILayout.EndHorizontal();
             
