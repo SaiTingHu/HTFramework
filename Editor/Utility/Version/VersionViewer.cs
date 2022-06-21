@@ -101,17 +101,17 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Supported Unity Versions: " + _versionInfo.CurrentVersion.UnityVersions);
+                GUILayout.Label("Supported Unity Versions: " + _version.UnityVersions);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Scripting Runtime Versions: " + _versionInfo.CurrentVersion.ScriptingVersions);
+                GUILayout.Label("Scripting Runtime Versions: " + _version.ScriptingVersions);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Api Compatibility Level: " + _versionInfo.CurrentVersion.APIVersions);
+                GUILayout.Label("Api Compatibility Level: " + _version.APIVersions);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
