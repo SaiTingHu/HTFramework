@@ -677,6 +677,7 @@ namespace HT.Framework
             PlayableDirector director = Target.GetComponent<PlayableDirector>();
             if (director && director.playableAsset)
             {
+                director.Play();
                 director.time = director.duration;
             }
         }
