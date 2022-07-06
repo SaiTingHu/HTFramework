@@ -352,6 +352,88 @@ namespace HT.Framework
             Reload();
         }
         /// <summary>
+        /// 选中数据
+        /// </summary>
+        /// <param name="data">数据</param>
+        public void SelectData(T data)
+        {
+            if (!_datas.Contains(data))
+                return;
+
+            TableViewItem<T> item = _items.Find((i) => { return i.Data == data; });
+            if (item != null)
+            {
+                SetSelection(new int[] { item.id });
+            }
+        }
+        /// <summary>
+        /// 选中数据
+        /// </summary>
+        /// <param name="data">数据</param>
+        /// <param name="options">选中的操作</param>
+        public void SelectData(T data, TreeViewSelectionOptions options)
+        {
+            if (!_datas.Contains(data))
+                return;
+
+            TableViewItem<T> item = _items.Find((i) => { return i.Data == data; });
+            if (item != null)
+            {
+                SetSelection(new int[] { item.id }, options);
+            }
+        }
+        /// <summary>
+        /// 选中数据
+        /// </summary>
+        /// <param name="datas">数据</param>
+        public void SelectDatas(List<T> datas)
+        {
+            List<int> ids = new List<int>();
+            for (int i = 0; i < datas.Count; i++)
+            {
+                T data = datas[i];
+                if (!_datas.Contains(data))
+                    continue;
+
+                TableViewItem<T> item = _items.Find((t) => { return t.Data == data; });
+                if (item != null)
+                {
+                    ids.Add(item.id);
+                }
+            }
+
+            if (ids.Count > 0)
+            {
+                SetSelection(ids);
+            }
+        }
+        /// <summary>
+        /// 选中数据
+        /// </summary>
+        /// <param name="datas">数据</param>
+        /// <param name="options">选中的操作</param>
+        public void SelectDatas(List<T> datas, TreeViewSelectionOptions options)
+        {
+            List<int> ids = new List<int>();
+            for (int i = 0; i < datas.Count; i++)
+            {
+                T data = datas[i];
+                if (!_datas.Contains(data))
+                    continue;
+
+                TableViewItem<T> item = _items.Find((t) => { return t.Data == data; });
+                if (item != null)
+                {
+                    ids.Add(item.id);
+                }
+            }
+
+            if (ids.Count > 0)
+            {
+                SetSelection(ids, options);
+            }
+        }
+        /// <summary>
         /// 清空所有数据
         /// </summary>
         public void ClearData()
