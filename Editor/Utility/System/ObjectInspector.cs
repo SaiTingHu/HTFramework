@@ -105,16 +105,16 @@ namespace HT.Framework
 
                         if (string.IsNullOrEmpty(_fields[i].Drawer.Style))
                         {
-                            GUILayout.BeginHorizontal();
+                            EditorGUILayout.BeginHorizontal();
                         }
                         else
                         {
-                            GUILayout.BeginHorizontal(_fields[i].Drawer.Style);
-                            GUILayout.Space(10);
+                            EditorGUILayout.BeginHorizontal(_fields[i].Drawer.Style);
+                            EditorGUILayout.Space(10);
                         }
                         _fields[i].DrawerValue = EditorGUILayout.Foldout(_fields[i].DrawerValue, _fields[i].Drawer.Name, _fields[i].Drawer.ToggleOnLabelClick);
                         drawer = _fields[i].DrawerValue;
-                        GUILayout.EndHorizontal();
+                        EditorGUILayout.EndHorizontal();
                     }
                     else
                     {
@@ -412,18 +412,18 @@ namespace HT.Framework
                         if (Property.name == "m_Script")
                         {
                             GUI.enabled = false;
-                            GUILayout.BeginHorizontal();
+                            EditorGUILayout.BeginHorizontal();
                             EditorGUILayout.PropertyField(Property);
-                            GUILayout.EndHorizontal();
+                            EditorGUILayout.EndHorizontal();
                             GUI.enabled = true;
                         }
                         else
                         {
                             GUI.enabled = IsEnable;
-                            GUILayout.BeginHorizontal();
+                            EditorGUILayout.BeginHorizontal();
                             EditorGUILayout.PropertyField(Property, new GUIContent(Label), true);
                             inspector.DrawCopyPaste(Property);
-                            GUILayout.EndHorizontal();
+                            EditorGUILayout.EndHorizontal();
                             GUI.enabled = true;
                         }
                     }
@@ -431,12 +431,12 @@ namespace HT.Framework
 
                     if (HasPreview)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(EditorGUIUtility.labelWidth);
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.Space(inspector.LabelWidth);
                         Texture2D preview = Property.propertyType == SerializedPropertyType.ObjectReference ? AssetPreview.GetAssetPreview(Property.objectReferenceValue) : null;
                         GUIContent gc = preview != null ? new GUIContent(preview) : new GUIContent("No Preview");
                         EditorGUILayout.LabelField(gc, EditorStyles.helpBox, GUILayout.Width(PreviewSize), GUILayout.Height(PreviewSize));
-                        GUILayout.EndHorizontal();
+                        EditorGUILayout.EndHorizontal();
                     }
                 }
             }
@@ -493,8 +493,8 @@ namespace HT.Framework
                         fieldInspector.Field.SetValue(inspector.target, DAttribute.Values[selectIndex]);
                         inspector.HasChanged();
                     }
-                    
-                    GUILayout.BeginHorizontal();
+
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
                     int newIndex = EditorGUILayout.Popup(fieldInspector.Label, selectIndex, DAttribute.DisplayOptions);
                     if (EditorGUI.EndChangeCheck())
@@ -503,13 +503,13 @@ namespace HT.Framework
                         fieldInspector.Field.SetValue(inspector.target, DAttribute.Values[newIndex]);
                         inspector.HasChanged();
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] used a mismatched Dropdown!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
         }
@@ -534,7 +534,7 @@ namespace HT.Framework
                     if (layer < 0) layer = 0;
                     if (layer > 31) layer = 31;
 
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
                     int newLayer = EditorGUILayout.LayerField(fieldInspector.Label, layer);
                     if (EditorGUI.EndChangeCheck())
@@ -543,7 +543,7 @@ namespace HT.Framework
                         fieldInspector.Field.SetValue(inspector.target, LayerMask.LayerToName(newLayer));
                         inspector.HasChanged();
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else if (fieldInspector.Field.FieldType == typeof(int))
                 {
@@ -551,7 +551,7 @@ namespace HT.Framework
                     if (layer < 0) layer = 0;
                     if (layer > 31) layer = 31;
 
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
                     int newLayer = EditorGUILayout.LayerField(fieldInspector.Label, layer);
                     if (EditorGUI.EndChangeCheck())
@@ -560,13 +560,13 @@ namespace HT.Framework
                         fieldInspector.Field.SetValue(inspector.target, newLayer);
                         inspector.HasChanged();
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Layer! because the types don't match!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
         }
@@ -596,9 +596,9 @@ namespace HT.Framework
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't use the ReorderableList!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
 
@@ -653,7 +653,7 @@ namespace HT.Framework
                     string value = (string)fieldInspector.Field.GetValue(inspector.target);
                     if (value == null) value = "";
 
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
                     string newValue = EditorGUILayout.PasswordField(fieldInspector.Label, value);
                     if (EditorGUI.EndChangeCheck())
@@ -662,13 +662,13 @@ namespace HT.Framework
                         fieldInspector.Field.SetValue(inspector.target, newValue);
                         inspector.HasChanged();
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Password! because the types don't match!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
         }
@@ -704,19 +704,19 @@ namespace HT.Framework
             {
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     bool isClick = (bool)LinkLabel.Invoke(null, Parameter);
                     if (isClick)
                     {
                         Application.OpenURL((string)fieldInspector.Field.GetValue(inspector.target));
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Hyperlink! because the types don't match!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
         }
@@ -743,7 +743,7 @@ namespace HT.Framework
                     string value = (string)fieldInspector.Field.GetValue(inspector.target);
                     if (value == null) value = "";
 
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
                     string newValue = EditorGUILayout.TextField(fieldInspector.Label, value);
                     if (EditorGUI.EndChangeCheck())
@@ -762,13 +762,13 @@ namespace HT.Framework
                             inspector.HasChanged();
                         }
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used FilePath! because the types don't match!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
         }
@@ -795,7 +795,7 @@ namespace HT.Framework
                     string value = (string)fieldInspector.Field.GetValue(inspector.target);
                     if (value == null) value = "";
 
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUI.BeginChangeCheck();
                     string newValue = EditorGUILayout.TextField(fieldInspector.Label, value);
                     if (EditorGUI.EndChangeCheck())
@@ -814,13 +814,13 @@ namespace HT.Framework
                             inspector.HasChanged();
                         }
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used FolderPath! because the types don't match!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
         }
@@ -850,8 +850,8 @@ namespace HT.Framework
 
                     string value = (string)fieldInspector.Field.GetValue(inspector.target);
 
-                    GUILayout.BeginHorizontal();
-                    GUILayout.Label(fieldInspector.Label, GUILayout.Width(EditorGUIUtility.labelWidth - 5));
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField(fieldInspector.Label, GUILayout.Width(inspector.LabelWidth));
                     if (GUILayout.Button(value, EditorStyles.popup))
                     {
                         if (GenerateMenu != null)
@@ -868,25 +868,24 @@ namespace HT.Framework
                                         Undo.RecordObject(inspector.target, "GenericMenu");
                                         value = menus[j];
                                         fieldInspector.Field.SetValue(inspector.target, value);
-                                        inspector.HasChanged();
-
                                         if (ChooseMenu != null)
                                         {
                                             CallChooseMenu(fieldInspector, value);
                                         }
+                                        inspector.HasChanged();
                                     });
                                 }
                                 gm.ShowAsContext();
                             }
                         }
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used GenericMenu! because the types don't match!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
 
@@ -965,19 +964,19 @@ namespace HT.Framework
                 IEnumerable<object> list = fieldInspector.Field.GetValue(inspector.target) as IEnumerable<object>;
                 if (fieldInspector.Field.FieldType.IsArray || list != null)
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PropertyField(fieldInspector.Property, new GUIContent(fieldInspector.Label), true);
                     if (GUILayout.Button(OpenGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         GenericTableWindow.OpenWindow(inspector.target, fieldInspector.Field.Name);
                     }
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal();
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used GenericTable! because the types don't match!", MessageType.Error);
-                    GUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
                 }
             }
         }
@@ -1392,7 +1391,7 @@ namespace HT.Framework
 
             private void CanWritePainting(ObjectInspector inspector)
             {
-                GUILayout.BeginHorizontal();
+                EditorGUILayout.BeginHorizontal();
                 EditorGUI.BeginChangeCheck();
                 object value = Property.GetValue(inspector.target);
                 object newValue = value;
@@ -1446,7 +1445,7 @@ namespace HT.Framework
                     EditorGUILayout.TextField(Name, value != null ? value.ToString() : "null");
                     EditorGUI.EndChangeCheck();
                 }
-                GUILayout.EndHorizontal();
+                EditorGUILayout.EndHorizontal();
 
                 if (value != newValue)
                 {
@@ -1460,7 +1459,7 @@ namespace HT.Framework
             {
                 GUI.enabled = false;
 
-                GUILayout.BeginHorizontal();
+                EditorGUILayout.BeginHorizontal();
                 object value = Property.GetValue(inspector.target);
                 if (Property.PropertyType.IsEnum)
                 {
@@ -1502,7 +1501,7 @@ namespace HT.Framework
                 {
                     EditorGUILayout.TextField(Name, value != null ? value.ToString() : "null");
                 }
-                GUILayout.EndHorizontal();
+                EditorGUILayout.EndHorizontal();
 
                 GUI.enabled = true;
             }
@@ -1536,19 +1535,19 @@ namespace HT.Framework
                 MulticastDelegate multicast = Field.GetValue(inspector.target) as MulticastDelegate;
                 Delegate[] delegates = multicast != null ? multicast.GetInvocationList() : null;
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(10);
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.Space(10);
                 IsFoldout = EditorGUILayout.Foldout(IsFoldout, string.Format("{0} [{1}]", Name, delegates != null ? delegates.Length : 0), true);
-                GUILayout.EndHorizontal();
+                EditorGUILayout.EndHorizontal();
 
                 if (IsFoldout && delegates != null)
                 {
                     for (int i = 0; i < delegates.Length; i++)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(30);
-                        GUILayout.Label(string.Format("{0}->{1}", delegates[i].Target, delegates[i].Method), "Textfield");
-                        GUILayout.EndHorizontal();
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.Space(30);
+                        EditorGUILayout.LabelField(string.Format("{0}->{1}", delegates[i].Target, delegates[i].Method), "Textfield");
+                        EditorGUILayout.EndHorizontal();
                     }
                 }
             }
@@ -1581,7 +1580,7 @@ namespace HT.Framework
                 || (Attribute.Mode == ButtonAttribute.EnableMode.Editor && !EditorApplication.isPlaying)
                 || (Attribute.Mode == ButtonAttribute.EnableMode.Playmode && EditorApplication.isPlaying);
 
-                GUILayout.BeginHorizontal();
+                EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button(Name, Attribute.Style))
                 {
                     inspector.HasChanged();
@@ -1599,7 +1598,7 @@ namespace HT.Framework
                         else Method.Invoke(inspector.target, null);
                     }
                 }
-                GUILayout.EndHorizontal();
+                EditorGUILayout.EndHorizontal();
 
                 GUI.enabled = true;
             }

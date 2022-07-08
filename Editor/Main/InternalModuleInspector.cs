@@ -43,16 +43,16 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
-            GUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox(Intro, MessageType.Info);
-            GUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal();
             GUI.enabled = !EditorApplication.isPlaying && _types.Count > 0;
-            GUILayout.Label("Helper", GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField("Helper", GUILayout.Width(LabelWidth));
             Button(_changeHelper, _module.HelperType, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25));
             GUI.enabled = true;
-            GUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
         }
         private void ChangeHelper()
         {

@@ -50,11 +50,11 @@ namespace HT.Framework
         /// <summary>
         /// 控件标签的标准宽度
         /// </summary>
-        protected float LabelWidth
+        protected virtual float LabelWidth
         {
             get
             {
-                return EditorGUIUtility.labelWidth - 5;
+                return EditorGUIUtility.labelWidth;
             }
         }
 
@@ -116,7 +116,7 @@ namespace HT.Framework
 
             if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)
             {
-                GUILayout.BeginHorizontal();
+                EditorGUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
 
                 if (_GiteeURL != null)
@@ -152,7 +152,7 @@ namespace HT.Framework
                     GUI.enabled = true;
                 }
 
-                GUILayout.EndHorizontal();
+                EditorGUILayout.EndHorizontal();
             }
 
             serializedObject.Update();
@@ -169,15 +169,15 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.cyan;
                 GUI.color = Color.white;
 
-                GUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Runtime Data", EditorStyles.boldLabel);
-                GUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Runtime Data", EditorStyles.boldLabel);
+                EditorGUILayout.EndHorizontal();
 
                 OnInspectorRuntimeGUI();
 
-                GUILayout.EndVertical();
+                EditorGUILayout.EndVertical();
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -530,7 +530,7 @@ namespace HT.Framework
         /// <param name="options">布局操作</param>
         protected void PropertyField(string propertyName, bool isLine = true, params GUILayoutOption[] options)
         {
-            if (isLine) GUILayout.BeginHorizontal();
+            if (isLine) EditorGUILayout.BeginHorizontal();
 
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
@@ -543,7 +543,7 @@ namespace HT.Framework
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
 
-            if (isLine) GUILayout.EndHorizontal();
+            if (isLine) EditorGUILayout.EndHorizontal();
         }
         /// <summary>
         /// 制作一个序列化属性字段
@@ -554,7 +554,7 @@ namespace HT.Framework
         /// <param name="options">布局操作</param>
         protected void PropertyField(string propertyName, string name, bool isLine = true, params GUILayoutOption[] options)
         {
-            if (isLine) GUILayout.BeginHorizontal();
+            if (isLine) EditorGUILayout.BeginHorizontal();
 
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
@@ -567,7 +567,7 @@ namespace HT.Framework
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
 
-            if (isLine) GUILayout.EndHorizontal();
+            if (isLine) EditorGUILayout.EndHorizontal();
         }
         /// <summary>
         /// 制作一个序列化属性字段
@@ -578,7 +578,7 @@ namespace HT.Framework
         /// <param name="options">布局操作</param>
         protected void PropertyField(string propertyName, bool includeChildren, bool isLine = true, params GUILayoutOption[] options)
         {
-            if (isLine) GUILayout.BeginHorizontal();
+            if (isLine) EditorGUILayout.BeginHorizontal();
 
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
@@ -591,7 +591,7 @@ namespace HT.Framework
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
 
-            if (isLine) GUILayout.EndHorizontal();
+            if (isLine) EditorGUILayout.EndHorizontal();
         }
         /// <summary>
         /// 制作一个序列化属性字段
@@ -603,7 +603,7 @@ namespace HT.Framework
         /// <param name="options">布局操作</param>
         protected void PropertyField(string propertyName, string name, bool includeChildren, bool isLine = true, params GUILayoutOption[] options)
         {
-            if (isLine) GUILayout.BeginHorizontal();
+            if (isLine) EditorGUILayout.BeginHorizontal();
 
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
@@ -616,7 +616,7 @@ namespace HT.Framework
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
 
-            if (isLine) GUILayout.EndHorizontal();
+            if (isLine) EditorGUILayout.EndHorizontal();
         }
 
         /// <summary>

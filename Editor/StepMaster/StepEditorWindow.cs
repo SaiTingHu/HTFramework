@@ -576,6 +576,7 @@ namespace HT.Framework
                         if (GUILayout.Button(_contentAsset.Content[i].IsEnable ? _enableGC : _disableGC, "InvisibleButton", GUILayout.Height(20), GUILayout.Width(20)))
                         {
                             _contentAsset.Content[i].IsEnable = !_contentAsset.Content[i].IsEnable;
+                            HasChanged(_contentAsset);
                         }
                         GUILayout.EndHorizontal();
                     }
@@ -1966,6 +1967,7 @@ namespace HT.Framework
                 {
                     _contentAsset.Content[i].IsEnable = true;
                 }
+                HasChanged(_contentAsset);
             });
             gm.AddItem(new GUIContent(GetWord("Disable All Steps")), false, () =>
             {
@@ -1973,6 +1975,7 @@ namespace HT.Framework
                 {
                     _contentAsset.Content[i].IsEnable = false;
                 }
+                HasChanged(_contentAsset);
             });
 
             gm.ShowAsContext();
