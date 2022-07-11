@@ -40,11 +40,18 @@ namespace HT.Framework
                     });
                 }
             });
-            AdvancedSearchHandlers.Add("所有包含[行为]节点的步骤", (stepContent) =>
+            AdvancedSearchHandlers.Add("所有包含<行为>节点的步骤", (stepContent) =>
             {
                 return stepContent.Operations.Exists((o) =>
                 {
                     return o.OperationType == StepOperationType.Action || o.OperationType == StepOperationType.ActionArgs;
+                });
+            });
+            AdvancedSearchHandlers.Add("所有包含<播放时间线>节点的步骤", (stepContent) =>
+            {
+                return stepContent.Operations.Exists((o) =>
+                {
+                    return o.OperationType == StepOperationType.PlayTimeline;
                 });
             });
         }
@@ -557,16 +564,17 @@ namespace HT.Framework
                     if (string.IsNullOrEmpty(_stepListAdvancedSearch) || _contentAsset.Content[i].IsSearched)
                     {
                         GUILayout.BeginHorizontal();
-                        GUI.color = Color.white;
+                        GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
                         GUILayout.Label(_stepGC, GUILayout.Height(20), GUILayout.Width(20));
                         if (_isShowAncillary && !string.IsNullOrEmpty(_contentAsset.Content[i].Ancillary))
                         {
                             GUI.color = Color.yellow;
-                            GUILayout.Label("[" + _contentAsset.Content[i].Ancillary + "]", GUILayout.Height(16));
+                            GUILayout.Label($"[{_contentAsset.Content[i].Ancillary}]", GUILayout.Height(16));
                         }
                         GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
-                        string style = _currentStepIndex == i ? "SelectionRect" : "PrefixLabel";
-                        if (GUILayout.Button(i + "." + showName, style, GUILayout.Height(20), GUILayout.ExpandWidth(true)))
+                        GUI.backgroundColor = _currentStepIndex == i ? Color.cyan : Color.white;
+                        string style = _currentStepIndex == i ? "TV Selection" : "PrefixLabel";
+                        if (GUILayout.Button($"{i}.{showName}", style, GUILayout.Height(20), GUILayout.ExpandWidth(true)))
                         {
                             SelectStepContent(i);
                             SelectStepOperation(-1);
@@ -583,6 +591,7 @@ namespace HT.Framework
                 }
             }
             GUI.color = Color.white;
+            GUI.backgroundColor = Color.white;
             GUILayout.EndScrollView();
             #endregion
 
