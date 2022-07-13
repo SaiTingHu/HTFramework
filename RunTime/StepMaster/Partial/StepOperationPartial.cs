@@ -681,6 +681,7 @@ namespace HT.Framework
             {
                 director.Play();
                 director.time = director.duration;
+                director.Stop();
             }
         }
         #endregion
