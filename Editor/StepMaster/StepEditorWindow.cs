@@ -2128,7 +2128,7 @@ namespace HT.Framework
         /// </summary>
         public void OpenHelperScript(string helper)
         {
-            MonoScriptToolkit.OpenMonoScript(helper);
+            CSharpScriptToolkit.OpenScript(helper);
         }
         /// <summary>
         /// 新建助手脚本

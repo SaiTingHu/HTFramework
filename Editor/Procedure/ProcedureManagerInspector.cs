@@ -140,7 +140,7 @@ namespace HT.Framework
                         subrect.Set(rect.x + rect.width - size, rect.y, 20, 20);
                         if (GUI.Button(subrect, _editGC, "InvisibleButton"))
                         {
-                            MonoScriptToolkit.OpenMonoScript(Target.ActivatedProcedures[index]);
+                            CSharpScriptToolkit.OpenScript(Target.ActivatedProcedures[index]);
                         }
                         size += 20;
                     }

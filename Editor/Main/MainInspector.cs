@@ -333,7 +333,7 @@ namespace HT.Framework
                         subrect.Set(rect.x + rect.width - 20, rect.y, 20, 20);
                         if (GUI.Button(subrect, _editGC, "InvisibleButton"))
                         {
-                            MonoScriptToolkit.OpenMonoScript(Target.DataModelTypes[index]);
+                            CSharpScriptToolkit.OpenScript(Target.DataModelTypes[index]);
                         }
                     }
                 }
