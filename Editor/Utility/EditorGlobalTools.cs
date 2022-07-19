@@ -1351,7 +1351,9 @@ namespace HT.Framework
             string path = AssetDatabase.GetAssetPath(editor.target);
             if (string.IsNullOrEmpty(path) || !path.StartsWith("Assets/")
                 || editor.target is MonoScript
-                || editor.target is Shader)
+                || editor.target is Shader
+                || editor.target is GameObject
+                || editor.target is TextAsset)
                 return;
 
             if (editor.target is DefaultAsset)
@@ -1408,10 +1410,12 @@ namespace HT.Framework
         {
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
+            GUI.backgroundColor = Color.yellow;
             if (GUILayout.Button("Edit with VSCode", EditorStyles.miniButton))
             {
                 EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
             }
+            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
         }
         /// <summary>
