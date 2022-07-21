@@ -83,9 +83,7 @@ namespace HT.Framework
         private Vector2 _rayHitBGPos;
         private Vector2 _rayHitBGSize;
         private ContentSizeFitter _rayHitTextFitter;
-        private PointerEventData _eventData;
-        private List<RaycastResult> _results = new List<RaycastResult>();
-
+        
         /// <summary>
         /// 射线发射摄像机
         /// </summary>
@@ -120,9 +118,10 @@ namespace HT.Framework
         {
             if (IsOpenRay)
             {
-                if (GlobalTools.IsPointerOverUGUI())
+                if (UIToolkit.IsStayUI)
                 {
-                    RaycastHiting(GetCurrentUGUI());
+                    UIToolkit.CalculateCurrentFocused(Main.m_Input.MousePosition);
+                    RaycastHiting(UIToolkit.CurrentFocused);
                 }
                 else
                 {
@@ -252,22 +251,6 @@ namespace HT.Framework
                 RayHitBG.rectTransform.anchoredPosition = _rayHitBGPos;
                 RayHitBG.rectTransform.sizeDelta = _rayHitBGSize;
             }
-        }
-        /// <summary>
-        /// 获取当前鼠标位置的UGUI控件
-        /// </summary>
-        private GameObject GetCurrentUGUI()
-        {
-            if (_eventData == null) _eventData = new PointerEventData(EventSystem.current);
-
-            _eventData.position = Main.m_Input.MousePosition;
-            EventSystem.current.RaycastAll(_eventData, _results);
-
-            if (_results.Count > 0)
-            {
-                return _results[0].gameObject;
-            }
-            return null;
         }
 
         /// <summary>

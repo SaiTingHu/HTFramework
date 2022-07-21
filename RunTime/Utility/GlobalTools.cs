@@ -6,7 +6,6 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -653,256 +652,6 @@ namespace HT.Framework
         }
         #endregion
 
-        #region UGUI工具
-        /// <summary>
-        /// 限制Text内容的长度在length以内，超过的部分用replace代替
-        /// </summary>
-        public static void RestrictLength(this Text tex, int length, string replace)
-        {
-            if (tex.text.Length > length)
-            {
-                tex.text = tex.text.Substring(0, length) + replace;
-            }
-        }
-        /// <summary>
-        /// 限制Text中指定子字串的字体大小
-        /// </summary>
-        public static void ToRichSize(this Text tex, string subStr, int size)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<size=" + size + ">");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</size>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 限制Text中指定子字串的字体颜色
-        /// </summary>
-        public static void ToRichColor(this Text tex, string subStr, Color color)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</color>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 限制Text中的指定子字串的字体加粗
-        /// </summary>
-        public static void ToRichBold(this Text tex, string subStr)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<b>");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</b>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 限制Text中的指定子字串的字体斜体
-        /// </summary>
-        public static void ToRichItalic(this Text tex, string subStr)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<i>");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</i>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 清除所有富文本样式
-        /// </summary>
-        public static void ClearRich(this Text tex)
-        {
-            string value = tex.text;
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (value[i] == '<')
-                {
-                    for (int j = i + 1; j < value.Length; j++)
-                    {
-                        if (value[j] == '>')
-                        {
-                            int count = j - i + 1;
-                            value = value.Remove(i, count);
-                            i -= 1;
-                            break;
-                        }
-                    }
-                }
-            }
-            tex.text = value;
-        }
-        /// <summary>
-        /// 当前鼠标是否停留在UGUI控件上
-        /// </summary>
-        /// <returns>是否</returns>
-        public static bool IsPointerOverUGUI()
-        {
-            if (EventSystem.current)
-            {
-#if UNITY_ANDROID && !UNITY_EDITOR
-                if (Input.touchCount > 0)
-                {
-                    return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
-                }
-                else
-                {
-                    return false;
-                }
-#else
-                return EventSystem.current.IsPointerOverGameObject();
-#endif
-            }
-            else
-            {
-                return false;
-            }
-        }
-        /// <summary>
-        /// 屏幕坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
-        /// </summary>
-        /// <param name="position">屏幕坐标</param>
-        /// <param name="reference">参照物（要赋值的UGUI控件的根物体）</param>
-        /// <param name="uIType">UI类型</param>
-        /// <returns>基于参照物的局部UGUI坐标</returns>
-        public static Vector2 ScreenToUGUIPosition(this Vector3 position, RectTransform reference = null, UIType uIType = UIType.Overlay)
-        {
-            Vector2 anchoredPos = Vector2.zero;
-            if (position.z < 0)
-            {
-                anchoredPos.Set(-100000, -100000);
-            }
-            else
-            {
-                position.z = 0;
-                switch (uIType)
-                {
-                    case UIType.Overlay:
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
-                        break;
-                    case UIType.Camera:
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
-                        break;
-                    case UIType.World:
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference, position, Main.m_Controller.MainCamera, out anchoredPos);
-                        break;
-                }
-            }
-            return anchoredPos;
-        }
-        /// <summary>
-        /// 获取输入框的int类型值，若不是该类型值，则返回-1
-        /// </summary>
-        /// <param name="input">输入框</param>
-        /// <returns>值</returns>
-        public static int IntText(this InputField input)
-        {
-            int value = -1;
-            int.TryParse(input.text, out value);
-            return value;
-        }
-        /// <summary>
-        /// 获取输入框的float类型值，若不是该类型值，则返回float.NaN
-        /// </summary>
-        /// <param name="input">输入框</param>
-        /// <returns>值</returns>
-        public static float FloatText(this InputField input)
-        {
-            float value = -1f;
-            if (float.TryParse(input.text, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return float.NaN;
-            }
-        }
-        /// <summary>
-        /// 设置下拉框值，若该下拉框不存在该值，则无效
-        /// </summary>
-        /// <param name="dropdown">下拉框</param>
-        /// <param name="value">目标值</param>
-        public static void SetValue(this Dropdown dropdown, string value)
-        {
-            for (int i = 0; i < dropdown.options.Count; i++)
-            {
-                if (dropdown.options[i].text == value)
-                {
-                    dropdown.value = i;
-                    return;
-                }
-            }
-        }
-        /// <summary>
-        /// 加载外部图片，并转换为Sprite
-        /// </summary>
-        /// <param name="path">图片路径</param>
-        /// <returns>转换后的Sprite</returns>
-        public static Sprite LoadSprite(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return null;
-            }
-
-            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, (int)stream.Length);
-
-            Texture2D texture = new Texture2D(80, 80);
-            texture.LoadImage(buffer);
-
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-
-            Main.Kill(texture);
-            stream.Close();
-
-            return sprite;
-        }
-        #endregion
-
         #region 系统工具
         /// <summary>
         /// 获取本机物理地址
@@ -977,6 +726,33 @@ namespace HT.Framework
         public static T Cast<T>(this object target) where T : class
         {
             return target as T;
+        }
+        /// <summary>
+        /// 加载外部图片，并转换为Sprite
+        /// </summary>
+        /// <param name="path">图片路径</param>
+        /// <returns>转换后的Sprite</returns>
+        public static Sprite LoadSprite(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, (int)stream.Length);
+
+            Texture2D texture = new Texture2D(80, 80);
+            texture.LoadImage(buffer);
+
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
+            Main.Kill(texture);
+            stream.Close();
+
+            return sprite;
         }
         #endregion
     }

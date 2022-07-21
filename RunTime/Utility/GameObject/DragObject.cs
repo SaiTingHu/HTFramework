@@ -50,7 +50,7 @@ namespace HT.Framework
         {
             if (IsCanDrag)
             {
-                if (GlobalTools.IsPointerOverUGUI())
+                if (UIToolkit.IsStayUI)
                     return;
                 
                 Vector3 mousePoint = Main.m_Input.MousePosition;
@@ -63,7 +63,7 @@ namespace HT.Framework
         {
             if (IsCanDrag)
             {
-                if (GlobalTools.IsPointerOverUGUI())
+                if (UIToolkit.IsStayUI)
                     return;
 
                 Vector3 mousePoint = Main.m_Input.MousePosition;

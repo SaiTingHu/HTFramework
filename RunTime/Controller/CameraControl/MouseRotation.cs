@@ -108,7 +108,7 @@ namespace HT.Framework
             if (!CanControl)
                 return;
 
-            if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
+            if (!IsCanOnUGUI && UIToolkit.IsStayUINotWorld)
                 return;
 
             if (Main.m_Input.GetButton(InputButtonType.MouseRight))
