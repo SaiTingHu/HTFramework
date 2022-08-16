@@ -83,7 +83,8 @@ namespace HT.Framework
         private Vector2 _rayHitBGPos;
         private Vector2 _rayHitBGSize;
         private ContentSizeFitter _rayHitTextFitter;
-        
+        private RectTransform _rayHitBGParent;
+
         /// <summary>
         /// 射线发射摄像机
         /// </summary>
@@ -108,6 +109,26 @@ namespace HT.Framework
                     _rayHitTextFitter = RayHitText.GetComponent<ContentSizeFitter>();
                 }
                 return _rayHitTextFitter;
+            }
+        }
+        /// <summary>
+        /// 提示框背景父级
+        /// </summary>
+        private RectTransform RayHitBGParent
+        {
+            get
+            {
+                if (RayHitBG == null)
+                {
+                    _rayHitBGParent = null;
+                    return null;
+                }
+
+                if (_rayHitBGParent == null)
+                {
+                    _rayHitBGParent = RayHitBG.rectTransform.parent.rectTransform();
+                }
+                return _rayHitBGParent;
             }
         }
 
@@ -137,7 +158,7 @@ namespace HT.Framework
                     }
                 }
 
-                Vector2 pos = Main.m_Input.MousePosition.ScreenToUGUIPosition(null, RayHitImageType);
+                Vector2 pos = Main.m_Input.MousePosition.ScreenToUGUIPosition(RayHitBGParent, RayHitImageType);
                 RaycastHitBGFlow(pos);
                 RayEvent?.Invoke(Target, HitPoint, pos);
             }
