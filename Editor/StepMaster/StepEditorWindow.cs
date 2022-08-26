@@ -277,7 +277,24 @@ namespace HT.Framework
                         {
                             if (!usedTargets.Contains(target.GUID))
                             {
+                                GameObject obj = target.gameObject;
                                 DestroyImmediate(target);
+                                HasChanged(obj);
+                            }
+                        }
+                    }
+
+                    PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                    if (prefabStage != null)
+                    {
+                        StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
+                        foreach (StepTarget target in targets)
+                        {
+                            if (!usedTargets.Contains(target.GUID))
+                            {
+                                GameObject obj = target.gameObject;
+                                DestroyImmediate(target);
+                                HasChanged(obj);
                             }
                         }
                     }
