@@ -45,7 +45,7 @@ namespace HT.Framework
             }
         }
         
-        private List<MeshOutlineRenderer> MeshOutlineRenderers = new List<MeshOutlineRenderer>();
+        private List<MeshOutlineRenderer> _meshOutlineRenderers = new List<MeshOutlineRenderer>();
         private bool _isInit = false;
         private bool _isOpened = false;
         private Color _color = Color.yellow;
@@ -61,7 +61,11 @@ namespace HT.Framework
         {
             Close();
 
-            MeshOutlineRenderers.Clear();
+            for (int i = 0; i < _meshOutlineRenderers.Count; i++)
+            {
+                _meshOutlineRenderers[i].Dispose();
+            }
+            _meshOutlineRenderers.Clear();
 
             MeshRenderer[] mrs = GetComponentsInChildren<MeshRenderer>(true);
             CacheRenderers(mrs);
@@ -88,18 +92,18 @@ namespace HT.Framework
             {
                 _isOpened = true;
 
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                 {
-                    MeshOutlineRenderers[i].SetOutlineState(true);
+                    _meshOutlineRenderers[i].SetOutlineState(true);
                 }
             }
 
             if (color != _color)
             {
                 _color = color;
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                 {
-                    MeshOutlineRenderers[i].SetOutlineColor(_color);
+                    _meshOutlineRenderers[i].SetOutlineColor(_color);
                 }
             }
 
@@ -108,9 +112,9 @@ namespace HT.Framework
                 _intensity = _maxIntensity = intensity;
                 if (!isFlash)
                 {
-                    for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                    for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                     {
-                        MeshOutlineRenderers[i].SetOutlineIntensity(_intensity);
+                        _meshOutlineRenderers[i].SetOutlineIntensity(_intensity);
                     }
                 }
             }
@@ -127,9 +131,9 @@ namespace HT.Framework
             {
                 _isOpened = false;
 
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                 {
-                    MeshOutlineRenderers[i].SetOutlineState(false);
+                    _meshOutlineRenderers[i].SetOutlineState(false);
                 }
             }
         }
@@ -145,6 +149,16 @@ namespace HT.Framework
         {
             Close();
         }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            for (int i = 0; i < _meshOutlineRenderers.Count; i++)
+            {
+                _meshOutlineRenderers[i].Dispose();
+            }
+            _meshOutlineRenderers.Clear();
+        }
         private void Update()
         {
             if (_isOpened)
@@ -152,9 +166,9 @@ namespace HT.Framework
                 if (_isFlash)
                 {
                     _intensity = Mathf.Lerp(0, _maxIntensity, 0.5f * Mathf.Sin(Time.realtimeSinceStartup * _flashFrequency * DoublePI) + 0.5f);
-                    for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                    for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                     {
-                        MeshOutlineRenderers[i].SetOutlineIntensity(_intensity);
+                        _meshOutlineRenderers[i].SetOutlineIntensity(_intensity);
                     }
                 }
             }
@@ -167,7 +181,7 @@ namespace HT.Framework
 
                 if (materials != null)
                 {
-                    MeshOutlineRenderers.Add(new MeshOutlineRenderer(renderers[i], materials));
+                    _meshOutlineRenderers.Add(new MeshOutlineRenderer(renderers[i], materials));
                 }
             }
         }
@@ -176,43 +190,41 @@ namespace HT.Framework
         {
             public Renderer RendererCached;
             public GameObject GameObjectCached;
-            private Material[] SourceMaterials;
-            private Material[] ReplacementMaterials;
+            private Material[] _sourceMaterials;
+            private Material[] _replacementMaterials;
 
             public MeshOutlineRenderer(Renderer renderer, Material[] sourceMaterials)
             {
                 RendererCached = renderer;
                 GameObjectCached = renderer.gameObject;
-                SourceMaterials = sourceMaterials;
-                ReplacementMaterials = new Material[sourceMaterials.Length];
+                _sourceMaterials = sourceMaterials;
+                _replacementMaterials = new Material[sourceMaterials.Length];
 
                 for (int i = 0; i < sourceMaterials.Length; i++)
                 {
                     Material material = sourceMaterials[i];
                     if (material == null)
-                    {
                         continue;
-                    }
 
                     string tag = material.GetTag("RenderType", true);
                     if (tag == "Transparent" || tag == "TransparentCutout")
                     {
-                        ReplacementMaterials[i] = GetTransparentMaterial();
+                        _replacementMaterials[i] = GetTransparentMaterial();
                     }
                     else
                     {
-                        ReplacementMaterials[i] = GetOpaqueMaterial();
+                        _replacementMaterials[i] = GetOpaqueMaterial();
                     }
 
                     if (material.HasProperty("_MainTex"))
                     {
-                        ReplacementMaterials[i].SetTexture("_MainTex", material.mainTexture);
-                        ReplacementMaterials[i].SetTextureOffset("_MainTex", material.mainTextureOffset);
-                        ReplacementMaterials[i].SetTextureScale("_MainTex", material.mainTextureScale);
+                        _replacementMaterials[i].SetTexture("_MainTex", material.mainTexture);
+                        _replacementMaterials[i].SetTextureOffset("_MainTex", material.mainTextureOffset);
+                        _replacementMaterials[i].SetTextureScale("_MainTex", material.mainTextureScale);
                     }
                     if (material.HasProperty("_Color"))
                     {
-                        ReplacementMaterials[i].SetColor("_Diffuse", material.color);
+                        _replacementMaterials[i].SetColor("_Diffuse", material.color);
                     }
                 }
             }
@@ -221,24 +233,40 @@ namespace HT.Framework
             {
                 if (RendererCached)
                 {
-                    RendererCached.sharedMaterials = isOutline ? ReplacementMaterials : SourceMaterials;
+                    RendererCached.sharedMaterials = isOutline ? _replacementMaterials : _sourceMaterials;
                 }
             }
 
             public void SetOutlineColor(Color color)
             {
-                for (int i = 0; i < ReplacementMaterials.Length; i++)
+                for (int i = 0; i < _replacementMaterials.Length; i++)
                 {
-                    ReplacementMaterials[i].SetColor("_HighlightColor", color);
+                    _replacementMaterials[i].SetColor("_HighlightColor", color);
                 }
             }
 
             public void SetOutlineIntensity(float intensity)
             {
-                for (int i = 0; i < ReplacementMaterials.Length; i++)
+                for (int i = 0; i < _replacementMaterials.Length; i++)
                 {
-                    ReplacementMaterials[i].SetFloat("_HighlightIntensity", intensity);
+                    _replacementMaterials[i].SetFloat("_HighlightIntensity", intensity);
                 }
+            }
+
+            public void Dispose()
+            {
+                if (_replacementMaterials != null)
+                {
+                    for (int i = 0; i < _replacementMaterials.Length; i++)
+                    {
+                        if (_replacementMaterials[i] != null)
+                        {
+                            DestroyImmediate(_replacementMaterials[i]);
+                        }
+                    }
+                }
+                _sourceMaterials = null;
+                _replacementMaterials = null;
             }
         }
     }

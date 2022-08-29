@@ -252,6 +252,23 @@ namespace HT.Framework
                     _replacementMaterials[_transparentMaterialIndexes[i]].SetColor("_Outline", color);
                 }
             }
+
+            public void Dispose(Material sharedOpaqueMaterial)
+            {
+                if (_replacementMaterials != null)
+                {
+                    for (int i = 0; i < _replacementMaterials.Length; i++)
+                    {
+                        if (_replacementMaterials[i] != null && _replacementMaterials[i] != sharedOpaqueMaterial)
+                        {
+                            DestroyImmediate(_replacementMaterials[i]);
+                        }
+                    }
+                }
+                _sourceMaterials = null;
+                _replacementMaterials = null;
+                _transparentMaterialIndexes = null;
+            }
         }
 
         private void OnEnable()
@@ -264,6 +281,10 @@ namespace HT.Framework
             StopAllCoroutines();
             HighlightingEffect.HighlightingEvent -= UpdateHighlighting;
 
+            for (int i = 0; i < _highlightableRenderers.Count; i++)
+            {
+                _highlightableRenderers[i].Dispose(HighlightingMaterial);
+            }
             _highlightableRenderers.Clear();
 
             //重置高亮参数
@@ -278,6 +299,26 @@ namespace HT.Framework
             _isOccluder = false;
             _isZWrite = false;
             
+            if (_opaqueMaterial)
+            {
+                DestroyImmediate(_opaqueMaterial);
+            }
+
+            if (_opaqueZMaterial)
+            {
+                DestroyImmediate(_opaqueZMaterial);
+            }
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            for (int i = 0; i < _highlightableRenderers.Count; i++)
+            {
+                _highlightableRenderers[i].Dispose(HighlightingMaterial);
+            }
+            _highlightableRenderers.Clear();
+
             if (_opaqueMaterial)
             {
                 DestroyImmediate(_opaqueMaterial);
@@ -517,6 +558,10 @@ namespace HT.Framework
 
             _isZWrite = writeDepth;
 
+            for (int i = 0; i < _highlightableRenderers.Count; i++)
+            {
+                _highlightableRenderers[i].Dispose(HighlightingMaterial);
+            }
             _highlightableRenderers.Clear();
 
             MeshRenderer[] mr = GetComponentsInChildren<MeshRenderer>();
