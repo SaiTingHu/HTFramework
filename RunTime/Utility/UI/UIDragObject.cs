@@ -7,23 +7,22 @@ namespace HT.Framework
     /// UGUI可拖动对象
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIDragObject")]
-    [DisallowMultipleComponent]
-    public sealed class UIDragObject : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    public sealed class UIDragObject : HTBehaviour, ICanvasRaycastFilter
     {
         /// <summary>
         /// 被拖动目标
         /// </summary>
         public GameObject DragTarget;
         /// <summary>
-        /// 拖动模式
+        /// 拖动触发键
         /// </summary>
-        public UIType Mode = UIType.Overlay;
+        public PointerEventData.InputButton DragButton = PointerEventData.InputButton.Left;
         /// <summary>
-        /// 水平拖动
+        /// 启用水平拖动
         /// </summary>
         public bool Horizontal = true;
         /// <summary>
-        /// 垂直拖动
+        /// 启用垂直拖动
         /// </summary>
         public bool Vertical = true;
         /// <summary>
@@ -51,98 +50,58 @@ namespace HT.Framework
         /// </summary>
         public float Down = 0;
 
-        private Transform _transform;
-        private RectTransform _rectTransform;
-        private bool _isDrag = false;
-        private Vector3 _lastPos;
-        private HTFAction Draging;
+        private RectTransform _target;
+        private RectTransform _targetParent;
 
-        private void Awake()
+        protected override void Awake()
         {
-            _transform = DragTarget.transform;
-            _rectTransform = DragTarget.rectTransform();
+            base.Awake();
 
-            switch (Mode)
+            _target = DragTarget.rectTransform();
+            _targetParent = _target.parent.rectTransform();
+        }
+        public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+        {
+            bool input = false;
+            switch (DragButton)
             {
-                case UIType.Overlay:
-                    Draging = OverlayDraging;
+                case PointerEventData.InputButton.Left:
+                    input = Main.m_Input.GetButton(InputButtonType.MouseLeft);
                     break;
-                case UIType.Camera:
-                case UIType.World:
-                    Draging = WorldDraging;
+                case PointerEventData.InputButton.Middle:
+                    input = Main.m_Input.GetButton(InputButtonType.MouseMiddle);
+                    break;
+                case PointerEventData.InputButton.Right:
+                    input = Main.m_Input.GetButton(InputButtonType.MouseRight);
+                    break;
+                default:
+                    input = false;
                     break;
             }
-        }
 
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            _isDrag = true;
-            _lastPos = Main.m_Input.MousePosition;
-        }
-
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            _isDrag = false;
-        }
-
-        private void Update()
-        {
-            if (_isDrag)
+            if (input)
             {
-                Draging();
+                Vector2 local;
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_targetParent, screenPoint, eventCamera, out local))
+                {
+                    _target.anchoredPosition = LimitPos(local);
+                }
             }
+            return true;
         }
-
-        private void WorldDraging()
+        private Vector2 LimitPos(Vector2 pos)
         {
-            Vector2 direction = Main.m_Input.MousePosition - _lastPos;
-            if (!Horizontal) direction.x = 0;
-            if (!Vertical) direction.y = 0;
-            _rectTransform.anchoredPosition += direction;
-            WorldLimitPos();
-            _lastPos = Main.m_Input.MousePosition;
-        }
-
-        private void OverlayDraging()
-        {
-            Vector3 direction = Main.m_Input.MousePosition - _lastPos;
-            if (!Horizontal) direction.x = 0;
-            if (!Vertical) direction.y = 0;
-            _transform.position += direction;
-            OverlayLimitPos();
-            _lastPos = Main.m_Input.MousePosition;
-        }
-
-        private void WorldLimitPos()
-        {
-            Vector2 pos = _rectTransform.anchoredPosition;
-            if (HorizontalLimit)
+            pos.x = Horizontal ? pos.x : _target.anchoredPosition.x;
+            pos.y = Vertical ? pos.y : _target.anchoredPosition.y;
+            if (Horizontal && HorizontalLimit)
             {
-                if (pos.x < Left) pos.x = Left;
-                else if (pos.x > Right) pos.x = Right;
+                pos.x = Mathf.Clamp(pos.x, Left, Right);
             }
-            if (VerticalLimit)
+            if (Vertical && VerticalLimit)
             {
-                if (pos.y < Down) pos.y = Down;
-                else if (pos.y > Up) pos.y = Up;
+                pos.y = Mathf.Clamp(pos.y, Down, Up);
             }
-            _rectTransform.anchoredPosition = pos;
-        }
-
-        private void OverlayLimitPos()
-        {
-            Vector2 pos = _transform.position;
-            if (HorizontalLimit)
-            {
-                if (pos.x < Left) pos.x = Left;
-                else if (pos.x > Right) pos.x = Right;
-            }
-            if (VerticalLimit)
-            {
-                if (pos.y < Down) pos.y = Down;
-                else if (pos.y > Up) pos.y = Up;
-            }
-            _transform.position = pos;
+            return pos;
         }
     }
 }

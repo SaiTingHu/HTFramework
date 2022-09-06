@@ -25,7 +25,7 @@ namespace HT.Framework
         /// <summary>
         /// 初始化
         /// </summary>
-        public virtual void OnInitialization()
+        public virtual void OnInit()
         { }
         /// <summary>
         /// 授权校验

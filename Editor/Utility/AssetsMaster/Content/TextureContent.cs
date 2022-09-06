@@ -49,19 +49,16 @@ namespace HT.Framework
             AlarmLevel = 0;
             AlarmMessage = "";
         }
-
         public void RaiseAlarmLevel(string message)
         {
             AlarmLevel += 1;
             AlarmMessage += string.Format("{0}.{1}\r\n", AlarmLevel, message);
         }
-
         public void ClearAlarmLevel()
         {
             AlarmLevel = 0;
             AlarmMessage = "";
         }
-
         private int GetSize()
         {
             if (Tex != null)
@@ -80,7 +77,6 @@ namespace HT.Framework
                 return 0;
             }
         }
-
         private string GetDetail()
         {
             StringBuilder detail = new StringBuilder();

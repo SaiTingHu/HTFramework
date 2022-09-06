@@ -26,7 +26,6 @@ namespace HT.Framework
                 _webRequestManager = webRequestManager.GetComponent<WebRequestManager>();
             }
         }
-        
         public override void OnSettingGUI()
         {
             base.OnSettingGUI();
@@ -43,7 +42,6 @@ namespace HT.Framework
                 }
             }
         }
-        
         public override void OnReset()
         {
             base.OnReset();

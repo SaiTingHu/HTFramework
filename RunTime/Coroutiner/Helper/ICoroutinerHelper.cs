@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static HT.Framework.Coroutiner;
+using static HT.Framework.CoroutinerManager;
 
 namespace HT.Framework
 {

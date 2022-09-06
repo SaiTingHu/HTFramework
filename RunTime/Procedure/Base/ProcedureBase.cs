@@ -8,25 +8,30 @@
         /// <summary>
         /// 流程初始化
         /// </summary>
-        public abstract void OnInit();
+        public virtual void OnInit()
+        { }
         /// <summary>
         /// 进入流程
         /// </summary>
         /// <param name="lastProcedure">上一个离开的流程</param>
-        public abstract void OnEnter(ProcedureBase lastProcedure);
+        public virtual void OnEnter(ProcedureBase lastProcedure)
+        { }
         /// <summary>
         /// 离开流程
         /// </summary>
         /// <param name="nextProcedure">下一个进入的流程</param>
-        public abstract void OnLeave(ProcedureBase nextProcedure);
+        public virtual void OnLeave(ProcedureBase nextProcedure)
+        { }
         /// <summary>
         /// 流程帧刷新
         /// </summary>
-        public abstract void OnUpdate();
+        public virtual void OnUpdate()
+        { }
         /// <summary>
         /// 流程帧刷新（秒）
         /// </summary>
-        public abstract void OnUpdateSecond();
+        public virtual void OnUpdateSecond()
+        { }
 
         /// <summary>
         /// 切换流程
@@ -35,7 +40,6 @@
         {
             Main.m_Procedure.SwitchProcedure<T>();
         }
-
         /// <summary>
         /// 切换至下一流程
         /// </summary>
@@ -43,7 +47,6 @@
         {
             Main.m_Procedure.SwitchNextProcedure();
         }
-
         /// <summary>
         /// 切换至上一流程
         /// </summary>

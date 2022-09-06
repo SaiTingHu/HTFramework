@@ -184,7 +184,6 @@ namespace HT.Framework
 
             _gameObjectCaches.Clear();
             GlobalTools.GetRootGameObjectsInAllScene(_gameObjectCaches);
-            _gameObjectCaches.Add(Main.Current.gameObject);
             for (int i = 0; i < _gameObjectCaches.Count; i++)
             {
                 CollectDebuggerGameObject(_gameObjectCaches[i].transform, null);
@@ -197,25 +196,26 @@ namespace HT.Framework
         /// </summary>
         private void CollectDebuggerGameObject(Transform transform, DebuggerGameObject parent)
         {
-            DebuggerGameObject debuggerGameObject = Main.m_ReferencePool.Spawn<DebuggerGameObject>();
-            debuggerGameObject.Target = transform.gameObject;
-            debuggerGameObject.Name = transform.gameObject.name;
-            debuggerGameObject.Layer = LayerMask.LayerToName(transform.gameObject.layer);
-            debuggerGameObject.Parent = parent;
-            _gameObjects.Add(debuggerGameObject);
+            DebuggerGameObject gameObject = Main.m_ReferencePool.Spawn<DebuggerGameObject>();
+            gameObject.Target = transform.gameObject;
+            gameObject.Name = transform.gameObject.name;
+            gameObject.Layer = LayerMask.LayerToName(transform.gameObject.layer);
+            gameObject.IsMain = gameObject.Target.GetComponent<Main>();
+            gameObject.Parent = parent;
+            _gameObjects.Add(gameObject);
 
-            if (debuggerGameObject.Parent != null)
+            if (gameObject.Parent != null)
             {
-                debuggerGameObject.Parent.Childrens.Add(debuggerGameObject);
+                gameObject.Parent.Childrens.Add(gameObject);
             }
             else
             {
-                GameObjectRoots.Add(debuggerGameObject);
+                GameObjectRoots.Add(gameObject);
             }
 
             for (int i = 0; i < transform.childCount; i++)
             {
-                CollectDebuggerGameObject(transform.GetChild(i), debuggerGameObject);
+                CollectDebuggerGameObject(transform.GetChild(i), gameObject);
             }
         }
         /// <summary>

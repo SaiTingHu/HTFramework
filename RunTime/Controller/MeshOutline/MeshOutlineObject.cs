@@ -5,8 +5,9 @@ namespace HT.Framework
 {
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-700)]
-    internal sealed class MeshOutlineObject : MonoBehaviour
+    internal sealed class MeshOutlineObject : HTBehaviour
     {
+        private const float DoublePI = 2f * Mathf.PI;
         private static Material GetOpaqueMaterial()
         {
             Material mat = new Material(OpaqueShader);
@@ -44,11 +45,14 @@ namespace HT.Framework
             }
         }
         
-        private List<MeshOutlineRenderer> MeshOutlineRenderers = new List<MeshOutlineRenderer>();
+        private List<MeshOutlineRenderer> _meshOutlineRenderers = new List<MeshOutlineRenderer>();
         private bool _isInit = false;
         private bool _isOpened = false;
-        private Color _outlineColor = Color.yellow;
-        private float _outlineIntensity = 1f;
+        private Color _color = Color.yellow;
+        private float _maxIntensity = 1;
+        private float _intensity = 1;
+        private bool _isFlash = false;
+        private float _flashFrequency = 2;
 
         /// <summary>
         /// 重置轮廓
@@ -57,7 +61,11 @@ namespace HT.Framework
         {
             Close();
 
-            MeshOutlineRenderers.Clear();
+            for (int i = 0; i < _meshOutlineRenderers.Count; i++)
+            {
+                _meshOutlineRenderers[i].Dispose();
+            }
+            _meshOutlineRenderers.Clear();
 
             MeshRenderer[] mrs = GetComponentsInChildren<MeshRenderer>(true);
             CacheRenderers(mrs);
@@ -69,8 +77,10 @@ namespace HT.Framework
         /// 开启轮廓高亮
         /// </summary>
         /// <param name="color">高亮颜色</param>
+        /// <param name="intensity">强度</param>
         /// <param name="isFlash">是否闪烁</param>
-        public void Open(Color color, float intensity)
+        /// <param name="freq">闪烁频率</param>
+        public void Open(Color color, float intensity, bool isFlash, float freq)
         {
             if (!_isInit)
             {
@@ -82,29 +92,35 @@ namespace HT.Framework
             {
                 _isOpened = true;
 
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                 {
-                    MeshOutlineRenderers[i].SetOutlineState(true);
+                    _meshOutlineRenderers[i].SetOutlineState(true);
                 }
             }
 
-            if (color != _outlineColor)
+            if (color != _color)
             {
-                _outlineColor = color;
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                _color = color;
+                for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                 {
-                    MeshOutlineRenderers[i].SetOutlineColor(_outlineColor);
+                    _meshOutlineRenderers[i].SetOutlineColor(_color);
                 }
             }
 
-            if (!_outlineIntensity.Approximately(intensity))
+            if (!_intensity.Approximately(intensity))
             {
-                _outlineIntensity = intensity;
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                _intensity = _maxIntensity = intensity;
+                if (!isFlash)
                 {
-                    MeshOutlineRenderers[i].SetOutlineIntensity(_outlineIntensity);
+                    for (int i = 0; i < _meshOutlineRenderers.Count; i++)
+                    {
+                        _meshOutlineRenderers[i].SetOutlineIntensity(_intensity);
+                    }
                 }
             }
+
+            _isFlash = isFlash;
+            _flashFrequency = freq;
         }
         /// <summary>
         /// 关闭轮廓高亮
@@ -115,9 +131,9 @@ namespace HT.Framework
             {
                 _isOpened = false;
 
-                for (int i = 0; i < MeshOutlineRenderers.Count; i++)
+                for (int i = 0; i < _meshOutlineRenderers.Count; i++)
                 {
-                    MeshOutlineRenderers[i].SetOutlineState(false);
+                    _meshOutlineRenderers[i].SetOutlineState(false);
                 }
             }
         }
@@ -128,10 +144,34 @@ namespace HT.Framework
         {
             Destroy(this);
         }
-
+        
         private void OnDisable()
         {
             Close();
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            for (int i = 0; i < _meshOutlineRenderers.Count; i++)
+            {
+                _meshOutlineRenderers[i].Dispose();
+            }
+            _meshOutlineRenderers.Clear();
+        }
+        private void Update()
+        {
+            if (_isOpened)
+            {
+                if (_isFlash)
+                {
+                    _intensity = Mathf.Lerp(0, _maxIntensity, 0.5f * Mathf.Sin(Time.realtimeSinceStartup * _flashFrequency * DoublePI) + 0.5f);
+                    for (int i = 0; i < _meshOutlineRenderers.Count; i++)
+                    {
+                        _meshOutlineRenderers[i].SetOutlineIntensity(_intensity);
+                    }
+                }
+            }
         }
         private void CacheRenderers(Renderer[] renderers)
         {
@@ -141,7 +181,7 @@ namespace HT.Framework
 
                 if (materials != null)
                 {
-                    MeshOutlineRenderers.Add(new MeshOutlineRenderer(renderers[i], materials));
+                    _meshOutlineRenderers.Add(new MeshOutlineRenderer(renderers[i], materials));
                 }
             }
         }
@@ -150,43 +190,41 @@ namespace HT.Framework
         {
             public Renderer RendererCached;
             public GameObject GameObjectCached;
-            private Material[] SourceMaterials;
-            private Material[] ReplacementMaterials;
+            private Material[] _sourceMaterials;
+            private Material[] _replacementMaterials;
 
             public MeshOutlineRenderer(Renderer renderer, Material[] sourceMaterials)
             {
                 RendererCached = renderer;
                 GameObjectCached = renderer.gameObject;
-                SourceMaterials = sourceMaterials;
-                ReplacementMaterials = new Material[sourceMaterials.Length];
+                _sourceMaterials = sourceMaterials;
+                _replacementMaterials = new Material[sourceMaterials.Length];
 
                 for (int i = 0; i < sourceMaterials.Length; i++)
                 {
                     Material material = sourceMaterials[i];
                     if (material == null)
-                    {
                         continue;
-                    }
 
                     string tag = material.GetTag("RenderType", true);
                     if (tag == "Transparent" || tag == "TransparentCutout")
                     {
-                        ReplacementMaterials[i] = GetTransparentMaterial();
+                        _replacementMaterials[i] = GetTransparentMaterial();
                     }
                     else
                     {
-                        ReplacementMaterials[i] = GetOpaqueMaterial();
+                        _replacementMaterials[i] = GetOpaqueMaterial();
                     }
 
                     if (material.HasProperty("_MainTex"))
                     {
-                        ReplacementMaterials[i].SetTexture("_MainTex", material.mainTexture);
-                        ReplacementMaterials[i].SetTextureOffset("_MainTex", material.mainTextureOffset);
-                        ReplacementMaterials[i].SetTextureScale("_MainTex", material.mainTextureScale);
+                        _replacementMaterials[i].SetTexture("_MainTex", material.mainTexture);
+                        _replacementMaterials[i].SetTextureOffset("_MainTex", material.mainTextureOffset);
+                        _replacementMaterials[i].SetTextureScale("_MainTex", material.mainTextureScale);
                     }
                     if (material.HasProperty("_Color"))
                     {
-                        ReplacementMaterials[i].SetColor("_Diffuse", material.color);
+                        _replacementMaterials[i].SetColor("_Diffuse", material.color);
                     }
                 }
             }
@@ -195,24 +233,40 @@ namespace HT.Framework
             {
                 if (RendererCached)
                 {
-                    RendererCached.sharedMaterials = isOutline ? ReplacementMaterials : SourceMaterials;
+                    RendererCached.sharedMaterials = isOutline ? _replacementMaterials : _sourceMaterials;
                 }
             }
 
             public void SetOutlineColor(Color color)
             {
-                for (int i = 0; i < ReplacementMaterials.Length; i++)
+                for (int i = 0; i < _replacementMaterials.Length; i++)
                 {
-                    ReplacementMaterials[i].SetColor("_HighlightColor", color);
+                    _replacementMaterials[i].SetColor("_HighlightColor", color);
                 }
             }
 
             public void SetOutlineIntensity(float intensity)
             {
-                for (int i = 0; i < ReplacementMaterials.Length; i++)
+                for (int i = 0; i < _replacementMaterials.Length; i++)
                 {
-                    ReplacementMaterials[i].SetFloat("_HighlightIntensity", intensity);
+                    _replacementMaterials[i].SetFloat("_HighlightIntensity", intensity);
                 }
+            }
+
+            public void Dispose()
+            {
+                if (_replacementMaterials != null)
+                {
+                    for (int i = 0; i < _replacementMaterials.Length; i++)
+                    {
+                        if (_replacementMaterials[i] != null)
+                        {
+                            DestroyImmediate(_replacementMaterials[i]);
+                        }
+                    }
+                }
+                _sourceMaterials = null;
+                _replacementMaterials = null;
             }
         }
     }

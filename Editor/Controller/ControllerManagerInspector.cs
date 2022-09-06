@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -7,62 +6,95 @@ using UnityEngine;
 namespace HT.Framework
 {
     [CustomEditor(typeof(ControllerManager))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/89416110")]
-    internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager>
+    internal sealed class ControllerManagerInspector : InternalModuleInspector<ControllerManager, IControllerHelper>
     {
         private List<BoxBoundsHandle> _handles = new List<BoxBoundsHandle>();
-        
-        protected override string Intro
-        {
-            get
-            {
-                return "Controller Manager, It includes free control, first person control, third person control, etc!";
-            }
-        }
 
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IControllerHelper);
-            }
-        }
+        protected override string Intro => "Controller Manager, it encapsulation free view controller, first person controller, third person controller, etc!";
 
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
+
+            PropertyField(nameof(ControllerManager.DefaultMode), "Default ControlMode");
+            PropertyField(nameof(ControllerManager.DefaultEase), "Default Ease");
+            PropertyField(nameof(ControllerManager.DefaultAutoPlay), "Default Auto Play");
+            PropertyField(nameof(ControllerManager.IsAutoKill), "Tweener Auto Kill");
             
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.DefaultControlMode, out Target.DefaultControlMode, "Default ControlMode");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.DefaultEase, out Target.DefaultEase, "Default Ease");
-            GUILayout.EndHorizontal();
-            
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.DefaultAutoPlay, out Target.DefaultAutoPlay, "Default Auto Play");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsAutoKill, out Target.IsAutoKill, "Tweener Auto Kill");
-            GUILayout.EndHorizontal();
-
             GUI.enabled = true;
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableBounds, out Target.IsEnableBounds, "Enable Bounds");
-            GUILayout.EndHorizontal();
-
+            PropertyField(nameof(ControllerManager.IsEnableBounds), "Enable Bounds");
+            
             if (Target.IsEnableBounds)
             {
-                PropertyField("FreeControlBounds");
+                PropertyField(nameof(ControllerManager.FreeControlBounds), "Free Control Bounds");
             }
         }
+        protected override void OnInspectorRuntimeGUI()
+        {
+            base.OnInspectorRuntimeGUI();
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Main Camera: ", GUILayout.Width(LabelWidth));
+            EditorGUILayout.ObjectField(Target.MainCamera, typeof(Camera), true);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Ray Target: ", GUILayout.Width(LabelWidth));
+            EditorGUILayout.ObjectField(Target.RayTargetObj, typeof(GameObject), true);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Control Mode: ", GUILayout.Width(LabelWidth));
+            Target.Mode = (ControlMode)EditorGUILayout.EnumPopup(Target.Mode);
+            GUILayout.EndHorizontal();
+
+            if (Target.Mode == ControlMode.FreeControl)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Position Control: ", GUILayout.Width(LabelWidth));
+                Target.EnablePositionControl = EditorGUILayout.Toggle(Target.EnablePositionControl);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Rotation Control: ", GUILayout.Width(LabelWidth));
+                Target.EnableRotationControl = EditorGUILayout.Toggle(Target.EnableRotationControl);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Look Point: ", GUILayout.Width(LabelWidth));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20);
+                GUILayout.Label(Target.LookPoint.ToString());
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Copy", EditorStyles.miniButton))
+                {
+                    GUIUtility.systemCopyBuffer = Target.LookPoint.ToCopyString("F2");
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Look Angle: ", GUILayout.Width(LabelWidth));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20);
+                GUILayout.Label(Target.LookAngle.ToString());
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Copy", EditorStyles.miniButton))
+                {
+                    GUIUtility.systemCopyBuffer = Target.LookAngle.ToCopyString("F2");
+                }
+                GUILayout.EndHorizontal();
+            }
+        }
         private void OnSceneGUI()
         {
             if (Target.IsEnableBounds)
@@ -104,67 +136,6 @@ namespace HT.Framework
                         }
                     }
                 }
-            }
-        }
-
-        protected override void OnInspectorRuntimeGUI()
-        {
-            base.OnInspectorRuntimeGUI();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Main Camera: ", GUILayout.Width(100));
-            EditorGUILayout.ObjectField(Target.MainCamera, typeof(Camera), true);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Ray Target: ", GUILayout.Width(100));
-            EditorGUILayout.ObjectField(Target.RayTargetObj, typeof(GameObject), true);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Control Mode: ", GUILayout.Width(100));
-            Target.TheControlMode = (ControlMode)EditorGUILayout.EnumPopup(Target.TheControlMode);
-            GUILayout.EndHorizontal();
-
-            if (Target.TheControlMode == ControlMode.FreeControl)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Position Control: ", GUILayout.Width(100));
-                Target.EnablePositionControl = EditorGUILayout.Toggle(Target.EnablePositionControl);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Rotation Control: ", GUILayout.Width(100));
-                Target.EnableRotationControl = EditorGUILayout.Toggle(Target.EnableRotationControl);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Look Point: ", GUILayout.Width(100));
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label(Target.LookPoint.ToString());
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Copy", EditorStyles.miniButton))
-                {
-                    GUIUtility.systemCopyBuffer = Target.LookPoint.ToCopyString("F2");
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Look Angle: ", GUILayout.Width(100));
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label(Target.LookAngle.ToString());
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Copy", EditorStyles.miniButton))
-                {
-                    GUIUtility.systemCopyBuffer = Target.LookAngle.ToCopyString("F2");
-                }
-                GUILayout.EndHorizontal();
             }
         }
     }

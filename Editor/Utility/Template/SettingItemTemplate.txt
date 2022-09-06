@@ -28,7 +28,6 @@ public class #SCRIPTNAME# : SettingItemBase
     {
         base.OnBeginSetting();
     }
-
     /// <summary>
     /// 设置面板UI
     /// </summary>
@@ -36,7 +35,6 @@ public class #SCRIPTNAME# : SettingItemBase
     {
         base.OnSettingGUI();
     }
-
     /// <summary>
     /// 结束设置
     /// </summary>
@@ -44,7 +42,6 @@ public class #SCRIPTNAME# : SettingItemBase
     {
         base.OnEndSetting();
     }
-
     /// <summary>
     /// 重置所有设置
     /// </summary>

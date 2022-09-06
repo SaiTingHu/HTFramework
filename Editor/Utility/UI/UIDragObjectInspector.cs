@@ -10,31 +10,31 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
-            PropertyField("DragTarget");
+            PropertyField(nameof(UIDragObject.DragTarget));
 
             GUI.enabled = Target.DragTarget;
 
-            PropertyField("Mode");
-            PropertyField("Horizontal");
+            PropertyField(nameof(UIDragObject.DragButton));
+            PropertyField(nameof(UIDragObject.Horizontal));
             if (Target.Horizontal)
             {
-                PropertyField("HorizontalLimit");
+                PropertyField(nameof(UIDragObject.HorizontalLimit));
 
                 if (Target.HorizontalLimit)
                 {
-                    PropertyField("Left");
-                    PropertyField("Right");
+                    PropertyField(nameof(UIDragObject.Left));
+                    PropertyField(nameof(UIDragObject.Right));
                 }
             }
-            PropertyField("Vertical");
+            PropertyField(nameof(UIDragObject.Vertical));
             if (Target.Vertical)
             {
-                PropertyField("VerticalLimit");
+                PropertyField(nameof(UIDragObject.VerticalLimit));
 
                 if (Target.VerticalLimit)
                 {
-                    PropertyField("Up");
-                    PropertyField("Down");
+                    PropertyField(nameof(UIDragObject.Up));
+                    PropertyField(nameof(UIDragObject.Down));
                 }
             }
 

@@ -16,7 +16,6 @@ public class #SCRIPTNAME# : UILogicResident
     {
         base.OnInit();
     }
-
 	/// <summary>
 	/// 打开UI
 	/// </summary>
@@ -24,7 +23,6 @@ public class #SCRIPTNAME# : UILogicResident
     {
         base.OnOpen(args);
     }
-
 	/// <summary>
     /// 置顶UI
     /// </summary>
@@ -32,7 +30,6 @@ public class #SCRIPTNAME# : UILogicResident
     {
         base.OnPlaceTop();
 	}
-    
 	/// <summary>
 	/// 关闭UI
 	/// </summary>
@@ -40,7 +37,6 @@ public class #SCRIPTNAME# : UILogicResident
     {
         base.OnClose();
     }
-
 	/// <summary>
 	/// 销毁UI
 	/// </summary>
@@ -48,7 +44,6 @@ public class #SCRIPTNAME# : UILogicResident
     {
         base.OnDestroy();
     }
-
 	/// <summary>
 	/// UI逻辑刷新
 	/// </summary>

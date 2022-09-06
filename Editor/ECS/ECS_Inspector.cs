@@ -36,22 +36,17 @@ namespace HT.Framework
                 }
             }
         }
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/106619485";
 
-        protected override bool IsEnableTitleGUI
+        protected override void OnEnable()
         {
-            get
-            {
-                return false;
-            }
-        }
+            base.OnEnable();
 
-        private void OnEnable()
-        {
             _components.Clear();
             _componentInfos.Clear();
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies((type) =>
             {
-                return type.IsSubclassOf(typeof(ECS_Component));
+                return type.IsSubclassOf(typeof(ECS_Component)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {
@@ -63,7 +58,7 @@ namespace HT.Framework
             _systemInfos.Clear();
             types = ReflectionToolkit.GetTypesInRunTimeAssemblies((type) =>
             {
-                return type.IsSubclassOf(typeof(ECS_System));
+                return type.IsSubclassOf(typeof(ECS_System)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {
@@ -73,7 +68,12 @@ namespace HT.Framework
 
             Entity = null;
         }
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
 
+            GUILayout.FlexibleSpace();
+        }
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
@@ -83,7 +83,6 @@ namespace HT.Framework
             ComponentGUI();
             SystemGUI();
         }
-
         private void EntityGUI()
         {
             GUILayout.BeginHorizontal();
@@ -91,7 +90,6 @@ namespace HT.Framework
             Entity = EditorGUILayout.ObjectField(Entity, typeof(ECS_Entity), true) as ECS_Entity;
             GUILayout.EndHorizontal();
         }
-
         private void ComponentGUI()
         {
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -140,7 +138,6 @@ namespace HT.Framework
 
             GUILayout.EndVertical();
         }
-
         private void SystemGUI()
         {
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -189,7 +186,6 @@ namespace HT.Framework
         {
             _isDirty = true;
         }
-
         private void CorrectionDirty()
         {
             if (_isDirty)
@@ -255,7 +251,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private bool ContainsAll(HashSet<Type> source, List<ECS_ComponentInfo> target)
         {
             for (int i = 0; i < target.Count; i++)
@@ -282,7 +277,6 @@ namespace HT.Framework
                 IsExist = false;
             }
         }
-
         private class ECS_SystemInfo
         {
             public string Name;

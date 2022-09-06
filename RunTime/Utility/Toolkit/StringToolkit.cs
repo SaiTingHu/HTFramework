@@ -12,6 +12,7 @@ namespace HT.Framework
     {
         #region 不重复命名
         private static HashSet<string> NoRepeatNames = new HashSet<string>();
+
         /// <summary>
         /// 开始不重复命名
         /// </summary>
@@ -49,6 +50,7 @@ namespace HT.Framework
 
         #region 字符串拼接
         private static StringBuilder StringInstance = new StringBuilder();
+
         /// <summary>
         /// 字符串拼接
         /// </summary>
@@ -70,6 +72,9 @@ namespace HT.Framework
         /// <returns>拼接成功的字符串</returns>
         public static string Concat(List<string> str)
         {
+            if (str == null || str.Count <= 0)
+                return null;
+
             StringInstance.Clear();
             for (int i = 0; i < str.Count; i++)
             {

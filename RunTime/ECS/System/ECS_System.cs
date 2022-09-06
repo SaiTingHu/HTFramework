@@ -44,7 +44,6 @@ namespace HT.Framework
             Name = string.Format("{0} ({1})", mna != null ? mna.Name : "未命名", GetType().FullName);
 #endif
         }
-
         /// <summary>
         /// 系统逻辑更新
         /// </summary>

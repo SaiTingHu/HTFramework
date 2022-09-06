@@ -11,11 +11,6 @@ namespace HT.Framework
         private int _limit = 100;
         private Queue<IReference> _referenceQueue = new Queue<IReference>();
 
-        public ReferenceSpawnPool(int limit)
-        {
-            _limit = limit;
-        }
-
         /// <summary>
         /// 引用数量
         /// </summary>
@@ -27,6 +22,11 @@ namespace HT.Framework
             }
         }
 
+        public ReferenceSpawnPool(int limit)
+        {
+            _limit = limit;
+        }
+        
         /// <summary>
         /// 生成引用
         /// </summary>
@@ -46,7 +46,6 @@ namespace HT.Framework
 
             return refe;
         }
-
         /// <summary>
         /// 生成引用
         /// </summary>
@@ -66,7 +65,6 @@ namespace HT.Framework
 
             return refe;
         }
-
         /// <summary>
         /// 回收引用
         /// </summary>
@@ -83,7 +81,6 @@ namespace HT.Framework
                 _referenceQueue.Enqueue(refe);
             }
         }
-
         /// <summary>
         /// 清空所有引用
         /// </summary>

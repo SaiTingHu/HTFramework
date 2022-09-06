@@ -14,38 +14,34 @@ public class #SCRIPTNAME# : HotfixProcedureBase
     /// </summary>
     public override void OnInit()
     {
-
+		base.OnInit();
     }
-
     /// <summary>
     /// 进入流程
     /// </summary>
     public override void OnEnter()
     {
-        
+        base.OnEnter();
     }
-    
     /// <summary>
     /// 离开流程
     /// </summary>
     public override void OnLeave()
     {
-        
+        base.OnLeave();
     }
-
     /// <summary>
     /// 流程帧刷新
     /// </summary>
     public override void OnUpdate()
     {
-        
+        base.OnUpdate();
     }
-
     /// <summary>
     /// 流程帧刷新（秒）
     /// </summary>
     public override void OnUpdateSecond()
     {
-        
+        base.OnUpdateSecond();
     }
 }

@@ -7,8 +7,20 @@ namespace HT.Framework
     /// 摄像机注视目标移动控制
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class MousePosition : MonoBehaviour
+    internal sealed class MousePosition : HTBehaviour
     {
+        /// <summary>
+        /// 是否可以控制
+        /// </summary>
+        public bool CanControl = true;
+        /// <summary>
+        /// 在UGUI目标上是否可以控制
+        /// </summary>
+        public bool IsCanOnUGUI = false;
+        /// <summary>
+        /// 是否可以通过按键控制
+        /// </summary>
+        public bool IsCanByKey = true;
         /// <summary>
         /// 阻尼缓冲时长
         /// </summary>
@@ -17,39 +29,28 @@ namespace HT.Framework
         /// x轴移动速度，y轴移动速度，z轴移动速度
         /// </summary>
         public float XSpeed = 0.1f, YSpeed = 0.1f, ZSpeed = 0.1f;
-        /// <summary>
-        /// 在UGUI目标上是否可以控制
-        /// </summary>
-        public bool IsCanOnUGUI = false;
         
-        //最终的位置
-        private Vector3 _finalPosition;
-        //阻尼缓动模式时的动画
-        private Tweener _moveTweener;
-        //保持追踪模式
-        private bool _isKeepTrack = false;
-        //追踪目标
-        private Transform _trackTarget;
-
         /// <summary>
-        /// 是否可以控制
+        /// 阻尼缓动模式时的动画缓存
         /// </summary>
-        public bool CanControl { get; set; } = true;
-
+        private Tweener _moveTweener;
+        /// <summary>
+        /// 保持追踪模式
+        /// </summary>
+        private bool _isKeepTrack = false;
+        /// <summary>
+        /// 追踪的目标
+        /// </summary>
+        private Transform _trackTarget;
+        
         /// <summary>
         /// 注视目标
         /// </summary>
         public CameraTarget Target { get; set; }
-
         /// <summary>
         /// 操作控制器
         /// </summary>
         public ControllerManager Manager { get; set; }
-
-        /// <summary>
-        /// 旋转控制器
-        /// </summary>
-        public MouseRotation MR { get; set; }
         
         /// <summary>
         /// 平移注视视野
@@ -84,22 +85,18 @@ namespace HT.Framework
                 Target.transform.position = position;
             }
         }
-
         /// <summary>
         /// 进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>
         public void EnterKeepTrack(Transform target)
         {
-            if (!target)
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Controller, "保持追踪的目标不能为空！");
-            }
+            if (target == null)
+                return;
 
             _isKeepTrack = true;
             _trackTarget = target;
         }
-
         /// <summary>
         /// 退出保持追踪模式
         /// </summary>
@@ -107,18 +104,17 @@ namespace HT.Framework
         {
             _isKeepTrack = false;
         }
-
         /// <summary>
-        /// 刷新
+        /// 更新
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             //控制
             Control();
             //应用
             ApplyPosition();
         }
-
+        
         private void Control()
         {
             if (_isKeepTrack)
@@ -137,7 +133,7 @@ namespace HT.Framework
             if (!CanControl)
                 return;
 
-            if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
+            if (!IsCanOnUGUI && UIToolkit.IsStayUINotWorld)
                 return;
 
             if (Main.m_Input.GetButton(InputButtonType.MouseMiddle))
@@ -149,9 +145,8 @@ namespace HT.Framework
                 }
                 Target.transform.Translate(transform.right * Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * -1);
                 Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * -1);
-                MR.NeedDamping = false;
             }
-            else if (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.UpperLower) != 0)
+            else if (IsCanByKey && (Main.m_Input.GetAxisRaw(InputAxisType.Horizontal) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.Vertical) != 0 || Main.m_Input.GetAxisRaw(InputAxisType.UpperLower) != 0))
             {
                 if (_moveTweener != null)
                 {
@@ -161,14 +156,8 @@ namespace HT.Framework
                 Target.transform.Translate(transform.right * Main.m_Input.GetAxis(InputAxisType.Horizontal) * XSpeed);
                 Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.Vertical) * ZSpeed);
                 Target.transform.Translate(transform.up * Main.m_Input.GetAxis(InputAxisType.UpperLower) * YSpeed);
-                MR.NeedDamping = false;
-            }
-            else
-            {
-                MR.NeedDamping = true;
             }
         }
-
         private void ApplyPosition()
         {
             if (Manager.IsEnableBounds)
@@ -176,7 +165,6 @@ namespace HT.Framework
                 Target.transform.position = ApplyBounds(Target.transform.position);
             }
         }
-
         private Vector3 ApplyBounds(Vector3 position)
         {
             if (InTheBounds(position))
@@ -188,16 +176,11 @@ namespace HT.Framework
                 return ClosestPoint(position);
             }
         }
-
         private bool InTheBounds(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 0)
             {
                 return true;
-            }
-            else if (Manager.FreeControlBounds.Count == 1)
-            {
-                return Manager.FreeControlBounds[0].Contains(position);
             }
             else
             {
@@ -211,7 +194,6 @@ namespace HT.Framework
                 return false;
             }
         }
-
         private Vector3 ClosestPoint(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 1)

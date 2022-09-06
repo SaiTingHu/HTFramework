@@ -6,8 +6,20 @@ namespace HT.Framework
     /// 摄像机注视目标旋转控制
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class MouseRotation : MonoBehaviour
+    internal sealed class MouseRotation : HTBehaviour
     {
+        /// <summary>
+        /// 是否可以控制
+        /// </summary>
+        public bool CanControl = true;
+        /// <summary>
+        /// 在UGUI目标上是否可以控制
+        /// </summary>
+        public bool IsCanOnUGUI = false;
+        /// <summary>
+        /// 允许在输入滚轮超越距离限制时，启用摄像机移动
+        /// </summary>
+        public bool AllowOverstepDistance = true;
         /// <summary>
         /// x轴旋转速度，y轴旋转速度，滚轮缩放速度
         /// </summary>
@@ -33,6 +45,10 @@ namespace HT.Framework
         /// </summary>
         public bool NeedDamping = true;
         /// <summary>
+        /// 阻尼缓冲时长
+        /// </summary>
+        public float DampingTime = 3;
+        /// <summary>
         /// 初始的摄像机x轴旋转值
         /// </summary>
         public float X = 90.0f;
@@ -40,42 +56,18 @@ namespace HT.Framework
         /// 初始的摄像机y轴旋转值
         /// </summary>
         public float Y = 30.0f;
+        
         /// <summary>
-        /// 在UGUI目标上是否可以控制
+        /// 目标位置
         /// </summary>
-        public bool IsCanOnUGUI = false;
-        /// <summary>
-        /// 允许在输入滚轮超越距离限制时，启用摄像机移动
-        /// </summary>
-        public bool AllowOverstepDistance = true;
-        /// <summary>
-        /// 是否始终保持注视目标，即使在视角切换时
-        /// </summary>
-        public bool IsLookAtTarget = true;
-
-        //注视点（注视目标的准确位置，经过偏移后的位置）
-        private Vector3 _targetPoint;
-        //插值量
-        private float _damping = 5.0f;
-        //系数
-        private float _factor = 0.02f;
-        //目标位置
         private Quaternion _rotation;
         private Vector3 _position;
         private Vector3 _disVector;
-        //最终的位置
-        private Vector3 _finalPosition;
-
-        /// <summary>
-        /// 是否可以控制
-        /// </summary>
-        public bool CanControl { get; set; } = true;
-
+        
         /// <summary>
         /// 注视目标
         /// </summary>
         public CameraTarget Target { get; set; }
-
         /// <summary>
         /// 操作控制器
         /// </summary>
@@ -100,45 +92,43 @@ namespace HT.Framework
                 SwitchAngle(damping);
             }
         }
-
         /// <summary>
-        /// 刷新
+        /// 更新
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             //控制
             Control();
             //应用
             ApplyRotation();
         }
-
+        
         private void Control()
         {
             if (!CanControl)
                 return;
 
-            if (!IsCanOnUGUI && GlobalTools.IsPointerOverUGUI())
+            if (!IsCanOnUGUI && UIToolkit.IsStayUINotWorld)
                 return;
 
             if (Main.m_Input.GetButton(InputButtonType.MouseRight))
             {
-                X += Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * _factor;
-                Y -= Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * _factor;
+                X += Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * Time.deltaTime;
+                Y -= Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * Time.deltaTime;
             }
             if (Main.m_Input.GetAxisRaw(InputAxisType.MouseScrollWheel) != 0)
             {
-                Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * _factor;
+                Distance -= Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * Time.deltaTime;
 
                 if (AllowOverstepDistance)
                 {
                     if (Distance <= MinDistance || Distance >= MaxDistance)
                     {
-                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel));
+                        Target.transform.Translate(transform.forward * Main.m_Input.GetAxis(InputAxisType.MouseScrollWheel) * MSpeed * Time.deltaTime);
                     }
                 }
             }
         }
-
         private void ApplyRotation()
         {
             //重新计算视角
@@ -146,16 +136,12 @@ namespace HT.Framework
 
             //切换视角
             SwitchAngle(NeedDamping);
-
-            //摄像机一直保持注视目标点
-            if (IsLookAtTarget)
-            {
-                transform.LookAt(Target.transform.position);
-            }
         }
-
         private void CalculateAngle()
         {
+            //将横向旋转值映射到区间[0,360]
+            if (X > 360) X = X % 360;
+            else if (X < 0) X = 360 + X;
             //将纵向旋转限制在视角最低值和最高值之间
             Y = ClampYAngle(Y, YMinAngleLimit, YMaxAngleLimit);
             //将视角距离限制在最小值和最大值之间
@@ -168,14 +154,13 @@ namespace HT.Framework
             //摄像机的最新旋转角度*摄像机与注视点的距离，得出摄像机与注视点的相对位置，再由注视点的位置加上相对位置便等于摄像机的位置
             _position = Target.transform.position + _rotation * _disVector;
         }
-
         private void SwitchAngle(bool damping)
         {
             //摄像机插值变换到新的位置
             if (damping)
             {
-                transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * _damping);
-                transform.position = Vector3.Lerp(transform.position, _position, Time.deltaTime * _damping);
+                transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * DampingTime);
+                transform.position = Vector3.Lerp(transform.position, _position, Time.deltaTime * DampingTime);
             }
             //摄像机直接变换到新的位置
             else
@@ -191,7 +176,6 @@ namespace HT.Framework
                 transform.position = ApplyBounds(transform.position);
             }
         }
-
         private float ClampYAngle(float angle, float min, float max)
         {
             if (angle < -360)
@@ -201,7 +185,6 @@ namespace HT.Framework
 
             return Mathf.Clamp(angle, min, max);
         }
-
         private Vector3 ApplyBounds(Vector3 position)
         {
             if (InTheBounds(position))
@@ -213,16 +196,11 @@ namespace HT.Framework
                 return ClosestPoint(position);
             }
         }
-
         private bool InTheBounds(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 0)
             {
                 return true;
-            }
-            else if (Manager.FreeControlBounds.Count == 1)
-            {
-                return Manager.FreeControlBounds[0].Contains(position);
             }
             else
             {
@@ -236,7 +214,6 @@ namespace HT.Framework
                 return false;
             }
         }
-
         private Vector3 ClosestPoint(Vector3 position)
         {
             if (Manager.FreeControlBounds.Count == 1)

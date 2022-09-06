@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Button))]
-    public sealed class DebuggerButton : DebuggerComponentBase
+    internal sealed class DebuggerButton : DebuggerComponentBase
     {
         private Button _target;
         private int _onClickEventCount;
@@ -21,12 +21,12 @@ namespace HT.Framework
                 _onClickEvents.Add(string.Format("{0}: {1} / {2}()", (i + 1).ToString(), _target.onClick.GetPersistentTarget(i).name, _target.onClick.GetPersistentMethodName(i)));
             }
         }
-
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.interactable = GUILayout.Toggle(_target.interactable, "Interactable");
+
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.interactable = BoolField("Interactable", _target.interactable);
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("OnClick Event Count: " + _onClickEventCount);

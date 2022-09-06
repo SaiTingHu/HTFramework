@@ -16,7 +16,6 @@ public class #SCRIPTNAME# : EntityLogicBase
     {
         base.OnInit();
     }
-
     /// <summary>
     /// 显示实体
     /// </summary>
@@ -24,7 +23,6 @@ public class #SCRIPTNAME# : EntityLogicBase
     {
         base.OnShow();
     }
-
     /// <summary>
     /// 隐藏实体
     /// </summary>
@@ -32,7 +30,6 @@ public class #SCRIPTNAME# : EntityLogicBase
     {
         base.OnHide();
     }
-
     /// <summary>
     /// 销毁实体
     /// </summary>
@@ -40,7 +37,6 @@ public class #SCRIPTNAME# : EntityLogicBase
     {
         base.OnDestroy();
     }
-
     /// <summary>
     /// 实体逻辑刷新
     /// </summary>
@@ -48,7 +44,6 @@ public class #SCRIPTNAME# : EntityLogicBase
     {
         base.OnUpdate();
     }
-
     /// <summary>
     /// 重置实体
     /// </summary>

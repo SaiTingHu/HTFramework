@@ -9,20 +9,20 @@ namespace HT.Framework
         {
             base.OnInspectorDefaultGUI();
 
-            Toggle(Target.IsEnableDoubleClick, out Target.IsEnableDoubleClick, "Is Enable Double Click");
+            PropertyField(nameof(UIClickButton.IsEnableDoubleClick), "Enable Double Click");
 
             if (Target.IsEnableDoubleClick)
             {
-                PropertyField("DoubleClickInterval");
-                PropertyField("OnMouseLeftDoubleClick");
-                PropertyField("OnMouseMiddleClick");
-                PropertyField("OnMouseRightClick");
+                PropertyField(nameof(UIClickButton.DoubleClickInterval));
+                PropertyField(nameof(UIClickButton.OnMouseLeftDoubleClick));
+                PropertyField(nameof(UIClickButton.OnMouseMiddleClick));
+                PropertyField(nameof(UIClickButton.OnMouseRightClick));
             }
             else
             {
-                PropertyField("OnMouseLeftClick");
-                PropertyField("OnMouseMiddleClick");
-                PropertyField("OnMouseRightClick");
+                PropertyField(nameof(UIClickButton.OnMouseLeftClick));
+                PropertyField(nameof(UIClickButton.OnMouseMiddleClick));
+                PropertyField(nameof(UIClickButton.OnMouseRightClick));
             }
         }
     }

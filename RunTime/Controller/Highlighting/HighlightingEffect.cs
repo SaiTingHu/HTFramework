@@ -2,10 +2,9 @@
 
 namespace HT.Framework
 {
-    [RequireComponent(typeof(Camera))]
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-800)]
-    internal sealed class HighlightingEffect : MonoBehaviour
+    internal sealed class HighlightingEffect : HTBehaviour
     {
         #region Static Fields
         /// <summary>
@@ -83,7 +82,7 @@ namespace HT.Framework
         #region Public Fields
         //Z缓冲深度
         public int StencilZBufferDepth = 0;
-        //采样因子
+        //降采样因子
         public int DownSampleFactor = 4;
         //模糊迭代次数
         public int BlurIterations = 2;
@@ -188,21 +187,14 @@ namespace HT.Framework
         private Camera _camera = null;
         #endregion
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _camera = GetComponent<Camera>();
         }
-
         private void Start()
         {
-            //不支持后期特效
-            if (!SystemInfo.supportsImageEffects)
-            {
-                Log.Warning("HighlightingSystem : Image effects is not supported on this platform! Disabling.");
-                enabled = false;
-                return;
-            }
-
             //不支持渲染纹理格式
             if (!SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGB32))
             {
@@ -261,7 +253,6 @@ namespace HT.Framework
 
             BlurMaterial.SetFloat("_Intensity", BlurIntensity);
         }
-
         private void OnDisable()
         {
             if (_shaderCameraObject != null)
@@ -295,21 +286,18 @@ namespace HT.Framework
                 _stencilBuffer = null;
             }
         }
-
         private void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
         {
             float off = BlurMinSpread + iteration * BlurSpread;
             BlurMaterial.SetFloat("_OffsetScale", off);
             Graphics.Blit(source, dest, BlurMaterial);
         }
-
         private void DownSample4x(RenderTexture source, RenderTexture dest)
         {
             float off = 1.0f;
             BlurMaterial.SetFloat("_OffsetScale", off);
             Graphics.Blit(source, dest, BlurMaterial);
         }
-
         private void OnPreRender()
         {
             if (enabled == false || gameObject.activeSelf == false)
@@ -360,7 +348,6 @@ namespace HT.Framework
             //关闭渲染
             HighlightingEvent?.Invoke(false, false);
         }
-
         private void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
             if (_stencilBuffer == null)
@@ -369,16 +356,16 @@ namespace HT.Framework
                 return;
             }
 
-            //创建两个纹理来模糊图像
+            //创建两个降采样纹理来模糊图像
             int width = source.width / DownSampleFactor;
             int height = source.height / DownSampleFactor;
             RenderTexture buffer1 = RenderTexture.GetTemporary(width, height, StencilZBufferDepth, RenderTextureFormat.ARGB32);
             RenderTexture buffer2 = RenderTexture.GetTemporary(width, height, StencilZBufferDepth, RenderTextureFormat.ARGB32);
 
-            //复制纹理到4x4的小纹理
+            //将纹理降采样、模糊处理后存入buffer1
             DownSample4x(_stencilBuffer, buffer1);
 
-            //模糊小纹理
+            //循环迭代模糊处理图像
             bool oddEven = true;
             for (int i = 0; i < BlurIterations; i++)
             {
@@ -394,12 +381,12 @@ namespace HT.Framework
                 oddEven = !oddEven;
             }
 
-            //合成
+            //使用合成Shader，合成最终输出图像
             CompositeMaterial.SetTexture("_StencilTex", _stencilBuffer);
             CompositeMaterial.SetTexture("_BlurTex", oddEven ? buffer1 : buffer2);
             Graphics.Blit(source, destination, CompositeMaterial);
 
-            //清理
+            //清理缓存
             RenderTexture.ReleaseTemporary(buffer1);
             RenderTexture.ReleaseTemporary(buffer2);
             if (_stencilBuffer != null)

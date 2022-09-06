@@ -10,17 +10,27 @@ namespace HT.Framework
     /// </summary>
     public sealed class DefaultEntityHelper : IEntityHelper
     {
-        //当前定义的实体与对象对应关系
+        /// <summary>
+        /// 当前定义的实体与对象对应关系
+        /// </summary>
         private Dictionary<string, GameObject> _defineEntities = new Dictionary<string, GameObject>();
-        //所有实体组
+        /// <summary>
+        /// 所有实体组
+        /// </summary>
         private Dictionary<Type, GameObject> _entitiesGroup = new Dictionary<Type, GameObject>();
-        //实体根节点
+        /// <summary>
+        /// 实体管理器
+        /// </summary>
+        private EntityManager _module;
+        /// <summary>
+        /// 实体根节点
+        /// </summary>
         private Transform _entityRoot;
 
         /// <summary>
         /// 实体管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有实体列表
         /// </summary>
@@ -47,13 +57,14 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
-            _entityRoot = Module.transform.Find("EntityRoot");
+            _module = Module as EntityManager;
+            _entityRoot = _module.transform.Find("EntityRoot");
 
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(EntityLogicBase));
+                return type.IsSubclassOf(typeof(EntityLogicBase)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {
@@ -81,14 +92,14 @@ namespace HT.Framework
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             foreach (var entities in Entities)
             {
@@ -104,7 +115,7 @@ namespace HT.Framework
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             _defineEntities.Clear();
 
@@ -126,7 +137,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }
@@ -152,10 +163,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">实体逻辑类</param>
         /// <param name="entityName">实体指定名称（为 <None> 时默认使用实体逻辑类名称）</param>
-        /// <param name="loadingAction">创建实体过程进度回调</param>
-        /// <param name="loadDoneAction">创建实体完成回调</param>
+        /// <param name="onLoading">创建实体过程进度回调</param>
+        /// <param name="onLoadDone">创建实体完成回调</param>
         /// <returns>加载协程</returns>
-        public Coroutine CreateEntity(Type type, string entityName, HTFAction<float> loadingAction, HTFAction<EntityLogicBase> loadDoneAction)
+        public Coroutine CreateEntity(Type type, string entityName, HTFAction<float> onLoading, HTFAction<EntityLogicBase> onLoadDone)
         {
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
@@ -166,9 +177,8 @@ namespace HT.Framework
                     {
                         EntityLogicBase entityLogic = GenerateEntity(type, ObjectPools[type].Dequeue(), entityName == "<None>" ? type.Name : entityName);
 
-                        loadingAction?.Invoke(1);
-                        loadDoneAction?.Invoke(entityLogic);
-                        Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
+                        onLoading?.Invoke(1);
+                        onLoadDone?.Invoke(entityLogic);
                         return null;
                     }
                     else
@@ -177,19 +187,17 @@ namespace HT.Framework
                         {
                             EntityLogicBase entityLogic = GenerateEntity(type, Main.Clone(_defineEntities[type.FullName], _entitiesGroup[type].transform), entityName == "<None>" ? type.Name : entityName);
 
-                            loadingAction?.Invoke(1);
-                            loadDoneAction?.Invoke(entityLogic);
-                            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
+                            onLoading?.Invoke(1);
+                            onLoadDone?.Invoke(entityLogic);
                             return null;
                         }
                         else
                         {
-                            return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, loadingAction, (obj) =>
+                            return Main.m_Resource.LoadPrefab(new PrefabInfo(attribute), _entitiesGroup[type].transform, onLoading, (obj) =>
                             {
                                 EntityLogicBase entityLogic = GenerateEntity(type, obj, entityName == "<None>" ? type.Name : entityName);
 
-                                loadDoneAction?.Invoke(entityLogic);
-                                Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
+                                onLoadDone?.Invoke(entityLogic);
                             });
                         }
                     }
@@ -259,10 +267,8 @@ namespace HT.Framework
         /// <param name="entityLogic">实体逻辑对象</param>
         public void ShowEntity(EntityLogicBase entityLogic)
         {
-            if (entityLogic.IsShowed)
-            {
+            if (entityLogic == null || entityLogic.IsShowed)
                 return;
-            }
 
             entityLogic.Entity.SetActive(true);
             entityLogic.OnShow();
@@ -273,10 +279,8 @@ namespace HT.Framework
         /// <param name="entityLogic">实体逻辑对象</param>
         public void HideEntity(EntityLogicBase entityLogic)
         {
-            if (!entityLogic.IsShowed)
-            {
+            if (entityLogic == null || !entityLogic.IsShowed)
                 return;
-            }
 
             entityLogic.Entity.SetActive(false);
             entityLogic.OnHide();
@@ -330,7 +334,13 @@ namespace HT.Framework
             }
         }
 
-        //生成实体
+        /// <summary>
+        /// 生成实体
+        /// </summary>
+        /// <param name="type">实体类型</param>
+        /// <param name="entity">实体对象</param>
+        /// <param name="entityName">实体名称</param>
+        /// <returns>实体逻辑类</returns>
         private EntityLogicBase GenerateEntity(Type type, GameObject entity, string entityName)
         {
             EntityLogicBase entityLogic = Main.m_ReferencePool.Spawn(type) as EntityLogicBase;
@@ -340,11 +350,18 @@ namespace HT.Framework
             entityLogic.Entity.SetActive(true);
             entityLogic.OnInit();
             entityLogic.OnShow();
+            Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventCreateEntitySucceed>().Fill(entityLogic));
             return entityLogic;
         }
-        //回收实体
+        /// <summary>
+        /// 回收实体
+        /// </summary>
+        /// <param name="entityLogic">实体逻辑类</param>
         private void RecoveryEntity(EntityLogicBase entityLogic)
         {
+            if (entityLogic == null)
+                return;
+
             Type type = entityLogic.GetType();
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();
             if (attribute != null)
@@ -377,7 +394,10 @@ namespace HT.Framework
                 }
             }
         }
-        //批量回收实体
+        /// <summary>
+        /// 批量回收实体
+        /// </summary>
+        /// <param name="type">实体类型</param>
         private void RecoveryEntities(Type type)
         {
             EntityResourceAttribute attribute = type.GetCustomAttribute<EntityResourceAttribute>();

@@ -16,7 +16,6 @@ public class #SCRIPTNAME# : UILogicTemporary
     {
         base.OnInit();
     }
-
 	/// <summary>
 	/// 打开UI
 	/// </summary>
@@ -24,7 +23,6 @@ public class #SCRIPTNAME# : UILogicTemporary
     {
         base.OnOpen(args);
     }
-    
 	/// <summary>
 	/// 关闭UI
 	/// </summary>
@@ -32,7 +30,6 @@ public class #SCRIPTNAME# : UILogicTemporary
     {
         base.OnClose();
     }
-
 	/// <summary>
 	/// 销毁UI
 	/// </summary>
@@ -40,7 +37,6 @@ public class #SCRIPTNAME# : UILogicTemporary
     {
         base.OnDestroy();
     }
-
 	/// <summary>
 	/// UI逻辑刷新
 	/// </summary>

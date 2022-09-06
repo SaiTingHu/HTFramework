@@ -5,9 +5,8 @@ namespace HT.Framework
     /// <summary>
     /// Web请求管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.WebRequest)]
-    public sealed class WebRequestManager : InternalModuleBase
+    public sealed class WebRequestManager : InternalModuleBase<IWebRequestHelper>
     {
         /// <summary>
         /// 当前是否是离线状态
@@ -18,19 +17,17 @@ namespace HT.Framework
         /// </summary>
         public AudioType DownloadAudioType = AudioType.WAV;
         
-        private IWebRequestHelper _helper;
-
-        private WebRequestManager()
+        /// <summary>
+        /// 是否已连接到因特网
+        /// </summary>
+        public bool IsConnectedInternet
         {
-
+            get
+            {
+                return _helper.IsConnectedInternet;
+            }
         }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IWebRequestHelper;
-        }
-
+        
         /// <summary>
         /// 注册接口（获取 string）
         /// </summary>
@@ -63,6 +60,19 @@ namespace HT.Framework
         public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle = null)
         {
             _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle);
+        }
+        /// <summary>
+        /// 注册接口（获取 File）
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="interfaceUrl">接口url</param>
+        /// <param name="savePath">保存路径</param>
+        /// <param name="loadingHandler">下载过程中回调</param>
+        /// <param name="finishedHandler">下载完成回调</param>
+        /// <param name="offlineHandle">离线模式处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler = null, HTFAction<bool> finishedHandler = null, HTFAction offlineHandle = null)
+        {
+            _helper.RegisterInterface(interfaceName, interfaceUrl, savePath, loadingHandler, finishedHandler, offlineHandle);
         }
         /// <summary>
         /// 注册接口（提交 表单）
@@ -126,6 +136,16 @@ namespace HT.Framework
         public Coroutine SendRequest(string interfaceName, WWWForm form)
         {
             return _helper.SendRequest(interfaceName, form);
+        }
+        /// <summary>
+        /// 发起下载文件请求
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="parameter">可选参数（要同时传入参数名和参数值，例：name='张三'）</param>
+        /// <returns>请求的协程</returns>
+        public Coroutine SendDownloadFile(string interfaceName, params string[] parameter)
+        {
+            return _helper.SendDownloadFile(interfaceName, parameter);
         }
     }
 }

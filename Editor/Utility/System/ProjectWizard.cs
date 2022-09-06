@@ -1,25 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 项目创建向导
+    /// </summary>
     internal sealed class ProjectWizard : HTFEditorWindow
     {
         private List<Folder> _rootFolders = new List<Folder>();
         private Folder _mainSceneFolder;
+        private Folder _UIEditFolder;
+        private Folder _RegularEditFolder;
         private Folder _procedureFolder;
         private string _mainSceneName = "Main";
-        private bool _isCreateInitialProcedure = true;
+        private string _UIEditName = "UIEdit";
+        private string _RegularEditName = "RegularEdit";
+        private bool _isCreateInitialProcedure = false;
         private string _initialProcedure = "InitialProcedure";
         private Vector2 _scrollFolderGUI;
 
         protected override bool IsEnableTitleGUI => false;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             InitFolder();
         }
         private void InitFolder()
@@ -34,6 +47,8 @@ namespace HT.Framework
             _rootFolders.Add(sourcefolder);
 
             _mainSceneFolder = sourcefolder;
+            _UIEditFolder = sourcefolder;
+            _RegularEditFolder = sourcefolder;
             _procedureFolder = procedureFolder;
 
             for (int i = 0; i < _rootFolders.Count; i++)
@@ -81,7 +96,7 @@ namespace HT.Framework
             folder.IsCreateGuide = GUILayout.Toggle(folder.IsCreateGuide, "Guide");
             if (folder.IsCreateGuide)
             {
-                folder.GuideContent = EditorGUILayout.TextField(folder.GuideContent, GUILayout.Width(120));
+                folder.GuideContent = EditorGUILayout.TextField(folder.GuideContent, GUILayout.Width(200));
             }
             GUI.color = Color.white;
             GUILayout.FlexibleSpace();
@@ -98,7 +113,8 @@ namespace HT.Framework
         private void SetupGUI()
         {
             GUILayout.BeginVertical("Original Setup", "Window");
-            
+
+            #region Main Scene
             GUILayout.BeginHorizontal();
             GUIContent content = EditorGUIUtility.IconContent("SceneAsset Icon");
             content.text = "Main Scene";
@@ -120,7 +136,57 @@ namespace HT.Framework
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
-            
+            #endregion
+
+            #region UI Edit
+            GUILayout.BeginHorizontal();
+            content = EditorGUIUtility.IconContent("SceneAsset Icon");
+            content.text = "UI Edit";
+            GUILayout.Label(content, GUILayout.Height(18), GUILayout.Width(120));
+            _UIEditName = EditorGUILayout.TextField(_UIEditName);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(125);
+            content = EditorGUIUtility.IconContent("Folder Icon");
+            content.text = _UIEditFolder != null ? _UIEditFolder.Path : "<None>";
+            if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                for (int i = 0; i < _rootFolders.Count; i++)
+                {
+                    ChooseUISceneFolderMenu(gm, _rootFolders[i]);
+                }
+                gm.ShowAsContext();
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+
+            #region Regular Edit
+            GUILayout.BeginHorizontal();
+            content = EditorGUIUtility.IconContent("SceneAsset Icon");
+            content.text = "Regular Edit";
+            GUILayout.Label(content, GUILayout.Height(18), GUILayout.Width(120));
+            _RegularEditName = EditorGUILayout.TextField(_RegularEditName);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(125);
+            content = EditorGUIUtility.IconContent("Folder Icon");
+            content.text = _RegularEditFolder != null ? _RegularEditFolder.Path : "<None>";
+            if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                for (int i = 0; i < _rootFolders.Count; i++)
+                {
+                    ChooseRegularSceneFolderMenu(gm, _rootFolders[i]);
+                }
+                gm.ShowAsContext();
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+
+            #region Initial Procedure
             GUILayout.BeginHorizontal();
             GUI.color = _isCreateInitialProcedure ? Color.white : Color.gray;
             _isCreateInitialProcedure = GUILayout.Toggle(_isCreateInitialProcedure, "Initial Procedure", GUILayout.Width(120));
@@ -143,6 +209,7 @@ namespace HT.Framework
             }
             GUI.enabled = true;
             GUILayout.EndHorizontal();
+            #endregion
 
             GUILayout.EndVertical();
         }
@@ -156,6 +223,30 @@ namespace HT.Framework
             for (int i = 0; i < folder.SubFolders.Count; i++)
             {
                 ChooseMainSceneFolderMenu(gm, folder.SubFolders[i]);
+            }
+        }
+        private void ChooseUISceneFolderMenu(GenericMenu gm, Folder folder)
+        {
+            gm.AddItem(new GUIContent(folder.Path.Replace("/", "\\")), _UIEditFolder == folder, () =>
+            {
+                _UIEditFolder = folder;
+            });
+
+            for (int i = 0; i < folder.SubFolders.Count; i++)
+            {
+                ChooseUISceneFolderMenu(gm, folder.SubFolders[i]);
+            }
+        }
+        private void ChooseRegularSceneFolderMenu(GenericMenu gm, Folder folder)
+        {
+            gm.AddItem(new GUIContent(folder.Path.Replace("/", "\\")), _RegularEditFolder == folder, () =>
+            {
+                _RegularEditFolder = folder;
+            });
+
+            for (int i = 0; i < folder.SubFolders.Count; i++)
+            {
+                ChooseRegularSceneFolderMenu(gm, folder.SubFolders[i]);
             }
         }
         private void ChooseProcedureFolderMenu(GenericMenu gm, Folder folder)
@@ -174,6 +265,7 @@ namespace HT.Framework
         {
             GUILayout.BeginHorizontal();
             GUI.enabled = _mainSceneFolder != null && _mainSceneName != "";
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Generate", EditorGlobalTools.Styles.LargeButton))
             {
                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to generate by project wizard？", "Yes", "No"))
@@ -181,6 +273,7 @@ namespace HT.Framework
                     Generate();
                 }
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }
@@ -196,21 +289,26 @@ namespace HT.Framework
             }
             else
             {
-                folder.SetGuide(true, "Hold " + folder.Name);
+                folder.SetGuide(true, string.Format("Put the {0} in this folder", folder.Name));
             }
         }
         private void Generate()
         {
+            if (_mainSceneName == _UIEditName || _mainSceneName == _RegularEditName || _UIEditName == _RegularEditName)
+            {
+                Log.Error("三个预设场景的名称不能相同！");
+                return;
+            }
+
             for (int i = 0; i < _rootFolders.Count; i++)
             {
                 CreateFolder(_rootFolders[i]);
             }
-
-            if (CreateMainScene())
-            {
-                CreateInitialProcedure();
-                SaveScene();
-            }
+            
+            CreateUIScene();
+            CreateRegularScene();
+            CreateMainScene();
+            Close();
         }
         private void CreateFolder(Folder folder)
         {
@@ -220,7 +318,7 @@ namespace HT.Framework
 
                 if (folder.IsCreateGuide)
                 {
-                    File.AppendAllText(folder.FullPath + "/Guide.txt", folder.GuideContent);
+                    File.AppendAllText(folder.FullPath + "/Guide.txt", folder.GuideContent, Encoding.UTF8);
                 }
             }
 
@@ -229,73 +327,104 @@ namespace HT.Framework
                 CreateFolder(folder.SubFolders[i]);
             }
         }
-        private bool CreateMainScene()
+        private void CreateUIScene()
+        {
+            if (_UIEditFolder != null && _UIEditName != "")
+            {
+                Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                string scenePath = _UIEditFolder.Path + "/" + _UIEditName + ".unity";
+
+                GameObject uiRoot = new GameObject("Canvas");
+                uiRoot.layer = LayerMask.NameToLayer("UI");
+                Canvas canvas = uiRoot.AddComponent<Canvas>();
+                CanvasScaler canvasScaler = uiRoot.AddComponent<CanvasScaler>();
+                GraphicRaycaster graphicRaycaster = uiRoot.AddComponent<GraphicRaycaster>();
+
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                canvasScaler.referenceResolution = new Vector2(1280, 720);
+                canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+
+                GameObject uiEvent = new GameObject("EventSystem");
+                uiEvent.AddComponent<EventSystem>();
+                uiEvent.AddComponent<StandaloneInputModule>();
+
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene, scenePath);
+                AssetDatabase.Refresh();
+
+                EditorSettings.prefabUIEnvironment = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
+            }
+        }
+        private void CreateRegularScene()
+        {
+            if (_RegularEditFolder != null && _RegularEditName != "")
+            {
+                Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                string scenePath = _RegularEditFolder.Path + "/" + _RegularEditName + ".unity";
+
+                GameObject light = new GameObject("Directional Light");
+                light.AddComponent<Light>();
+
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene, _RegularEditFolder.Path + "/" + _RegularEditName + ".unity");
+                AssetDatabase.Refresh();
+
+                EditorSettings.prefabRegularEnvironment = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
+            }
+        }
+        private void CreateMainScene()
         {
             if (_mainSceneFolder != null && _mainSceneName != "")
             {
-                Main main = FindObjectOfType<Main>();
-                if (main == null)
+                Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+                Object prefab = AssetDatabase.LoadAssetAtPath<Object>("Assets/HTFramework/HTFramework.prefab");
+                if (prefab)
                 {
-                    Object asset = AssetDatabase.LoadAssetAtPath<Object>("Assets/HTFramework/HTFramework.prefab");
-                    if (asset)
+                    GameObject main = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+                    main.name = "HTFramework";
+                    main.transform.localPosition = Vector3.zero;
+                    main.transform.localRotation = Quaternion.identity;
+                    main.transform.localScale = Vector3.one;
+
+                    if (_isCreateInitialProcedure)
                     {
-                        GameObject mainObj = PrefabUtility.InstantiatePrefab(asset) as GameObject;
-                        mainObj.name = "HTFramework";
-                        mainObj.transform.localPosition = Vector3.zero;
-                        mainObj.transform.localRotation = Quaternion.identity;
-                        mainObj.transform.localScale = Vector3.one;
-                        return true;
-                    }
-                    else
-                    {
-                        Log.Error("新建框架主环境失败，丢失主预制体：Assets/HTFramework/HTFramework.prefab");
+                        if (_procedureFolder != null && _initialProcedure != "")
+                        {
+                            string path = _procedureFolder.FullPath + "/" + _initialProcedure + ".cs";
+                            if (!File.Exists(path))
+                            {
+                                TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "ProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
+                                if (asset)
+                                {
+                                    string code = asset.text;
+                                    code = code.Replace("新建流程", "初始流程（运行 " + _mainSceneName + " 场景会首先进入此流程）");
+                                    code = code.Replace("#SCRIPTNAME#", _initialProcedure);
+                                    File.AppendAllText(path, code, Encoding.UTF8);
+                                    asset = null;
+
+                                    ProcedureManager procedure = main.GetComponentByChild<ProcedureManager>("Procedure");
+                                    procedure.ActivatedProcedures.Add(_initialProcedure);
+                                    procedure.DefaultProcedure = _initialProcedure;
+                                }
+                            }
+                            else
+                            {
+                                Log.Error("新建初始流程失败，已存在脚本 " + path);
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    Log.Error("已存在框架主环境，项目生成向导将不会再自动创建主场景！");
+                    Log.Error("新建框架主环境失败，丢失主预制体：Assets/HTFramework/HTFramework.prefab");
                 }
-            }
-            return false;
-        }
-        private void CreateInitialProcedure()
-        {
-            if (_isCreateInitialProcedure)
-            {
-                if (_procedureFolder != null && _initialProcedure != "")
-                {
-                    string path = _procedureFolder.FullPath + "/" + _initialProcedure + ".cs";
-                    if (!File.Exists(path))
-                    {
-                        TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/ProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
-                        if (asset)
-                        {
-                            string code = asset.text;
-                            code = code.Replace("新建流程", "初始流程（运行 " + _mainSceneName + " 场景会首先进入此流程）");
-                            code = code.Replace("#SCRIPTNAME#", _initialProcedure);
-                            File.AppendAllText(path, code);
-                            asset = null;
 
-                            Main main = FindObjectOfType<Main>();
-                            ProcedureManager procedure = main.GetComponentByChild<ProcedureManager>("Procedure");
-                            procedure.ActivatedProcedures.Add(_initialProcedure);
-                            procedure.DefaultProcedure = _initialProcedure;
-                        }
-                    }
-                    else
-                    {
-                        Log.Error("新建初始流程失败，已存在脚本 " + path);
-                    }
-                }
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene, _mainSceneFolder.Path + "/" + _mainSceneName + ".unity");
+                AssetDatabase.Refresh();
             }
-        }
-        private void SaveScene()
-        {
-            Main main = FindObjectOfType<Main>();
-            EditorSceneManager.MarkSceneDirty(main.gameObject.scene);
-            EditorSceneManager.SaveScene(main.gameObject.scene, _mainSceneFolder.Path + "/" + _mainSceneName + ".unity");
-            AssetDatabase.Refresh();
-            Close();
         }
         
         private class Folder

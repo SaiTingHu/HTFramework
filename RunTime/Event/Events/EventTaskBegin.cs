@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 任务流程开始事件【调用 TaskMaster.Begin 开始整个流程后触发】
+    /// 任务流程开始事件【调用 TaskMaster.Begin 开始整个流程后触发】（二型事件）
     /// </summary>
     public sealed class EventTaskBegin : EventHandlerBase
     {
@@ -12,7 +12,6 @@
         {
             return this;
         }
-
         /// <summary>
         /// 重置引用，当被引用池回收时调用
         /// </summary>

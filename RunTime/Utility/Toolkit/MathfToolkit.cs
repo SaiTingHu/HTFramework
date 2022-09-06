@@ -29,6 +29,9 @@ namespace HT.Framework
         /// <returns>随机获取的值</returns>
         public static T RandomValue<T>(this T[] values)
         {
+            if (values == null || values.Length <= 0)
+                return default;
+
             int index = UnityEngine.Random.Range(0, values.Length);
             return values[index];
         }
@@ -40,8 +43,50 @@ namespace HT.Framework
         /// <returns>随机获取的值</returns>
         public static T RandomValue<T>(this List<T> values)
         {
+            if (values == null || values.Count <= 0)
+                return default;
+
             int index = UnityEngine.Random.Range(0, values.Count);
             return values[index];
+        }
+        /// <summary>
+        /// 随机执行一个Action
+        /// </summary>
+        /// <param name="action1">Action1</param>
+        /// <param name="action2">Action2</param>
+        public static void RandomExecute(HTFAction action1, HTFAction action2)
+        {
+            int value = UnityEngine.Random.Range(0, 10);
+            if (value < 5)
+            {
+                action1?.Invoke();
+            }
+            else
+            {
+                action2?.Invoke();
+            }
+        }
+        /// <summary>
+        /// 随机执行一个Action
+        /// </summary>
+        /// <param name="action1">Action1</param>
+        /// <param name="action2">Action2</param>
+        /// <param name="action3">Action3</param>
+        public static void RandomExecute(HTFAction action1, HTFAction action2, HTFAction action3)
+        {
+            int value = UnityEngine.Random.Range(0, 9);
+            if (value < 3)
+            {
+                action1?.Invoke();
+            }
+            else if (value < 6)
+            {
+                action2?.Invoke();
+            }
+            else
+            {
+                action3?.Invoke();
+            }
         }
         /// <summary>
         /// 随机执行一个Action
@@ -49,6 +94,9 @@ namespace HT.Framework
         /// <param name="values">Action数组</param>
         public static void RandomExecute(params HTFAction[] values)
         {
+            if (values == null || values.Length <= 0)
+                return;
+
             int index = UnityEngine.Random.Range(0, values.Length);
             values[index]?.Invoke();
         }
@@ -62,6 +110,7 @@ namespace HT.Framework
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
             byte[] fromData = Encoding.UTF8.GetBytes(value);
             byte[] toData = md5.ComputeHash(fromData);
+            md5.Dispose();
             return Convert.ToBase64String(toData);
         }
         /// <summary>

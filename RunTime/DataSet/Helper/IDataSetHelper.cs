@@ -50,8 +50,9 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">数据集类型</param>
         /// <param name="match">匹配条件</param>
+        /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
         /// <returns>数据集</returns>
-        DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match);
+        DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match, bool isCut = false);
         /// <summary>
         /// 根据先后顺序获取某一类型的第一条数据集
         /// </summary>
@@ -74,7 +75,6 @@ namespace HT.Framework
         /// <param name="type">数据集类型</param>
         /// <returns>数据集数量</returns>
         int GetCount(Type type);
-
         /// <summary>
         /// 清空某一类型的数据集仓库
         /// </summary>

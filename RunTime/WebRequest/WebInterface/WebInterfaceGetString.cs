@@ -13,24 +13,21 @@ namespace HT.Framework
         {
             if (handler == null)
             {
-                Handler?.Invoke("");
+                Handler?.Invoke(null);
             }
             else
             {
                 Handler?.Invoke(handler.text);
             }
         }
-
         public override void OnSetDownloadHandler(UnityWebRequest request)
         {
 
         }
-
         public override string OnGetDownloadString(DownloadHandler handler)
         {
             return handler.text;
         }
-
         public override void Reset()
         {
             OfflineHandler = null;

@@ -1,6 +1,8 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace HT.Framework
@@ -8,14 +10,13 @@ namespace HT.Framework
     /// <summary>
     /// 操作控制器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Controller)]
-    public sealed class ControllerManager : InternalModuleBase
+    public sealed class ControllerManager : InternalModuleBase<IControllerHelper>
     {
         /// <summary>
         /// 默认的控制模式【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal ControlMode DefaultControlMode = ControlMode.FreeControl;
+        [SerializeField] internal ControlMode DefaultMode = ControlMode.FreeControl;
         /// <summary>
         /// Dotween动画的默认缓动类型【请勿在代码中修改】
         /// </summary>
@@ -36,7 +37,6 @@ namespace HT.Framework
         /// 自由控制：是否启用边界盒
         /// </summary>
         public bool IsEnableBounds = false;
-
         /// <summary>
         /// 切换至自由控制事件
         /// </summary>
@@ -53,34 +53,17 @@ namespace HT.Framework
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
-        
-        private IControllerHelper _helper;
 
-        private ControllerManager()
+        /// <summary>
+        /// 模块的优先级（越小越优先）
+        /// </summary>
+        public override int Priority
         {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-            
-            DOTween.defaultEaseType = DefaultEase;
-            DOTween.defaultAutoPlay = DefaultAutoPlay;
-            DOTween.defaultAutoKill = IsAutoKill;
-            
-            _helper = Helper as IControllerHelper;
-            _helper.RayEvent += (target, point, point2D) =>
+            get
             {
-                RayEvent?.Invoke(target, point, point2D);
-            };
+                return -1;
+            }
         }
-        internal override void OnPreparatory()
-        {
-            base.OnPreparatory();
-
-            TheControlMode = DefaultControlMode;
-        }
-
         /// <summary>
         /// 主摄像机
         /// </summary>
@@ -94,14 +77,14 @@ namespace HT.Framework
         /// <summary>
         /// 控制模式
         /// </summary>
-        public ControlMode TheControlMode
+        public ControlMode Mode
         {
             set
             {
-                if (_helper.TheControlMode != value)
+                if (_helper.Mode != value)
                 {
-                    _helper.TheControlMode = value;
-                    switch (_helper.TheControlMode)
+                    _helper.Mode = value;
+                    switch (_helper.Mode)
                     {
                         case ControlMode.FreeControl:
                             SwitchToFreeControlEvent?.Invoke();
@@ -117,7 +100,7 @@ namespace HT.Framework
             }
             get
             {
-                return _helper.TheControlMode;
+                return _helper.Mode;
             }
         }
         /// <summary>
@@ -197,20 +180,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 自由控制：摄像机是否始终保持注视目标
-        /// </summary>
-        public bool IsLookAtTarget
-        {
-            get
-            {
-                return _helper.IsLookAtTarget;
-            }
-            set
-            {
-                _helper.IsLookAtTarget = value;
-            }
-        }
-        /// <summary>
         /// 当前射线击中的目标
         /// </summary>
         public MouseRayTargetBase RayTarget
@@ -227,7 +196,10 @@ namespace HT.Framework
         {
             get
             {
-                return _helper.RayTargetObj;
+                if (_helper.RayTarget != null)
+                    return _helper.RayTarget.gameObject;
+                else
+                    return null;
             }
         }
         /// <summary>
@@ -282,6 +254,40 @@ namespace HT.Framework
                 _helper.EnableMouseRayHitPrompt = value;
             }
         }
+        /// <summary>
+        /// 高亮组件是否自动销毁
+        /// </summary>
+        public bool HighlightAutoDie
+        {
+            get
+            {
+                return _helper.HighlightAutoDie;
+            }
+            set
+            {
+                _helper.HighlightAutoDie = value;
+            }
+        }
+
+        public override void OnInit()
+        {
+            base.OnInit();
+
+            DOTween.defaultEaseType = DefaultEase;
+            DOTween.defaultAutoPlay = DefaultAutoPlay;
+            DOTween.defaultAutoKill = IsAutoKill;
+
+            _helper.RayEvent += (target, point, point2D) =>
+            {
+                RayEvent?.Invoke(target, point, point2D);
+            };
+        }
+        public override void OnReady()
+        {
+            base.OnReady();
+
+            Mode = DefaultMode;
+        }
 
         /// <summary>
         /// 自由控制：添加边界盒
@@ -309,6 +315,7 @@ namespace HT.Framework
         {
             FreeControlBounds.Clear();
         }
+
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>
@@ -338,6 +345,60 @@ namespace HT.Framework
             _helper.SetLookAngle(angle.x, angle.y, distance, damping);
         }
         /// <summary>
+        /// 自由控制：设置视角移动速度
+        /// </summary>
+        /// <param name="x">x轴移动速度</param>
+        /// <param name="y">y轴移动速度</param>
+        /// <param name="z">z轴移动速度</param>
+        public void SetMoveSpeed(float x, float y, float z)
+        {
+            _helper.SetMoveSpeed(x, y, z);
+        }
+        /// <summary>
+        /// 自由控制：设置视角移动速度
+        /// </summary>
+        /// <param name="speed">移动速度</param>
+        public void SetMoveSpeed(Vector3 speed)
+        {
+            _helper.SetMoveSpeed(speed.x, speed.y, speed.z);
+        }
+        /// <summary>
+        /// 自由控制：设置视角旋转速度
+        /// </summary>
+        /// <param name="x">x轴旋转速度</param>
+        /// <param name="y">y轴旋转速度</param>
+        /// <param name="m">滚轮缩放速度</param>
+        public void SetRotateSpeed(float x, float y, float m)
+        {
+            _helper.SetRotateSpeed(x, y, m);
+        }
+        /// <summary>
+        /// 自由控制：设置视角旋转速度
+        /// </summary>
+        /// <param name="speed">旋转速度</param>
+        public void SetRotateSpeed(Vector3 speed)
+        {
+            _helper.SetRotateSpeed(speed.x, speed.y, speed.z);
+        }
+        /// <summary>
+        /// 自由控制：设置摄像机旋转时视角Y轴的限制
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        public void SetAngleLimit(float min, float max)
+        {
+            _helper.SetAngleLimit(min, max);
+        }
+        /// <summary>
+        /// 自由控制：设置摄像机注视距离的最小值和最大值
+        /// </summary>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        public void SetMinMaxDistance(float min, float max)
+        {
+            _helper.SetMinMaxDistance(min, max);
+        }
+        /// <summary>
         /// 自由控制：进入保持追踪模式
         /// </summary>
         /// <param name="target">追踪目标</param>
@@ -362,13 +423,13 @@ namespace HT.Framework
         {
             _helper.SetMouseRayFocusImage(background, content, uIType);
         }
-
+        
         /// <summary>
         /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
         /// </summary>
         /// <param name="target">目标</param>
         /// <param name="callback">点击事件回调</param>
-        public void AddClickListener(GameObject target, HTFAction callback)
+        public void AddClickListener(GameObject target, UnityAction callback)
         {
             _helper.AddClickListener(target, callback);
         }
@@ -376,16 +437,18 @@ namespace HT.Framework
         /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
         /// </summary>
         /// <param name="target">目标</param>
-        public void RemoveClickListener(GameObject target)
+        /// <param name="callback">点击事件回调</param>
+        public void RemoveClickListener(GameObject target, UnityAction callback)
         {
-            _helper.RemoveClickListener(target);
+            _helper.RemoveClickListener(target, callback);
         }
         /// <summary>
-        /// 清空所有点击事件
+        /// 为挂载 MouseRayTargetBase 的目标移除所有的鼠标左键点击事件
         /// </summary>
-        public void ClearClickListener()
+        /// <param name="target">目标</param>
+        public void RemoveAllClickListener(GameObject target)
         {
-            _helper.ClearClickListener();
+            _helper.RemoveAllClickListener(target);
         }
     }
 

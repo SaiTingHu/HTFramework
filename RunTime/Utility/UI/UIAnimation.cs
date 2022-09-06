@@ -8,7 +8,7 @@ namespace HT.Framework
     /// UI控件动画
     /// </summary>
     [AddComponentMenu("HTFramework/UI/UIAnimation")]
-    public sealed class UIAnimation : MonoBehaviour
+    public sealed class UIAnimation : HTBehaviour
     {
         public UIAnimationType TheAnimationType = UIAnimationType.Move;
         public Ease TheEase = Ease.Linear;
@@ -20,6 +20,14 @@ namespace HT.Framework
         public float TheTime = 1;
         public int TheLoops = -1;
         public bool PlayOnStart = true;
+
+        private RectTransform _rectTransform;
+        private Graphic _theGraphic;
+        private Vector3 _positionRecord;
+        private Vector3 _rotationRecord;
+        private Vector3 _scaleRecord;
+        private Color _colorRecord;
+        private Tweener _theTweener;
 
         /// <summary>
         /// 动画是否播放中
@@ -42,17 +50,11 @@ namespace HT.Framework
         /// 动画是否暂停中
         /// </summary>
         public bool IsPause { get; private set; } = false;
-
-        private RectTransform _rectTransform;
-        private Graphic _theGraphic;
-        private Vector3 _positionRecord;
-        private Vector3 _rotationRecord;
-        private Vector3 _scaleRecord;
-        private Color _colorRecord;
-        private Tweener _theTweener;
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _rectTransform = transform.rectTransform();
             _theGraphic = GetComponent<Graphic>();
             _positionRecord = transform.localPosition;
@@ -60,7 +62,6 @@ namespace HT.Framework
             _scaleRecord = transform.localScale;
             _colorRecord = _theGraphic != null ? _theGraphic.color : Color.white;
         }
-
         private void Start()
         {
             if (_rectTransform == null)
@@ -119,7 +120,6 @@ namespace HT.Framework
 
             IsPause = false;
         }
-
         /// <summary>
         /// 暂停
         /// </summary>
@@ -132,7 +132,6 @@ namespace HT.Framework
 
             IsPause = true;
         }
-
         /// <summary>
         /// 继续播放
         /// </summary>
@@ -145,7 +144,6 @@ namespace HT.Framework
 
             IsPause = false;
         }
-
         /// <summary>
         /// 停止
         /// </summary>

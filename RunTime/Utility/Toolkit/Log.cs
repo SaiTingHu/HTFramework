@@ -7,9 +7,11 @@ namespace HT.Framework
     /// </summary>
     public static class Log
     {
-        private static readonly string InfoPrefix = "<b><color=cyan>[HTFramework.Info]</color></b> ";
-        private static readonly string WarningPrefix = "<b><color=yellow>[HTFramework.Warning]</color></b> ";
-        private static readonly string ErrorPrefix = "<b><color=red>[HTFramework.Error]</color></b> ";
+#if UNITY_EDITOR
+        private const string InfoPrefix = "<b><color=cyan>[HTFramework.Info]</color></b> ";
+        private const string WarningPrefix = "<b><color=yellow>[HTFramework.Warning]</color></b> ";
+        private const string ErrorPrefix = "<b><color=red>[HTFramework.Error]</color></b> ";
+#endif
 
         /// <summary>
         /// 打印信息日志
@@ -22,7 +24,7 @@ namespace HT.Framework
 #else
             if (Main.Current.IsEnabledLogInfo)
             {
-                Debug.Log(InfoPrefix + content);
+                Debug.Log(content);
             }
 #endif
         }
@@ -37,7 +39,7 @@ namespace HT.Framework
 #else
             if (Main.Current.IsEnabledLogWarning)
             {
-                Debug.LogWarning(WarningPrefix + content);
+                Debug.LogWarning(content);
             }
 #endif
         }
@@ -52,7 +54,7 @@ namespace HT.Framework
 #else
             if (Main.Current.IsEnabledLogError)
             {
-                Debug.LogError(ErrorPrefix + content);
+                Debug.LogError(content);
             }
 #endif
         }

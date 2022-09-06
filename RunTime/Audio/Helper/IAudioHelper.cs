@@ -93,11 +93,6 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         void PlayBackgroundMusic(AudioClip clip, bool isLoop = true, float speed = 1);
         /// <summary>
-        /// 播放背景音乐
-        /// </summary>
-        /// <param name="clip">音乐剪辑</param>
-        void PlayBackgroundMusic(AudioClip clip);
-        /// <summary>
         /// 暂停播放背景音乐
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
@@ -106,7 +101,7 @@ namespace HT.Framework
         /// 恢复播放背景音乐
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
-        void UnPauseBackgroundMusic(bool isGradual = true);
+        void ResumeBackgroundMusic(bool isGradual = true);
         /// <summary>
         /// 停止播放背景音乐
         /// </summary>
@@ -120,11 +115,6 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         void PlaySingleSound(AudioClip clip, bool isLoop = false, float speed = 1);
         /// <summary>
-        /// 播放单通道音效
-        /// </summary>
-        /// <param name="clip">音乐剪辑</param>
-        void PlaySingleSound(AudioClip clip);
-        /// <summary>
         /// 暂停播放单通道音效
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
@@ -133,7 +123,7 @@ namespace HT.Framework
         /// 恢复播放单通道音效
         /// </summary>
         /// <param name="isGradual">是否渐进式</param>
-        void UnPauseSingleSound(bool isGradual = true);
+        void ResumeSingleSound(bool isGradual = true);
         /// <summary>
         /// 停止播放单通道音效
         /// </summary>
@@ -146,11 +136,6 @@ namespace HT.Framework
         /// <param name="isLoop">是否循环</param>
         /// <param name="speed">播放速度</param>
         void PlayMultipleSound(AudioClip clip, bool isLoop = false, float speed = 1);
-        /// <summary>
-        /// 播放多通道音效
-        /// </summary>
-        /// <param name="clip">音乐剪辑</param>
-        void PlayMultipleSound(AudioClip clip);
         /// <summary>
         /// 停止播放指定的多通道音效
         /// </summary>
@@ -174,12 +159,6 @@ namespace HT.Framework
         /// <param name="speed">播放速度</param>
         void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool isLoop = false, float speed = 1);
         /// <summary>
-        /// 播放世界音效
-        /// </summary>
-        /// <param name="attachTarget">附加目标</param>
-        /// <param name="clip">音乐剪辑</param>
-        void PlayWorldSound(GameObject attachTarget, AudioClip clip);
-        /// <summary>
         /// 暂停播放指定的世界音效
         /// </summary>
         /// <param name="attachTarget">附加目标</param>
@@ -190,7 +169,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="attachTarget">附加目标</param>
         /// <param name="isGradual">是否渐进式</param>
-        void UnPauseWorldSound(GameObject attachTarget, bool isGradual = true);
+        void ResumeWorldSound(GameObject attachTarget, bool isGradual = true);
         /// <summary>
         /// 停止播放指定的世界音效
         /// </summary>
@@ -211,10 +190,5 @@ namespace HT.Framework
         /// <param name="clip">音效剪辑</param>
         /// <param name="volumeScale">音量缩放比</param>
         void PlayOneShoot(AudioClip clip, float volumeScale = 1);
-        /// <summary>
-        /// 播放OneShoot音效
-        /// </summary>
-        /// <param name="clip">音效剪辑</param>
-        void PlayOneShoot(AudioClip clip);
     }
 }

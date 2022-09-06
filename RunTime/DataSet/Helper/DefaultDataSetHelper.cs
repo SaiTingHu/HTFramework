@@ -12,7 +12,7 @@ namespace HT.Framework
         /// <summary>
         /// 数据集管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有数据集
         /// </summary>
@@ -21,11 +21,11 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(DataSetBase));
+                return type.IsSubclassOf(typeof(DataSetBase)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {
@@ -35,21 +35,21 @@ namespace HT.Framework
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             
         }
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             foreach (var dataset in DataSets)
             {
@@ -67,7 +67,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
             
         }
@@ -78,10 +78,8 @@ namespace HT.Framework
         /// <param name="dataSet">数据集</param>
         public void AddDataSet(DataSetBase dataSet)
         {
-            if (!dataSet)
-            {
-                throw new HTFrameworkException(HTFrameworkModule.DataSet, "不能添加空的数据集至仓库！");
-            }
+            if (dataSet == null)
+                return;
 
             Type type = dataSet.GetType();
             if (!DataSets.ContainsKey(type))
@@ -96,10 +94,8 @@ namespace HT.Framework
         /// <param name="dataSet">数据集</param>
         public void RemoveDataSet(DataSetBase dataSet)
         {
-            if (!dataSet)
-            {
-                throw new HTFrameworkException(HTFrameworkModule.DataSet, "不能移除空的数据集！");
-            }
+            if (dataSet == null)
+                return;
 
             Type type = dataSet.GetType();
             if (!DataSets.ContainsKey(type))
@@ -168,18 +164,24 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取所有数据集失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
-        
+
         /// <summary>
         /// 获取某一类型的满足匹配条件的第一条数据集
         /// </summary>
         /// <param name="type">数据集类型</param>
         /// <param name="match">匹配条件</param>
+        /// <param name="isCut">是否同时在数据集仓库中移除该数据集</param>
         /// <returns>数据集</returns>
-        public DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match)
+        public DataSetBase GetDataSet(Type type, Predicate<DataSetBase> match, bool isCut = false)
         {
             if (DataSets.ContainsKey(type))
             {
-                return DataSets[type].Find(match);
+                DataSetBase dataset = DataSets[type].Find(match);
+                if (isCut && dataset)
+                {
+                    DataSets[type].Remove(dataset);
+                }
+                return dataset;
             }
             else
             {
@@ -262,7 +264,6 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.DataSet, "获取数据集数量失败：" + type.Name + " 并不是有效的数据集类型！");
             }
         }
-        
         /// <summary>
         /// 清空某一类型的数据集仓库
         /// </summary>
@@ -271,6 +272,10 @@ namespace HT.Framework
         {
             if (DataSets.ContainsKey(type))
             {
+                for (int i = 0; i < DataSets[type].Count; i++)
+                {
+                    Main.Kill(DataSets[type][i]);
+                }
                 DataSets[type].Clear();
             }
             else

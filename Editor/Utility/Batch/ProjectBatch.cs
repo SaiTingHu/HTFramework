@@ -14,16 +14,12 @@ namespace HT.Framework
         private MethodInfo _selectionAddMethod;
         private object[] _parameter = new object[1];
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             if (_selectionAddMethod == null)
             {
                 MethodInfo[] methods = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.Selection").GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
@@ -41,7 +37,12 @@ namespace HT.Framework
                 }
             }
         }
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
 
+            GUILayout.FlexibleSpace();
+        }
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
@@ -65,9 +66,9 @@ namespace HT.Framework
             if (GUILayout.Button(_objectType != null ? _objectType.FullName : "<None>", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
-                    return type.IsSubclassOf(typeof(UnityEngine.Object)) && type.FullName.ToLower().Contains(_objectTypeFilter.ToLower());
+                    return type.IsSubclassOf(typeof(UnityEngine.Object)) && !type.IsSubclassOf(typeof(Component)) && type.FullName.ToLower().Contains(_objectTypeFilter.ToLower());
                 });
                 gm.AddItem(new GUIContent("<None>"), _objectType == null, () =>
                 {
@@ -76,7 +77,7 @@ namespace HT.Framework
                 for (int i = 0; i < types.Count; i++)
                 {
                     Type type = types[i];
-                    gm.AddItem(new GUIContent(type.FullName), type == _objectType, () =>
+                    gm.AddItem(new GUIContent(type.FullName.Replace(".", "/")), type == _objectType, () =>
                     {
                         _objectType = type;
                     });
@@ -88,6 +89,7 @@ namespace HT.Framework
             GUI.enabled = _folder && _objectType != null && _selectionAddMethod != null;
 
             EditorGUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Collect"))
             {
                 Selection.activeObject = _folder;
@@ -99,6 +101,7 @@ namespace HT.Framework
                     CollectObject(objs[i]);
                 }
             }
+            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 
             GUI.enabled = true;

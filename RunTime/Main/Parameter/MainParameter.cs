@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 主要参数
+    /// 全局主参数
     /// </summary>
     [Serializable]
     public sealed class MainParameter

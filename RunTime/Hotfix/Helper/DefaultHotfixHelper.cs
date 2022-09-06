@@ -16,7 +16,7 @@ namespace HT.Framework
         /// <summary>
         /// 热更新管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 热更新DLL
         /// </summary>
@@ -41,7 +41,7 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             _module = Module as HotfixManager;
 
@@ -57,7 +57,7 @@ namespace HT.Framework
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             if (_module.IsEnableHotfix)
             {
@@ -73,14 +73,14 @@ namespace HT.Framework
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
 
         }
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             HotfixDll = null;
             HotfixAssembly = null;
@@ -98,7 +98,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }
@@ -230,7 +230,7 @@ namespace HT.Framework
 
             SearchHotfixMethod();
 
-            Main.m_Event.Throw(this, Main.m_ReferencePool.Spawn<EventHotfixReady>());
+            Main.m_Event.Throw<EventHotfixReady>();
         }
         private void SearchHotfixMethod()
         {

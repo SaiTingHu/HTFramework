@@ -8,7 +8,7 @@ namespace HT.Framework
     /// ECS的实体
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class ECS_Entity : MonoBehaviour
+    public sealed class ECS_Entity : HTBehaviour
     {
         /// <summary>
         /// 创建新的实体
@@ -29,6 +29,11 @@ namespace HT.Framework
             if (entity.ID == "") entity.GenerateID();
             return entity;
         }
+
+        [SerializeField] private string _name = "";
+        [SerializeField] private string _id = "";
+        private Dictionary<Type, ECS_Component> _components = new Dictionary<Type, ECS_Component>();
+        private Dictionary<int, ECS_Order> _orders = new Dictionary<int, ECS_Order>();
 
         /// <summary>
         /// 实体名称
@@ -54,18 +59,17 @@ namespace HT.Framework
                 return _id;
             }
         }
-
-        [SerializeField] private string _name = "";
-        [SerializeField] private string _id = "";
-        private Dictionary<Type, ECS_Component> _components = new Dictionary<Type, ECS_Component>();
-        private Dictionary<int, ECS_Order> _orders = new Dictionary<int, ECS_Order>();
-
-        private void Awake()
+        
+        protected override void Awake()
         {
+            base.Awake();
+
             Main.m_ECS.AddEntity(this);
         }
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             Main.m_ECS.RemoveEntity(this);
         }
 

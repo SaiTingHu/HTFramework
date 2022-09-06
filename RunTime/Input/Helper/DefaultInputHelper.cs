@@ -16,7 +16,7 @@ namespace HT.Framework
         /// <summary>
         /// 输入管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 输入设备
         /// </summary>
@@ -42,7 +42,7 @@ namespace HT.Framework
         /// <summary>
         /// 鼠标位置
         /// </summary>
-        public Vector3 MousePosition { get; set; }
+        public Vector3 MousePosition { get; private set; }
         /// <summary>
         /// 任意键按住
         /// </summary>
@@ -67,21 +67,26 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             
         }
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             Device.OnStartUp();
+
+            Main.Current.ApplicationFocusEvent += (isFocus) =>
+            {
+                ResetAll();
+            };
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             if (IsEnableInputDevice)
             {
@@ -91,7 +96,7 @@ namespace HT.Framework
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             Device.OnShutdown();
         }
@@ -105,7 +110,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }
@@ -179,6 +184,88 @@ namespace HT.Framework
             {
                 _virtualButtons.Remove(name);
             }
+        }
+
+        /// <summary>
+        /// 设置虚拟鼠标位置
+        /// </summary>
+        /// <param name="value">鼠标位置</param>
+        public void SetVirtualMousePosition(Vector3 value)
+        {
+            MousePosition = value;
+        }
+        /// <summary>
+        /// 设置按钮按下
+        /// </summary>
+        /// <param name="name">按钮名称</param>
+        public void SetButtonDown(string name)
+        {
+            if (!IsExistVirtualButton(name))
+            {
+                RegisterVirtualButton(name);
+            }
+            _virtualButtons[name].Pressed();
+        }
+        /// <summary>
+        /// 设置按钮抬起
+        /// </summary>
+        /// <param name="name">按钮名称</param>
+        public void SetButtonUp(string name)
+        {
+            if (!IsExistVirtualButton(name))
+            {
+                RegisterVirtualButton(name);
+            }
+            _virtualButtons[name].Released();
+        }
+        /// <summary>
+        /// 设置轴线值为正方向1
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        public void SetAxisPositive(string name)
+        {
+            if (!IsExistVirtualAxis(name))
+            {
+                RegisterVirtualAxis(name);
+            }
+            _virtualAxes[name].Update(1);
+        }
+        /// <summary>
+        /// 设置轴线值为负方向-1
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        public void SetAxisNegative(string name)
+        {
+            if (!IsExistVirtualAxis(name))
+            {
+                RegisterVirtualAxis(name);
+            }
+            _virtualAxes[name].Update(-1);
+        }
+        /// <summary>
+        /// 设置轴线值为0
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        public void SetAxisZero(string name)
+        {
+            if (!IsExistVirtualAxis(name))
+            {
+                RegisterVirtualAxis(name);
+            }
+            _virtualAxes[name].Update(0);
+        }
+        /// <summary>
+        /// 设置轴线值
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        /// <param name="value">轴线值</param>
+        public void SetAxis(string name, float value)
+        {
+            if (!IsExistVirtualAxis(name))
+            {
+                RegisterVirtualAxis(name);
+            }
+            _virtualAxes[name].Update(value);
         }
 
         /// <summary>
@@ -353,81 +440,7 @@ namespace HT.Framework
             }
             return false;
         }
-
-        /// <summary>
-        /// 设置按钮按下
-        /// </summary>
-        /// <param name="name">按钮名称</param>
-        public void SetButtonDown(string name)
-        {
-            if (!IsExistVirtualButton(name))
-            {
-                RegisterVirtualButton(name);
-            }
-            _virtualButtons[name].Pressed();
-        }
-        /// <summary>
-        /// 设置按钮抬起
-        /// </summary>
-        /// <param name="name">按钮名称</param>
-        public void SetButtonUp(string name)
-        {
-            if (!IsExistVirtualButton(name))
-            {
-                RegisterVirtualButton(name);
-            }
-            _virtualButtons[name].Released();
-        }
-        /// <summary>
-        /// 设置轴线值为正方向1
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        public void SetAxisPositive(string name)
-        {
-            if (!IsExistVirtualAxis(name))
-            {
-                RegisterVirtualAxis(name);
-            }
-            _virtualAxes[name].Update(1);
-        }
-        /// <summary>
-        /// 设置轴线值为负方向-1
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        public void SetAxisNegative(string name)
-        {
-            if (!IsExistVirtualAxis(name))
-            {
-                RegisterVirtualAxis(name);
-            }
-            _virtualAxes[name].Update(-1);
-        }
-        /// <summary>
-        /// 设置轴线值为0
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        public void SetAxisZero(string name)
-        {
-            if (!IsExistVirtualAxis(name))
-            {
-                RegisterVirtualAxis(name);
-            }
-            _virtualAxes[name].Update(0);
-        }
-        /// <summary>
-        /// 设置轴线值
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        /// <param name="value">轴线值</param>
-        public void SetAxis(string name, float value)
-        {
-            if (!IsExistVirtualAxis(name))
-            {
-                RegisterVirtualAxis(name);
-            }
-            _virtualAxes[name].Update(value);
-        }
-
+        
         /// <summary>
         /// 加载输入设备
         /// </summary>
@@ -473,7 +486,7 @@ namespace HT.Framework
         {
             public string Name { get; private set; }
 
-            private int _lastPressedFrame = -5;
+            private int _pressedFrame = -5;
             private int _releasedFrame = -5;
             private bool _pressed = false;
 
@@ -485,15 +498,17 @@ namespace HT.Framework
             public void Pressed()
             {
                 if (_pressed)
-                {
                     return;
-                }
+
                 _pressed = true;
-                _lastPressedFrame = Time.frameCount;
+                _pressedFrame = Time.frameCount;
             }
             
             public void Released()
             {
+                if (!_pressed)
+                    return;
+
                 _pressed = false;
                 _releasedFrame = Time.frameCount;
             }
@@ -510,7 +525,7 @@ namespace HT.Framework
             {
                 get
                 {
-                    return _lastPressedFrame - Time.frameCount == -1;
+                    return _pressedFrame == Time.frameCount;
                 }
             }
 
@@ -518,7 +533,7 @@ namespace HT.Framework
             {
                 get
                 {
-                    return _releasedFrame == Time.frameCount - 1;
+                    return _releasedFrame == Time.frameCount;
                 }
             }
         }

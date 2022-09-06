@@ -1,7 +1,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 热更新准备就绪事件
+    /// 热更新准备就绪事件（二型事件）
     /// </summary>
     public sealed class EventHotfixReady : EventHandlerBase
     {
@@ -12,7 +12,6 @@ namespace HT.Framework
         {
             return this;
         }
-
         /// <summary>
         /// 重置引用，当被引用池回收时调用
         /// </summary>

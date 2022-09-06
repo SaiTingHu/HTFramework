@@ -3,78 +3,66 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 内置模块的检视器
     /// </summary>
-    public abstract class InternalModuleInspector<M> : HTFEditor<M> where M : Object
+    /// <typeparam name="M">内置模块</typeparam>
+    /// <typeparam name="H">内置模块的助手</typeparam>
+    internal abstract class InternalModuleInspector<M, H> : HTFEditor<M> where M : UObject where H : class, IInternalModuleHelper
     {
-        private InternalModuleBase _module;
-        protected IInternalModuleHelper _helper;
+        protected H _helper;
+        private InternalModuleBase<H> _module;
+        private List<Type> _types;
+        private HTFAction _changeHelper;
 
-        protected virtual string Intro
-        {
-            get
-            {
-                return "";
-            }
-        }
-
-        protected virtual Type HelperInterface
-        {
-            get
-            {
-                return null;
-            }
-        }
+        protected virtual string Intro => null;
 
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
 
-            _module = Target as InternalModuleBase;
+            _module = Target as InternalModuleBase<H>;
+            _types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+            {
+                return typeof(H).IsAssignableFrom(type) && typeof(H) != type;
+            });
+            _changeHelper = ChangeHelper;
         }
-
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            FieldInfo fieldInfo = Target.GetType().GetField("_helper", BindingFlags.Instance | BindingFlags.NonPublic);
-            _helper = fieldInfo != null ? (fieldInfo.GetValue(Target) as IInternalModuleHelper) : null;
+            PropertyInfo propertyInfo = Target.GetType().GetProperty("_helper", BindingFlags.Instance | BindingFlags.NonPublic);
+            _helper = propertyInfo != null ? (propertyInfo.GetValue(Target) as H) : null;
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
-            GUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal();
             EditorGUILayout.HelpBox(Intro, MessageType.Info);
-            GUILayout.EndHorizontal();
-            
-            GUILayout.BeginHorizontal();
-            GUI.enabled = !EditorApplication.isPlaying && HelperInterface != null;
-            GUILayout.Label("Helper", GUILayout.Width(50));
-            Button(ChangeHelper, _module.HelperType, EditorGlobalTools.Styles.MiniPopup);
-            GUI.enabled = true;
-            GUILayout.EndHorizontal();
-        }
+            EditorGUILayout.EndHorizontal();
 
+            EditorGUILayout.BeginHorizontal();
+            GUI.enabled = !EditorApplication.isPlaying && _types.Count > 0;
+            EditorGUILayout.LabelField("Helper", GUILayout.Width(LabelWidth));
+            Button(_changeHelper, _module.HelperType, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25));
+            GUI.enabled = true;
+            EditorGUILayout.EndHorizontal();
+        }
         private void ChangeHelper()
         {
             GenericMenu gm = new GenericMenu();
-            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
-            {
-                return HelperInterface.IsAssignableFrom(type) && HelperInterface != type;
-            });
-            for (int i = 0; i < types.Count; i++)
+            for (int i = 0; i < _types.Count; i++)
             {
                 int j = i;
-                gm.AddItem(new GUIContent(types[j].FullName), _module.HelperType == types[j].FullName, () =>
+                gm.AddItem(new GUIContent(_types[j].FullName), _module.HelperType == _types[j].FullName, () =>
                 {
-                    _module.HelperType = types[j].FullName;
+                    _module.HelperType = _types[j].FullName;
                 });
             }
             gm.ShowAsContext();

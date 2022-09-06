@@ -1,27 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 自定义模块管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.CustomModule)]
-    public sealed class CustomModuleManager : InternalModuleBase
+    public sealed class CustomModuleManager : InternalModuleBase<ICustomModuleHelper>
     {
-        private ICustomModuleHelper _helper;
-
-        private CustomModuleManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as ICustomModuleHelper;
-        }
-
         /// <summary>
         /// 自定义模块
         /// </summary>
@@ -31,15 +17,15 @@ namespace HT.Framework
         {
             get
             {
-                if (_helper.CustomModules.ContainsKey(moduleName))
-                {
-                    return _helper.CustomModules[moduleName];
-                }
-                else
-                {
-                    return null;
-                }
+                return _helper.GetCustomModule(moduleName);
             }
+        }
+        /// <summary>
+        /// 获取所有的自定义模块
+        /// </summary>
+        public List<CustomModuleBase> GetAllCustomModule()
+        {
+            return _helper.GetAllCustomModule();
         }
         /// <summary>
         /// 终止指定的自定义模块
@@ -47,11 +33,7 @@ namespace HT.Framework
         /// <param name="moduleName">模块名称</param>
         public void TerminationModule(string moduleName)
         {
-            if (_helper.CustomModules.ContainsKey(moduleName))
-            {
-                _helper.CustomModules[moduleName].OnTermination();
-                _helper.CustomModules.Remove(moduleName);
-            }
+            _helper.TerminationModule(moduleName);
         }
     }
 }

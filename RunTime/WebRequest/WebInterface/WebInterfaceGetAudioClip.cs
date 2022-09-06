@@ -22,17 +22,14 @@ namespace HT.Framework
                 Handler?.Invoke(downloadHandler.audioClip);
             }
         }
-
         public override void OnSetDownloadHandler(UnityWebRequest request)
         {
             request.downloadHandler = new DownloadHandlerAudioClip(request.url, Main.m_WebRequest.DownloadAudioType);
         }
-
         public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }
-
         public override void Reset()
         {
             OfflineHandler = null;

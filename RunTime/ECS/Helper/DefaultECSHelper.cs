@@ -9,9 +9,14 @@ namespace HT.Framework
     public sealed class DefaultECSHelper : IECSHelper
     {
         /// <summary>
+        /// 当前ECS环境是否是脏的
+        /// </summary>
+        private bool _isDirty = false;
+
+        /// <summary>
         /// ECS管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有系统【系统类型，系统对象】
         /// </summary>
@@ -20,20 +25,15 @@ namespace HT.Framework
         /// 所有实体【实体ID，实体对象】
         /// </summary>
         public Dictionary<string, ECS_Entity> Entities { get; private set; } = new Dictionary<string, ECS_Entity>();
-
-        /// <summary>
-        /// 当前ECS环境是否是脏的
-        /// </summary>
-        private bool _isDirty = false;
         
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(ECS_System));
+                return type.IsSubclassOf(typeof(ECS_System)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {
@@ -43,7 +43,7 @@ namespace HT.Framework
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
             foreach (var system in Systems)
             {
@@ -53,7 +53,7 @@ namespace HT.Framework
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             if (_isDirty)
             {
@@ -86,7 +86,7 @@ namespace HT.Framework
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             Systems.Clear();
             Entities.Clear();
@@ -101,7 +101,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }

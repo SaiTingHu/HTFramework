@@ -10,13 +10,7 @@ namespace HT.Framework
         private List<ResourceFolder> _resourcesFolders = new List<ResourceFolder>();
         private Vector2 _scroll;
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableTitleGUI => false;
 
         public void Init()
         {
@@ -54,7 +48,7 @@ namespace HT.Framework
                             GUILayout.FlexibleSpace();
                             if (GUILayout.Button("Load to Scene", EditorStyles.miniButton))
                             {
-                                GameObject obj = Instantiate(resource) as GameObject;
+                                GameObject obj = PrefabUtility.InstantiatePrefab(resource) as GameObject;
                                 Selection.activeGameObject = obj;
                                 EditorGUIUtility.PingObject(obj);
                             }
@@ -78,7 +72,6 @@ namespace HT.Framework
         {
             _resourcesFolders.Clear();
             EditorUtility.UnloadUnusedAssetsImmediate();
-            System.GC.Collect();
         }
         private void SearchResourcesFolder(string folderPath)
         {
@@ -105,7 +98,7 @@ namespace HT.Framework
         }
         private bool IsIgnoreFolder(string folderName)
         {
-            if (EditorGlobalTools.HTFrameworkFolder.Contains(folderName))
+            if (EditorPrefsTable.HTFrameworkFolder.Contains(folderName))
             {
                 return true;
             }

@@ -6,21 +6,28 @@ namespace HT.Framework
     /// <summary>
     /// 内置模块基类
     /// </summary>
-    public abstract class InternalModuleBase : MonoBehaviour, IModuleManager
+    /// <typeparam name="H">内置模块的助手类型</typeparam>
+    [DisallowMultipleComponent]
+    [LockTransform]
+    public abstract class InternalModuleBase<H> : HTBehaviour, IModuleManager where H : class, IInternalModuleHelper
     {
         /// <summary>
         /// 内置模块助手类型
         /// </summary>
         [SerializeField] internal string HelperType = "<None>";
         /// <summary>
+        /// 模块的优先级（越小越优先）
+        /// </summary>
+        public virtual int Priority { get; } = 0;
+        /// <summary>
         /// 内置模块助手
         /// </summary>
-        internal IInternalModuleHelper Helper { get; private set; }
+        protected H _helper { get; private set; }
 
         /// <summary>
         /// 初始化模块
         /// </summary>
-        internal virtual void OnInitialization()
+        public virtual void OnInit()
         {
             if (HelperType != "<None>")
             {
@@ -29,69 +36,73 @@ namespace HT.Framework
                 {
                     if (typeof(IInternalModuleHelper).IsAssignableFrom(type))
                     {
-                        Helper = Activator.CreateInstance(type) as IInternalModuleHelper;
-                        Helper.Module = this;
-                        Helper.OnInitialization();
+                        _helper = Activator.CreateInstance(type) as H;
+                        _helper.Module = this;
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Input, "创建内置模块助手失败：内置模块助手类 " + HelperType + " 必须实现该模块对应的助手接口！");
+                        throw new HTFrameworkException(HTFrameworkModule.Main, "创建内置模块助手失败：内置模块助手类 " + HelperType + " 必须实现该模块对应的助手接口！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Input, "创建内置模块助手失败：丢失内置模块助手类 " + HelperType + "！");
+                    throw new HTFrameworkException(HTFrameworkModule.Main, "创建内置模块助手失败：丢失内置模块助手类 " + HelperType + "！");
                 }
+            }
+
+            if (_helper != null)
+            {
+                _helper.OnInit();
             }
         }
         /// <summary>
         /// 模块准备工作
         /// </summary>
-        internal virtual void OnPreparatory()
+        public virtual void OnReady()
         {
-            if (Helper != null)
+            if (_helper != null)
             {
-                Helper.OnPreparatory();
+                _helper.OnReady();
             }
         }
         /// <summary>
         /// 刷新模块
         /// </summary>
-        internal virtual void OnRefresh()
+        public virtual void OnUpdate()
         {
-            if (Helper != null)
+            if (_helper != null)
             {
-                Helper.OnRefresh();
+                _helper.OnUpdate();
             }
         }
         /// <summary>
         /// 终结模块
         /// </summary>
-        internal virtual void OnTermination()
+        public virtual void OnTerminate()
         {
-            if (Helper != null)
+            if (_helper != null)
             {
-                Helper.OnTermination();
+                _helper.OnTerminate();
             }
         }
         /// <summary>
         /// 暂停模块
         /// </summary>
-        internal virtual void OnPause()
+        public virtual void OnPause()
         {
-            if (Helper != null)
+            if (_helper != null)
             {
-                Helper.OnPause();
+                _helper.OnPause();
             }
         }
         /// <summary>
         /// 恢复模块
         /// </summary>
-        internal virtual void OnUnPause()
+        public virtual void OnResume()
         {
-            if (Helper != null)
+            if (_helper != null)
             {
-                Helper.OnUnPause();
+                _helper.OnResume();
             }
         }
     }

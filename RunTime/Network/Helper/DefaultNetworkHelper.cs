@@ -12,7 +12,7 @@ namespace HT.Framework
         /// <summary>
         /// 网络管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
         /// 所有的通信管道
         /// </summary>
@@ -45,32 +45,32 @@ namespace HT.Framework
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
 
         }
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
 
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
 
         }
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             foreach (var channel in ProtocolChannels)
             {
-                channel.Value.OnTermination();
+                channel.Value.OnTerminate();
             }
 
             ProtocolChannels.Clear();
@@ -85,7 +85,7 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }
@@ -108,7 +108,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Network, "加载通信协议通道失败：通信协议通道类 " + channelTypes[i] + " 必须实现接口：IProtocolChannel！");
+                        throw new HTFrameworkException(HTFrameworkModule.Network, "加载通信协议通道失败：通信协议通道类 " + channelTypes[i] + " 必须继承至基类：ProtocolChannelBase！");
                     }
                 }
                 else
@@ -119,7 +119,7 @@ namespace HT.Framework
 
             foreach (var channel in ProtocolChannels)
             {
-                channel.Value.OnInitialization();
+                channel.Value.OnInit();
                 channel.Value.SendMessageEvent += (cha) =>
                 {
                     SendMessageEvent?.Invoke(cha);

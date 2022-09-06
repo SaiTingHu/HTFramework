@@ -23,21 +23,24 @@ namespace HT.Framework
         /// <param name="time">闪烁一次的时间</param>
         public static void OpenTwinkle(this Graphic graphic, Color color, float time = 0.5f)
         {
-            if (!Graphics.ContainsKey(graphic))
-            {
-                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
-                () =>
-                {
-                    return graphic.color;
-                },
-                (c) =>
-                {
-                    graphic.color = c;
-                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+            if (graphic == null)
+                return;
 
-                tweener.startValue = graphic.color;
-                Graphics.Add(graphic, tweener);
-            }
+            if (Graphics.ContainsKey(graphic))
+                return;
+
+            TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+            () =>
+            {
+                return graphic.color;
+            },
+            (c) =>
+            {
+                graphic.color = c;
+            }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+            tweener.startValue = graphic.color;
+            Graphics.Add(graphic, tweener);
         }
         /// <summary>
         /// 关闭图像控件的闪烁
@@ -45,15 +48,18 @@ namespace HT.Framework
         /// <param name="graphic">图像控件</param>
         public static void CloseTwinkle(this Graphic graphic)
         {
-            if (Graphics.ContainsKey(graphic))
-            {
-                Color normalColor = Graphics[graphic].startValue;
+            if (graphic == null)
+                return;
 
-                Graphics[graphic].Kill();
-                Graphics.Remove(graphic);
+            if (!Graphics.ContainsKey(graphic))
+                return;
 
-                graphic.color = normalColor;
-            }
+            Color normalColor = Graphics[graphic].startValue;
+
+            Graphics[graphic].Kill();
+            Graphics.Remove(graphic);
+
+            graphic.color = normalColor;
         }
         /// <summary>
         /// 开启可选控件的闪烁（只在Normal状态）
@@ -63,40 +69,46 @@ namespace HT.Framework
         /// <param name="time">闪烁一次的时间</param>
         public static void OpenTwinkle(this Selectable selectable, Color color, float time = 0.5f)
         {
-            if (!Selectables.ContainsKey(selectable) && selectable.targetGraphic != null)
+            if (selectable == null)
+                return;
+
+            if (selectable.targetGraphic == null)
+                return;
+
+            if (Selectables.ContainsKey(selectable))
+                return;
+
+            if (selectable.transition == Selectable.Transition.ColorTint)
             {
-                if (selectable.transition == Selectable.Transition.ColorTint)
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
                 {
-                    TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
-                    () =>
-                    {
-                        return selectable.colors.normalColor;
-                    },
-                    (c) =>
-                    {
-                        ColorBlock block = selectable.colors;
-                        block.normalColor = c;
-                        selectable.colors = block;
-                    }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
-
-                    tweener.startValue = selectable.colors.normalColor;
-                    Selectables.Add(selectable, tweener);
-                }
-                else
+                    return selectable.colors.normalColor;
+                },
+                (c) =>
                 {
-                    TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
-                    () =>
-                    {
-                        return selectable.targetGraphic.color;
-                    },
-                    (c) =>
-                    {
-                        selectable.targetGraphic.color = c;
-                    }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+                    ColorBlock block = selectable.colors;
+                    block.normalColor = c;
+                    selectable.colors = block;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
 
-                    tweener.startValue = selectable.targetGraphic.color;
-                    Selectables.Add(selectable, tweener);
-                }
+                tweener.startValue = selectable.colors.normalColor;
+                Selectables.Add(selectable, tweener);
+            }
+            else
+            {
+                TweenerCore<Color, Color, ColorOptions> tweener = DOTween.To(
+                () =>
+                {
+                    return selectable.targetGraphic.color;
+                },
+                (c) =>
+                {
+                    selectable.targetGraphic.color = c;
+                }, color, time).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+
+                tweener.startValue = selectable.targetGraphic.color;
+                Selectables.Add(selectable, tweener);
             }
         }
         /// <summary>
@@ -105,28 +117,31 @@ namespace HT.Framework
         /// <param name="selectable">可选控件</param>
         public static void CloseTwinkle(this Selectable selectable)
         {
-            if (Selectables.ContainsKey(selectable))
+            if (selectable == null)
+                return;
+
+            if (!Selectables.ContainsKey(selectable))
+                return;
+
+            if (selectable.transition == Selectable.Transition.ColorTint)
             {
-                if (selectable.transition == Selectable.Transition.ColorTint)
-                {
-                    ColorBlock block = selectable.colors;
-                    block.normalColor = Selectables[selectable].startValue;
+                ColorBlock block = selectable.colors;
+                block.normalColor = Selectables[selectable].startValue;
 
-                    Selectables[selectable].Kill();
-                    Selectables.Remove(selectable);
+                Selectables[selectable].Kill();
+                Selectables.Remove(selectable);
 
-                    selectable.colors = block;
-                }
-                else
-                {
-                    Color normalColor = Selectables[selectable].startValue;
+                selectable.colors = block;
+            }
+            else
+            {
+                Color normalColor = Selectables[selectable].startValue;
 
-                    Selectables[selectable].Kill();
-                    Selectables.Remove(selectable);
+                Selectables[selectable].Kill();
+                Selectables.Remove(selectable);
 
-                    if (selectable.targetGraphic != null)
-                        selectable.targetGraphic.color = normalColor;
-                }
+                if (selectable.targetGraphic != null)
+                    selectable.targetGraphic.color = normalColor;
             }
         }
         /// <summary>

@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 鼠标射线可捕获的目标
     /// </summary>
-    public abstract class MouseRayTargetBase : MonoBehaviour
+    [DisallowMultipleComponent]
+    public abstract class MouseRayTargetBase : HTBehaviour
     {
         /// <summary>
         /// 目标显示的名称
@@ -23,5 +25,9 @@ namespace HT.Framework
         /// 是否开启高亮，当目标被射线捕获时
         /// </summary>
         public bool IsOpenHighlight = true;
+        /// <summary>
+        /// 鼠标左键点击事件
+        /// </summary>
+        public UnityEvent OnMouseClick;
     }
 }

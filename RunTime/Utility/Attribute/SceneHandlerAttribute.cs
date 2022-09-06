@@ -13,7 +13,7 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 移动手柄处理器
+    /// 移动手柄处理器（支持 Vector2、Vector3 类型）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
@@ -21,6 +21,10 @@ namespace HT.Framework
     {
         public string Display { get; private set; }
 
+        /// <summary>
+        /// 移动手柄处理器（支持 Vector2、Vector3 类型）
+        /// </summary>
+        /// <param name="display">显示名称</param>
         public MoveHandlerAttribute(string display = null)
         {
             Display = display;
@@ -28,7 +32,7 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 半径手柄处理器
+    /// 半径手柄处理器（支持 float、int 类型）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
@@ -36,6 +40,10 @@ namespace HT.Framework
     {
         public string Display { get; private set; }
 
+        /// <summary>
+        /// 半径手柄处理器（支持 float、int 类型）
+        /// </summary>
+        /// <param name="display">显示名称</param>
         public RadiusHandlerAttribute(string display = null)
         {
             Display = display;
@@ -43,7 +51,7 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 包围盒处理器
+    /// 包围盒处理器（支持 Bounds 类型）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
@@ -51,6 +59,10 @@ namespace HT.Framework
     {
         public string Display { get; private set; }
 
+        /// <summary>
+        /// 包围盒处理器（支持 Bounds 类型）
+        /// </summary>
+        /// <param name="display">显示名称</param>
         public BoundsHandlerAttribute(string display = null)
         {
             Display = display;
@@ -58,7 +70,7 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 方向处理器
+    /// 方向处理器（支持 Vector2、Vector3 类型）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
@@ -66,6 +78,10 @@ namespace HT.Framework
     {
         public bool IsDynamic { get; private set; }
 
+        /// <summary>
+        /// 方向处理器（支持 Vector2、Vector3 类型）
+        /// </summary>
+        /// <param name="isDynamic">是否动态模式</param>
         public DirectionHandlerAttribute(bool isDynamic = false)
         {
             IsDynamic = isDynamic;
@@ -73,7 +89,7 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 圆形区域处理器
+    /// 圆形区域处理器（支持 float 类型）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
@@ -82,6 +98,11 @@ namespace HT.Framework
         public Axis Direction { get; private set; }
         public bool IsDynamic { get; private set; }
 
+        /// <summary>
+        /// 圆形区域处理器（支持 float 类型）
+        /// </summary>
+        /// <param name="direction">方向</param>
+        /// <param name="isDynamic">是否动态模式</param>
         public CircleAreaHandlerAttribute(Axis direction = Axis.Y, bool isDynamic = false)
         {
             Direction = direction;

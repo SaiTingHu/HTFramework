@@ -8,7 +8,7 @@ namespace HT.Framework
     /// </summary>
     [AddComponentMenu("HTFramework/GameObject/DragObject")]
     [DisallowMultipleComponent]
-    public sealed class DragObject : MonoBehaviour
+    public sealed class DragObject : HTBehaviour
     {
         /// <summary>
         /// 是否启用全局拖拽
@@ -45,12 +45,12 @@ namespace HT.Framework
                 return IsAllowDragEnvironment && IsAllowDrag;
             }
         }
-
+        
         private void OnMouseDown()
         {
             if (IsCanDrag)
             {
-                if (GlobalTools.IsPointerOverUGUI())
+                if (UIToolkit.IsStayUI)
                     return;
                 
                 Vector3 mousePoint = Main.m_Input.MousePosition;
@@ -59,12 +59,11 @@ namespace HT.Framework
                 _offset = screenPoint - mousePoint;
             }
         }
-
         private void OnMouseDrag()
         {
             if (IsCanDrag)
             {
-                if (GlobalTools.IsPointerOverUGUI())
+                if (UIToolkit.IsStayUI)
                     return;
 
                 Vector3 mousePoint = Main.m_Input.MousePosition;
@@ -83,7 +82,6 @@ namespace HT.Framework
                 }
             }
         }
-
         private void OnMouseUp()
         {
             if (IsCanDrag)

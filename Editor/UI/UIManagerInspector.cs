@@ -1,143 +1,165 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(UIManager))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88125982")]
-    internal sealed class UIManagerInspector : InternalModuleInspector<UIManager>
+    internal sealed class UIManagerInspector : InternalModuleInspector<UIManager, IUIHelper>
     {
-        private IUIHelper _UIHelper;
+        private GUIContent _addGC;
+        private GUIContent _removeGC;
+        private ReorderableList _uiList;
         private bool _overlayUIFoldout = true;
         private bool _cameraUIFoldout = true;
 
-        protected override string Intro
+        protected override string Intro => "UI Manager, this is the master controller for all UIs!";
+
+        protected override void OnDefaultEnable()
         {
-            get
+            base.OnDefaultEnable();
+
+            _addGC = new GUIContent();
+            _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
+            _addGC.tooltip = "Add a new define";
+            _removeGC = new GUIContent();
+            _removeGC.image = EditorGUIUtility.IconContent("d_Toolbar Minus").image;
+            _removeGC.tooltip = "Remove select define";
+
+            _uiList = new ReorderableList(Target.DefineUINames, typeof(string), true, true, false, false);
+            _uiList.elementHeight = 45;
+            _uiList.footerHeight = 0;
+            _uiList.drawHeaderCallback = (Rect rect) =>
             {
-                return "UI Manager, Control all UILogic Entity!";
-            }
-        }
+                Rect sub = rect;
+                sub.Set(rect.x, rect.y, 200, rect.height);
+                GUI.Label(sub, "Define UI:");
 
-        protected override Type HelperInterface
-        {
-            get
+                if (!EditorApplication.isPlaying)
+                {
+                    sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
+                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    {
+                        Target.DefineUINames.Add("<None>");
+                        Target.DefineUIEntitys.Add(null);
+                        HasChanged();
+                    }
+
+                    sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
+                    GUI.enabled = _uiList.index >= 0 && _uiList.index < Target.DefineUINames.Count;
+                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    {
+                        Target.DefineUINames.RemoveAt(_uiList.index);
+                        Target.DefineUIEntitys.RemoveAt(_uiList.index);
+                        HasChanged();
+                    }
+                    GUI.enabled = true;
+                }
+            };
+            _uiList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
             {
-                return typeof(IUIHelper);
-            }
+                if (index >= 0 && index < Target.DefineUINames.Count)
+                {
+                    Rect subrect = rect;
+
+                    subrect.Set(rect.x, rect.y + 2, 50, 16);
+                    GUI.Label(subrect, "Type");
+                    if (isActive)
+                    {
+                        subrect.Set(rect.x + 50, rect.y + 2, rect.width - 50, 16);
+                        if (GUI.Button(subrect, Target.DefineUINames[index], EditorGlobalTools.Styles.MiniPopup))
+                        {
+                            GenericMenu gm = new GenericMenu();
+                            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                            {
+                                return type.IsSubclassOf(typeof(UILogicBase)) && !type.IsAbstract;
+                            });
+                            for (int m = 0; m < types.Count; m++)
+                            {
+                                int j = index;
+                                int n = m;
+                                if (Target.DefineUINames.Contains(types[n].FullName))
+                                {
+                                    gm.AddDisabledItem(new GUIContent(types[n].FullName), Target.DefineUINames[j] == types[n].FullName);
+                                }
+                                else
+                                {
+                                    gm.AddItem(new GUIContent(types[n].FullName), Target.DefineUINames[j] == types[n].FullName, () =>
+                                    {
+                                        Target.DefineUINames[j] = types[n].FullName;
+                                        HasChanged();
+                                    });
+                                }
+                            }
+                            gm.ShowAsContext();
+                        }
+                    }
+                    else
+                    {
+                        subrect.Set(rect.x + 50, rect.y + 2, rect.width - 50, 16);
+                        GUI.Label(subrect, Target.DefineUINames[index]);
+                    }
+
+                    subrect.Set(rect.x, rect.y + 22, 50, 16);
+                    GUI.Label(subrect, "Entity");
+                    subrect.Set(rect.x + 50, rect.y + 22, rect.width - 50, 16);
+                    GameObject entity = EditorGUI.ObjectField(subrect, Target.DefineUIEntitys[index], typeof(GameObject), false) as GameObject;
+                    if (entity != Target.DefineUIEntitys[index])
+                    {
+                        Target.DefineUIEntitys[index] = entity;
+                        HasChanged();
+                    }
+                }
+            };
+            _uiList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                if (Event.current.type == EventType.Repaint)
+                {
+                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "Box";
+                    gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
+                    rect.x += 2;
+                    rect.width -= 6;
+                    gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
+                }
+            };
+            _uiList.onReorderCallbackWithDetails = (ReorderableList list, int oldIndex, int newIndex) =>
+            {
+                GameObject entity = Target.DefineUIEntitys[oldIndex];
+                Target.DefineUIEntitys.RemoveAt(oldIndex);
+                Target.DefineUIEntitys.Insert(newIndex, entity);
+                HasChanged();
+            };
         }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _UIHelper = _helper as IUIHelper;
-        }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableOverlayUI, out Target.IsEnableOverlayUI, "Is Enable Overlay UI");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableCameraUI, out Target.IsEnableCameraUI, "Is Enable Camera UI");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsEnableWorldUI, out Target.IsEnableWorldUI, "Is Enable World UI");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Define UI:");
-            GUILayout.EndHorizontal();
-
-            for (int i = 0; i < Target.DefineUINames.Count; i++)
-            {
-                GUILayout.BeginVertical(EditorStyles.helpBox);
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Type", GUILayout.Width(40));
-                if (GUILayout.Button(Target.DefineUINames[i], EditorGlobalTools.Styles.MiniPopup))
-                {
-                    GenericMenu gm = new GenericMenu();
-                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
-                    {
-                        return type.IsSubclassOf(typeof(UILogicBase)) && type != typeof(UILogicResident) && type != typeof(UILogicTemporary);
-                    });
-                    for (int m = 0; m < types.Count; m++)
-                    {
-                        int j = i;
-                        int n = m;
-                        if (Target.DefineUINames.Contains(types[n].FullName))
-                        {
-                            gm.AddDisabledItem(new GUIContent(types[n].FullName));
-                        }
-                        else
-                        {
-                            gm.AddItem(new GUIContent(types[n].FullName), Target.DefineUINames[j] == types[n].FullName, () =>
-                            {
-                                Undo.RecordObject(target, "Set Define UI Name");
-                                Target.DefineUINames[j] = types[n].FullName;
-                                HasChanged();
-                            });
-                        }
-                    }
-                    gm.ShowAsContext();
-                }
-                GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
-                {
-                    Undo.RecordObject(target, "Delete Define UI");
-                    Target.DefineUINames.RemoveAt(i);
-                    Target.DefineUIEntitys.RemoveAt(i);
-                    HasChanged();
-                    continue;
-                }
-                GUI.backgroundColor = Color.white;
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Entity", GUILayout.Width(40));
-                GameObject entity = Target.DefineUIEntitys[i];
-                ObjectField(Target.DefineUIEntitys[i], out entity, false, "");
-                if (entity != Target.DefineUIEntitys[i])
-                {
-                    Target.DefineUIEntitys[i] = entity;
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.EndVertical();
-            }
-
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("New", EditorStyles.miniButton))
-            {
-                Undo.RecordObject(target, "New Define UI");
-                Target.DefineUINames.Add("<None>");
-                Target.DefineUIEntitys.Add(null);
-                HasChanged();
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
+            PropertyField(nameof(UIManager.IsEnableOverlayUI), "Enable Overlay UI");
+            PropertyField(nameof(UIManager.IsEnableCameraUI), "Enable Camera UI");
+            PropertyField(nameof(UIManager.IsEnableWorldUI), "Enable World UI");
+            
+            _uiList.DoLayoutList();
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
+
+            GUILayout.BeginHorizontal();
+            Target.IsHideAll = EditorGUILayout.Toggle("Hide All", Target.IsHideAll);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Target.IsDisplayMask = EditorGUILayout.Toggle("Display Mask", Target.IsDisplayMask);
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             Target.IsLockTemporaryUI = EditorGUILayout.Toggle("Lock Temporary", Target.IsLockTemporaryUI);
@@ -150,7 +172,7 @@ namespace HT.Framework
 
             if (_overlayUIFoldout)
             {
-                foreach (var ui in _UIHelper.OverlayUIs)
+                foreach (var ui in _helper.OverlayUIs)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -168,14 +190,7 @@ namespace HT.Framework
                         GUI.enabled = !ui.Value.IsOpened;
                         if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
                         {
-                            if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
-                            {
-                                Target.OpenResidentUI(ui.Key);
-                            }
-                            else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
-                            {
-                                Target.OpenTemporaryUI(ui.Key);
-                            }
+                            Target.OpenUI(ui.Key);
                         }
                         GUI.enabled = ui.Value.IsOpened;
                         if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
@@ -195,7 +210,7 @@ namespace HT.Framework
 
             if (_cameraUIFoldout)
             {
-                foreach (var ui in _UIHelper.CameraUIs)
+                foreach (var ui in _helper.CameraUIs)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
@@ -213,14 +228,7 @@ namespace HT.Framework
                         GUI.enabled = !ui.Value.IsOpened;
                         if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
                         {
-                            if (ui.Key.IsSubclassOf(typeof(UILogicResident)))
-                            {
-                                Target.OpenResidentUI(ui.Key);
-                            }
-                            else if (ui.Key.IsSubclassOf(typeof(UILogicTemporary)))
-                            {
-                                Target.OpenTemporaryUI(ui.Key);
-                            }
+                            Target.OpenUI(ui.Key);
                         }
                         GUI.enabled = ui.Value.IsOpened;
                         if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))

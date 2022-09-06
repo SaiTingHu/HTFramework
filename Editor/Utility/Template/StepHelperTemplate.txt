@@ -21,13 +21,26 @@ public class #SCRIPTNAME# : StepHelper
     }
 
 	/// <summary>
+	/// 初始化
+	/// </summary>
+    public override void OnInit()
+    {
+        base.OnInit();
+    }
+	/// <summary>
 	/// 跳过步骤（仅在跳过时执行）
 	/// </summary>
     public override void OnSkip()
     {
         base.OnSkip();
     }
-
+	/// <summary>
+    /// 跳过步骤，立即模式（仅在立即跳过时执行）
+    /// </summary>
+    public override void OnSkipImmediate()
+    {
+		base.OnSkipImmediate();
+    }
 	/// <summary>
 	/// 恢复步骤（仅在倒退时执行）
 	/// </summary>
@@ -35,7 +48,6 @@ public class #SCRIPTNAME# : StepHelper
     {
         base.OnRestore();
     }
-
     /// <summary>
     /// 步骤指引
     /// </summary>
@@ -43,15 +55,6 @@ public class #SCRIPTNAME# : StepHelper
     {
 	    base.OnGuide();
     }
-
-	/// <summary>
-	/// 初始化
-	/// </summary>
-    public override void OnInit()
-    {
-        base.OnInit();
-    }
-
 	/// <summary>
 	/// 帧刷新
 	/// </summary>
@@ -59,7 +62,6 @@ public class #SCRIPTNAME# : StepHelper
     {
         base.OnUpdate();
     }
-
 	/// <summary>
 	/// 销毁
 	/// </summary>

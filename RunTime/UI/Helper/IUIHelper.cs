@@ -20,7 +20,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有World类型的UI
         /// </summary>
-        Dictionary<string, UIManager.WorldUIDomain> WorldUIs { get; }
+        Dictionary<string, UIWorldDomain> WorldUIs { get; }
         /// <summary>
         /// Camera类型UI的摄像机
         /// </summary>
@@ -47,6 +47,10 @@ namespace HT.Framework
         /// 是否隐藏所有UI实体
         /// </summary>
         bool IsHideAll { get; set; }
+        /// <summary>
+        /// 是否显示全屏遮罩
+        /// </summary>
+        bool IsDisplayMask { get; set; }
 
         /// <summary>
         /// 预加载常驻UI
@@ -80,6 +84,12 @@ namespace HT.Framework
         /// <param name="type">UI逻辑类</param>
         /// <returns>UI逻辑对象</returns>
         UILogicBase GetOpenedUI(Type type);
+        /// <summary>
+        /// 获取UI
+        /// </summary>
+        /// <param name="type">UI逻辑类</param>
+        /// <returns>UI逻辑对象</returns>
+        UILogicBase GetUI(Type type);
         /// <summary>
         /// 置顶常驻UI
         /// </summary>

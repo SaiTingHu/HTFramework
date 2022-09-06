@@ -6,28 +6,14 @@ namespace HT.Framework
     /// <summary>
     /// 对象池管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.ObjectPool)]
-    public sealed class ObjectPoolManager : InternalModuleBase
+    public sealed class ObjectPoolManager : InternalModuleBase<IObjectPoolHelper>
     {
         /// <summary>
         /// 单个对象池上限【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal int Limit = 100;
         
-        private IObjectPoolHelper _helper;
-
-        private ObjectPoolManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IObjectPoolHelper;
-        }
-
         /// <summary>
         /// 注册对象池
         /// </summary>

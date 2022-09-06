@@ -34,10 +34,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">实体逻辑类</param>
         /// <param name="entityName">实体指定名称（为 <None> 时默认使用实体逻辑类名称）</param>
-        /// <param name="loadingAction">创建实体过程进度回调</param>
-        /// <param name="loadDoneAction">创建实体完成回调</param>
+        /// <param name="onLoading">创建实体过程进度回调</param>
+        /// <param name="onLoadDone">创建实体完成回调</param>
         /// <returns>加载协程</returns>
-        Coroutine CreateEntity(Type type, string entityName, HTFAction<float> loadingAction, HTFAction<EntityLogicBase> loadDoneAction);
+        Coroutine CreateEntity(Type type, string entityName, HTFAction<float> onLoading, HTFAction<EntityLogicBase> onLoadDone);
         /// <summary>
         /// 销毁实体
         /// </summary>

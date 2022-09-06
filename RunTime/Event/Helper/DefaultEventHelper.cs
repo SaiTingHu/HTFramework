@@ -11,28 +11,28 @@ namespace HT.Framework
         /// <summary>
         /// 事件管理器
         /// </summary>
-        public InternalModuleBase Module { get; set; }
+        public IModuleManager Module { get; set; }
         /// <summary>
-        /// I型事件
+        /// 一型事件
         /// </summary>
         public Dictionary<Type, HTFAction<object, EventHandlerBase>> EventHandlerList1 { get; private set; } = new Dictionary<Type, HTFAction<object, EventHandlerBase>>();
         /// <summary>
-        /// II型事件
+        /// 二型事件
         /// </summary>
         public Dictionary<Type, HTFAction> EventHandlerList2 { get; private set; } = new Dictionary<Type, HTFAction>();
         /// <summary>
-        /// III型事件
+        /// 三型事件
         /// </summary>
         public Dictionary<Type, HTFAction<EventHandlerBase>> EventHandlerList3 { get; private set; } = new Dictionary<Type, HTFAction<EventHandlerBase>>();
 
         /// <summary>
         /// 初始化助手
         /// </summary>
-        public void OnInitialization()
+        public void OnInit()
         {
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
-                return type.IsSubclassOf(typeof(EventHandlerBase));
+                return type.IsSubclassOf(typeof(EventHandlerBase)) && !type.IsAbstract;
             });
             for (int i = 0; i < types.Count; i++)
             {
@@ -44,21 +44,21 @@ namespace HT.Framework
         /// <summary>
         /// 助手准备工作
         /// </summary>
-        public void OnPreparatory()
+        public void OnReady()
         {
 
         }
         /// <summary>
         /// 刷新助手
         /// </summary>
-        public void OnRefresh()
+        public void OnUpdate()
         {
             
         }
         /// <summary>
         /// 终结助手
         /// </summary>
-        public void OnTermination()
+        public void OnTerminate()
         {
             EventHandlerList1.Clear();
             EventHandlerList2.Clear();
@@ -74,13 +74,13 @@ namespace HT.Framework
         /// <summary>
         /// 恢复助手
         /// </summary>
-        public void OnUnPause()
+        public void OnResume()
         {
 
         }
 
         /// <summary>
-        /// 订阅I型事件 ------ HTFAction(object, EventHandlerBase)
+        /// 订阅一型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -96,7 +96,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 订阅II型事件 ------ HTFAction()
+        /// 订阅二型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -112,7 +112,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 订阅III型事件 ------ HTFAction(EventHandlerBase)
+        /// 订阅三型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -128,7 +128,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 取消订阅I型事件 ------ HTFAction(object, EventHandlerBase)
+        /// 取消订阅一型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -140,7 +140,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 取消订阅II型事件 ------ HTFAction()
+        /// 取消订阅二型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -152,7 +152,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 取消订阅III型事件 ------ HTFAction(EventHandlerBase)
+        /// 取消订阅三型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -184,12 +184,15 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 抛出I型事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// 抛出一型事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="sender">事件发送者</param>
         /// <param name="handler">事件处理类实例</param>
         public void Throw(object sender, EventHandlerBase handler)
         {
+            if (sender == null || handler == null)
+                return;
+
             Type type = handler.GetType();
             if (EventHandlerList1.ContainsKey(type))
             {
@@ -205,7 +208,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 抛出II型事件
+        /// 抛出二型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         public void Throw(Type type)
@@ -220,11 +223,14 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 抛出III型事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// 抛出三型事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="handler">事件处理类实例</param>
         public void Throw(EventHandlerBase handler)
         {
+            if (handler == null)
+                return;
+
             Type type = handler.GetType();
             if (EventHandlerList3.ContainsKey(type))
             {

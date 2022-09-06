@@ -7,7 +7,7 @@ namespace HT.Framework
     /// 游戏物体动画
     /// </summary>
     [AddComponentMenu("HTFramework/GameObject/GameObject Animation")]
-    public sealed class GameObjectAnimation : MonoBehaviour
+    public sealed class GameObjectAnimation : HTBehaviour
     {
         public GameObjectAnimationType TheAnimationType = GameObjectAnimationType.Move;
         public Ease TheEase = Ease.Linear;
@@ -17,6 +17,11 @@ namespace HT.Framework
         public float TheTime = 1;
         public int TheLoops = -1;
         public bool PlayOnStart = true;
+
+        private Vector3 _positionRecord;
+        private Vector3 _rotationRecord;
+        private Vector3 _scaleRecord;
+        private Tweener _theTweener;
 
         /// <summary>
         /// 动画是否播放中
@@ -39,19 +44,15 @@ namespace HT.Framework
         /// 动画是否暂停中
         /// </summary>
         public bool IsPause { get; private set; } = false;
-
-        private Vector3 _positionRecord;
-        private Vector3 _rotationRecord;
-        private Vector3 _scaleRecord;
-        private Tweener _theTweener;
-
-        private void Awake()
+        
+        protected override void Awake()
         {
+            base.Awake();
+
             _positionRecord = transform.localPosition;
             _rotationRecord = transform.localRotation.eulerAngles;
             _scaleRecord = transform.localScale;
         }
-
         private void Start()
         {
             if (PlayOnStart)
@@ -88,7 +89,6 @@ namespace HT.Framework
 
             IsPause = false;
         }
-
         /// <summary>
         /// 暂停
         /// </summary>
@@ -101,7 +101,6 @@ namespace HT.Framework
 
             IsPause = true;
         }
-
         /// <summary>
         /// 继续播放
         /// </summary>
@@ -114,7 +113,6 @@ namespace HT.Framework
 
             IsPause = false;
         }
-
         /// <summary>
         /// 停止
         /// </summary>

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Image))]
-    public sealed class DebuggerImage : DebuggerComponentBase
+    internal sealed class DebuggerImage : DebuggerComponentBase
     {
         private Image _target;
 
@@ -12,21 +12,19 @@ namespace HT.Framework
         {
             _target = Target as Image;
         }
-
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.raycastTarget = GUILayout.Toggle(_target.raycastTarget, "Raycast Target");
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Fill Amount: ");
-            _target.fillAmount = FloatField(_target.fillAmount);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.fillCenter = GUILayout.Toggle(_target.fillCenter, "Fill Center");
-            GUILayout.EndHorizontal();
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            ObjectFieldReadOnly("Sprite", _target.sprite);
+            ObjectFieldReadOnly("Material", _target.material);
+            _target.raycastTarget = BoolField("Raycast Target", _target.raycastTarget);
+            _target.maskable = BoolField("Maskable", _target.maskable);
+            _target.type = (Image.Type)EnumField("Image Type", _target.type);
+            _target.fillCenter = BoolField("Fill Center", _target.fillCenter);
+            _target.preserveAspect = BoolField("Preserve Aspect", _target.preserveAspect);
+            _target.fillAmount = FloatField("Fill Amount", _target.fillAmount);
         }
     }
 }

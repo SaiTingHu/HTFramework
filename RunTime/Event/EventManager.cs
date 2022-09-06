@@ -1,30 +1,15 @@
 ﻿using System;
-using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 事件管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Event)]
-    public sealed class EventManager : InternalModuleBase
+    public sealed class EventManager : InternalModuleBase<IEventHelper>
     {
-        private IEventHelper _helper;
-
-        private EventManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IEventHelper;
-        }
-
         /// <summary>
-        /// 订阅I型事件 ------ HTFAction(object, EventHandlerBase)
+        /// 订阅一型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -33,7 +18,7 @@ namespace HT.Framework
             _helper.Subscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 订阅I型事件 ------ HTFAction(object, EventHandlerBase)
+        /// 订阅一型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -42,7 +27,7 @@ namespace HT.Framework
             _helper.Subscribe(type, handler);
         }
         /// <summary>
-        /// 订阅II型事件 ------ HTFAction()
+        /// 订阅二型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -51,7 +36,7 @@ namespace HT.Framework
             _helper.Subscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 订阅II型事件 ------ HTFAction()
+        /// 订阅二型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -60,7 +45,7 @@ namespace HT.Framework
             _helper.Subscribe(type, handler);
         }
         /// <summary>
-        /// 订阅III型事件 ------ HTFAction(EventHandlerBase)
+        /// 订阅三型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -69,7 +54,7 @@ namespace HT.Framework
             _helper.Subscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 订阅III型事件 ------ HTFAction(EventHandlerBase)
+        /// 订阅三型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -78,7 +63,7 @@ namespace HT.Framework
             _helper.Subscribe(type, handler);
         }
         /// <summary>
-        /// 取消订阅I型事件 ------ HTFAction(object, EventHandlerBase)
+        /// 取消订阅一型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -87,7 +72,7 @@ namespace HT.Framework
             _helper.Unsubscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 取消订阅I型事件 ------ HTFAction(object, EventHandlerBase)
+        /// 取消订阅一型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -96,7 +81,7 @@ namespace HT.Framework
             _helper.Unsubscribe(type, handler);
         }
         /// <summary>
-        /// 取消订阅II型事件 ------ HTFAction()
+        /// 取消订阅二型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -105,7 +90,7 @@ namespace HT.Framework
             _helper.Unsubscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 取消订阅II型事件 ------ HTFAction()
+        /// 取消订阅二型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -114,7 +99,7 @@ namespace HT.Framework
             _helper.Unsubscribe(type, handler);
         }
         /// <summary>
-        /// 取消订阅III型事件 ------ HTFAction(EventHandlerBase)
+        /// 取消订阅三型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -123,7 +108,7 @@ namespace HT.Framework
             _helper.Unsubscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 取消订阅III型事件 ------ HTFAction(EventHandlerBase)
+        /// 取消订阅三型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -149,7 +134,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 抛出I型事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// 抛出一型事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="sender">事件发送者</param>
         /// <param name="handler">事件处理类实例</param>
@@ -158,7 +143,7 @@ namespace HT.Framework
             _helper.Throw(sender, handler);
         }
         /// <summary>
-        /// 抛出II型事件
+        /// 抛出二型事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         public void Throw<T>() where T : EventHandlerBase
@@ -166,7 +151,7 @@ namespace HT.Framework
             _helper.Throw(typeof(T));
         }
         /// <summary>
-        /// 抛出II型事件
+        /// 抛出二型事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         public void Throw(Type type)
@@ -174,7 +159,7 @@ namespace HT.Framework
             _helper.Throw(type);
         }
         /// <summary>
-        /// 抛出III型事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// 抛出三型事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="handler">事件处理类实例</param>
         public void Throw(EventHandlerBase handler)

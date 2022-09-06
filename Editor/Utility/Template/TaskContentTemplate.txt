@@ -13,30 +13,33 @@ using UnityEditor;
 [TaskContent("#SCRIPTNAME#")]
 public class #SCRIPTNAME# : TaskContentBase
 {
-	public #SCRIPTNAME#() : base()
-    {
-        
-    }
-
-	public override void OnStart()
+	protected override void OnStart()
     {
         base.OnStart();
     }
-
     protected override void OnUpdate()
     {
         base.OnUpdate();
     }
-
-    public override void OnComplete()
+    protected override void OnComplete()
     {
         base.OnComplete();
     }
+    protected override void OnEnd()
+    {
+        base.OnEnd();
+    }
 
 #if UNITY_EDITOR
-    public override int OnPropertyGUI()
+    protected override int OnPropertyGUI()
     {
         int height = base.OnPropertyGUI();
+
+		GUILayout.BeginHorizontal();
+        GUILayout.Label("[新建任务内容]");
+        GUILayout.EndHorizontal();
+
+        height += 20;
 
         return height;
     }

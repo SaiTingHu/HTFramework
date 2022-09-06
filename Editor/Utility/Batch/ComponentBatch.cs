@@ -15,16 +15,12 @@ namespace HT.Framework
         private MethodInfo _selectionAddMethod;
         private object[] _parameter = new object[1];
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             if (_selectionAddMethod == null)
             {
                 MethodInfo[] methods = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.Selection").GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
@@ -42,7 +38,12 @@ namespace HT.Framework
                 }
             }
         }
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
 
+            GUILayout.FlexibleSpace();
+        }
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
@@ -66,7 +67,7 @@ namespace HT.Framework
             if (GUILayout.Button(_componentType != null ? _componentType.FullName : "<None>", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
+                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
                     return type.IsSubclassOf(typeof(Component)) && type.FullName.ToLower().Contains(_componentTypeFilter.ToLower());
                 });
@@ -77,7 +78,7 @@ namespace HT.Framework
                 for (int i = 0; i < types.Count; i++)
                 {
                     Type type = types[i];
-                    gm.AddItem(new GUIContent(type.FullName), type == _componentType, () =>
+                    gm.AddItem(new GUIContent(type.FullName.Replace(".", "/")), type == _componentType, () =>
                     {
                         _componentType = type;
                     });
@@ -94,6 +95,7 @@ namespace HT.Framework
             GUI.enabled = _root && _componentType != null && _selectionAddMethod != null;
 
             EditorGUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Collect"))
             {
                 Selection.activeGameObject = null;
@@ -104,6 +106,7 @@ namespace HT.Framework
                     CollectComponent(components[i]);
                 }
             }
+            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 
             GUI.enabled = true;

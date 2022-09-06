@@ -22,17 +22,14 @@ namespace HT.Framework
                 Handler?.Invoke(downloadHandler.texture);
             }
         }
-
         public override void OnSetDownloadHandler(UnityWebRequest request)
         {
             request.downloadHandler = new DownloadHandlerTexture(true);
         }
-
         public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }
-
         public override void Reset()
         {
             OfflineHandler = null;

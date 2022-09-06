@@ -1,38 +1,15 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(ResourceManager))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88852698")]
-    internal sealed class ResourceManagerInspector : InternalModuleInspector<ResourceManager>
+    internal sealed class ResourceManagerInspector : InternalModuleInspector<ResourceManager, IResourceHelper>
     {
-        private IResourceHelper _resourceHelper;
-
-        protected override string Intro
-        {
-            get
-            {
-                return "Resource Manager, Manage all resource loading and unloading!";
-            }
-        }
-
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IResourceHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _resourceHelper = _helper as IResourceHelper;
-        }
+        protected override string Intro => "Resource Manager, use this to complete the loading and unloading of resources!";
 
         protected override void OnInspectorDefaultGUI()
         {
@@ -40,13 +17,12 @@ namespace HT.Framework
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            EnumPopup(Target.Mode, out Target.Mode, "Load Mode");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(ResourceManager.Mode), "Load Mode");
 
             if (Target.Mode == ResourceLoadMode.Resource)
             {
                 GUILayout.BeginHorizontal();
+                GUI.backgroundColor = Color.green;
                 if (GUILayout.Button("Resources Folder View", EditorGlobalTools.Styles.LargeButton))
                 {
                     ResourcesFolderViewWindow window = EditorWindow.GetWindow<ResourcesFolderViewWindow>();
@@ -56,26 +32,17 @@ namespace HT.Framework
                     window.Init();
                     window.Show();
                 }
+                GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
             }
             else if (Target.Mode == ResourceLoadMode.AssetBundle)
             {
-                GUILayout.BeginHorizontal();
-                TextField(Target.AssetBundleManifestName, out Target.AssetBundleManifestName, "Manifest Name");
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsEditorMode, out Target.IsEditorMode, "Editor Mode");
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                Toggle(Target.IsCacheAssetBundle, out Target.IsCacheAssetBundle, "Cache AssetBundle");
-                GUILayout.EndHorizontal();
+                PropertyField(nameof(ResourceManager.AssetBundleManifestName), "Manifest Name");
+                PropertyField(nameof(ResourceManager.IsEditorMode), "Editor Mode");
             }
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
@@ -85,25 +52,25 @@ namespace HT.Framework
                 if (!Target.IsEditorMode)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Root Path: ", GUILayout.Width(100));
-                    EditorGUILayout.TextField(_resourceHelper.AssetBundleRootPath);
+                    GUILayout.Label("Root Path: ", GUILayout.Width(LabelWidth));
+                    EditorGUILayout.TextField(_helper.AssetBundleRootPath);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Manifest: ", GUILayout.Width(100));
-                    EditorGUILayout.ObjectField(_resourceHelper.AssetBundleManifest, typeof(AssetBundleManifest), false);
+                    GUILayout.Label("Manifest: ", GUILayout.Width(LabelWidth));
+                    EditorGUILayout.ObjectField(_helper.AssetBundleManifest, typeof(AssetBundleManifest), false);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("AssetBundles: ", GUILayout.Width(100));
-                    GUILayout.Label(_resourceHelper.AssetBundles.Count.ToString());
+                    GUILayout.Label("AssetBundles: ", GUILayout.Width(LabelWidth));
+                    GUILayout.Label(_helper.AssetBundles.Count.ToString());
                     GUILayout.EndHorizontal();
 
-                    foreach (var item in _resourceHelper.AssetBundles)
+                    foreach (var item in _helper.AssetBundles)
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
-                        GUILayout.Label(item.Key, GUILayout.Width(80));
+                        GUILayout.Label(item.Key, GUILayout.Width(LabelWidth - 20));
                         EditorGUILayout.ObjectField(item.Value, typeof(AssetBundle), false);
                         GUILayout.EndHorizontal();
                     }

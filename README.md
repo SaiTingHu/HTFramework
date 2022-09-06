@@ -6,15 +6,11 @@
 
 # Unity HTFramework
 
-一个开源的基于Unity的简易、轻量级、模块式框架，更适用于应用软件、小型游戏项目，可插拨特性使其能够最大兼容性的与其他框架、环境混合开发。
-
-## 参考
-
-- [EllanJiang/GameFramework](https://github.com/EllanJiang/GameFramework)。
+HTFramework是基于Unity的一个快速开发框架，集需求模块化、代码重用性、实用便捷性、功能高内聚、统一编码规范、可扩展性、可维护性、可通用性、可插拨性为一体，并提供持续维护、升级。
 
 ## 环境
 
-- Unity版本：2018.3.0及以上。
+- Unity版本：2019.4.30。
 
 - .NET API版本：4.x。
 
@@ -44,7 +40,7 @@
 
 - [Event](https://wanderer.blog.csdn.net/article/details/85689865) - 可以将一切操作定义为具体的全局事件，通过订阅事件、抛出事件以驱动整个业务逻辑。
 
-- [ExceptionHandler](https://wanderer.blog.csdn.net/article/details/102894933) - 异常处理者，当程序任何部位发生未知、未捕获的异常时，他会在这里被截获，并写入日志文件，同时支持在异常发生时打开指定程序（仅在PC平台），或者在异常发生时回馈日志到指定邮箱。
+- [Exception](https://wanderer.blog.csdn.net/article/details/102894933) - 异常处理者，当程序任何部位发生未知、未捕获的异常时，他会在这里被截获，并写入日志文件，同时支持在异常发生时打开指定程序（仅在PC平台），或者在异常发生时回馈日志到指定邮箱。
 
 - [FSM](https://wanderer.blog.csdn.net/article/details/86073351) - 模拟一切可以抽象为有限状态机结构的业务逻辑，类似于角色动画、怪物AI、任意有独立逻辑的个体等。
 
@@ -64,9 +60,9 @@
 
 - [Resource](https://wanderer.blog.csdn.net/article/details/88852698) - 资源加载管理器，主要用于动态加载资源（只支持异步加载），在加载中或加载完成后都可以进行自定义操作，现在主要支持Resource直接加载和AssetBundle加载，比如，UI模块就会自动调用资源管理器加载UI实体。
 
-- [StepEditor](https://wanderer.blog.csdn.net/article/details/87712995) - 步骤编辑器，严格来说，StepEditor只是框架的一个内置工具，他最开始的用途是用来解决一系列冗长的线性任务，为了实现可视化和降低后期改动的复杂度，当然，也可以用作流程控制器。
+- [StepMaster](https://wanderer.blog.csdn.net/article/details/87712995) - 步骤编辑器，严格来说，StepEditor只是框架的一个内置工具，他最开始的用途是用来解决一系列冗长的线性任务，为了实现可视化和降低后期改动的复杂度，当然，也可以用作流程控制器。
 
-- [TaskEditor](https://wanderer.blog.csdn.net/article/details/104317219) - 任务编辑器，可以自定义任务点，设置任务达成条件，多个任务点组成一个任务内容，使用一系列任务内容完成角色扮演的设计。
+- [TaskMaster](https://wanderer.blog.csdn.net/article/details/104317219) - 任务编辑器，可以自定义任务点，设置任务达成条件，多个任务点组成一个任务内容，使用一系列任务内容完成角色扮演的设计。
 
 - [UI](https://wanderer.blog.csdn.net/article/details/88125982) - 用于管理全局的UI实体，以省去手动创建UI实例、销毁UI实例等一系列操作，他可以在非常方便且省去不必要的开销优势下，让你条例清晰的组织和管控好任何复杂的UI结构。
 
@@ -80,25 +76,35 @@
 
 - [XLua](https://github.com/SaiTingHu/HTFrameworkXLua)【可选模块】 - 本模块旨在结合XLua与框架的资源加载策略，快速实现热更流程，并优化了开发环境，使得开发人员可以最低成本的投入到Lua业务开发。
 
-- [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于文件系统、本地化系统、新手引导系统、时间系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
+- [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于文件系统、本地化系统、新手引导系统、时间系统、AVG2D系统、FTG2D系统、RPG2D系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
 
 ## 内置工具
 
-- [Unity Asset Bundle Browser tool](https://docs.unity3d.com/Manual/AssetBundles-Browser.html)。
+- [AssetBundle Browser 1.7.0](https://docs.unity3d.com/Manual/AssetBundles-Browser.html)。
 
-- [Dotween Free](http://dotween.demigiant.com/)。
+- [Dotween Free 1.2.632](http://dotween.demigiant.com/)。
 
-## 注意事项
-
-- 框架中所有On开头的函数为生命周期函数或回调函数，均由框架呼叫，请勿手动调用。
-
-- 框架中的Procedure（流程）必须包含至少一个流程才能正确构建项目，而其他模块，如无需要，均可以不使用。
+- [LitJson 0.17.0](https://github.com/LitJSON/litjson)。
 
 ## 演示代码
 
 - [入门级Demo](https://github.com/SaiTingHu/HTFrameworkDemo)。
 
 - [应用级Demo - 超级坦克大战](https://blog.csdn.net/qq992817263/category_10133279.html)。
+
+- [应用级Demo - FTG2D横版自由格斗](https://blog.csdn.net/qq992817263/category_10732753.html)。
+
+## 注意事项
+
+- 1.框架中所有On开头的函数为生命周期函数或回调函数，均由框架呼叫，请勿手动调用。
+
+- 2.框架中的Procedure（流程）必须包含至少一个流程才能正确构建项目，而其他模块，如无需要，均可以不使用。
+
+## 主要特性
+
+- 1.入口场景为一切的开始，也为一切的结束，整个游戏的生命周期都将在入口场景中完成，不建议使用多场景切换模式，如果确实需要使用，可以将其他场景打入AB包内加载。
+
+- 2.入口场景中只包含框架主模块（或其他自定义主模块、主控制器），其他任何东西都应该是动态加载的。
 
 ## 使用方法
 

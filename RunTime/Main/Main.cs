@@ -3,85 +3,48 @@
     /// <summary>
     /// HTFramework 主模块
     /// </summary>
-    public sealed partial class Main : InternalModuleBase
+    public sealed partial class Main : InternalModuleBase<IMainHelper>
     {
-        /// <summary>
-        /// 当前主程序
-        /// </summary>
-        public static Main Current { get; private set; }
-        
-        internal override void OnInitialization()
+        public override void OnInit()
         {
-            base.OnInitialization();
-
-            DontDestroyOnLoad(gameObject);
-
-            if (Current == null)
-            {
-                Current = this;
-            }
-            else
-            {
-                throw new HTFrameworkException(HTFrameworkModule.Main, "框架致命错误：不能存在两个及以上Main主模块！");
-            }
-
-            LicenseInitialization();
-            MainDataInitialization();
-            ModuleInitialization();
+            base.OnInit();
+            
+            LicenseInit();
+            DataModelInit();
+            ModuleInit();
         }
-
-        internal override void OnPreparatory()
+        public override void OnReady()
         {
-            base.OnPreparatory();
+            base.OnReady();
 
-            LicensePreparatory();
-            MainDataPreparatory();
-            ModulePreparatory();
+            LicenseReady();
+            DataModelReady();
+            ModuleReady();
         }
-
-        internal override void OnRefresh()
+        public override void OnUpdate()
         {
-            base.OnRefresh();
+            base.OnUpdate();
 
-            LogicLoopRefresh();
-            UtilityRefresh();
-            ModuleRefresh();
+            UtilityUpdate();
+            ModuleUpdate();
         }
-
-        internal void OnFixedRefresh()
+        public override void OnTerminate()
         {
-            LogicFixedLoopRefresh();
+            base.OnTerminate();
+
+            ModuleTerminate();
         }
-
-        internal void OnMainGUI()
-        {
-            LicenseOnGUI();
-        }
-
-        internal override void OnTermination()
-        {
-            base.OnTermination();
-
-            ModuleTermination();
-        }
-
-        internal override void OnPause()
+        public override void OnPause()
         {
             base.OnPause();
 
             ModulePause();
         }
-
-        internal override void OnUnPause()
+        public override void OnResume()
         {
-            base.OnUnPause();
+            base.OnResume();
 
-            ModuleUnPause();
-        }
-
-        internal void OnMainQuit()
-        {
-            ApplicationQuitEvent?.Invoke();
+            ModuleResume();
         }
     }
 }

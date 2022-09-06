@@ -23,6 +23,7 @@ namespace HT.Framework
         /// 离线模式处理者
         /// </summary>
         public HTFAction OfflineHandler;
+
         /// <summary>
         /// 请求完成
         /// </summary>

@@ -1,38 +1,15 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(ObjectPoolManager))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86610600")]
-    internal sealed class ObjectPoolManagerInspector : InternalModuleInspector<ObjectPoolManager>
+    internal sealed class ObjectPoolManagerInspector : InternalModuleInspector<ObjectPoolManager, IObjectPoolHelper>
     {
-        private IObjectPoolHelper _objectPoolHelper;
-
-        protected override string Intro
-        {
-            get
-            {
-                return "Object pool manager, it manages all object pools and can register new object pools!";
-            }
-        }
-
-        protected override Type HelperInterface
-        {
-            get
-            {
-                return typeof(IObjectPoolHelper);
-            }
-        }
-
-        protected override void OnRuntimeEnable()
-        {
-            base.OnRuntimeEnable();
-
-            _objectPoolHelper = _helper as IObjectPoolHelper;
-        }
+        protected override string Intro => "Object pool manager, it manages all object pools and can register new object pools!";
 
         protected override void OnInspectorDefaultGUI()
         {
@@ -40,25 +17,22 @@ namespace HT.Framework
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginHorizontal();
-            IntField(Target.Limit, out Target.Limit, "Limit");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(ObjectPoolManager.Limit), "Limit");
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
 
-            if (_objectPoolHelper.SpawnPools.Count == 0)
+            if (_helper.SpawnPools.Count == 0)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("No Runtime Data!");
                 GUILayout.EndHorizontal();
             }
 
-            foreach (var pool in _objectPoolHelper.SpawnPools)
+            foreach (var pool in _helper.SpawnPools)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);

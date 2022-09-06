@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 关于框架
+    /// </summary>
     internal sealed class About : HTFEditorWindow
     {
         [InitializeOnLoadMethod]
@@ -10,7 +13,7 @@ namespace HT.Framework
         {
             if (EditorApplication.timeSinceStartup < 30)
             {
-                if (EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true))
+                if (EditorPrefs.GetBool(EditorPrefsTable.About_IsShowOnStart, true))
                 {
                     EditorApplication.delayCall += () =>
                     {
@@ -27,8 +30,10 @@ namespace HT.Framework
         private Texture _frameworkLogo;
         private Texture _csdnLogo;
         private Texture _githubLogo;
+        private Texture _giteeLogo;
         private GUIContent _csdnGUIContent;
         private GUIContent _githubGUIContent;
+        private GUIContent _giteeGUIContent;
         private GUIContent _pcGUIContent;
         private GUIContent _androidGUIContent;
         private GUIContent _webglGUIContent;
@@ -42,25 +47,25 @@ namespace HT.Framework
         private int _colorIndex;
         private float _colorPos;
 
-        protected override bool IsEnableTitleGUI
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableTitleGUI => false;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _frameworkLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGOTitle2.png");
             _csdnLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
             _githubLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
+            _giteeLogo = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
             _csdnGUIContent = new GUIContent();
             _csdnGUIContent.image = _csdnLogo;
             _csdnGUIContent.text = "CSDN";
             _githubGUIContent = new GUIContent();
             _githubGUIContent.image = _githubLogo;
             _githubGUIContent.text = "Github";
+            _giteeGUIContent = new GUIContent();
+            _giteeGUIContent.image = _giteeLogo;
+            _giteeGUIContent.text = "Gitee";
             _pcGUIContent = new GUIContent();
             _pcGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.Standalone.Small").image;
             _pcGUIContent.text = "PC,Mac & Linux Standalone";
@@ -80,17 +85,23 @@ namespace HT.Framework
 
             EditorApplication.update += RefreshLOGOColor;
         }
-
         private void OnDestroy()
         {
             EditorApplication.update -= RefreshLOGOColor;
         }
+        protected override void OnBodyGUI()
+        {
+            base.OnBodyGUI();
 
+            LOGOGUI();
+
+            AboutGUI();
+        }
         private void RefreshLOGOColor()
         {
             if (_colorPos <= 1)
             {
-                _colorPos += 0.01f;
+                _colorPos += 0.005f;
             }
             else
             {
@@ -102,23 +113,12 @@ namespace HT.Framework
             }
             Repaint();
         }
-
         private void ReadCurrentVersion()
         {
             _versionInfo = AssetDatabase.LoadAssetAtPath<VersionInfo>("Assets/HTFramework/Editor/Utility/Version/Version.asset");
             _versionNumber = _versionInfo.CurrentVersion.GetFullNumber();
-            _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.AboutIsShowOnStart, true);
+            _isShowOnStart = EditorPrefs.GetBool(EditorPrefsTable.About_IsShowOnStart, true);
         }
-
-        protected override void OnBodyGUI()
-        {
-            base.OnBodyGUI();
-
-            LOGOGUI();
-
-            AboutGUI();
-        }
-
         private void LOGOGUI()
         {
             GUI.color = Color.Lerp(_lastColor, _currentColor, _colorPos);
@@ -126,18 +126,24 @@ namespace HT.Framework
             GUI.color = Color.white;
 
             GUI.Label(new Rect(80, 100, 100, 20), "Version: " + _versionNumber);
-            if (GUI.Button(new Rect(200, 100, 100, 16), "Version History", EditorGlobalTools.Styles.MiniPopup))
+            GUI.backgroundColor = Color.cyan;
+            if (GUI.Button(new Rect(200, 100, 110, 16), "Version History", EditorGlobalTools.Styles.MiniPopup))
             {
                 VersionViewer.OpenWindow(_versionInfo);
             }
+            GUI.backgroundColor = Color.white;
         }
-
         private void AboutGUI()
         {
             GUILayout.BeginVertical();
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
+            if (GUILayout.Button(_giteeGUIContent, EditorGlobalTools.Styles.Label))
+            {
+                Application.OpenURL("https://gitee.com/SaiTingHu/HTFramework");
+            }
+            EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
             if (GUILayout.Button(_githubGUIContent, EditorGlobalTools.Styles.Label))
             {
                 Application.OpenURL("https://github.com/SaiTingHu/HTFramework");
@@ -158,7 +164,7 @@ namespace HT.Framework
 
             GUILayout.BeginVertical(GUILayout.Height(100));
             _scroll = GUILayout.BeginScrollView(_scroll);
-            GUILayout.Label(_versionInfo.CurrentVersion.ReleaseNotes);
+            EditorGUILayout.TextArea(_versionInfo.CurrentVersion.ReleaseNotes);
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
             
@@ -192,7 +198,7 @@ namespace HT.Framework
             if (isShowOnStart != _isShowOnStart)
             {
                 _isShowOnStart = isShowOnStart;
-                EditorPrefs.SetBool(EditorPrefsTable.AboutIsShowOnStart, _isShowOnStart);
+                EditorPrefs.SetBool(EditorPrefsTable.About_IsShowOnStart, _isShowOnStart);
             }
             GUILayout.EndHorizontal();
 

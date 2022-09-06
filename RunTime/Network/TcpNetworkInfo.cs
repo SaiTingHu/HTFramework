@@ -44,7 +44,6 @@ namespace HT.Framework
                 BodyLength += Messages.Count * 4;
             }
         }
-
         public TcpNetworkInfo()
         {
         }

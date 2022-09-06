@@ -1,28 +1,13 @@
 ﻿using System;
-using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 有限状态机管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.FSM)]
-    public sealed class FSMManager : InternalModuleBase
+    public sealed class FSMManager : InternalModuleBase<IFSMHelper>
     {
-        private IFSMHelper _helper;
-
-        private FSMManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IFSMHelper;
-        }
-
         /// <summary>
         /// 注册状态机
         /// </summary>

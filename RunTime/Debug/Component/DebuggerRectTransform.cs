@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(RectTransform))]
-    public sealed class DebuggerRectTransform : DebuggerComponentBase
+    internal sealed class DebuggerRectTransform : DebuggerComponentBase
     {
         private RectTransform _target;
 
@@ -11,37 +11,17 @@ namespace HT.Framework
         {
             _target = Target as RectTransform;
         }
-
         public override void OnDebuggerGUI()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("ChildCount: " + _target.childCount);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Position:", GUILayout.Width(60));
-            _target.position = Vector3Field(_target.position);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Rotation:", GUILayout.Width(60));
-            _target.rotation = Quaternion.Euler(Vector3Field(_target.rotation.eulerAngles));
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Scale:", GUILayout.Width(60));
-            _target.localScale = Vector3Field(_target.localScale);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("AnchoredPosition:", GUILayout.Width(60));
-            _target.anchoredPosition3D = Vector3Field(_target.anchoredPosition3D);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("SizeDelta:", GUILayout.Width(60));
-            _target.sizeDelta = Vector2Field(_target.sizeDelta);
-            GUILayout.EndHorizontal();
+            IntField("Child Count", _target.childCount);
+            _target.position = Vector3Field("Position", _target.position);
+            _target.rotation = Quaternion.Euler(Vector3Field("Rotation", _target.eulerAngles));
+            _target.localPosition = Vector3Field("Local Position", _target.localPosition);
+            _target.localRotation = Quaternion.Euler(Vector3Field("Local Rotation", _target.localEulerAngles));
+            _target.localScale = Vector3Field("Scale", _target.localScale);
+            _target.anchoredPosition3D = Vector3Field("AnchoredPosition", _target.anchoredPosition3D);
+            _target.sizeDelta = Vector2Field("SizeDelta", _target.sizeDelta);
+            _target.pivot = Vector2Field("Pivot", _target.pivot);
         }
     }
 }

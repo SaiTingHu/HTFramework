@@ -1,147 +1,174 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace HT.Framework
 {
     [CustomEditor(typeof(EntityManager))]
+    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/101541066")]
-    internal sealed class EntityManagerInspector : InternalModuleInspector<EntityManager>
+    internal sealed class EntityManagerInspector : InternalModuleInspector<EntityManager, IEntityHelper>
     {
-        private IEntityHelper _entityHelper;
+        private GUIContent _addGC;
+        private GUIContent _removeGC;
+        private ReorderableList _entityList;
         private Dictionary<Type, bool> _entityFoldouts;
         private Dictionary<Type, bool> _objectPoolFoldouts;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "Entity Manager, Control all EntityLogic!";
-            }
-        }
+        protected override string Intro => "Entity Manager, Everything is entity except UI, this is a controller of all entity!";
 
-        protected override Type HelperInterface
+        protected override void OnDefaultEnable()
         {
-            get
-            {
-                return typeof(IEntityHelper);
-            }
-        }
+            base.OnDefaultEnable();
 
+            _addGC = new GUIContent();
+            _addGC.image = EditorGUIUtility.IconContent("d_Toolbar Plus More").image;
+            _addGC.tooltip = "Add a new define";
+            _removeGC = new GUIContent();
+            _removeGC.image = EditorGUIUtility.IconContent("d_Toolbar Minus").image;
+            _removeGC.tooltip = "Remove select define";
+
+            _entityList = new ReorderableList(Target.DefineEntityNames, typeof(string), true, true, false, false);
+            _entityList.elementHeight = 45;
+            _entityList.footerHeight = 0;
+            _entityList.drawHeaderCallback = (Rect rect) =>
+            {
+                Rect sub = rect;
+                sub.Set(rect.x, rect.y, 200, rect.height);
+                GUI.Label(sub, "Define Entity:");
+
+                if (!EditorApplication.isPlaying)
+                {
+                    sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
+                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    {
+                        Target.DefineEntityNames.Add("<None>");
+                        Target.DefineEntityTargets.Add(null);
+                        HasChanged();
+                    }
+
+                    sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
+                    GUI.enabled = _entityList.index >= 0 && _entityList.index < Target.DefineEntityNames.Count;
+                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    {
+                        Target.DefineEntityNames.RemoveAt(_entityList.index);
+                        Target.DefineEntityTargets.RemoveAt(_entityList.index);
+                        HasChanged();
+                    }
+                    GUI.enabled = true;
+                }
+            };
+            _entityList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                if (index >= 0 && index < Target.DefineEntityNames.Count)
+                {
+                    Rect subrect = rect;
+
+                    subrect.Set(rect.x, rect.y + 2, 50, 16);
+                    GUI.Label(subrect, "Type");
+                    if (isActive)
+                    {
+                        subrect.Set(rect.x + 50, rect.y + 2, rect.width - 50, 16);
+                        if (GUI.Button(subrect, Target.DefineEntityNames[index], EditorGlobalTools.Styles.MiniPopup))
+                        {
+                            GenericMenu gm = new GenericMenu();
+                            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                            {
+                                return type.IsSubclassOf(typeof(EntityLogicBase)) && !type.IsAbstract;
+                            });
+                            for (int m = 0; m < types.Count; m++)
+                            {
+                                int j = index;
+                                int n = m;
+                                if (Target.DefineEntityNames.Contains(types[n].FullName))
+                                {
+                                    gm.AddDisabledItem(new GUIContent(types[n].FullName), Target.DefineEntityNames[j] == types[n].FullName);
+                                }
+                                else
+                                {
+                                    gm.AddItem(new GUIContent(types[n].FullName), Target.DefineEntityNames[j] == types[n].FullName, () =>
+                                    {
+                                        Target.DefineEntityNames[j] = types[n].FullName;
+                                        HasChanged();
+                                    });
+                                }
+                            }
+                            gm.ShowAsContext();
+                        }
+                    }
+                    else
+                    {
+                        subrect.Set(rect.x + 50, rect.y + 2, rect.width - 50, 16);
+                        GUI.Label(subrect, Target.DefineEntityNames[index]);
+                    }
+
+                    subrect.Set(rect.x, rect.y + 22, 50, 16);
+                    GUI.Label(subrect, "Entity");
+                    subrect.Set(rect.x + 50, rect.y + 22, rect.width - 50, 16);
+                    GameObject entity = EditorGUI.ObjectField(subrect, Target.DefineEntityTargets[index], typeof(GameObject), false) as GameObject;
+                    if (entity != Target.DefineEntityTargets[index])
+                    {
+                        Target.DefineEntityTargets[index] = entity;
+                        HasChanged();
+                    }
+                }
+            };
+            _entityList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                if (Event.current.type == EventType.Repaint)
+                {
+                    GUIStyle gUIStyle = (index % 2 != 0) ? "CN EntryBackEven" : "Box";
+                    gUIStyle = (!isActive && !isFocused) ? gUIStyle : "RL Element";
+                    rect.x += 2;
+                    rect.width -= 6;
+                    gUIStyle.Draw(rect, false, isActive, isActive, isFocused);
+                }
+            };
+            _entityList.onReorderCallbackWithDetails = (ReorderableList list, int oldIndex, int newIndex) =>
+            {
+                GameObject entity = Target.DefineEntityTargets[oldIndex];
+                Target.DefineEntityTargets.RemoveAt(oldIndex);
+                Target.DefineEntityTargets.Insert(newIndex, entity);
+                HasChanged();
+            };
+        }
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
 
-            _entityHelper = _helper as IEntityHelper;
             _entityFoldouts = new Dictionary<Type, bool>();
             _objectPoolFoldouts = new Dictionary<Type, bool>();
-            foreach (var entity in _entityHelper.Entities)
+            foreach (var entity in _helper.Entities)
             {
                 _entityFoldouts.Add(entity.Key, true);
                 _objectPoolFoldouts.Add(entity.Key, true);
             }
         }
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Define Entity:");
-            GUILayout.EndHorizontal();
-
-            for (int i = 0; i < Target.DefineEntityNames.Count; i++)
-            {
-                GUILayout.BeginVertical(EditorStyles.helpBox);
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Type", GUILayout.Width(40));
-                if (GUILayout.Button(Target.DefineEntityNames[i], EditorGlobalTools.Styles.MiniPopup))
-                {
-                    GenericMenu gm = new GenericMenu();
-                    List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
-                    {
-                        return type.IsSubclassOf(typeof(EntityLogicBase));
-                    });
-                    for (int m = 0; m < types.Count; m++)
-                    {
-                        int j = i;
-                        int n = m;
-                        if (Target.DefineEntityNames.Contains(types[n].FullName))
-                        {
-                            gm.AddDisabledItem(new GUIContent(types[n].FullName));
-                        }
-                        else
-                        {
-                            gm.AddItem(new GUIContent(types[n].FullName), Target.DefineEntityNames[j] == types[n].FullName, () =>
-                            {
-                                Undo.RecordObject(target, "Set Define Entity Name");
-                                Target.DefineEntityNames[j] = types[n].FullName;
-                                HasChanged();
-                            });
-                        }
-                    }
-                    gm.ShowAsContext();
-                }
-                GUI.backgroundColor = Color.red;
-                if (GUILayout.Button("Delete", EditorStyles.miniButton, GUILayout.Width(50)))
-                {
-                    Undo.RecordObject(target, "Delete Define Entity");
-                    Target.DefineEntityNames.RemoveAt(i);
-                    Target.DefineEntityTargets.RemoveAt(i);
-                    HasChanged();
-                    continue;
-                }
-                GUI.backgroundColor = Color.white;
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Entity", GUILayout.Width(40));
-                GameObject entity = Target.DefineEntityTargets[i];
-                ObjectField(Target.DefineEntityTargets[i], out entity, false, "");
-                if (entity != Target.DefineEntityTargets[i])
-                {
-                    Target.DefineEntityTargets[i] = entity;
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.EndVertical();
-            }
-
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("New", EditorStyles.miniButton))
-            {
-                Undo.RecordObject(target, "New Define Entity");
-                Target.DefineEntityNames.Add("<None>");
-                Target.DefineEntityTargets.Add(null);
-                HasChanged();
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
+            _entityList.DoLayoutList();
 
             GUI.enabled = true;
         }
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
 
-            if (_entityHelper.Entities.Count == 0 && _entityHelper.ObjectPools.Count == 0)
+            if (_helper.Entities.Count == 0 && _helper.ObjectPools.Count == 0)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("No Runtime Data!");
                 GUILayout.EndHorizontal();
             }
 
-            foreach (var entity in _entityHelper.Entities)
+            foreach (var entity in _helper.Entities)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);
@@ -172,7 +199,7 @@ namespace HT.Framework
                 }
             }
 
-            foreach (var pool in _entityHelper.ObjectPools)
+            foreach (var pool in _helper.ObjectPools)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);

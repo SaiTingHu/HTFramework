@@ -4,54 +4,91 @@ using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
-    public abstract class HTFEditor<E> : Editor where E : Object
+    /// <summary>
+    /// 自定义编辑器行为基类
+    /// </summary>
+    /// <typeparam name="E">自定义的组件</typeparam>
+    public abstract class HTFEditor<E> : Editor where E : UObject
     {
         /// <summary>
         /// 当前目标
         /// </summary>
         protected E Target;
-
+        /// <summary>
+        /// 当前的所有目标
+        /// </summary>
+        protected E[] Targets;
+        /// <summary>
+        /// 复制、粘贴按钮的GUIContent
+        /// </summary>
+        protected GUIContent CopyPasteGC;
+        
         private GithubURLAttribute _GithubURL;
+        private GiteeURLAttribute _GiteeURL;
         private CSDNBlogURLAttribute _CSDNURL;
-        private Texture _GithubIcon;
-        private Texture _CSDNIcon;
+        private GUIContent _GithubGC;
+        private GUIContent _GiteeGC;
+        private GUIContent _CSDNGC;
         private Dictionary<string, SerializedProperty> _serializedPropertys = new Dictionary<string, SerializedProperty>();
 
         /// <summary>
         /// 是否启用运行时调试数据
         /// </summary>
-        protected virtual bool IsEnableRuntimeData
-        {
-            get
-            {
-                return true;
-            }
-        }
-
+        protected virtual bool IsEnableRuntimeData => true;
         /// <summary>
         /// 是否启用基础属性展示
         /// </summary>
-        protected virtual bool IsEnableBaseInspectorGUI
+        protected virtual bool IsEnableBaseInspectorGUI => false;
+        /// <summary>
+        /// 是否启用宽模式
+        /// </summary>
+        protected virtual bool IsWideMode => true;
+        /// <summary>
+        /// 控件标签的标准宽度
+        /// </summary>
+        protected virtual float LabelWidth
         {
             get
             {
-                return false;
+                return EditorGUIUtility.labelWidth;
             }
         }
 
         private void OnEnable()
         {
             Target = target as E;
-            _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
-            _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
-            _GithubIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
-            _CSDNIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
-            _serializedPropertys.Clear();
+            Targets = targets.ConvertAllAS<E, UObject>();
+            CopyPasteGC = new GUIContent();
+            CopyPasteGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            CopyPasteGC.tooltip = "Copy or Paste";
 
+            _GithubURL = GetType().GetCustomAttribute<GithubURLAttribute>();
+            _GiteeURL = GetType().GetCustomAttribute<GiteeURLAttribute>();
+            _CSDNURL = GetType().GetCustomAttribute<CSDNBlogURLAttribute>();
+            if (_GithubURL != null)
+            {
+                _GithubGC = new GUIContent();
+                _GithubGC.image = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Github.png");
+                _GithubGC.tooltip = "Github";
+            }
+            if (_GiteeURL != null)
+            {
+                _GiteeGC = new GUIContent();
+                _GiteeGC.image = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Gitee.png");
+                _GiteeGC.tooltip = "Gitee";
+            }
+            if (_CSDNURL != null)
+            {
+                _CSDNGC = new GUIContent();
+                _CSDNGC.image = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
+                _CSDNGC.tooltip = "CSDN";
+            }
+            _serializedPropertys.Clear();
+            
             OnDefaultEnable();
 
             if (IsEnableRuntimeData && EditorApplication.isPlaying)
@@ -59,18 +96,44 @@ namespace HT.Framework
                 OnRuntimeEnable();
             }
         }
-        
+        private void OnDisable()
+        {
+            _serializedPropertys.Clear();
+
+            OnDefaultDisable();
+
+            if (IsEnableRuntimeData && EditorApplication.isPlaying)
+            {
+                OnRuntimeDisable();
+            }
+        }
         public sealed override void OnInspectorGUI()
         {
-            if (_GithubURL != null || _CSDNURL != null)
+            if (EditorGUIUtility.wideMode != IsWideMode)
             {
-                GUILayout.BeginHorizontal();
+                EditorGUIUtility.wideMode = IsWideMode;
+            }
+
+            if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)
+            {
+                EditorGUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
+
+                if (_GiteeURL != null)
+                {
+                    GUI.enabled = !string.IsNullOrEmpty(_GiteeURL.URL);
+                    if (GUILayout.Button(_GiteeGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    {
+                        Application.OpenURL(_GiteeURL.URL);
+                    }
+                    EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
+                    GUI.enabled = true;
+                }
 
                 if (_GithubURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_GithubURL.URL);
-                    if (GUILayout.Button(_GithubIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(_GithubGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         Application.OpenURL(_GithubURL.URL);
                     }
@@ -81,7 +144,7 @@ namespace HT.Framework
                 if (_CSDNURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_CSDNURL.URL);
-                    if (GUILayout.Button(_CSDNIcon, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(_CSDNGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
                     {
                         Application.OpenURL(_CSDNURL.URL);
                     }
@@ -89,14 +152,16 @@ namespace HT.Framework
                     GUI.enabled = true;
                 }
 
-                GUILayout.EndHorizontal();
+                EditorGUILayout.EndHorizontal();
             }
+
+            serializedObject.Update();
 
             if (IsEnableBaseInspectorGUI)
             {
                 base.OnInspectorGUI();
             }
-
+            
             OnInspectorDefaultGUI();
 
             if (IsEnableRuntimeData && EditorApplication.isPlaying)
@@ -104,60 +169,76 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.cyan;
                 GUI.color = Color.white;
 
-                GUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Runtime Data", EditorStyles.boldLabel);
-                GUILayout.EndHorizontal();
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Runtime Data", EditorStyles.boldLabel);
+                EditorGUILayout.EndHorizontal();
 
                 OnInspectorRuntimeGUI();
 
-                GUILayout.EndVertical();
+                EditorGUILayout.EndVertical();
             }
 
             serializedObject.ApplyModifiedProperties();
         }
-
         /// <summary>
-        /// 默认 Enable 初始化
+        /// 默认 Enable
         /// </summary>
         protected virtual void OnDefaultEnable()
         { }
-
         /// <summary>
-        /// 运行时 Enable 初始化
+        /// 运行时 Enable
         /// </summary>
         protected virtual void OnRuntimeEnable()
         { }
-
+        /// <summary>
+        /// 默认 Disable
+        /// </summary>
+        protected virtual void OnDefaultDisable()
+        { }
+        /// <summary>
+        /// 运行时 Disable
+        /// </summary>
+        protected virtual void OnRuntimeDisable()
+        { }
         /// <summary>
         /// 默认 Inspector GUI
         /// </summary>
         protected virtual void OnInspectorDefaultGUI()
         { }
-
         /// <summary>
         /// 运行时 Inspector GUI
         /// </summary>
         protected virtual void OnInspectorRuntimeGUI()
         { }
-
         /// <summary>
         /// 标记目标已改变
         /// </summary>
-        protected void HasChanged()
+        /// <param name="markTarget">是否仅标记单个 target</param>
+        protected void HasChanged(bool markTarget = false)
         {
-            if (!EditorApplication.isPlaying)
+            if (markTarget)
             {
                 EditorUtility.SetDirty(target);
-                Component component = target as Component;
-                if (component != null && component.gameObject.scene != null)
+            }
+            else
+            {
+                for (int i = 0; i < targets.Length; i++)
                 {
-                    EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
+                    EditorUtility.SetDirty(targets[i]);
                 }
             }
-        }
 
+            if (EditorApplication.isPlaying)
+                return;
+
+            Component component = target as Component;
+            if (component != null && component.gameObject.scene != null)
+            {
+                EditorSceneManager.MarkSceneDirty(component.gameObject.scene);
+            }
+        }
         /// <summary>
         /// 根据名字获取序列化属性
         /// </summary>
@@ -189,7 +270,7 @@ namespace HT.Framework
         {
             if (GUILayout.Button(name, options))
             {
-                Undo.RecordObject(target, "click button");
+                Undo.RecordObject(target, "Click button");
                 action();
                 HasChanged();
             }
@@ -201,7 +282,7 @@ namespace HT.Framework
         {
             if (GUILayout.Button(name, style, options))
             {
-                Undo.RecordObject(target, "click button");
+                Undo.RecordObject(target, "Click button");
                 action();
                 HasChanged();
             }
@@ -211,7 +292,6 @@ namespace HT.Framework
         /// </summary>
         protected void Toggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = value ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, options);
             if (EditorGUI.EndChangeCheck())
@@ -224,14 +304,12 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个Toggle
         /// </summary>
         protected void Toggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
         {
-            GUI.color = value ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, style, options);
             if (EditorGUI.EndChangeCheck())
@@ -244,47 +322,6 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
-        }
-        /// <summary>
-        /// 制作一个GUILayout Toggle
-        /// </summary>
-        protected void GUILayoutToggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
-        {
-            GUI.color = value ? Color.white : Color.gray;
-            EditorGUI.BeginChangeCheck();
-            bool newValue = GUILayout.Toggle(value, name, options);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, "Set bool value");
-                outValue = newValue;
-                HasChanged();
-            }
-            else
-            {
-                outValue = value;
-            }
-            GUI.color = Color.white;
-        }
-        /// <summary>
-        /// 制作一个GUILayout Toggle
-        /// </summary>
-        protected void GUILayoutToggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
-        {
-            GUI.color = value ? Color.white : Color.gray;
-            EditorGUI.BeginChangeCheck();
-            bool newValue = GUILayout.Toggle(value, name, style, options);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, "Set bool value");
-                outValue = newValue;
-                HasChanged();
-            }
-            else
-            {
-                outValue = value;
-            }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个IntSlider
@@ -363,7 +400,6 @@ namespace HT.Framework
         /// </summary>
         protected void TextField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = !string.IsNullOrEmpty(value) ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             string newValue = EditorGUILayout.TextField(name, value, options);
             if (EditorGUI.EndChangeCheck())
@@ -376,14 +412,12 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个PasswordField
         /// </summary>
         protected void PasswordField(string value, out string outValue, string name, params GUILayoutOption[] options)
         {
-            GUI.color = !string.IsNullOrEmpty(value) ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             string newValue = EditorGUILayout.PasswordField(name, value, options);
             if (EditorGUI.EndChangeCheck())
@@ -396,14 +430,12 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个ObjectField
         /// </summary>
         protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UnityEngine.Object
         {
-            GUI.color = value ? Color.white : Color.gray;
             EditorGUI.BeginChangeCheck();
             T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects, options) as T;
             if (EditorGUI.EndChangeCheck())
@@ -416,7 +448,6 @@ namespace HT.Framework
             {
                 outValue = value;
             }
-            GUI.color = Color.white;
         }
         /// <summary>
         /// 制作一个Vector2Field
@@ -490,64 +521,301 @@ namespace HT.Framework
                 outValue = value;
             }
         }
+
         /// <summary>
-        /// 制作一个PropertyField
+        /// 制作一个序列化属性字段
         /// </summary>
-        protected void PropertyField(string propertyName, string name, params GUILayoutOption[] options)
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, bool isLine = true, params GUILayoutOption[] options)
         {
-            SerializedProperty serializedProperty = GetProperty(propertyName);
-            if (serializedProperty != null)
-            {
-                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), true, options);
-            }
-            else
-            {
-                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
-            }
-        }
-        /// <summary>
-        /// 制作一个PropertyField
-        /// </summary>
-        protected void PropertyField(string propertyName, params GUILayoutOption[] options)
-        {
+            if (isLine) EditorGUILayout.BeginHorizontal();
+
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, true, options);
+                DrawCopyPaste(serializedProperty);
             }
             else
             {
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
+
+            if (isLine) EditorGUILayout.EndHorizontal();
         }
         /// <summary>
-        /// 制作一个PropertyField
+        /// 制作一个序列化属性字段
         /// </summary>
-        protected void PropertyField(string propertyName, string name, bool includeChildren, params GUILayoutOption[] options)
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="name">显示名称</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, string name, bool isLine = true, params GUILayoutOption[] options)
         {
+            if (isLine) EditorGUILayout.BeginHorizontal();
+
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
             {
-                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), includeChildren, options);
+                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), true, options);
+                DrawCopyPaste(serializedProperty);
             }
             else
             {
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
             }
+
+            if (isLine) EditorGUILayout.EndHorizontal();
         }
         /// <summary>
-        /// 制作一个PropertyField
+        /// 制作一个序列化属性字段
         /// </summary>
-        protected void PropertyField(string propertyName, bool includeChildren, params GUILayoutOption[] options)
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="includeChildren">包含子级</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, bool includeChildren, bool isLine = true, params GUILayoutOption[] options)
         {
+            if (isLine) EditorGUILayout.BeginHorizontal();
+
             SerializedProperty serializedProperty = GetProperty(propertyName);
             if (serializedProperty != null)
             {
                 EditorGUILayout.PropertyField(serializedProperty, includeChildren, options);
+                DrawCopyPaste(serializedProperty);
             }
             else
             {
                 EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+            }
+
+            if (isLine) EditorGUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 制作一个序列化属性字段
+        /// </summary>
+        /// <param name="propertyName">属性名称</param>
+        /// <param name="name">显示名称</param>
+        /// <param name="includeChildren">包含子级</param>
+        /// <param name="isLine">自动水平布局并占用一行</param>
+        /// <param name="options">布局操作</param>
+        protected void PropertyField(string propertyName, string name, bool includeChildren, bool isLine = true, params GUILayoutOption[] options)
+        {
+            if (isLine) EditorGUILayout.BeginHorizontal();
+
+            SerializedProperty serializedProperty = GetProperty(propertyName);
+            if (serializedProperty != null)
+            {
+                EditorGUILayout.PropertyField(serializedProperty, new GUIContent(name), includeChildren, options);
+                DrawCopyPaste(serializedProperty);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+            }
+
+            if (isLine) EditorGUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 在属性字段的后面绘制复制、粘贴按钮
+        /// </summary>
+        /// <param name="property">属性</param>
+        protected void DrawCopyPaste(SerializedProperty property)
+        {
+            if (!IsSupportCopyPaste(property))
+                return;
+
+            if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            {
+                GenericMenu gm = new GenericMenu();
+                if (Targets.Length == 1)
+                {
+                    gm.AddItem(new GUIContent("Copy"), false, () =>
+                    {
+                        CopyValue(property);
+                    });
+                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                    {
+                        PasteValue(property);
+                    });
+                }
+                else
+                {
+                    gm.AddDisabledItem(new GUIContent("Copy"));
+                    gm.AddDisabledItem(new GUIContent("Paste"));
+                }
+                gm.ShowAsContext();
+            }
+        }
+        /// <summary>
+        /// 属性的类型是否支持复制粘贴
+        /// </summary>
+        private bool IsSupportCopyPaste(SerializedProperty property)
+        {
+            if (property.propertyType == SerializedPropertyType.Vector2
+                || property.propertyType == SerializedPropertyType.Vector3
+                || property.propertyType == SerializedPropertyType.Vector4
+                || property.propertyType == SerializedPropertyType.Vector2Int
+                || property.propertyType == SerializedPropertyType.Vector3Int
+                || property.propertyType == SerializedPropertyType.Quaternion
+                || property.propertyType == SerializedPropertyType.Bounds
+                || property.propertyType == SerializedPropertyType.BoundsInt)
+                return true;
+            return false;
+        }
+        /// <summary>
+        /// 复制属性的值
+        /// </summary>
+        private void CopyValue(SerializedProperty property)
+        {
+            if (property.propertyType == SerializedPropertyType.Vector2)
+            {
+                GUIUtility.systemCopyBuffer = property.vector2Value.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3)
+            {
+                GUIUtility.systemCopyBuffer = property.vector3Value.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector4)
+            {
+                GUIUtility.systemCopyBuffer = property.vector4Value.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector2Int)
+            {
+                GUIUtility.systemCopyBuffer = property.vector2IntValue.ToCopyString();
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3Int)
+            {
+                GUIUtility.systemCopyBuffer = property.vector3IntValue.ToCopyString();
+            }
+            else if (property.propertyType == SerializedPropertyType.Quaternion)
+            {
+                GUIUtility.systemCopyBuffer = property.quaternionValue.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.Bounds)
+            {
+                GUIUtility.systemCopyBuffer = property.boundsValue.ToCopyString("F4");
+            }
+            else if (property.propertyType == SerializedPropertyType.BoundsInt)
+            {
+                GUIUtility.systemCopyBuffer = property.boundsIntValue.ToCopyString();
+            }
+        }
+        /// <summary>
+        /// 粘贴值到属性
+        /// </summary>
+        private void PasteValue(SerializedProperty property)
+        {
+            if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                return;
+
+            if (property.propertyType == SerializedPropertyType.Vector2)
+            {
+                property.vector2Value = GUIUtility.systemCopyBuffer.ToPasteVector2(Vector3.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3)
+            {
+                property.vector3Value = GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector4)
+            {
+                property.vector4Value = GUIUtility.systemCopyBuffer.ToPasteVector4(Vector4.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector2Int)
+            {
+                property.vector2IntValue = GUIUtility.systemCopyBuffer.ToPasteVector2Int(Vector2Int.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Vector3Int)
+            {
+                property.vector3IntValue = GUIUtility.systemCopyBuffer.ToPasteVector3Int(Vector3Int.zero);
+            }
+            else if (property.propertyType == SerializedPropertyType.Quaternion)
+            {
+                property.quaternionValue = GUIUtility.systemCopyBuffer.ToPasteQuaternion(Quaternion.identity);
+            }
+            else if (property.propertyType == SerializedPropertyType.Bounds)
+            {
+                property.boundsValue = GUIUtility.systemCopyBuffer.ToPasteBounds();
+            }
+            else if (property.propertyType == SerializedPropertyType.BoundsInt)
+            {
+                property.boundsIntValue = GUIUtility.systemCopyBuffer.ToPasteBoundsInt();
+            }
+            property.serializedObject.ApplyModifiedProperties();
+        }
+
+        /// <summary>
+        /// 创建可脚本化对象，并作为此主对象的子对象
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <returns>对象实例</returns>
+        protected T CreateSubScriptableObject<T>() where T : ScriptableObject
+        {
+            return CreateSubScriptableObject(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 创建可脚本化对象，并作为此主对象的子对象
+        /// </summary>
+        /// <param name="type">对象类型</param>
+        /// <returns>对象实例</returns>
+        protected ScriptableObject CreateSubScriptableObject(Type type)
+        {
+            if (Targets.Length > 1)
+                return null;
+
+            ScriptableObject obj = CreateInstance(type);
+            obj.name = type.FullName;
+            if (Target is Component)
+            {
+                Component component = Target as Component;
+                GameObject prefab = ScriptableToolkit.GetBelongPrefab(component.gameObject);
+                if (prefab != null)
+                {
+                    ScriptableToolkit.SaveSubScriptableObject(obj, prefab);
+                    return obj;
+                }
+                else
+                {
+                    return obj;
+                }
+            }
+            else
+            {
+                ScriptableToolkit.SaveSubScriptableObject(obj, Target);
+                return obj;
+            }
+        }
+        /// <summary>
+        /// 销毁可脚本化对象
+        /// </summary>
+        /// <param name="obj">对象</param>
+        protected void DestroySubScriptableObject(ScriptableObject obj)
+        {
+            if (Targets.Length > 1)
+                return;
+
+            if (obj == null)
+                return;
+
+            if (Target is Component)
+            {
+                Component component = Target as Component;
+                GameObject prefab = ScriptableToolkit.GetBelongPrefab(component.gameObject);
+                if (prefab != null)
+                {
+                    ScriptableToolkit.DestroySubScriptableObject(obj, prefab);
+                }
+                else
+                {
+                    DestroyImmediate(obj);
+                }
+            }
+            else
+            {
+                ScriptableToolkit.DestroySubScriptableObject(obj, Target);
             }
         }
     }

@@ -10,7 +10,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace HT.Framework
 {
@@ -104,33 +104,34 @@ namespace HT.Framework
         }
         #endregion
 
-        public override void Initialization()
-        {
-            base.Initialization();
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
 
+        public void Initialization()
+        {
             _assembliesPath = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/")) + "/Data/Managed";
 
             _assemblies.Add(typeof(Type).Assembly.Location);
             _assemblies.Add(typeof(Button).Assembly.Location);
             _assemblies.Add(typeof(Main).Assembly.Location);
             _assemblies.Add(typeof(DOTween).Assembly.Location);
-            _assemblies.Add(_assembliesPath + "/UnityEditor.dll");
-            _assemblies.Add(_assembliesPath + "/UnityEngine/UnityEngine.dll");
-            _assemblies.Add(_assembliesPath + "/UnityEngine/UnityEngine.CoreModule.dll");
-            _assemblies.Add(GlobalTools.GetDirectorySameLevelOfAssets("/Library/ScriptAssemblies/Assembly-CSharp.dll"));
-            _assemblies.Add(GlobalTools.GetDirectorySameLevelOfAssets("/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll"));
+            _assemblies.Add(typeof(Editor).Assembly.Location);
+            _assemblies.Add(typeof(GameObject).Assembly.Location);
+            _assemblies.Add(PathToolkit.ProjectPath + "Library/ScriptAssemblies/Assembly-CSharp.dll");
+            _assemblies.Add(PathToolkit.ProjectPath + "Library/ScriptAssemblies/Assembly-CSharp-Editor.dll");
 
             _namespace = "using System;\r\nusing System.Collections;\r\nusing System.Collections.Generic;\r\nusing UnityEngine;\r\nusing UnityEngine.UI;\r\nusing UnityEditor;\r\nusing HT.Framework;\r\nusing DG.Tweening;\r\n";
             _code = "Log.Info(\"Hello world!\");";
 
-            TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/DynamicExecuterTemplate.txt", typeof(TextAsset)) as TextAsset;
+            TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "DynamicExecuterTemplate.txt", typeof(TextAsset)) as TextAsset;
             if (asset)
             {
                 _codeTemplate = asset.text;
             }
         }
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _csharpCodeProvider = new CSharpCodeProvider();
             Entity = null;
             _methodName = "<None>";
@@ -140,10 +141,6 @@ namespace HT.Framework
             base.OnTitleGUI();
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("About", EditorStyles.toolbarButton))
-            {
-                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/102971712");
-            }
         }
         protected override void OnBodyGUI()
         {
@@ -261,10 +258,12 @@ namespace HT.Framework
             #region Execute
             GUILayout.BeginHorizontal();
             GUI.enabled = _code != "";
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Execute", EditorGlobalTools.Styles.LargeButton))
             {
                 DynamicExecute();
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = true;
             GUILayout.EndHorizontal();
             #endregion
@@ -279,7 +278,7 @@ namespace HT.Framework
             GUI.enabled = Entity != null;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Target:", GUILayout.Width(60));
-            GUIContent content = Target != null ? new GUIContent(EditorGUIUtility.ObjectContent(Target, Target.GetType())) : new GUIContent("<None>");
+            GUIContent content = Target != null ? EditorGUIUtility.ObjectContent(Target, Target.GetType()) : new GUIContent("<None>");
             if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
@@ -291,7 +290,7 @@ namespace HT.Framework
                 for (int i = 0; i < components.Length; i++)
                 {
                     Component component = components[i];
-                    gm.AddItem(new GUIContent(component.GetType().Name), Target == component, () =>
+                    gm.AddItem(new GUIContent(component.GetType().FullName), Target == component, () =>
                     {
                         Target = component;
                     });
@@ -333,6 +332,7 @@ namespace HT.Framework
             GUILayout.Label("Parameters:");
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+            bool isValid = true;
             for (int i = 0; i < _parameters.Count; i++)
             {
                 GUILayout.BeginHorizontal();
@@ -364,13 +364,18 @@ namespace HT.Framework
                         _parameters[i].ColorValue = EditorGUILayout.ColorField(_parameters[i].ColorValue);
                         break;
                     default:
-                        if (_parameters[i].IsObject)
+                        if (_parameters[i].IsEnum)
+                        {
+                            _parameters[i].EnumValue = EditorGUILayout.EnumPopup(_parameters[i].EnumValue);
+                        }
+                        else if (_parameters[i].IsObject)
                         {
                             _parameters[i].ObjectValue = EditorGUILayout.ObjectField(_parameters[i].ObjectValue, _parameters[i].ObjectType, true);
                         }
                         else
                         {
                             GUILayout.Label("Unknown type!");
+                            isValid = false;
                         }
                         break;
                 }
@@ -381,11 +386,13 @@ namespace HT.Framework
 
             #region Execute
             GUILayout.BeginHorizontal();
-            GUI.enabled = Method != null;
+            GUI.enabled = Method != null && isValid;
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Execute", EditorGlobalTools.Styles.LargeButton))
             {
                 StaticExecute();
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = true;
             GUILayout.EndHorizontal();
             #endregion
@@ -491,9 +498,10 @@ namespace HT.Framework
             public ParameterInfo Info { get; private set; }
             public string Name { get; private set; }
             public string Type { get; private set; }
+            public bool IsEnum { get; private set; }
             public bool IsObject { get; private set; }
             public Type ObjectType { get; private set; }
-
+            
             public string StringValue;
             public int IntValue;
             public float FloatValue;
@@ -502,15 +510,26 @@ namespace HT.Framework
             public Vector2 Vector2Value;
             public Vector3 Vector3Value;
             public Color ColorValue;
-            public Object ObjectValue;
+            public Enum EnumValue;
+            public UObject ObjectValue;
 
             public Parameter(ParameterInfo parameterInfo)
             {
                 Info = parameterInfo;
                 Name = parameterInfo.Name;
                 Type = parameterInfo.ParameterType.Name;
-                IsObject = parameterInfo.ParameterType == typeof(Object) || parameterInfo.ParameterType.IsSubclassOf(typeof(Object));
+                IsEnum = parameterInfo.ParameterType.IsEnum;
+                IsObject = parameterInfo.ParameterType == typeof(UObject) || parameterInfo.ParameterType.IsSubclassOf(typeof(UObject));
                 ObjectType = IsObject ? parameterInfo.ParameterType : null;
+
+                if (IsEnum)
+                {
+                    EnumValue = (Enum)Enum.ToObject(parameterInfo.ParameterType, 0);
+                }
+                if (IsObject)
+                {
+                    ObjectValue = null;
+                }
             }
 
             public object GetValue()
@@ -534,7 +553,11 @@ namespace HT.Framework
                     case "Color":
                         return ColorValue;
                     default:
-                        if (IsObject)
+                        if (IsEnum)
+                        {
+                            return EnumValue;
+                        }
+                        else if (IsObject)
                         {
                             return ObjectValue;
                         }

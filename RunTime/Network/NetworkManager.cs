@@ -8,9 +8,8 @@ namespace HT.Framework
     /// <summary>
     /// 网络管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Network)]
-    public sealed class NetworkManager : InternalModuleBase
+    public sealed class NetworkManager : InternalModuleBase<INetworkHelper>
     {
         /// <summary>
         /// 启用的通信协议通道类型【请勿在代码中修改】
@@ -60,43 +59,6 @@ namespace HT.Framework
 
         private IPEndPoint _serverEndPoint;
         private IPEndPoint _clientEndPoint;
-        private INetworkHelper _helper;
-
-        private NetworkManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as INetworkHelper;
-            _helper.LoadProtocolChannels(ChannelTypes);
-            _helper.BeginConnectServerEvent += (cha) =>
-            {
-                BeginConnectServerEvent?.Invoke(cha);
-            };
-            _helper.ConnectServerSuccessEvent += (cha) =>
-            {
-                ConnectServerSuccessEvent?.Invoke(cha);
-            };
-            _helper.ConnectServerFailEvent += (cha) =>
-            {
-                ConnectServerFailEvent?.Invoke(cha);
-            };
-            _helper.DisconnectServerEvent += (cha) =>
-            {
-                DisconnectServerEvent?.Invoke(cha);
-            };
-            _helper.SendMessageEvent += (cha) =>
-            {
-                SendMessageEvent?.Invoke(cha);
-            };
-            _helper.ReceiveMessageEvent += (cha, mes) =>
-            {
-                ReceiveMessageEvent?.Invoke(cha, mes);
-            };
-        }
 
         /// <summary>
         /// 服务器地址
@@ -127,6 +89,37 @@ namespace HT.Framework
             }
         }
 
+        public override void OnInit()
+        {
+            base.OnInit();
+
+            _helper.LoadProtocolChannels(ChannelTypes);
+            _helper.BeginConnectServerEvent += (cha) =>
+            {
+                BeginConnectServerEvent?.Invoke(cha);
+            };
+            _helper.ConnectServerSuccessEvent += (cha) =>
+            {
+                ConnectServerSuccessEvent?.Invoke(cha);
+            };
+            _helper.ConnectServerFailEvent += (cha) =>
+            {
+                ConnectServerFailEvent?.Invoke(cha);
+            };
+            _helper.DisconnectServerEvent += (cha) =>
+            {
+                DisconnectServerEvent?.Invoke(cha);
+            };
+            _helper.SendMessageEvent += (cha) =>
+            {
+                SendMessageEvent?.Invoke(cha);
+            };
+            _helper.ReceiveMessageEvent += (cha, mes) =>
+            {
+                ReceiveMessageEvent?.Invoke(cha, mes);
+            };
+        }
+        
         /// <summary>
         /// 设置服务器IP地址及端口号
         /// </summary>

@@ -16,9 +16,8 @@ public class #SCRIPTNAME# : DataSetBase
     /// </summary>
     public override void Fill(JsonData data)
     {
-        
+        base.Fill(data);
     }
-
 	/// <summary>
     /// 将数据集打包为Json数据
     /// </summary>

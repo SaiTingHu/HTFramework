@@ -11,17 +11,14 @@ namespace HT.Framework
         {
             
         }
-
         public override void OnSetDownloadHandler(UnityWebRequest request)
         {
 
         }
-
         public override string OnGetDownloadString(DownloadHandler handler)
         {
             return "";
         }
-
         public override void Reset()
         {
             

@@ -1,24 +1,36 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 任务点开始事件
+    /// 任务点开始事件（三型事件）
     /// </summary>
     public sealed class EventTaskPointStart : EventHandlerBase
     {
         /// <summary>
         /// 任务点对象
         /// </summary>
-        public TaskPointBase TaskPoint;
+        public TaskPointBase TaskPoint { get; private set; }
+        /// <summary>
+        /// 任务点是否启用
+        /// </summary>
+        public bool IsEnable { get; private set; }
+        /// <summary>
+        /// 是否为自动完成
+        /// </summary>
+        public bool IsAutoComplete { get; private set; }
 
         /// <summary>
         /// 填充数据，所有属性、字段的初始化工作可以在这里完成
         /// </summary>
-        public EventTaskPointStart Fill(TaskPointBase taskPoint)
+        /// <param name="taskPoint">任务点对象</param>
+        /// <param name="isEnable">任务点是否启用</param>
+        /// <param name="isAutoComplete">是否为自动完成</param>
+        public EventTaskPointStart Fill(TaskPointBase taskPoint, bool isEnable, bool isAutoComplete)
         {
             TaskPoint = taskPoint;
+            IsEnable = isEnable;
+            IsAutoComplete = isAutoComplete;
             return this;
         }
-
         /// <summary>
         /// 重置引用，当被引用池回收时调用
         /// </summary>

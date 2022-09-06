@@ -6,93 +6,57 @@ namespace HT.Framework
     [CustomEditor(typeof(MouseRotation))]
     internal sealed class MouseRotationInspector : HTFEditor<MouseRotation>
     {
-        protected override bool IsEnableRuntimeData
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool IsEnableRuntimeData => false;
 
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsCanOnUGUI, out Target.IsCanOnUGUI, "Is Can Control On UGUI");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(MouseRotation.CanControl), "Can Control");
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.AllowOverstepDistance, out Target.AllowOverstepDistance, "Allow Overstep Distance");
-            GUILayout.EndHorizontal();
+            GUI.enabled = Target.CanControl;
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.IsLookAtTarget, out Target.IsLookAtTarget, "LookAt Target");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(MouseRotation.IsCanOnUGUI), "Can Control On UGUI");
+            PropertyField(nameof(MouseRotation.AllowOverstepDistance), "Allow Overstep Distance");
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            FloatField(Target.XSpeed, out Target.XSpeed, "      X");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.YSpeed, out Target.YSpeed, "      Y");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.MSpeed, out Target.MSpeed, "      M");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(MouseRotation.XSpeed), "      X");
+            PropertyField(nameof(MouseRotation.YSpeed), "      Y");
+            PropertyField(nameof(MouseRotation.MSpeed), "      M");
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            FloatField(Target.YMinAngleLimit, out Target.YMinAngleLimit, "      Y min");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.YMaxAngleLimit, out Target.YMaxAngleLimit, "      Y max");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(MouseRotation.YMinAngleLimit), "      Y min");
+            PropertyField(nameof(MouseRotation.YMaxAngleLimit), "      Y max");
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Distance", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            FloatField(Target.Distance, out Target.Distance, "      Distance");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.MinDistance, out Target.MinDistance, "      Min");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.MaxDistance, out Target.MaxDistance, "      Max");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(MouseRotation.Distance), "      Distance");
+            PropertyField(nameof(MouseRotation.MinDistance), "      Min");
+            PropertyField(nameof(MouseRotation.MaxDistance), "      Max");
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            Toggle(Target.NeedDamping, out Target.NeedDamping, "      Need Damping");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(MouseRotation.NeedDamping), "      Need Damping");
+            PropertyField(nameof(MouseRotation.DampingTime), "      Damping Time");
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            FloatField(Target.X, out Target.X, "      X");
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            FloatField(Target.Y, out Target.Y, "      Y");
-            GUILayout.EndHorizontal();
+            PropertyField(nameof(MouseRotation.X), "      X");
+            PropertyField(nameof(MouseRotation.Y), "      Y");
+            
+            GUI.enabled = true;
         }
     }
 }

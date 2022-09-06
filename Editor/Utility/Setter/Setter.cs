@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -18,19 +17,17 @@ namespace HT.Framework
         private Vector2 _scrollItemNameGUI;
         private Vector2 _scrollItemSettingGUI;
 
-        private void OnEnable()
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/104610857";
+
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             _settingItems.Clear();
             _settingItems.Add(new SettingItemMain());
-            _settingItems.Add(new SettingItemAspectTrack());
-            _settingItems.Add(new SettingItemAudio());
-            _settingItems.Add(new SettingItemController());
             _settingItems.Add(new SettingItemWebRequest());
 
             _settingItemSigns.Clear();
-            _settingItemSigns.Add(true);
-            _settingItemSigns.Add(true);
-            _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
             _settingItemSigns.Add(true);
 
@@ -57,7 +54,7 @@ namespace HT.Framework
             _editGUIContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             _editGUIContent.tooltip = "Edit Module";
 
-            _currentItem = -1;
+            _currentItem = 0;
 
             _itemFilter = "";
         }
@@ -92,11 +89,6 @@ namespace HT.Framework
             {
                 _itemFilter = "";
                 GUI.FocusControl(null);
-            }
-
-            if (GUILayout.Button("About", EditorStyles.toolbarButton))
-            {
-                Application.OpenURL("https://wanderer.blog.csdn.net/article/details/104610857");
             }
         }
         protected override void OnBodyGUI()
@@ -200,35 +192,7 @@ namespace HT.Framework
         }
         private void NewSettingItemScript()
         {
-            string directory = EditorPrefs.GetString(EditorPrefsTable.Script_SettingItem_Directory, Application.dataPath);
-            string path = EditorUtility.SaveFilePanel("新建 SettingItem 类（必须放在Editor文件夹内）", directory, "NewSettingItem", "cs");
-            if (path != "")
-            {
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath("Assets/HTFramework/Editor/Utility/Template/SettingItemTemplate.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        File.AppendAllText(path, code);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset cs = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(cs);
-                        Selection.activeObject = cs;
-                        AssetDatabase.OpenAsset(cs);
-                        EditorPrefs.SetString(EditorPrefsTable.Script_SettingItem_Directory, path.Substring(0, path.LastIndexOf("/")));
-                    }
-                }
-                else
-                {
-                    Log.Error("新建SettingItem失败，已存在类型 " + className);
-                }
-            }
+            EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_SettingItem_Folder, "SettingItem (EditorOnly)", "SettingItemTemplate");
         }
         private void EditModule()
         {
@@ -238,15 +202,6 @@ namespace HT.Framework
             {
                 case HTFrameworkModule.Main:
                     moduleEntity = GameObject.Find("HTFramework");
-                    break;
-                case HTFrameworkModule.AspectTrack:
-                    moduleEntity = GameObject.Find("HTFramework/AspectTrack");
-                    break;
-                case HTFrameworkModule.Audio:
-                    moduleEntity = GameObject.Find("HTFramework/Audio");
-                    break;
-                case HTFrameworkModule.Controller:
-                    moduleEntity = GameObject.Find("HTFramework/Controller");
                     break;
                 case HTFrameworkModule.WebRequest:
                     moduleEntity = GameObject.Find("HTFramework/WebRequest");

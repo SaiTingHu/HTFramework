@@ -6,9 +6,8 @@ namespace HT.Framework
     /// <summary>
     /// 热更新管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Hotfix)]
-    public sealed class HotfixManager : InternalModuleBase
+    public sealed class HotfixManager : InternalModuleBase<IHotfixHelper>
     {
         /// <summary>
         /// 是否启用热更新【请勿在代码中修改】
@@ -26,8 +25,6 @@ namespace HT.Framework
         /// 执行热更新逻辑事件
         /// </summary>
         internal event HTFAction UpdateHotfixLogicEvent;
-
-        private IHotfixHelper _helper;
         
         /// <summary>
         /// 当前已加载的热更新程序集
@@ -50,19 +47,9 @@ namespace HT.Framework
             }
         }
 
-        private HotfixManager()
+        public override void OnUpdate()
         {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IHotfixHelper;
-        }
-        internal override void OnRefresh()
-        {
-            base.OnRefresh();
+            base.OnUpdate();
 
             if (IsEnableHotfix)
             {

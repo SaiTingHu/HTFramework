@@ -1,0 +1,13 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using HT.Framework;
+using DG.Tweening;
+
+/// <summary>
+/// 新建有限状态机参数
+/// </summary>
+public class #SCRIPTNAME#: FSMArgsBase
+{
+    
+}

@@ -7,9 +7,8 @@ namespace HT.Framework
     /// <summary>
     /// 流程管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.Procedure)]
-    public sealed class ProcedureManager : InternalModuleBase
+    public sealed class ProcedureManager : InternalModuleBase<IProcedureHelper>
     {
         /// <summary>
         /// 当前激活的流程类名【请勿在代码中修改】
@@ -18,15 +17,13 @@ namespace HT.Framework
         /// <summary>
         /// 当前的默认流程类名【请勿在代码中修改】
         /// </summary>
-        [SerializeField] internal string DefaultProcedure = "";
+        [SerializeField] internal string DefaultProcedure = null;
 
         /// <summary>
         /// 任意流程切换事件（上一个离开的流程、下一个进入的流程）
         /// </summary>
         public event HTFAction<ProcedureBase, ProcedureBase> AnyProcedureSwitchEvent;
         
-        private IProcedureHelper _helper;
-
         /// <summary>
         /// 当前流程
         /// </summary>
@@ -38,15 +35,10 @@ namespace HT.Framework
             }
         }
 
-        private ProcedureManager()
+        public override void OnInit()
         {
+            base.OnInit();
 
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IProcedureHelper;
             _helper.AnyProcedureSwitchEvent += (last, next) =>
             {
                 AnyProcedureSwitchEvent?.Invoke(last, next);
@@ -72,7 +64,7 @@ namespace HT.Framework
             return _helper.GetProcedure(type);
         }
         /// <summary>
-        /// 是否存在流程
+        /// 是否存在指定类型的流程
         /// </summary>
         /// <typeparam name="T">流程类</typeparam>
         /// <returns>是否存在</returns>
@@ -81,13 +73,22 @@ namespace HT.Framework
             return _helper.IsExistProcedure(typeof(T));
         }
         /// <summary>
-        /// 是否存在流程
+        /// 是否存在指定类型的流程
         /// </summary>
         /// <param name="type">流程类</param>
         /// <returns>是否存在</returns>
         public bool IsExistProcedure(Type type)
         {
             return _helper.IsExistProcedure(type);
+        }
+        /// <summary>
+        /// 是否存在指定序号的流程（依据编辑器面板的序号）
+        /// </summary>
+        /// <param name="index">流程序号</param>
+        /// <returns>是否存在</returns>
+        public bool IsExistProcedure(int index)
+        {
+            return _helper.IsExistProcedure(index);
         }
 
         /// <summary>

@@ -1,28 +1,13 @@
 ﻿using System;
-using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
     /// ECS管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.ECS)]
-    public sealed class ECSManager : InternalModuleBase
+    public sealed class ECSManager : InternalModuleBase<IECSHelper>
     {
-        private IECSHelper _helper;
-
-        private ECSManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IECSHelper;
-        }
-
         /// <summary>
         /// 设置ECS环境为脏的，触发ECS环境重新刷新
         /// </summary>

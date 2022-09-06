@@ -18,7 +18,7 @@ namespace HT.Framework
         /// <summary>
         /// 鼠标位置
         /// </summary>
-        Vector3 MousePosition { get; set; }
+        Vector3 MousePosition { get; }
         /// <summary>
         /// 任意键按住
         /// </summary>
@@ -60,6 +60,43 @@ namespace HT.Framework
         /// </summary>
         /// <param name="name">按钮名称</param>
         void UnRegisterVirtualButton(string name);
+
+        /// <summary>
+        /// 设置虚拟鼠标位置
+        /// </summary>
+        /// <param name="value">鼠标位置</param>
+        void SetVirtualMousePosition(Vector3 value);
+        /// <summary>
+        /// 设置按钮按下
+        /// </summary>
+        /// <param name="name">按钮名称</param>
+        void SetButtonDown(string name);
+        /// <summary>
+        /// 设置按钮抬起
+        /// </summary>
+        /// <param name="name">按钮名称</param>
+        void SetButtonUp(string name);
+        /// <summary>
+        /// 设置轴线值为正方向1
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        void SetAxisPositive(string name);
+        /// <summary>
+        /// 设置轴线值为负方向-1
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        void SetAxisNegative(string name);
+        /// <summary>
+        /// 设置轴线值为0
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        void SetAxisZero(string name);
+        /// <summary>
+        /// 设置轴线值
+        /// </summary>
+        /// <param name="name">轴线名称</param>
+        /// <param name="value">轴线值</param>
+        void SetAxis(string name, float value);
 
         /// <summary>
         /// 按钮按住
@@ -150,39 +187,7 @@ namespace HT.Framework
         /// <param name="keyCode3">按键3代码</param>
         /// <returns>是否抬起</returns>
         bool GetKeyUp(KeyCode keyCode1, KeyCode keyCode2, KeyCode keyCode3);
-
-        /// <summary>
-        /// 设置按钮按下
-        /// </summary>
-        /// <param name="name">按钮名称</param>
-        void SetButtonDown(string name);
-        /// <summary>
-        /// 设置按钮抬起
-        /// </summary>
-        /// <param name="name">按钮名称</param>
-        void SetButtonUp(string name);
-        /// <summary>
-        /// 设置轴线值为正方向1
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        void SetAxisPositive(string name);
-        /// <summary>
-        /// 设置轴线值为负方向-1
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        void SetAxisNegative(string name);
-        /// <summary>
-        /// 设置轴线值为0
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        void SetAxisZero(string name);
-        /// <summary>
-        /// 设置轴线值
-        /// </summary>
-        /// <param name="name">轴线名称</param>
-        /// <param name="value">轴线值</param>
-        void SetAxis(string name, float value);
-
+        
         /// <summary>
         /// 加载输入设备
         /// </summary>

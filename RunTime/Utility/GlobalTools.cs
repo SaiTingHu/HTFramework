@@ -1,14 +1,11 @@
 ﻿using DG.Tweening;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -19,208 +16,6 @@ namespace HT.Framework
     /// </summary>
     public static class GlobalTools
     {
-        #region 延时工具
-        /// <summary>
-        /// 延时执行
-        /// </summary>
-        /// <param name="behaviour">执行者</param>
-        /// <param name="action">执行的代码</param>
-        /// <param name="delaySeconds">延时的秒数</param>
-        /// <returns>延时的协程</returns>
-        public static Coroutine DelayExecute(this MonoBehaviour behaviour, HTFAction action, float delaySeconds)
-        {
-            Coroutine coroutine = behaviour.StartCoroutine(DelayExecute(action, delaySeconds));
-            return coroutine;
-        }
-        private static IEnumerator DelayExecute(HTFAction action, float delaySeconds)
-        {
-            yield return YieldInstructioner.GetWaitForSeconds(delaySeconds);
-            action();
-        }
-
-        /// <summary>
-        /// 下一帧执行
-        /// </summary>
-        /// <param name="behaviour">执行者</param>
-        /// <param name="action">执行的代码</param>
-        /// <returns>延时的协程</returns>
-        public static Coroutine NextFrameExecute(this MonoBehaviour behaviour, HTFAction action)
-        {
-            Coroutine coroutine = behaviour.StartCoroutine(NextFrameExecute(action));
-            return coroutine;
-        }
-        private static IEnumerator NextFrameExecute(HTFAction action)
-        {
-            yield return null;
-            action();
-        }
-
-        /// <summary>
-        /// 等待执行
-        /// </summary>
-        /// <param name="behaviour">执行者</param>
-        /// <param name="action">执行的代码</param>
-        /// <param name="waitUntil">等待的WaitUntil</param>
-        /// <returns>等待的协程</returns>
-        public static Coroutine WaitExecute(this MonoBehaviour behaviour, HTFAction action, WaitUntil waitUntil)
-        {
-            Coroutine coroutine = behaviour.StartCoroutine(WaitExecute(action, waitUntil));
-            return coroutine;
-        }
-        private static IEnumerator WaitExecute(HTFAction action, WaitUntil waitUntil)
-        {
-            yield return waitUntil;
-            action();
-        }
-        #endregion
-        
-        #region 事件工具
-        /// <summary>
-        /// UGUI 控件添加公共事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        /// <param name="type">事件类型</param>
-        /// <param name="callback">回调函数</param>
-        public static void AddCommonEventListener(this RectTransform target, EventTriggerType type, UnityAction<BaseEventData> callback)
-        {
-            EventTrigger trigger = target.GetComponent<EventTrigger>();
-            if (trigger == null)
-            {
-                trigger = target.gameObject.AddComponent<EventTrigger>();
-            }
-            if (trigger.triggers == null)
-            {
-                trigger.triggers = new List<EventTrigger.Entry>();
-            }
-
-            //定义一个事件入口
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            //设置事件类型
-            entry.eventID = type;
-            //设置事件回调函数
-            entry.callback = new EventTrigger.TriggerEvent();
-            entry.callback.AddListener(callback);
-            //添加事件到事件组
-            trigger.triggers.Add(entry);
-        }
-        /// <summary>
-        /// UGUI 控件移除所有公共事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        public static void RemoveAllCommonEventListener(this RectTransform target)
-        {
-            EventTrigger trigger = target.GetComponent<EventTrigger>();
-            if (trigger != null)
-            {
-                if (trigger.triggers != null)
-                {
-                    trigger.triggers.Clear();
-                }
-            }
-        }
-        /// <summary>
-        /// UGUI Button添加点击事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        /// <param name="callback">回调函数</param>
-        public static void AddEventListener(this RectTransform target, UnityAction callback)
-        {
-            Button button = target.GetComponent<Button>();
-            if (button)
-            {
-                button.onClick.AddListener(callback);
-            }
-            else
-            {
-                Log.Info(target.name + " 丢失了组件 Button！");
-            }
-        }
-        /// <summary>
-        /// UGUI Button移除所有点击事件监听
-        /// </summary>
-        /// <param name="target">事件监听目标</param>
-        public static void RemoveAllEventListener(this RectTransform target)
-        {
-            Button button = target.GetComponent<Button>();
-            if (button)
-            {
-                button.onClick.RemoveAllListeners();
-            }
-            else
-            {
-                Log.Info(target.name + " 丢失了组件 Button！");
-            }
-        }
-        /// <summary>
-        /// 为挂载 MouseRayTargetBase 的目标添加鼠标左键点击事件
-        /// </summary>
-        /// <param name="target">目标</param>
-        /// <param name="callback">点击事件回调</param>
-        public static void AddClickListener(this GameObject target, HTFAction callback)
-        {
-            Main.m_Controller.AddClickListener(target, callback);
-        }
-        /// <summary>
-        /// 为挂载 MouseRayTargetBase 的目标移除鼠标左键点击事件
-        /// </summary>
-        /// <param name="target">目标</param>
-        public static void RemoveClickListener(this GameObject target)
-        {
-            Main.m_Controller.RemoveClickListener(target);
-        }
-        #endregion
-
-        #region Json工具
-        /// <summary>
-        /// Json数据转换为字符串
-        /// </summary>
-        /// <param name="json">Json数据</param>
-        /// <returns>字符串</returns>
-        public static string JsonToString(JsonData json)
-        {
-            if (json == null)
-            {
-                Log.Error("Json数据为空！");
-                return "";
-            }
-            return json.ToJson();
-        }
-        /// <summary>
-        /// 字符串转换为Json数据
-        /// </summary>
-        /// <param name="value">字符串</param>
-        /// <returns>Json数据</returns>
-        public static JsonData StringToJson(string value)
-        {
-            if (string.IsNullOrEmpty(value) || value == "")
-            {
-                return null;
-            }
-            else
-            {
-                return JsonMapper.ToObject(value);
-            }
-        }
-        /// <summary>
-        /// 在安全模式下获取Json值
-        /// </summary>
-        /// <param name="json">json数据</param>
-        /// <param name="key">键</param>
-        /// <param name="defaultValue">缺省值</param>
-        /// <returns>获取到的键对应的值</returns>
-        public static string GetValueInSafe(this JsonData json, string key, string defaultValue)
-        {
-            if (json.Keys.Contains(key))
-            {
-                return json[key].ToString();
-            }
-            else
-            {
-                return defaultValue;
-            }
-        }
-        #endregion
-
         #region 动画工具
         /// <summary>
         /// Text文本动画，从null值开始
@@ -471,7 +266,7 @@ namespace HT.Framework
             }
             else
             {
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
                     if (rootObj.name == name)
@@ -499,7 +294,7 @@ namespace HT.Framework
             }
             else
             {
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
                     if (rootObj.name == name)
@@ -527,7 +322,7 @@ namespace HT.Framework
             }
             else
             {
-                GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+                GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (GameObject rootObj in rootObjs)
                 {
                     if (rootObj.name == name)
@@ -695,22 +490,6 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 生成一个长度为length的数组，数组中每个数据均为此值
-        /// </summary>
-        /// <typeparam name="T">数组类型</typeparam>
-        /// <param name="value">数组值</param>
-        /// <param name="length">数组长度</param>
-        /// <returns>数组</returns>
-        public static T[] GenerateArray<T>(this T value, int length)
-        {
-            T[] array = new T[length];
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = value;
-            }
-            return array;
-        }
-        /// <summary>
         /// 判断数组中是否存在某元素
         /// </summary>
         /// <param name="array">数组</param>
@@ -760,6 +539,25 @@ namespace HT.Framework
             for (int i = 0; i < array.Count; i++)
             {
                 convertArray.Add(array[i] as TOutput);
+            }
+            return convertArray;
+        }
+        /// <summary>
+        /// 强制转换数组的类型（使用as强转）
+        /// </summary>
+        /// <typeparam name="TOutput">目标类型</typeparam>
+        /// <typeparam name="TInput">原类型</typeparam>
+        public static TOutput[] ConvertAllAS<TOutput, TInput>(this TInput[] array) where TOutput : class where TInput : class
+        {
+            if (array == null)
+            {
+                return null;
+            }
+
+            TOutput[] convertArray = new TOutput[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                convertArray[i] = array[i] as TOutput;
             }
             return convertArray;
         }
@@ -854,328 +652,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region UGUI工具
-        /// <summary>
-        /// 限制Text内容的长度在length以内，超过的部分用replace代替
-        /// </summary>
-        public static void RestrictLength(this Text tex, int length, string replace)
-        {
-            if (tex.text.Length > length)
-            {
-                tex.text = tex.text.Substring(0, length) + replace;
-            }
-        }
-        /// <summary>
-        /// 限制Text中指定子字串的字体大小
-        /// </summary>
-        public static void ToRichSize(this Text tex, string subStr, int size)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<size=" + size + ">");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</size>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 限制Text中指定子字串的字体颜色
-        /// </summary>
-        public static void ToRichColor(this Text tex, string subStr, Color color)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<color=" + color.ToHexSystemString() + ">");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</color>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 限制Text中的指定子字串的字体加粗
-        /// </summary>
-        public static void ToRichBold(this Text tex, string subStr)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<b>");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</b>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 限制Text中的指定子字串的字体斜体
-        /// </summary>
-        public static void ToRichItalic(this Text tex, string subStr)
-        {
-            if (subStr.Length <= 0 || !tex.text.Contains(subStr))
-            {
-                return;
-            }
-
-            string valueRich = tex.text;
-            int index = valueRich.IndexOf(subStr);
-            if (index >= 0) valueRich = valueRich.Insert(index, "<i>");
-            else return;
-
-            index = valueRich.IndexOf(subStr) + subStr.Length;
-            if (index >= 0) valueRich = valueRich.Insert(index, "</i>");
-            else return;
-
-            tex.text = valueRich;
-        }
-        /// <summary>
-        /// 清除所有富文本样式
-        /// </summary>
-        public static void ClearRich(this Text tex)
-        {
-            string value = tex.text;
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (value[i] == '<')
-                {
-                    for (int j = i + 1; j < value.Length; j++)
-                    {
-                        if (value[j] == '>')
-                        {
-                            int count = j - i + 1;
-                            value = value.Remove(i, count);
-                            i -= 1;
-                            break;
-                        }
-                    }
-                }
-            }
-            tex.text = value;
-        }
-        /// <summary>
-        /// 当前鼠标是否停留在UGUI控件上
-        /// </summary>
-        /// <returns>是否</returns>
-        public static bool IsPointerOverUGUI()
-        {
-            if (EventSystem.current)
-            {
-                return EventSystem.current.IsPointerOverGameObject();
-            }
-            else
-            {
-                return false;
-            }
-        }
-        /// <summary>
-        /// 世界坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
-        /// </summary>
-        /// <param name="position">世界坐标</param>
-        /// <param name="reference">参照物（要赋值的UGUI控件的根物体）</param>
-        /// <param name="uIType">UI类型</param>
-        /// <returns>基于参照物的局部UGUI坐标</returns>
-        public static Vector2 WorldToUGUIPosition(this Vector3 position, RectTransform reference = null, UIType uIType = UIType.Overlay)
-        {
-            Vector3 screenPos;
-            Vector2 anchoredPos = Vector2.zero;
-            switch (uIType)
-            {
-                case UIType.Overlay:
-                    screenPos = Main.m_Controller.MainCamera.WorldToScreenPoint(position);
-                    if (screenPos.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        screenPos.z = 0;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, screenPos, null, out anchoredPos);
-                    }
-                    break;
-                case UIType.Camera:
-                    screenPos = Main.m_UI.UICamera.WorldToScreenPoint(position);
-                    if (screenPos.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        screenPos.z = 0;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, screenPos, Main.m_UI.UICamera, out anchoredPos);
-                    }
-                    break;
-                case UIType.World:
-                    anchoredPos = position;
-                    break;
-            }
-            return anchoredPos;
-        }
-        /// <summary>
-        /// 屏幕坐标转换为UGUI坐标（只针对框架UI模块下的UI控件）
-        /// </summary>
-        /// <param name="position">屏幕坐标</param>
-        /// <param name="reference">参照物（要赋值的UGUI控件的根物体）</param>
-        /// <param name="uIType">UI类型</param>
-        /// <returns>基于参照物的局部UGUI坐标</returns>
-        public static Vector2 ScreenToUGUIPosition(this Vector3 position, RectTransform reference = null, UIType uIType = UIType.Overlay)
-        {
-            Vector2 anchoredPos = Vector2.zero;
-            switch (uIType)
-            {
-                case UIType.Overlay:
-                    if (position.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        position.z = 0;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.OverlayUIRoot, position, null, out anchoredPos);
-                    }
-                    break;
-                case UIType.Camera:
-                    if (position.z < 0)
-                    {
-                        anchoredPos.Set(-100000, -100000);
-                    }
-                    else
-                    {
-                        position.z = 0;
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
-                    }
-                    break;
-                case UIType.World:
-                    anchoredPos = position;
-                    break;
-            }
-            return anchoredPos;
-        }
-        /// <summary>
-        /// 获取输入框的int类型值，若不是该类型值，则返回-1
-        /// </summary>
-        /// <param name="input">输入框</param>
-        /// <returns>值</returns>
-        public static int IntText(this InputField input)
-        {
-            int value = -1;
-            int.TryParse(input.text, out value);
-            return value;
-        }
-        /// <summary>
-        /// 获取输入框的float类型值，若不是该类型值，则返回float.NaN
-        /// </summary>
-        /// <param name="input">输入框</param>
-        /// <returns>值</returns>
-        public static float FloatText(this InputField input)
-        {
-            float value = -1f;
-            if (float.TryParse(input.text, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return float.NaN;
-            }
-        }
-        /// <summary>
-        /// 设置下拉框值，若该下拉框不存在该值，则无效
-        /// </summary>
-        /// <param name="dropdown">下拉框</param>
-        /// <param name="value">目标值</param>
-        public static void SetValue(this Dropdown dropdown, string value)
-        {
-            for (int i = 0; i < dropdown.options.Count; i++)
-            {
-                if (dropdown.options[i].text == value)
-                {
-                    dropdown.value = i;
-                    return;
-                }
-            }
-        }
-        /// <summary>
-        /// 加载外部图片，并转换为Sprite
-        /// </summary>
-        /// <param name="path">图片路径</param>
-        /// <returns>转换后的Sprite</returns>
-        public static Sprite LoadSprite(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return null;
-            }
-
-            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, (int)stream.Length);
-
-            Texture2D tex = new Texture2D(80, 80);
-            tex.LoadImage(buffer);
-
-            stream.Close();
-
-            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0));
-        }
-        #endregion
-
-        #region 日志工具
-        /// <summary>
-        /// 打印普通日志
-        /// </summary>
-        /// <param name="value">日志</param>
-        [Obsolete("Use 'Log.Info(string)' instead. It will be removed in the future.")]
-        public static void LogInfo(string value)
-        {
-            value.Info();
-        }
-        /// <summary>
-        /// 打印警告日志
-        /// </summary>
-        /// <param name="value">日志</param>
-        [Obsolete("Use 'Log.Warning(string)' instead. It will be removed in the future.")]
-        public static void LogWarning(string value)
-        {
-            value.Warning();
-        }
-        /// <summary>
-        /// 打印错误日志
-        /// </summary>
-        /// <param name="value">日志</param>
-        [Obsolete("Use 'Log.Error(string)' instead. It will be removed in the future.")]
-        public static void LogError(string value)
-        {
-            value.Error();
-        }
-        #endregion
-
         #region 系统工具
         /// <summary>
-        /// 获取本机Mac地址
+        /// 获取本机物理地址
         /// </summary>
-        /// <returns>Mac地址</returns>
+        /// <returns>物理地址</returns>
         public static string GetMacAddress()
         {
             try
@@ -1183,26 +664,18 @@ namespace HT.Framework
                 NetworkInterface[] nis = NetworkInterface.GetAllNetworkInterfaces();
                 for (int i = 0; i < nis.Length; i++)
                 {
-                    if (nis[i].Name == "本地连接")
+                    string address = nis[i].GetPhysicalAddress().ToString();
+                    if (!string.IsNullOrEmpty(address))
                     {
-                        return nis[i].GetPhysicalAddress().ToString();
+                        return address;
                     }
                 }
-                return "null";
+                return null;
             }
             catch
             {
-                return "null";
+                return null;
             }
-        }
-        /// <summary>
-        /// 获取与Assets同级的目录
-        /// </summary>
-        /// <param name="directory">目录名（例如：/Library，获取项目的Library目录）</param>
-        /// <returns>目录</returns>
-        public static string GetDirectorySameLevelOfAssets(string directory)
-        {
-            return Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + directory;
         }
         /// <summary>
         /// 转换为颜色RGB参数的十六进制字符串
@@ -1211,10 +684,11 @@ namespace HT.Framework
         /// <returns>十六进制字符串</returns>
         public static string ToHexSystemString(this Color color)
         {
-            return "#" + ((int)(color.r * 255)).ToString("x2") +
-                ((int)(color.g * 255)).ToString("x2") +
-                ((int)(color.b * 255)).ToString("x2") +
-                ((int)(color.a * 255)).ToString("x2");
+            return string.Format("#{0}{1}{2}{3}"
+                , ((int)(color.r * 255)).ToString("x2")
+                , ((int)(color.g * 255)).ToString("x2")
+                , ((int)(color.b * 255)).ToString("x2")
+                , ((int)(color.a * 255)).ToString("x2"));
         }
         #endregion
 
@@ -1252,6 +726,33 @@ namespace HT.Framework
         public static T Cast<T>(this object target) where T : class
         {
             return target as T;
+        }
+        /// <summary>
+        /// 加载外部图片，并转换为Sprite
+        /// </summary>
+        /// <param name="path">图片路径</param>
+        /// <returns>转换后的Sprite</returns>
+        public static Sprite LoadSprite(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, (int)stream.Length);
+
+            Texture2D texture = new Texture2D(80, 80);
+            texture.LoadImage(buffer);
+
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+
+            Main.Kill(texture);
+            stream.Close();
+
+            return sprite;
         }
         #endregion
     }

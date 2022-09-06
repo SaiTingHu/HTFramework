@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(SphereCollider))]
-    public sealed class DebuggerSphereCollider : DebuggerComponentBase
+    internal sealed class DebuggerSphereCollider : DebuggerComponentBase
     {
         private SphereCollider _target;
 
@@ -11,22 +11,15 @@ namespace HT.Framework
         {
             _target = Target as SphereCollider;
         }
-
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
-            _target.isTrigger = GUILayout.Toggle(_target.isTrigger, "Is Trigger");
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Center: ", GUILayout.Width(60));
-            _target.center = Vector3Field(_target.center);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Radius: ", GUILayout.Width(60));
-            _target.radius = FloatField(_target.radius);
-            GUILayout.EndHorizontal();
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.isTrigger = BoolField("Is Trigger", _target.isTrigger);
+            ObjectFieldReadOnly("Material", _target.sharedMaterial);
+            _target.center = Vector3Field("Center", _target.center);
+            _target.radius = FloatField("Radius", _target.radius);
         }
     }
 }

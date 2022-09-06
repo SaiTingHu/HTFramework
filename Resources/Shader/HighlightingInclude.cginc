@@ -1,11 +1,8 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 #ifndef HIGHLIGHTING_CG_INCLUDED
 #define HIGHLIGHTING_CG_INCLUDED
 
 #include "UnityCG.cginc"
 
-// Opaque
 uniform fixed4 _Outline;
 
 struct appdata_vert
@@ -23,7 +20,6 @@ fixed4 frag() : COLOR
 	return _Outline;
 }
 
-// Transparent
 uniform sampler2D _MainTex;
 uniform float4 _MainTex_ST;
 uniform fixed _Cutoff;

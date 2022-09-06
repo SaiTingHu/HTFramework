@@ -7,7 +7,7 @@ namespace HT.Framework
     /// ECS的组件
     /// </summary>
     [RequireComponent(typeof(ECS_Entity))]
-    public abstract class ECS_Component : MonoBehaviour
+    public abstract class ECS_Component : HTBehaviour
     {
         /// <summary>
         /// 属于的实体
@@ -21,8 +21,10 @@ namespace HT.Framework
         internal string Name;
 #endif
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             Entity = GetComponent<ECS_Entity>();
             Entity.AppendComponent(this);
 
@@ -31,8 +33,10 @@ namespace HT.Framework
             Name = string.Format("{0} ({1})", cna != null ? cna.Name : "未命名", GetType().FullName);
 #endif
         }
-        protected virtual void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             if (Entity) Entity.RemoveComponent(this);
         }
     }

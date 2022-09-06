@@ -3,7 +3,7 @@
 namespace HT.Framework
 {
     [CustomDebugger(typeof(Camera))]
-    public sealed class DebuggerCamera : DebuggerComponentBase
+    internal sealed class DebuggerCamera : DebuggerComponentBase
     {
         private Camera _target;
 
@@ -11,30 +11,18 @@ namespace HT.Framework
         {
             _target = Target as Camera;
         }
-
         public override void OnDebuggerGUI()
         {
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
-            _target.enabled = GUILayout.Toggle(_target.enabled, "Enabled");
 
-            GUILayout.Label("Clear Flags: ");
-            GUILayout.BeginHorizontal();
-            _target.clearFlags = (CameraClearFlags)EnumField(_target.clearFlags);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Field Of View: ");
-            _target.fieldOfView = FloatField(_target.fieldOfView);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            _target.fieldOfView = GUILayout.HorizontalSlider(_target.fieldOfView, 1, 179);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Depth: ");
-            _target.depth = FloatField(_target.depth);
-            GUILayout.EndHorizontal();
+            _target.enabled = BoolField("Enabled", _target.enabled);
+            _target.clearFlags = (CameraClearFlags)EnumField("Clear Flags", _target.clearFlags);
+            _target.fieldOfView = FloatField("Field Of View", _target.fieldOfView);
+            _target.nearClipPlane = FloatField("Clipping Planes Near", _target.nearClipPlane);
+            _target.farClipPlane = FloatField("Clipping Planes Far", _target.farClipPlane);
+            _target.depth = FloatField("Depth", _target.depth);
+            ObjectFieldReadOnly("Target Texture", _target.targetTexture);
+            _target.useOcclusionCulling = BoolField("Occlusion Culling", _target.useOcclusionCulling);
         }
     }
 }

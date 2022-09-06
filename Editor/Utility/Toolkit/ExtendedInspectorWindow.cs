@@ -27,10 +27,15 @@ namespace HT.Framework
         private Vector2 _scroll;
         private GUIContent _prefabGC;
         private GUIContent _removeGC;
-        
-        private void OnEnable()
+
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
+
+        protected override void OnEnable()
         {
-            _editors.Clear();
+            base.OnEnable();
+
+            ClearEditors();
+
             for (int i = 0; i < _components.Count; i++)
             {
                 if (_components[i] == null)
@@ -41,7 +46,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    _editors.Add(Editor.CreateEditor(_components[i]));
+                    AddEditor(_components[i]);
                 }
             }
 
@@ -51,14 +56,17 @@ namespace HT.Framework
             _removeGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _removeGC.tooltip = "Remove";
         }
-
+        private void OnDestroy()
+        {
+            ClearEditors();
+        }
         protected override void OnTitleGUI()
         {
             base.OnTitleGUI();
 
             GUILayout.Label("Targets " + _components.Count.ToString(), EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Fold All", EditorStyles.toolbarButton))
+            if (GUILayout.Button("Collapse All", EditorStyles.toolbarButton))
             {
                 for (int i = 0; i < _foldouts.Count; i++)
                 {
@@ -66,7 +74,6 @@ namespace HT.Framework
                 }
             }
         }
-
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
@@ -78,8 +85,8 @@ namespace HT.Framework
                 if (_components[i] == null)
                 {
                     _components.RemoveAt(i);
-                    _editors.RemoveAt(i);
                     _foldouts.RemoveAt(i);
+                    RemoveEditor(i);
                     i -= 1;
                 }
                 else
@@ -89,8 +96,8 @@ namespace HT.Framework
                     if (GUILayout.Button(_removeGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20)))
                     {
                         _components.RemoveAt(i);
-                        _editors.RemoveAt(i);
                         _foldouts.RemoveAt(i);
+                        RemoveEditor(i);
                         i -= 1;
                         break;
                     }
@@ -129,9 +136,29 @@ namespace HT.Framework
             if (!_components.Contains(component))
             {
                 _components.Add(component);
-                _editors.Add(Editor.CreateEditor(component));
                 _foldouts.Add(true);
+                AddEditor(component);
             }
+        }
+        private void AddEditor(Component component)
+        {
+            _editors.Add(Editor.CreateEditor(component));
+        }
+        private void RemoveEditor(int index)
+        {
+            if (index >= 0 && index < _editors.Count)
+            {
+                DestroyImmediate(_editors[index]);
+                _editors.RemoveAt(index);
+            }
+        }
+        private void ClearEditors()
+        {
+            for (int i = 0; i < _editors.Count; i++)
+            {
+                DestroyImmediate(_editors[i]);
+            }
+            _editors.Clear();
         }
     }
 }

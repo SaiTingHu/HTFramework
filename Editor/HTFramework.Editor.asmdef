@@ -1,0 +1,17 @@
+{
+    "name": "HTFramework.Editor",
+    "references": [
+        "GUID:83f631a6180cc5a41982c9354b6cc704"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

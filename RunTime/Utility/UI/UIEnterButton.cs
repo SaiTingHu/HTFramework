@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIEnterButton")]
     [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
-    public sealed class UIEnterButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public sealed class UIEnterButton : HTBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         /// <summary>
         /// 鼠标进入事件
@@ -21,12 +21,11 @@ namespace HT.Framework
         /// 鼠标离开事件
         /// </summary>
         public UnityEvent OnMouseExit;
-
+        
         public void OnPointerEnter(PointerEventData eventData)
         {
             OnMouseEnter.Invoke();
         }
-
         public void OnPointerExit(PointerEventData eventData)
         {
             OnMouseExit.Invoke();

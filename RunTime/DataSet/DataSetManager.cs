@@ -1,29 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 数据集管理器
     /// </summary>
-    [DisallowMultipleComponent]
     [InternalModule(HTFrameworkModule.DataSet)]
-    public sealed class DataSetManager : InternalModuleBase
+    public sealed class DataSetManager : InternalModuleBase<IDataSetHelper>
     {
-        private IDataSetHelper _helper;
-
-        private DataSetManager()
-        {
-
-        }
-        internal override void OnInitialization()
-        {
-            base.OnInitialization();
-
-            _helper = Helper as IDataSetHelper;
-        }
-
         /// <summary>
         /// 添加数据集至数据集仓库
         /// </summary>
@@ -181,7 +166,6 @@ namespace HT.Framework
         {
             return _helper.GetCount(type);
         }
-
         /// <summary>
         /// 清空某一类型的数据集仓库
         /// </summary>

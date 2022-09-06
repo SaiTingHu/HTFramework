@@ -8,22 +8,27 @@
         /// <summary>
         /// 流程初始化
         /// </summary>
-        public abstract void OnInit();
+        public virtual void OnInit()
+        { }
         /// <summary>
         /// 进入流程
         /// </summary>
-        public abstract void OnEnter();
+        public virtual void OnEnter()
+        { }
         /// <summary>
         /// 离开流程
         /// </summary>
-        public abstract void OnLeave();
+        public virtual void OnLeave()
+        { }
         /// <summary>
         /// 流程帧刷新
         /// </summary>
-        public abstract void OnUpdate();
+        public virtual void OnUpdate()
+        { }
         /// <summary>
         /// 流程帧刷新（秒）
         /// </summary>
-        public abstract void OnUpdateSecond();
+        public virtual void OnUpdateSecond()
+        { }
     }
 }
