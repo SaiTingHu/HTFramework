@@ -521,11 +521,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region ProjectWizard 【优先级1000】
+        #region ProjectWizard 【优先级10000】
         /// <summary>
         /// ProjectWizard
         /// </summary>
-        [MenuItem("HTFramework/Project Wizard", false, 1000)]
+        [MenuItem("HTFramework/Project Wizard", false, 10000)]
         private static void OpenProjectWizard()
         {
             ProjectWizard wizard = EditorWindow.GetWindow<ProjectWizard>();
@@ -536,11 +536,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region Execution Order 【优先级1001】
+        #region Execution Order 【优先级10001】
         /// <summary>
         /// Execution Order
         /// </summary>
-        [MenuItem("HTFramework/Execution Order", false, 1001)]
+        [MenuItem("HTFramework/Execution Order", false, 10001)]
         private static void OpenExecutionOrder()
         {
             ExecutionOrder window = EditorWindow.GetWindow<ExecutionOrder>();
@@ -550,11 +550,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region HTFramework Setting... 【优先级1002】
+        #region HTFramework Setting... 【优先级10002】
         /// <summary>
         /// HTFramework Setting...
         /// </summary>
-        [MenuItem("HTFramework/HTFramework Settings...", false, 1002)]
+        [MenuItem("HTFramework/HTFramework Settings...", false, 10002)]
         private static void OpenHTFrameworkSettings()
         {
             Setter setter = EditorWindow.GetWindow<Setter>();
@@ -565,7 +565,7 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 层级视图新建菜单
+        #region 层级视图新建菜单 【优先级100】
         /// <summary>
         /// 【验证函数】新建框架主环境
         /// </summary>
@@ -577,7 +577,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建框架主环境
         /// </summary>
-        [MenuItem("GameObject/HTFramework/Main Environment", false, 0)]
+        [MenuItem("GameObject/HTFramework/Main Environment", false, 100)]
         private static void CreateMain()
         {
             UnityEngine.Object asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>("Assets/HTFramework/HTFramework.prefab");
@@ -602,7 +602,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建FSM
         /// </summary>
-        [MenuItem("GameObject/HTFramework/FSM", false, 1)]
+        [MenuItem("GameObject/HTFramework/FSM", false, 101)]
         private static void CreateFSM()
         {
             GameObject fsm = new GameObject();
@@ -616,11 +616,11 @@ namespace HT.Framework
         }
         #endregion
 
-        #region 工程视图新建菜单
+        #region 工程视图新建菜单 【优先级100】
         /// <summary>
         /// 新建AspectProxy类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# AspectProxy Script", false, 11)]
+        [MenuItem("Assets/Create/HTFramework/C# AspectProxy Script", false, 100)]
         private static void CreateAspectProxy()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_AspectProxy_Folder, "AspectProxy", "AspectProxyTemplate");
@@ -629,7 +629,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建CustomModule类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# CustomModule Script", false, 12)]
+        [MenuItem("Assets/Create/HTFramework/C# CustomModule Script", false, 101)]
         private static void CreateCustomModule()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_CustomModule_Folder, "CustomModule", "CustomModuleTemplate", "#MODULENAME#");
@@ -638,7 +638,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建DataSet类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# DataSet Script", false, 13)]
+        [MenuItem("Assets/Create/HTFramework/C# DataSet Script", false, 102)]
         private static void CreateDataSet()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_DataSet_Folder, "DataSet", "DataSetTemplate");
@@ -647,7 +647,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建EntityLogic类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# EntityLogic Script", false, 14)]
+        [MenuItem("Assets/Create/HTFramework/C# EntityLogic Script", false, 103)]
         private static void CreateEntityLogic()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_EntityLogic_Folder, "EntityLogic", "EntityLogicTemplate");
@@ -656,7 +656,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建EventHandler类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# EventHandler Script", false, 15)]
+        [MenuItem("Assets/Create/HTFramework/C# EventHandler Script", false, 104)]
         private static void CreateEventHandler()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_EventHandler_Folder, "EventHandler", "EventHandlerTemplate");
@@ -665,7 +665,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建FiniteState类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# FiniteState Script", false, 16)]
+        [MenuItem("Assets/Create/HTFramework/C# FiniteState Script", false, 105)]
         private static void CreateFiniteState()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_FiniteState_Folder, "FiniteState", "FiniteStateTemplate", "#STATENAME#");
@@ -674,7 +674,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建Procedure类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 17)]
+        [MenuItem("Assets/Create/HTFramework/C# Procedure Script", false, 106)]
         private static void CreateProcedure()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_Procedure_Folder, "Procedure", "ProcedureTemplate");
@@ -683,7 +683,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ProtocolChannel类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# Protocol Channel Script", false, 18)]
+        [MenuItem("Assets/Create/HTFramework/C# Protocol Channel Script", false, 107)]
         private static void CreateProtocolChannel()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ProtocolChannel_Folder, "ProtocolChannel", "ProtocolChannelTemplate");
@@ -692,7 +692,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicResident类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 19)]
+        [MenuItem("Assets/Create/HTFramework/C# UILogicResident Script", false, 108)]
         private static void CreateUILogicResident()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_UILogicResident_Folder, "UILogicResident", "UILogicResidentTemplate");
@@ -701,7 +701,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UILogicTemporary类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 20)]
+        [MenuItem("Assets/Create/HTFramework/C# UILogicTemporary Script", false, 109)]
         private static void CreateUILogicTemporary()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_UILogicTemporary_Folder, "UILogicTemporary", "UILogicTemporaryTemplate");
@@ -710,7 +710,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ECS的组件类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/[ECS] C# Component Script", false, 1000)]
+        [MenuItem("Assets/Create/HTFramework/[ECS] C# Component Script", false, 120)]
         private static void CreateECSComponent()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ECSComponent_Folder, "ECSComponent", "ECSComponentTemplate");
@@ -719,7 +719,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ECS的系统类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/[ECS] C# System Script", false, 1001)]
+        [MenuItem("Assets/Create/HTFramework/[ECS] C# System Script", false, 121)]
         private static void CreateECSSystem()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ECSSystem_Folder, "ECSSystem", "ECSSystemTemplate");
@@ -728,7 +728,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建ECS的指令类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/[ECS] C# Order Script", false, 1002)]
+        [MenuItem("Assets/Create/HTFramework/[ECS] C# Order Script", false, 122)]
         private static void CreateECSOrder()
         {
             CreateScriptFormTemplate(EditorPrefsTable.Script_ECSOrder_Folder, "ECSOrder", "ECSOrderTemplate");
@@ -745,7 +745,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建HotfixProcedure类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 2000)]
+        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixProcedure Script", false, 140)]
         private static void CreateHotfixProcedure()
         {
             EditorPrefs.SetString(EditorPrefsTable.Script_HotfixProcedure_Folder, "/Hotfix");
@@ -763,7 +763,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建HotfixObject类
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 2001)]
+        [MenuItem("Assets/Create/HTFramework/[Hotfix] C# HotfixObject Script", false, 141)]
         private static void CreateHotfixObject()
         {
             EditorPrefs.SetString(EditorPrefsTable.Script_HotfixObject_Folder, "/Hotfix");
@@ -785,7 +785,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建WebGL插件
         /// </summary>
-        [MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 3000)]
+        [MenuItem("Assets/Create/HTFramework/WebGL Plugin", false, 160)]
         private static void CreateWebGLPlugin()
         {
             string pluginsDirectory = Application.dataPath + "/Plugins";
