@@ -185,33 +185,41 @@ namespace HT.Framework
             if (_rayTarget == target)
                 return;
 
-            if (_rayTarget)
+            if (Target)
             {
                 if (_rayTargetType == TargetType.GameObject)
                 {
                     switch (TriggerHighlighting)
                     {
                         case HighlightingType.Normal:
-                            _rayTarget.CloseHighLight(IsAutoDie);
+                            Target.gameObject.CloseHighLight(IsAutoDie);
                             break;
                         case HighlightingType.Flash:
-                            _rayTarget.CloseFlashHighLight(IsAutoDie);
+                            Target.gameObject.CloseFlashHighLight(IsAutoDie);
                             break;
                         case HighlightingType.Outline:
-                            _rayTarget.CloseMeshOutline(IsAutoDie);
+                            Target.gameObject.CloseMeshOutline(IsAutoDie);
                             break;
                     }
                 }
                 Target = null;
-                _rayTarget = null;
             }
 
-            if (target && target.GetComponent<MouseRayTargetBase>())
+            _rayTarget = target;
+            MouseRayTargetBase rayTarget = null;
+            if (_rayTarget)
             {
-                Target = target.GetComponent<MouseRayTargetBase>();
-                _rayTarget = target;
                 _rayTargetType = _rayTarget.rectTransform() ? TargetType.UI : TargetType.GameObject;
+                rayTarget = _rayTarget.GetComponent<MouseRayTargetBase>();
+                if (rayTarget == null)
+                {
+                    rayTarget = _rayTarget.GetComponentInParent<MouseRayTargetBase>();
+                }
+            }
 
+            if (_rayTarget && rayTarget)
+            {
+                Target = rayTarget;
                 if (IsOpenPrompt && Target.IsOpenPrompt)
                 {
                     if (RayHitBG)
@@ -239,13 +247,13 @@ namespace HT.Framework
                         switch (TriggerHighlighting)
                         {
                             case HighlightingType.Normal:
-                                _rayTarget.OpenHighLight(NormalColor);
+                                Target.gameObject.OpenHighLight(NormalColor);
                                 break;
                             case HighlightingType.Flash:
-                                _rayTarget.OpenFlashHighLight(FlashColor1, FlashColor2);
+                                Target.gameObject.OpenFlashHighLight(FlashColor1, FlashColor2);
                                 break;
                             case HighlightingType.Outline:
-                                _rayTarget.OpenMeshOutline(NormalColor, OutlineIntensity);
+                                Target.gameObject.OpenMeshOutline(NormalColor, OutlineIntensity);
                                 break;
                         }
                     }
