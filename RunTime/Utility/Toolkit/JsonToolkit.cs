@@ -90,7 +90,7 @@ namespace HT.Framework
         /// <returns>获取到的键对应的值</returns>
         public static string GetValueInSafe(this JsonData json, string key, string defaultValue = null)
         {
-            if (json.Keys.Contains(key))
+            if (json.IsObject && json.Keys.Contains(key))
             {
                 if (json[key] != null)
                 {

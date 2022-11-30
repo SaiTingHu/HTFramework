@@ -267,6 +267,15 @@ namespace HT.Framework
                                 usedTargets.Add(operation.TargetGUID);
                             }
                         }
+
+                        for (int j = 0; j < content.Parameters.Count; j++)
+                        {
+                            StepParameter parameter = content.Parameters[j];
+                            if (parameter.Type == StepParameter.ParameterType.GameObject && !usedTargets.Contains(parameter.GameObjectGUID) && parameter.GameObjectGUID != "<None>")
+                            {
+                                usedTargets.Add(parameter.GameObjectGUID);
+                            }
+                        }
                     }
 
                     GameObject[] rootObjs = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
