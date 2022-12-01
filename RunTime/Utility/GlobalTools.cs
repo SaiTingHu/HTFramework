@@ -735,9 +735,7 @@ namespace HT.Framework
         public static Sprite LoadSprite(string path)
         {
             if (!File.Exists(path))
-            {
                 return null;
-            }
 
             FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
 
@@ -749,7 +747,6 @@ namespace HT.Framework
 
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
 
-            Main.Kill(texture);
             stream.Close();
 
             return sprite;
