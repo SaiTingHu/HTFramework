@@ -21,7 +21,9 @@ namespace HT.Framework
         private Folder _RegularEditFolder;
         private Folder _procedureFolder;
         private string _mainSceneName = "Main";
+        private bool _isCreateUIEdit = true;
         private string _UIEditName = "UIEdit";
+        private bool _isCreateRegularEdit = false;
         private string _RegularEditName = "RegularEdit";
         private bool _isCreateInitialProcedure = false;
         private string _initialProcedure = "InitialProcedure";
@@ -118,12 +120,12 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUIContent content = EditorGUIUtility.IconContent("SceneAsset Icon");
             content.text = "Main Scene";
-            GUILayout.Label(content, GUILayout.Height(18), GUILayout.Width(120));
+            GUILayout.Label(content, GUILayout.Height(18), GUILayout.Width(140));
             _mainSceneName = EditorGUILayout.TextField(_mainSceneName);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(125);
+            GUILayout.Space(145);
             content = EditorGUIUtility.IconContent("Folder Icon");
             content.text = _mainSceneFolder != null ? _mainSceneFolder.Path : "<None>";
             if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
@@ -140,6 +142,10 @@ namespace HT.Framework
 
             #region UI Edit
             GUILayout.BeginHorizontal();
+            GUI.color = _isCreateUIEdit ? Color.white : Color.gray;
+            _isCreateUIEdit = GUILayout.Toggle(_isCreateUIEdit, "", GUILayout.Width(16));
+            GUI.color = Color.white;
+            GUI.enabled = _isCreateUIEdit;
             content = EditorGUIUtility.IconContent("SceneAsset Icon");
             content.text = "UI Edit";
             GUILayout.Label(content, GUILayout.Height(18), GUILayout.Width(120));
@@ -147,7 +153,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(125);
+            GUILayout.Space(145);
             content = EditorGUIUtility.IconContent("Folder Icon");
             content.text = _UIEditFolder != null ? _UIEditFolder.Path : "<None>";
             if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
@@ -159,11 +165,16 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
             #endregion
 
             #region Regular Edit
             GUILayout.BeginHorizontal();
+            GUI.color = _isCreateRegularEdit ? Color.white : Color.gray;
+            _isCreateRegularEdit = GUILayout.Toggle(_isCreateRegularEdit, "", GUILayout.Width(16));
+            GUI.color = Color.white;
+            GUI.enabled = _isCreateRegularEdit;
             content = EditorGUIUtility.IconContent("SceneAsset Icon");
             content.text = "Regular Edit";
             GUILayout.Label(content, GUILayout.Height(18), GUILayout.Width(120));
@@ -171,7 +182,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(125);
+            GUILayout.Space(145);
             content = EditorGUIUtility.IconContent("Folder Icon");
             content.text = _RegularEditFolder != null ? _RegularEditFolder.Path : "<None>";
             if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
@@ -183,20 +194,21 @@ namespace HT.Framework
                 }
                 gm.ShowAsContext();
             }
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
             #endregion
 
             #region Initial Procedure
             GUILayout.BeginHorizontal();
             GUI.color = _isCreateInitialProcedure ? Color.white : Color.gray;
-            _isCreateInitialProcedure = GUILayout.Toggle(_isCreateInitialProcedure, "Initial Procedure", GUILayout.Width(120));
+            _isCreateInitialProcedure = GUILayout.Toggle(_isCreateInitialProcedure, "Initial Procedure", GUILayout.Width(140));
             GUI.color = Color.white;
             GUI.enabled = _isCreateInitialProcedure;
             _initialProcedure = EditorGUILayout.TextField(_initialProcedure);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(125);
+            GUILayout.Space(145);
             content.text = _procedureFolder != null ? _procedureFolder.Path : "<None>";
             if (GUILayout.Button(content, EditorGlobalTools.Styles.MiniPopup))
             {
@@ -329,7 +341,7 @@ namespace HT.Framework
         }
         private void CreateUIScene()
         {
-            if (_UIEditFolder != null && _UIEditName != "")
+            if (_isCreateUIEdit && _UIEditFolder != null && _UIEditName != "")
             {
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 string scenePath = _UIEditFolder.Path + "/" + _UIEditName + ".unity";
@@ -358,7 +370,7 @@ namespace HT.Framework
         }
         private void CreateRegularScene()
         {
-            if (_RegularEditFolder != null && _RegularEditName != "")
+            if (_isCreateRegularEdit && _RegularEditFolder != null && _RegularEditName != "")
             {
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 string scenePath = _RegularEditFolder.Path + "/" + _RegularEditName + ".unity";
