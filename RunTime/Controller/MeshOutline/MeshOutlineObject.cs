@@ -123,6 +123,23 @@ namespace HT.Framework
             _flashFrequency = freq;
         }
         /// <summary>
+        /// 开启轮廓高亮
+        /// </summary>
+        /// <param name="defaultColor">默认颜色</param>
+        /// <param name="color">高亮颜色</param>
+        /// <param name="intensity">强度</param>
+        /// <param name="isFlash">是否闪烁</param>
+        /// <param name="freq">闪烁频率</param>
+        public void Open(Color defaultColor, Color color, float intensity, bool isFlash, float freq)
+        {
+            Open(color, intensity, isFlash, freq);
+
+            for (int i = 0; i < _meshOutlineRenderers.Count; i++)
+            {
+                _meshOutlineRenderers[i].SetDiffuseColor(defaultColor);
+            }
+        }
+        /// <summary>
         /// 关闭轮廓高亮
         /// </summary>
         public void Close()
@@ -234,6 +251,14 @@ namespace HT.Framework
                 if (RendererCached)
                 {
                     RendererCached.sharedMaterials = isOutline ? _replacementMaterials : _sourceMaterials;
+                }
+            }
+
+            public void SetDiffuseColor(Color color)
+            {
+                for (int i = 0; i < _replacementMaterials.Length; i++)
+                {
+                    _replacementMaterials[i].SetColor("_Diffuse", color);
                 }
             }
 

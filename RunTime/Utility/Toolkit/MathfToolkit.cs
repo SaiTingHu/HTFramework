@@ -22,6 +22,26 @@ namespace HT.Framework
             return Mathf.Approximately(sourceValue, targetValue);
         }
         /// <summary>
+        /// 是否约等于另一个向量
+        /// </summary>
+        /// <param name="sourceValue">源向量</param>
+        /// <param name="targetValue">目标向量</param>
+        /// <returns>是否约等于</returns>
+        public static bool Approximately(this Vector2 sourceValue, Vector2 targetValue)
+        {
+            return sourceValue.x.Approximately(targetValue.x) && sourceValue.y.Approximately(targetValue.y);
+        }
+        /// <summary>
+        /// 是否约等于另一个向量
+        /// </summary>
+        /// <param name="sourceValue">源向量</param>
+        /// <param name="targetValue">目标向量</param>
+        /// <returns>是否约等于</returns>
+        public static bool Approximately(this Vector3 sourceValue, Vector3 targetValue)
+        {
+            return sourceValue.x.Approximately(targetValue.x) && sourceValue.y.Approximately(targetValue.y) && sourceValue.z.Approximately(targetValue.z);
+        }
+        /// <summary>
         /// 从数组中随机获取一个值
         /// </summary>
         /// <typeparam name="T">值类型</typeparam>

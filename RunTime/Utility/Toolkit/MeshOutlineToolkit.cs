@@ -71,6 +71,36 @@ namespace HT.Framework
             mo.Open(color, intensity, isFlash, freq);
         }
         /// <summary>
+        /// 开启网格轮廓高亮
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="defaultColor">默认颜色</param>
+        /// <param name="color">高亮颜色</param>
+        /// <param name="intensity">强度</param>
+        /// <param name="isFlash">是否闪烁</param>
+        /// <param name="freq">闪烁频率</param>
+        public static void OpenMeshOutline(this GameObject target, Color defaultColor, Color color, float intensity, bool isFlash, float freq)
+        {
+            if (target == null)
+                return;
+
+            if (!Main.m_Controller.EnableHighlightingEffect)
+                return;
+
+            MeshOutlineObject mo = target.GetComponent<MeshOutlineObject>();
+            if (mo == null) mo = target.AddComponent<MeshOutlineObject>();
+
+            if (MOs.Contains(mo))
+                return;
+
+            MOs.Add(mo);
+
+            target.ClearMeshOutlineInChildren();
+            target.ClearMeshOutlineInParent();
+
+            mo.Open(defaultColor, color, intensity, isFlash, freq);
+        }
+        /// <summary>
         /// 重置高亮网格轮廓
         /// </summary>
         /// <param name="target">目标物体</param>
