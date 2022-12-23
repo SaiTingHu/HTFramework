@@ -98,7 +98,7 @@ namespace HT.Framework
         }
         private bool IsIgnoreFolder(string folderName)
         {
-            if (EditorPrefsTable.HTFrameworkFolder.Contains(folderName))
+            if (EditorPrefsTable.HTFrameworkFolder.Contains(folderName) || folderName.EndsWith("~"))
             {
                 return true;
             }

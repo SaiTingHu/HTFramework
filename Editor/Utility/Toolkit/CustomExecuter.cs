@@ -136,6 +136,14 @@ namespace HT.Framework
             Entity = null;
             _methodName = "<None>";
         }
+        private void OnDestroy()
+        {
+            if (_csharpCodeProvider != null)
+            {
+                _csharpCodeProvider.Dispose();
+                _csharpCodeProvider = null;
+            }
+        }
         protected override void OnTitleGUI()
         {
             base.OnTitleGUI();
@@ -426,6 +434,7 @@ namespace HT.Framework
             }
             compilerParameters.GenerateExecutable = false;
             compilerParameters.GenerateInMemory = true;
+            compilerParameters.CompilerOptions = "/unsafe /optimize";
             return compilerParameters;
         }
         private string GenerateCode()
