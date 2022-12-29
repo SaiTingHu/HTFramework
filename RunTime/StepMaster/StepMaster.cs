@@ -125,6 +125,16 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 当前是否有步骤在执行状态
+        /// </summary>
+        public bool IsExecuting
+        {
+            get
+            {
+                return _executing;
+            }
+        }
+        /// <summary>
         /// 暂停步骤控制者
         /// </summary>
         public bool Pause
