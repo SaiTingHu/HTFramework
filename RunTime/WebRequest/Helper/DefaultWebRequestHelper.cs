@@ -299,7 +299,8 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), wif, url, end.ToString("mm:ss:fff"), request.error));
+                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}"
+                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.error));
 
                     wif.OnRequestFinished(null);
                 }
@@ -352,7 +353,8 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}", begin.ToString("mm:ss:fff"), wif, url, end.ToString("mm:ss:fff"), request.error));
+                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}"
+                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.error));
 
                     wif.OnRequestFinished(null);
                 }
