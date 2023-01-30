@@ -1,5 +1,5 @@
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace HT.Framework
@@ -29,7 +29,7 @@ namespace HT.Framework
             PrefabStage prefabStage = PrefabStageUtility.GetPrefabStage(target);
             if (prefabStage != null)
             {
-                return AssetDatabase.LoadAssetAtPath<GameObject>(prefabStage.prefabAssetPath);
+                return AssetDatabase.LoadAssetAtPath<GameObject>(prefabStage.assetPath);
             }
             return null;
         }

@@ -678,26 +678,10 @@ namespace HT.Framework
         private sealed class HyperlinkPainter : FieldPainter
         {
             public HyperlinkAttribute HAttribute;
-            public MethodInfo LinkLabel;
-            public object[] Parameter;
 
             public HyperlinkPainter(InspectorAttribute attribute) : base(attribute)
             {
                 HAttribute = attribute as HyperlinkAttribute;
-                MethodInfo[] methods = typeof(EditorGUILayout).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
-                foreach (var method in methods)
-                {
-                    if (method.Name == "LinkLabel")
-                    {
-                        ParameterInfo[] parameters = method.GetParameters();
-                        if (parameters != null && parameters.Length > 0 && parameters[0].ParameterType == typeof(string))
-                        {
-                            LinkLabel = method;
-                            break;
-                        }
-                    }
-                }
-                Parameter = new object[] { HAttribute.Name, new GUILayoutOption[0] };
             }
 
             public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
@@ -705,8 +689,7 @@ namespace HT.Framework
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
                     EditorGUILayout.BeginHorizontal();
-                    bool isClick = (bool)LinkLabel.Invoke(null, Parameter);
-                    if (isClick)
+                    if (EditorGUILayout.LinkButton(HAttribute.Name))
                     {
                         Application.OpenURL((string)fieldInspector.Field.GetValue(inspector.target));
                     }

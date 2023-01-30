@@ -10,9 +10,9 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 ## 环境
 
-- Unity版本：2019.4.30。
+- Unity版本：2021.3.15。
 
-- .NET API版本：4.x。
+- .NET API版本：.NET Framework。
 
 ## 编码规范
 

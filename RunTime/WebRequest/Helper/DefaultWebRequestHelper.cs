@@ -290,7 +290,7 @@ namespace HT.Framework
 
                 DateTime end = DateTime.Now;
 
-                if (!request.isNetworkError && !request.isHttpError)
+                if (request.result == UnityWebRequest.Result.Success)
                 {
                     Log.Info(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
                         , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, wif.OnGetDownloadString(request.downloadHandler)));
@@ -344,7 +344,7 @@ namespace HT.Framework
 
                 DateTime end = DateTime.Now;
 
-                if (!request.isNetworkError && !request.isHttpError)
+                if (request.result == UnityWebRequest.Result.Success)
                 {
                     Log.Info(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
                         , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, wif.OnGetDownloadString(request.downloadHandler)));
@@ -417,7 +417,7 @@ namespace HT.Framework
 
                 DateTime end = DateTime.Now;
 
-                if (!request.isNetworkError && !request.isHttpError)
+                if (request.result == UnityWebRequest.Result.Success)
                 {
                     Log.Info(string.Format("[{0}] 发起下载文件请求：[{1}] {2}\r\n[{3}] 成功下载至：{4}"
                         , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), wif.Path));

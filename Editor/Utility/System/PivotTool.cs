@@ -28,17 +28,17 @@ namespace HT.Framework
 
         private void OnEnable()
         {
-            EditorTools.activeToolChanged += ActiveToolChanged;
+            ToolManager.activeToolChanged += ActiveToolChanged;
             Selection.selectionChanged += ActiveToolChanged;
         }
         private void OnDisable()
         {
-            EditorTools.activeToolChanged -= ActiveToolChanged;
+            ToolManager.activeToolChanged -= ActiveToolChanged;
             Selection.selectionChanged -= ActiveToolChanged;
         }
         private void ActiveToolChanged()
         {
-            if (!EditorTools.IsActiveTool(this))
+            if (!ToolManager.IsActiveTool(this))
                 return;
 
             _target = target as Transform;

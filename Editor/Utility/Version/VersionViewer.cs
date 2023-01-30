@@ -106,11 +106,6 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Scripting Runtime Versions: " + _version.ScriptingVersions);
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
                 GUILayout.Label("Api Compatibility Level: " + _version.APIVersions);
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -165,11 +160,6 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Supported Unity Versions: ", GUILayout.Width(180));
             _releaseVersion.UnityVersions = EditorGUILayout.TextField(_releaseVersion.UnityVersions);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Scripting Runtime Versions: ", GUILayout.Width(180));
-            _releaseVersion.ScriptingVersions = EditorGUILayout.TextField(_releaseVersion.ScriptingVersions);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

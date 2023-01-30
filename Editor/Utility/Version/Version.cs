@@ -31,15 +31,11 @@ namespace HT.Framework
         /// <summary>
         /// 版本号支持的Unity版本
         /// </summary>
-        public string UnityVersions = "2019.4.30";
-        /// <summary>
-        /// 版本号支持的运行时编码.Net版本
-        /// </summary>
-        public string ScriptingVersions = ".NET 4.x Equivalent";
+        public string UnityVersions = "2021.3.15";
         /// <summary>
         /// 版本号支持的.Net API版本
         /// </summary>
-        public string APIVersions = ".NET 4.x";
+        public string APIVersions = ".NET Framework";
         
         /// <summary>
         /// 获取完整的版本号

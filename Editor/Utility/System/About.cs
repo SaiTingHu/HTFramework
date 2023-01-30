@@ -101,7 +101,7 @@ namespace HT.Framework
         {
             if (_colorPos <= 1)
             {
-                _colorPos += 0.005f;
+                _colorPos += 0.002f;
             }
             else
             {
@@ -162,7 +162,7 @@ namespace HT.Framework
             GUILayout.Label("Release Notes: [Date " + _versionInfo.CurrentVersion.ReleaseDate + "]");
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical(GUILayout.Height(100));
+            GUILayout.BeginVertical(GUILayout.Height(120));
             _scroll = GUILayout.BeginScrollView(_scroll);
             EditorGUILayout.TextArea(_versionInfo.CurrentVersion.ReleaseNotes);
             GUILayout.EndScrollView();
@@ -178,11 +178,6 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Supported Unity Versions: " + _versionInfo.CurrentVersion.UnityVersions);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Scripting Runtime Versions: " + _versionInfo.CurrentVersion.ScriptingVersions);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 

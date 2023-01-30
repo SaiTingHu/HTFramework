@@ -2,7 +2,7 @@
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
 #endif
 
 namespace HT.Framework

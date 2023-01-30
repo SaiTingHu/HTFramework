@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
-using UnityEditor.Experimental.SceneManagement;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace HT.Framework
@@ -2275,7 +2275,7 @@ namespace HT.Framework
 
             if (operation.Target != null)
                 return;
-            
+
             PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
             if (prefabStage != null)
             {

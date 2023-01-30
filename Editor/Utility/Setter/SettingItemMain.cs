@@ -57,7 +57,6 @@ namespace HT.Framework
                 {
                     _isEnableLnkTools = isEnableLnkTools;
                     EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Enable, _isEnableLnkTools);
-                    EditorApplication.delayCall += EditorGlobalTools.CoerciveCompile;
                 }
             }
             GUILayout.EndHorizontal();

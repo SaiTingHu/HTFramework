@@ -459,21 +459,9 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 打开 Extended Inspector
-        /// </summary>
-        [MenuItem("HTFramework/Tools/Extended Inspector", false, 108)]
-        private static void OpenExtendedInspector()
-        {
-            ExtendedInspectorWindow window = EditorWindow.GetWindow<ExtendedInspectorWindow>();
-            window.titleContent.image = EditorGUIUtility.IconContent("d_UnityEditor.InspectorWindow").image;
-            window.titleContent.text = "Extended Inspector";
-            window.Show();
-        }
-
-        /// <summary>
         /// 合并多个模型网格
         /// </summary>
-        [MenuItem("HTFramework/Tools/Mesh Combines", false, 109)]
+        [MenuItem("HTFramework/Tools/Mesh Combines", false, 108)]
         private static void MeshCombines()
         {
             if (Selection.gameObjects.Length <= 1)
@@ -1255,24 +1243,6 @@ namespace HT.Framework
                 }
             }
             return defaultValue;
-        }
-        #endregion
-
-        #region 编辑器工具
-        /// <summary>
-        /// 强制编辑器进行编译
-        /// </summary>
-        public static void CoerciveCompile()
-        {
-            Type type = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface");
-            if (type != null)
-            {
-                MethodInfo method = type.GetMethod("RecompileAllScriptsOnNextTick", BindingFlags.Static | BindingFlags.Public);
-                if (method != null)
-                {
-                    method.Invoke(null, null);
-                }
-            }
         }
         #endregion
 

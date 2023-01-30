@@ -608,7 +608,7 @@ namespace HT.Framework
                     : UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName, GetAssetBundleHash(assetBundleName)))
                 {
                     yield return request.SendWebRequest();
-                    if (!request.isNetworkError && !request.isHttpError)
+                    if (request.result == UnityWebRequest.Result.Success)
                     {
                         AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
                         if (bundle)
@@ -649,7 +649,7 @@ namespace HT.Framework
                         onLoading?.Invoke(request.downloadProgress);
                         yield return null;
                     }
-                    if (!request.isNetworkError && !request.isHttpError)
+                    if (request.result == UnityWebRequest.Result.Success)
                     {
                         AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
                         if (bundle)
