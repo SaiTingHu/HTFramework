@@ -89,14 +89,14 @@ namespace HT.Framework
         {
             //标准PC平台：鼠标和键盘做为输入设备
             if (Input.GetMouseButtonDown(0)) SetButtonDown(InputButtonType.MouseLeft);
-            else if (Input.GetMouseButtonUp(0)) SetButtonUp(InputButtonType.MouseLeft);
+            if (Input.GetMouseButtonUp(0)) SetButtonUp(InputButtonType.MouseLeft);
 
             if (Input.GetMouseButtonDown(1)) SetButtonDown(InputButtonType.MouseRight);
-            else if (Input.GetMouseButtonUp(1)) SetButtonUp(InputButtonType.MouseRight);
+            if (Input.GetMouseButtonUp(1)) SetButtonUp(InputButtonType.MouseRight);
 
             if (Input.GetMouseButtonDown(2)) SetButtonDown(InputButtonType.MouseMiddle);
-            else if (Input.GetMouseButtonUp(2)) SetButtonUp(InputButtonType.MouseMiddle);
-            
+            if (Input.GetMouseButtonUp(2)) SetButtonUp(InputButtonType.MouseMiddle);
+
             if (Input.GetMouseButtonDown(0))
             {
                 if (_mouseLeftClickTimer <= 0)
