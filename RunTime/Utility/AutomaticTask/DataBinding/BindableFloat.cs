@@ -105,7 +105,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning(string.Format("自动化任务：数据绑定失败，当前不支持控件 {0} 与 BindableFloat 类型的数据绑定！", control.GetType().FullName));
+                Log.Warning($"自动化任务：数据绑定失败，当前不支持控件 {control.GetType().FullName} 与 BindableFloat 类型的数据绑定！");
             }
         }
         /// <summary>

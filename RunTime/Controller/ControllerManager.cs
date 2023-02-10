@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -268,6 +267,10 @@ namespace HT.Framework
                 _helper.HighlightAutoDie = value;
             }
         }
+        /// <summary>
+        /// 自由控制：排斥盒
+        /// </summary>
+        internal HashSet<RepelBox> FreeControlRepelBoxs { get; private set; } = new HashSet<RepelBox>();
 
         public override void OnInit()
         {
@@ -314,6 +317,30 @@ namespace HT.Framework
         public void ClearBounds()
         {
             FreeControlBounds.Clear();
+        }
+
+        /// <summary>
+        /// 自由控制：添加排斥盒
+        /// </summary>
+        /// <param name="box">排斥盒</param>
+        public void AddRepelBox(RepelBox box)
+        {
+            FreeControlRepelBoxs.Add(box);
+        }
+        /// <summary>
+        /// 自由控制：移除排斥盒
+        /// </summary>
+        /// <param name="box">排斥盒</param>
+        public void RemoveRepelBox(RepelBox box)
+        {
+            FreeControlRepelBoxs.Remove(box);
+        }
+        /// <summary>
+        /// 自由控制：清空排斥盒
+        /// </summary>
+        public void ClearRepelBox()
+        {
+            FreeControlRepelBoxs.Clear();
         }
 
         /// <summary>

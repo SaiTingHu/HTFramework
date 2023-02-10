@@ -200,7 +200,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                Log.Error($"步骤：{Content.Name}[ID:{Content.GUID}]未获取到参数[{parameterName}]！");
                 return null;
             }
         }
@@ -218,7 +218,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("步骤：{0}[ID:{1}]未获取到参数[{2}]！", Content.Name, Content.GUID, parameterName));
+                Log.Error($"步骤：{Content.Name}[ID:{Content.GUID}]未获取到参数[{parameterName}]！");
                 return null;
             }
         }

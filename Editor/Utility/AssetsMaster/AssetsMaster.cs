@@ -226,7 +226,7 @@ namespace HT.Framework
             if (_type == AssetType.Texture)
             {
                 GUI.color = _textureAlarmCount > 0 ? Color.yellow : Color.white;
-                if (GUILayout.Button("Alarm Value [" + _textureAlarmCount + "]", EditorStyles.popup))
+                if (GUILayout.Button($"Alarm Value [{_textureAlarmCount}]", EditorStyles.popup))
                 {
                     TextureAlarmValueSetter.ShowWindow(this, new Vector2(position.x + position.width + 20, position.y + 100));
                 }
@@ -363,7 +363,7 @@ namespace HT.Framework
                 _materialIndex -= 1;
             }
             GUI.enabled = true;
-            GUILayout.Label(_materialIndex + "/" + _materialTotalIndex);
+            GUILayout.Label($"{_materialIndex}/{_materialTotalIndex}");
             GUI.enabled = _materialIndex < _materialTotalIndex;
             if (GUILayout.Button(">", EditorStyles.miniButton))
             {
@@ -530,12 +530,12 @@ namespace HT.Framework
                     GUILayout.Toggle(content.MipMapCount > 1, "", GUILayout.Width(20));
                     GUILayout.Label(content.MipMapCount + "MipMap", GUILayout.Width(100));
                     GUI.enabled = content.IsKnown && content.InMaterials.Count > 0;
-                    if (GUILayout.Button(content.InMaterials.Count + " Material", GUILayout.Width(100)))
+                    if (GUILayout.Button($"{content.InMaterials.Count} Material", GUILayout.Width(100)))
                     {
                         Selection.objects = content.InMaterials.ToArray();
                     }
                     GUI.enabled = content.IsKnown;
-                    if (GUILayout.Button(content.InGameObjects.Count + " GameObject", GUILayout.Width(140)))
+                    if (GUILayout.Button($"{content.InGameObjects.Count} GameObject", GUILayout.Width(140)))
                     {
                         Selection.objects = content.InGameObjects.ToArray();
                     }
@@ -565,7 +565,7 @@ namespace HT.Framework
                 _textureIndex -= 1;
             }
             GUI.enabled = true;
-            GUILayout.Label(_textureIndex + "/" + _textureTotalIndex);
+            GUILayout.Label($"{_textureIndex}/{_textureTotalIndex}");
             GUI.enabled = _textureIndex < _textureTotalIndex;
             if (GUILayout.Button(">", EditorStyles.miniButton))
             {
@@ -644,7 +644,7 @@ namespace HT.Framework
                 });
                 gm.ShowAsContext();
             }
-            GUILayout.Label("VertexCount [" + _totalMeshVertices + " verts]", GUILayout.Width(175));
+            GUILayout.Label($"VertexCount [{_totalMeshVertices} verts]", GUILayout.Width(175));
             if (GUILayout.Button(_sortGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
@@ -707,19 +707,19 @@ namespace HT.Framework
                         EditorGUIUtility.PingObject(content.Me);
                     }
                     GUILayout.Label(content.Me.name, GUILayout.Width(200));
-                    GUILayout.Label(content.VertexCount + "x" + content.InGameObjects.Count + " verts", GUILayout.Width(200));
+                    GUILayout.Label($"{content.VertexCount}x{content.InGameObjects.Count} verts", GUILayout.Width(200));
                     GUI.enabled = content.InStaticBatching.Count > 0;
-                    if (GUILayout.Button(content.InStaticBatching.Count + " Static Batching", GUILayout.Width(140)))
+                    if (GUILayout.Button($"{content.InStaticBatching.Count} Static Batching", GUILayout.Width(140)))
                     {
                         Selection.objects = content.InStaticBatching.ToArray();
                     }
                     GUI.enabled = content.InSkinned.Count > 0;
-                    if (GUILayout.Button(content.InSkinned.Count + " Skinned Mesh", GUILayout.Width(140)))
+                    if (GUILayout.Button($"{content.InSkinned.Count} Skinned Mesh", GUILayout.Width(140)))
                     {
                         Selection.objects = content.InSkinned.ToArray();
                     }
                     GUI.enabled = true;
-                    if (GUILayout.Button(content.InGameObjects.Count + " GameObject", GUILayout.Width(140)))
+                    if (GUILayout.Button($"{content.InGameObjects.Count} GameObject", GUILayout.Width(140)))
                     {
                         Selection.objects = content.InGameObjects.ToArray();
                     }
@@ -743,7 +743,7 @@ namespace HT.Framework
                 _meshIndex -= 1;
             }
             GUI.enabled = true;
-            GUILayout.Label(_meshIndex + "/" + _meshTotalIndex);
+            GUILayout.Label($"{_meshIndex}/{_meshTotalIndex}");
             GUI.enabled = _meshIndex < _meshTotalIndex;
             if (GUILayout.Button(">", EditorStyles.miniButton))
             {
@@ -858,7 +858,7 @@ namespace HT.Framework
                     }
                     GUILayout.Label(content.Script.name, GUILayout.Width(200));
                     GUILayout.Label(content.Assembly, GUILayout.Width(200));
-                    if (GUILayout.Button(content.InGameObjects.Count + " GameObject", GUILayout.Width(140)))
+                    if (GUILayout.Button($"{content.InGameObjects.Count} GameObject", GUILayout.Width(140)))
                     {
                         Selection.objects = content.InGameObjects.ToArray();
                     }
@@ -882,7 +882,7 @@ namespace HT.Framework
                 _monoScriptIndex -= 1;
             }
             GUI.enabled = true;
-            GUILayout.Label(_monoScriptIndex + "/" + _monoScriptTotalIndex);
+            GUILayout.Label($"{_monoScriptIndex}/{_monoScriptTotalIndex}");
             GUI.enabled = _monoScriptIndex < _monoScriptTotalIndex;
             if (GUILayout.Button(">", EditorStyles.miniButton))
             {
@@ -985,7 +985,7 @@ namespace HT.Framework
                     GUI.color = Color.red;
                     foreach (var item in content.MissingInfos)
                     {
-                        GUILayout.Label("[" + item + "]");
+                        GUILayout.Label($"[{item}]");
                     }
                     GUI.color = Color.white;
                     GUILayout.FlexibleSpace();
@@ -1008,7 +1008,7 @@ namespace HT.Framework
                 _missingIndex -= 1;
             }
             GUI.enabled = true;
-            GUILayout.Label(_missingIndex + "/" + _missingTotalIndex);
+            GUILayout.Label($"{_missingIndex}/{_missingTotalIndex}");
             GUI.enabled = _missingIndex < _missingTotalIndex;
             if (GUILayout.Button(">", EditorStyles.miniButton))
             {
@@ -1131,7 +1131,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        GetMissingContent(renderer.gameObject, renderer.GetType().Name + ".Material");
+                        GetMissingContent(renderer.gameObject, $"{renderer.GetType().Name}.Material");
                     }
                 }
                 if (renderer is SpriteRenderer)
@@ -1286,7 +1286,7 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    GetMissingContent(scripts[i].gameObject, scripts[i].GetType().Name + ".Sprite");
+                                    GetMissingContent(scripts[i].gameObject, $"{scripts[i].GetType().Name}.Sprite");
                                 }
                             }
                             else if (fieldType == typeof(Mesh) || fieldType.IsSubclassOf(typeof(Mesh)))
@@ -1298,7 +1298,7 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    GetMissingContent(scripts[i].gameObject, scripts[i].GetType().Name + ".Mesh");
+                                    GetMissingContent(scripts[i].gameObject, $"{scripts[i].GetType().Name}.Mesh");
                                 }
                             }
                             else if (fieldType == typeof(Material) || fieldType.IsSubclassOf(typeof(Material)))
@@ -1310,7 +1310,7 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    GetMissingContent(scripts[i].gameObject, scripts[i].GetType().Name + ".Material");
+                                    GetMissingContent(scripts[i].gameObject, $"{scripts[i].GetType().Name}.Material");
                                 }
                             }
                             else if (fieldType == typeof(ScriptableObject) || fieldType.IsSubclassOf(typeof(ScriptableObject)))
@@ -1322,7 +1322,7 @@ namespace HT.Framework
                                 }
                                 else
                                 {
-                                    GetMissingContent(scripts[i].gameObject, scripts[i].GetType().Name + ".ScriptableObject");
+                                    GetMissingContent(scripts[i].gameObject, $"{scripts[i].GetType().Name}.ScriptableObject");
                                 }
                             }
                         }

@@ -508,7 +508,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] used a mismatched Dropdown!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] used a mismatched Dropdown!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -565,7 +565,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Layer! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used Layer! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -597,7 +597,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't use the ReorderableList!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't use the ReorderableList!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -607,7 +607,7 @@ namespace HT.Framework
                 List = new UReorderableList(fieldInspector.Property.serializedObject, fieldInspector.Property, true, true, true, true);
                 List.drawHeaderCallback = (Rect rect) =>
                 {
-                    EditorGUI.LabelField(rect, string.Format("{0}: {1}", fieldInspector.Label, fieldInspector.Property.arraySize), EditorStyles.boldLabel);
+                    EditorGUI.LabelField(rect, $"{fieldInspector.Label}: {fieldInspector.Property.arraySize}", EditorStyles.boldLabel);
                 };
                 List.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
                 {
@@ -667,7 +667,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Password! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used Password! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -698,7 +698,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used Hyperlink! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used Hyperlink! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -750,7 +750,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used FilePath! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used FilePath! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -802,7 +802,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used FolderPath! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used FolderPath! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -867,7 +867,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used GenericMenu! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used GenericMenu! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -958,7 +958,7 @@ namespace HT.Framework
                 else
                 {
                     EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.HelpBox("[" + fieldInspector.Field.Name + "] can't used GenericTable! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used GenericTable! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -1529,7 +1529,7 @@ namespace HT.Framework
                     {
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.Space(30);
-                        EditorGUILayout.LabelField(string.Format("{0}->{1}", delegates[i].Target, delegates[i].Method), "Textfield");
+                        EditorGUILayout.LabelField($"{delegates[i].Target}->{delegates[i].Method}", "Textfield");
                         EditorGUILayout.EndHorizontal();
                     }
                 }
@@ -1573,7 +1573,7 @@ namespace HT.Framework
                         object result = null;
                         if (Method.IsStatic) result = Method.Invoke(null, null);
                         else result = Method.Invoke(inspector.target, null);
-                        Log.Info("点击按钮 " + Name + " 后，存在返回值：" + result);
+                        Log.Info($"点击按钮 {Name} 后，存在返回值：{result}");
                     }
                     else
                     {

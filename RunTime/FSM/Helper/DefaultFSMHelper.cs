@@ -89,7 +89,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("注册状态机失败：已存在状态机 " + fsm.Name + " ！");
+                Log.Warning($"注册状态机失败：已存在状态机 {fsm.Name} ！");
             }
         }
         /// <summary>
@@ -112,7 +112,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("移除已注册的状态机失败：不存在状态机 " + fsm.Name + " ！");
+                Log.Warning($"移除已注册的状态机失败：不存在状态机 {fsm.Name} ！");
             }
         }
 

@@ -41,12 +41,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Main, "创建内置模块助手失败：内置模块助手类 " + HelperType + " 必须实现该模块对应的助手接口！");
+                        throw new HTFrameworkException(HTFrameworkModule.Main, $"创建内置模块助手失败：内置模块助手类 {HelperType} 必须实现该模块对应的助手接口！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Main, "创建内置模块助手失败：丢失内置模块助手类 " + HelperType + "！");
+                    throw new HTFrameworkException(HTFrameworkModule.Main, $"创建内置模块助手失败：丢失内置模块助手类 {HelperType}！");
                 }
             }
 

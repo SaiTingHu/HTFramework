@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -91,7 +90,7 @@ namespace HT.Framework
             if (_localizeWindow != null)
             {
                 GenerateWords();
-                _languagePrefsKey = "HT.Framework.HTFEditorWindow.Language." + GetType().FullName;
+                _languagePrefsKey = $"HT.Framework.HTFEditorWindow.Language.{GetType().FullName}";
                 CurrentLanguage = (Language)EditorPrefs.GetInt(_languagePrefsKey, 1);
             }
 
@@ -289,7 +288,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("{0} 窗口发现相同Key的本地化词汇：{1}！", GetType().FullName, english));
+                Log.Error($"{GetType().FullName} 窗口发现相同Key的本地化词汇：{english}！");
             }
         }
         /// <summary>
@@ -305,7 +304,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("{0} 窗口发现相同Key的本地化词汇：{1}！", GetType().FullName, english));
+                Log.Error($"{GetType().FullName} 窗口发现相同Key的本地化词汇：{english}！");
             }
         }
         /// <summary>

@@ -44,16 +44,16 @@ namespace HT.Framework
             if (GUILayout.Button("Export Step Data To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("Export Step Data", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
-                if (path != "")
+                if (!string.IsNullOrEmpty(path))
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
-                        EditorUtility.DisplayProgressBar("Export......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
-                        if (Target.Content[i].Ancillary != "")
+                        EditorUtility.DisplayProgressBar("Export......", $"{i}/{Target.Content.Count}", (float)i / Target.Content.Count);
+                        if (!string.IsNullOrEmpty(Target.Content[i].Ancillary))
                         {
-                            File.AppendAllText(path, "【" + Target.Content[i].Ancillary + "】\r\n", Encoding.UTF8);
+                            File.AppendAllText(path, $"【{Target.Content[i].Ancillary}】\r\n", Encoding.UTF8);
                         }
-                        File.AppendAllText(path, (i + 1) + "、" + Target.Content[i].Name + "\r\n" + Target.Content[i].Prompt + "\r\n", Encoding.UTF8);
+                        File.AppendAllText(path, $"{i + 1}、{Target.Content[i].Name}\r\n{Target.Content[i].Prompt}\r\n", Encoding.UTF8);
                     }
                     EditorUtility.ClearProgressBar();
                 }
@@ -64,16 +64,16 @@ namespace HT.Framework
             if (GUILayout.Button("Export Step Name To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("Export Step Name", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
-                if (path != "")
+                if (!string.IsNullOrEmpty(path))
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
-                        EditorUtility.DisplayProgressBar("Export......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
-                        if (Target.Content[i].Ancillary != "")
+                        EditorUtility.DisplayProgressBar("Export......", $"{i}/{Target.Content.Count}", (float)i / Target.Content.Count);
+                        if (!string.IsNullOrEmpty(Target.Content[i].Ancillary))
                         {
-                            File.AppendAllText(path, "【" + Target.Content[i].Ancillary + "】\r\n", Encoding.UTF8);
+                            File.AppendAllText(path, $"【{Target.Content[i].Ancillary}】\r\n", Encoding.UTF8);
                         }
-                        File.AppendAllText(path, Target.Content[i].Name + "\r\n", Encoding.UTF8);
+                        File.AppendAllText(path, $"{Target.Content[i].Name}\r\n", Encoding.UTF8);
                     }
                     EditorUtility.ClearProgressBar();
                 }
@@ -84,12 +84,12 @@ namespace HT.Framework
             if (GUILayout.Button("Export Step Prompt To .txt"))
             {
                 string path = EditorUtility.SaveFilePanel("Export Step Prompt", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Target.name, "txt");
-                if (path != "")
+                if (!string.IsNullOrEmpty(path))
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
-                        EditorUtility.DisplayProgressBar("Export......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
-                        File.AppendAllText(path, Target.Content[i].Prompt + "\r\n", Encoding.UTF8);
+                        EditorUtility.DisplayProgressBar("Export......", $"{i}/{Target.Content.Count}", (float)i / Target.Content.Count);
+                        File.AppendAllText(path, $"{Target.Content[i].Prompt}\r\n", Encoding.UTF8);
                     }
                     EditorUtility.ClearProgressBar();
                 }
@@ -109,7 +109,7 @@ namespace HT.Framework
                     {
                         for (int i = 0; i < asset.Content.Count; i++)
                         {
-                            EditorUtility.DisplayProgressBar("Import......", i + "/" + asset.Content.Count, (float)i / asset.Content.Count);
+                            EditorUtility.DisplayProgressBar("Import......", $"{i}/{asset.Content.Count}", (float)i / asset.Content.Count);
                             Target.Content.Add(asset.Content[i].Clone());
                         }
                         HasChanged();
@@ -134,19 +134,19 @@ namespace HT.Framework
             _scroll = GUILayout.BeginScrollView(_scroll);
             for (int i = 0; i < Target.Content.Count; i++)
             {
-                if (Target.Content[i].Ancillary != "")
+                if (!string.IsNullOrEmpty(Target.Content[i].Ancillary))
                 {
                     GUILayout.BeginHorizontal();
                     GUI.color = Color.yellow;
-                    GUILayout.Label("【" + Target.Content[i].Ancillary + "】");
+                    GUILayout.Label($"【{Target.Content[i].Ancillary}】");
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
                 }
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(i + "." + Target.Content[i].Name);
+                GUILayout.Label($"{i}.{Target.Content[i].Name}");
                 GUILayout.FlexibleSpace();
-                GUILayout.Label("[" + Target.Content[i].Trigger + "]");
+                GUILayout.Label($"[{Target.Content[i].Trigger}]");
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();

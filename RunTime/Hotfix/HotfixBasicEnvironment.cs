@@ -106,7 +106,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Hotfix, "切换热更新流程失败：不存在流程 " + typeof(T).Name + " 或者流程未激活！");
+                throw new HTFrameworkException(HTFrameworkModule.Hotfix, $"切换热更新流程失败：不存在流程 {typeof(T).Name} 或者流程未激活！");
             }
         }
     }

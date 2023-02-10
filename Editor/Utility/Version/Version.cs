@@ -43,7 +43,7 @@ namespace HT.Framework
         /// <returns>版本号</returns>
         public string GetFullNumber()
         {
-            return string.Format("{0}.{1}.{2}", MajorNumber, MinorNumber, ReviseNumber);
+            return $"{MajorNumber}.{MinorNumber}.{ReviseNumber}";
         }
     }
 }

@@ -21,7 +21,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _isShowEvent1 = EditorGUILayout.Foldout(_isShowEvent1, "Event List: <object, EventHandlerBase> " + _helper.EventHandlerList1.Count, true);
+            _isShowEvent1 = EditorGUILayout.Foldout(_isShowEvent1, $"Event List: <object, EventHandlerBase> {_helper.EventHandlerList1.Count}", true);
             GUILayout.EndHorizontal();
 
             if (_isShowEvent1)
@@ -44,7 +44,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _isShowEvent2 = EditorGUILayout.Foldout(_isShowEvent2, "Event List: <> " + _helper.EventHandlerList2.Count, true);
+            _isShowEvent2 = EditorGUILayout.Foldout(_isShowEvent2, $"Event List: <> {_helper.EventHandlerList2.Count}", true);
             GUILayout.EndHorizontal();
 
             if (_isShowEvent2)
@@ -67,7 +67,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _isShowEvent3 = EditorGUILayout.Foldout(_isShowEvent3, "Event List: <EventHandlerBase> " + _helper.EventHandlerList3.Count, true);
+            _isShowEvent3 = EditorGUILayout.Foldout(_isShowEvent3, $"Event List: <EventHandlerBase> {_helper.EventHandlerList3.Count}", true);
             GUILayout.EndHorizontal();
 
             if (_isShowEvent3)

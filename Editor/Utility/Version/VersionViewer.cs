@@ -183,7 +183,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Release", EditorStyles.miniButtonLeft))
             {
-                if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to release new version？Current version will be changed to [" + _releaseVersion.GetFullNumber() + "]!", "Yes", "No"))
+                if (EditorUtility.DisplayDialog("Prompt", $"Are you sure you want to release new version？Current version will be changed to [{_releaseVersion.GetFullNumber()}]!", "Yes", "No"))
                 {
                     _versionInfo.PreviousVersions.Add(_versionInfo.CurrentVersion);
                     _versionInfo.CurrentVersion = _releaseVersion;

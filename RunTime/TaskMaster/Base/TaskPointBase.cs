@@ -108,7 +108,7 @@ namespace HT.Framework
             {
                 if (GetTarget == null)
                 {
-                    Log.Error("任务点 " + GetName + " 的目标为空，这是不被允许的！");
+                    Log.Error($"任务点 {GetName} 的目标为空，这是不被允许的！");
                     return null;
                 }
 
@@ -204,7 +204,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("任务控制器：开始任务点【{0}】时出错！错误描述：{1}", Name, e.ToString()));
+                Log.Error($"任务控制器：开始任务点【{Name}】时出错！错误描述：{e}");
             }
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, isAuto));
@@ -237,7 +237,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("任务控制器：指引任务点【{0}】时出错！错误描述：{1}", Name, e.ToString()));
+                Log.Error($"任务控制器：指引任务点【{Name}】时出错！错误描述：{e}");
             }
         }
         /// <summary>
@@ -300,7 +300,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("任务控制器：自动完成任务点【{0}】时出错！错误描述：{1}", Name, e.ToString()));
+                Log.Error($"任务控制器：自动完成任务点【{Name}】时出错！错误描述：{e}");
             }
 
             if (GetTaskTarget != null)
@@ -328,7 +328,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("任务控制器：结束任务点【{0}】时出错！错误描述：{1}", Name, e.ToString()));
+                Log.Error($"任务控制器：结束任务点【{Name}】时出错！错误描述：{e}");
             }
         }
 
@@ -814,7 +814,7 @@ namespace HT.Framework
                                 });
                                 gm.AddItem(new GUIContent(getWord("Delete Point")), false, () =>
                                 {
-                                    if (EditorUtility.DisplayDialog("Delete Task Point", "Are you sure you want to delete task point [" + Name + "]?", "Yes", "No"))
+                                    if (EditorUtility.DisplayDialog("Delete Task Point", $"Are you sure you want to delete task point [{Name}]?", "Yes", "No"))
                                     {
                                         DeletePoint(asset, content);
                                         GUI.changed = true;
@@ -876,7 +876,7 @@ namespace HT.Framework
                         case KeyCode.Delete:
                             if (IsSelected)
                             {
-                                if (EditorUtility.DisplayDialog("Delete Task Point", "Are you sure you want to delete task point [" + Name + "]?", "Yes", "No"))
+                                if (EditorUtility.DisplayDialog("Delete Task Point", $"Are you sure you want to delete task point [{Name}]?", "Yes", "No"))
                                 {
                                     DeletePoint(asset, content);
                                     GUI.changed = true;

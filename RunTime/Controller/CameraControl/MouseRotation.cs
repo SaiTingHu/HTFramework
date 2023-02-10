@@ -169,6 +169,15 @@ namespace HT.Framework
                 transform.position = _position;
             }
 
+            //排斥盒检测
+            if (Manager.FreeControlRepelBoxs.Count > 0)
+            {
+                foreach (var box in Manager.FreeControlRepelBoxs)
+                {
+                    transform.position = box.Repel(transform.position);
+                }
+            }
+
             //摄像机位置限制
             if (Manager.IsEnableBounds)
             {

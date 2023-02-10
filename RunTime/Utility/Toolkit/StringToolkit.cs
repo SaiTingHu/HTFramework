@@ -30,11 +30,11 @@ namespace HT.Framework
             if (NoRepeatNames.Contains(rawName))
             {
                 int index = 0;
-                string noRepeatName = rawName + " " + index.ToString();
+                string noRepeatName = $"{rawName} {index}";
                 while (NoRepeatNames.Contains(noRepeatName))
                 {
                     index += 1;
-                    noRepeatName = rawName + " " + index.ToString();
+                    noRepeatName = $"{rawName} {index}";
                 }
 
                 NoRepeatNames.Add(noRepeatName);

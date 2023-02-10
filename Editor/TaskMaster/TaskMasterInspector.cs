@@ -40,11 +40,11 @@ namespace HT.Framework
             if (Target.ContentAsset != null)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Task Content Count: " + Target.AllTaskContent.Count);
+                GUILayout.Label($"Task Content Count: {Target.AllTaskContent.Count}");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Is Running: " + Target.IsRunning);
+                GUILayout.Label($"Is Running: {Target.IsRunning}");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

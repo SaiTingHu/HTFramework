@@ -269,7 +269,7 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("Element " + i, GUILayout.Width(nameLength - 20));
+                GUILayout.Label($"Element {i}", GUILayout.Width(nameLength - 20));
                 GUILayout.TextField(materials[i] != null ? materials[i].name : "<None>", options);
                 GUILayout.EndHorizontal();
             }

@@ -442,7 +442,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            Log.Warning(string.Format("步骤控制者：发现相同GUID的目标！GUID：{0}\r\n目标物体：{1} 和 {2}", targetCaches[i].GUID, _targets[targetCaches[i].GUID].transform.FullName(), targetCaches[i].transform.FullName()));
+                            Log.Warning($"步骤控制者：发现相同GUID的目标！GUID：{targetCaches[i].GUID}\r\n目标物体：{_targets[targetCaches[i].GUID].transform.FullName()} 和 {targetCaches[i].transform.FullName()}");
                         }
                     }
                 }
@@ -455,7 +455,7 @@ namespace HT.Framework
                     StepContent content = ContentAsset.Content[i];
                     if (_stepContentIDs.ContainsKey(content.GUID))
                     {
-                        Log.Error(string.Format("步骤控制者：发现相同GUID的步骤！GUID：{0}\r\n步骤：{1} 和 {2}", content.GUID, _stepContentIDs[content.GUID].Name, content.Name));
+                        Log.Error($"步骤控制者：发现相同GUID的步骤！GUID：{content.GUID}\r\n步骤：{_stepContentIDs[content.GUID].Name} 和 {content.Name}");
                     }
                     else
                     {
@@ -476,7 +476,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error(string.Format("步骤控制者：【步骤：{0}】【{1}】目标没有找到，目标路径：{2}", i, content.Name, content.TargetPath));
+                        Log.Error($"步骤控制者：【步骤：{i}】【{content.Name}】目标没有找到，目标路径：{content.TargetPath}");
                     }
 
                     for (int j = 0; j < content.Operations.Count; j++)
@@ -488,7 +488,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            Log.Error(string.Format("步骤控制者：【步骤：{0}】【操作：{1}】目标没有找到，目标路径：{2}", i, operation.Name, operation.TargetPath));
+                            Log.Error($"步骤控制者：【步骤：{i}】【操作：{operation.Name}】目标没有找到，目标路径：{operation.TargetPath}");
                         }
                     }
 
@@ -749,7 +749,7 @@ namespace HT.Framework
                     }
                     catch (Exception e)
                     {
-                        Log.Error(string.Format("步骤控制器：指引步骤【{0}.{1}】的助手【{2}】时出错！错误描述：{3}", CurrentStepIndex, CurrentStepContent.Name, CurrentStepContent.Helper, e.ToString()));
+                        Log.Error($"步骤控制器：指引步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
                     }
                 }
                 else
@@ -852,7 +852,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
+                    Log.Error($"步骤控制器：【步骤：{_currentStepIndex + 1}】【{_currentContent.Name}】的目标丢失Button组件！");
                 }
             }
             //状态改变触发类型的步骤，自动重置状态
@@ -925,7 +925,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
+                        Log.Error($"步骤控制器：【步骤：{_currentStepIndex + 1}】【{_currentContent.Name}】的目标丢失Button组件！");
                     }
                 }
                 _currentButton = null;
@@ -982,7 +982,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
+                            Log.Error($"步骤控制器：【步骤：{_currentStepIndex + 1}】【{_currentContent.Name}】的目标丢失Button组件！");
                         }
                     }
                     _currentButton = null;
@@ -1039,7 +1039,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
+                        Log.Error($"步骤控制器：【步骤：{_currentStepIndex + 1}】【{_currentContent.Name}】的目标丢失Button组件！");
                     }
                 }
                 _currentButton = null;
@@ -1094,7 +1094,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            Log.Error(string.Format("步骤控制器：【步骤：{0}】【{1}】的目标丢失Button组件！", _currentStepIndex + 1, _currentContent.Name));
+                            Log.Error($"步骤控制器：【步骤：{_currentStepIndex + 1}】【{_currentContent.Name}】的目标丢失Button组件！");
                         }
                     }
                     _currentButton = null;
@@ -1183,14 +1183,14 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error(string.Format("步骤控制器：步骤【{0}.{1}】的助手【{2}】丢失！", CurrentStepIndex, CurrentStepContent.Name, CurrentStepContent.Helper));
+                        Log.Error($"步骤控制器：步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】丢失！");
                     }
                 }
                 return null;
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("步骤控制器：创建步骤【{0}.{1}】的助手【{2}】时出错！错误描述：{3}", CurrentStepIndex, CurrentStepContent.Name, CurrentStepContent.Helper, e.ToString()));
+                Log.Error($"步骤控制器：创建步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
                 return null;
             }
         }
@@ -1208,7 +1208,7 @@ namespace HT.Framework
                 }
                 catch (Exception e)
                 {
-                    Log.Error(string.Format("步骤控制器：跳过步骤【{0}.{1}】的助手【{2}】时出错！错误描述：{3}", CurrentStepIndex, CurrentStepContent.Name, CurrentStepContent.Helper, e.ToString()));
+                    Log.Error($"步骤控制器：跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
                 }
                 if (_currentHelper.SkipLifeTime > 0)
                 {
@@ -1231,7 +1231,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("步骤控制器：立即跳过步骤【{0}.{1}】的助手【{2}】时出错！错误描述：{3}", CurrentStepIndex, CurrentStepContent.Name, CurrentStepContent.Helper, e.ToString()));
+                Log.Error($"步骤控制器：立即跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
             }
         }
         /// <summary>
@@ -1249,7 +1249,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("步骤控制器：恢复步骤【{0}.{1}】的助手【{2}】时出错！错误描述：{3}", CurrentStepIndex, CurrentStepContent.Name, CurrentStepContent.Helper, e.ToString()));
+                Log.Error($"步骤控制器：恢复步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
             }
         }
         /// <summary>
@@ -1267,7 +1267,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error(string.Format("步骤控制器：销毁步骤【{0}.{1}】的助手【{2}】时出错！错误描述：{3}", CurrentStepIndex, CurrentStepContent.Name, CurrentStepContent.Helper, e.ToString()));
+                Log.Error($"步骤控制器：销毁步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
             }
         }
         /// <summary>

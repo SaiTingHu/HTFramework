@@ -157,13 +157,13 @@ namespace HT.Framework
                 OnException(logString, stackTrace, type);
 
                 _logInfoBuilder.Clear();
-                _logInfoBuilder.Append("[time]:" + DateTime.Now.ToString() + "\r\n\r\n");
-                _logInfoBuilder.Append("[type]:" + type.ToString() + "\r\n\r\n");
-                _logInfoBuilder.Append("[message]:" + logString + "\r\n\r\n");
-                _logInfoBuilder.Append("[stack trace]:" + stackTrace + "\r\n\r\n");
+                _logInfoBuilder.Append($"[time]:{DateTime.Now}\r\n\r\n");
+                _logInfoBuilder.Append($"[type]:{type}\r\n\r\n");
+                _logInfoBuilder.Append($"[message]:{logString}\r\n\r\n");
+                _logInfoBuilder.Append($"[stack trace]:{stackTrace}\r\n\r\n");
 
 #if UNITY_STANDALONE_WIN
-                string logPath = _logPath + "/" + DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff") + ".log";
+                string logPath = $"{_logPath}/{DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff")}.log";
                 File.AppendAllText(logPath, _logInfoBuilder.ToString(), Encoding.UTF8);
 
                 if (_module.IsEnableFeedback)
@@ -172,21 +172,21 @@ namespace HT.Framework
                     {
                         ProcessStartInfo process = new ProcessStartInfo();
                         process.FileName = _module.FeedbackProgramPath;
-                        process.Arguments = "\"" + logPath + "\"";
+                        process.Arguments = $"\"{logPath}\"";
                         Process pro = new Process();
                         pro.StartInfo = process;
                         pro.Start();
                     }
                     else
                     {
-                        File.AppendAllText(logPath, "[feedback]:Doesn't find feedback program!path: " + _module.FeedbackProgramPath + "\r\n", Encoding.UTF8);
+                        File.AppendAllText(logPath, $"[feedback]:Doesn't find feedback program!path: {_module.FeedbackProgramPath}\r\n", Encoding.UTF8);
                     }
                     Application.Quit();
                 }
 #endif
                 if (_module.IsEnableMailReport)
                 {
-                    ReportMail(Application.productName + ".Exception." + DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), _logInfoBuilder.ToString());
+                    ReportMail($"{Application.productName}.Exception.{DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss")}", _logInfoBuilder.ToString());
                 }
             }
         }

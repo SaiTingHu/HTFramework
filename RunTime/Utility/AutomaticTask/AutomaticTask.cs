@@ -110,7 +110,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error(string.Format("自动化任务：依赖注入（Path）失败，字段 {0} 的类型不被支持！", fieldInfos[i].Name));
+                        Log.Error($"自动化任务：依赖注入（Path）失败，字段 {fieldInfos[i].Name} 的类型不被支持！");
                     }
                     count += 1;
                 }
@@ -123,7 +123,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error(string.Format("自动化任务：依赖注入（UI）失败，字段 {0} 必须为UI逻辑类对象（UILogicBase），且不能为抽象类！", fieldInfos[i].Name));
+                        Log.Error($"自动化任务：依赖注入（UI）失败，字段 {fieldInfos[i].Name} 必须为UI逻辑类对象（UILogicBase），且不能为抽象类！");
                     }
                     count += 1;
                 }
@@ -154,7 +154,7 @@ namespace HT.Framework
 
                 if (!fieldInfos[i].FieldType.IsSubclassOf(typeof(UIBehaviour)))
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，字段 {0}.{1} 的类型不支持数据绑定，只有 UnityEngine.EventSystems.UIBehaviour 的子类型支持数据绑定！", type.FullName, fieldInfos[i].Name));
+                    Log.Error($"自动化任务：数据绑定失败，字段 {type.FullName}.{fieldInfos[i].Name} 的类型不支持数据绑定，只有 UnityEngine.EventSystems.UIBehaviour 的子类型支持数据绑定！");
                     continue;
                 }
 
@@ -162,18 +162,18 @@ namespace HT.Framework
                 DataBindingAttribute attribute = fieldInfos[i].GetCustomAttribute<DataBindingAttribute>();
                 if (attribute.TargetType == null)
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，字段 {0}.{1} 绑定的目标数据模型类不存在！", type.FullName, fieldInfos[i].Name));
+                    Log.Error($"自动化任务：数据绑定失败，字段 {type.FullName}.{fieldInfos[i].Name} 绑定的目标数据模型类不存在！");
                     continue;
                 }
                 DataModelBase dataModel = Main.Current.GetDataModel(attribute.TargetType);
                 if (dataModel == null)
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，数据模型类 {0} 未添加至当前环境！", attribute.TargetType.FullName));
+                    Log.Error($"自动化任务：数据绑定失败，数据模型类 {attribute.TargetType.FullName} 未添加至当前环境！");
                     continue;
                 }
 
                 //获取绑定的目标数据模型的数据字段
-                string fieldName = attribute.TargetType.FullName + "." + attribute.TargetField;
+                string fieldName = $"{attribute.TargetType.FullName}.{attribute.TargetField}";
                 FieldInfo dataField = null;
                 if (targetFieldsCache.ContainsKey(fieldName))
                 {
@@ -189,12 +189,12 @@ namespace HT.Framework
                 }
                 if (dataField == null)
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，未找到字段 {0}.{1} 绑定的目标数据字段 {2}！", type.FullName, fieldInfos[i].Name, fieldName));
+                    Log.Error($"自动化任务：数据绑定失败，未找到字段 {type.FullName}.{fieldInfos[i].Name} 绑定的目标数据字段 {fieldName}！");
                     continue;
                 }
                 if (!(dataField.FieldType.BaseType.IsGenericType && dataField.FieldType.BaseType.GetGenericTypeDefinition() == typeof(BindableType<>)))
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，目标数据字段 {0} 并不是可绑定的数据类型 BindableType！", fieldName));
+                    Log.Error($"自动化任务：数据绑定失败，目标数据字段 {fieldName} 并不是可绑定的数据类型 BindableType！");
                     continue;
                 }
 
@@ -210,7 +210,7 @@ namespace HT.Framework
                 object controlValue = fieldInfos[i].GetValue(instance);
                 if (controlValue == null)
                 {
-                    Log.Error(string.Format("自动化任务：数据绑定失败，字段 {0}.{1} 是个空引用！", type.FullName, fieldInfos[i].Name));
+                    Log.Error($"自动化任务：数据绑定失败，字段 {type.FullName}.{fieldInfos[i].Name} 是个空引用！");
                     continue;
                 }
 

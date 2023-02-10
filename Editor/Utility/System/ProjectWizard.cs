@@ -301,7 +301,7 @@ namespace HT.Framework
             }
             else
             {
-                folder.SetGuide(true, string.Format("Put the {0} in this folder", folder.Name));
+                folder.SetGuide(true, $"Put the {folder.Name} in this folder");
             }
         }
         private void Generate()
@@ -344,7 +344,7 @@ namespace HT.Framework
             if (_isCreateUIEdit && _UIEditFolder != null && _UIEditName != "")
             {
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-                string scenePath = _UIEditFolder.Path + "/" + _UIEditName + ".unity";
+                string scenePath = $"{_UIEditFolder.Path}/{_UIEditName}.unity";
 
                 GameObject uiRoot = new GameObject("Canvas");
                 uiRoot.layer = LayerMask.NameToLayer("UI");
@@ -373,13 +373,13 @@ namespace HT.Framework
             if (_isCreateRegularEdit && _RegularEditFolder != null && _RegularEditName != "")
             {
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-                string scenePath = _RegularEditFolder.Path + "/" + _RegularEditName + ".unity";
+                string scenePath = $"{_RegularEditFolder.Path}/{_RegularEditName}.unity";
 
                 GameObject light = new GameObject("Directional Light");
                 light.AddComponent<Light>();
 
                 EditorSceneManager.MarkSceneDirty(scene);
-                EditorSceneManager.SaveScene(scene, _RegularEditFolder.Path + "/" + _RegularEditName + ".unity");
+                EditorSceneManager.SaveScene(scene, $"{_RegularEditFolder.Path}/{_RegularEditName}.unity");
                 AssetDatabase.Refresh();
 
                 EditorSettings.prefabRegularEnvironment = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
@@ -404,14 +404,14 @@ namespace HT.Framework
                     {
                         if (_procedureFolder != null && _initialProcedure != "")
                         {
-                            string path = _procedureFolder.FullPath + "/" + _initialProcedure + ".cs";
+                            string path = $"{_procedureFolder.FullPath}/{_initialProcedure}.cs";
                             if (!File.Exists(path))
                             {
                                 TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + "ProcedureTemplate.txt", typeof(TextAsset)) as TextAsset;
                                 if (asset)
                                 {
                                     string code = asset.text;
-                                    code = code.Replace("新建流程", "初始流程（运行 " + _mainSceneName + " 场景会首先进入此流程）");
+                                    code = code.Replace("新建流程", $"初始流程（运行 {_mainSceneName} 场景会首先进入此流程）");
                                     code = code.Replace("#SCRIPTNAME#", _initialProcedure);
                                     File.AppendAllText(path, code, Encoding.UTF8);
                                     asset = null;
@@ -423,7 +423,7 @@ namespace HT.Framework
                             }
                             else
                             {
-                                Log.Error("新建初始流程失败，已存在脚本 " + path);
+                                Log.Error($"新建初始流程失败，已存在脚本 {path}");
                             }
                         }
                     }
@@ -434,7 +434,7 @@ namespace HT.Framework
                 }
 
                 EditorSceneManager.MarkSceneDirty(scene);
-                EditorSceneManager.SaveScene(scene, _mainSceneFolder.Path + "/" + _mainSceneName + ".unity");
+                EditorSceneManager.SaveScene(scene, $"{_mainSceneFolder.Path}/{_mainSceneName}.unity");
                 AssetDatabase.Refresh();
             }
         }
@@ -456,7 +456,7 @@ namespace HT.Framework
                 SubFolders = new List<Folder>();
                 Name = name;
                 Path = Parent == null ? ("Assets/" + Name) : (Parent.Path + "/" + Name);
-                FullPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + "/" + Path;
+                FullPath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("/")) + $"/{Path}";
 
                 if (Parent != null)
                 {

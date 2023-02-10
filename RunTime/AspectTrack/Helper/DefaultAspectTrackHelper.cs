@@ -72,7 +72,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("新增拦截条件失败：已存在同名拦截条件 " + conditionName + " ！");
+                Log.Warning($"新增拦截条件失败：已存在同名拦截条件 {conditionName} ！");
             }
         }
         /// <summary>
@@ -154,7 +154,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("获取代理对象失败：真实对象 " + realObject.ToString() + " 并不存在代理对象！");
+                Log.Warning($"获取代理对象失败：真实对象 {realObject.ToString()} 并不存在代理对象！");
                 return null;
             }
         }
@@ -171,7 +171,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("获取代理者失败：真实对象 " + realObject.ToString() + " 并不存在代理者！");
+                Log.Warning($"获取代理者失败：真实对象 {realObject.ToString()} 并不存在代理者！");
                 return null;
             }
         }

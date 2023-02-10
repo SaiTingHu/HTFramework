@@ -89,7 +89,7 @@ namespace HT.Framework
                     PlayTimelineExecute();
                     break;
                 default:
-                    Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 Execute 定义！");
+                    Log.Warning($"步骤控制者：[{OperationType} 操作] 没有可以执行的 Execute 定义！");
                     break;
             }
         }
@@ -150,7 +150,7 @@ namespace HT.Framework
                 Renderer renderer = Target.GetComponent<Renderer>();
                 if (!renderer)
                 {
-                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Renderer！无法播放颜色改变动画！");
+                    Log.Error($"步骤控制者：目标 {Target.name} 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
                 renderer.material.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
@@ -160,7 +160,7 @@ namespace HT.Framework
                 Graphic graphic = Target.GetComponent<Graphic>();
                 if (!graphic)
                 {
-                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Graphic！无法播放颜色改变动画！");
+                    Log.Error($"步骤控制者：目标 {Target.name} 丢失组件Graphic！无法播放颜色改变动画！");
                     return;
                 }
                 graphic.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
@@ -193,7 +193,7 @@ namespace HT.Framework
         {
             if (!Target.GetComponent<TextMesh>())
             {
-                Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件TextMesh！无法设置TextMesh文本！");
+                Log.Error($"步骤控制者：目标 {Target.name} 丢失组件TextMesh！无法设置TextMesh文本！");
                 return;
             }
             Target.GetComponent<TextMesh>().text = StringValue;
@@ -228,7 +228,7 @@ namespace HT.Framework
             else
             {
 
-                Log.Error("步骤控制者：未获取到组件类型 " + StringValue + " ！");
+                Log.Error($"步骤控制者：未获取到组件类型 {StringValue} ！");
             }
         }
         private void TransformExecute()
@@ -320,7 +320,7 @@ namespace HT.Framework
                     PlayTimelineSkip();
                     break;
                 default:
-                    Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 Skip 定义！");
+                    Log.Warning($"步骤控制者：[{OperationType} 操作] 没有可以执行的 Skip 定义！");
                     break;
             }
         }
@@ -381,7 +381,7 @@ namespace HT.Framework
                 Renderer renderer = Target.GetComponent<Renderer>();
                 if (!renderer)
                 {
-                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Renderer！无法播放颜色改变动画！");
+                    Log.Error($"步骤控制者：目标 {Target.name} 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
                 renderer.material.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
@@ -391,7 +391,7 @@ namespace HT.Framework
                 Graphic graphic = Target.GetComponent<Graphic>();
                 if (!graphic)
                 {
-                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Graphic！无法播放颜色改变动画！");
+                    Log.Error($"步骤控制者：目标 {Target.name} 丢失组件Graphic！无法播放颜色改变动画！");
                     return;
                 }
                 graphic.DOColor(ColorValue, ElapseTime).SetEase(AnimationEase);
@@ -424,7 +424,7 @@ namespace HT.Framework
         {
             if (!Target.GetComponent<TextMesh>())
             {
-                Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件TextMesh！无法设置TextMesh文本！");
+                Log.Error($"步骤控制者：目标 {Target.name} 丢失组件TextMesh！无法设置TextMesh文本！");
                 return;
             }
             Target.GetComponent<TextMesh>().text = StringValue;
@@ -458,7 +458,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error("步骤控制者：未获取到组件类型 " + StringValue + " ！");
+                Log.Error($"步骤控制者：未获取到组件类型 {StringValue} ！");
             }
         }
         private void TransformSkip()
@@ -550,7 +550,7 @@ namespace HT.Framework
                     PlayTimelineSkipImmediate();
                     break;
                 default:
-                    Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 SkipImmediate 定义！");
+                    Log.Warning($"步骤控制者：[{OperationType} 操作] 没有可以执行的 SkipImmediate 定义！");
                     break;
             }
         }
@@ -580,7 +580,7 @@ namespace HT.Framework
                 Renderer renderer = Target.GetComponent<Renderer>();
                 if (!renderer)
                 {
-                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Renderer！无法播放颜色改变动画！");
+                    Log.Error($"步骤控制者：目标 {Target.name} 丢失组件Renderer！无法播放颜色改变动画！");
                     return;
                 }
                 renderer.material.color = ColorValue;
@@ -590,7 +590,7 @@ namespace HT.Framework
                 Graphic graphic = Target.GetComponent<Graphic>();
                 if (!graphic)
                 {
-                    Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件Graphic！无法播放颜色改变动画！");
+                    Log.Error($"步骤控制者：目标 {Target.name} 丢失组件Graphic！无法播放颜色改变动画！");
                     return;
                 }
                 graphic.color = ColorValue;
@@ -623,7 +623,7 @@ namespace HT.Framework
         {
             if (!Target.GetComponent<TextMesh>())
             {
-                Log.Error("步骤控制者：目标 " + Target.name + " 丢失组件TextMesh！无法设置TextMesh文本！");
+                Log.Error($"步骤控制者：目标 {Target.name} 丢失组件TextMesh！无法设置TextMesh文本！");
                 return;
             }
             Target.GetComponent<TextMesh>().text = StringValue;
@@ -657,7 +657,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error("步骤控制者：未获取到组件类型 " + StringValue + " ！");
+                Log.Error($"步骤控制者：未获取到组件类型 {StringValue} ！");
             }
         }
         private void TransformSkipImmediate()
@@ -778,7 +778,7 @@ namespace HT.Framework
                     PlayTimelineGUI(getWord);
                     break;
                 default:
-                    Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 OnEditorGUI 定义！");
+                    Log.Warning($"步骤控制者：[{OperationType} 操作] 没有可以执行的 OnEditorGUI 定义！");
                     break;
             }
         }
@@ -1225,7 +1225,7 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUI.color = Color.cyan;
-                GUILayout.Label(string.Format("{0} {1} {2}", getWord("Delay Time"), ElapseTime, getWord("Second")));
+                GUILayout.Label($"{getWord("Delay Time")} {ElapseTime} {getWord("Second")}");
                 GUI.color = Color.white;
                 GUILayout.EndHorizontal();
             }
@@ -1519,7 +1519,7 @@ namespace HT.Framework
                     ChangeParentPreviewTarget();
                     break;
                 default:
-                    Log.Warning("步骤控制者：[" + OperationType + " 操作] 没有可以执行的 InitPreviewTarget 定义！");
+                    Log.Warning($"步骤控制者：[{OperationType} 操作] 没有可以执行的 InitPreviewTarget 定义！");
                     break;
             }
         }

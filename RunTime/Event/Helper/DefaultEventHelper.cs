@@ -92,7 +92,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅I型事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, $"订阅I型事件失败：不存在可以订阅的事件类型 {type.Name} ！");
             }
         }
         /// <summary>
@@ -108,7 +108,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅II型事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, $"订阅II型事件失败：不存在可以订阅的事件类型 {type.Name} ！");
             }
         }
         /// <summary>
@@ -124,7 +124,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "订阅III型事件失败：不存在可以订阅的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, $"订阅III型事件失败：不存在可以订阅的事件类型 {type.Name} ！");
             }
         }
         /// <summary>
@@ -204,7 +204,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出I型事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, $"抛出I型事件失败：不存在可以抛出的事件类型 {type.Name} ！");
             }
         }
         /// <summary>
@@ -219,7 +219,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出II型事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, $"抛出II型事件失败：不存在可以抛出的事件类型 {type.Name} ！");
             }
         }
         /// <summary>
@@ -242,7 +242,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Event, "抛出III型事件失败：不存在可以抛出的事件类型 " + type.Name + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.Event, $"抛出III型事件失败：不存在可以抛出的事件类型 {type.Name} ！");
             }
         }
     }

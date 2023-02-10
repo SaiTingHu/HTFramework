@@ -1783,7 +1783,7 @@ namespace HT.Framework
         /// </summary>
         private void DeleteStepContent(int contentIndex)
         {
-            if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete step " + _contentAsset.Content[contentIndex].Name + "？", "Yes", "No"))
+            if (EditorUtility.DisplayDialog("Prompt", $"Are you sure delete step {_contentAsset.Content[contentIndex].Name}？", "Yes", "No"))
             {
                 StopPreviewInStep(contentIndex);
                 _contentAsset.Content.RemoveAt(contentIndex);
@@ -1922,7 +1922,7 @@ namespace HT.Framework
                     showName = content.Name;
                     break;
                 case StepListShowType.IDAndName:
-                    showName = content.GUID + " " + content.Name;
+                    showName = $"{content.GUID} {content.Name}";
                     break;
                 default:
                     showName = "<None>";
@@ -1930,11 +1930,11 @@ namespace HT.Framework
             }
             if (_isShowTrigger)
             {
-                showName = string.Format("{0} [{1}]", showName, GetWord(content.Trigger.ToString()));
+                showName = $"{showName} [{GetWord(content.Trigger.ToString())}]";
             }
             if (_isShowHelper && content.Helper != "<None>")
             {
-                showName = string.Format("{0} [{1}]", showName, content.Helper);
+                showName = $"{showName} [{content.Helper}]";
             }
             return showName;
         }
@@ -1954,7 +1954,7 @@ namespace HT.Framework
             {
                 gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentStepObj.Name), false, () =>
                 {
-                    GUIUtility.systemCopyBuffer = string.Format("StepContent|{0}|{1}", assetPath, _currentStepObj.GUID);
+                    GUIUtility.systemCopyBuffer = $"StepContent|{assetPath}|{_currentStepObj.GUID}";
                 });
             }
 
@@ -2030,7 +2030,7 @@ namespace HT.Framework
             {
                 gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentOperationObj.Name), false, () =>
                 {
-                    GUIUtility.systemCopyBuffer = string.Format("StepOperation|{0}|{1}|{2}", assetPath, _currentStepObj.GUID, _currentOperationObj.GUID);
+                    GUIUtility.systemCopyBuffer = $"StepOperation|{assetPath}|{_currentStepObj.GUID}|{_currentOperationObj.GUID}";
                 });
             }
         }
@@ -2181,7 +2181,7 @@ namespace HT.Framework
             content.GetExecuteTwice(_operationIndexs);
             foreach (var item in _operationIndexs)
             {
-                Log.Warning("注意：操作节点【" + content.Operations[item].Name + "】有两次或以上连线接入，可能会被多次执行！");
+                Log.Warning($"注意：操作节点【{content.Operations[item].Name}】有两次或以上连线接入，可能会被多次执行！");
             }
             _operationIndexs.Clear();
 

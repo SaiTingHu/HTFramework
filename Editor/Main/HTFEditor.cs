@@ -540,7 +540,7 @@ namespace HT.Framework
             }
             else
             {
-                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+                EditorGUILayout.HelpBox($"Property [{propertyName}] not found!", MessageType.Error);
             }
 
             if (isLine) EditorGUILayout.EndHorizontal();
@@ -564,7 +564,7 @@ namespace HT.Framework
             }
             else
             {
-                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+                EditorGUILayout.HelpBox($"Property [{propertyName}] not found!", MessageType.Error);
             }
 
             if (isLine) EditorGUILayout.EndHorizontal();
@@ -588,7 +588,7 @@ namespace HT.Framework
             }
             else
             {
-                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+                EditorGUILayout.HelpBox($"Property [{propertyName}] not found!", MessageType.Error);
             }
 
             if (isLine) EditorGUILayout.EndHorizontal();
@@ -613,7 +613,7 @@ namespace HT.Framework
             }
             else
             {
-                EditorGUILayout.HelpBox("Property [" + propertyName + "] not found!", MessageType.Error);
+                EditorGUILayout.HelpBox($"Property [{propertyName}] not found!", MessageType.Error);
             }
 
             if (isLine) EditorGUILayout.EndHorizontal();

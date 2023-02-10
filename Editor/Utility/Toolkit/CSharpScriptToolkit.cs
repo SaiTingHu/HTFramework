@@ -62,12 +62,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Error("打开脚本文件失败：没有找到 " + name + " 脚本文件！");
+                    Log.Error($"打开脚本文件失败：没有找到 {name} 脚本文件！");
                 }
             }
             else
             {
-                Log.Error("打开脚本文件失败：没有找到 " + name + " 脚本文件！");
+                Log.Error($"打开脚本文件失败：没有找到 {name} 脚本文件！");
             }
         }
         /// <summary>
@@ -93,12 +93,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Error("打开脚本文件失败：没有找到 " + name + " 脚本文件！");
+                    Log.Error($"打开脚本文件失败：没有找到 {name} 脚本文件！");
                 }
             }
             else
             {
-                Log.Error("打开脚本文件失败：没有找到 " + name + " 脚本文件！");
+                Log.Error($"打开脚本文件失败：没有找到 {name} 脚本文件！");
             }
         }
     }

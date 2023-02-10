@@ -88,13 +88,13 @@ namespace HT.Framework
             Type type = null;
             foreach (string assembly in RunTimeAssemblies)
             {
-                type = Type.GetType(typeName + "," + assembly);
+                type = Type.GetType($"{typeName},{assembly}");
                 if (type != null)
                 {
                     return type;
                 }
             }
-            Log.Error("获取类型 " + typeName + " 失败！当前运行时程序集中不存在此类型！");
+            Log.Error($"获取类型 {typeName} 失败！当前运行时程序集中不存在此类型！");
             return null;
         }
         /// <summary>

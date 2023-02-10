@@ -18,7 +18,7 @@ namespace HT.Framework
             _onClickEvents.Clear();
             for (int i = 0; i < _onClickEventCount; i++)
             {
-                _onClickEvents.Add(string.Format("{0}: {1} / {2}()", (i + 1).ToString(), _target.onClick.GetPersistentTarget(i).name, _target.onClick.GetPersistentMethodName(i)));
+                _onClickEvents.Add($"{i + 1}: {_target.onClick.GetPersistentTarget(i).name} / {_target.onClick.GetPersistentMethodName(i)}()");
             }
         }
         public override void OnDebuggerGUI()
@@ -29,7 +29,7 @@ namespace HT.Framework
             _target.interactable = BoolField("Interactable", _target.interactable);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("OnClick Event Count: " + _onClickEventCount);
+            GUILayout.Label($"OnClick Event Count: {_onClickEventCount}");
             GUI.enabled = _onClickEventCount > 0;
             if (GUILayout.Button("OnClick"))
             {

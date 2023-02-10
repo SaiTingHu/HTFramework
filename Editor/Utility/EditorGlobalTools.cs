@@ -200,7 +200,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Warning("对象 " + objs[i].name + " 没有Graphic组件，无法做为可捕获UI目标！");
+                    Log.Warning($"对象 {objs[i].name} 没有Graphic组件，无法做为可捕获UI目标！");
                 }
             }
         }
@@ -314,7 +314,7 @@ namespace HT.Framework
                 ECS_Entity.CreateEntity(Selection.gameObjects[i]);
                 index += 1;
             }
-            Log.Info("已完成ECS实体标记 " + index + " 个！");
+            Log.Info($"已完成ECS实体标记 {index} 个！");
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace HT.Framework
             List<Material> materials = new List<Material>();
             for (int i = 0; i < objs.Length; i++)
             {
-                EditorUtility.DisplayProgressBar("合并网格", "正在合并网格及纹理......（" + i + "/" + objs.Length + "）", ((float)i) / objs.Length);
+                EditorUtility.DisplayProgressBar("合并网格", $"正在合并网格及纹理......（{i}/{objs.Length}）", ((float)i) / objs.Length);
 
                 if (!objs[i].GetComponent<MeshRenderer>() || !objs[i].GetComponent<MeshFilter>())
                     continue;
@@ -822,19 +822,19 @@ namespace HT.Framework
             string fullPath = Application.dataPath + directory;
             if (!Directory.Exists(fullPath)) fullPath = Application.dataPath;
 
-            string path = EditorUtility.SaveFilePanel("Create " + scriptType + " Class", fullPath, "New" + scriptType, "cs");
+            string path = EditorUtility.SaveFilePanel($"Create {scriptType} Class", fullPath, $"New{scriptType}", "cs");
             if (!string.IsNullOrEmpty(path))
             {
                 if (!path.Contains(Application.dataPath))
                 {
-                    Log.Error("新建 " + scriptType + " 失败：创建路径必须在当前项目的 Assets 路径下！");
+                    Log.Error($"新建 {scriptType} 失败：创建路径必须在当前项目的 Assets 路径下！");
                     return "<None>";
                 }
 
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
                 if (!File.Exists(path))
                 {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + templateName + ".txt", typeof(TextAsset)) as TextAsset;
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath($"{EditorPrefsTable.ScriptTemplateFolder}{templateName}.txt", typeof(TextAsset)) as TextAsset;
                     if (asset)
                     {
                         string code = asset.text;
@@ -860,12 +860,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error("新建 " + scriptType + " 失败：丢失脚本模板文件！");
+                        Log.Error($"新建 {scriptType} 失败：丢失脚本模板文件！");
                     }
                 }
                 else
                 {
-                    Log.Error("新建 " + scriptType + " 失败：已存在类文件 " + className);
+                    Log.Error($"新建 {scriptType} 失败：已存在类文件 {className}！");
                 }
             }
             return "<None>";
@@ -885,19 +885,19 @@ namespace HT.Framework
             string fullPath = Application.dataPath + directory;
             if (!Directory.Exists(fullPath)) fullPath = Application.dataPath;
 
-            string path = EditorUtility.SaveFilePanel("Create " + scriptType + " Class", fullPath, "New" + scriptType, "cs");
+            string path = EditorUtility.SaveFilePanel($"Create {scriptType} Class", fullPath, $"New{scriptType}", "cs");
             if (!string.IsNullOrEmpty(path))
             {
                 if (!path.Contains(Application.dataPath))
                 {
-                    Log.Error("新建 " + scriptType + " 失败：创建路径必须在当前项目的 Assets 路径下！");
+                    Log.Error($"新建 {scriptType} 失败：创建路径必须在当前项目的 Assets 路径下！");
                     return "<None>";
                 }
 
                 string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
                 if (!File.Exists(path))
                 {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath(EditorPrefsTable.ScriptTemplateFolder + templateName + ".txt", typeof(TextAsset)) as TextAsset;
+                    TextAsset asset = AssetDatabase.LoadAssetAtPath($"{EditorPrefsTable.ScriptTemplateFolder}{templateName}.txt", typeof(TextAsset)) as TextAsset;
                     if (asset)
                     {
                         string code = asset.text;
@@ -927,12 +927,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error("新建 " + scriptType + " 失败：丢失脚本模板文件！");
+                        Log.Error($"新建 {scriptType} 失败：丢失脚本模板文件！");
                     }
                 }
                 else
                 {
-                    Log.Error("新建 " + scriptType + " 失败：已存在类文件 " + className);
+                    Log.Error($"新建 {scriptType} 失败：已存在类文件 {className}！");
                 }
             }
             return "<None>";
@@ -948,7 +948,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector2 value, string format)
         {
-            return string.Format("Vector2({0}f,{1}f)", value.x.ToString(format), value.y.ToString(format));
+            return $"Vector2({value.x.ToString(format)}f,{value.y.ToString(format)}f)";
         }
         /// <summary>
         /// Vector3转换为标准Copy字符串
@@ -958,7 +958,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector3 value, string format)
         {
-            return string.Format("Vector3({0}f,{1}f,{2}f)", value.x.ToString(format), value.y.ToString(format), value.z.ToString(format));
+            return $"Vector3({value.x.ToString(format)}f,{value.y.ToString(format)}f,{value.z.ToString(format)}f)";
         }
         /// <summary>
         /// Vector4转换为标准Copy字符串
@@ -968,7 +968,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector4 value, string format)
         {
-            return string.Format("Vector4({0}f,{1}f,{2}f,{3}f)", value.x.ToString(format), value.y.ToString(format), value.z.ToString(format), value.w.ToString(format));
+            return $"Vector4({value.x.ToString(format)}f,{value.y.ToString(format)}f,{value.z.ToString(format)}f,{value.w.ToString(format)}f)";
         }
         /// <summary>
         /// Vector2Int转换为标准Copy字符串
@@ -977,7 +977,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector2Int value)
         {
-            return string.Format("Vector2Int({0},{1})", value.x, value.y);
+            return $"Vector2Int({value.x},{value.y})";
         }
         /// <summary>
         /// Vector3Int转换为标准Copy字符串
@@ -986,7 +986,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Vector3Int value)
         {
-            return string.Format("Vector3Int({0},{1},{2})", value.x, value.y, value.z);
+            return $"Vector3Int({value.x},{ value.y},{value.z})";
         }
         /// <summary>
         /// Quaternion转换为标准Copy字符串
@@ -996,7 +996,7 @@ namespace HT.Framework
         /// <returns>Copy字符串</returns>
         public static string ToCopyString(this Quaternion value, string format)
         {
-            return string.Format("Quaternion({0}f,{1}f,{2}f,{3}f)", value.x.ToString(format), value.y.ToString(format), value.z.ToString(format), value.w.ToString(format));
+            return $"Quaternion({value.x.ToString(format)}f,{value.y.ToString(format)}f,{value.z.ToString(format)}f,{value.w.ToString(format)}f)";
         }
         /// <summary>
         /// Bounds转换为标准Copy字符串

@@ -77,12 +77,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.FSM, "创建有限状态机数据类失败：数据类 " + Data + " 必须继承至有限状态机数据基类：FSMDataBase！");
+                        throw new HTFrameworkException(HTFrameworkModule.FSM, $"创建有限状态机数据类失败：数据类 {Data} 必须继承至有限状态机数据基类：FSMDataBase！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.FSM, "创建有限状态机数据类失败：丢失数据类 " + Data + " ！");
+                    throw new HTFrameworkException(HTFrameworkModule.FSM, $"创建有限状态机数据类失败：丢失数据类 {Data} ！");
                 }
             }
             //加载所有状态
@@ -102,28 +102,28 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.FSM, "加载有限状态失败：有限状态类 " + States[i] + " 必须继承至有限状态基类：FiniteStateBase！");
+                        throw new HTFrameworkException(HTFrameworkModule.FSM, $"加载有限状态失败：有限状态类 {States[i]} 必须继承至有限状态基类：FiniteStateBase！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.FSM, "加载有限状态失败：丢失有限状态类 " + States[i] + " ！");
+                    throw new HTFrameworkException(HTFrameworkModule.FSM, $"加载有限状态失败：丢失有限状态类 {States[i]} ！");
                 }
             }
             //设置默认状态、最终状态
             if (string.IsNullOrEmpty(DefaultState) || string.IsNullOrEmpty(FinalState) || _stateInstances.Count <= 0)
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "有限状态机 " + Name + " 的状态为空！或未指定默认状态、最终状态！");
+                throw new HTFrameworkException(HTFrameworkModule.FSM, $"有限状态机 {Name} 的状态为空！或未指定默认状态、最终状态！");
             }
             _defaultState = ReflectionToolkit.GetTypeInRunTimeAssemblies(DefaultState);
             if (_defaultState == null)
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "有限状态机 " + Name + " 丢失了默认状态 " + DefaultState + "！");
+                throw new HTFrameworkException(HTFrameworkModule.FSM, $"有限状态机 {Name} 丢失了默认状态 {DefaultState}！");
             }
             _finalState = ReflectionToolkit.GetTypeInRunTimeAssemblies(FinalState);
             if (_finalState == null)
             {
-                throw new HTFrameworkException(HTFrameworkModule.FSM, "有限状态机 " + Name + " 丢失了最终状态 " + FinalState + "！");
+                throw new HTFrameworkException(HTFrameworkModule.FSM, $"有限状态机 {Name} 丢失了最终状态 {FinalState}！");
             }
             _isAutomate = CurrentData != null ? CurrentData.IsAutomate : false;
             _isSupportedDataDriver = CurrentData != null ? CurrentData.IsSupportedDataDriver : false;
@@ -282,7 +282,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("切换状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
+                Log.Warning($"切换状态失败：有限状态机 {Name} 不存在状态 {type.Name}！");
             }
         }
 
@@ -302,7 +302,7 @@ namespace HT.Framework
         {
             if (type == _defaultState || type == _finalState)
             {
-                Log.Warning("终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为该状态为初始状态或最终状态！");
+                Log.Warning($"终止状态失败：有限状态机 {Name} 无法终止状态 {type.Name}！因为该状态为初始状态或最终状态！");
                 return;
             }
 
@@ -310,7 +310,7 @@ namespace HT.Framework
             {
                 if (CurrentState == _stateInstances[type])
                 {
-                    Log.Warning("终止状态失败：有限状态机 " + Name + " 无法终止状态 " + type.Name + "！因为当前正处于该状态！");
+                    Log.Warning($"终止状态失败：有限状态机 {Name} 无法终止状态 {type.Name}！因为当前正处于该状态！");
                     return;
                 }
 
@@ -319,7 +319,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("终止状态失败：有限状态机 " + Name + " 不存在状态 " + type.Name + "！");
+                Log.Warning($"终止状态失败：有限状态机 {Name} 不存在状态 {type.Name}！");
             }
         }
 
@@ -347,7 +347,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("附加状态失败：有限状态机 " + Name + " 已存在状态 " + type.Name + "！");
+                Log.Warning($"附加状态失败：有限状态机 {Name} 已存在状态 {type.Name}！");
             }
         }
 

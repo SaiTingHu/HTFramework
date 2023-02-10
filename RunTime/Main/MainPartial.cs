@@ -355,12 +355,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Main, "获取内置模块失败：内置模块类 " + modules[i].GetType().FullName + " 的 InternalModule 标记与已有模块重复！");
+                        throw new HTFrameworkException(HTFrameworkModule.Main, $"获取内置模块失败：内置模块类 {modules[i].GetType().FullName} 的 InternalModule 标记与已有模块重复！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Main, "获取内置模块失败：内置模块类 " + modules[i].GetType().FullName + " 丢失了 InternalModule 标记！");
+                    throw new HTFrameworkException(HTFrameworkModule.Main, $"获取内置模块失败：内置模块类 {modules[i].GetType().FullName} 丢失了 InternalModule 标记！");
                 }
             }
 
@@ -453,7 +453,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Main, "获取内置模块失败：不存在名为 " + moduleName.ToString() + " 的内置模块！");
+                throw new HTFrameworkException(HTFrameworkModule.Main, $"获取内置模块失败：不存在名为 {moduleName} 的内置模块！");
             }
         }
         #endregion
@@ -495,12 +495,12 @@ namespace HT.Framework
                         }
                         else
                         {
-                            Log.Error(string.Format("创建授权者失败：授权者类 {0} 必须继承至基类：LicenserBase！", LicenserType));
+                            Log.Error($"创建授权者失败：授权者类 {LicenserType} 必须继承至基类：LicenserBase！");
                         }
                     }
                     else
                     {
-                        Log.Error(string.Format("创建授权者失败：丢失授权者类 {0}！", LicenserType));
+                        Log.Error($"创建授权者失败：丢失授权者类 {LicenserType}！");
                     }
                 }
                 else
@@ -576,12 +576,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error(string.Format("创建数据模型失败：数据模型类 {0} 必须继承至基类：DataModelBase！", DataModelTypes[i]));
+                        Log.Error($"创建数据模型失败：数据模型类 {DataModelTypes[i]} 必须继承至基类：DataModelBase！");
                     }
                 }
                 else
                 {
-                    Log.Error(string.Format("创建数据模型失败：丢失数据模型类 {0}！", DataModelTypes[i]));
+                    Log.Error($"创建数据模型失败：丢失数据模型类 {DataModelTypes[i]}！");
                 }
             }
         }
@@ -722,7 +722,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error("获取参数失败：当前不存在参数 " + parameterName + "！");
+                Log.Error($"获取参数失败：当前不存在参数 {parameterName}！");
                 return null;
             }
         }
@@ -740,7 +740,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error("获取参数失败：当前不存在参数 " + parameterName + "！");
+                Log.Error($"获取参数失败：当前不存在参数 {parameterName}！");
                 return null;
             }
         }
@@ -1094,7 +1094,7 @@ namespace HT.Framework
                 }
                 catch (Exception e)
                 {
-                    string error = string.Format("子线程执行中出现异常，子线程方法：{0}.{1}，异常信息：{2}", action.Target.GetType().FullName, action.Method.Name, e.Message);
+                    string error = $"子线程执行中出现异常，子线程方法：{action.Target.GetType().FullName}.{action.Method.Name}，异常信息：{e.Message}";
                     Log.Error(error);
                 }
                 finally
@@ -1124,7 +1124,7 @@ namespace HT.Framework
                 }
                 catch (Exception e)
                 {
-                    string error = string.Format("子线程执行中出现异常，子线程方法：{0}.{1}，异常信息：{2}", action.Target.GetType().FullName, action.Method.Name, e.Message);
+                    string error = $"子线程执行中出现异常，子线程方法：{action.Target.GetType().FullName}.{action.Method.Name}，异常信息：{e.Message}";
                     Log.Error(error);
                 }
                 finally

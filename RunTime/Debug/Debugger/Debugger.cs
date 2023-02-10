@@ -197,7 +197,7 @@ namespace HT.Framework
             #region Title
             GUILayout.BeginHorizontal();
             GUI.contentColor = _fpsColor;
-            if (GUILayout.Button(string.Format("{0}: {1}", GetWord("FPS"), FPS), GUILayout.Height(40)))
+            if (GUILayout.Button($"{GetWord("FPS")}: {FPS}", GUILayout.Height(40)))
             {
                 _isExpand = false;
                 RefreshMaskState();
@@ -268,13 +268,13 @@ namespace HT.Framework
                         _fpsColor = Color.white;
                     }
                     GUI.contentColor = (_showInfoLog ? Color.white : Color.gray);
-                    _showInfoLog = GUILayout.Toggle(_showInfoLog, string.Format("{0} [{1}]", GetWord("Info"), _infoLogCount), GUILayout.Height(20));
+                    _showInfoLog = GUILayout.Toggle(_showInfoLog, $"{GetWord("Info")} [{_infoLogCount}]", GUILayout.Height(20));
                     GUI.contentColor = (_showWarningLog ? Color.white : Color.gray);
-                    _showWarningLog = GUILayout.Toggle(_showWarningLog, string.Format("{0} [{1}]", GetWord("Warning"), _warningLogCount), GUILayout.Height(20));
+                    _showWarningLog = GUILayout.Toggle(_showWarningLog, $"{GetWord("Warning")} [{_warningLogCount}]", GUILayout.Height(20));
                     GUI.contentColor = (_showErrorLog ? Color.white : Color.gray);
-                    _showErrorLog = GUILayout.Toggle(_showErrorLog, string.Format("{0} [{1}]", GetWord("Error"), _errorLogCount), GUILayout.Height(20));
+                    _showErrorLog = GUILayout.Toggle(_showErrorLog, $"{GetWord("Error")} [{_errorLogCount}]", GUILayout.Height(20));
                     GUI.contentColor = (_showFatalLog ? Color.white : Color.gray);
-                    _showFatalLog = GUILayout.Toggle(_showFatalLog, string.Format("{0} [{1}]", GetWord("Fatal"), _fatalLogCount), GUILayout.Height(20));
+                    _showFatalLog = GUILayout.Toggle(_showFatalLog, $"{GetWord("Fatal")} [{_fatalLogCount}]", GUILayout.Height(20));
                     GUI.contentColor = Color.white;
                     GUILayout.EndHorizontal();
 
@@ -323,7 +323,7 @@ namespace HT.Framework
                     _scrollCurrentLogView = GUILayout.BeginScrollView(_scrollCurrentLogView, "Box");
                     if (_currentLogIndex != -1)
                     {
-                        GUILayout.Label(_consoleLogs[_currentLogIndex].Message + "\r\n\r\n" + _consoleLogs[_currentLogIndex].StackTrace);
+                        GUILayout.Label($"{_consoleLogs[_currentLogIndex].Message}\r\n\r\n{_consoleLogs[_currentLogIndex].StackTrace}");
                     }
                     GUILayout.EndScrollView();
                     #endregion
@@ -348,7 +348,7 @@ namespace HT.Framework
                         GUI.contentColor = Color.white;
 
                         GUILayout.BeginHorizontal();
-                        GUILayout.Label(GetWord("Search") + ":", GUILayout.Width(60));
+                        GUILayout.Label($"{GetWord("Search")}:", GUILayout.Width(60));
                         _debuggerScene.GameObjectFiltrate = GUILayout.TextField(_debuggerScene.GameObjectFiltrate);
                         if (GUILayout.Button(GetWord("Search"), GUILayout.Width(60)))
                         {
@@ -403,7 +403,7 @@ namespace HT.Framework
                             if (_debuggerScene.IsReadyAddComponent)
                             {
                                 GUILayout.BeginHorizontal();
-                                GUILayout.Label(GetWord("Search") + ":", GUILayout.Width(60));
+                                GUILayout.Label($"{GetWord("Search")}:", GUILayout.Width(60));
                                 _debuggerScene.ComponentFiltrate = GUILayout.TextField(_debuggerScene.ComponentFiltrate);
                                 if (GUILayout.Button(GetWord("Search"), GUILayout.Width(60)))
                                 {
@@ -476,7 +476,7 @@ namespace HT.Framework
                     #region Memory
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    GUILayout.Label(GetWord("Memory") + " " + GetWord("Information"), GUILayout.Height(20));
+                    GUILayout.Label($"{GetWord("Memory")} {GetWord("Information")}", GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginVertical("Box", GUILayout.Height(275));
@@ -484,31 +484,31 @@ namespace HT.Framework
                     long memory = Profiler.GetTotalReservedMemoryLong() / 1000000;
                     if (memory > _maxTotalReservedMemory) _maxTotalReservedMemory = memory;
                     if (memory < _minTotalReservedMemory) _minTotalReservedMemory = memory;
-                    string text = string.Format("{0}: {1}MB        [{2}: {3}  {4}: {5}]", GetWord("Total Memory"), memory, GetWord("Min"), _minTotalReservedMemory, GetWord("Max"), _maxTotalReservedMemory);
+                    string text = $"{GetWord("Total Memory")}: {memory}MB        [{GetWord("Min")}: {_minTotalReservedMemory}  {GetWord("Max")}: {_maxTotalReservedMemory}]";
                     GUILayout.Label(text);
 
                     memory = Profiler.GetTotalAllocatedMemoryLong() / 1000000;
                     if (memory > _maxTotalAllocatedMemory) _maxTotalAllocatedMemory = memory;
                     if (memory < _minTotalAllocatedMemory) _minTotalAllocatedMemory = memory;
-                    text = string.Format("{0}: {1}MB        [{2}: {3}  {4}: {5}]", GetWord("Used Memory"), memory, GetWord("Min"), _minTotalAllocatedMemory, GetWord("Max"), _maxTotalAllocatedMemory);
+                    text = $"{GetWord("Used Memory")}: {memory}MB        [{GetWord("Min")}: {_minTotalAllocatedMemory}  {GetWord("Max")}: {_maxTotalAllocatedMemory}]";
                     GUILayout.Label(text);
 
                     memory = Profiler.GetTotalUnusedReservedMemoryLong() / 1000000;
                     if (memory > _maxTotalUnusedReservedMemory) _maxTotalUnusedReservedMemory = memory;
                     if (memory < _minTotalUnusedReservedMemory) _minTotalUnusedReservedMemory = memory;
-                    text = string.Format("{0}: {1}MB        [{2}: {3}  {4}: {5}]", GetWord("Free Memory"), memory, GetWord("Min"), _minTotalUnusedReservedMemory, GetWord("Max"), _maxTotalUnusedReservedMemory);
+                    text = $"{GetWord("Free Memory")}: {memory}MB        [{ GetWord("Min")}: {_minTotalUnusedReservedMemory}  {GetWord("Max")}: {_maxTotalUnusedReservedMemory}]";
                     GUILayout.Label(text);
 
                     memory = Profiler.GetMonoHeapSizeLong() / 1000000;
                     if (memory > _maxMonoHeapSize) _maxMonoHeapSize = memory;
                     if (memory < _minMonoHeapSize) _minMonoHeapSize = memory;
-                    text = string.Format("{0}: {1}MB        [{2}: {3}  {4}: {5}]", GetWord("Total Mono Memory"), memory, GetWord("Min"), _minMonoHeapSize, GetWord("Max"), _maxMonoHeapSize);
+                    text = $"{GetWord("Total Mono Memory")}: {memory}MB        [{GetWord("Min")}: {_minMonoHeapSize}  {GetWord("Max")}: {_maxMonoHeapSize}]";
                     GUILayout.Label(text);
 
                     memory = Profiler.GetMonoUsedSizeLong() / 1000000;
                     if (memory > _maxMonoUsedSize) _maxMonoUsedSize = memory;
                     if (memory < _minMonoUsedSize) _minMonoUsedSize = memory;
-                    text = string.Format("{0}: {1}MB        [{2}: {3}  {4}: {5}]", GetWord("Used Mono Memory"), memory, GetWord("Min"), _minMonoUsedSize, GetWord("Max"), _maxMonoUsedSize);
+                    text = $"{GetWord("Used Mono Memory")}: {memory}MB        [{GetWord("Min")}: {_minMonoUsedSize}  {GetWord("Max")}: {_maxMonoUsedSize}]";
                     GUILayout.Label(text);
 
                     GUILayout.EndVertical();
@@ -530,32 +530,32 @@ namespace HT.Framework
                     #region DrawCall
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    GUILayout.Label(GetWord("DrawCall") + " " + GetWord("Information"), GUILayout.Height(20));
+                    GUILayout.Label($"{GetWord("DrawCall")} {GetWord("Information")}", GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     _scrollDrawCallView = GUILayout.BeginScrollView(_scrollDrawCallView, "Box");
 #if UNITY_EDITOR
-                    GUILayout.Label(GetWord("DrawCalls") + ": " + UnityEditor.UnityStats.drawCalls);
-                    GUILayout.Label(GetWord("Batches") + ": " + UnityEditor.UnityStats.batches);
-                    GUILayout.Label(GetWord("Static Batched DrawCalls") + ": " + UnityEditor.UnityStats.staticBatchedDrawCalls);
-                    GUILayout.Label(GetWord("Static Batches") + ": " + UnityEditor.UnityStats.staticBatches);
-                    GUILayout.Label(GetWord("Dynamic Batched DrawCalls") + ": " + UnityEditor.UnityStats.dynamicBatchedDrawCalls);
-                    GUILayout.Label(GetWord("Dynamic Batches") + ": " + UnityEditor.UnityStats.dynamicBatches);
+                    GUILayout.Label($"{GetWord("DrawCalls")}: {UnityEditor.UnityStats.drawCalls}");
+                    GUILayout.Label($"{GetWord("Batches")}: {UnityEditor.UnityStats.batches}");
+                    GUILayout.Label($"{GetWord("Static Batched DrawCalls")}: {UnityEditor.UnityStats.staticBatchedDrawCalls}");
+                    GUILayout.Label($"{GetWord("Static Batches")}: {UnityEditor.UnityStats.staticBatches}");
+                    GUILayout.Label($"{GetWord("Dynamic Batched DrawCalls")}: {UnityEditor.UnityStats.dynamicBatchedDrawCalls}");
+                    GUILayout.Label($"{GetWord("Dynamic Batches")}: {UnityEditor.UnityStats.dynamicBatches}");
                     if (UnityEditor.UnityStats.triangles > 10000)
                     {
-                        GUILayout.Label(GetWord("Triangles") + ": " + UnityEditor.UnityStats.triangles / 10000 + "W");
+                        GUILayout.Label($"{GetWord("Triangles")}: {UnityEditor.UnityStats.triangles / 10000}W");
                     }
                     else
                     {
-                        GUILayout.Label(GetWord("Triangles") + ": " + UnityEditor.UnityStats.triangles);
+                        GUILayout.Label($"{GetWord("Triangles")}: {UnityEditor.UnityStats.triangles}");
                     }
                     if (UnityEditor.UnityStats.vertices > 10000)
                     {
-                        GUILayout.Label(GetWord("Vertices") + ": " + UnityEditor.UnityStats.vertices / 10000 + "W");
+                        GUILayout.Label($"{GetWord("Vertices")}: {UnityEditor.UnityStats.vertices / 10000}W");
                     }
                     else
                     {
-                        GUILayout.Label(GetWord("Vertices") + ": " + UnityEditor.UnityStats.vertices);
+                        GUILayout.Label($"{GetWord("Vertices")}: {UnityEditor.UnityStats.vertices}");
                     }
 #else
                     if (_isChinese)
@@ -574,24 +574,24 @@ namespace HT.Framework
                     #region System
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    GUILayout.Label(GetWord("System") + " " + GetWord("Information"), GUILayout.Height(20));
+                    GUILayout.Label($"{GetWord("System")} {GetWord("Information")}", GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     _scrollSystemView = GUILayout.BeginScrollView(_scrollSystemView, "Box");
-                    GUILayout.Label(GetWord("Operating System") + ": " + SystemInfo.operatingSystem);
-                    GUILayout.Label(GetWord("System Memory") + ": " + SystemInfo.systemMemorySize.ToString() + "MB");
-                    GUILayout.Label(GetWord("Processor") + ": " + SystemInfo.processorType);
-                    GUILayout.Label(GetWord("Number Of Processor") + ": " + SystemInfo.processorCount.ToString());
-                    GUILayout.Label(GetWord("Graphics Device Name") + ": " + SystemInfo.graphicsDeviceName);
-                    GUILayout.Label(GetWord("Graphics Device Type") + ": " + SystemInfo.graphicsDeviceType.ToString());
-                    GUILayout.Label(GetWord("Graphics Memory") + ": " + SystemInfo.graphicsMemorySize.ToString() + "MB");
-                    GUILayout.Label(GetWord("Graphics DeviceID") + ": " + SystemInfo.graphicsDeviceID.ToString());
-                    GUILayout.Label(GetWord("Graphics Device Vendor") + ": " + SystemInfo.graphicsDeviceVendor);
-                    GUILayout.Label(GetWord("Graphics Device Vendor ID") + ": " + SystemInfo.graphicsDeviceVendorID.ToString());
-                    GUILayout.Label(GetWord("Device Model") + ": " + SystemInfo.deviceModel);
-                    GUILayout.Label(GetWord("Device Name") + ": " + SystemInfo.deviceName);
-                    GUILayout.Label(GetWord("Device Type") + ": " + SystemInfo.deviceType.ToString());
-                    GUILayout.Label(GetWord("Device Unique Identifier") + ": " + SystemInfo.deviceUniqueIdentifier);
+                    GUILayout.Label($"{GetWord("Operating System")}: {SystemInfo.operatingSystem}");
+                    GUILayout.Label($"{GetWord("System Memory")}: {SystemInfo.systemMemorySize}MB");
+                    GUILayout.Label($"{GetWord("Processor")}: {SystemInfo.processorType}");
+                    GUILayout.Label($"{GetWord("Number Of Processor")}: {SystemInfo.processorCount}");
+                    GUILayout.Label($"{GetWord("Graphics Device Name")}: {SystemInfo.graphicsDeviceName}");
+                    GUILayout.Label($"{GetWord("Graphics Device Type")}: {SystemInfo.graphicsDeviceType}");
+                    GUILayout.Label($"{GetWord("Graphics Memory") }: {SystemInfo.graphicsMemorySize}MB");
+                    GUILayout.Label($"{GetWord("Graphics DeviceID")}: {SystemInfo.graphicsDeviceID}");
+                    GUILayout.Label($"{GetWord("Graphics Device Vendor")}: {SystemInfo.graphicsDeviceVendor}");
+                    GUILayout.Label($"{GetWord("Graphics Device Vendor ID")}: {SystemInfo.graphicsDeviceVendorID}");
+                    GUILayout.Label($"{GetWord("Device Model")}: {SystemInfo.deviceModel}");
+                    GUILayout.Label($"{GetWord("Device Name")}: {SystemInfo.deviceName}");
+                    GUILayout.Label($"{GetWord("Device Type")}: {SystemInfo.deviceType}");
+                    GUILayout.Label($"{GetWord("Device Unique Identifier")}: {SystemInfo.deviceUniqueIdentifier}");
                     GUILayout.EndScrollView();
                     #endregion
                     break;
@@ -599,14 +599,14 @@ namespace HT.Framework
                     #region Screen
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    GUILayout.Label(GetWord("Screen") + " " + GetWord("Information"), GUILayout.Height(20));
+                    GUILayout.Label($"{GetWord("Screen")} {GetWord("Information")}", GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginVertical("Box", GUILayout.Height(250), GUILayout.Height(275));
-                    GUILayout.Label(GetWord("DPI") + ": " + Screen.dpi.ToString());
-                    GUILayout.Label(GetWord("Resolution") + ": " + Screen.width.ToString() + " x " + Screen.height.ToString());
-                    GUILayout.Label(GetWord("Device Resolution") + ": " + Screen.currentResolution.ToString());
-                    GUILayout.Label(GetWord("Device Sleep") + ": " + (Screen.sleepTimeout == SleepTimeout.NeverSleep ? GetWord("Never Sleep") : GetWord("System Setting")));
+                    GUILayout.Label($"{GetWord("DPI")}: {Screen.dpi}");
+                    GUILayout.Label($"{GetWord("Resolution")}: {Screen.width} x {Screen.height}");
+                    GUILayout.Label($"{GetWord("Device Resolution")}: {Screen.currentResolution}");
+                    GUILayout.Label($"{GetWord("Device Sleep")}: " + (Screen.sleepTimeout == SleepTimeout.NeverSleep ? GetWord("Never Sleep") : GetWord("System Setting")));
                     GUILayout.EndVertical();
 
                     GUILayout.BeginHorizontal();
@@ -636,13 +636,13 @@ namespace HT.Framework
                     #region Quality
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    GUILayout.Label(GetWord("Quality") + " " + GetWord("Information"), GUILayout.Height(20));
+                    GUILayout.Label($"{GetWord("Quality")} {GetWord("Information")}", GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginVertical("Box", GUILayout.Height(275));
-                    GUILayout.Label(GetWord("Graphics Quality") + ": " + GetWord(QualitySettings.names[QualitySettings.GetQualityLevel()]));
-                    GUILayout.Label(GetWord("Min FPS") + ": " + MinFPS.ToString());
-                    GUILayout.Label(GetWord("Max FPS") + ": " + MaxFPS.ToString());
+                    GUILayout.Label($"{GetWord("Graphics Quality")}: {GetWord(QualitySettings.names[QualitySettings.GetQualityLevel()])}");
+                    GUILayout.Label($"{GetWord("Min FPS")}: {MinFPS}");
+                    GUILayout.Label($"{GetWord("Max FPS")}: {MaxFPS}");
                     GUILayout.EndVertical();
 
                     GUILayout.BeginHorizontal();
@@ -661,41 +661,41 @@ namespace HT.Framework
                     #region Time
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    GUILayout.Label(GetWord("Time") + " " + GetWord("Information"), GUILayout.Height(20));
+                    GUILayout.Label($"{GetWord("Time")} {GetWord("Information")}", GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginVertical("Box", GUILayout.Height(275));
-                    GUILayout.Label(GetWord("Current Time") + ": " + DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss"));
-                    GUILayout.Label(GetWord("Elapse Time") + ": " + ((int)Time.realtimeSinceStartup).ToString());
-                    GUILayout.Label(GetWord("Time Scale") + ": " + Time.timeScale.ToString());
+                    GUILayout.Label($"{GetWord("Current Time")}: {DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss")}");
+                    GUILayout.Label($"{GetWord("Elapse Time")}: {(int)Time.realtimeSinceStartup}");
+                    GUILayout.Label($"{GetWord("Time Scale")}: {Time.timeScale}");
                     GUILayout.EndVertical();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("0.1 " + GetWord("Multiple"), GUILayout.Height(20)))
+                    if (GUILayout.Button($"0.1 {GetWord("Multiple")}", GUILayout.Height(20)))
                     {
                         Time.timeScale = 0.1f;
                     }
-                    if (GUILayout.Button("0.2 " + GetWord("Multiple"), GUILayout.Height(20)))
+                    if (GUILayout.Button($"0.2 {GetWord("Multiple")}", GUILayout.Height(20)))
                     {
                         Time.timeScale = 0.2f;
                     }
-                    if (GUILayout.Button("0.5 " + GetWord("Multiple"), GUILayout.Height(20)))
+                    if (GUILayout.Button($"0.5 {GetWord("Multiple")}", GUILayout.Height(20)))
                     {
                         Time.timeScale = 0.5f;
                     }
-                    if (GUILayout.Button("1 " + GetWord("Multiple"), GUILayout.Height(20)))
+                    if (GUILayout.Button($"1 {GetWord("Multiple")}", GUILayout.Height(20)))
                     {
                         Time.timeScale = 1;
                     }
-                    if (GUILayout.Button("2 " + GetWord("Multiple"), GUILayout.Height(20)))
+                    if (GUILayout.Button($"2 {GetWord("Multiple")}", GUILayout.Height(20)))
                     {
                         Time.timeScale = 2;
                     }
-                    if (GUILayout.Button("5 " + GetWord("Multiple"), GUILayout.Height(20)))
+                    if (GUILayout.Button($"5 {GetWord("Multiple")}", GUILayout.Height(20)))
                     {
                         Time.timeScale = 5;
                     }
-                    if (GUILayout.Button("10 " + GetWord("Multiple"), GUILayout.Height(20)))
+                    if (GUILayout.Button($"10 {GetWord("Multiple")}", GUILayout.Height(20)))
                     {
                         Time.timeScale = 10;
                     }
@@ -706,17 +706,17 @@ namespace HT.Framework
                     #region Environment
                     GUILayout.BeginHorizontal();
                     GUI.contentColor = Color.white;
-                    GUILayout.Label(GetWord("Environment") + " " + GetWord("Information"), GUILayout.Height(20));
+                    GUILayout.Label($"{GetWord("Environment")} {GetWord("Information")}", GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginVertical("Box", GUILayout.Height(275));
-                    GUILayout.Label(GetWord("Product Name") + ": " + Application.productName);
-                    GUILayout.Label(GetWord("Product Identifier") + ": " + Application.identifier);
-                    GUILayout.Label(GetWord("Product Version") + ": " + Application.version);
-                    GUILayout.Label(GetWord("Product DataPath") + ": " + Application.dataPath);
-                    GUILayout.Label(GetWord("Company Name") + ": " + Application.companyName);
-                    GUILayout.Label(GetWord("Unity Version") + ": " + Application.unityVersion);
-                    GUILayout.Label(GetWord("Has Pro License") + ": " + GetWord(Application.HasProLicense().ToString()));
+                    GUILayout.Label($"{GetWord("Product Name")}: {Application.productName}");
+                    GUILayout.Label($"{GetWord("Product Identifier")}: {Application.identifier}");
+                    GUILayout.Label($"{GetWord("Product Version")}: {Application.version}");
+                    GUILayout.Label($"{GetWord("Product DataPath")}: {Application.dataPath}");
+                    GUILayout.Label($"{GetWord("Company Name")}: {Application.companyName}");
+                    GUILayout.Label($"{GetWord("Unity Version")}: {Application.unityVersion}");
+                    GUILayout.Label($"{GetWord("Has Pro License")}: {GetWord(Application.HasProLicense().ToString())}");
                     string internetState = GetWord("NotReachable");
                     if (Application.internetReachability == NetworkReachability.NotReachable)
                         internetState = GetWord("No Network");
@@ -724,7 +724,7 @@ namespace HT.Framework
                         internetState = GetWord("WiFi");
                     else if (Application.internetReachability == NetworkReachability.ReachableViaCarrierDataNetwork)
                         internetState = GetWord("Data Network");
-                    GUILayout.Label(GetWord("Internet State") + ": " + internetState);
+                    GUILayout.Label($"{GetWord("Internet State")}: {internetState}");
                     GUILayout.EndVertical();
 
                     GUILayout.BeginHorizontal();
@@ -747,7 +747,7 @@ namespace HT.Framework
             GUI.DragWindow(_dragWindowRect);
 
             GUI.contentColor = _fpsColor;
-            if (GUILayout.Button(string.Format("{0}: {1}", GetWord("FPS"), FPS), GUILayout.Width(80), GUILayout.Height(30)))
+            if (GUILayout.Button($"{GetWord("FPS")}: {FPS}", GUILayout.Width(80), GUILayout.Height(30)))
             {
                 _isExpand = true;
                 RefreshMaskState();
@@ -783,7 +783,7 @@ namespace HT.Framework
                 log.Type = "Info";
                 _infoLogCount += 1;
             }
-            log.Name = string.Format("[{0}] [{1}] {2}", GetWord(log.Type), log.Time, log.Message);
+            log.Name = $"[{GetWord(log.Type)}] [{log.Time}] {log.Message}";
             _consoleLogs.Add(log);
 
             if (_warningLogCount > 0)
@@ -970,7 +970,7 @@ namespace HT.Framework
                 Texture2D texture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
                 texture.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
                 texture.Apply();
-                string name = "ScreenShotImage_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".png";
+                string name = $"ScreenShotImage_{DateTime.Now.ToString("yyyyMMddhhmmss")}.png";
                 byte[] bytes = texture.EncodeToPNG();
                 File.WriteAllBytes(path + name, bytes);
                 Main.Kill(texture);
@@ -1029,8 +1029,8 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(GetWord("Tag") + ": " + gameObject.Target.tag);
-                GUILayout.Label(GetWord("Layer") + ": " + gameObject.Layer);
+                GUILayout.Label($"{GetWord("Tag")}: {gameObject.Target.tag}");
+                GUILayout.Label($"{GetWord("Layer")}: {gameObject.Layer}");
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
@@ -1097,8 +1097,8 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(GetWord("Tag") + ": " + gameObject.Target.tag);
-                GUILayout.Label(GetWord("Layer") + ": " + gameObject.Layer);
+                GUILayout.Label($"{GetWord("Tag")}: {gameObject.Target.tag}");
+                GUILayout.Label($"{GetWord("Layer")}: {gameObject.Layer}");
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();

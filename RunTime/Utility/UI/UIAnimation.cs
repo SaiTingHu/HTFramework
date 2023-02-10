@@ -66,7 +66,7 @@ namespace HT.Framework
         {
             if (_rectTransform == null)
             {
-                Log.Error(name + " 丢失组件rectTransform！不能执行UIAnimation！");
+                Log.Error($"{name} 丢失组件rectTransform！不能执行UIAnimation！");
                 Destroy(this);
                 return;
             }
@@ -74,7 +74,7 @@ namespace HT.Framework
             {
                 if (TheAnimationType == UIAnimationType.Transparency || TheAnimationType == UIAnimationType.Color)
                 {
-                    Log.Error(name + " 丢失组件Graphic！不能执行相应的UIAnimation！");
+                    Log.Error($"{name} 丢失组件Graphic！不能执行相应的UIAnimation！");
                     Destroy(this);
                     return;
                 }

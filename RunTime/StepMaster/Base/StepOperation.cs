@@ -107,7 +107,7 @@ namespace HT.Framework
             if (!PreviewTarget)
             {
                 PreviewTarget = Main.CloneGameObject(Target, Target.rectTransform());
-                PreviewTarget.name = "[Preview]" + Target.name + " - " + Name;
+                PreviewTarget.name = $"[Preview]{Target.name} - {Name}";
                 if (!PreviewTarget.GetComponent<StepPreview>())
                     PreviewTarget.AddComponent<StepPreview>();
                 SetPreviewTransform(stepContent, operationIndex);

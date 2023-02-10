@@ -123,7 +123,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.UI, $"预加载UI失败：UI对象 {type.Name} 并未存在！");
             }
         }
         /// <summary>
@@ -160,7 +160,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("预加载UI失败：UI对象 {0} 并未存在！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.UI, $"预加载UI失败：UI对象 {type.Name} 并未存在！");
             }
         }
         /// <summary>
@@ -216,7 +216,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.UI, $"打开UI失败：UI对象 {type.Name} 并未存在！");
             }
             return null;
         }
@@ -275,7 +275,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.UI, string.Format("打开UI失败：UI对象 {0} 并未存在！", type.Name));
+                throw new HTFrameworkException(HTFrameworkModule.UI, $"打开UI失败：UI对象 {type.Name} 并未存在！");
             }
             return null;
         }

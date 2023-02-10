@@ -56,12 +56,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：流程 " + manager.ActivatedProcedures[i] + " 必须继承至流程基类：ProcedureBase！");
+                        throw new HTFrameworkException(HTFrameworkModule.Procedure, $"创建流程失败：流程 {manager.ActivatedProcedures[i]} 必须继承至流程基类：ProcedureBase！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "创建流程失败：丢失流程 " + manager.ActivatedProcedures[i] + "！");
+                    throw new HTFrameworkException(HTFrameworkModule.Procedure, $"创建流程失败：丢失流程 {manager.ActivatedProcedures[i]}！");
                 }
             }
             _defaultProcedure = manager.DefaultProcedure;
@@ -87,7 +87,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Procedure, "进入流程失败：丢失流程 " + _defaultProcedure + " ！");
+                    throw new HTFrameworkException(HTFrameworkModule.Procedure, $"进入流程失败：丢失流程 {_defaultProcedure} ！");
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Procedure, "获取流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
+                throw new HTFrameworkException(HTFrameworkModule.Procedure, $"获取流程失败：不存在流程 {type.Name} 或者流程未激活！");
             }
         }
         /// <summary>
@@ -196,7 +196,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Procedure, "切换流程失败：不存在流程 " + type.Name + " 或者流程未激活！");
+                throw new HTFrameworkException(HTFrameworkModule.Procedure, $"切换流程失败：不存在流程 {type.Name} 或者流程未激活！");
             }
         }
         /// <summary>
@@ -242,7 +242,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Procedure, "切换流程失败：不存在序号为 " + (index + 1).ToString() + " 的流程或者流程未激活！");
+                throw new HTFrameworkException(HTFrameworkModule.Procedure, $"切换流程失败：不存在序号为 {index + 1} 的流程或者流程未激活！");
             }
         }
     }

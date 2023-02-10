@@ -25,7 +25,7 @@ namespace HT.Framework
             foreach (var item in _helper.DataSets)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("DataSet Type: " + item.Key.Name);
+                GUILayout.Label($"DataSet Type: {item.Key.Name}");
                 GUILayout.EndHorizontal();
 
                 if (item.Value.Count == 0)

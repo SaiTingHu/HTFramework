@@ -70,11 +70,11 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
-                        EditorUtility.DisplayProgressBar("Export......", i + "/" + _taskContentCount, (float)i / _taskContentCount);
-                        File.AppendAllText(path, "【" + Target.Content[i].Name + "】\r\n", Encoding.UTF8);
+                        EditorUtility.DisplayProgressBar("Export......", $"{i}/{_taskContentCount}", (float)i / _taskContentCount);
+                        File.AppendAllText(path, $"【{Target.Content[i].Name}】\r\n", Encoding.UTF8);
                         for (int j = 0; j < Target.Content[i].Points.Count; j++)
                         {
-                            File.AppendAllText(path, Target.Content[i].Points[j].Name + "\r\n", Encoding.UTF8);
+                            File.AppendAllText(path, $"{Target.Content[i].Points[j].Name}\r\n", Encoding.UTF8);
                         }
                     }
                     EditorUtility.ClearProgressBar();
@@ -92,11 +92,11 @@ namespace HT.Framework
                 {
                     for (int i = 0; i < Target.Content.Count; i++)
                     {
-                        EditorUtility.DisplayProgressBar("Export......", i + "/" + _taskContentCount, (float)i / _taskContentCount);
-                        File.AppendAllText(path, "【" + Target.Content[i].Details + "】\r\n", Encoding.UTF8);
+                        EditorUtility.DisplayProgressBar("Export......", $"{i}/{_taskContentCount}", (float)i / _taskContentCount);
+                        File.AppendAllText(path, $"【{Target.Content[i].Details}】\r\n", Encoding.UTF8);
                         for (int j = 0; j < Target.Content[i].Points.Count; j++)
                         {
-                            File.AppendAllText(path, Target.Content[i].Points[j].Details + "\r\n", Encoding.UTF8);
+                            File.AppendAllText(path, $"{Target.Content[i].Points[j].Details}\r\n", Encoding.UTF8);
                         }
                     }
                     EditorUtility.ClearProgressBar();
@@ -198,7 +198,7 @@ namespace HT.Framework
                 if (content != null)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(i + "." + content.Name);
+                    GUILayout.Label($"{i}.{content.Name}");
                     GUILayout.FlexibleSpace();
                     GUI.enabled = !_isExistMissed;
                     if (GUILayout.Button("Reorder"))
@@ -215,7 +215,7 @@ namespace HT.Framework
                         {
                             GUILayout.BeginHorizontal();
                             GUILayout.Space(20);
-                            GUILayout.Label(j + "." + point.Name);
+                            GUILayout.Label($"{j}.{point.Name}");
                             GUILayout.FlexibleSpace();
                             GUILayout.EndHorizontal();
                         }
@@ -224,7 +224,7 @@ namespace HT.Framework
                             GUILayout.BeginHorizontal();
                             GUI.color = Color.red;
                             GUILayout.Space(20);
-                            GUILayout.Label(j + ".<Missing script>");
+                            GUILayout.Label($"{j}.<Missing script>");
                             GUILayout.FlexibleSpace();
                             GUI.color = Color.white;
                             GUILayout.EndHorizontal();
@@ -236,7 +236,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     GUI.color = Color.red;
-                    GUILayout.Label(i + ".<Missing script>");
+                    GUILayout.Label($"{i}.<Missing script>");
                     GUILayout.FlexibleSpace();
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
@@ -277,7 +277,7 @@ namespace HT.Framework
             {
                 for (int i = 0; i < asset.Content.Count; i++)
                 {
-                    EditorUtility.DisplayProgressBar("Import......", i + "/" + asset.Content.Count, (float)i / asset.Content.Count);
+                    EditorUtility.DisplayProgressBar("Import......", $"{i}/{asset.Content.Count}", (float)i / asset.Content.Count);
                     CloneContent(asset.Content[i]);
                 }
                 HasChanged();
@@ -299,7 +299,7 @@ namespace HT.Framework
         {
             for (int i = 0; i < Target.Content.Count; i++)
             {
-                EditorUtility.DisplayProgressBar("Clear......", i + "/" + Target.Content.Count, (float)i / Target.Content.Count);
+                EditorUtility.DisplayProgressBar("Clear......", $"{i}/{Target.Content.Count}", (float)i / Target.Content.Count);
                 TaskContentBase content = Target.Content[i];
                 for (int j = 0; j < content.Points.Count; j++)
                 {

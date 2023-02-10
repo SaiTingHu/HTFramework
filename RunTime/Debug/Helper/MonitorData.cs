@@ -37,7 +37,7 @@ namespace HT.Framework
                 }
             }
 
-            return string.Format("监控名称：{0}    消耗时间：{1}秒    产生的堆内存垃圾：{2}{3}    触发GC次数：{4}", Name, Elapsed, garbage, unit, GCCount);
+            return $"监控名称：{Name}    消耗时间：{Elapsed}秒    产生的堆内存垃圾：{garbage}{unit}    触发GC次数：{GCCount}";
         }
     }
 }

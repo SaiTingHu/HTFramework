@@ -146,7 +146,7 @@ namespace HT.Framework
         /// <returns>协议名字</returns>
         public override string ToString()
         {
-            return Protocol.ToString() + "协议通道";
+            return $"{Protocol}协议通道";
         }
         /// <summary>
         /// 连接服务器

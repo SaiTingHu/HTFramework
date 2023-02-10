@@ -194,7 +194,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：Resources文件夹中不存在资源 {0}！", info.ResourcePath));
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源失败：Resources文件夹中不存在资源 {info.ResourcePath}！");
                 }
             }
             else
@@ -215,7 +215,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：路径中不存在资源 {0}！", info.AssetPath));
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源失败：路径中不存在资源 {info.AssetPath}！");
                     }
                 }
                 else
@@ -234,7 +234,7 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源失败：AB包 {info.AssetBundleName} 中不存在资源 {info.AssetPath}！");
                         }
                     }
                 }
@@ -253,7 +253,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Resource, string.Format("加载资源失败：AB包 {0} 中不存在资源 {1}！", info.AssetBundleName, info.AssetPath));
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源失败：AB包 {info.AssetBundleName} 中不存在资源 {info.AssetPath}！");
                     }
                 }
 #endif
@@ -298,7 +298,7 @@ namespace HT.Framework
         {
             if (Scenes.ContainsKey(info.ResourcePath))
             {
-                Log.Warning(string.Format("加载场景失败：名为 {0} 的场景已加载！", info.ResourcePath));
+                Log.Warning($"加载场景失败：名为 {info.ResourcePath} 的场景已加载！");
                 yield break;
             }
 
@@ -455,7 +455,7 @@ namespace HT.Framework
         {
             if (!Scenes.ContainsKey(info.ResourcePath))
             {
-                Log.Warning(string.Format("卸载场景失败：名为 {0} 的场景还未加载！", info.ResourcePath));
+                Log.Warning($"卸载场景失败：名为 {info.ResourcePath} 的场景还未加载！");
                 yield break;
             }
 
@@ -617,12 +617,12 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{request.url} 未下载到AB包！");
                         }
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{request.url} 遇到网络错误：{request.error}！");
                     }
                 }
             }
@@ -658,12 +658,12 @@ namespace HT.Framework
                         }
                         else
                         {
-                            throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 未下载到AB包！");
+                            throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{request.url} 未下载到AB包！");
                         }
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Resource, "请求：" + request.url + " 遇到网络错误：" + request.error + "！");
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{request.url} 遇到网络错误：{request.error}！");
                     }
                 }
             }

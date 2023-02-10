@@ -242,7 +242,7 @@ namespace HT.Framework
                         GUI.enabled = !CurrentAssembly.IsDynamic;
                         if (GUILayout.Button("Open in Explorer", EditorStyles.miniButton, GUILayout.Width(110)))
                         {
-                            string args = "/Select, " + CurrentAssembly.Location;
+                            string args = $"/Select, {CurrentAssembly.Location}";
                             ExecutableToolkit.ExecuteExplorer(args);
                         }
                         GUI.enabled = true;
@@ -254,7 +254,7 @@ namespace HT.Framework
                         if (GUILayout.Button("Open in ILSpy", EditorStyles.miniButton, GUILayout.Width(110)))
                         {
                             string ilspyPath = EditorPrefs.GetString(EditorPrefsTable.ILSpyPath, null);
-                            bool succeed = ExecutableToolkit.Execute(ilspyPath, "\"" + CurrentAssembly.Location + "\"");
+                            bool succeed = ExecutableToolkit.Execute(ilspyPath, $"\"{CurrentAssembly.Location}\"");
                             if (!succeed)
                             {
                                 EditorApplication.ExecuteMenuItem("HTFramework/HTFramework Settings...");
@@ -323,7 +323,7 @@ namespace HT.Framework
                         if (CurrentType == _types[i])
                         {
                             GUILayout.BeginHorizontal();
-                            EditorGUILayout.TextField("namespace " + CurrentType.Namespace);
+                            EditorGUILayout.TextField($"namespace {CurrentType.Namespace}");
                             GUILayout.EndHorizontal();
 
                             GUILayout.BeginHorizontal();
@@ -383,7 +383,7 @@ namespace HT.Framework
 
                         GUI.backgroundColor = CurrentField == _fields[i] ? Color.cyan : Color.white;
                         GUILayout.BeginHorizontal();
-                        if (GUILayout.Button("[Field]  " + _fields[i].Name))
+                        if (GUILayout.Button($"[Field]  {_fields[i].Name}"))
                         {
                             CurrentField = _fields[i];
                             CurrentMethod = null;
@@ -415,7 +415,7 @@ namespace HT.Framework
 
                         GUI.backgroundColor = CurrentMethod == _methods[i] ? Color.cyan : Color.white;
                         GUILayout.BeginHorizontal();
-                        if (GUILayout.Button("[Method]  " + _methods[i].Name))
+                        if (GUILayout.Button($"[Method]  {_methods[i].Name}"))
                         {
                             CurrentMethod = _methods[i];
                             CurrentField = null;
@@ -447,7 +447,7 @@ namespace HT.Framework
 
                         GUI.backgroundColor = CurrentProperty == _propertys[i] ? Color.cyan : Color.white;
                         GUILayout.BeginHorizontal();
-                        if (GUILayout.Button("[Property]  " + _propertys[i].Name))
+                        if (GUILayout.Button($"[Property]  {_propertys[i].Name}"))
                         {
                             CurrentProperty = _propertys[i];
                             CurrentMethod = null;
@@ -543,7 +543,7 @@ namespace HT.Framework
             MethodInfo method = (get != null ? get : set);
             if (method == null)
             {
-                return "private " + property.PropertyType.Name + " " + property.Name + " {}";
+                return $"private {property.PropertyType.Name} {property.Name} " + "{}";
             }
 
             _builder.Clear();

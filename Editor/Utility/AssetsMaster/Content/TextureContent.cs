@@ -52,7 +52,7 @@ namespace HT.Framework
         public void RaiseAlarmLevel(string message)
         {
             AlarmLevel += 1;
-            AlarmMessage += string.Format("{0}.{1}\r\n", AlarmLevel, message);
+            AlarmMessage += $"{AlarmLevel}.{message}\r\n";
         }
         public void ClearAlarmLevel()
         {

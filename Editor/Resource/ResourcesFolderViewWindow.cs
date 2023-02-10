@@ -26,7 +26,7 @@ namespace HT.Framework
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
-                _resourcesFolders[i].IsExpanding = EditorGUILayout.Foldout(_resourcesFolders[i].IsExpanding, string.Format("{0}  [{1}]", _resourcesFolders[i].AssetName, _resourcesFolders[i].Resources.Count), true);
+                _resourcesFolders[i].IsExpanding = EditorGUILayout.Foldout(_resourcesFolders[i].IsExpanding, $"{_resourcesFolders[i].AssetName}  [{_resourcesFolders[i].Resources.Count}]", true);
                 GUILayout.EndHorizontal();
 
                 if (_resourcesFolders[i].IsExpanding)
@@ -98,7 +98,7 @@ namespace HT.Framework
         }
         private bool IsIgnoreFolder(string folderName)
         {
-            if (EditorPrefsTable.HTFrameworkFolder.Contains(folderName) || folderName.EndsWith("~"))
+            if (EditorPrefsTable.HTFrameworkFolder.Contains(folderName) || folderName.EndsWith('~'))
             {
                 return true;
             }
@@ -124,7 +124,7 @@ namespace HT.Framework
                 {
                     if (fis[i].Extension != ".meta")
                     {
-                        string path = AssetName + "/" + fis[i].Name;
+                        string path = $"{AssetName}/{fis[i].Name}";
                         System.Type t = AssetDatabase.GetMainAssetTypeAtPath(path);
                         Resources.Add(AssetDatabase.LoadAssetAtPath(path, t));
                     }

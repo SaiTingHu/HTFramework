@@ -159,7 +159,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Release Notes: [Date " + _versionInfo.CurrentVersion.ReleaseDate + "]");
+            GUILayout.Label($"Release Notes: [Date {_versionInfo.CurrentVersion.ReleaseDate}]");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(GUILayout.Height(120));
@@ -177,12 +177,12 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Supported Unity Versions: " + _versionInfo.CurrentVersion.UnityVersions);
+            GUILayout.Label($"Supported Unity Versions: {_versionInfo.CurrentVersion.UnityVersions}");
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Api Compatibility Level: " + _versionInfo.CurrentVersion.APIVersions);
+            GUILayout.Label($"Api Compatibility Level: {_versionInfo.CurrentVersion.APIVersions}");
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 

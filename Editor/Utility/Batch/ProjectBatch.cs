@@ -48,7 +48,8 @@ namespace HT.Framework
             base.OnBodyGUI();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("批处理[ " + (_folder ? _folder.name : "Root") + " ]文件夹下的[ " + (_objectType != null ? _objectType.FullName : "Object") + " ]对象！", MessageType.Info);
+            string prompt = string.Format("批处理[ {0} ]文件夹下的[ {1} ]对象！", _folder ? _folder.name : "Root", _objectType != null ? _objectType.FullName : "Object");
+            EditorGUILayout.HelpBox(prompt, MessageType.Info);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();

@@ -39,7 +39,7 @@ namespace HT.Framework
 
             GUILayout.Label("Password:");
             _password = EditorGUILayout.PasswordField(_password, GUILayout.Width(100));
-            GUI.enabled = _password != "";
+            GUI.enabled = !string.IsNullOrEmpty(_password);
             if (GUILayout.Button("Login", EditorStyles.miniButton))
             {
                 _checkAction?.Invoke(_password);
@@ -66,7 +66,7 @@ namespace HT.Framework
                     {
                         case KeyCode.Return:
                         case KeyCode.KeypadEnter:
-                            if (_password != "")
+                            if (!string.IsNullOrEmpty(_password))
                             {
                                 _checkAction?.Invoke(_password);
                                 Close();

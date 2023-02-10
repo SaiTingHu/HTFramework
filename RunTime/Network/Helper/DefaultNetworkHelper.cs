@@ -108,12 +108,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        throw new HTFrameworkException(HTFrameworkModule.Network, "加载通信协议通道失败：通信协议通道类 " + channelTypes[i] + " 必须继承至基类：ProtocolChannelBase！");
+                        throw new HTFrameworkException(HTFrameworkModule.Network, $"加载通信协议通道失败：通信协议通道类 {channelTypes[i]} 必须继承至基类：ProtocolChannelBase！");
                     }
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Network, "加载通信协议通道失败：丢失通信协议通道类 " + channelTypes[i] + "！");
+                    throw new HTFrameworkException(HTFrameworkModule.Network, $"加载通信协议通道失败：丢失通信协议通道类 {channelTypes[i]}！");
                 }
             }
 
@@ -171,12 +171,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Warning("连接服务器出错：" + ProtocolChannels[channelType].ToString() + " 不需要与服务器保持连接！");
+                    Log.Warning($"连接服务器出错：{ProtocolChannels[channelType]} 不需要与服务器保持连接！");
                 }
             }
             else
             {
-                Log.Warning("连接服务器出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
+                Log.Warning($"连接服务器出错：{channelType.FullName} 未启用或并不是有效的通信协议！");
             }
         }
         private IEnumerator ConnectServerCoroutine(ProtocolChannelBase protocolChannel)
@@ -190,7 +190,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error("连接服务器出错：" + e.ToString());
+                Log.Error($"连接服务器出错：{e}");
             }
             finally
             {
@@ -231,12 +231,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Warning("与服务器断开连接出错：" + ProtocolChannels[channelType].ToString() + " 不需要与服务器保持连接！");
+                    Log.Warning($"与服务器断开连接出错：{ProtocolChannels[channelType]} 不需要与服务器保持连接！");
                 }
             }
             else
             {
-                Log.Warning("与服务器断开连接出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
+                Log.Warning($"与服务器断开连接出错：{channelType.FullName} 未启用或并不是有效的通信协议！");
             }
         }
         /// <summary>
@@ -270,7 +270,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Warning("发送消息出错：" + channelType.FullName + " 未启用或并不是有效的通信协议！");
+                Log.Warning($"发送消息出错：{channelType.FullName} 未启用或并不是有效的通信协议！");
                 return true;
             }
         }

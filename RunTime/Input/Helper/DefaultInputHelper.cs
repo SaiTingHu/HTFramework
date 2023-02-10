@@ -141,7 +141,7 @@ namespace HT.Framework
         {
             if (_virtualAxes.ContainsKey(name))
             {
-                Log.Error(string.Format("注册虚拟轴线失败：已经存在名为 {0} 的虚拟轴线！", name));
+                Log.Error($"注册虚拟轴线失败：已经存在名为 {name} 的虚拟轴线！");
             }
             else
             {
@@ -156,7 +156,7 @@ namespace HT.Framework
         {
             if (_virtualButtons.ContainsKey(name))
             {
-                Log.Error(string.Format("注册虚拟按钮失败：已经存在名为 {0} 的虚拟按钮！", name));
+                Log.Error($"注册虚拟按钮失败：已经存在名为 {name} 的虚拟按钮！");
             }
             else
             {
@@ -456,12 +456,12 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：输入设备类 " + deviceType + " 必须继承至输入设备基类：InputDeviceBase！");
+                    throw new HTFrameworkException(HTFrameworkModule.Input, $"加载输入设备失败：输入设备类 {deviceType} 必须继承至输入设备基类：InputDeviceBase！");
                 }
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Input, "加载输入设备失败：丢失输入设备类 " + deviceType + "！");
+                throw new HTFrameworkException(HTFrameworkModule.Input, $"加载输入设备失败：丢失输入设备类 {deviceType}！");
             }
         }
         /// <summary>

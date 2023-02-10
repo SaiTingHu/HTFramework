@@ -143,13 +143,13 @@ namespace HT.Framework
             foreach (var channel in _helper.ProtocolChannels)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(channel.Key.FullName + " [" + channel.Value.Protocol.ToString() + "]");
+                GUILayout.Label($"{channel.Key.FullName} [{channel.Value.Protocol}]");
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label("IsConnect:" + channel.Value.IsConnect.ToString());
+                GUILayout.Label($"IsConnect:{channel.Value.IsConnect}");
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }

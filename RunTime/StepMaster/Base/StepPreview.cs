@@ -16,7 +16,7 @@ namespace HT.Framework
         {
             base.Awake();
 
-            Log.Error("步骤控制者：发现步骤预览目标 [" + transform.FullName() + "]，预览目标不应该存在于运行时！");
+            Log.Error($"步骤控制者：发现步骤预览目标 [{transform.FullName()}]，预览目标不应该存在于运行时！");
         }
         private void OnDrawGizmos()
         {

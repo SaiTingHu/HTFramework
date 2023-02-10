@@ -131,7 +131,7 @@ namespace HT.Framework
             {
                 if (injectCount <= 0 && bindCount <= 0)
                 {
-                    string content = string.Format("【{0}】启用了自动化任务，但不存在任何依赖注入字段[Inject]，和数据绑定字段[DataBind]，请考虑关闭自动化任务（IsAutomate = false）！", GetType().FullName);
+                    string content = $"【{GetType().FullName}】启用了自动化任务，但不存在任何依赖注入字段[Inject]，和数据绑定字段[DataBind]，请考虑关闭自动化任务（IsAutomate = false）！";
                     SafetyChecker.DoSafetyWarning(content);
                     return false;
                 }
@@ -140,7 +140,7 @@ namespace HT.Framework
                 {
                     if (bindCount <= 0)
                     {
-                        string content = string.Format("【{0}】实现了数据驱动接口（IDataDriver），但不存在任何数据绑定字段[DataBind]，请考虑移除数据驱动接口！", GetType().FullName);
+                        string content = $"【{GetType().FullName}】实现了数据驱动接口（IDataDriver），但不存在任何数据绑定字段[DataBind]，请考虑移除数据驱动接口！";
                         SafetyChecker.DoSafetyWarning(content);
                         return false;
                     }

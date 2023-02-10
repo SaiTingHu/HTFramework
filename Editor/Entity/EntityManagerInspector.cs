@@ -203,7 +203,7 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(10);
-                _objectPoolFoldouts[pool.Key] = EditorGUILayout.Foldout(_objectPoolFoldouts[pool.Key], pool.Key.FullName + " [Object Pool]", true);
+                _objectPoolFoldouts[pool.Key] = EditorGUILayout.Foldout(_objectPoolFoldouts[pool.Key], $"{pool.Key.FullName} [Object Pool]", true);
                 GUILayout.EndHorizontal();
 
                 if (_objectPoolFoldouts[pool.Key])

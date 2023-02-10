@@ -93,7 +93,7 @@ namespace HT.Framework
             }
             else
             {
-                FileName = Application.persistentDataPath + "/" + file.name;
+                FileName = $"{Application.persistentDataPath}/{file.name}";
                 if (File.Exists(FileName))
                 {
                     IniString = File.ReadAllText(FileName);

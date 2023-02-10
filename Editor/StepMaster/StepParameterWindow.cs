@@ -36,7 +36,7 @@ namespace HT.Framework
                 for (int i = 0; i < _contentAsset.Content.Count; i++)
                 {
                     StepContent stepContent = _contentAsset.Content[i];
-                    gm.AddItem(new GUIContent(i + "." + stepContent.Name), stepContent == _content, () =>
+                    gm.AddItem(new GUIContent($"{i}.{stepContent.Name}"), stepContent == _content, () =>
                     {
                         _content = stepContent;
                     });

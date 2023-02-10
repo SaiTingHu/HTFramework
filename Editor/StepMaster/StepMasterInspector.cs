@@ -58,11 +58,11 @@ namespace HT.Framework
             if (Target.ContentAsset != null)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Step Count: " + Target.StepCount);
+                GUILayout.Label($"Step Count: {Target.StepCount}");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Is Running: " + Target.IsRunning);
+                GUILayout.Label($"Is Running: {Target.IsRunning}");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -70,7 +70,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Current Step: " + Target.CurrentStepIndex);
+                GUILayout.Label($"Current Step: {Target.CurrentStepIndex}");
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Skip", EditorStyles.miniButtonLeft))
                 {
@@ -115,14 +115,14 @@ namespace HT.Framework
                 }
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Custom Order: " + _customOrder.Count);
+                GUILayout.Label($"Custom Order: {_customOrder.Count}");
                 GUILayout.EndHorizontal();
 
                 foreach (var order in _customOrder)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Space(20);
-                    GUILayout.Label(string.Format("{0} -> {1}", _stepContentIDs[order.Key].Name, _stepContentIDs[order.Value].Name));
+                    GUILayout.Label($"{_stepContentIDs[order.Key].Name} -> {_stepContentIDs[order.Value].Name}");
                     GUILayout.EndHorizontal();
                 }
             }

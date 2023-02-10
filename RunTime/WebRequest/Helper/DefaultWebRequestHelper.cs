@@ -96,7 +96,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("注册接口失败：已存在名为 {0} 的网络接口！", interfaceName));
+                Log.Error($"注册接口失败：已存在名为 {interfaceName} 的网络接口！");
             }
         }
         /// <summary>
@@ -119,7 +119,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("注册接口失败：已存在名为 {0} 的网络接口！", interfaceName));
+                Log.Error($"注册接口失败：已存在名为 {interfaceName} 的网络接口！");
             }
         }
         /// <summary>
@@ -142,7 +142,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("注册接口失败：已存在名为 {0} 的网络接口！", interfaceName));
+                Log.Error($"注册接口失败：已存在名为 {interfaceName} 的网络接口！");
             }
         }
         /// <summary>
@@ -169,7 +169,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("注册接口失败：已存在名为 {0} 的网络接口！", interfaceName));
+                Log.Error($"注册接口失败：已存在名为 {interfaceName} 的网络接口！");
             }
         }
         /// <summary>
@@ -188,7 +188,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Error(string.Format("注册接口失败：已存在名为 {0} 的网络接口！", interfaceName));
+                Log.Error($"注册接口失败：已存在名为 {interfaceName} 的网络接口！");
             }
         }
         /// <summary>
@@ -261,7 +261,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.WebRequest, string.Format("发起网络请求失败：不存在名为 {0} 的网络接口！", interfaceName));
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, $"发起网络请求失败：不存在名为 {interfaceName} 的网络接口！");
             }
             return null;
         }
@@ -327,7 +327,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.WebRequest, string.Format("发起网络请求失败：不存在名为 {0} 的网络接口！", interfaceName));
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, $"发起网络请求失败：不存在名为 {interfaceName} 的网络接口！");
             }
             return null;
         }
@@ -381,7 +381,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.WebRequest, string.Format("发起下载文件请求失败：不存在名为 {0} 的文件请求接口！", interfaceName));
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, $"发起下载文件请求失败：不存在名为 {interfaceName} 的文件请求接口！");
             }
             return null;
         }

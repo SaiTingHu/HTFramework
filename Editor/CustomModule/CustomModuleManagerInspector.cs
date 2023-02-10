@@ -16,14 +16,14 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("CustomModules: " + _helper.GetAllCustomModule().Count);
+            GUILayout.Label($"CustomModules: {_helper.GetAllCustomModule().Count}");
             GUILayout.EndHorizontal();
 
             foreach (var item in _helper.GetAllCustomModule())
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUILayout.Label(item.Name + "[" + item.GetType().FullName + "]");
+                GUILayout.Label($"{item.Name}[{item.GetType().FullName}]");
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

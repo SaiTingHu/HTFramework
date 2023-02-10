@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HT.Framework
@@ -7,123 +6,147 @@ namespace HT.Framework
     /// 自由视角排斥盒
     /// </summary>
     [AddComponentMenu("HTFramework/Camera Control/Repel Box")]
+    [RequireComponent(typeof(BoxCollider))]
     [DisallowMultipleComponent]
-    public class RepelBox : HTBehaviour
+    public sealed class RepelBox : HTBehaviour
     {
-        /// <summary>
-        /// 生效半径（自由视角位置与此排斥盒的距离小于生效半径，才启动排斥检测）
-        /// </summary>
-        [RadiusHandler] public float ActiveRadius = 10;
-        /// <summary>
-        /// 排斥盒范围
-        /// </summary>
-        [BoundsHandler] public Bounds Scope;
+        private Bounds _scope;
+        private float _up;
+        private float _down;
+        private float _left;
+        private float _right;
+        private float _front;
+        private float _back;
 
-        private Transform _mainCamera;
-        private List<Vector3> _pointTracks = new List<Vector3>();
-        private List<Vector3> _angleTracks = new List<Vector3>();
-
-        protected override void Awake()
+        private void Start()
         {
-            base.Awake();
+            if (Main.m_Controller) Main.m_Controller.AddRepelBox(this);
 
-            _mainCamera = Main.m_Controller.MainCamera.transform;
+            RefreshScope();
         }
-        private void Update()
+
+        protected override void OnDestroy()
         {
-            if (_mainCamera == null)
-                return;
+            base.OnDestroy();
 
-            if (Vector3.Distance(Scope.center, Main.m_Controller.LookPoint) > ActiveRadius && Vector3.Distance(Scope.center, _mainCamera.position) > ActiveRadius)
-                return;
-
-            RepelTest();
+            if (Main.m_Controller) Main.m_Controller.RemoveRepelBox(this);
         }
 
         /// <summary>
-        /// 排斥检测
+        /// 刷新排斥盒范围
         /// </summary>
-        private void RepelTest()
+        public void RefreshScope()
         {
-            if (Scope.Contains(Main.m_Controller.LookPoint))
+            BoxCollider boxCollider = GetComponent<BoxCollider>();
+            if (boxCollider)
             {
-                BackToLastPointTrack();
+                _scope = boxCollider.bounds;
+                _up = _scope.center.y + _scope.extents.y;
+                _down = _scope.center.y - _scope.extents.y;
+                _left = _scope.center.x - _scope.extents.x;
+                _right = _scope.center.x + _scope.extents.x;
+                _front = _scope.center.z + _scope.extents.z;
+                _back = _scope.center.z - _scope.extents.z;
             }
-            else
+        }
+        /// <summary>
+        /// 将一个顶点排斥到盒子之外
+        /// </summary>
+        /// <param name="pos">顶点</param>
+        /// <returns>排斥出去的顶点</returns>
+        public Vector3 Repel(Vector3 pos)
+        {
+            if (!_scope.Contains(pos))
+                return pos;
+
+            Direction dir = CalculateDirection(pos);
+            Vector3 newPos = CorrectPos(pos, dir);
+            return newPos;
+        }
+
+        /// <summary>
+        /// 计算距离顶点最近的面
+        /// </summary>
+        private Direction CalculateDirection(Vector3 pos)
+        {
+            float newDis;
+            float dis = _up - pos.y;
+            Direction dir = Direction.Up;
+
+            newDis = pos.y - _down;
+            if (newDis < dis)
             {
-                RecordPointTrack(Main.m_Controller.LookPoint);
+                dis = newDis;
+                dir = Direction.Down;
             }
 
-            if (Scope.Contains(_mainCamera.position))
+            newDis = pos.x - _left;
+            if (newDis < dis)
             {
-                BackToLastAngleTrack();
+                dis = newDis;
+                dir = Direction.Left;
             }
-            else
+
+            newDis = _right - pos.x;
+            if (newDis < dis)
             {
-                RecordAngleTrack(_mainCamera.position);
+                dis = newDis;
+                dir = Direction.Right;
             }
+
+            newDis = _front - pos.z;
+            if (newDis < dis)
+            {
+                dis = newDis;
+                dir = Direction.Front;
+            }
+
+            newDis = pos.z - _back;
+            if (newDis < dis)
+            {
+                dis = newDis;
+                dir = Direction.Back;
+            }
+
+            return dir;
         }
         /// <summary>
-        /// 记录视点轨迹
+        /// 修正顶点位置
         /// </summary>
-        /// <param name="point">视点</param>
-        private void RecordPointTrack(Vector3 point)
+        private Vector3 CorrectPos(Vector3 pos, Direction dir)
         {
-            _pointTracks.Add(point);
-            if (_pointTracks.Count > 10)
+            switch (dir)
             {
-                _pointTracks.RemoveAt(0);
+                case Direction.Up:
+                    pos.y = _up;
+                    break;
+                case Direction.Down:
+                    pos.y = _down;
+                    break;
+                case Direction.Left:
+                    pos.x = _left;
+                    break;
+                case Direction.Right:
+                    pos.x = _right;
+                    break;
+                case Direction.Front:
+                    pos.z = _front;
+                    break;
+                case Direction.Back:
+                    pos.z = _back;
+                    break;
             }
+            return pos;
         }
-        /// <summary>
-        /// 返回上一个位于排斥盒之外的视点轨迹
-        /// </summary>
-        private void BackToLastPointTrack()
+
+        private enum Direction
         {
-            while (_pointTracks.Count > 0)
-            {
-                Vector3 point = _pointTracks[_pointTracks.Count - 1];
-                if (!Scope.Contains(point))
-                {
-                    Main.m_Controller.SetLookPoint(point, false);
-                    return;
-                }
-                else
-                {
-                    _pointTracks.RemoveAt(_pointTracks.Count - 1);
-                }
-            }
-        }
-        /// <summary>
-        /// 记录视角轨迹
-        /// </summary>
-        /// <param name="cameraPos">摄像机位置</param>
-        private void RecordAngleTrack(Vector3 cameraPos)
-        {
-            _angleTracks.Add(cameraPos);
-            if (_angleTracks.Count > 10)
-            {
-                _angleTracks.RemoveAt(0);
-            }
-        }
-        /// <summary>
-        /// 返回上一个位于排斥盒之外的视角轨迹
-        /// </summary>
-        private void BackToLastAngleTrack()
-        {
-            while (_angleTracks.Count > 0)
-            {
-                Vector3 cameraPos = _angleTracks[_angleTracks.Count - 1];
-                if (!Scope.Contains(cameraPos))
-                {
-                    _mainCamera.position = cameraPos;
-                    return;
-                }
-                else
-                {
-                    _angleTracks.RemoveAt(_angleTracks.Count - 1);
-                }
-            }
+            Up,
+            Down,
+            Left,
+            Right,
+            Front,
+            Back
         }
     }
 }

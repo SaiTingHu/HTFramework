@@ -37,7 +37,7 @@ namespace HT.Framework
                 {
                     Rect subrect = rect;
                     subrect.Set(rect.x, rect.y + 2, rect.width, 16);
-                    GUI.Label(subrect, (index + 1).ToString() + "." + _taskContent.Points[index].Name);
+                    GUI.Label(subrect, $"{index + 1}.{_taskContent.Points[index].Name}");
                 }
             };
             _taskPointsList.drawElementBackgroundCallback = (Rect rect, int index, bool isActive, bool isFocused) =>

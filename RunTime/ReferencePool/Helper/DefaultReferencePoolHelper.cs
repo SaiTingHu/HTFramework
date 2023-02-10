@@ -78,7 +78,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.ReferencePool, "获取引用数量失败：不存在引用池 " + type.FullName + " ！");
+                throw new HTFrameworkException(HTFrameworkModule.ReferencePool, $"获取引用数量失败：不存在引用池 {type.FullName} ！");
             }
         }
         /// <summary>

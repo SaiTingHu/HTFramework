@@ -81,7 +81,7 @@ namespace HT.Framework
 
                 GUI.color = Color.white;
                 GUILayout.BeginHorizontal("IN BigTitle");
-                _enumerators[executor.Key] = EditorGUILayout.Foldout(_enumerators[executor.Key], string.Format("{0}.{1} -> {2}  [{3}]", index1, executor.Key.Target, executor.Key.Method, executor.Value.Count), true);
+                _enumerators[executor.Key] = EditorGUILayout.Foldout(_enumerators[executor.Key], $"{index1}.{executor.Key.Target} -> {executor.Key.Method}  [{executor.Value.Count}]", true);
                 GUILayout.EndHorizontal();
                 GUI.color = _bgColor;
                 index1 += 1;
@@ -157,7 +157,7 @@ namespace HT.Framework
         private void MouseDownEnumerator(CoroutinerManager.CoroutineEnumerator enumerator)
         {
             _currentEnumerator = enumerator;
-            _currentStackTrace = _currentEnumerator.ID + "\r\n\r\n" + GetFullStackTraceInfo(_currentEnumerator.StackTraceInfo);
+            _currentStackTrace = $"{_currentEnumerator.ID}\r\n\r\n{GetFullStackTraceInfo(_currentEnumerator.StackTraceInfo)}";
             Repaint();
         }
         private string GetFullStackTraceInfo(StackTrace trace)

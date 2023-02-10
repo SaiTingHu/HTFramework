@@ -512,7 +512,7 @@ namespace HT.Framework
                 string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
                 gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentContent.Name), false, () =>
                 {
-                    GUIUtility.systemCopyBuffer = string.Format("TaskContent|{0}|{1}", assetPath, _currentContent.GUID);
+                    GUIUtility.systemCopyBuffer = $"TaskContent|{assetPath}|{_currentContent.GUID}";
                 });
             }
         }
@@ -628,7 +628,7 @@ namespace HT.Framework
                     if (index >= 0 && index < _contentAsset.Content.Count)
                     {
                         Rect sub = rect;
-                        GUI.Label(sub, (index + 1).ToString() + "." + _contentAsset.Content[index].Name);
+                        GUI.Label(sub, $"{index + 1}.{_contentAsset.Content[index].Name}");
 
                         if (isActive)
                         {
@@ -641,7 +641,7 @@ namespace HT.Framework
                             sub.Set(rect.x + rect.width - 20, rect.y, 20, 20);
                             if (GUI.Button(sub, _deleteGC, "InvisibleButton"))
                             {
-                                if (EditorUtility.DisplayDialog("Prompt", "Are you sure delete task [" + _contentAsset.Content[index].Name + "]?", "Yes", "No"))
+                                if (EditorUtility.DisplayDialog("Prompt", $"Are you sure delete task [{_contentAsset.Content[index].Name}]?", "Yes", "No"))
                                 {
                                     DeleteContent(index);
                                 }
@@ -738,7 +738,7 @@ namespace HT.Framework
                     number += 1;
                     gm.AddItem(new GUIContent(GetWord("Copy") + " " + taskPoint.Name), false, () =>
                     {
-                        GUIUtility.systemCopyBuffer = string.Format("TaskPoint|{0}|{1}|{2}", assetPath, _currentContent.GUID, taskPoint.GUID);
+                        GUIUtility.systemCopyBuffer = $"TaskPoint|{assetPath}|{_currentContent.GUID}|{taskPoint.GUID}";
                     });
                 }
             }

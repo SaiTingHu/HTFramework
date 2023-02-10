@@ -77,7 +77,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Info(target.name + " 丢失了组件 Button！");
+                Log.Info($"{target.name} 丢失了组件 Button！");
             }
         }
         /// <summary>
@@ -96,7 +96,7 @@ namespace HT.Framework
             }
             else
             {
-                Log.Info(target.name + " 丢失了组件 Button！");
+                Log.Info($"{target.name} 丢失了组件 Button！");
             }
         }
         /// <summary>

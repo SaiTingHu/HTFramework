@@ -49,7 +49,8 @@ namespace HT.Framework
             base.OnBodyGUI();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("批处理[ " + (_root ? _root.name : "Root") + " ]下的[ " + (_componentType != null ? _componentType.FullName : "Component") + " ]组件！", MessageType.Info);
+            string prompt = string.Format("批处理[ {0} ]下的[ {1} ]组件！", _root ? _root.name : "Root", _componentType != null ? _componentType.FullName : "Component");
+            EditorGUILayout.HelpBox(prompt, MessageType.Info);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();

@@ -39,7 +39,7 @@ namespace HT.Framework
             FieldInfo fieldInfo = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (fieldInfo == null)
             {
-                Log.Warning(string.Format("通用表格绘制器：未从 {0} 中找到字段 {1}！", target.GetType().FullName, fieldName));
+                Log.Warning($"通用表格绘制器：未从 {target.GetType().FullName} 中找到字段 {fieldName}！");
                 Close();
                 return;
             }
@@ -47,7 +47,7 @@ namespace HT.Framework
             List<object> datas = GetDatas(fieldInfo.GetValue(target));
             if (datas.Count <= 0)
             {
-                Log.Warning(string.Format("通用表格绘制器：{0} 的字段 {1} 长度为0，或不是数组、集合类型！", target.GetType().FullName, fieldName));
+                Log.Warning($"通用表格绘制器：{target.GetType().FullName} 的字段 {fieldName} 长度为0，或不是数组、集合类型！");
                 Close();
                 return;
             }
@@ -55,7 +55,7 @@ namespace HT.Framework
             List<TableColumn<object>> columns = GetColumns(datas[0].GetType());
             if (columns.Count <= 0)
             {
-                Log.Warning(string.Format("通用表格绘制器：{0} 的字段 {1} 不是复杂类型，或类型中不含有可序列化字段！", target.GetType().FullName, fieldName));
+                Log.Warning($"通用表格绘制器：{target.GetType().FullName} 的字段 {fieldName} 不是复杂类型，或类型中不含有可序列化字段！");
                 Close();
                 return;
             }
@@ -63,7 +63,7 @@ namespace HT.Framework
             _tableView = new TableView<object>(datas, columns);
             _tableView.IsEnableContextClick = false;
             _target = target;
-            _targetName = string.Format("{1}.{2} ({0})", _target.name, _target.GetType().FullName, fieldName);
+            _targetName = $"{_target.GetType().FullName}.{fieldName} ({_target.name})";
         }
         protected override void OnTitleGUI()
         {

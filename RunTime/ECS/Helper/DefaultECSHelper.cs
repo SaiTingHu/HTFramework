@@ -150,13 +150,13 @@ namespace HT.Framework
         {
             if (entity.ID == "")
             {
-                Log.Warning(string.Format("ECS：发现ID为空的实体 [{0}]，这是不被允许的！", entity.Name));
+                Log.Warning($"ECS：发现ID为空的实体 [{entity.Name}]，这是不被允许的！");
                 return;
             }
 
             if (Entities.ContainsKey(entity.ID))
             {
-                Log.Warning(string.Format("ECS：发现ID [{0}] 重复的实体 [{1}] 和 [{2}]，这是不被允许的！", entity.ID, entity.Name, Entities[entity.ID].Name));
+                Log.Warning($"ECS：发现ID [{entity.ID}] 重复的实体 [{entity.Name}] 和 [{Entities[entity.ID].Name}]，这是不被允许的！");
             }
             else
             {

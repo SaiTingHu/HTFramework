@@ -47,7 +47,7 @@ namespace HT.Framework
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
-                        GUILayout.Label("Name: " + fsms[i].Name);
+                        GUILayout.Label($"Name: {fsms[i].Name}");
                         GUILayout.EndHorizontal();
 
                         GUILayout.BeginHorizontal();

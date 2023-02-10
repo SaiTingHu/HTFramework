@@ -295,7 +295,7 @@ namespace HT.Framework
         private string ToCSPublicField()
         {
             string fieldName = Target.name.Trim().Replace(" ", "");
-            string field = string.Format("[Label(\"{0}\")] public GameObject {1};", Target.name, fieldName);
+            string field = $"[Label(\"{Target.name}\")] public GameObject {fieldName};";
             return field;
         }
         private string ToCSPrivateField()
@@ -303,7 +303,7 @@ namespace HT.Framework
             string fieldName = Target.name.Trim().Replace(" ", "");
             char[] fieldNames = fieldName.ToCharArray();
             fieldNames[0] = char.ToLower(fieldNames[0]);
-            string field = string.Format("[InjectPath(\"{0}\")] private GameObject _{1};", Target.FullName(), new string(fieldNames));
+            string field = $"[InjectPath(\"{Target.FullName()}\")] private GameObject _{new string(fieldNames)};";
             return field;
         }
     }

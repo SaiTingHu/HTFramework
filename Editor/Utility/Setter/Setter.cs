@@ -176,7 +176,7 @@ namespace HT.Framework
 
         private bool IsDisplay(string name)
         {
-            if (_itemFilter == "")
+            if (string.IsNullOrEmpty(_itemFilter))
             {
                 return true;
             }

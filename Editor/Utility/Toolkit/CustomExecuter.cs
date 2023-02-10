@@ -344,7 +344,7 @@ namespace HT.Framework
             for (int i = 0; i < _parameters.Count; i++)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label((i + 1) + "." + _parameters[i].Name + ":", GUILayout.Width(200));
+                GUILayout.Label($"{i + 1}.{_parameters[i].Name}:", GUILayout.Width(200));
                 switch (_parameters[i].Type)
                 {
                     case "String":
@@ -456,7 +456,7 @@ namespace HT.Framework
                 object returnValue = Method.Invoke(null, parameters);
                 if (Method.ReturnType.Name != "Void")
                 {
-                    Log.Info("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
+                    Log.Info($"Execute {_methodName}, Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
                 }
             }
             else
@@ -464,7 +464,7 @@ namespace HT.Framework
                 object returnValue = Method.Invoke(Target, parameters);
                 if (Method.ReturnType.Name != "Void")
                 {
-                    Log.Info("Execute " + _methodName + ", Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
+                    Log.Info($"Execute {_methodName}, Return value is: " + (returnValue != null ? returnValue.ToString() : "null"));
                 }
             }
         }

@@ -85,7 +85,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Entity, "创建实体逻辑对象失败：实体逻辑类 " + types[i].Name + " 丢失 EntityResourceAttribute 标记！");
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, $"创建实体逻辑对象失败：实体逻辑类 {types[i].Name} 丢失 EntityResourceAttribute 标记！");
                 }
             }
         }
@@ -204,7 +204,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Entity, "创建实体失败：实体对象 " + type.Name + " 并未存在！");
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, $"创建实体失败：实体对象 {type.Name} 并未存在！");
                 }
             }
             return null;
@@ -241,7 +241,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Entity, "获取实体失败：实体对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.Entity, $"获取实体失败：实体对象 {type.Name} 并未存在！");
             }
         }
         /// <summary>
@@ -257,7 +257,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Entity, "获取实体组失败：实体对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.Entity, $"获取实体组失败：实体对象 {type.Name} 并未存在！");
             }
         }
 
@@ -306,7 +306,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Entity, "显示实体失败：实体对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.Entity, $"显示实体失败：实体对象 {type.Name} 并未存在！");
             }
         }
         /// <summary>
@@ -330,7 +330,7 @@ namespace HT.Framework
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Entity, "隐藏实体失败：实体对象 " + type.Name + " 并未存在！");
+                throw new HTFrameworkException(HTFrameworkModule.Entity, $"隐藏实体失败：实体对象 {type.Name} 并未存在！");
             }
         }
 
@@ -390,7 +390,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Entity, "销毁实体失败：实体对象 " + type.Name + " 并未存在！");
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, $"销毁实体失败：实体对象 {type.Name} 并未存在！");
                 }
             }
         }
@@ -433,7 +433,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    throw new HTFrameworkException(HTFrameworkModule.Entity, "销毁实体失败：实体对象 " + type.Name + " 并未存在！");
+                    throw new HTFrameworkException(HTFrameworkModule.Entity, $"销毁实体失败：实体对象 {type.Name} 并未存在！");
                 }
             }
         }

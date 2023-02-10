@@ -173,11 +173,11 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Current Procedure: " + Target.CurrentProcedure.GetType().Name);
+            GUILayout.Label($"Current Procedure: {Target.CurrentProcedure.GetType().Name}");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Procedures: " + _helper.Procedures.Count);
+            GUILayout.Label($"Procedures: {_helper.Procedures.Count}");
             GUILayout.EndHorizontal();
 
             foreach (var procedure in _helper.Procedures)

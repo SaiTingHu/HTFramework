@@ -118,7 +118,7 @@ namespace HT.Framework
         {
             if (!CoroutineEnumerators.ContainsKey(id))
             {
-                Log.Warning("重启协程失败：不存在ID为 " + id + " 的协程！");
+                Log.Warning($"重启协程失败：不存在ID为 {id} 的协程！");
                 return;
             }
             CoroutineEnumerators[id].Rerun();
@@ -131,7 +131,7 @@ namespace HT.Framework
         {
             if (!CoroutineEnumerators.ContainsKey(id))
             {
-                Log.Warning("终止协程失败：不存在ID为 " + id + " 的协程！");
+                Log.Warning($"终止协程失败：不存在ID为 {id} 的协程！");
                 return;
             }
             CoroutineEnumerators[id].Stop();
