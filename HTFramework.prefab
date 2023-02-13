@@ -1467,6 +1467,7 @@ MonoBehaviour:
   IsAutoKill: 1
   FreeControlBounds: []
   IsEnableBounds: 0
+  IsEnableRepelBox: 0
 --- !u!1 &3561192959184875086
 GameObject:
   m_ObjectHideFlags: 0

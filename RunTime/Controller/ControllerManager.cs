@@ -37,6 +37,10 @@ namespace HT.Framework
         /// </summary>
         public bool IsEnableBounds = false;
         /// <summary>
+        /// 自由控制：是否启用排斥盒
+        /// </summary>
+        public bool IsEnableRepelBox = false;
+        /// <summary>
         /// 切换至自由控制事件
         /// </summary>
         public event HTFAction SwitchToFreeControlEvent;

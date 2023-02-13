@@ -12,6 +12,7 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             _target.IsEnableBounds = BoolField("Is Enable Bounds", _target.IsEnableBounds);
+            _target.IsEnableRepelBox = BoolField("Is Enable RepelBox", _target.IsEnableRepelBox);
             _target.EnablePositionControl = BoolField("Enable Position Control", _target.EnablePositionControl);
             _target.EnableRotationControl = BoolField("Enable Rotation Control", _target.EnableRotationControl);
             _target.IsCanControlOnUGUI = BoolField("Is Can Control On UGUI", _target.IsCanControlOnUGUI);

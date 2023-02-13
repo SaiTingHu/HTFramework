@@ -34,6 +34,8 @@ namespace HT.Framework
             {
                 PropertyField(nameof(ControllerManager.FreeControlBounds), "Free Control Bounds");
             }
+
+            PropertyField(nameof(ControllerManager.IsEnableRepelBox), "Enable RepelBox");
         }
         protected override void OnInspectorRuntimeGUI()
         {

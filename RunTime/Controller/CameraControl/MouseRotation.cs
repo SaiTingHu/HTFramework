@@ -170,7 +170,7 @@ namespace HT.Framework
             }
 
             //排斥盒检测
-            if (Manager.FreeControlRepelBoxs.Count > 0)
+            if (Manager.IsEnableRepelBox)
             {
                 foreach (var box in Manager.FreeControlRepelBoxs)
                 {
@@ -178,7 +178,7 @@ namespace HT.Framework
                 }
             }
 
-            //摄像机位置限制
+            //边界盒检测
             if (Manager.IsEnableBounds)
             {
                 //应用边界盒
