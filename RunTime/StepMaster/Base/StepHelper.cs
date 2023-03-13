@@ -29,7 +29,7 @@ namespace HT.Framework
         /// </summary>
         public HashSet<GameObject> AuxiliaryTarget { get; private set; } = new HashSet<GameObject>();
         /// <summary>
-        /// 是否启用帧刷新
+        /// 是否启用帧更新
         /// </summary>
         public bool IsEnableUpdate { get; set; } = true;
         /// <summary>
@@ -112,7 +112,7 @@ namespace HT.Framework
             Main.m_Controller.SetLookAngle(Content.BestView);
         }
         /// <summary>
-        /// 帧刷新（仅在步骤执行前生效）
+        /// 帧更新（仅在步骤执行前生效）
         /// </summary>
         public virtual void OnUpdate()
         {

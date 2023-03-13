@@ -26,6 +26,7 @@
             base.OnUpdate();
 
             UtilityUpdate();
+            BehaviourUpdate();
             ModuleUpdate();
         }
         public override void OnTerminate()

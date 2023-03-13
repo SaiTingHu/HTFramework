@@ -93,7 +93,7 @@ namespace HT.Framework
             
         }
         /// <summary>
-        /// UI逻辑刷新
+        /// UI逻辑更新
         /// </summary>
         public virtual void OnUpdate()
         {

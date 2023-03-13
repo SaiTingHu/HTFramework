@@ -80,7 +80,7 @@ namespace HT.Framework
         /// <param name="y">视角y值</param>
         /// <param name="distance">视角距离</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetAngle(float x, float y, float distance, bool damping = true)
+        public void SetAngle(float x, float y, float distance, bool damping)
         {
             X = x;
             Y = y;

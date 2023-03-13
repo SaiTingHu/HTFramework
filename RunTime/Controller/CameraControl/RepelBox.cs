@@ -24,7 +24,6 @@ namespace HT.Framework
 
             RefreshScope();
         }
-
         protected override void OnDestroy()
         {
             base.OnDestroy();

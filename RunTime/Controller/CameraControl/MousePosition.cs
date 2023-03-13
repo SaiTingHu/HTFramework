@@ -57,7 +57,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="position">目标位置</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetPosition(Vector3 position, bool damping = true)
+        public void SetPosition(Vector3 position, bool damping)
         {
             if (_isKeepTrack)
             {

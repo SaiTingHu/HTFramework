@@ -114,7 +114,7 @@ namespace HT.Framework
             
         }
         /// <summary>
-        /// 任务内容开始后，帧刷新
+        /// 任务内容开始后，帧更新
         /// </summary>
         protected virtual void OnUpdate()
         {

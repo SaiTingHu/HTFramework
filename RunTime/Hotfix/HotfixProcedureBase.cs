@@ -21,12 +21,12 @@
         public virtual void OnLeave()
         { }
         /// <summary>
-        /// 流程帧刷新
+        /// 流程帧更新
         /// </summary>
         public virtual void OnUpdate()
         { }
         /// <summary>
-        /// 流程帧刷新（秒）
+        /// 流程秒更新
         /// </summary>
         public virtual void OnUpdateSecond()
         { }

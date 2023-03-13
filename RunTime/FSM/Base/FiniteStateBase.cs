@@ -33,7 +33,7 @@
         public virtual void OnReason()
         { }
         /// <summary>
-        /// 状态帧刷新
+        /// 状态帧更新
         /// </summary>
         public virtual void OnUpdate()
         { }

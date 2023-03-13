@@ -207,6 +207,87 @@ namespace HT.Framework
         }
         #endregion
 
+        #region Behaviour
+        private Dictionary<HTBehaviour, IUpdateFrame> _updateFrameBehaviours = new Dictionary<HTBehaviour, IUpdateFrame>();
+        private Dictionary<HTBehaviour, IUpdateSecond> _updateSecondBehaviours = new Dictionary<HTBehaviour, IUpdateSecond>();
+        private float _timer = 0;
+
+        private void BehaviourUpdate()
+        {
+            if (Pause)
+                return;
+
+            if (_updateFrameBehaviours.Count > 0)
+            {
+                foreach (var behaviour in _updateFrameBehaviours)
+                {
+                    if (behaviour.Key != null && behaviour.Key.enabled && behaviour.Key.gameObject.activeSelf && behaviour.Value != null)
+                    {
+                        behaviour.Value.OnUpdateFrame();
+                    }
+                }
+            }
+
+            if (_timer >= 1)
+            {
+                _timer -= 1;
+                if (_updateSecondBehaviours.Count > 0)
+                {
+                    foreach (var behaviour in _updateSecondBehaviours)
+                    {
+                        if (behaviour.Key != null && behaviour.Key.enabled && behaviour.Key.gameObject.activeSelf && behaviour.Value != null)
+                        {
+                            behaviour.Value.OnUpdateSecond();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                _timer += Time.deltaTime;
+            }
+        }
+
+        /// <summary>
+        /// 注册行为类
+        /// </summary>
+        /// <param name="behaviour">行为类对象</param>
+        internal void RegisterBehaviour(HTBehaviour behaviour)
+        {
+            IUpdateFrame updateFrame = behaviour as IUpdateFrame;
+            if (updateFrame != null)
+            {
+                if (!_updateFrameBehaviours.ContainsKey(behaviour))
+                    _updateFrameBehaviours.Add(behaviour, updateFrame);
+            }
+            IUpdateSecond updateSecond = behaviour as IUpdateSecond;
+            if (updateSecond != null)
+            {
+                if (!_updateSecondBehaviours.ContainsKey(behaviour))
+                    _updateSecondBehaviours.Add(behaviour, updateSecond);
+            }
+        }
+        /// <summary>
+        /// 注销行为类
+        /// </summary>
+        /// <param name="behaviour">行为类对象</param>
+        internal void UnregisterBehaviour(HTBehaviour behaviour)
+        {
+            IUpdateFrame updateFrame = behaviour as IUpdateFrame;
+            if (updateFrame != null)
+            {
+                if (_updateFrameBehaviours.ContainsKey(behaviour))
+                    _updateFrameBehaviours.Remove(behaviour);
+            }
+            IUpdateSecond updateSecond = behaviour as IUpdateSecond;
+            if (updateSecond != null)
+            {
+                if (_updateSecondBehaviours.ContainsKey(behaviour))
+                    _updateSecondBehaviours.Remove(behaviour);
+            }
+        }
+        #endregion
+
         #region Module
         /// <summary>
         /// 切面调试模块

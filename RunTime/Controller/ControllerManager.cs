@@ -352,7 +352,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="point">目标位置</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetLookPoint(Vector3 point, bool damping = true)
+        public void SetLookPoint(Vector3 point, bool damping = false)
         {
             _helper.SetLookPoint(point, damping);
         }

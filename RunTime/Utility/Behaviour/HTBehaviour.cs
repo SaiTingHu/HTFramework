@@ -41,13 +41,15 @@ namespace HT.Framework
                 }
             }
 
+            if (Main.Current) Main.Current.RegisterBehaviour(this);
+
 #if UNITY_EDITOR
             SafetyChecker.DoSafetyCheck(this, injectCount, bindCount);
 #endif
         }
         protected virtual void OnDestroy()
         {
-            
+            if (Main.Current) Main.Current.UnregisterBehaviour(this);
         }
 
         /// <summary>

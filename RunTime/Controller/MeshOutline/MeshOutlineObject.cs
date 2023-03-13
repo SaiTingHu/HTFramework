@@ -5,7 +5,7 @@ namespace HT.Framework
 {
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-700)]
-    internal sealed class MeshOutlineObject : HTBehaviour
+    internal sealed class MeshOutlineObject : HTBehaviour, IUpdateFrame
     {
         private const float DoublePI = 2f * Mathf.PI;
         private static Material GetOpaqueMaterial()
@@ -176,7 +176,7 @@ namespace HT.Framework
             }
             _meshOutlineRenderers.Clear();
         }
-        private void Update()
+        public void OnUpdateFrame()
         {
             if (_isOpened)
             {
@@ -202,7 +202,7 @@ namespace HT.Framework
                 }
             }
         }
-        
+
         private class MeshOutlineRenderer
         {
             public Renderer RendererCached;

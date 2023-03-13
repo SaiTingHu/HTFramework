@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/UI/UIClickButton")]
     [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
-    public sealed class UIClickButton : HTBehaviour, IPointerClickHandler
+    public sealed class UIClickButton : HTBehaviour, IPointerClickHandler, IUpdateFrame
     {
         /// <summary>
         /// 启用左键双击事件
@@ -70,8 +70,7 @@ namespace HT.Framework
                     break;
             }
         }
-
-        private void Update()
+        public void OnUpdateFrame()
         {
             if (IsEnableDoubleClick)
             {

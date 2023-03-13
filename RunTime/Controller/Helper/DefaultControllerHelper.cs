@@ -252,7 +252,7 @@ namespace HT.Framework
                     MouseRayTarget target = RayTarget as MouseRayTarget;
                     if (target && target.IsDoubleClickFocus)
                     {
-                        SetLookPoint(target.transform.position);
+                        SetLookPoint(target.transform.position, false);
                     }
                 }
             }
@@ -284,7 +284,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="point">目标位置</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetLookPoint(Vector3 point, bool damping = true)
+        public void SetLookPoint(Vector3 point, bool damping)
         {
             _mousePosition.SetPosition(point, damping);
         }
@@ -295,7 +295,7 @@ namespace HT.Framework
         /// <param name="y">视角y值</param>
         /// <param name="distance">视角距离</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetLookAngle(float x, float y, float distance, bool damping = true)
+        public void SetLookAngle(float x, float y, float distance, bool damping)
         {
             _mouseRotation.SetAngle(x, y, distance, damping);
         }
