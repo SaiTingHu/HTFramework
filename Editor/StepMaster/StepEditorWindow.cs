@@ -22,11 +22,11 @@ namespace HT.Framework
         /// </summary>
         static StepEditorWindow()
         {
-            AdvancedSearchHandlers.Add("所有禁用的步骤", (stepContent) =>
+            AdvancedSearchHandlers.Add("禁用的步骤", (stepContent) =>
             {
                 return !stepContent.IsEnable;
             });
-            AdvancedSearchHandlers.Add("所有存在空目标的步骤", (stepContent) =>
+            AdvancedSearchHandlers.Add("存在空目标的步骤", (stepContent) =>
             {
                 if (stepContent.TargetGUID == "<None>")
                 {
@@ -40,14 +40,18 @@ namespace HT.Framework
                     });
                 }
             });
-            AdvancedSearchHandlers.Add("所有包含<行为>节点的步骤", (stepContent) =>
+            AdvancedSearchHandlers.Add("名称、提示中存在空格的步骤", (stepContent) =>
+            {
+                return stepContent.Name.Contains(' ') || stepContent.Prompt.Contains(' ');
+            });
+            AdvancedSearchHandlers.Add("包含<行为>节点的步骤", (stepContent) =>
             {
                 return stepContent.Operations.Exists((o) =>
                 {
                     return o.OperationType == StepOperationType.Action || o.OperationType == StepOperationType.ActionArgs;
                 });
             });
-            AdvancedSearchHandlers.Add("所有包含<播放时间线>节点的步骤", (stepContent) =>
+            AdvancedSearchHandlers.Add("包含<播放时间线>节点的步骤", (stepContent) =>
             {
                 return stepContent.Operations.Exists((o) =>
                 {
