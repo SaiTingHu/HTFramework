@@ -31,6 +31,10 @@ namespace HT.Framework
                 OnMousePressed.Invoke();
             }
         }
+        private void OnDisable()
+        {
+            OnPointerUp(null);
+        }
         public void OnPointerDown(PointerEventData eventData)
         {
             _isPressed = true;
