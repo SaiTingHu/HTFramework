@@ -116,7 +116,7 @@ namespace HT.Framework
                 taskGameObjects._gameObjects[index] = GameObject.Find(taskGameObjects.Paths[index]);
                 if (taskGameObjects._gameObjects[index] == null)
                 {
-                    TaskTarget[] targets = UnityEngine.Object.FindObjectsOfType<TaskTarget>();
+                    TaskTarget[] targets = UnityEngine.Object.FindObjectsOfType<TaskTarget>(true);
                     foreach (TaskTarget target in targets)
                     {
                         if (taskGameObjects.GUIDs[index] == target.GUID)

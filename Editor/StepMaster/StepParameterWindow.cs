@@ -332,7 +332,7 @@ namespace HT.Framework
                 para.GameObjectValue = GameObject.Find(para.GameObjectPath);
                 if (para.GameObjectValue == null)
                 {
-                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
+                    StepTarget[] targets = FindObjectsOfType<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
                         if (target.GUID == para.GameObjectGUID && !target.GetComponent<StepPreview>())

@@ -1355,7 +1355,7 @@ namespace HT.Framework
                         GameObjectValue = GameObject.Find(StringValue2);
                         if (GameObjectValue == null)
                         {
-                            StepTarget[] targets = UnityEngine.Object.FindObjectsOfType<StepTarget>();
+                            StepTarget[] targets = UnityEngine.Object.FindObjectsOfType<StepTarget>(true);
                             foreach (StepTarget target in targets)
                             {
                                 if (target.GUID == StringValue && !target.GetComponent<StepPreview>())

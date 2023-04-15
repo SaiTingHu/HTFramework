@@ -2245,7 +2245,7 @@ namespace HT.Framework
                 content.Target = GameObject.Find(content.TargetPath);
                 if (content.Target == null)
                 {
-                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
+                    StepTarget[] targets = FindObjectsOfType<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
                         if (target.GUID == content.TargetGUID && !target.GetComponent<StepPreview>())
@@ -2304,7 +2304,7 @@ namespace HT.Framework
                 operation.Target = GameObject.Find(operation.TargetPath);
                 if (operation.Target == null)
                 {
-                    StepTarget[] targets = FindObjectsOfType<StepTarget>();
+                    StepTarget[] targets = FindObjectsOfType<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
                         if (target.GUID == operation.TargetGUID && !target.GetComponent<StepPreview>())

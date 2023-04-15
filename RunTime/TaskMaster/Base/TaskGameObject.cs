@@ -168,7 +168,7 @@ namespace HT.Framework
                 taskGameObject.AgentEntity = GameObject.Find(taskGameObject.Path);
                 if (taskGameObject.AgentEntity == null)
                 {
-                    TaskTarget[] targets = UnityEngine.Object.FindObjectsOfType<TaskTarget>();
+                    TaskTarget[] targets = UnityEngine.Object.FindObjectsOfType<TaskTarget>(true);
                     foreach (TaskTarget target in targets)
                     {
                         if (taskGameObject.GUID == target.GUID)
