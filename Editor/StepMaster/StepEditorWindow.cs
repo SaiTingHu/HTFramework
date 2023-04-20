@@ -139,6 +139,7 @@ namespace HT.Framework
         private GUIContent _stepHelperGC;
         private GUIContent _previewGC;
         private GUIContent _advancedSearchGC;
+        private GUIContent _valueEditorGC;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = null;
@@ -208,6 +209,9 @@ namespace HT.Framework
             _advancedSearchGC = new GUIContent();
             _advancedSearchGC.image = EditorGUIUtility.IconContent("FilterByType").image;
             _advancedSearchGC.tooltip = "Advanced Search";
+            _valueEditorGC = new GUIContent();
+            _valueEditorGC.image = EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image;
+            _valueEditorGC.tooltip = "Edit in a new window";
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
             _ct = FindObjectOfType<CameraTarget>();
@@ -840,7 +844,15 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    _currentStepObj.Prompt = EditorGUILayout.TextField(_currentStepObj.Prompt, GUILayout.Width(185));
+                    _currentStepObj.Prompt = EditorGUILayout.TextField(_currentStepObj.Prompt, GUILayout.Width(165));
+                    if (GUILayout.Button(_valueEditorGC, "IconButton", GUILayout.Width(20)))
+                    {
+                        StringValueEditor.OpenWindow(this, _currentStepObj.Prompt, $"{_currentStepIndex}.{_currentStepObj.Name}({GetWord("Prompt")})", (str) =>
+                        {
+                            _currentStepObj.Prompt = str;
+                            HasChanged(_contentAsset);
+                        });
+                    }
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
