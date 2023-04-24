@@ -75,7 +75,7 @@ namespace HT.Framework
                 {
                     gm.AddItem(new GUIContent(copy), false, () =>
                     {
-                        GUIUtility.systemCopyBuffer = taskGameObject.GUID;
+                        GUIUtility.systemCopyBuffer = $"{taskGameObject.GUID}|{taskGameObject.Path}";
                     });
                 }
                 if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
@@ -86,7 +86,12 @@ namespace HT.Framework
                 {
                     gm.AddItem(new GUIContent(paste), false, () =>
                     {
-                        taskGameObject.GUID = GUIUtility.systemCopyBuffer;
+                        string[] buffer = GUIUtility.systemCopyBuffer.Split('|');
+                        if (buffer.Length == 2)
+                        {
+                            taskGameObject.GUID = buffer[0];
+                            taskGameObject.Path = buffer[1];
+                        }
                     });
                 }
                 gm.ShowAsContext();

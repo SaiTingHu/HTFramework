@@ -129,16 +129,19 @@ namespace HT.Framework
                     _fields[i].Painting(this);
                 }
             }
+            EditorGUI.indentLevel = 0;
         }
         /// <summary>
         /// 绘制属性
         /// </summary>
         private void PropertyGUI()
         {
+            GUI.color = Color.yellow;
             for (int i = 0; i < _properties.Count; i++)
             {
                 _properties[i].Painting(this);
             }
+            GUI.color = Color.white;
         }
         /// <summary>
         /// 绘制事件

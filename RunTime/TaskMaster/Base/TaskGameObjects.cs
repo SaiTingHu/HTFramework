@@ -56,6 +56,22 @@ namespace HT.Framework
             }
         }
 
+        /// <summary>
+        /// 数组中是否存在指定物体
+        /// </summary>
+        /// <param name="obj">指定物体</param>
+        public bool Contains(GameObject obj)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (this[i] == obj)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 #if UNITY_EDITOR
         private string _displayName;
         private ReorderableList _reorderableList;
@@ -75,10 +91,11 @@ namespace HT.Framework
             taskGameObjects.InitializeEditorData(name);
 
             taskGameObjects._reorderableList.DoLayoutList();
+            GUILayout.Space(5);
 
             int count = taskGameObjects.GUIDs.Count;
             if (count <= 0) count = 1;
-            return 25 + count * 22;
+            return 33 + count * 24;
         }
 
         /// <summary>
