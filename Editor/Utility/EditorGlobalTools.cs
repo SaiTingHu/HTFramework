@@ -459,7 +459,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 合并多个模型网格
+        /// 合并多个静态网格
         /// </summary>
         [MenuItem("HTFramework/Tools/Mesh Combines", false, 108)]
         private static void MeshCombines()
@@ -506,6 +506,37 @@ namespace HT.Framework
             AssetDatabase.SaveAssets();
 
             EditorUtility.ClearProgressBar();
+        }
+
+        /// <summary>
+        /// 截取蒙皮网格当前帧，保存为静态网格
+        /// </summary>
+        [MenuItem("HTFramework/Tools/SkinnedMesh Bake", false, 109)]
+        private static void SkinnedMeshBake()
+        {
+            if (Selection.gameObjects.Length != 1)
+            {
+                Log.Warning("请先选中1个待截取静态网格的蒙皮网格！");
+                return;
+            }
+
+            SkinnedMeshRenderer skinnedMeshRenderer = Selection.activeGameObject.GetComponent<SkinnedMeshRenderer>();
+            if (skinnedMeshRenderer == null)
+            {
+                Log.Warning("请先选中1个待截取静态网格的蒙皮网格！");
+                return;
+            }
+
+            Mesh mesh = new Mesh();
+            skinnedMeshRenderer.BakeMesh(mesh);
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+            AssetDatabase.CreateAsset(mesh, $"Assets/{skinnedMeshRenderer.sharedMesh.name}.asset");
+            AssetDatabase.SaveAssets();
+
+            Selection.activeObject = mesh;
+            EditorGUIUtility.PingObject(mesh);
         }
         #endregion
 
