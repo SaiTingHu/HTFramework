@@ -23,39 +23,49 @@ namespace HT.Framework
             GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            PropertyField(nameof(MouseRotation.XSpeed), "      X");
-            PropertyField(nameof(MouseRotation.YSpeed), "      Y");
-            PropertyField(nameof(MouseRotation.MSpeed), "      M");
-            
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            PropertyField(nameof(MouseRotation.XSpeed), "X");
+            PropertyField(nameof(MouseRotation.YSpeed), "Y");
+            PropertyField(nameof(MouseRotation.MSpeed), "M");
+            GUILayout.EndVertical();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            PropertyField(nameof(MouseRotation.YMinAngleLimit), "      Y min");
-            PropertyField(nameof(MouseRotation.YMaxAngleLimit), "      Y max");
-            
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            PropertyField(nameof(MouseRotation.YMinAngleLimit), "Y min");
+            PropertyField(nameof(MouseRotation.YMaxAngleLimit), "Y max");
+            GUILayout.EndVertical();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Distance", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            PropertyField(nameof(MouseRotation.Distance), "      Distance");
-            PropertyField(nameof(MouseRotation.MinDistance), "      Min");
-            PropertyField(nameof(MouseRotation.MaxDistance), "      Max");
-            
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            PropertyField(nameof(MouseRotation.Distance), "Distance");
+            PropertyField(nameof(MouseRotation.MinDistance), "Min");
+            PropertyField(nameof(MouseRotation.MaxDistance), "Max");
+            GUILayout.EndVertical();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            PropertyField(nameof(MouseRotation.NeedDamping), "      Need Damping");
-            PropertyField(nameof(MouseRotation.DampingTime), "      Damping Time");
-            
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            PropertyField(nameof(MouseRotation.NeedDamping), "Need Damping");
+            PropertyField(nameof(MouseRotation.DampingTime), "Damping Time");
+            GUILayout.EndVertical();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Angle", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            PropertyField(nameof(MouseRotation.X), "      X");
-            PropertyField(nameof(MouseRotation.Y), "      Y");
-            
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            PropertyField(nameof(MouseRotation.X), "X");
+            PropertyField(nameof(MouseRotation.Y), "Y");
+            GUILayout.EndVertical();
+
             GUI.enabled = true;
         }
     }

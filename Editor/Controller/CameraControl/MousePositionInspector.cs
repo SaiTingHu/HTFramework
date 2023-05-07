@@ -23,16 +23,20 @@ namespace HT.Framework
             GUILayout.Label("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            PropertyField(nameof(MousePosition.XSpeed), "      X");
-            PropertyField(nameof(MousePosition.YSpeed), "      Y");
-            PropertyField(nameof(MousePosition.ZSpeed), "      Z");
-            
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            PropertyField(nameof(MousePosition.XSpeed), "X");
+            PropertyField(nameof(MousePosition.YSpeed), "Y");
+            PropertyField(nameof(MousePosition.ZSpeed), "Z");
+            GUILayout.EndVertical();
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
-            PropertyField(nameof(MousePosition.DampingTime), "      Damping Time");
-            
+            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
+            PropertyField(nameof(MousePosition.DampingTime), "Damping Time");
+            GUILayout.EndVertical();
+
             GUI.enabled = true;
         }
     }

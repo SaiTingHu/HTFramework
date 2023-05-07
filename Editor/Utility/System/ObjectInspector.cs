@@ -110,7 +110,7 @@ namespace HT.Framework
                         else
                         {
                             EditorGUILayout.BeginHorizontal(_fields[i].Drawer.Style);
-                            EditorGUILayout.Space(10);
+                            GUILayout.Space(10);
                         }
                         _fields[i].DrawerValue = EditorGUILayout.Foldout(_fields[i].DrawerValue, _fields[i].Drawer.Name, _fields[i].Drawer.ToggleOnLabelClick);
                         drawer = _fields[i].DrawerValue;
@@ -312,6 +312,10 @@ namespace HT.Framework
                         {
                             Painters.Add(new FolderPathPainter(iattributes[i]));
                         }
+                        else if (iattributes[i] is ClassTypeAttribute)
+                        {
+                            Painters.Add(new ClassTypePainter(iattributes[i]));
+                        }
                         else if (iattributes[i] is EnableAttribute)
                         {
                             EnableCondition = property.serializedObject.targetObject.GetType().GetMethod(iattributes[i].Cast<EnableAttribute>().Condition, flags);
@@ -435,10 +439,11 @@ namespace HT.Framework
                     if (HasPreview)
                     {
                         EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.Space(inspector.LabelWidth);
+                        GUILayout.Space(inspector.LabelWidth);
                         Texture2D preview = Property.propertyType == SerializedPropertyType.ObjectReference ? AssetPreview.GetAssetPreview(Property.objectReferenceValue) : null;
                         GUIContent gc = preview != null ? new GUIContent(preview) : new GUIContent("No Preview");
                         EditorGUILayout.LabelField(gc, EditorStyles.helpBox, GUILayout.Width(PreviewSize), GUILayout.Height(PreviewSize));
+                        GUILayout.FlexibleSpace();
                         EditorGUILayout.EndHorizontal();
                     }
                 }
@@ -806,6 +811,80 @@ namespace HT.Framework
                 {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used FolderPath! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.EndHorizontal();
+                }
+            }
+        }
+        /// <summary>
+        /// 字段绘制器 - Class类型
+        /// </summary>
+        private sealed class ClassTypePainter : FieldPainter
+        {
+            public ClassTypeAttribute CAttribute;
+
+            public ClassTypePainter(InspectorAttribute attribute) : base(attribute)
+            {
+                CAttribute = attribute as ClassTypeAttribute;
+            }
+
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(string))
+                {
+                    string value = (string)fieldInspector.Field.GetValue(inspector.target);
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.LabelField(fieldInspector.Label, GUILayout.Width(inspector.LabelWidth));
+                    if (GUILayout.Button(value, EditorStyles.popup))
+                    {
+                        GenericMenu gm = new GenericMenu();
+                        List<Type> types;
+                        if (CAttribute.IsOnlyRuntime)
+                        {
+                            if (CAttribute.IsIgnoreAbstract)
+                            {
+                                types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type => { return type.IsSubclassOf(CAttribute.ParentClass) && !type.IsAbstract; });
+                            }
+                            else
+                            {
+                                types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type => { return type.IsSubclassOf(CAttribute.ParentClass); });
+                            }
+                        }
+                        else
+                        {
+                            if (CAttribute.IsIgnoreAbstract)
+                            {
+                                types = ReflectionToolkit.GetTypesInAllAssemblies(type => { return type.IsSubclassOf(CAttribute.ParentClass) && !type.IsAbstract; });
+                            }
+                            else
+                            {
+                                types = ReflectionToolkit.GetTypesInAllAssemblies(type => { return type.IsSubclassOf(CAttribute.ParentClass); });
+                            }
+                        }
+                        gm.AddItem(new GUIContent("<None>"), value == "<None>", () =>
+                        {
+                            Undo.RecordObject(inspector.target, "ClassType");
+                            fieldInspector.Field.SetValue(inspector.target, "<None>");
+                            inspector.HasChanged();
+                        });
+                        for (int i = 0; i < types.Count; i++)
+                        {
+                            int j = i;
+                            gm.AddItem(new GUIContent(types[j].FullName), value == types[j].FullName, () =>
+                            {
+                                Undo.RecordObject(inspector.target, "ClassType");
+                                fieldInspector.Field.SetValue(inspector.target, types[j].FullName);
+                                inspector.HasChanged();
+                            });
+                        }
+                        gm.ShowAsContext();
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+                else
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used ClassType! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
@@ -1522,7 +1601,7 @@ namespace HT.Framework
                 Delegate[] delegates = multicast != null ? multicast.GetInvocationList() : null;
 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.Space(10);
+                GUILayout.Space(10);
                 IsFoldout = EditorGUILayout.Foldout(IsFoldout, string.Format("{0} [{1}]", Name, delegates != null ? delegates.Length : 0), true);
                 EditorGUILayout.EndHorizontal();
 
@@ -1531,7 +1610,7 @@ namespace HT.Framework
                     for (int i = 0; i < delegates.Length; i++)
                     {
                         EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.Space(30);
+                        GUILayout.Space(30);
                         EditorGUILayout.LabelField($"{delegates[i].Target}->{delegates[i].Method}", "Textfield");
                         EditorGUILayout.EndHorizontal();
                     }

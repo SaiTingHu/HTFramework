@@ -34,6 +34,7 @@ namespace HT.Framework
             window._contentAsset = contentAsset;
             window._currentContent = null;
             window._taskContentList = null;
+            window._isMinimize = false;
             if (!EditorApplication.isPlaying)
             {
                 window.ReSet();
@@ -47,6 +48,8 @@ namespace HT.Framework
         private TaskContentBase _currentContent;
         private Texture _background;
         private ReorderableList _taskContentList;
+        private bool _isMinimize = false;
+        private Rect _recordedPosition;
 
         private bool _isShowContent = true;
         private bool _isShowProperty = true;
@@ -62,6 +65,13 @@ namespace HT.Framework
         private GUIContent _deleteGC;
         private HTFFunc<string, string> _getWord;
 
+        protected override bool IsEnableTitleGUI
+        {
+            get
+            {
+                return !_isMinimize;
+            }
+        }
         protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/104317219";
 
         protected override void OnEnable()
@@ -99,6 +109,9 @@ namespace HT.Framework
         protected override void OnGUIReady()
         {
             base.OnGUIReady();
+
+            if (_isMinimize)
+                return;
 
             GUI.DrawTextureWithTexCoords(new Rect(0, 0, position.width, position.height), _background, new Rect(0, 0, position.width / 50, position.height / 50));
 
@@ -155,20 +168,31 @@ namespace HT.Framework
                 });
                 gm.ShowAsContext();
             }
+            if (GUILayout.Button(GetWord("Minimize"), EditorStyles.toolbarPopup))
+            {
+                MinimizeWindow();
+            }
         }
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
-            
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(5);
-            OnContentGUI();
-            GUILayout.Space(5);
-            OnPropertyGUI();
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
 
-            OnPointEventHandle();
+            if (_isMinimize)
+            {
+                MinimizeGUI();
+            }
+            else
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(5);
+                OnContentGUI();
+                GUILayout.Space(5);
+                OnPropertyGUI();
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+
+                OnPointEventHandle();
+            }
 
             if (GUI.changed)
             {
@@ -192,6 +216,8 @@ namespace HT.Framework
             AddWord("查找任务点", "Find Task Point");
             AddWord("任务内容属性", "Task Content Property");
             AddWord("设置", "Setting");
+            AddWord("最小化", "Minimize");
+            AddWord("最大化", "Maximize");
             AddWord("锁定身份号", "Lock ID");
             AddWord("仅在选中时展开任务点", "Expand Point Only Selected");
             AddWord("显示任务点全名", "Show Point Full Name");
@@ -217,6 +243,33 @@ namespace HT.Framework
             AddWord("已禁用", "DISABLED");
         }
 
+        /// <summary>
+        /// 最小化后的GUI
+        /// </summary>
+        private void MinimizeGUI()
+        {
+            GUILayout.BeginHorizontal(EditorStyles.toolbar);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(GetWord("Maximize"), EditorStyles.toolbarButton))
+            {
+                MaximizeWindow();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginVertical();
+            GUILayout.FlexibleSpace();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            GUILayout.Label(GetWord("Task Content Count") + ":" + _contentAsset.Content.Count);
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
+        }
         /// <summary>
         /// 任务内容GUI
         /// </summary>
@@ -681,6 +734,26 @@ namespace HT.Framework
                     HasChanged(_contentAsset);
                 };
             }
+        }
+        /// <summary>
+        /// 最小化窗口
+        /// </summary>
+        private void MinimizeWindow()
+        {
+            _recordedPosition = position;
+            minSize = new Vector2(200, 100);
+            maxSize = new Vector2(200, 100);
+            _isMinimize = true;
+        }
+        /// <summary>
+        /// 最大化窗口
+        /// </summary>
+        private void MaximizeWindow()
+        {
+            minSize = new Vector2(800, 600);
+            maxSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            position = _recordedPosition;
+            _isMinimize = false;
         }
 
         /// <summary>

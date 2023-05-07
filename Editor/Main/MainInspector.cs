@@ -475,7 +475,7 @@ namespace HT.Framework
                         break;
                     case MainParameter.ParameterType.Prefab:
                         valueProperty = mainParameter.FindPropertyRelative("PrefabValue");
-                        valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(GameObject), true);
+                        valueProperty.objectReferenceValue = EditorGUI.ObjectField(subrect, valueProperty.objectReferenceValue, typeof(GameObject), false);
                         break;
                     case MainParameter.ParameterType.Texture:
                         valueProperty = mainParameter.FindPropertyRelative("TextureValue");

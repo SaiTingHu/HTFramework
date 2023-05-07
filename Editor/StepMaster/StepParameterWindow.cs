@@ -127,7 +127,7 @@ namespace HT.Framework
                         },
                         (str) =>
                         {
-                            stepParameter.Vector2Value = str.ToPasteVector2();
+                            stepParameter.Vector2Value = str.ToPasteVector2(Vector2.zero);
                         });
                         break;
                     case StepParameter.ParameterType.Vector3:
@@ -139,7 +139,7 @@ namespace HT.Framework
                         },
                         (str) =>
                         {
-                            stepParameter.Vector3Value = str.ToPasteVector3();
+                            stepParameter.Vector3Value = str.ToPasteVector3(Vector3.zero);
                         });
                         break;
                     case StepParameter.ParameterType.Color:
