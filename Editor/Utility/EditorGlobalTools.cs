@@ -1064,13 +1064,12 @@ namespace HT.Framework
             {
                 value = value.Replace("Vector2(", "");
                 value = value.Replace(")", "");
+                value = value.Replace("f", "");
 
                 string[] vector2 = value.Split(',');
                 if (vector2.Length == 2)
                 {
                     float x, y;
-                    vector2[0] = vector2[0].Replace("f", "");
-                    vector2[1] = vector2[1].Replace("f", "");
                     if (float.TryParse(vector2[0], out x) && float.TryParse(vector2[1], out y))
                     {
                         return new Vector2(x, y);
@@ -1091,14 +1090,12 @@ namespace HT.Framework
             {
                 value = value.Replace("Vector3(", "");
                 value = value.Replace(")", "");
+                value = value.Replace("f", "");
 
                 string[] vector3 = value.Split(',');
                 if (vector3.Length == 3)
                 {
                     float x, y, z;
-                    vector3[0] = vector3[0].Replace("f", "");
-                    vector3[1] = vector3[1].Replace("f", "");
-                    vector3[2] = vector3[2].Replace("f", "");
                     if (float.TryParse(vector3[0], out x) && float.TryParse(vector3[1], out y) && float.TryParse(vector3[2], out z))
                     {
                         return new Vector3(x, y, z);
@@ -1119,15 +1116,12 @@ namespace HT.Framework
             {
                 value = value.Replace("Vector4(", "");
                 value = value.Replace(")", "");
+                value = value.Replace("f", "");
 
                 string[] vector4 = value.Split(',');
                 if (vector4.Length == 4)
                 {
                     float x, y, z, w;
-                    vector4[0] = vector4[0].Replace("f", "");
-                    vector4[1] = vector4[1].Replace("f", "");
-                    vector4[2] = vector4[2].Replace("f", "");
-                    vector4[3] = vector4[3].Replace("f", "");
                     if (float.TryParse(vector4[0], out x) && float.TryParse(vector4[1], out y) && float.TryParse(vector4[2], out z) && float.TryParse(vector4[3], out w))
                     {
                         return new Vector4(x, y, z, w);
@@ -1198,15 +1192,12 @@ namespace HT.Framework
             {
                 value = value.Replace("Quaternion(", "");
                 value = value.Replace(")", "");
+                value = value.Replace("f", "");
 
                 string[] quaternion = value.Split(',');
                 if (quaternion.Length == 4)
                 {
                     float x, y, z, w;
-                    quaternion[0] = quaternion[0].Replace("f", "");
-                    quaternion[1] = quaternion[1].Replace("f", "");
-                    quaternion[2] = quaternion[2].Replace("f", "");
-                    quaternion[3] = quaternion[3].Replace("f", "");
                     if (float.TryParse(quaternion[0], out x) && float.TryParse(quaternion[1], out y) && float.TryParse(quaternion[2], out z) && float.TryParse(quaternion[3], out w))
                     {
                         return new Quaternion(x, y, z, w);
@@ -1227,18 +1218,13 @@ namespace HT.Framework
             {
                 value = value.Replace("Bounds(", "");
                 value = value.Replace(")", "");
+                value = value.Replace("f", "");
 
                 string[] bounds = value.Split(',');
                 if (bounds.Length == 6)
                 {
                     float centerX, centerY, centerZ;
                     float sizeX, sizeY, sizeZ;
-                    bounds[0] = bounds[0].Replace("f", "");
-                    bounds[1] = bounds[1].Replace("f", "");
-                    bounds[2] = bounds[2].Replace("f", "");
-                    bounds[3] = bounds[3].Replace("f", "");
-                    bounds[4] = bounds[4].Replace("f", "");
-                    bounds[5] = bounds[5].Replace("f", "");
                     if (float.TryParse(bounds[0], out centerX) && float.TryParse(bounds[1], out centerY) && float.TryParse(bounds[2], out centerZ)
                         && float.TryParse(bounds[3], out sizeX) && float.TryParse(bounds[4], out sizeY) && float.TryParse(bounds[5], out sizeZ))
                     {

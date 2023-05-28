@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace HT.Framework
@@ -108,27 +109,71 @@ namespace HT.Framework
             return defaultValue;
         }
         /// <summary>
-        /// 转换成Vector3，格式：x,y,z
+        /// 转换成Vector2，格式：Vector2(x,y)
         /// </summary>
         /// <param name="value">字符串</param>
-        /// <returns>Vector3值</returns>
-        public static Vector3 ToVector3(this string value)
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>Vector2值</returns>
+        public static Vector2 ToVector2(this string value, Vector2 defaultValue = default)
         {
-            value = value.Replace("f", "");
-            string[] values = value.Split(',');
-            if (values.Length == 3)
+            if (value.StartsWith("Vector2("))
             {
-                try
-                {
-                    return new Vector3(float.Parse(values[0]), float.Parse(values[1]), float.Parse(values[2]));
-                }
-                catch
-                {
-                    return Vector3.zero;
-                }
+                value = value.Replace("Vector2(", "");
+                value = value.Replace(")", "");
+                value = value.Replace("f", "");
+                string[] vector2 = value.Split(',');
+                float x = 0;
+                float y = 0;
+                if (vector2.Length > 0) float.TryParse(vector2[0], out x);
+                if (vector2.Length > 1) float.TryParse(vector2[1], out y);
+                return new Vector2(x, y);
             }
+            return defaultValue;
+        }
+        /// <summary>
+        /// 转换成Vector3，格式：Vector3(x,y,z)
+        /// </summary>
+        /// <param name="value">字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>Vector3值</returns>
+        public static Vector3 ToVector3(this string value, Vector3 defaultValue = default)
+        {
+            if (value.StartsWith("Vector3("))
+            {
+                value = value.Replace("Vector3(", "");
+                value = value.Replace(")", "");
+                value = value.Replace("f", "");
+                string[] vector3 = value.Split(',');
+                float x = 0;
+                float y = 0;
+                float z = 0;
+                if (vector3.Length > 0) float.TryParse(vector3[0], out x);
+                if (vector3.Length > 1) float.TryParse(vector3[1], out y);
+                if (vector3.Length > 2) float.TryParse(vector3[2], out z);
+                return new Vector3(x, y, z);
+            }
+            return defaultValue;
+        }
+        #endregion
 
-            return Vector3.zero;
+        #region 正则表达式
+        /// <summary>
+        /// 是否为整型内容
+        /// </summary>
+        /// <param name="value">字符串值</param>
+        /// <returns>是否为整型内容</returns>
+        public static bool IsInt(this string value)
+        {
+            return Regex.IsMatch(value, "^([-]?[0-9]{1,})$");
+        }
+        /// <summary>
+        /// 是否为浮点型内容
+        /// </summary>
+        /// <param name="value">字符串值</param>
+        /// <returns>是否为浮点型内容</returns>
+        public static bool IsFloat(this string value)
+        {
+            return Regex.IsMatch(value, "^([-]?[0-9]{1,}[.][0-9]*)$");
         }
         #endregion
     }

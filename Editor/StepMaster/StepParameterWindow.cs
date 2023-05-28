@@ -76,7 +76,6 @@ namespace HT.Framework
                     {
                         _content.Parameters.Remove(stepParameter);
                         _content.Parameters.Insert(i - 1, stepParameter);
-                        continue;
                     }
                 }
                 if (GUILayout.Button("▼", EditorStyles.miniButtonMid, GUILayout.Width(20)))
@@ -85,14 +84,12 @@ namespace HT.Framework
                     {
                         _content.Parameters.Remove(stepParameter);
                         _content.Parameters.Insert(i + 1, stepParameter);
-                        continue;
                     }
                 }
                 GUI.backgroundColor = Color.red;
                 if (GUILayout.Button(GetWord("Delete"), EditorStyles.miniButtonRight))
                 {
                     DeleteParameter(i);
-                    continue;
                 }
                 GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();

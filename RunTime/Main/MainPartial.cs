@@ -346,6 +346,10 @@ namespace HT.Framework
         /// </summary>
         public static InputManager m_Input { get; private set; }
         /// <summary>
+        /// 指令模块
+        /// </summary>
+        public static InstructionManager m_Instruction { get; private set; }
+        /// <summary>
         /// 主模块
         /// </summary>
         public static Main m_Main { get; private set; }
@@ -459,6 +463,7 @@ namespace HT.Framework
             m_FSM = GetInternalModule(HTFrameworkModule.FSM) as FSMManager;
             m_Hotfix = GetInternalModule(HTFrameworkModule.Hotfix) as HotfixManager;
             m_Input = GetInternalModule(HTFrameworkModule.Input) as InputManager;
+            m_Instruction = GetInternalModule(HTFrameworkModule.Instruction) as InstructionManager;
             m_Main = GetInternalModule(HTFrameworkModule.Main) as Main;
             m_Network = GetInternalModule(HTFrameworkModule.Network) as NetworkManager;
             m_ObjectPool = GetInternalModule(HTFrameworkModule.ObjectPool) as ObjectPoolManager;
@@ -1254,6 +1259,7 @@ namespace HT.Framework
         FSM,
         Hotfix,
         Input,
+        Instruction,
         Main,
         Network,
         ObjectPool,
