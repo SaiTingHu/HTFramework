@@ -9,6 +9,7 @@ namespace HT.Framework
     internal static class InstructionLexer
     {
         private static StringBuilder Builder = new StringBuilder();
+        private static char BOM = '\ufeff';
 
         /// <summary>
         /// 词法分析
@@ -27,7 +28,7 @@ namespace HT.Framework
                 if (code[i] == '/' && (i + 1) < code.Length && code[i + 1] == '/')
                     break;
 
-                if (code[i] == '\t' || code[i] == '\r')
+                if (code[i] == '\t' || code[i] == '\r' || code[i] == BOM)
                     continue;
 
                 if (isStr)
