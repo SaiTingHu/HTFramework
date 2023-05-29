@@ -191,9 +191,9 @@ namespace HT.Framework
                 Log.Error($"【指令系统】语法解析错误：#SetField指令的第二个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
-            if (tokens[3].Type != TokenType.String)
+            if (tokens[3].Type != TokenType.Identifier && tokens[3].Type != TokenType.String)
             {
-                Log.Error($"【指令系统】语法解析错误：#SetField指令的第三个参数必须为String类型（双引号包裹）！[第{line}行]");
+                Log.Error($"【指令系统】语法解析错误：#SetField指令的第三个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
             if (!IsValueType(tokens[4].Type))
@@ -205,7 +205,7 @@ namespace HT.Framework
             SentenceSetField sentence = Main.m_ReferencePool.Spawn<SentenceSetField>();
             sentence.TargetPath = ConvertIdentifier(tokens[1].Type, tokens[1].Value.Replace("\"", ""), defines, line);
             sentence.ComType = ConvertIdentifier(tokens[2].Type, tokens[2].Value.Replace("\"", ""), defines, line);
-            sentence.FieldName = tokens[3].Value.Replace("\"", "");
+            sentence.FieldName = ConvertIdentifier(tokens[3].Type, tokens[3].Value.Replace("\"", ""), defines, line);
             if (tokens[4].Type == TokenType.String)
             {
                 sentence.Type = ArgsType.String;
@@ -267,9 +267,9 @@ namespace HT.Framework
                 Log.Error($"【指令系统】语法解析错误：#SetProperty指令的第二个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
-            if (tokens[3].Type != TokenType.String)
+            if (tokens[3].Type != TokenType.Identifier && tokens[3].Type != TokenType.String)
             {
-                Log.Error($"【指令系统】语法解析错误：#SetProperty指令的第三个参数必须为String类型（双引号包裹）！[第{line}行]");
+                Log.Error($"【指令系统】语法解析错误：#SetProperty指令的第三个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
             if (!IsValueType(tokens[4].Type))
@@ -281,7 +281,7 @@ namespace HT.Framework
             SentenceSetProperty sentence = Main.m_ReferencePool.Spawn<SentenceSetProperty>();
             sentence.TargetPath = ConvertIdentifier(tokens[1].Type, tokens[1].Value.Replace("\"", ""), defines, line);
             sentence.ComType = ConvertIdentifier(tokens[2].Type, tokens[2].Value.Replace("\"", ""), defines, line);
-            sentence.PropertyName = tokens[3].Value.Replace("\"", "");
+            sentence.PropertyName = ConvertIdentifier(tokens[3].Type, tokens[3].Value.Replace("\"", ""), defines, line);
             if (tokens[4].Type == TokenType.String)
             {
                 sentence.Type = ArgsType.String;
@@ -387,15 +387,15 @@ namespace HT.Framework
                 Log.Error($"【指令系统】语法解析错误：#NewObj指令必须跟一个参数！[第{line}行]");
                 return null;
             }
-            if (tokens[1].Type != TokenType.String)
+            if (tokens[1].Type != TokenType.Identifier && tokens[1].Type != TokenType.String)
             {
-                Log.Error($"【指令系统】语法解析错误：#NewObj指令的第一个参数必须为String类型（双引号包裹）！[第{line}行]");
+                Log.Error($"【指令系统】语法解析错误：#NewObj指令的第一个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
 
             SentenceNewObj sentence = Main.m_ReferencePool.Spawn<SentenceNewObj>();
             sentence.TargetPath = null;
-            sentence.Name = tokens[1].Value.Replace("\"", "");
+            sentence.Name = ConvertIdentifier(tokens[1].Type, tokens[1].Value.Replace("\"", ""), defines, line);
             return sentence;
         }
         /// <summary>
@@ -417,15 +417,15 @@ namespace HT.Framework
                 Log.Error($"【指令系统】语法解析错误：#Rename指令的第一个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
-            if (tokens[2].Type != TokenType.String)
+            if (tokens[2].Type != TokenType.Identifier && tokens[2].Type != TokenType.String)
             {
-                Log.Error($"【指令系统】语法解析错误：#Rename指令的第二个参数必须为String类型（双引号包裹）！[第{line}行]");
+                Log.Error($"【指令系统】语法解析错误：#Rename指令的第二个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
 
             SentenceRename sentence = Main.m_ReferencePool.Spawn<SentenceRename>();
             sentence.TargetPath = ConvertIdentifier(tokens[1].Type, tokens[1].Value.Replace("\"", ""), defines, line);
-            sentence.Name = tokens[2].Value.Replace("\"", "");
+            sentence.Name = ConvertIdentifier(tokens[2].Type, tokens[2].Value.Replace("\"", ""), defines, line);
             return sentence;
         }
         /// <summary>
@@ -447,15 +447,15 @@ namespace HT.Framework
                 Log.Error($"【指令系统】语法解析错误：#SendMessage指令的第一个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
-            if (tokens[2].Type != TokenType.String)
+            if (tokens[2].Type != TokenType.Identifier && tokens[2].Type != TokenType.String)
             {
-                Log.Error($"【指令系统】语法解析错误：#SendMessage指令的第二个参数必须为String类型（双引号包裹）！[第{line}行]");
+                Log.Error($"【指令系统】语法解析错误：#SendMessage指令的第二个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
                 return null;
             }
 
             SentenceSendMessage sentence = Main.m_ReferencePool.Spawn<SentenceSendMessage>();
             sentence.TargetPath = ConvertIdentifier(tokens[1].Type, tokens[1].Value.Replace("\"", ""), defines, line);
-            sentence.MethodName = tokens[2].Value.Replace("\"", "");
+            sentence.MethodName = ConvertIdentifier(tokens[2].Type, tokens[2].Value.Replace("\"", ""), defines, line);
             if (tokens.Count == 4)
             {
                 if (tokens[3].Type == TokenType.String)

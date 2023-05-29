@@ -6,7 +6,7 @@ namespace HT.Framework
     [CustomEditor(typeof(InstructionManager))]
     [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
     [GithubURL("https://github.com/SaiTingHu/HTFramework")]
-    [CSDNBlogURL("")]
+    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/130918484")]
     internal sealed class InstructionManagerInspector : InternalModuleInspector<InstructionManager, IInstructionHelper>
     {
         protected override string Intro => "Instruction Manager, compile and execute dynamic instructions!";
