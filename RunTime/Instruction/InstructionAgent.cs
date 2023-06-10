@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace HT.Framework
 {
@@ -12,7 +11,7 @@ namespace HT.Framework
         /// <summary>
         /// 指令代码
         /// </summary>
-        [Multiline(10)] public string Code;
+        public string Code;
         
         private string _lastCode;
         private Instruction _instruction;
@@ -22,6 +21,11 @@ namespace HT.Framework
         /// </summary>
         public void Execute()
         {
+            if (Main.m_Instruction == null)
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Instruction, "执行指令失败：未发现指令编译器！");
+            }
+
             if (_instruction == null)
             {
                 _lastCode = Code;
@@ -35,7 +39,8 @@ namespace HT.Framework
                     Main.m_Instruction.Compile(Code, _instruction);
                 }
             }
-            _instruction.Execute();
+
+            if (_instruction != null) _instruction.Execute();
         }
         /// <summary>
         /// 释放资源

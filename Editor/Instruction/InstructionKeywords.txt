@@ -1,0 +1,14 @@
+#Define [Name] "Value"
+#AddCom "Path" "ComType"
+#RemoveCom "Path" "ComType"
+#SetField "Path" "ComType" "FieldName" Args
+#SetProperty "Path" "ComType" "PropertyName" Args
+#NewObj "Name"
+#DeleteObj "Path"
+#Rename "Path" "Name"
+#Active "Path" true
+#SendMessage "Path" "MethodName" Args
+#SetParent "Path" "ParentPath"
+#SetPosition "Path" Vector3(0,0,0) true
+#SetRotation "Path" Vector3(0,0,0) true
+#SetScale "Path" Vector3(0,0,0)
