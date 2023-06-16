@@ -25,9 +25,9 @@
         {
             base.OnUpdate();
 
-            UtilityUpdate();
-            BehaviourUpdate();
             ModuleUpdate();
+            BehaviourUpdate();
+            UtilityUpdate();
         }
         public override void OnTerminate()
         {
