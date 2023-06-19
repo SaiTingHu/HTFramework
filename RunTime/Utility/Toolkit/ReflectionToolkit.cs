@@ -9,26 +9,6 @@ namespace HT.Framework
     /// </summary>
     public static class ReflectionToolkit
     {
-        static ReflectionToolkit()
-        {
-            List<Type> types = GetTypesInAllAssemblies();
-            for (int i = 0; i < types.Count; i++)
-            {
-                FieldInfo[] fields = types[i].GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                for (int j = 0; j < fields.Length; j++)
-                {
-                    if (fields[j].FieldType == typeof(string) && fields[j].IsDefined(typeof(RunTimeAssemblyAttribute), false))
-                    {
-                        string value = fields[j].GetValue(null) as string;
-                        if (!string.IsNullOrEmpty(value))
-                        {
-                            if (!RunTimeAssemblies.Contains(value)) RunTimeAssemblies.Add(value);
-                        }
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// 当前的运行时程序集
         /// </summary>
@@ -36,6 +16,14 @@ namespace HT.Framework
             "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.ILHotfix.RunTime", "HTFramework.GC.RunTime",
             "UnityEngine", "UnityEngine.CoreModule", "UnityEngine.UI", "UnityEngine.PhysicsModule" };
 
+        /// <summary>
+        /// 添加自定义程序集到运行时程序域（建议在类的【静态构造方法】中添加，以使其位于框架的所有行为之前）
+        /// </summary>
+        /// <param name="assembly">运行时程序集</param>
+        public static void AddRunTimeAssembly(string assembly)
+        {
+            RunTimeAssemblies.Add(assembly);
+        }
         /// <summary>
         /// 从当前程序域的运行时程序集中获取所有类型
         /// </summary>
@@ -94,7 +82,7 @@ namespace HT.Framework
                     return type;
                 }
             }
-            Log.Error($"获取类型 {typeName} 失败！当前运行时程序集中不存在此类型！");
+            Log.Error($"获取类型 {typeName} 失败！当前运行时程序集中不存在此类型！或此类型所在的程序集未使用 ReflectionToolkit.AddRunTimeAssembly(assembly) 添加到程序域！");
             return null;
         }
         /// <summary>

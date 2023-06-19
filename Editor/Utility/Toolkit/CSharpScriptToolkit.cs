@@ -8,6 +8,7 @@ namespace HT.Framework
     /// </summary>
     public static class CSharpScriptToolkit
     {
+        private const string ScriptExtension = ".cs";
         private static Dictionary<string, string> Scripts = new Dictionary<string, string>();
         
         static CSharpScriptToolkit()
@@ -16,9 +17,9 @@ namespace HT.Framework
             string[] paths = AssetDatabase.GetAllAssetPaths();
             for (int i = 0; i < paths.Length; i++)
             {
-                if (paths[i].EndsWith(".cs"))
+                if (paths[i].EndsWith(ScriptExtension))
                 {
-                    string fileName = paths[i].Substring(paths[i].LastIndexOf("/") + 1).Replace(".cs", "");
+                    string fileName = paths[i].Substring(paths[i].LastIndexOf("/") + 1).Replace(ScriptExtension, "");
                     if (!Scripts.ContainsKey(fileName))
                     {
                         Scripts.Add(fileName, paths[i]);
