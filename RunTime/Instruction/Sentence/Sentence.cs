@@ -5,7 +5,7 @@ namespace HT.Framework
     /// <summary>
     /// 可执行语句
     /// </summary>
-    internal abstract class Sentence : IReference
+    public abstract class Sentence : IReference
     {
         /// <summary>
         /// 目标路径

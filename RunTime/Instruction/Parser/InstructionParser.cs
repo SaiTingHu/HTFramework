@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace HT.Framework
@@ -12,9 +13,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="tokens">单词序列</param>
         /// <param name="defines">标识符定义</param>
+        /// <param name="sentenceCustoms">自定义指令集</param>
         /// <param name="line">源码行数</param>
         /// <returns>可执行语句</returns>
-        public static Sentence Analyze(List<Token> tokens, Dictionary<string, string> defines, int line)
+        public static Sentence Analyze(List<Token> tokens, Dictionary<string, string> defines, Dictionary<string, Type> sentenceCustoms, int line)
         {
             if (tokens != null && tokens.Count > 0)
             {
@@ -58,7 +60,14 @@ namespace HT.Framework
                         case "#SetScale":
                             return GenerateSentenceSetScale(tokens, defines, line);
                         default:
-                            Log.Error($"【指令系统】语法解析错误：无法识别指令关键字 {tokens[0].Value}！[第{line}行]");
+                            if (sentenceCustoms.ContainsKey(tokens[0].Value))
+                            {
+                                return GenerateSentenceCustom(tokens, defines, line, tokens[0].Value, sentenceCustoms[tokens[0].Value]);
+                            }
+                            else
+                            {
+                                Log.Error($"【指令系统】语法解析错误：无法识别指令关键字 {tokens[0].Value}！[第{line}行]");
+                            }
                             break;
                     }
                 }
@@ -629,6 +638,38 @@ namespace HT.Framework
             SentenceSetScale sentence = Main.m_ReferencePool.Spawn<SentenceSetScale>();
             sentence.TargetPath = ConvertIdentifier(tokens[1].Type, tokens[1].Value.Replace("\"", ""), defines, line);
             sentence.Scale = tokens[2].Value.ToVector3();
+            return sentence;
+        }
+        /// <summary>
+        /// 生成语句（自定义指令）
+        /// </summary>
+        /// <param name="tokens">单词序列</param>
+        /// <param name="defines">标识符定义</param>
+        /// <param name="line">源码行数</param>
+        /// <param name="keyword">自定义指令关键字</param>
+        /// <param name="type">自定义指令类型</param>
+        /// <returns>可执行语句</returns>
+        private static SentenceCustom GenerateSentenceCustom(List<Token> tokens, Dictionary<string, string> defines, int line, string keyword, Type type)
+        {
+            if (tokens.Count != 3)
+            {
+                Log.Error($"【指令系统】语法解析错误：{keyword}指令必须跟两个参数！[第{line}行]");
+                return null;
+            }
+            if (tokens[1].Type != TokenType.Identifier && tokens[1].Type != TokenType.String)
+            {
+                Log.Error($"【指令系统】语法解析错误：{keyword}指令的第一个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
+                return null;
+            }
+            if (tokens[2].Type != TokenType.Identifier && tokens[2].Type != TokenType.String)
+            {
+                Log.Error($"【指令系统】语法解析错误：{keyword}指令的第二个参数只能为标识符（[]包裹）或String类型（双引号包裹）！[第{line}行]");
+                return null;
+            }
+
+            SentenceCustom sentence = Main.m_ReferencePool.Spawn(type) as SentenceCustom;
+            sentence.TargetPath = ConvertIdentifier(tokens[1].Type, tokens[1].Value.Replace("\"", ""), defines, line);
+            sentence.Args = ConvertIdentifier(tokens[2].Type, tokens[2].Value.Replace("\"", ""), defines, line);
             return sentence;
         }
 
