@@ -101,7 +101,7 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(GetWord("Value") + ":", GUILayout.Width(40));
-                switch (_content.Parameters[i].Type)
+                switch (stepParameter.Type)
                 {
                     case StepParameter.ParameterType.String:
                         stepParameter.StringValue = EditorGUILayout.TextField(stepParameter.StringValue);
@@ -190,18 +190,18 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
-                if (_content.Parameters[i].Type == StepParameter.ParameterType.GameObject)
+                if (stepParameter.Type == StepParameter.ParameterType.GameObject)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(45));
-                    string guid = _content.Parameters[i].GameObjectGUID;
+                    string guid = stepParameter.GameObjectGUID;
                     EditorGUILayout.TextField(guid == "<None>" ? GetWord(guid) : guid);
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(45)))
                     {
-                        _content.Parameters[i].GameObjectValue = null;
-                        _content.Parameters[i].GameObjectGUID = "<None>";
-                        _content.Parameters[i].GameObjectPath = "<None>";
+                        stepParameter.GameObjectValue = null;
+                        stepParameter.GameObjectGUID = "<None>";
+                        stepParameter.GameObjectPath = "<None>";
                         GUI.FocusControl(null);
                     }
                     GUILayout.EndHorizontal();
