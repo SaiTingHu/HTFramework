@@ -13,7 +13,7 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal GUISkin DebuggerSkin;
         /// <summary>
-        /// 是否启用调试器
+        /// 是否启用调试器（必须在初始时为true才能启用，初始为false动态改为true无效）
         /// </summary>
         public bool IsEnableDebugger = false;
         /// <summary>

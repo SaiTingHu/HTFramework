@@ -83,6 +83,9 @@ namespace HT.Framework
         private List<Type> _addComponents = new List<Type>();
         private Vector2 _scrollSceneView = Vector2.zero;
         private Vector2 _scrollInspectorView = Vector2.zero;
+        private Vector2 _scrollInstruction = Vector2.zero;
+        private bool _isInstruction = false;
+        private string _instructionCode;
         //Memory
         private long _minTotalReservedMemory = 10000;
         private long _maxTotalReservedMemory = 0;
@@ -124,6 +127,10 @@ namespace HT.Framework
         public void OnDebuggerGUI()
         {
             GUI.skin = _skin;
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            GUIUtility.ScaleAroundPivot(new Vector2(2, 2), Vector2.zero);
+#endif
 
             if (_isExpand)
             {
@@ -335,9 +342,43 @@ namespace HT.Framework
                     if (GUILayout.Button(GetWord("Refresh"), GUILayout.Width(80), GUILayout.Height(20)))
                     {
                         _debuggerScene.Refresh();
-                        return;
+                    }
+                    if (GUILayout.Button(GetWord("Instruction"), GUILayout.Width(100), GUILayout.Height(20)))
+                    {
+                        _isInstruction = !_isInstruction;
                     }
                     GUILayout.EndHorizontal();
+
+                    //绘制指令代码编辑窗口
+                    if (_isInstruction)
+                    {
+                        GUILayout.BeginVertical(GUILayout.Height(100));
+
+                        _scrollInstruction = GUILayout.BeginScrollView(_scrollInstruction);
+                        _instructionCode = GUILayout.TextArea(_instructionCode);
+                        GUILayout.EndScrollView();
+
+                        GUILayout.BeginHorizontal();
+                        GUILayout.FlexibleSpace();
+                        if (GUILayout.Button(GetWord("Clear Code"), GUILayout.Width(100), GUILayout.Height(20)))
+                        {
+                            _instructionCode = "";
+                        }
+                        if (GUILayout.Button(GetWord("Execute"), GUILayout.Width(100), GUILayout.Height(20)))
+                        {
+                            using (Instruction ins = Main.m_Instruction.Compile(_instructionCode))
+                            {
+                                if (ins != null)
+                                {
+                                    ins.Execute();
+                                    _debuggerScene.Refresh();
+                                }
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.EndVertical();
+                    }
 
                     GUILayout.BeginHorizontal();
 
@@ -356,6 +397,7 @@ namespace HT.Framework
                         }
                         GUILayout.EndHorizontal();
 
+                        //绘制游戏物体列表
                         _scrollSceneView = GUILayout.BeginScrollView(_scrollSceneView);
                         if (_debuggerScene.IsShowGameObjectFiltrate)
                         {
@@ -377,11 +419,52 @@ namespace HT.Framework
                     }
 
                     {
-                        GUILayout.BeginVertical("Box", GUILayout.Width(335));
+                        GUILayout.BeginVertical("Box", GUILayout.Width(340));
                         GUI.contentColor = Color.yellow;
                         GUILayout.Label(GetWord("Inspector"), GUILayout.Height(20));
                         GUI.contentColor = Color.white;
 
+                        //绘制游戏物体的属性
+                        if (_debuggerScene.CurrentGameObject != null && _debuggerScene.CurrentGameObject.Target)
+                        {
+                            GUILayout.BeginVertical("Box");
+
+                            GUILayout.BeginHorizontal();
+                            GUI.contentColor = Color.cyan;
+                            GUILayout.Label(_debuggerScene.CurrentGameObject.Name);
+                            GUI.contentColor = Color.white;
+                            GUILayout.EndHorizontal();
+
+                            GUILayout.BeginHorizontal();
+                            GUI.enabled = !_debuggerScene.CurrentGameObject.IsMain;
+                            bool active = GUILayout.Toggle(_debuggerScene.CurrentGameObject.Target.activeSelf, GetWord("Active"));
+                            if (active != _debuggerScene.CurrentGameObject.Target.activeSelf)
+                            {
+                                _debuggerScene.CurrentGameObject.Target.SetActive(active);
+                            }
+                            GUILayout.FlexibleSpace();
+                            if (GUILayout.Button(GetWord("Look at")))
+                            {
+                                Main.m_Controller.Mode = ControlMode.FreeControl;
+                                Main.m_Controller.SetLookPoint(_debuggerScene.CurrentGameObject.Target.transform.position);
+                            }
+                            if (GUILayout.Button(GetWord("Delete")))
+                            {
+                                Main.Kill(_debuggerScene.CurrentGameObject.Target);
+                                _debuggerScene.Refresh();
+                            }
+                            GUI.enabled = true;
+                            GUILayout.EndHorizontal();
+
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Label($"{GetWord("Tag")}: {_debuggerScene.CurrentGameObject.Target.tag}");
+                            GUILayout.Label($"{GetWord("Layer")}: {_debuggerScene.CurrentGameObject.Layer}");
+                            GUILayout.EndHorizontal();
+
+                            GUILayout.EndVertical();
+                        }
+
+                        //绘制添加、删除组件按钮
                         if (_debuggerScene.CurrentGameObject != null && _debuggerScene.CurrentGameObject.Target)
                         {
                             GUILayout.BeginHorizontal();
@@ -397,6 +480,7 @@ namespace HT.Framework
                             GUILayout.EndHorizontal();
                         }
 
+                        //绘制组件列表
                         _scrollInspectorView = GUILayout.BeginScrollView(_scrollInspectorView);
                         if (_debuggerScene.CurrentGameObject != null && _debuggerScene.CurrentGameObject.Target)
                         {
@@ -827,6 +911,9 @@ namespace HT.Framework
             _words.Add("Refresh", "刷新");
             _words.Add("Hierarchy", "场景内的所有物体");
             _words.Add("Search", "查找");
+            _words.Add("Instruction", "指令代码");
+            _words.Add("Clear Code", "清空代码");
+            _words.Add("Execute", "执行代码");
             _words.Add("Active", "激活");
             _words.Add("Look at", "看向他");
             _words.Add("Delete", "删除");
@@ -991,7 +1078,7 @@ namespace HT.Framework
         private void OnGameObjectGUI(DebuggerGameObject gameObject)
         {
             GUILayout.BeginHorizontal();
-            GUI.contentColor = gameObject.Target ? (gameObject.Target.activeSelf ? Color.cyan : Color.gray) : Color.red;
+            GUI.contentColor = gameObject.Target ? (gameObject.Target.activeInHierarchy ? Color.cyan : Color.gray) : Color.red;
             bool value = _debuggerScene.CurrentGameObject == gameObject;
             if (GUILayout.Toggle(value, gameObject.Name) != value)
             {
@@ -1006,35 +1093,6 @@ namespace HT.Framework
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-
-            if (_debuggerScene.CurrentGameObject == gameObject && gameObject.Target)
-            {
-                GUILayout.BeginVertical("Box");
-
-                GUILayout.BeginHorizontal();
-                GUI.enabled = gameObject.Name != "HTFramework";
-                GUI.contentColor = gameObject.Target.activeSelf ? Color.white : Color.gray;
-                bool active = GUILayout.Toggle(gameObject.Target.activeSelf, GetWord("Active"));
-                if (active != gameObject.Target.activeSelf)
-                {
-                    gameObject.Target.SetActive(active);
-                }
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button(GetWord("Delete")))
-                {
-                    Main.Kill(gameObject.Target);
-                    _debuggerScene.Refresh();
-                }
-                GUI.enabled = true;
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label($"{GetWord("Tag")}: {gameObject.Target.tag}");
-                GUILayout.Label($"{GetWord("Layer")}: {gameObject.Layer}");
-                GUILayout.EndHorizontal();
-
-                GUILayout.EndVertical();
-            }
         }
         /// <summary>
         /// 调试器游戏对象UI（层级模式）
@@ -1042,7 +1100,7 @@ namespace HT.Framework
         private void OnGameObjectGUILevel(DebuggerGameObject gameObject, int level)
         {
             GUILayout.BeginHorizontal();
-            GUI.contentColor = gameObject.Target ? (gameObject.Target.activeSelf ? Color.cyan : Color.gray) : Color.red;
+            GUI.contentColor = gameObject.Target ? (gameObject.Target.activeInHierarchy ? Color.cyan : Color.gray) : Color.red;
             if (gameObject.Childrens.Count > 0)
             {
                 GUILayout.Space(20 * level);
@@ -1069,40 +1127,6 @@ namespace HT.Framework
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-
-            if (_debuggerScene.CurrentGameObject == gameObject && gameObject.Target)
-            {
-                GUILayout.BeginVertical("Box");
-
-                GUILayout.BeginHorizontal();
-                GUI.enabled = !gameObject.IsMain;
-                GUI.contentColor = gameObject.Target.activeSelf ? Color.white : Color.gray;
-                bool active = GUILayout.Toggle(gameObject.Target.activeSelf, GetWord("Active"));
-                if (active != gameObject.Target.activeSelf)
-                {
-                    gameObject.Target.SetActive(active);
-                }
-                GUILayout.FlexibleSpace();
-                if (GUILayout.Button(GetWord("Look at")))
-                {
-                    Main.m_Controller.Mode = ControlMode.FreeControl;
-                    Main.m_Controller.SetLookPoint(gameObject.Target.transform.position);
-                }
-                if (GUILayout.Button(GetWord("Delete")))
-                {
-                    Main.Kill(gameObject.Target);
-                    _debuggerScene.Refresh();
-                }
-                GUI.enabled = true;
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label($"{GetWord("Tag")}: {gameObject.Target.tag}");
-                GUILayout.Label($"{GetWord("Layer")}: {gameObject.Layer}");
-                GUILayout.EndHorizontal();
-
-                GUILayout.EndVertical();
-            }
 
             if (gameObject.IsExpand)
             {
