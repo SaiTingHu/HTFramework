@@ -338,7 +338,7 @@ namespace HT.Framework
                 if (Wireds[i].Left == lastIndex)
                 {
                     int nextIndex = Wireds[i].Right;
-                    Operations[nextIndex].TimePoint = Operations[lastIndex].TimePoint + Operations[lastIndex].ElapseTime;
+                    Operations[nextIndex].TimePoint = Operations[lastIndex].TimePoint + Operations[lastIndex].ElapseTime + 1;
                     operations.Add(Operations[nextIndex]);
                     GenerateTimeline(operations, i);
                 }
