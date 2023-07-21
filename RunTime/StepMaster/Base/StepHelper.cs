@@ -139,7 +139,7 @@ namespace HT.Framework
         /// <param name="parameterName">参数名称</param>
         /// <param name="parameterType">参数类型</param>
         /// <returns>是否存在</returns>
-        public bool IsExistParameter(string parameterName, StepParameter.ParameterType parameterType)
+        protected bool IsExistParameter(string parameterName, StepParameter.ParameterType parameterType)
         {
             StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
             return stepParameter != null;
@@ -149,7 +149,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>是否存在</returns>
-        public bool IsExistParameter(string parameterName)
+        protected bool IsExistParameter(string parameterName)
         {
             StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
             return stepParameter != null;
@@ -160,7 +160,7 @@ namespace HT.Framework
         /// <param name="parameterName">参数名称</param>
         /// <param name="parameterType">参数类型</param>
         /// <param name="stepParameters">输出的参数列表</param>
-        public void GetParameters(string parameterName, StepParameter.ParameterType parameterType, List<StepParameter> stepParameters)
+        protected void GetParameters(string parameterName, StepParameter.ParameterType parameterType, List<StepParameter> stepParameters)
         {
             for (int i = 0; i < Parameters.Count; i++)
             {
@@ -175,7 +175,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <param name="stepParameters">输出的参数列表</param>
-        public void GetParameters(string parameterName, List<StepParameter> stepParameters)
+        protected void GetParameters(string parameterName, List<StepParameter> stepParameters)
         {
             for (int i = 0; i < Parameters.Count; i++)
             {
@@ -191,7 +191,7 @@ namespace HT.Framework
         /// <param name="parameterName">参数名称</param>
         /// <param name="parameterType">参数类型</param>
         /// <returns>参数</returns>
-        public StepParameter GetParameter(string parameterName, StepParameter.ParameterType parameterType)
+        protected StepParameter GetParameter(string parameterName, StepParameter.ParameterType parameterType)
         {
             StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName && p.Type == parameterType; });
             if (stepParameter != null)
@@ -209,7 +209,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public StepParameter GetParameter(string parameterName)
+        protected StepParameter GetParameter(string parameterName)
         {
             StepParameter stepParameter = Parameters.Find((p) => { return p.Name == parameterName; });
             if (stepParameter != null)
@@ -227,7 +227,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public string GetStringParameter(string parameterName)
+        protected string GetStringParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.String);
             return (stepParameter != null) ? stepParameter.StringValue : null;
@@ -237,7 +237,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public int GetIntegerParameter(string parameterName)
+        protected int GetIntegerParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Integer);
             return (stepParameter != null) ? stepParameter.IntegerValue : 0;
@@ -247,7 +247,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public float GetFloatParameter(string parameterName)
+        protected float GetFloatParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Float);
             return (stepParameter != null) ? stepParameter.FloatValue : 0f;
@@ -257,7 +257,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public bool GetBooleanParameter(string parameterName)
+        protected bool GetBooleanParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Boolean);
             return (stepParameter != null) ? stepParameter.BooleanValue : false;
@@ -267,7 +267,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public Vector2 GetVector2Parameter(string parameterName)
+        protected Vector2 GetVector2Parameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Vector2);
             return (stepParameter != null) ? stepParameter.Vector2Value : Vector2.zero;
@@ -277,7 +277,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public Vector3 GetVector3Parameter(string parameterName)
+        protected Vector3 GetVector3Parameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Vector3);
             return (stepParameter != null) ? stepParameter.Vector3Value : Vector3.zero;
@@ -287,7 +287,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public Color GetColorParameter(string parameterName)
+        protected Color GetColorParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Color);
             return (stepParameter != null) ? stepParameter.ColorValue : Color.white;
@@ -297,7 +297,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public GameObject GetGameObjectParameter(string parameterName)
+        protected GameObject GetGameObjectParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.GameObject);
             return (stepParameter != null) ? stepParameter.GameObjectValue : null;
@@ -307,7 +307,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public Texture GetTextureParameter(string parameterName)
+        protected Texture GetTextureParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Texture);
             return (stepParameter != null) ? stepParameter.TextureValue : null;
@@ -317,7 +317,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public AudioClip GetAudioClipParameter(string parameterName)
+        protected AudioClip GetAudioClipParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.AudioClip);
             return (stepParameter != null) ? stepParameter.AudioClipValue : null;
@@ -327,7 +327,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="parameterName">参数名称</param>
         /// <returns>参数</returns>
-        public Material GetMaterialParameter(string parameterName)
+        protected Material GetMaterialParameter(string parameterName)
         {
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Material);
             return (stepParameter != null) ? stepParameter.MaterialValue : null;
