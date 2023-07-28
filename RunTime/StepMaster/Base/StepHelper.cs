@@ -332,6 +332,16 @@ namespace HT.Framework
             StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Material);
             return (stepParameter != null) ? stepParameter.MaterialValue : null;
         }
+        /// <summary>
+        /// 通过名称获取Custom参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected string GetCustomParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.Custom);
+            return (stepParameter != null) ? stepParameter.StringValue : null;
+        }
     }
 
     /// <summary>

@@ -145,7 +145,7 @@ namespace HT.Framework
                     case StepParameter.ParameterType.GameObject:
                         SearchParameterTarget(stepParameter);
 
-                        GUI.color = stepParameter.GameObjectValue ? Color.white : Color.gray;
+                        GUI.color = stepParameter.GameObjectGUID != "<None>" ? Color.white : Color.gray;
                         GameObject objValue = EditorGUILayout.ObjectField(stepParameter.GameObjectValue, typeof(GameObject), true) as GameObject;
                         GUI.color = Color.white;
 
@@ -186,6 +186,19 @@ namespace HT.Framework
                         GUI.color = stepParameter.MaterialValue ? Color.white : Color.gray;
                         stepParameter.MaterialValue = EditorGUILayout.ObjectField(stepParameter.MaterialValue, typeof(Material), false) as Material;
                         GUI.color = Color.white;
+                        break;
+                    case StepParameter.ParameterType.Custom:
+                        if (GUILayout.Button(stepParameter.StringValue, EditorStyles.miniButton, GUILayout.Width(225)))
+                        {
+                            if (StepEditorWindow.CustomParameterHandler != null)
+                            {
+                                StepEditorWindow.CustomParameterHandler?.Invoke(stepParameter);
+                            }
+                            else
+                            {
+                                Log.Error("无法编辑自定义参数：请使用 StepEditorWindow.RegisterCustomParameterHandler() 注册处理者，需注意，自定义参数存储的值为 StepParameter.StringValue 字段！");
+                            }
+                        }
                         break;
                 }
                 GUILayout.EndHorizontal();

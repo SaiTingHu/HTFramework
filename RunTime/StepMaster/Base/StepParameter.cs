@@ -73,7 +73,11 @@ namespace HT.Framework
             /// <summary>
             /// 材质
             /// </summary>
-            Material
+            Material,
+            /// <summary>
+            /// 自定义
+            /// </summary>
+            Custom
         }
 
 #if UNITY_EDITOR

@@ -16,6 +16,7 @@ namespace HT.Framework
         private static HTFFunc<string, string> NewHelperScriptHandler;
         private static HTFFunc<ControlMode, Vector3> GetBestViewHandler;
         private static Dictionary<string, HTFFunc<StepContent, bool>> AdvancedSearchHandlers = new Dictionary<string, HTFFunc<StepContent, bool>>();
+        internal static HTFAction<StepParameter> CustomParameterHandler;
 
         /// <summary>
         /// 静态构造函数
@@ -94,6 +95,14 @@ namespace HT.Framework
                 return;
 
             AdvancedSearchHandlers.Add(name, handler);
+        }
+        /// <summary>
+        /// 注册【编辑步骤参数（自定义类型）】时的自定义处理者
+        /// </summary>
+        /// <param name="handler">自定义处理者</param>
+        public static void RegisterCustomParameterHandler(HTFAction<StepParameter> handler)
+        {
+            CustomParameterHandler = handler;
         }
         /// <summary>
         /// 打开窗口
