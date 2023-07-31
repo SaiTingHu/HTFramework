@@ -188,7 +188,7 @@ namespace HT.Framework
                         GUI.color = Color.white;
                         break;
                     case StepParameter.ParameterType.Custom:
-                        if (GUILayout.Button(stepParameter.StringValue, EditorStyles.miniButton, GUILayout.Width(225)))
+                        if (GUILayout.Button(stepParameter.StringValue, EditorStyles.popup, GUILayout.Width(225)))
                         {
                             if (StepEditorWindow.CustomParameterHandler != null)
                             {
