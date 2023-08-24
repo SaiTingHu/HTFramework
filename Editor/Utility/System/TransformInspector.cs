@@ -10,6 +10,30 @@ namespace HT.Framework
     internal sealed class TransformInspector : HTFEditor<Transform>
     {
         private static bool _copyQuaternion = false;
+        [MenuItem("CONTEXT/Transform/Copy/Location")]
+        public static void CopyLocation(MenuCommand cmd)
+        {
+            if (cmd.context is Transform)
+            {
+                Transform trans = cmd.context as Transform;
+                GUIUtility.systemCopyBuffer = trans.GetLocation().LocationToJson();
+            }
+        }
+        [MenuItem("CONTEXT/Transform/Paste/Location")]
+        public static void PasteLocation(MenuCommand cmd)
+        {
+            if (cmd.context is Transform && !string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+            {
+                Transform trans = cmd.context as Transform;
+                Location location = GUIUtility.systemCopyBuffer.JsonToLocation();
+                if (location != null)
+                {
+                    Undo.RecordObject(trans, "Paste Location");
+                    trans.SetLocation(location);
+                    EditorUtility.SetDirty(trans);
+                }
+            }
+        }
 
         private PagePainter _pagePainter;
         private object _rotationGUI;

@@ -751,6 +751,36 @@ namespace HT.Framework
 
             return sprite;
         }
+        /// <summary>
+        /// 设置Transform的位置
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <param name="location">位置</param>
+        public static void SetLocation(this Transform target, Location location)
+        {
+            if (target == null || location == null)
+                return;
+
+            target.localPosition = location.Position;
+            target.localEulerAngles = location.Rotation;
+            target.localScale = location.Scale;
+        }
+        /// <summary>
+        /// 获取Transform的位置
+        /// </summary>
+        /// <param name="target">目标</param>
+        /// <returns>位置</returns>
+        public static Location GetLocation(this Transform target)
+        {
+            if (target == null)
+                return null;
+
+            Location location = new Location();
+            location.Position = target.localPosition;
+            location.Rotation = target.localEulerAngles;
+            location.Scale = target.localScale;
+            return location;
+        }
         #endregion
     }
 }

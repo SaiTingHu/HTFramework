@@ -1261,6 +1261,48 @@ namespace HT.Framework
             }
             return defaultValue;
         }
+        /// <summary>
+        /// 将Location转换为Json字符串
+        /// </summary>
+        /// <param name="location">Location对象</param>
+        /// <returns>Json字符串</returns>
+        public static string LocationToJson(this Location location)
+        {
+            if (location != null)
+            {
+                JsonData jsonData = new JsonData();
+                jsonData["type"] = "Location";
+                jsonData["Position"] = location.Position.ToCopyString("F4");
+                jsonData["Rotation"] = location.Rotation.ToCopyString("F4");
+                jsonData["Scale"] = location.Scale.ToCopyString("F4");
+                return JsonToolkit.JsonToString(jsonData);
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// 将Json字符串转换为Location
+        /// </summary>
+        /// <param name="json">Json字符串</param>
+        /// <returns>Location对象</returns>
+        public static Location JsonToLocation(this string json)
+        {
+            JsonData jsonData = JsonToolkit.StringToJson(json);
+            if (jsonData != null && jsonData.GetValueInSafe("type") == "Location")
+            {
+                Location location = new Location();
+                location.Position = jsonData["Position"].ToString().ToPasteVector3(Vector3.zero);
+                location.Rotation = jsonData["Rotation"].ToString().ToPasteVector3(Vector3.zero);
+                location.Scale = jsonData["Scale"].ToString().ToPasteVector3(Vector3.zero);
+                return location;
+            }
+            else
+            {
+                return null;
+            }
+        }
         #endregion
 
         #region Hierarchy窗口扩展

@@ -662,7 +662,8 @@ namespace HT.Framework
                 || property.propertyType == SerializedPropertyType.Vector3Int
                 || property.propertyType == SerializedPropertyType.Quaternion
                 || property.propertyType == SerializedPropertyType.Bounds
-                || property.propertyType == SerializedPropertyType.BoundsInt)
+                || property.propertyType == SerializedPropertyType.BoundsInt
+                || (property.propertyType == SerializedPropertyType.Generic && property.hasChildren && property.type == "Location"))
                 return true;
             return false;
         }
@@ -702,6 +703,21 @@ namespace HT.Framework
             else if (property.propertyType == SerializedPropertyType.BoundsInt)
             {
                 GUIUtility.systemCopyBuffer = property.boundsIntValue.ToCopyString();
+            }
+            else if (property.propertyType == SerializedPropertyType.Generic && property.hasChildren && property.type == "Location")
+            {
+                SerializedProperty position = property.FindPropertyRelative("Position");
+                SerializedProperty rotation = property.FindPropertyRelative("Rotation");
+                SerializedProperty scale = property.FindPropertyRelative("Scale");
+
+                if (position != null && rotation != null && scale != null)
+                {
+                    Location location = new Location();
+                    location.Position = position.vector3Value;
+                    location.Rotation = rotation.vector3Value;
+                    location.Scale = scale.vector3Value;
+                    GUIUtility.systemCopyBuffer = location.LocationToJson();
+                }
             }
         }
         /// <summary>
@@ -743,6 +759,23 @@ namespace HT.Framework
             else if (property.propertyType == SerializedPropertyType.BoundsInt)
             {
                 property.boundsIntValue = GUIUtility.systemCopyBuffer.ToPasteBoundsInt();
+            }
+            else if (property.propertyType == SerializedPropertyType.Generic && property.hasChildren && property.type == "Location")
+            {
+                SerializedProperty position = property.FindPropertyRelative("Position");
+                SerializedProperty rotation = property.FindPropertyRelative("Rotation");
+                SerializedProperty scale = property.FindPropertyRelative("Scale");
+
+                if (position != null && rotation != null && scale != null)
+                {
+                    Location location = GUIUtility.systemCopyBuffer.JsonToLocation();
+                    if (location != null)
+                    {
+                        position.vector3Value = location.Position;
+                        rotation.vector3Value = location.Rotation;
+                        scale.vector3Value = location.Scale;
+                    }
+                }
             }
             property.serializedObject.ApplyModifiedProperties();
         }
