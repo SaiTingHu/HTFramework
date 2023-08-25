@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !DISABLE_ASPECTTRACK
+using System;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
@@ -142,3 +143,4 @@ namespace HT.Framework
         }
     }
 }
+#endif

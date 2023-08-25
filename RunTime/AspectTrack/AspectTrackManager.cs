@@ -18,7 +18,8 @@ namespace HT.Framework
         /// 是否启用全局拦截（注意：只拦截无返回值方法的调用）
         /// </summary>
         public bool IsEnableIntercept = false;
-        
+
+#if !DISABLE_ASPECTTRACK
         /// <summary>
         /// 全局拦截条件
         /// </summary>
@@ -108,5 +109,6 @@ namespace HT.Framework
         {
             _helper.ClearProxyer();
         }
+#endif
     }
 }

@@ -8,6 +8,7 @@ namespace HT.Framework
     /// </summary>
     public interface IAspectTrackHelper : IInternalModuleHelper
     {
+#if !DISABLE_ASPECTTRACK
         /// <summary>
         /// 所有的代理对象【真实对象、代理对象】
         /// </summary>
@@ -72,5 +73,6 @@ namespace HT.Framework
         /// 清空所有代理者、代理对象
         /// </summary>
         void ClearProxyer();
+#endif
     }
 }

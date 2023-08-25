@@ -1,4 +1,5 @@
-﻿namespace HT.Framework
+﻿#if !DISABLE_ASPECTTRACK
+namespace HT.Framework
 {
     /// <summary>
     /// 切面代理对象接口
@@ -8,3 +9,4 @@
         void Track();
     }
 }
+#endif

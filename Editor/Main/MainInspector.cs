@@ -126,10 +126,28 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
+                GUILayout.Space(5);
+
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Historical record");
+                GUILayout.Label("Predefined:");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(10);
+                GUILayout.Label("DISABLE_ASPECTTRACK", "PR PrefabLabel");
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Clear record", EditorStyles.miniButton, GUILayout.Width(90)))
+                if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(40)))
+                {
+                    _newDefine += "DISABLE_ASPECTTRACK;";
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.Space(5);
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Historical Record:");
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Clear Record", EditorStyles.miniButton, GUILayout.Width(90)))
                 {
                     _currentScriptingDefine.ClearDefinesRecord();
                 }

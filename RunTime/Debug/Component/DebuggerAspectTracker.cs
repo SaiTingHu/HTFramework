@@ -16,6 +16,7 @@ namespace HT.Framework
             _target.IsEnableAspectTrack = BoolField("Is Enable Track", _target.IsEnableAspectTrack);
             _target.IsEnableIntercept = BoolField("Is Enable Intercept", _target.IsEnableIntercept);
 
+#if !DISABLE_ASPECTTRACK
             GUILayout.BeginHorizontal();
             GUILayout.Label("Intercept Conditions");
             GUILayout.EndHorizontal();
@@ -34,6 +35,7 @@ namespace HT.Framework
                 _target.InterceptConditions.Clear();
             }
             GUILayout.EndHorizontal();
+#endif
         }
     }
 }

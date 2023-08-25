@@ -12,6 +12,7 @@ namespace HT.Framework
         /// 切面代理追踪器
         /// </summary>
         public IModuleManager Module { get; set; }
+#if !DISABLE_ASPECTTRACK
         /// <summary>
         /// 所有的代理对象【真实对象、代理对象】
         /// </summary>
@@ -24,6 +25,7 @@ namespace HT.Framework
         /// 全局拦截条件
         /// </summary>
         public Dictionary<string, HTFFunc<MethodBase, object[], bool>> InterceptConditions { get; private set; } = new Dictionary<string, HTFFunc<MethodBase, object[], bool>>();
+#endif
 
         /// <summary>
         /// 初始化助手
@@ -45,8 +47,10 @@ namespace HT.Framework
         /// </summary>
         public void OnTerminate()
         {
+#if !DISABLE_ASPECTTRACK
             ClearInterceptCondition();
             ClearProxyer();
+#endif
         }
         /// <summary>
         /// 暂停助手
@@ -59,6 +63,7 @@ namespace HT.Framework
         public void OnResume()
         { }
 
+#if !DISABLE_ASPECTTRACK
         /// <summary>
         /// 新增拦截条件
         /// </summary>
@@ -183,5 +188,6 @@ namespace HT.Framework
             ProxyObjects.Clear();
             Proxys.Clear();
         }
+#endif
     }
 }
