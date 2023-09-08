@@ -799,6 +799,7 @@ namespace HT.Framework
                     GUILayout.Label($"{GetWord("Product Version")}: {Application.version}");
                     GUILayout.Label($"{GetWord("Product DataPath")}: {Application.dataPath}");
                     GUILayout.Label($"{GetWord("Company Name")}: {Application.companyName}");
+                    GUILayout.Label($"{GetWord("HTFramework Version")}: {Main.Current.Version}");
                     GUILayout.Label($"{GetWord("Unity Version")}: {Application.unityVersion}");
                     GUILayout.Label($"{GetWord("Has Pro License")}: {GetWord(Application.HasProLicense().ToString())}");
                     string internetState = GetWord("NotReachable");
@@ -1003,6 +1004,7 @@ namespace HT.Framework
             _words.Add("Product Version", "项目版本");
             _words.Add("Product DataPath", "项目数据路径");
             _words.Add("Company Name", "公司名称");
+            _words.Add("HTFramework Version", "HT框架版本");
             _words.Add("Unity Version", "Unity版本");
             _words.Add("Has Pro License", "Unity专业版");
             _words.Add("True", "是");

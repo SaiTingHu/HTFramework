@@ -1225,6 +1225,25 @@ namespace HT.Framework
         }
         #endregion
 
+        #region Version
+        [SerializeField] private string _version;
+
+        /// <summary>
+        /// 框架的版本号
+        /// </summary>
+        internal string Version
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+            }
+        }
+        #endregion
+
         #region ApplicationFocus
         /// <summary>
         /// 程序焦点事件

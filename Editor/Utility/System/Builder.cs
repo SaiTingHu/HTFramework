@@ -67,7 +67,19 @@ namespace HT.Framework
                 return;
             }
 
+            //蚀刻当前版本号到运行时程序
+            VersionInfo versionInfo = AssetDatabase.LoadAssetAtPath<VersionInfo>("Assets/HTFramework/Editor/Utility/Version/Version.asset");
+            Main main = FindObjectOfType<Main>();
+            if (main != null && versionInfo != null)
+            {
+                main.Version = versionInfo.CurrentVersion.GetFullNumber();
+                EditorUtility.SetDirty(main);
+            }
+
             PreProcessBuildEvent?.Invoke(options);
+
+            EditorApplication.ExecuteMenuItem("File/Save");
+            EditorApplication.ExecuteMenuItem("File/Save Project");
 
             BuildPlayerWindow.DefaultBuildMethods.BuildPlayer(options);
         }
