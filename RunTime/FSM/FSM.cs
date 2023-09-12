@@ -11,7 +11,7 @@ namespace HT.Framework
     [AddComponentMenu("HTFramework/FSM")]
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-900)]
-    public sealed class FSM : HTBehaviour
+    public sealed class FSM : HTBehaviour, IUpdateFrame
     {
         /// <summary>
         /// 是否自动注册到管理器【请勿在代码中修改】
@@ -150,19 +150,6 @@ namespace HT.Framework
                 SwitchState(_defaultState);
             }
         }
-        private void Update()
-        {
-            if (Main.Current.Pause)
-            {
-                return;
-            }
-            
-            if (CurrentState != null)
-            {
-                CurrentState.OnUpdate();
-                CurrentState.OnReason();
-            }
-        }
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -181,6 +168,14 @@ namespace HT.Framework
             if (Main.m_FSM.IsExistFSM(Name))
             {
                 Main.m_FSM.UnRegisterFSM(this);
+            }
+        }
+        public void OnUpdateFrame()
+        {
+            if (CurrentState != null)
+            {
+                CurrentState.OnUpdate();
+                CurrentState.OnReason();
             }
         }
 

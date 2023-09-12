@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace HT.Framework
@@ -62,6 +63,26 @@ namespace HT.Framework
             if (args.Length < 2)
                 return true;
 
+            Type type = GetType();
+            if (type != typeof(Main))
+            {
+                MethodInfo methodInfo = type.GetMethod("Update", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                if (methodInfo != null && methodInfo.GetParameters().Length == 0 && methodInfo.ReturnType.Name == "Void")
+                {
+                    string content = $"【{type.FullName}】类使用了 Update 方法，不建议这样做，建议使用接口 HT.Framework.IUpdateFrame 替代！";
+                    SafetyChecker.DoSafetyWarning(content);
+                    return false;
+                }
+
+                methodInfo = type.GetMethod("OnGUI", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                if (methodInfo != null && methodInfo.GetParameters().Length == 0 && methodInfo.ReturnType.Name == "Void")
+                {
+                    string content = $"【{type.FullName}】类使用了 OnGUI 方法，不建议这样做，建议使用接口 HT.Framework.IDrawGUI 替代！";
+                    SafetyChecker.DoSafetyWarning(content);
+                    return false;
+                }
+            }
+
             int injectCount = (int)args[0];
             int bindCount = (int)args[1];
 
@@ -69,7 +90,7 @@ namespace HT.Framework
             {
                 if (injectCount <= 0 && bindCount <= 0)
                 {
-                    string content = $"【{GetType().FullName}】启用了自动化任务，但不存在任何依赖注入字段[Inject]，和数据绑定字段[DataBind]，请考虑关闭自动化任务（IsAutomate = false）！";
+                    string content = $"【{type.FullName}】启用了自动化任务，但不存在任何依赖注入字段[Inject]，和数据绑定字段[DataBind]，请考虑关闭自动化任务（IsAutomate = false）！";
                     SafetyChecker.DoSafetyWarning(content);
                     return false;
                 }
@@ -78,7 +99,7 @@ namespace HT.Framework
                 {
                     if (bindCount <= 0)
                     {
-                        string content = $"【{GetType().FullName}】实现了数据驱动接口（IDataDriver），但不存在任何数据绑定字段[DataBind]，请考虑移除数据驱动接口！";
+                        string content = $"【{type.FullName}】实现了数据驱动接口（IDataDriver），但不存在任何数据绑定字段[DataBind]，请考虑移除数据驱动接口！";
                         SafetyChecker.DoSafetyWarning(content);
                         return false;
                     }

@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 调试管理器
     /// </summary>
     [InternalModule(HTFrameworkModule.Debug)]
-    public sealed class DebugManager : InternalModuleBase<IDebugHelper>
+    public sealed class DebugManager : InternalModuleBase<IDebugHelper>, IDrawGUI
     {
         /// <summary>
         /// 调试器皮肤【请勿在代码中修改】
@@ -38,16 +38,7 @@ namespace HT.Framework
             
             _helper.OnInitDebugger(DebuggerSkin, IsChinese);
         }
-        public override void OnUpdate()
-        {
-            base.OnUpdate();
-
-            if (useGUILayout != IsEnableDebugger)
-            {
-                useGUILayout = IsEnableDebugger;
-            }
-        }
-        private void OnGUI()
+        public void OnDrawGUI()
         {
             _helper.OnDebuggerGUI();
         }

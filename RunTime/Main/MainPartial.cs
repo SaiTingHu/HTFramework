@@ -168,6 +168,8 @@ namespace HT.Framework
         {
             base.Awake();
 
+            useGUILayout = true;
+
             if (Current == null)
             {
                 Current = this;
@@ -189,6 +191,7 @@ namespace HT.Framework
         }
         private void OnGUI()
         {
+            BehaviourDrawGUI();
             LicenseOnGUI();
         }
         protected override void OnDestroy()
@@ -464,10 +467,24 @@ namespace HT.Framework
         #endregion
 
         #region Behaviour
+        private Dictionary<HTBehaviour, IDrawGUI> _drawGUIBehaviours = new Dictionary<HTBehaviour, IDrawGUI>();
         private Dictionary<HTBehaviour, IUpdateFrame> _updateFrameBehaviours = new Dictionary<HTBehaviour, IUpdateFrame>();
         private Dictionary<HTBehaviour, IUpdateSecond> _updateSecondBehaviours = new Dictionary<HTBehaviour, IUpdateSecond>();
         private float _timer = 0;
 
+        private void BehaviourDrawGUI()
+        {
+            if (_drawGUIBehaviours.Count > 0)
+            {
+                foreach (var behaviour in _drawGUIBehaviours)
+                {
+                    if (behaviour.Key != null && behaviour.Key.enabled && behaviour.Key.gameObject.activeSelf && behaviour.Value != null)
+                    {
+                        behaviour.Value.OnDrawGUI();
+                    }
+                }
+            }
+        }
         private void BehaviourUpdate()
         {
             if (Pause)
@@ -510,6 +527,12 @@ namespace HT.Framework
         /// <param name="behaviour">行为类对象</param>
         internal void RegisterBehaviour(HTBehaviour behaviour)
         {
+            IDrawGUI drawGUI = behaviour as IDrawGUI;
+            if (drawGUI != null)
+            {
+                if (!_drawGUIBehaviours.ContainsKey(behaviour))
+                    _drawGUIBehaviours.Add(behaviour, drawGUI);
+            }
             IUpdateFrame updateFrame = behaviour as IUpdateFrame;
             if (updateFrame != null)
             {
@@ -529,6 +552,12 @@ namespace HT.Framework
         /// <param name="behaviour">行为类对象</param>
         internal void UnregisterBehaviour(HTBehaviour behaviour)
         {
+            IDrawGUI drawGUI = behaviour as IDrawGUI;
+            if (drawGUI != null)
+            {
+                if (_drawGUIBehaviours.ContainsKey(behaviour))
+                    _drawGUIBehaviours.Remove(behaviour);
+            }
             IUpdateFrame updateFrame = behaviour as IUpdateFrame;
             if (updateFrame != null)
             {
