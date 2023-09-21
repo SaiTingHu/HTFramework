@@ -467,20 +467,23 @@ namespace HT.Framework
         #endregion
 
         #region Behaviour
-        private Dictionary<HTBehaviour, IDrawGUI> _drawGUIBehaviours = new Dictionary<HTBehaviour, IDrawGUI>();
-        private Dictionary<HTBehaviour, IUpdateFrame> _updateFrameBehaviours = new Dictionary<HTBehaviour, IUpdateFrame>();
-        private Dictionary<HTBehaviour, IUpdateSecond> _updateSecondBehaviours = new Dictionary<HTBehaviour, IUpdateSecond>();
+        private List<HTBehaviour> _drawGUIBehaviours = new List<HTBehaviour>();
+        private List<HTBehaviour> _updateFrameBehaviours = new List<HTBehaviour>();
+        private List<HTBehaviour> _updateSecondBehaviours = new List<HTBehaviour>();
+        private List<IDrawGUI> _drawGUIs = new List<IDrawGUI>();
+        private List<IUpdateFrame> _updateFrames = new List<IUpdateFrame>();
+        private List<IUpdateSecond> _updateSeconds = new List<IUpdateSecond>();
         private float _timer = 0;
 
         private void BehaviourDrawGUI()
         {
-            if (_drawGUIBehaviours.Count > 0)
+            if (_drawGUIs.Count > 0)
             {
-                foreach (var behaviour in _drawGUIBehaviours)
+                for (int i = 0; i < _drawGUIBehaviours.Count && i < _drawGUIs.Count; i++)
                 {
-                    if (behaviour.Key != null && behaviour.Key.enabled && behaviour.Key.gameObject.activeSelf && behaviour.Value != null)
+                    if (_drawGUIBehaviours[i] != null && _drawGUIBehaviours[i].enabled && _drawGUIBehaviours[i].gameObject.activeSelf && _drawGUIs[i] != null)
                     {
-                        behaviour.Value.OnDrawGUI();
+                        _drawGUIs[i].OnDrawGUI();
                     }
                 }
             }
@@ -490,13 +493,13 @@ namespace HT.Framework
             if (Pause)
                 return;
 
-            if (_updateFrameBehaviours.Count > 0)
+            if (_updateFrames.Count > 0)
             {
-                foreach (var behaviour in _updateFrameBehaviours)
+                for (int i = 0; i < _updateFrameBehaviours.Count && i < _updateFrames.Count; i++)
                 {
-                    if (behaviour.Key != null && behaviour.Key.enabled && behaviour.Key.gameObject.activeSelf && behaviour.Value != null)
+                    if (_updateFrameBehaviours[i] != null && _updateFrameBehaviours[i].enabled && _updateFrameBehaviours[i].gameObject.activeSelf && _updateFrames[i] != null)
                     {
-                        behaviour.Value.OnUpdateFrame();
+                        _updateFrames[i].OnUpdateFrame();
                     }
                 }
             }
@@ -504,13 +507,13 @@ namespace HT.Framework
             if (_timer >= 1)
             {
                 _timer -= 1;
-                if (_updateSecondBehaviours.Count > 0)
+                if (_updateSeconds.Count > 0)
                 {
-                    foreach (var behaviour in _updateSecondBehaviours)
+                    for (int i = 0; i < _updateSecondBehaviours.Count && i < _updateSeconds.Count; i++)
                     {
-                        if (behaviour.Key != null && behaviour.Key.enabled && behaviour.Key.gameObject.activeSelf && behaviour.Value != null)
+                        if (_updateSecondBehaviours[i] != null && _updateSecondBehaviours[i].enabled && _updateSecondBehaviours[i].gameObject.activeSelf && _updateSeconds[i] != null)
                         {
-                            behaviour.Value.OnUpdateSecond();
+                            _updateSeconds[i].OnUpdateSecond();
                         }
                     }
                 }
@@ -530,20 +533,29 @@ namespace HT.Framework
             IDrawGUI drawGUI = behaviour as IDrawGUI;
             if (drawGUI != null)
             {
-                if (!_drawGUIBehaviours.ContainsKey(behaviour))
-                    _drawGUIBehaviours.Add(behaviour, drawGUI);
+                if (!_drawGUIBehaviours.Contains(behaviour))
+                {
+                    _drawGUIBehaviours.Add(behaviour);
+                    _drawGUIs.Add(drawGUI);
+                }
             }
             IUpdateFrame updateFrame = behaviour as IUpdateFrame;
             if (updateFrame != null)
             {
-                if (!_updateFrameBehaviours.ContainsKey(behaviour))
-                    _updateFrameBehaviours.Add(behaviour, updateFrame);
+                if (!_updateFrameBehaviours.Contains(behaviour))
+                {
+                    _updateFrameBehaviours.Add(behaviour);
+                    _updateFrames.Add(updateFrame);
+                }
             }
             IUpdateSecond updateSecond = behaviour as IUpdateSecond;
             if (updateSecond != null)
             {
-                if (!_updateSecondBehaviours.ContainsKey(behaviour))
-                    _updateSecondBehaviours.Add(behaviour, updateSecond);
+                if (!_updateSecondBehaviours.Contains(behaviour))
+                {
+                    _updateSecondBehaviours.Add(behaviour);
+                    _updateSeconds.Add(updateSecond);
+                }
             }
         }
         /// <summary>
@@ -555,20 +567,29 @@ namespace HT.Framework
             IDrawGUI drawGUI = behaviour as IDrawGUI;
             if (drawGUI != null)
             {
-                if (_drawGUIBehaviours.ContainsKey(behaviour))
+                if (_drawGUIBehaviours.Contains(behaviour))
+                {
                     _drawGUIBehaviours.Remove(behaviour);
+                    _drawGUIs.Remove(drawGUI);
+                }
             }
             IUpdateFrame updateFrame = behaviour as IUpdateFrame;
             if (updateFrame != null)
             {
-                if (_updateFrameBehaviours.ContainsKey(behaviour))
+                if (_updateFrameBehaviours.Contains(behaviour))
+                {
                     _updateFrameBehaviours.Remove(behaviour);
+                    _updateFrames.Remove(updateFrame);
+                }
             }
             IUpdateSecond updateSecond = behaviour as IUpdateSecond;
             if (updateSecond != null)
             {
-                if (_updateSecondBehaviours.ContainsKey(behaviour))
+                if (_updateSecondBehaviours.Contains(behaviour))
+                {
                     _updateSecondBehaviours.Remove(behaviour);
+                    _updateSeconds.Remove(updateSecond);
+                }
             }
         }
         #endregion
