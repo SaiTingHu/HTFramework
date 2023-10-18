@@ -13,6 +13,12 @@ namespace HT.Framework
         private static WaitForFixedUpdate CurrentWaitForFixedUpdate = new WaitForFixedUpdate();
         private static Dictionary<string, WaitForSeconds> AllWaitForSeconds = new Dictionary<string, WaitForSeconds>();
         private static Dictionary<string, WaitForSecondsRealtime> AllWaitForSecondsRealtimes = new Dictionary<string, WaitForSecondsRealtime>();
+        private static WaitForSeconds Seconds0_5;
+        private static WaitForSeconds Seconds1;
+        private static WaitForSeconds Seconds1_5;
+        private static WaitForSeconds Seconds2;
+        private static WaitForSeconds Seconds2_5;
+        private static WaitForSeconds Seconds3;
 
         /// <summary>
         /// 获取WaitForEndOfFrame对象
@@ -37,6 +43,37 @@ namespace HT.Framework
         /// <returns>WaitForSeconds对象</returns>
         public static WaitForSeconds GetWaitForSeconds(float second)
         {
+            if (second.Approximately(0.5f))
+            {
+                if (Seconds0_5 == null) Seconds0_5 = new WaitForSeconds(0.5f);
+                return Seconds0_5;
+            }
+            else if (second.Approximately(1))
+            {
+                if (Seconds1 == null) Seconds1 = new WaitForSeconds(1);
+                return Seconds1;
+            }
+            else if (second.Approximately(1.5f))
+            {
+                if (Seconds1_5 == null) Seconds1_5 = new WaitForSeconds(1.5f);
+                return Seconds1_5;
+            }
+            else if (second.Approximately(2))
+            {
+                if (Seconds2 == null) Seconds2 = new WaitForSeconds(2);
+                return Seconds2;
+            }
+            else if (second.Approximately(2.5f))
+            {
+                if (Seconds2_5 == null) Seconds2_5 = new WaitForSeconds(2.5f);
+                return Seconds2_5;
+            }
+            else if (second.Approximately(3))
+            {
+                if (Seconds3 == null) Seconds3 = new WaitForSeconds(3);
+                return Seconds3;
+            }
+
             string secondStr = second.ToString("F2");
             if (!AllWaitForSeconds.ContainsKey(secondStr))
             {
