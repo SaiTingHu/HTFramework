@@ -12,6 +12,10 @@ namespace HT.Framework
         /// </summary>
         private const string WarningPrefix = "<b><color=yellow>[Safety Warning]</color></b> ";
         /// <summary>
+        /// 是否启用检查程序
+        /// </summary>
+        public static bool IsEnableChecker { get; set; } = true;
+        /// <summary>
         /// 检查的目标总数量
         /// </summary>
         public static int CheckCount { get; private set; }
@@ -21,12 +25,15 @@ namespace HT.Framework
         public static int PassCount { get; private set; }
 
         /// <summary>
-        /// 执行性能及安全性检查程序
+        /// 执行性能及安全性检查程序（建议只在编辑器模式下进行）
         /// </summary>
         /// <param name="target">检查目标</param>
         /// <param name="args">参数</param>
         public static void DoSafetyCheck(ISafetyCheckTarget target, params object[] args)
         {
+            if (!IsEnableChecker)
+                return;
+
             CheckCount += 1;
             bool pass = target.OnSafetyCheck(args);
             if (pass)

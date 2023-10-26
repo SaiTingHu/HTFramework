@@ -60,9 +60,6 @@ namespace HT.Framework
         /// <returns>检查是否通过</returns>
         public virtual bool OnSafetyCheck(params object[] args)
         {
-            if (args.Length < 2)
-                return true;
-
             Type type = GetType();
             if (type != typeof(Main))
             {
@@ -82,6 +79,9 @@ namespace HT.Framework
                     return false;
                 }
             }
+
+            if (args.Length < 2)
+                return true;
 
             int injectCount = (int)args[0];
             int bindCount = (int)args[1];

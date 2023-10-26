@@ -29,5 +29,27 @@ namespace HT.Framework
         /// 鼠标左键点击事件
         /// </summary>
         public UnityEvent OnMouseClick;
+
+        public override bool OnSafetyCheck(params object[] args)
+        {
+            if (!base.OnSafetyCheck(args))
+            {
+                return false;
+            }
+
+            if (IsOpenHighlight && transform.GetComponent<Collider>())
+            {
+                if (transform.parent)
+                {
+                    MouseRayTargetBase rayTargetP = transform.parent.GetComponentInParent<MouseRayTargetBase>();
+                    if (rayTargetP && rayTargetP.IsOpenHighlight && rayTargetP.GetComponent<Collider>())
+                    {
+                        SafetyChecker.DoSafetyWarning($"由于高亮及轮廓发光组件的限制，物体【{transform.FullName()}】已挂载鼠标射线捕获目标组件【MouseRayTargetBase】，其父级物体【{rayTargetP.transform.name}】不应再挂载该组件！");
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 }
