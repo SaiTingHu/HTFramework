@@ -24,7 +24,41 @@ namespace HT.Framework
         public Texture TextureValue = null;
         public AudioClip AudioClipValue = null;
         public Material MaterialValue = null;
-        
+
+        public override string ToString()
+        {
+            switch (Type)
+            {
+                case ParameterType.String:
+                    return $"{Name}:{StringValue}";
+                case ParameterType.Integer:
+                    return $"{Name}:{IntegerValue}";
+                case ParameterType.Float:
+                    return $"{Name}:{FloatValue}";
+                case ParameterType.Boolean:
+                    return $"{Name}:{BooleanValue}";
+                case ParameterType.Vector2:
+                    return $"{Name}:{Vector2Value}";
+                case ParameterType.Vector3:
+                    return $"{Name}:{Vector3Value}";
+                case ParameterType.Color:
+                    return $"{Name}:{ColorValue}";
+                case ParameterType.GameObject:
+                    return $"{Name}:{GameObjectValue}";
+                case ParameterType.Texture:
+                    return $"{Name}:{TextureValue}";
+                case ParameterType.AudioClip:
+                    return $"{Name}:{AudioClipValue}";
+                case ParameterType.Material:
+                    return $"{Name}:{MaterialValue}";
+                case ParameterType.Custom:
+                    return $"{Name}:{StringValue}";
+                default:
+                    break;
+            }
+            return base.ToString();
+        }
+
         /// <summary>
         /// 参数类型
         /// </summary>

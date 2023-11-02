@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEditor;
@@ -7,9 +8,14 @@ using UnityEngine;
 
 namespace HT.Framework
 {
+    /// <summary>
+    /// 步骤内容序列化资源 - 检视器
+    /// </summary>
     [CustomEditor(typeof(StepContentAsset))]
-    internal sealed class StepContentAssetInspector : HTFEditor<StepContentAsset>
+    public sealed class StepContentAssetInspector : HTFEditor<StepContentAsset>
     {
+        private static HashSet<string> ShowParameterNames = new HashSet<string>();
+
         [OnOpenAsset]
         private static bool OnOpenAsset(int instanceID, int line)
         {
@@ -20,6 +26,14 @@ namespace HT.Framework
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// 添加需要在StepContentAsset的检视面板显示的参数名称
+        /// </summary>
+        /// <param name="paraName">参数名称</param>
+        public static void AddShowParameterName(string paraName)
+        {
+            ShowParameterNames.Add(paraName);
         }
 
         private Vector2 _scroll = Vector2.zero;
@@ -146,7 +160,14 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label($"{i}.{Target.Content[i].Name}");
                 GUILayout.FlexibleSpace();
-                GUILayout.Label($"[{Target.Content[i].Trigger}]");
+                for (int j = 0; j < Target.Content[i].Parameters.Count; j++)
+                {
+                    StepParameter stepParameter = Target.Content[i].Parameters[j];
+                    if (ShowParameterNames.Contains(stepParameter.Name))
+                    {
+                        GUILayout.Label(stepParameter.ToString() + " ");
+                    }
+                }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();

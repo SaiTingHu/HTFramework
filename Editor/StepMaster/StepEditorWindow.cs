@@ -59,6 +59,10 @@ namespace HT.Framework
                     return o.OperationType == StepOperationType.PlayTimeline;
                 });
             });
+            AdvancedSearchHandlers.Add("包含自定义<Custom>参数的步骤", (stepContent) =>
+            {
+                return stepContent.Parameters.Exists((p) => { return p.Type == StepParameter.ParameterType.Custom; });
+            });
         }
         /// <summary>
         /// 注册【新增步骤内容】时的自定义处理者
@@ -949,9 +953,10 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
+                    GUI.enabled = _currentStepObj.InitialMode != ControlMode.FreeControl;
                     GUILayout.Label(GetWord("Best Pos") + ":", GUILayout.Width(80));
                     GUILayout.FlexibleSpace();
-                    GUI.enabled = _player && _currentStepObj.Target;
+                    GUI.enabled = _currentStepObj.InitialMode != ControlMode.FreeControl && _player && _currentStepObj.Target;
                     if (GUILayout.Button(GetWord("Get"), GUILayout.Width(40)))
                     {
                         _currentStepObj.BestPos = _player.transform.position;
@@ -960,7 +965,9 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
+                    GUI.enabled = _currentStepObj.InitialMode != ControlMode.FreeControl;
                     _currentStepObj.BestPos = EditorGUILayout.Vector3Field("", _currentStepObj.BestPos, GUILayout.Width(185));
+                    GUI.enabled = true;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
