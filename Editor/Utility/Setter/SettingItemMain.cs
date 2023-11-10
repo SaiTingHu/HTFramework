@@ -57,6 +57,7 @@ namespace HT.Framework
                 {
                     _isEnableLnkTools = isEnableLnkTools;
                     EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Enable, _isEnableLnkTools);
+                    EditorUtility.RequestScriptReload();
                 }
             }
             GUILayout.EndHorizontal();
