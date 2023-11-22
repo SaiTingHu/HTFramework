@@ -149,6 +149,7 @@ namespace HT.Framework
         /// <param name="defineEntityTargets">预定义的实体对象</param>
         public void SetDefine(List<string> defineEntityNames, List<GameObject> defineEntityTargets)
         {
+            _defineEntities.Clear();
             for (int i = 0; i < defineEntityNames.Count; i++)
             {
                 if (!_defineEntities.ContainsKey(defineEntityNames[i]))

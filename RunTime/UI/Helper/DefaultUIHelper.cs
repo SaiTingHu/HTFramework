@@ -131,15 +131,6 @@ namespace HT.Framework
         public void OnInit()
         {
             _module = Module as UIManager;
-
-            for (int i = 0; i < _module.DefineUINames.Count; i++)
-            {
-                if (!_defineUIAndEntitys.ContainsKey(_module.DefineUINames[i]))
-                {
-                    _defineUIAndEntitys.Add(_module.DefineUINames[i], _module.DefineUIEntitys[i]);
-                }
-            }
-
             _UIRoot = _module.transform.FindChildren("UIRoot");
             _overlayUIRoot = _UIRoot.transform.Find("OverlayUIRoot");
             _overlayUIRootRect = _overlayUIRoot.rectTransform();
@@ -281,7 +272,40 @@ namespace HT.Framework
         {
 
         }
-        
+
+        /// <summary>
+        /// 设置预定义
+        /// </summary>
+        /// <param name="defineUINames">预定义的UI名称</param>
+        /// <param name="defineUIEntitys">预定义的UI实体</param>
+        public void SetDefine(List<string> defineUINames, List<GameObject> defineUIEntitys)
+        {
+            _defineUIAndEntitys.Clear();
+            for (int i = 0; i < defineUINames.Count; i++)
+            {
+                if (!_defineUIAndEntitys.ContainsKey(defineUINames[i]))
+                {
+                    _defineUIAndEntitys.Add(defineUINames[i], defineUIEntitys[i]);
+                }
+            }
+        }
+        /// <summary>
+        /// 添加预定义（如果已存在则覆盖，已打开的UI不受影响，销毁后再次打开生效）
+        /// </summary>
+        /// <param name="defineUIName">预定义的UI名称</param>
+        /// <param name="defineUIEntity">预定义的UI实体</param>
+        public void AddDefine(string defineUIName, GameObject defineUIEntity)
+        {
+            if (_defineUIAndEntitys.ContainsKey(defineUIName))
+            {
+                _defineUIAndEntitys[defineUIName] = defineUIEntity;
+            }
+            else
+            {
+                _defineUIAndEntitys.Add(defineUIName, defineUIEntity);
+            }
+        }
+
         /// <summary>
         /// 预加载常驻UI
         /// </summary>

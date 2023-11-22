@@ -53,6 +53,19 @@ namespace HT.Framework
         bool IsDisplayMask { get; set; }
 
         /// <summary>
+        /// 设置预定义
+        /// </summary>
+        /// <param name="defineUINames">预定义的UI名称</param>
+        /// <param name="defineUIEntitys">预定义的UI实体</param>
+        void SetDefine(List<string> defineUINames, List<GameObject> defineUIEntitys);
+        /// <summary>
+        /// 添加预定义（如果已存在则覆盖，已打开的UI不受影响，销毁后再次打开生效）
+        /// </summary>
+        /// <param name="defineUIName">预定义的UI名称</param>
+        /// <param name="defineUIEntity">预定义的UI实体</param>
+        void AddDefine(string defineUIName, GameObject defineUIEntity);
+
+        /// <summary>
         /// 预加载常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>

@@ -112,7 +112,24 @@ namespace HT.Framework
                 return _helper.IsDisplayMask;
             }
         }
-        
+
+        public override void OnInit()
+        {
+            base.OnInit();
+
+            _helper.SetDefine(DefineUINames, DefineUIEntitys);
+        }
+
+        /// <summary>
+        /// 添加预定义（如果已存在则覆盖，已打开的UI不受影响，销毁后再次打开生效）
+        /// </summary>
+        /// <param name="defineUIName">预定义的UI名称</param>
+        /// <param name="defineUIEntity">预定义的UI实体</param>
+        public void AddDefine(string defineUIName, GameObject defineUIEntity)
+        {
+            _helper.AddDefine(defineUIName, defineUIEntity);
+        }
+
         /// <summary>
         /// 预加载UI
         /// </summary>
