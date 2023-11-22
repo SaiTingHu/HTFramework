@@ -17,6 +17,7 @@ namespace HT.Framework
 
             _target.enabled = BoolField("Enabled", _target.enabled);
             _target.clearFlags = (CameraClearFlags)EnumField("Clear Flags", _target.clearFlags);
+            _target.backgroundColor = ColorField("Background", _target.backgroundColor);
             _target.fieldOfView = FloatField("Field Of View", _target.fieldOfView);
             _target.nearClipPlane = FloatField("Clipping Planes Near", _target.nearClipPlane);
             _target.farClipPlane = FloatField("Clipping Planes Far", _target.farClipPlane);

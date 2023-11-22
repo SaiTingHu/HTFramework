@@ -19,7 +19,7 @@ namespace HT.Framework
             _target.enabled = BoolField("Enabled", _target.enabled);
             _target.receiveShadows = BoolField("Receive Shadows", _target.receiveShadows);
             _target.shadowCastingMode = (ShadowCastingMode)EnumField("Cast Shadows", _target.shadowCastingMode);
-            MaterialsFieldReadOnly("Materials", _target.sharedMaterials);
+            MaterialsFieldReadOnly("Materials", _target.materials);
         }
     }
 }

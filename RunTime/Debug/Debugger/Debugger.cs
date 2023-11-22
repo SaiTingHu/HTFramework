@@ -86,6 +86,7 @@ namespace HT.Framework
         private Vector2 _scrollInstruction = Vector2.zero;
         private bool _isInstruction = false;
         private string _instructionCode;
+        private bool _isSearchByType = false;
         //Memory
         private long _minTotalReservedMemory = 10000;
         private long _maxTotalReservedMemory = 0;
@@ -343,10 +344,7 @@ namespace HT.Framework
                     {
                         _debuggerScene.Refresh();
                     }
-                    if (GUILayout.Button(GetWord("Instruction"), GUILayout.Width(100), GUILayout.Height(20)))
-                    {
-                        _isInstruction = !_isInstruction;
-                    }
+                    _isInstruction = GUILayout.Toggle(_isInstruction, GetWord("Instruction"), "Button", GUILayout.Width(100), GUILayout.Height(20));
                     GUILayout.EndHorizontal();
 
                     //绘制指令代码编辑窗口
@@ -390,12 +388,37 @@ namespace HT.Framework
 
                         GUILayout.BeginHorizontal();
                         GUILayout.Label($"{GetWord("Search")}:", GUILayout.Width(60));
+                        _isSearchByType = GUILayout.Toggle(_isSearchByType, "T", "Button", GUILayout.Width(20));
                         _debuggerScene.GameObjectFiltrate = GUILayout.TextField(_debuggerScene.GameObjectFiltrate);
                         if (GUILayout.Button(GetWord("Search"), GUILayout.Width(60)))
                         {
                             _debuggerScene.ExecuteGameObjectFiltrate(_debuggerGameObjects);
+                            _isSearchByType = false;
                         }
                         GUILayout.EndHorizontal();
+
+                        if (_isSearchByType)
+                        {
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(60);
+                            if (GUILayout.Button(GetWord("Name"), GUILayout.Width(120)))
+                            {
+                                _debuggerScene.GameObjectFiltrate = "";
+                                _isSearchByType = false;
+                            }
+                            GUILayout.FlexibleSpace();
+                            GUILayout.EndHorizontal();
+
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(60);
+                            if (GUILayout.Button(GetWord("Tag"), GUILayout.Width(120)))
+                            {
+                                _debuggerScene.GameObjectFiltrate = "[Tag]:";
+                                _isSearchByType = false;
+                            }
+                            GUILayout.FlexibleSpace();
+                            GUILayout.EndHorizontal();
+                        }
 
                         //绘制游戏物体列表
                         _scrollSceneView = GUILayout.BeginScrollView(_scrollSceneView);
@@ -912,6 +935,7 @@ namespace HT.Framework
             _words.Add("Refresh", "刷新");
             _words.Add("Hierarchy", "场景内的所有物体");
             _words.Add("Search", "查找");
+            _words.Add("Name", "名称");
             _words.Add("Instruction", "指令代码");
             _words.Add("Clear Code", "清空代码");
             _words.Add("Execute", "执行代码");

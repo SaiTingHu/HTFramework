@@ -160,13 +160,35 @@ namespace HT.Framework
             }
             else
             {
-                IsShowGameObjectFiltrate = true;
-                string filtrate = GameObjectFiltrate.ToLower();
-                for (int i = 0; i < GameObjects.Count; i++)
+                if (GameObjectFiltrate.StartsWith("[Tag]:"))
                 {
-                    if (GameObjects[i].Name.ToLower().Contains(filtrate))
+                    string filtrate = GameObjectFiltrate.Replace("[Tag]:", "").ToLower();
+                    if (string.IsNullOrEmpty(filtrate))
                     {
-                        gameObjects.Add(GameObjects[i]);
+                        IsShowGameObjectFiltrate = false;
+                    }
+                    else
+                    {
+                        IsShowGameObjectFiltrate = true;
+                        for (int i = 0; i < GameObjects.Count; i++)
+                        {
+                            if (GameObjects[i].Target.tag.ToLower().Contains(filtrate))
+                            {
+                                gameObjects.Add(GameObjects[i]);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    IsShowGameObjectFiltrate = true;
+                    string filtrate = GameObjectFiltrate.ToLower();
+                    for (int i = 0; i < GameObjects.Count; i++)
+                    {
+                        if (GameObjects[i].Name.ToLower().Contains(filtrate))
+                        {
+                            gameObjects.Add(GameObjects[i]);
+                        }
                     }
                 }
             }

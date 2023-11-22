@@ -20,8 +20,8 @@ namespace HT.Framework
             _target.center = Vector3Field("Center", _target.center);
             _target.radius = FloatField("Radius", _target.radius);
             _target.height = FloatField("Height", _target.height);
-            BoolField("Is Grounded", _target.isGrounded);
-            Vector3Field("Velocity", _target.velocity);
+            BoolFieldReadOnly("Is Grounded", _target.isGrounded);
+            Vector3FieldReadOnly("Velocity", _target.velocity);
         }
     }
 }

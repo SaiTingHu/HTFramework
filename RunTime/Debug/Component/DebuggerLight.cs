@@ -25,8 +25,11 @@ namespace HT.Framework
             {
                 _target.spotAngle = FloatField("Spot Angle", _target.spotAngle);
             }
+            _target.color = ColorField("Color", _target.color);
             _target.intensity = FloatField("Intensity", _target.intensity);
             _target.shadows = (LightShadows)EnumField("Shadow Type", _target.shadows);
+            ObjectFieldReadOnly("Cookie", _target.cookie);
+            ObjectFieldReadOnly("Flare", _target.flare);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace HT.Framework
 
             _target.enabled = BoolField("Enabled", _target.enabled);
             ObjectFieldReadOnly("Texture", _target.texture);
+            _target.color = ColorField("Color", _target.color);
             ObjectFieldReadOnly("Material", _target.material);
             _target.raycastTarget = BoolField("Raycast Target", _target.raycastTarget);
             _target.maskable = BoolField("Maskable", _target.maskable);

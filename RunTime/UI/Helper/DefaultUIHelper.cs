@@ -19,7 +19,7 @@ namespace HT.Framework
         //当前打开的Camera类型的非常驻UI（非常驻UI同时只能打开一个）
         private UILogicTemporary _currentCameraTemporaryUI;
         //所有UI根节点
-        private GameObject _UIEntity;
+        private GameObject _UIRoot;
         //Overlay类型的UI根节点
         private Transform _overlayUIRoot;
         private RectTransform _overlayUIRootRect;
@@ -103,11 +103,11 @@ namespace HT.Framework
         {
             set
             {
-                _UIEntity.SetActive(!value);
+                _UIRoot.SetActive(!value);
             }
             get
             {
-                return !_UIEntity.activeSelf;
+                return !_UIRoot.activeSelf;
             }
         }
         /// <summary>
@@ -140,18 +140,18 @@ namespace HT.Framework
                 }
             }
 
-            _UIEntity = _module.transform.FindChildren("UIEntity");
-            _overlayUIRoot = _UIEntity.transform.Find("OverlayUIRoot");
+            _UIRoot = _module.transform.FindChildren("UIRoot");
+            _overlayUIRoot = _UIRoot.transform.Find("OverlayUIRoot");
             _overlayUIRootRect = _overlayUIRoot.rectTransform();
             _overlayResidentPanel = _overlayUIRoot.Find("ResidentPanel");
             _overlayTemporaryPanel = _overlayUIRoot.Find("TemporaryPanel");
-            _cameraUIRoot = _UIEntity.transform.Find("CameraUIRoot");
+            _cameraUIRoot = _UIRoot.transform.Find("CameraUIRoot");
             _cameraUIRootRect = _cameraUIRoot.rectTransform();
             _cameraResidentPanel = _cameraUIRoot.Find("ResidentPanel");
             _cameraTemporaryPanel = _cameraUIRoot.Find("TemporaryPanel");
-            _worldUIRoot = _UIEntity.transform.Find("WorldUIRoot");
+            _worldUIRoot = _UIRoot.transform.Find("WorldUIRoot");
             _maskPanel = _overlayUIRoot.FindChildren("MaskPanel");
-            UICamera = _UIEntity.GetComponentByChild<Camera>("UICamera");
+            UICamera = _UIRoot.GetComponentByChild<Camera>("UICamera");
 
             _overlayUIRoot.gameObject.SetActive(_module.IsEnableOverlayUI);
             _cameraUIRoot.gameObject.SetActive(_module.IsEnableCameraUI);

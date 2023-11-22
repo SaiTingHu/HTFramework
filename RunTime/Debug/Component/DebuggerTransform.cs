@@ -13,7 +13,7 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            IntField("Child Count", _target.childCount);
+            IntFieldReadOnly("Child Count", _target.childCount);
             _target.position = Vector3Field("Position", _target.position);
             _target.rotation = Quaternion.Euler(Vector3Field("Rotation", _target.eulerAngles));
             _target.localPosition = Vector3Field("Local Position", _target.localPosition);

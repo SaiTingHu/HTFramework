@@ -13,15 +13,34 @@ namespace HT.Framework
         }
         public override void OnDebuggerGUI()
         {
-            IntField("Child Count", _target.childCount);
+            IntFieldReadOnly("Child Count", _target.childCount);
             _target.position = Vector3Field("Position", _target.position);
             _target.rotation = Quaternion.Euler(Vector3Field("Rotation", _target.eulerAngles));
             _target.localPosition = Vector3Field("Local Position", _target.localPosition);
             _target.localRotation = Quaternion.Euler(Vector3Field("Local Rotation", _target.localEulerAngles));
             _target.localScale = Vector3Field("Scale", _target.localScale);
-            _target.anchoredPosition3D = Vector3Field("AnchoredPosition", _target.anchoredPosition3D);
+            _target.anchoredPosition = Vector2Field("AnchoredPosition", _target.anchoredPosition);
             _target.sizeDelta = Vector2Field("SizeDelta", _target.sizeDelta);
             _target.pivot = Vector2Field("Pivot", _target.pivot);
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.RepeatButton("x-"))
+            {
+                _target.anchoredPosition -= new Vector2(1, 0);
+            }
+            if (GUILayout.RepeatButton("x+"))
+            {
+                _target.anchoredPosition += new Vector2(1, 0);
+            }
+            if (GUILayout.RepeatButton("y-"))
+            {
+                _target.anchoredPosition -= new Vector2(0, 1);
+            }
+            if (GUILayout.RepeatButton("y+"))
+            {
+                _target.anchoredPosition += new Vector2(0, 1);
+            }
+            GUILayout.EndHorizontal();
         }
     }
 }

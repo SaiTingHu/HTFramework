@@ -22,6 +22,7 @@ namespace HT.Framework
             _target.fontStyle = (FontStyle)EnumField("Font Style", _target.fontStyle);
             _target.richText = BoolField("Rich Text", _target.richText);
             ObjectFieldReadOnly("Font", _target.font);
+            _target.color = ColorField("Color", _target.color);
         }
     }
 }

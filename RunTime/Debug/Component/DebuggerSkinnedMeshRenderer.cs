@@ -20,8 +20,8 @@ namespace HT.Framework
             _target.receiveShadows = BoolField("Receive Shadows", _target.receiveShadows);
             _target.shadowCastingMode = (ShadowCastingMode)EnumField("Cast Shadows", _target.shadowCastingMode);
             ObjectFieldReadOnly("Mesh", _target.sharedMesh);
-            StringFieldReadOnly("Bones", _target.bones.Length.ToString());
-            MaterialsFieldReadOnly("Materials", _target.sharedMaterials);
+            IntFieldReadOnly("Bones", _target.bones.Length);
+            MaterialsFieldReadOnly("Materials", _target.materials);
         }
     }
 }

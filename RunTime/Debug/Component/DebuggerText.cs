@@ -23,6 +23,7 @@ namespace HT.Framework
             _target.fontSize = IntField("Font Size", _target.fontSize);
             _target.lineSpacing = FloatField("Line Spacing", _target.lineSpacing);
             _target.supportRichText = BoolField("Rich Text", _target.supportRichText);
+            _target.color = ColorField("Color", _target.color);
             ObjectFieldReadOnly("Material", _target.material);
             _target.raycastTarget = BoolField("Raycast Target", _target.raycastTarget);
             _target.maskable = BoolField("Maskable", _target.maskable);

@@ -17,7 +17,8 @@ namespace HT.Framework
             GUI.contentColor = _target.enabled ? Color.white : Color.gray;
 
             _target.enabled = BoolField("Enabled", _target.enabled);
-            ObjectFieldReadOnly("Sprite", _target.sprite);
+            ObjectFieldReadOnly("Source Image", _target.sprite);
+            _target.color = ColorField("Color", _target.color);
             ObjectFieldReadOnly("Material", _target.material);
             _target.raycastTarget = BoolField("Raycast Target", _target.raycastTarget);
             _target.maskable = BoolField("Maskable", _target.maskable);

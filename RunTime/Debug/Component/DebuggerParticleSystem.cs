@@ -34,7 +34,7 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
 
-            IntField("Particles", _target.particleCount);
+            IntFieldReadOnly("Particles", _target.particleCount);
             _mainModule.loop = BoolField("Loop", _mainModule.loop);
         }
     }
