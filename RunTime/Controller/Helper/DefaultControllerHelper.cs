@@ -7,9 +7,8 @@ namespace HT.Framework
     /// <summary>
     /// 默认的操作控制器助手
     /// </summary>
-    public sealed class DefaultControllerHelper : IControllerHelper
+    internal sealed class DefaultControllerHelper : IControllerHelper
     {
-        private ControllerManager _module;
         private CameraTarget _cameraTarget;
         private MousePosition _mousePosition;
         private MouseRotation _mouseRotation;
@@ -201,23 +200,7 @@ namespace HT.Framework
         /// </summary>
         public void OnInit()
         {
-            _module = Module as ControllerManager;
-            MainCamera = _module.GetComponentByChild<Camera>("MainCamera");
-            _cameraTarget = _module.GetComponentByChild<CameraTarget>("CameraTarget");
-            _mousePosition = MainCamera.GetComponent<MousePosition>();
-            _mouseRotation = MainCamera.GetComponent<MouseRotation>();
-            _mouseRay = MainCamera.GetComponent<MouseRay>();
-            _highlightingEffect = MainCamera.GetComponent<HighlightingEffect>();
-
-            _mousePosition.Target = _cameraTarget;
-            _mousePosition.Manager = Module as ControllerManager;
-            _mouseRotation.Target = _cameraTarget;
-            _mouseRotation.Manager = Module as ControllerManager;
-            _mouseRay.RayCamera = MainCamera;
-            _mouseRay.RayEvent += (target, point, point2D) =>
-            {
-                RayEvent?.Invoke(target, point, point2D);
-            };
+            
         }
         /// <summary>
         /// 助手准备工作
@@ -278,7 +261,32 @@ namespace HT.Framework
         {
             
         }
-        
+
+        /// <summary>
+        /// 设置主摄像机和注视目标
+        /// </summary>
+        /// <param name="camera">主摄像机</param>
+        /// <param name="cameraTarget">注视目标</param>
+        public void SetMainCameraAndTarget(Camera camera, CameraTarget cameraTarget)
+        {
+            MainCamera = camera;
+            _cameraTarget = cameraTarget;
+            _mousePosition = MainCamera.GetComponent<MousePosition>();
+            _mouseRotation = MainCamera.GetComponent<MouseRotation>();
+            _mouseRay = MainCamera.GetComponent<MouseRay>();
+            _highlightingEffect = MainCamera.GetComponent<HighlightingEffect>();
+
+            _mousePosition.Target = _cameraTarget;
+            _mousePosition.Controller = Main.m_Controller;
+            _mouseRotation.Target = _cameraTarget;
+            _mouseRotation.Controller = Main.m_Controller;
+            _mouseRay.RayCamera = MainCamera;
+            _mouseRay.RayEvent += (target, point, point2D) =>
+            {
+                RayEvent?.Invoke(target, point, point2D);
+            };
+        }
+
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>

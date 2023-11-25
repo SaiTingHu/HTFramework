@@ -20,6 +20,7 @@ namespace HT.Framework
                 return _helper.GetCustomModule(moduleName);
             }
         }
+
         /// <summary>
         /// 获取所有的自定义模块
         /// </summary>

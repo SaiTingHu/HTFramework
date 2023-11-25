@@ -284,6 +284,7 @@ namespace HT.Framework
             DOTween.defaultAutoPlay = DefaultAutoPlay;
             DOTween.defaultAutoKill = IsAutoKill;
 
+            _helper.SetMainCameraAndTarget(transform.GetComponentByChild<Camera>("MainCamera"), transform.GetComponentByChild<CameraTarget>("CameraTarget"));
             _helper.RayEvent += (target, point, point2D) =>
             {
                 RayEvent?.Invoke(target, point, point2D);

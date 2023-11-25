@@ -7,7 +7,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的协程调度器助手
     /// </summary>
-    public sealed class DefaultCoroutinerHelper : ICoroutinerHelper
+    internal sealed class DefaultCoroutinerHelper : ICoroutinerHelper
     {
         /// <summary>
         /// 协程调度器
@@ -191,7 +191,6 @@ namespace HT.Framework
                 RemoveWarehouse(enumerator.Value);
                 Main.m_ReferencePool.Despawn(enumerator.Value);
             }
-            notRunnings = null;
         }
 
         private void DepositWarehouse(CoroutineEnumerator enumerator)

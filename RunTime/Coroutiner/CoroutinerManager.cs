@@ -69,7 +69,7 @@ namespace HT.Framework
             _helper.Stop(action);
         }
         /// <summary>
-        /// 是否存在
+        /// 是否存在协程
         /// </summary>
         /// <param name="id">协程迭代器ID</param>
         /// <returns>是否存在</returns>

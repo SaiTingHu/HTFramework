@@ -69,7 +69,14 @@ namespace HT.Framework
         /// 射线投射事件(MouseRayTargetBase：当前射中的目标，Vector3：当前射中的点，Vector2：当前鼠标位置转换后的UGUI坐标)
         /// </summary>
         event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
-        
+
+        /// <summary>
+        /// 设置主摄像机和注视目标
+        /// </summary>
+        /// <param name="camera">主摄像机</param>
+        /// <param name="cameraTarget">注视目标</param>
+        void SetMainCameraAndTarget(Camera camera, CameraTarget cameraTarget);
+
         /// <summary>
         /// 自由控制：设置摄像机注视点
         /// </summary>

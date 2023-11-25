@@ -6,7 +6,7 @@ namespace HT.Framework
     /// 摄像机注视目标
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class CameraTarget : HTBehaviour
+    public sealed class CameraTarget : HTBehaviour
     {
         
     }

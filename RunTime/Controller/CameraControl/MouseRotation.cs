@@ -71,7 +71,7 @@ namespace HT.Framework
         /// <summary>
         /// 操作控制器
         /// </summary>
-        public ControllerManager Manager { get; set; }
+        public ControllerManager Controller { get; set; }
         
         /// <summary>
         /// 旋转注视视野
@@ -170,16 +170,16 @@ namespace HT.Framework
             }
 
             //排斥盒检测
-            if (Manager.IsEnableRepelBox)
+            if (Controller.IsEnableRepelBox)
             {
-                foreach (var box in Manager.FreeControlRepelBoxs)
+                foreach (var box in Controller.FreeControlRepelBoxs)
                 {
                     transform.position = box.Repel(transform.position);
                 }
             }
 
             //边界盒检测
-            if (Manager.IsEnableBounds)
+            if (Controller.IsEnableBounds)
             {
                 //应用边界盒
                 transform.position = ApplyBounds(transform.position);
@@ -207,15 +207,15 @@ namespace HT.Framework
         }
         private bool InTheBounds(Vector3 position)
         {
-            if (Manager.FreeControlBounds.Count == 0)
+            if (Controller.FreeControlBounds.Count == 0)
             {
                 return true;
             }
             else
             {
-                for (int i = 0; i < Manager.FreeControlBounds.Count; i++)
+                for (int i = 0; i < Controller.FreeControlBounds.Count; i++)
                 {
-                    if (Manager.FreeControlBounds[i].Contains(position))
+                    if (Controller.FreeControlBounds[i].Contains(position))
                     {
                         return true;
                     }
@@ -225,20 +225,20 @@ namespace HT.Framework
         }
         private Vector3 ClosestPoint(Vector3 position)
         {
-            if (Manager.FreeControlBounds.Count == 1)
+            if (Controller.FreeControlBounds.Count == 1)
             {
-                return Manager.FreeControlBounds[0].ClosestPoint(position);
+                return Controller.FreeControlBounds[0].ClosestPoint(position);
             }
             else
             {
-                Bounds bounds = Manager.FreeControlBounds[0];
+                Bounds bounds = Controller.FreeControlBounds[0];
                 float dis = Vector3.Distance(bounds.center, position);
-                for (int i = 1; i < Manager.FreeControlBounds.Count; i++)
+                for (int i = 1; i < Controller.FreeControlBounds.Count; i++)
                 {
-                    float newdis = Vector3.Distance(Manager.FreeControlBounds[i].center, position);
+                    float newdis = Vector3.Distance(Controller.FreeControlBounds[i].center, position);
                     if (newdis < dis)
                     {
-                        bounds = Manager.FreeControlBounds[i];
+                        bounds = Controller.FreeControlBounds[i];
                         dis = newdis;
                     }
                 }
