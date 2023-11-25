@@ -212,7 +212,7 @@ namespace HT.Framework
 
         #region Module
         /// <summary>
-        /// 切面调试模块
+        /// 切面代理模块
         /// </summary>
         public static AspectTrackManager m_AspectTrack { get; private set; }
         /// <summary>

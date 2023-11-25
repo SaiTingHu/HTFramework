@@ -85,10 +85,10 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUI.enabled = _helper.BackgroundSource.clip;
+                GUI.enabled = Target.BackgroundMusicClip;
                 if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
-                    Target.PlayBackgroundMusic(_helper.BackgroundSource.clip);
+                    Target.PlayBackgroundMusic(Target.BackgroundMusicClip);
                 }
                 if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
@@ -107,12 +107,9 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                _helper.BackgroundSource.clip = EditorGUILayout.ObjectField("Clip:", _helper.BackgroundSource.clip, typeof(AudioClip), true) as AudioClip;
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Loop: " + _helper.BackgroundSource.loop);
+                GUI.enabled = false;
+                EditorGUILayout.ObjectField("Clip:", Target.BackgroundMusicClip, typeof(AudioClip), true);
+                GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -123,11 +120,6 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 Target.BackgroundPriority = EditorGUILayout.IntSlider("Priority: ", Target.BackgroundPriority, 0, 256);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Speed: " + _helper.BackgroundSource.pitch);
                 GUILayout.EndHorizontal();
             }
             #endregion
@@ -142,10 +134,10 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                GUI.enabled = _helper.SingleSource.clip;
+                GUI.enabled = Target.SingleSoundClip;
                 if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
                 {
-                    Target.PlaySingleSound(_helper.SingleSource.clip);
+                    Target.PlaySingleSound(Target.SingleSoundClip);
                 }
                 if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
                 {
@@ -164,12 +156,9 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                _helper.SingleSource.clip = EditorGUILayout.ObjectField("Clip:", _helper.SingleSource.clip, typeof(AudioClip), true) as AudioClip;
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Loop: " + _helper.SingleSource.loop);
+                GUI.enabled = false;
+                EditorGUILayout.ObjectField("Clip:", Target.SingleSoundClip, typeof(AudioClip), true);
+                GUI.enabled = true;
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -180,11 +169,6 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 Target.SinglePriority = EditorGUILayout.IntSlider("Priority: ", Target.SinglePriority, 0, 256);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Speed: " + _helper.SingleSource.pitch);
                 GUILayout.EndHorizontal();
             }
             #endregion
@@ -209,20 +193,6 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
-                int mplayingCount = 0;
-                int mstopedCount = 0;
-                for (int i = 0; i < _helper.MultipleSources.Count; i++)
-                {
-                    if (_helper.MultipleSources[i].isPlaying)
-                    {
-                        mplayingCount += 1;
-                    }
-                    else
-                    {
-                        mstopedCount += 1;
-                    }
-                }
-
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 Target.MultipleVolume = EditorGUILayout.Slider("Volume: ", Target.MultipleVolume, 0f, 1f);
@@ -231,21 +201,6 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 Target.MultiplePriority = EditorGUILayout.IntSlider("Priority: ", Target.MultiplePriority, 0, 256);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Source: " + _helper.MultipleSources.Count);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Playing: " + mplayingCount);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Stoped: " + mstopedCount);
                 GUILayout.EndHorizontal();
             }
             #endregion
@@ -270,20 +225,6 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
-                int wplayingCount = 0;
-                int wstopedCount = 0;
-                foreach (var audio in _helper.WorldSources)
-                {
-                    if (audio.Value.isPlaying)
-                    {
-                        wplayingCount += 1;
-                    }
-                    else
-                    {
-                        wstopedCount += 1;
-                    }
-                }
-
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 Target.WorldVolume = EditorGUILayout.Slider("Volume: ", Target.WorldVolume, 0f, 1f);
@@ -292,21 +233,6 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 Target.WorldPriority = EditorGUILayout.IntSlider("Priority: ", Target.WorldPriority, 0, 256);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Source: " + _helper.WorldSources.Count);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Playing: " + wplayingCount);
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20);
-                GUILayout.Label("Stoped: " + wstopedCount);
                 GUILayout.EndHorizontal();
             }
             #endregion

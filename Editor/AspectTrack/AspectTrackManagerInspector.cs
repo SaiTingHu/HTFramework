@@ -56,7 +56,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Clear Conditions"))
             {
-                Target.InterceptConditions.Clear();
+                Target.ClearInterceptCondition();
             }
             GUILayout.EndHorizontal();
 #endif

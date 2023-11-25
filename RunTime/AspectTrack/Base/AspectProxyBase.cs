@@ -11,8 +11,6 @@ namespace HT.Framework
     /// </summary>
     public abstract class AspectProxyBase<T> : RealProxy where T : IAspectTrackObject
     {
-        private const string VOIDSIGN = "Void";
-
         protected T _realObject;
 
         /// <summary>
@@ -53,21 +51,12 @@ namespace HT.Framework
         public sealed override IMessage Invoke(IMessage msg)
         {
             IMethodCallMessage callMsg = msg as IMethodCallMessage;
-
-            bool isVoid = false;
-            MethodInfo info = callMsg.MethodBase as MethodInfo;
-            if (info != null)
-            {
-                isVoid = (info.ReturnType.Name == VOIDSIGN);
-                info = null;
-            }
-
             object returnValue = null;
             object[] args = OnBeforeInvoke(callMsg.MethodBase, callMsg.Args);
             
             try
             {
-                if (isVoid && IsIntercept(callMsg.MethodBase, args))
+                if (Main.m_AspectTrack.IsIntercept(callMsg.MethodBase, args))
                 {
                     OnIntercept(callMsg.MethodBase);
                     returnValue = null;
@@ -82,7 +71,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Warning($"切面追踪：方法 {callMsg.MethodBase.Name} 经过修改后传入的实参与形参数量不匹配！");
+                        Log.Warning($"切面代理：方法 {callMsg.MethodBase.Name} 经过修改后传入的实参与形参数量不匹配！");
                         returnValue = callMsg.MethodBase.Invoke(_realObject, callMsg.Args);
                         return new ReturnMessage(returnValue, callMsg.Args, callMsg.ArgCount - callMsg.InArgCount, callMsg.LogicalCallContext, callMsg);
                     }
@@ -118,29 +107,6 @@ namespace HT.Framework
         /// <param name="method">方法</param>
         /// <param name="returnValue">返回值</param>
         protected abstract void OnAfterInvoke(MethodBase method, object returnValue);
-        /// <summary>
-        /// 是否拦截
-        /// </summary>
-        /// <param name="methodBase">方法</param>
-        /// <param name="args">参数</param>
-        /// <returns>是否被拦截</returns>
-        private bool IsIntercept(MethodBase methodBase, object[] args)
-        {
-            if (Main.m_AspectTrack.IsEnableIntercept)
-            {
-                foreach (var condition in Main.m_AspectTrack.InterceptConditions)
-                {
-                    if (condition.Value != null)
-                    {
-                        if (condition.Value.Invoke(methodBase, args))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
     }
 }
 #endif

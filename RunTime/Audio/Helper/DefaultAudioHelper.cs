@@ -7,9 +7,14 @@ namespace HT.Framework
     /// <summary>
     /// 默认的音频管理器助手
     /// </summary>
-    public sealed class DefaultAudioHelper : IAudioHelper
+    internal sealed class DefaultAudioHelper : IAudioHelper
     {
-        private AudioManager _module;
+        private Transform _audioSourceRoot;
+        private AudioSource _backgroundSource;
+        private AudioSource _singleSource;
+        private List<AudioSource> _multipleSources = new List<AudioSource>();
+        private Dictionary<GameObject, AudioSource> _worldSources  = new Dictionary<GameObject, AudioSource>();
+        private AudioSource _oneShootSource;
         private bool _isMute = false;
         private int _backgroundPriority = 0;
         private int _singlePriority = 10;
@@ -27,26 +32,7 @@ namespace HT.Framework
         /// 音频管理器
         /// </summary>
         public IModuleManager Module { get; set; }
-        /// <summary>
-        /// 背景音乐音源
-        /// </summary>
-        public AudioSource BackgroundSource { get; private set; }
-        /// <summary>
-        /// 单通道音效音源
-        /// </summary>
-        public AudioSource SingleSource { get; private set; }
-        /// <summary>
-        /// 多通道音效音源
-        /// </summary>
-        public List<AudioSource> MultipleSources { get; private set; } = new List<AudioSource>();
-        /// <summary>
-        /// 世界音效音源
-        /// </summary>
-        public Dictionary<GameObject, AudioSource> WorldSources { get; private set; } = new Dictionary<GameObject, AudioSource>();
-        /// <summary>
-        /// OneShoot音源
-        /// </summary>
-        public AudioSource OneShootSource { get; private set; }
+        
         /// <summary>
         /// 静音
         /// </summary>
@@ -61,17 +47,17 @@ namespace HT.Framework
                 if (_isMute != value)
                 {
                     _isMute = value;
-                    BackgroundSource.mute = _isMute;
-                    SingleSource.mute = _isMute;
-                    for (int i = 0; i < MultipleSources.Count; i++)
+                    _backgroundSource.mute = _isMute;
+                    _singleSource.mute = _isMute;
+                    for (int i = 0; i < _multipleSources.Count; i++)
                     {
-                        MultipleSources[i].mute = _isMute;
+                        _multipleSources[i].mute = _isMute;
                     }
-                    foreach (var audio in WorldSources)
+                    foreach (var audio in _worldSources)
                     {
                         audio.Value.mute = _isMute;
                     }
-                    OneShootSource.mute = _isMute;
+                    _oneShootSource.mute = _isMute;
                 }
             }
         }
@@ -82,7 +68,7 @@ namespace HT.Framework
         {
             get
             {
-                return BackgroundSource.isPlaying;
+                return _backgroundSource.isPlaying;
             }
         }
         /// <summary>
@@ -92,7 +78,7 @@ namespace HT.Framework
         {
             get
             {
-                return SingleSource.isPlaying;
+                return _singleSource.isPlaying;
             }
         }
         /// <summary>
@@ -109,7 +95,7 @@ namespace HT.Framework
                 if (_backgroundPriority != value)
                 {
                     _backgroundPriority = value;
-                    BackgroundSource.priority = _backgroundPriority;
+                    _backgroundSource.priority = _backgroundPriority;
                 }
             }
         }
@@ -127,7 +113,7 @@ namespace HT.Framework
                 if (_singlePriority != value)
                 {
                     _singlePriority = value;
-                    SingleSource.priority = _singlePriority;
+                    _singleSource.priority = _singlePriority;
                 }
             }
         }
@@ -145,9 +131,9 @@ namespace HT.Framework
                 if (_multiplePriority != value)
                 {
                     _multiplePriority = value;
-                    for (int i = 0; i < MultipleSources.Count; i++)
+                    for (int i = 0; i < _multipleSources.Count; i++)
                     {
-                        MultipleSources[i].priority = _multiplePriority;
+                        _multipleSources[i].priority = _multiplePriority;
                     }
                 }
             }
@@ -166,7 +152,7 @@ namespace HT.Framework
                 if (_worldPriority != value)
                 {
                     _worldPriority = value;
-                    foreach (var audio in WorldSources)
+                    foreach (var audio in _worldSources)
                     {
                         audio.Value.priority = _worldPriority;
                     }
@@ -187,7 +173,7 @@ namespace HT.Framework
                 if (_oneShootPriority != value)
                 {
                     _oneShootPriority = value;
-                    OneShootSource.priority = _oneShootPriority;
+                    _oneShootSource.priority = _oneShootPriority;
                 }
             }
         }
@@ -205,7 +191,7 @@ namespace HT.Framework
                 if (!_backgroundVolume.Approximately(value))
                 {
                     _backgroundVolume = value;
-                    BackgroundSource.volume = _backgroundVolume;
+                    _backgroundSource.volume = _backgroundVolume;
                 }
             }
         }
@@ -223,7 +209,7 @@ namespace HT.Framework
                 if (!_singleVolume.Approximately(value))
                 {
                     _singleVolume = value;
-                    SingleSource.volume = _singleVolume;
+                    _singleSource.volume = _singleVolume;
                 }
             }
         }
@@ -241,9 +227,9 @@ namespace HT.Framework
                 if (!_multipleVolume.Approximately(value))
                 {
                     _multipleVolume = value;
-                    for (int i = 0; i < MultipleSources.Count; i++)
+                    for (int i = 0; i < _multipleSources.Count; i++)
                     {
-                        MultipleSources[i].volume = _multipleVolume;
+                        _multipleSources[i].volume = _multipleVolume;
                     }
                 }
             }
@@ -262,7 +248,7 @@ namespace HT.Framework
                 if (!_worldVolume.Approximately(value))
                 {
                     _worldVolume = value;
-                    foreach (var audio in WorldSources)
+                    foreach (var audio in _worldSources)
                     {
                         audio.Value.volume = _worldVolume;
                     }
@@ -283,8 +269,28 @@ namespace HT.Framework
                 if (!_oneShootVolume.Approximately(value))
                 {
                     _oneShootVolume = value;
-                    OneShootSource.volume = _oneShootVolume;
+                    _oneShootSource.volume = _oneShootVolume;
                 }
+            }
+        }
+        /// <summary>
+        /// 当前的背景音乐剪辑
+        /// </summary>
+        public AudioClip BackgroundMusicClip
+        {
+            get
+            {
+                return _backgroundSource.clip;
+            }
+        }
+        /// <summary>
+        /// 当前的单通道音效剪辑
+        /// </summary>
+        public AudioClip SingleSoundClip
+        {
+            get
+            {
+                return _singleSource.clip;
             }
         }
         /// <summary>
@@ -296,13 +302,7 @@ namespace HT.Framework
         /// 初始化助手
         /// </summary>
         public void OnInit()
-        {
-            _module = Module as AudioManager;
-            BackgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", _module.transform);
-            SingleSource = AudioToolkit.CreateAudioSource("SingleSource", _module.transform);
-            OneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", _module.transform);
-            BackgroundSource.loop = true;
-        }
+        { }
         /// <summary>
         /// 助手准备工作
         /// </summary>
@@ -315,10 +315,10 @@ namespace HT.Framework
         {
             if (_singlePlayDetector)
             {
-                if (!SingleSource.isPlaying)
+                if (!_singleSource.isPlaying)
                 {
                     _singlePlayDetector = false;
-                    SingleSoundEndOfPlayEvent?.Invoke(SingleSource.clip != null ? SingleSource.clip.name : null);
+                    SingleSoundEndOfPlayEvent?.Invoke(_singleSource.clip != null ? _singleSource.clip.name : null);
                 }
             }
         }
@@ -343,6 +343,19 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 设置音源根节点
+        /// </summary>
+        /// <param name="transform">音源根节点</param>
+        public void SetAudioSourceRoot(Transform transform)
+        {
+            _audioSourceRoot = transform;
+            _backgroundSource = AudioToolkit.CreateAudioSource("BackgroundSource", _audioSourceRoot);
+            _singleSource = AudioToolkit.CreateAudioSource("SingleSource", _audioSourceRoot);
+            _oneShootSource = AudioToolkit.CreateAudioSource("OneShootSource", _audioSourceRoot);
+            _backgroundSource.loop = true;
+        }
+
+        /// <summary>
         /// 播放背景音乐
         /// </summary>
         /// <param name="clip">音乐剪辑</param>
@@ -353,18 +366,18 @@ namespace HT.Framework
             if (clip == null)
                 return;
 
-            BackgroundSource.DOKill();
+            _backgroundSource.DOKill();
 
-            if (BackgroundSource.isPlaying)
+            if (_backgroundSource.isPlaying)
             {
-                BackgroundSource.Stop();
+                _backgroundSource.Stop();
             }
 
-            BackgroundSource.clip = clip;
-            BackgroundSource.loop = isLoop;
-            BackgroundSource.pitch = speed;
-            BackgroundSource.volume = BackgroundVolume;
-            BackgroundSource.Play();
+            _backgroundSource.clip = clip;
+            _backgroundSource.loop = isLoop;
+            _backgroundSource.pitch = speed;
+            _backgroundSource.volume = BackgroundVolume;
+            _backgroundSource.Play();
         }
         /// <summary>
         /// 暂停播放背景音乐
@@ -372,20 +385,20 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void PauseBackgroundMusic(bool isGradual = true)
         {
-            BackgroundSource.DOKill();
+            _backgroundSource.DOKill();
 
             if (isGradual)
             {
-                BackgroundSource.DOFade(0, 2).OnComplete(() =>
+                _backgroundSource.DOFade(0, 2).OnComplete(() =>
                 {
-                    BackgroundSource.Pause();
-                    BackgroundSource.volume = BackgroundVolume;
+                    _backgroundSource.Pause();
+                    _backgroundSource.volume = BackgroundVolume;
                 });
             }
             else
             {
-                BackgroundSource.Pause();
-                BackgroundSource.volume = BackgroundVolume;
+                _backgroundSource.Pause();
+                _backgroundSource.volume = BackgroundVolume;
             }
         }
         /// <summary>
@@ -394,18 +407,18 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void ResumeBackgroundMusic(bool isGradual = true)
         {
-            BackgroundSource.DOKill();
+            _backgroundSource.DOKill();
 
             if (isGradual)
             {
-                BackgroundSource.volume = 0;
-                BackgroundSource.UnPause();
-                BackgroundSource.DOFade(BackgroundVolume, 2);
+                _backgroundSource.volume = 0;
+                _backgroundSource.UnPause();
+                _backgroundSource.DOFade(BackgroundVolume, 2);
             }
             else
             {
-                BackgroundSource.UnPause();
-                BackgroundSource.volume = BackgroundVolume;
+                _backgroundSource.UnPause();
+                _backgroundSource.volume = BackgroundVolume;
             }
         }
         /// <summary>
@@ -413,11 +426,11 @@ namespace HT.Framework
         /// </summary>
         public void StopBackgroundMusic()
         {
-            BackgroundSource.DOKill();
+            _backgroundSource.DOKill();
 
-            if (BackgroundSource.isPlaying)
+            if (_backgroundSource.isPlaying)
             {
-                BackgroundSource.Stop();
+                _backgroundSource.Stop();
             }
         }
 
@@ -432,18 +445,18 @@ namespace HT.Framework
             if (clip == null)
                 return;
 
-            SingleSource.DOKill();
+            _singleSource.DOKill();
 
-            if (SingleSource.isPlaying)
+            if (_singleSource.isPlaying)
             {
-                SingleSource.Stop();
+                _singleSource.Stop();
             }
 
-            SingleSource.clip = clip;
-            SingleSource.loop = isLoop;
-            SingleSource.pitch = speed;
-            SingleSource.volume = SingleVolume;
-            SingleSource.Play();
+            _singleSource.clip = clip;
+            _singleSource.loop = isLoop;
+            _singleSource.pitch = speed;
+            _singleSource.volume = SingleVolume;
+            _singleSource.Play();
             _singlePlayDetector = true;
         }
         /// <summary>
@@ -452,20 +465,20 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void PauseSingleSound(bool isGradual = true)
         {
-            SingleSource.DOKill();
+            _singleSource.DOKill();
 
             if (isGradual)
             {
-                SingleSource.DOFade(0, 2).OnComplete(() =>
+                _singleSource.DOFade(0, 2).OnComplete(() =>
                 {
-                    SingleSource.Pause();
-                    SingleSource.volume = SingleVolume;
+                    _singleSource.Pause();
+                    _singleSource.volume = SingleVolume;
                 });
             }
             else
             {
-                SingleSource.Pause();
-                SingleSource.volume = SingleVolume;
+                _singleSource.Pause();
+                _singleSource.volume = SingleVolume;
             }
         }
         /// <summary>
@@ -474,18 +487,18 @@ namespace HT.Framework
         /// <param name="isGradual">是否渐进式</param>
         public void ResumeSingleSound(bool isGradual = true)
         {
-            SingleSource.DOKill();
+            _singleSource.DOKill();
 
             if (isGradual)
             {
-                SingleSource.volume = 0;
-                SingleSource.UnPause();
-                SingleSource.DOFade(SingleVolume, 2);
+                _singleSource.volume = 0;
+                _singleSource.UnPause();
+                _singleSource.DOFade(SingleVolume, 2);
             }
             else
             {
-                SingleSource.UnPause();
-                SingleSource.volume = SingleVolume;
+                _singleSource.UnPause();
+                _singleSource.volume = SingleVolume;
             }
         }
         /// <summary>
@@ -493,11 +506,11 @@ namespace HT.Framework
         /// </summary>
         public void StopSingleSound()
         {
-            SingleSource.DOKill();
+            _singleSource.DOKill();
 
-            if (SingleSource.isPlaying)
+            if (_singleSource.isPlaying)
             {
-                SingleSource.Stop();
+                _singleSource.Stop();
             }
         }
 
@@ -527,13 +540,13 @@ namespace HT.Framework
             if (clip == null)
                 return;
 
-            for (int i = 0; i < MultipleSources.Count; i++)
+            for (int i = 0; i < _multipleSources.Count; i++)
             {
-                if (MultipleSources[i].isPlaying)
+                if (_multipleSources[i].isPlaying)
                 {
-                    if (MultipleSources[i].clip == clip)
+                    if (_multipleSources[i].clip == clip)
                     {
-                        MultipleSources[i].Stop();
+                        _multipleSources[i].Stop();
                     }
                 }
             }
@@ -543,11 +556,11 @@ namespace HT.Framework
         /// </summary>
         public void StopAllMultipleSound()
         {
-            for (int i = 0; i < MultipleSources.Count; i++)
+            for (int i = 0; i < _multipleSources.Count; i++)
             {
-                if (MultipleSources[i].isPlaying)
+                if (_multipleSources[i].isPlaying)
                 {
-                    MultipleSources[i].Stop();
+                    _multipleSources[i].Stop();
                 }
             }
         }
@@ -556,12 +569,12 @@ namespace HT.Framework
         /// </summary>
         public void ClearIdleMultipleAudioSource()
         {
-            for (int i = 0; i < MultipleSources.Count; i++)
+            for (int i = 0; i < _multipleSources.Count; i++)
             {
-                if (!MultipleSources[i].isPlaying)
+                if (!_multipleSources[i].isPlaying)
                 {
-                    AudioSource audio = MultipleSources[i];
-                    MultipleSources.RemoveAt(i);
+                    AudioSource audio = _multipleSources[i];
+                    _multipleSources.RemoveAt(i);
                     i -= 1;
                     Main.Kill(audio.gameObject);
                 }
@@ -580,9 +593,9 @@ namespace HT.Framework
             if (attachTarget == null || clip == null)
                 return;
 
-            if (WorldSources.ContainsKey(attachTarget))
+            if (_worldSources.ContainsKey(attachTarget))
             {
-                AudioSource audio = WorldSources[attachTarget];
+                AudioSource audio = _worldSources[attachTarget];
                 audio.DOKill();
                 if (audio.isPlaying)
                 {
@@ -597,7 +610,7 @@ namespace HT.Framework
             else
             {
                 AudioSource audio = AudioToolkit.AttachAudioSource(attachTarget, WorldPriority, WorldVolume, 1, 1, Mute);
-                WorldSources.Add(attachTarget, audio);
+                _worldSources.Add(attachTarget, audio);
                 audio.clip = clip;
                 audio.loop = isLoop;
                 audio.pitch = speed;
@@ -614,9 +627,9 @@ namespace HT.Framework
             if (attachTarget == null)
                 return;
 
-            if (WorldSources.ContainsKey(attachTarget))
+            if (_worldSources.ContainsKey(attachTarget))
             {
-                AudioSource audio = WorldSources[attachTarget];
+                AudioSource audio = _worldSources[attachTarget];
                 audio.DOKill();
                 if (isGradual)
                 {
@@ -643,9 +656,9 @@ namespace HT.Framework
             if (attachTarget == null)
                 return;
 
-            if (WorldSources.ContainsKey(attachTarget))
+            if (_worldSources.ContainsKey(attachTarget))
             {
-                AudioSource audio = WorldSources[attachTarget];
+                AudioSource audio = _worldSources[attachTarget];
                 audio.DOKill();
                 if (isGradual)
                 {
@@ -669,12 +682,12 @@ namespace HT.Framework
             if (attachTarget == null)
                 return;
 
-            if (WorldSources.ContainsKey(attachTarget))
+            if (_worldSources.ContainsKey(attachTarget))
             {
-                WorldSources[attachTarget].DOKill();
-                if (WorldSources[attachTarget].isPlaying)
+                _worldSources[attachTarget].DOKill();
+                if (_worldSources[attachTarget].isPlaying)
                 {
-                    WorldSources[attachTarget].Stop();
+                    _worldSources[attachTarget].Stop();
                 }
             }
         }
@@ -683,7 +696,7 @@ namespace HT.Framework
         /// </summary>
         public void StopAllWorldSound()
         {
-            foreach (var audio in WorldSources)
+            foreach (var audio in _worldSources)
             {
                 audio.Value.DOKill();
                 if (audio.Value.isPlaying)
@@ -698,7 +711,7 @@ namespace HT.Framework
         public void ClearIdleWorldAudioSource()
         {
             HashSet<GameObject> removeSet = new HashSet<GameObject>();
-            foreach (var audio in WorldSources)
+            foreach (var audio in _worldSources)
             {
                 if (!audio.Value.isPlaying)
                 {
@@ -708,7 +721,7 @@ namespace HT.Framework
             }
             foreach (var item in removeSet)
             {
-                WorldSources.Remove(item);
+                _worldSources.Remove(item);
             }
         }
 
@@ -722,7 +735,7 @@ namespace HT.Framework
             if (clip == null)
                 return;
 
-            OneShootSource.PlayOneShot(clip, volumeScale);
+            _oneShootSource.PlayOneShot(clip, volumeScale);
         }
 
         /// <summary>
@@ -731,16 +744,16 @@ namespace HT.Framework
         /// <returns>闲置中的多通道音源</returns>
         private AudioSource ExtractIdleMultipleAudioSource()
         {
-            for (int i = 0; i < MultipleSources.Count; i++)
+            for (int i = 0; i < _multipleSources.Count; i++)
             {
-                if (!MultipleSources[i].isPlaying)
+                if (!_multipleSources[i].isPlaying)
                 {
-                    return MultipleSources[i];
+                    return _multipleSources[i];
                 }
             }
 
-            AudioSource audio = AudioToolkit.CreateAudioSource("MultipleAudio", MultiplePriority, MultipleVolume, 1, 0, Mute, _module.transform);
-            MultipleSources.Add(audio);
+            AudioSource audio = AudioToolkit.CreateAudioSource("MultipleAudio", MultiplePriority, MultipleVolume, 1, 0, Mute, _audioSourceRoot.transform);
+            _multipleSources.Add(audio);
             return audio;
         }
     }

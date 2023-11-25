@@ -5,13 +5,13 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// 切面代理追踪器
+    /// 切面代理器
     /// </summary>
     [InternalModule(HTFrameworkModule.AspectTrack)]
     public sealed class AspectTrackManager : InternalModuleBase<IAspectTrackHelper>
     {
         /// <summary>
-        /// 是否启用切面追踪【请勿在代码中修改】
+        /// 是否启用切面代理【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal bool IsEnableAspectTrack = false;
         /// <summary>
@@ -63,6 +63,20 @@ namespace HT.Framework
         public void ClearInterceptCondition()
         {
             _helper.ClearInterceptCondition();
+        }
+        /// <summary>
+        /// 是否拦截一个方法的调用
+        /// </summary>
+        /// <param name="methodBase">方法</param>
+        /// <param name="args">参数</param>
+        /// <returns>是否被拦截</returns>
+        public bool IsIntercept(MethodBase methodBase, object[] args)
+        {
+            if (IsEnableIntercept)
+            {
+                return _helper.IsIntercept(methodBase, args);
+            }
+            return false;
         }
 
         /// <summary>

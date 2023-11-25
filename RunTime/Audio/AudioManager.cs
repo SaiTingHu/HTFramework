@@ -228,6 +228,26 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 当前的背景音乐剪辑
+        /// </summary>
+        public AudioClip BackgroundMusicClip
+        {
+            get
+            {
+                return _helper.BackgroundMusicClip;
+            }
+        }
+        /// <summary>
+        /// 当前的单通道音效剪辑
+        /// </summary>
+        public AudioClip SingleSoundClip
+        {
+            get
+            {
+                return _helper.SingleSoundClip;
+            }
+        }
+        /// <summary>
         /// 单通道音效播放结束事件，参数为播放结束时的音频剪辑名称
         /// </summary>
         public event HTFAction<string> SingleSoundEndOfPlayEvent;
@@ -236,6 +256,7 @@ namespace HT.Framework
         {
             base.OnInit();
 
+            _helper.SetAudioSourceRoot(transform);
             _helper.SingleSoundEndOfPlayEvent += (value) =>
             {
                 SingleSoundEndOfPlayEvent?.Invoke(value);
