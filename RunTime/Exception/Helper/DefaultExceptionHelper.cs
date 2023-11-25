@@ -10,12 +10,12 @@ namespace HT.Framework
     /// <summary>
     /// 默认的异常处理器助手
     /// </summary>
-    public sealed class DefaultExceptionHelper : IExceptionHelper
+    internal sealed class DefaultExceptionHelper : IExceptionHelper
     {
         /// <summary>
         /// 异常处理器
         /// </summary>
-        private ExceptionManager _module;
+        private ExceptionManager _exceptionManager;
         /// <summary>
         /// 异常日志Builder
         /// </summary>
@@ -34,7 +34,7 @@ namespace HT.Framework
         private float _reportBufferTimer = 0;
 
         /// <summary>
-        /// 异常处理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>
@@ -47,27 +47,27 @@ namespace HT.Framework
         /// </summary>
         public void OnInit()
         {
-            _module = Module as ExceptionManager;
+            _exceptionManager = Module as ExceptionManager;
 
 #if UNITY_EDITOR
-            _module.IsHandler = false;
+            _exceptionManager.IsHandler = false;
 #endif
 
 #if UNITY_STANDALONE_WIN
-            _module.FeedbackProgramPath = PathToolkit.ProjectPath + _module.FeedbackProgramPath;
+            _exceptionManager.FeedbackProgramPath = PathToolkit.ProjectPath + _exceptionManager.FeedbackProgramPath;
             _logPath = PathToolkit.ProjectPath + "Logs";
             if (!Directory.Exists(_logPath))
             {
                 Directory.CreateDirectory(_logPath);
             }
 #endif
-            if (_module.IsHandler)
+            if (_exceptionManager.IsHandler)
             {
                 Application.logMessageReceived += Handler;
 
-                if (_module.IsEnableMailReport)
+                if (_exceptionManager.IsEnableMailReport)
                 {
-                    _sender = new EmailSender(_module.SendMailbox, _module.SendMailboxPassword, _module.ReceiveMailbox, _module.Host, _module.Port);
+                    _sender = new EmailSender(_exceptionManager.SendMailbox, _exceptionManager.SendMailboxPassword, _exceptionManager.ReceiveMailbox, _exceptionManager.Host, _exceptionManager.Port);
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace HT.Framework
         /// </summary>
         public void OnTerminate()
         {
-            if (_module.IsHandler)
+            if (_exceptionManager.IsHandler)
             {
                 Application.logMessageReceived -= Handler;
 
@@ -127,12 +127,11 @@ namespace HT.Framework
         public void ReportMail(string subject, string body)
         {
             if (_reportBufferTimer > 0)
-            {
                 return;
-            }
-            _reportBufferTimer = _module.ReportBufferTime;
 
-            if (_module.IsHandler)
+            _reportBufferTimer = _exceptionManager.ReportBufferTime;
+
+            if (_exceptionManager.IsHandler)
             {
                 if (_sender != null)
                 {
@@ -166,12 +165,12 @@ namespace HT.Framework
                 string logPath = $"{_logPath}/{DateTime.Now.ToString("yyyy_MM_dd HH_mm_ss_fff")}.log";
                 File.AppendAllText(logPath, _logInfoBuilder.ToString(), Encoding.UTF8);
 
-                if (_module.IsEnableFeedback)
+                if (_exceptionManager.IsEnableFeedback)
                 {
-                    if (File.Exists(_module.FeedbackProgramPath))
+                    if (File.Exists(_exceptionManager.FeedbackProgramPath))
                     {
                         ProcessStartInfo process = new ProcessStartInfo();
-                        process.FileName = _module.FeedbackProgramPath;
+                        process.FileName = _exceptionManager.FeedbackProgramPath;
                         process.Arguments = $"\"{logPath}\"";
                         Process pro = new Process();
                         pro.StartInfo = process;
@@ -179,12 +178,12 @@ namespace HT.Framework
                     }
                     else
                     {
-                        File.AppendAllText(logPath, $"[feedback]:Doesn't find feedback program!path: {_module.FeedbackProgramPath}\r\n", Encoding.UTF8);
+                        File.AppendAllText(logPath, $"[feedback]:Doesn't find feedback program!path: {_exceptionManager.FeedbackProgramPath}\r\n", Encoding.UTF8);
                     }
                     Application.Quit();
                 }
 #endif
-                if (_module.IsEnableMailReport)
+                if (_exceptionManager.IsEnableMailReport)
                 {
                     ReportMail($"{Application.productName}.Exception.{DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss")}", _logInfoBuilder.ToString());
                 }

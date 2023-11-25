@@ -6,10 +6,10 @@ namespace HT.Framework
     /// <summary>
     /// 默认的FSM管理器助手
     /// </summary>
-    public sealed class DefaultFSMHelper : IFSMHelper
+    internal sealed class DefaultFSMHelper : IFSMHelper
     {
         /// <summary>
-        /// FSM管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

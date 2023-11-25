@@ -30,8 +30,8 @@ namespace HT.Framework
         public void Reset()
         {
             Type = LogType.Error;
-            LogString = "";
-            StackTrace = "";
+            LogString = null;
+            StackTrace = null;
         }
     }
 }

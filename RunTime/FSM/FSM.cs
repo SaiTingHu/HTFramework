@@ -260,9 +260,7 @@ namespace HT.Framework
             if (_stateInstances.ContainsKey(type))
             {
                 if (CurrentState == _stateInstances[type])
-                {
                     return;
-                }
 
                 FiniteStateBase lastState = CurrentState;
                 FiniteStateBase nextState = _stateInstances[type];

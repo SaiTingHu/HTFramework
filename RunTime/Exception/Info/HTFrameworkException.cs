@@ -10,14 +10,14 @@ namespace HT.Framework
         /// <summary>
         /// 异常模块
         /// </summary>
-        public HTFrameworkModule Module;
+        public HTFrameworkModule Module { get; private set; }
 
         /// <summary>
         /// HTFramework框架异常
         /// </summary>
         /// <param name="module">异常发起的模块</param>
         /// <param name="message">异常信息</param>
-        public HTFrameworkException(HTFrameworkModule module, string message) : base("[" + module.ToString() + "]" + message)
+        public HTFrameworkException(HTFrameworkModule module, string message) : base($"[{module}]{message}")
         {
             Module = module;
         }
