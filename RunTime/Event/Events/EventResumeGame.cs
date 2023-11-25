@@ -1,7 +1,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 游戏恢复事件（二型事件）
+    /// 游戏恢复事件
     /// </summary>
     public sealed class EventResumeGame : EventHandlerBase
     {

@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 任务点开始事件（三型事件）
+    /// 任务点开始事件
     /// </summary>
     public sealed class EventTaskPointStart : EventHandlerBase
     {

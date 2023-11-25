@@ -1,7 +1,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 任意UI打开事件（三型事件）
+    /// 任意UI打开事件
     /// </summary>
     public sealed class EventUIOpened : EventHandlerBase
     {

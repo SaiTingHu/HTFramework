@@ -1,7 +1,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 游戏暂停事件（二型事件）
+    /// 游戏暂停事件
     /// </summary>
     public sealed class EventPauseGame : EventHandlerBase
     {

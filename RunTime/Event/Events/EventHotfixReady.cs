@@ -1,7 +1,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 热更新准备就绪事件（二型事件）
+    /// 热更新准备就绪事件
     /// </summary>
     public sealed class EventHotfixReady : EventHandlerBase
     {

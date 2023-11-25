@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 任务流程结束事件【调用 TaskMaster.End 结束整个流程或任务执行完毕后触发】（二型事件）
+    /// 任务流程结束事件【调用 TaskMaster.End 结束整个流程或任务执行完毕后触发】
     /// </summary>
     public sealed class EventTaskEnd : EventHandlerBase
     {

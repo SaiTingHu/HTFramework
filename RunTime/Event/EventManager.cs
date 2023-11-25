@@ -9,43 +9,7 @@ namespace HT.Framework
     public sealed class EventManager : InternalModuleBase<IEventHelper>
     {
         /// <summary>
-        /// 订阅一型事件
-        /// </summary>
-        /// <typeparam name="T">事件处理类</typeparam>
-        /// <param name="handler">事件处理者</param>
-        public void Subscribe<T>(HTFAction<object, EventHandlerBase> handler) where T : EventHandlerBase
-        {
-            _helper.Subscribe(typeof(T), handler);
-        }
-        /// <summary>
-        /// 订阅一型事件
-        /// </summary>
-        /// <param name="type">事件处理类</param>
-        /// <param name="handler">事件处理者</param>
-        public void Subscribe(Type type, HTFAction<object, EventHandlerBase> handler)
-        {
-            _helper.Subscribe(type, handler);
-        }
-        /// <summary>
-        /// 订阅二型事件
-        /// </summary>
-        /// <typeparam name="T">事件处理类</typeparam>
-        /// <param name="handler">事件处理者</param>
-        public void Subscribe<T>(HTFAction handler) where T : EventHandlerBase
-        {
-            _helper.Subscribe(typeof(T), handler);
-        }
-        /// <summary>
-        /// 订阅二型事件
-        /// </summary>
-        /// <param name="type">事件处理类</param>
-        /// <param name="handler">事件处理者</param>
-        public void Subscribe(Type type, HTFAction handler)
-        {
-            _helper.Subscribe(type, handler);
-        }
-        /// <summary>
-        /// 订阅三型事件
+        /// 订阅事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -54,7 +18,7 @@ namespace HT.Framework
             _helper.Subscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 订阅三型事件
+        /// 订阅事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -63,43 +27,7 @@ namespace HT.Framework
             _helper.Subscribe(type, handler);
         }
         /// <summary>
-        /// 取消订阅一型事件
-        /// </summary>
-        /// <typeparam name="T">事件处理类</typeparam>
-        /// <param name="handler">事件处理者</param>
-        public void Unsubscribe<T>(HTFAction<object, EventHandlerBase> handler) where T : EventHandlerBase
-        {
-            _helper.Unsubscribe(typeof(T), handler);
-        }
-        /// <summary>
-        /// 取消订阅一型事件
-        /// </summary>
-        /// <param name="type">事件处理类</param>
-        /// <param name="handler">事件处理者</param>
-        public void Unsubscribe(Type type, HTFAction<object, EventHandlerBase> handler)
-        {
-            _helper.Unsubscribe(type, handler);
-        }
-        /// <summary>
-        /// 取消订阅二型事件
-        /// </summary>
-        /// <typeparam name="T">事件处理类</typeparam>
-        /// <param name="handler">事件处理者</param>
-        public void Unsubscribe<T>(HTFAction handler) where T : EventHandlerBase
-        {
-            _helper.Unsubscribe(typeof(T), handler);
-        }
-        /// <summary>
-        /// 取消订阅二型事件
-        /// </summary>
-        /// <param name="type">事件处理类</param>
-        /// <param name="handler">事件处理者</param>
-        public void Unsubscribe(Type type, HTFAction handler)
-        {
-            _helper.Unsubscribe(type, handler);
-        }
-        /// <summary>
-        /// 取消订阅三型事件
+        /// 取消订阅事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         /// <param name="handler">事件处理者</param>
@@ -108,7 +36,7 @@ namespace HT.Framework
             _helper.Unsubscribe(typeof(T), handler);
         }
         /// <summary>
-        /// 取消订阅三型事件
+        /// 取消订阅事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         /// <param name="handler">事件处理者</param>
@@ -132,18 +60,8 @@ namespace HT.Framework
         {
             _helper.ClearSubscribe(type);
         }
-
         /// <summary>
-        /// 抛出一型事件（抛出事件时，请使用引用池生成事件处理者实例）
-        /// </summary>
-        /// <param name="sender">事件发送者</param>
-        /// <param name="handler">事件处理类实例</param>
-        public void Throw(object sender, EventHandlerBase handler)
-        {
-            _helper.Throw(sender, handler);
-        }
-        /// <summary>
-        /// 抛出二型事件
+        /// 抛出事件
         /// </summary>
         /// <typeparam name="T">事件处理类</typeparam>
         public void Throw<T>() where T : EventHandlerBase
@@ -151,7 +69,7 @@ namespace HT.Framework
             _helper.Throw(typeof(T));
         }
         /// <summary>
-        /// 抛出二型事件
+        /// 抛出事件
         /// </summary>
         /// <param name="type">事件处理类</param>
         public void Throw(Type type)
@@ -159,7 +77,7 @@ namespace HT.Framework
             _helper.Throw(type);
         }
         /// <summary>
-        /// 抛出三型事件（抛出事件时，请使用引用池生成事件处理者实例）
+        /// 抛出事件（抛出事件时，请使用引用池生成事件处理者实例）
         /// </summary>
         /// <param name="handler">事件处理类实例</param>
         public void Throw(EventHandlerBase handler)

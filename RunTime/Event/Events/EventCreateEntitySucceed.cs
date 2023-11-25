@@ -1,7 +1,7 @@
 namespace HT.Framework
 {
     /// <summary>
-    /// 创建实体成功事件（三型事件）
+    /// 创建实体成功事件
     /// </summary>
     public sealed class EventCreateEntitySucceed : EventHandlerBase
     {
