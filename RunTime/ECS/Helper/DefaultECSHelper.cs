@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的ECS管理器助手
     /// </summary>
-    public sealed class DefaultECSHelper : IECSHelper
+    internal sealed class DefaultECSHelper : IECSHelper
     {
         /// <summary>
         /// 当前ECS环境是否是脏的
@@ -14,7 +14,7 @@ namespace HT.Framework
         private bool _isDirty = false;
 
         /// <summary>
-        /// ECS管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>
@@ -148,7 +148,7 @@ namespace HT.Framework
         /// <param name="entity">实体</param>
         public void AddEntity(ECS_Entity entity)
         {
-            if (entity.ID == "")
+            if (string.IsNullOrEmpty(entity.ID))
             {
                 Log.Warning($"ECS：发现ID为空的实体 [{entity.Name}]，这是不被允许的！");
                 return;

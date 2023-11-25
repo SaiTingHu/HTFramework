@@ -8,7 +8,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的实体管理器助手
     /// </summary>
-    public sealed class DefaultEntityHelper : IEntityHelper
+    internal sealed class DefaultEntityHelper : IEntityHelper
     {
         /// <summary>
         /// 当前定义的实体与对象对应关系
@@ -28,7 +28,7 @@ namespace HT.Framework
         private Transform _entityRoot;
 
         /// <summary>
-        /// 实体管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>
@@ -297,9 +297,7 @@ namespace HT.Framework
                 for (int i = 0; i < Entities[type].Count; i++)
                 {
                     if (Entities[type][i].IsShowed)
-                    {
                         continue;
-                    }
 
                     Entities[type][i].Entity.SetActive(true);
                     Entities[type][i].OnShow();
@@ -321,9 +319,7 @@ namespace HT.Framework
                 for (int i = 0; i < Entities[type].Count; i++)
                 {
                     if (!Entities[type][i].IsShowed)
-                    {
                         continue;
-                    }
 
                     Entities[type][i].Entity.SetActive(false);
                     Entities[type][i].OnHide();

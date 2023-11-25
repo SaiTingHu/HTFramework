@@ -39,7 +39,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否启用自动化，这将造成反射的性能消耗
         /// </summary>
-        protected virtual bool IsAutomate => true;
+        protected virtual bool IsAutomate => false;
 
         /// <summary>
         /// 初始化

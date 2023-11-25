@@ -26,7 +26,7 @@ namespace HT.Framework
             ECS_Entity entity = target.GetComponent<ECS_Entity>();
             if (entity == null) entity = target.AddComponent<ECS_Entity>();
             entity.Name = entityName;
-            if (entity.ID == "") entity.GenerateID();
+            if (string.IsNullOrEmpty(entity.ID)) entity.GenerateID();
             return entity;
         }
 

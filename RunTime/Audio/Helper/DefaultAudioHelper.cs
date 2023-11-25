@@ -29,10 +29,9 @@ namespace HT.Framework
         private bool _singlePlayDetector = false;
 
         /// <summary>
-        /// 音频管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
-        
         /// <summary>
         /// 静音
         /// </summary>

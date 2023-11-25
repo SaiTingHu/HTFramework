@@ -7,10 +7,10 @@ namespace HT.Framework
     /// <summary>
     /// 默认的数据集管理器助手
     /// </summary>
-    public sealed class DefaultDataSetHelper : IDataSetHelper
+    internal sealed class DefaultDataSetHelper : IDataSetHelper
     {
         /// <summary>
-        /// 数据集管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

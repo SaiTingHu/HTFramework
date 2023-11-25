@@ -6,9 +6,9 @@ namespace HT.Framework
     /// <summary>
     /// 默认的调试管理器助手
     /// </summary>
-    public sealed class DefaultDebugHelper : IDebugHelper
+    internal sealed class DefaultDebugHelper : IDebugHelper
     {
-        private DebugManager _module;
+        private DebugManager _debugManager;
         private Debugger _debugger;
         private bool _isEnableDebugger = false;
         private string _monitorName;
@@ -17,7 +17,7 @@ namespace HT.Framework
         private int _monitorBeginGC;
 
         /// <summary>
-        /// 调试管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>
@@ -27,7 +27,7 @@ namespace HT.Framework
         {
             get
             {
-                if (_module.IsEnableDebugger && _debugger != null)
+                if (_debugManager.IsEnableDebugger && _debugger != null)
                 {
                     return _debugger.FPS;
                 }
@@ -43,7 +43,7 @@ namespace HT.Framework
         /// </summary>
         public void OnInit()
         {
-            _module = Module as DebugManager;
+            _debugManager = Module as DebugManager;
         }
         /// <summary>
         /// 助手准备工作
@@ -60,9 +60,9 @@ namespace HT.Framework
             if (_debugger != null)
             {
                 _debugger.RefreshFPS();
-                if (_isEnableDebugger != _module.IsEnableDebugger)
+                if (_isEnableDebugger != _debugManager.IsEnableDebugger)
                 {
-                    _isEnableDebugger = _module.IsEnableDebugger;
+                    _isEnableDebugger = _debugManager.IsEnableDebugger;
                     _debugger.RefreshMaskState();
                 }
             }
@@ -100,7 +100,7 @@ namespace HT.Framework
         /// <param name="isChinese">是否切换为中文</param>
         public void OnInitDebugger(GUISkin debuggerSkin, bool isChinese)
         {
-            if (_module.IsEnableDebugger)
+            if (_debugManager.IsEnableDebugger)
             {
                 _debugger = new Debugger();
                 _debugger.OnInit(debuggerSkin, isChinese);
@@ -111,7 +111,7 @@ namespace HT.Framework
         /// </summary>
         public void OnDebuggerGUI()
         {
-            if (_module.IsEnableDebugger)
+            if (_debugManager.IsEnableDebugger)
             {
                 if (_debugger != null)
                 {

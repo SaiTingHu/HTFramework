@@ -9,9 +9,10 @@ namespace HT.Framework
     internal sealed class DefaultAspectTrackHelper : IAspectTrackHelper
     {
         /// <summary>
-        /// 切面代理追踪器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
+
 #if !DISABLE_ASPECTTRACK
         private const string VOIDSIGN = "Void";
 

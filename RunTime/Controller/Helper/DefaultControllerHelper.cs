@@ -16,7 +16,7 @@ namespace HT.Framework
         private HighlightingEffect _highlightingEffect;
 
         /// <summary>
-        /// 操作控制器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

@@ -10,7 +10,7 @@ namespace HT.Framework
     internal sealed class DefaultCoroutinerHelper : ICoroutinerHelper
     {
         /// <summary>
-        /// 协程调度器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

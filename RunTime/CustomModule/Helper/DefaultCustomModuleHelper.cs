@@ -10,7 +10,7 @@ namespace HT.Framework
     internal sealed class DefaultCustomModuleHelper : ICustomModuleHelper
     {
         /// <summary>
-        /// 自定义模块管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         
