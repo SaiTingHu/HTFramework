@@ -10,12 +10,12 @@ namespace HT.Framework
     /// <summary>
     /// 默认的Web请求管理器助手
     /// </summary>
-    public sealed class DefaultWebRequestHelper : IWebRequestHelper
+    internal sealed class DefaultWebRequestHelper : IWebRequestHelper
     {
         private WebRequestManager _module;
 
         /// <summary>
-        /// Web请求管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

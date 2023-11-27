@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的引用池管理器助手
     /// </summary>
-    public sealed class DefaultReferencePoolHelper : IReferencePoolHelper
+    internal sealed class DefaultReferencePoolHelper : IReferencePoolHelper
     {
         /// <summary>
         /// 对象池默认上限
@@ -14,7 +14,7 @@ namespace HT.Framework
         private int _limit;
 
         /// <summary>
-        /// 引用池管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

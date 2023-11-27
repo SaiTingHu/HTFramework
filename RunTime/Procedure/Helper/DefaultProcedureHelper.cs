@@ -7,13 +7,13 @@ namespace HT.Framework
     /// <summary>
     /// 默认的流程管理器助手
     /// </summary>
-    public sealed class DefaultProcedureHelper : IProcedureHelper
+    internal sealed class DefaultProcedureHelper : IProcedureHelper
     {
         private float _timer = 0;
         private string _defaultProcedure;
 
         /// <summary>
-        /// 流程管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>
@@ -179,9 +179,7 @@ namespace HT.Framework
             if (Procedures.ContainsKey(type))
             {
                 if (CurrentProcedure == Procedures[type])
-                {
                     return;
-                }
 
                 ProcedureBase lastProcedure = CurrentProcedure;
                 ProcedureBase nextProcedure = Procedures[type];

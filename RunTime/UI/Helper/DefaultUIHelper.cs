@@ -8,7 +8,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的UI管理器助手
     /// </summary>
-    public sealed class DefaultUIHelper : IUIHelper
+    internal sealed class DefaultUIHelper : IUIHelper
     {
         //UI管理器
         private UIManager _module;
@@ -36,7 +36,7 @@ namespace HT.Framework
         private GameObject _maskPanel;
 
         /// <summary>
-        /// UI管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

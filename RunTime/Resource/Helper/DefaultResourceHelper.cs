@@ -14,7 +14,7 @@ namespace HT.Framework
     /// <summary>
     /// 默认的资源管理器助手
     /// </summary>
-    public sealed class DefaultResourceHelper : IResourceHelper
+    internal sealed class DefaultResourceHelper : IResourceHelper
     {
         /// <summary>
         /// 单线下载中
@@ -26,7 +26,7 @@ namespace HT.Framework
         private WaitUntil _loadWait;
 
         /// <summary>
-        /// 资源管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

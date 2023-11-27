@@ -112,7 +112,7 @@ namespace HT.Framework
                 {
                     Rect subrect = rect;
                     subrect.Set(rect.x, rect.y + 2, rect.width, 16);
-                    GUI.Label(subrect, Target.ActivatedProcedures[index]);
+                    GUI.Label(subrect, $"{index + 1}.{Target.ActivatedProcedures[index]}");
 
                     int size = 20;
                     if (Target.DefaultProcedure == Target.ActivatedProcedures[index])

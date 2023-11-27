@@ -12,11 +12,11 @@ namespace HT.Framework
         /// 所有引用池
         /// </summary>
         Dictionary<Type, ReferenceSpawnPool> SpawnPools { get; }
-        
+
         /// <summary>
         /// 获取引用池中引用数量
         /// </summary>
-        /// <typeparam name="T">引用类型</typeparam>
+        /// <param name="type">引用类型</param>
         /// <returns>引用数量</returns>
         int GetPoolCount(Type type);
         /// <summary>
