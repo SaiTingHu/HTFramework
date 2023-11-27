@@ -7,14 +7,14 @@ namespace HT.Framework
     /// <summary>
     /// 默认的输入管理器助手
     /// </summary>
-    public sealed class DefaultInputHelper : IInputHelper
+    internal sealed class DefaultInputHelper : IInputHelper
     {
         private bool _isEnableInputDevice = true;
         private Dictionary<string, VirtualAxis> _virtualAxes = new Dictionary<string, VirtualAxis>();
         private Dictionary<string, VirtualButton> _virtualButtons = new Dictionary<string, VirtualButton>();
 
         /// <summary>
-        /// 输入管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>

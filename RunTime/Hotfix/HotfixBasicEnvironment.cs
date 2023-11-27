@@ -89,24 +89,23 @@ namespace HT.Framework
         /// <typeparam name="T">流程类型</typeparam>
         public void SwitchProcedure<T>() where T : HotfixProcedureBase
         {
-            if (_procedureInstances.ContainsKey(typeof(T)))
+            Type type = typeof(T);
+            if (_procedureInstances.ContainsKey(type))
             {
-                if (_currentProcedure == _procedureInstances[typeof(T)])
-                {
+                if (_currentProcedure == _procedureInstances[type])
                     return;
-                }
 
                 if (_currentProcedure != null)
                 {
                     _currentProcedure.OnLeave();
                 }
 
-                _currentProcedure = _procedureInstances[typeof(T)];
+                _currentProcedure = _procedureInstances[type];
                 _currentProcedure.OnEnter();
             }
             else
             {
-                throw new HTFrameworkException(HTFrameworkModule.Hotfix, $"切换热更新流程失败：不存在流程 {typeof(T).Name} 或者流程未激活！");
+                throw new HTFrameworkException(HTFrameworkModule.Hotfix, $"切换热更新流程失败：不存在流程 {type.Name} 或者流程未激活！");
             }
         }
     }
