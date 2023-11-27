@@ -24,7 +24,7 @@ namespace HT.Framework
         /// <param name="limit">对象池上限，等于0时，表示使用默认值</param>
         public void RegisterSpawnPool(string name, GameObject spawnTem, HTFAction<GameObject> onSpawn = null, HTFAction<GameObject> onDespawn = null, int limit = 0)
         {
-            _helper.RegisterSpawnPool(name, spawnTem, onSpawn, onDespawn, limit);
+            _helper.RegisterSpawnPool(name, spawnTem, onSpawn, onDespawn, limit <= 0 ? Limit : limit);
         }
         /// <summary>
         /// 是否存在指定名称的对象池

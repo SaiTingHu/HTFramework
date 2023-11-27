@@ -61,6 +61,9 @@ namespace HT.Framework
         /// <param name="obj">对象</param>
         public void Despawn(GameObject obj)
         {
+            if (obj == null)
+                return;
+
             if (_objectQueue.Count >= _limit)
             {
                 _onDespawn?.Invoke(obj);

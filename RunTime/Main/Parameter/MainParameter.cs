@@ -11,7 +11,7 @@ namespace HT.Framework
     {
         public ParameterType Type = ParameterType.String;
         public string Name = "参数名称";
-        public string StringValue = "";
+        public string StringValue = null;
         public int IntegerValue = 0;
         public float FloatValue = 0;
         public bool BooleanValue = false;

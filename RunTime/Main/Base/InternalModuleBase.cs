@@ -19,6 +19,7 @@ namespace HT.Framework
         /// 模块的优先级（越小越优先）
         /// </summary>
         public virtual int Priority { get; } = 0;
+
         /// <summary>
         /// 内置模块助手
         /// </summary>

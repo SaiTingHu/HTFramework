@@ -888,7 +888,7 @@ namespace HT.Framework
         public string GetStringParameter(string parameterName)
         {
             MainParameter mainParameter = GetParameter(parameterName, MainParameter.ParameterType.String);
-            return (mainParameter != null) ? mainParameter.StringValue : "";
+            return (mainParameter != null) ? mainParameter.StringValue : null;
         }
         /// <summary>
         /// 通过名称获取Integer参数

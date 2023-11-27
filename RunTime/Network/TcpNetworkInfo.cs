@@ -33,7 +33,7 @@ namespace HT.Framework
             {
                 for (int i = 0; i < Messages.Count; i++)
                 {
-                    if (string.IsNullOrEmpty(Messages[i]) || Messages[i] == "")
+                    if (string.IsNullOrEmpty(Messages[i]))
                     {
                         Messages.RemoveAt(i);
                         i -= 1;

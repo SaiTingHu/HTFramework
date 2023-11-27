@@ -7,10 +7,10 @@ namespace HT.Framework
     /// <summary>
     /// 默认的网络管理器助手
     /// </summary>
-    public sealed class DefaultNetworkHelper : INetworkHelper
+    internal sealed class DefaultNetworkHelper : INetworkHelper
     {
         /// <summary>
-        /// 网络管理器
+        /// 所属的内置模块
         /// </summary>
         public IModuleManager Module { get; set; }
         /// <summary>
@@ -161,9 +161,7 @@ namespace HT.Framework
                 if (ProtocolChannels[channelType].IsNeedConnect)
                 {
                     if (ProtocolChannels[channelType].IsConnect)
-                    {
                         return;
-                    }
 
                     BeginConnectServerEvent?.Invoke(ProtocolChannels[channelType]);
 
@@ -216,9 +214,7 @@ namespace HT.Framework
                 if (ProtocolChannels[channelType].IsNeedConnect)
                 {
                     if (!ProtocolChannels[channelType].IsConnect)
-                    {
                         return;
-                    }
 
                     if (ProtocolChannels[channelType].IsDisconnectRequest(message))
                     {

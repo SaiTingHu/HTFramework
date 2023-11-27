@@ -434,7 +434,7 @@ namespace HT.Framework
         /// <summary>
         /// 制作一个ObjectField
         /// </summary>
-        protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UnityEngine.Object
+        protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UObject
         {
             EditorGUI.BeginChangeCheck();
             T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects, options) as T;
