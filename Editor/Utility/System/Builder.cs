@@ -51,7 +51,7 @@ namespace HT.Framework
         [PostProcessBuild(0)]
         private static void OnPostProcessBuild(BuildTarget target, string pathToBuildProject)
         {
-            Log.Info($"项目发布成功！发布平台：{target}！发布路径：{pathToBuildProject}！");
+            Log.Info($"项目发布成功！发布平台：{target}！发布路径：{pathToBuildProject.Hyperlink("file:///" + pathToBuildProject)}！");
 
             PostProcessBuildEvent?.Invoke(target, pathToBuildProject);
         }
