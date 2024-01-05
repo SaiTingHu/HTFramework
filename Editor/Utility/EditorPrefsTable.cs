@@ -145,11 +145,6 @@ namespace HT.Framework
         /// TaskEditorWindow配置：是否显示任务点全名
         /// </summary>
         public static readonly string TaskEditorWindow_ShowPointFullName = "HT.Framework.TaskEditorWindow.ShowPointFullName";
-
-        /// <summary>
-        /// Collider配置：是否绘制碰撞盒范围
-        /// </summary>
-        public static readonly string Collider_ShowBounds = "HT.Framework.Collider.ShowBounds";
         #endregion
     }
 }

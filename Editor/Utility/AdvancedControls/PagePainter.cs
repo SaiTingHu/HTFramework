@@ -23,6 +23,10 @@ namespace HT.Framework
         /// 所有分页的顺序
         /// </summary>
         private List<string> _pagesOrder = new List<string>();
+        /// <summary>
+        /// 记录当前选中分页的key
+        /// </summary>
+        private string _recordPageKey;
 
         /// <summary>
         /// 当前的宿主
@@ -40,7 +44,7 @@ namespace HT.Framework
             set
             {
                 _currentPage = value;
-                EditorPrefs.SetString(CurrentHost.GetType().FullName, _currentPage);
+                EditorPrefs.SetString(_recordPageKey, _currentPage);
             }
         }
         /// <summary>
@@ -55,7 +59,8 @@ namespace HT.Framework
         public PagePainter(Editor host)
         {
             CurrentHost = host ?? throw new HTFrameworkException(HTFrameworkModule.Utility, "初始化分页绘制器失败：宿主不能为空！");
-            CurrentPage = EditorPrefs.GetString(CurrentHost.GetType().FullName, null);
+            _recordPageKey = $"HT.Framework.PagePainter.{CurrentHost.GetType().FullName}";
+            CurrentPage = EditorPrefs.GetString(_recordPageKey, null);
         }
 
         /// <summary>

@@ -12,6 +12,22 @@ namespace HT.Framework
         private const string WarningPrefix = "<b><color=yellow>[HTFramework.Warning]</color></b> ";
         private const string ErrorPrefix = "<b><color=red>[HTFramework.Error]</color></b> ";
 #endif
+        private static ILogHandler _handler;
+
+        /// <summary>
+        /// 日志处理器
+        /// </summary>
+        private static ILogHandler Handler
+        {
+            get
+            {
+                if (_handler == null)
+                {
+                    _handler = Debug.unityLogger.logHandler;
+                }
+                return _handler;
+            }
+        }
 
         /// <summary>
         /// 转换为超链接文本（仅在编辑器中控制台生效）
@@ -74,14 +90,7 @@ namespace HT.Framework
         /// <param name="content">日志内容</param>
         public static void Info(this string content)
         {
-#if UNITY_EDITOR
-            Debug.Log(InfoPrefix + content);
-#else
-            if (Main.Current.IsEnabledLogInfo)
-            {
-                Debug.Log(content);
-            }
-#endif
+            Info(content, null);
         }
         /// <summary>
         /// 打印警告日志
@@ -89,14 +98,7 @@ namespace HT.Framework
         /// <param name="content">日志内容</param>
         public static void Warning(this string content)
         {
-#if UNITY_EDITOR
-            Debug.LogWarning(WarningPrefix + content);
-#else
-            if (Main.Current.IsEnabledLogWarning)
-            {
-                Debug.LogWarning(content);
-            }
-#endif
+            Warning(content, null);
         }
         /// <summary>
         /// 打印错误日志
@@ -104,12 +106,53 @@ namespace HT.Framework
         /// <param name="content">日志内容</param>
         public static void Error(this string content)
         {
+            Error(content, null);
+        }
+        /// <summary>
+        /// 打印信息日志
+        /// </summary>
+        /// <param name="content">日志内容</param>
+        /// <param name="context">上下文目标</param>
+        public static void Info(this string content, Object context)
+        {
 #if UNITY_EDITOR
-            Debug.LogError(ErrorPrefix + content);
+            Handler.LogFormat(LogType.Log, context, InfoPrefix + content);
+#else
+            if (Main.Current.IsEnabledLogInfo)
+            {
+                Handler.LogFormat(LogType.Log, context, content);
+            }
+#endif
+        }
+        /// <summary>
+        /// 打印警告日志
+        /// </summary>
+        /// <param name="content">日志内容</param>
+        /// <param name="context">上下文目标</param>
+        public static void Warning(this string content, Object context)
+        {
+#if UNITY_EDITOR
+            Handler.LogFormat(LogType.Warning, context, WarningPrefix + content);
+#else
+            if (Main.Current.IsEnabledLogWarning)
+            {
+                Handler.LogFormat(LogType.Warning, context, content);
+            }
+#endif
+        }
+        /// <summary>
+        /// 打印错误日志
+        /// </summary>
+        /// <param name="content">日志内容</param>
+        /// <param name="context">上下文目标</param>
+        public static void Error(this string content, Object context)
+        {
+#if UNITY_EDITOR
+            Handler.LogFormat(LogType.Error, context, ErrorPrefix + content);
 #else
             if (Main.Current.IsEnabledLogError)
             {
-                Debug.LogError(content);
+                Handler.LogFormat(LogType.Error, context, content);
             }
 #endif
         }
