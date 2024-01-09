@@ -12,22 +12,6 @@ namespace HT.Framework
         private const string WarningPrefix = "<b><color=yellow>[HTFramework.Warning]</color></b> ";
         private const string ErrorPrefix = "<b><color=red>[HTFramework.Error]</color></b> ";
 #endif
-        private static ILogHandler _handler;
-
-        /// <summary>
-        /// 日志处理器
-        /// </summary>
-        private static ILogHandler Handler
-        {
-            get
-            {
-                if (_handler == null)
-                {
-                    _handler = Debug.unityLogger.logHandler;
-                }
-                return _handler;
-            }
-        }
 
         /// <summary>
         /// 转换为超链接文本（仅在编辑器中控制台生效）
@@ -116,11 +100,11 @@ namespace HT.Framework
         public static void Info(this string content, Object context)
         {
 #if UNITY_EDITOR
-            Handler.LogFormat(LogType.Log, context, InfoPrefix + content);
+            Debug.Log(InfoPrefix + content, context);
 #else
             if (Main.Current.IsEnabledLogInfo)
             {
-                Handler.LogFormat(LogType.Log, context, content);
+                Debug.Log(content, context);
             }
 #endif
         }
@@ -132,11 +116,11 @@ namespace HT.Framework
         public static void Warning(this string content, Object context)
         {
 #if UNITY_EDITOR
-            Handler.LogFormat(LogType.Warning, context, WarningPrefix + content);
+            Debug.LogWarning(WarningPrefix + content, context);
 #else
             if (Main.Current.IsEnabledLogWarning)
             {
-                Handler.LogFormat(LogType.Warning, context, content);
+                Debug.LogWarning(content, context);
             }
 #endif
         }
@@ -148,11 +132,11 @@ namespace HT.Framework
         public static void Error(this string content, Object context)
         {
 #if UNITY_EDITOR
-            Handler.LogFormat(LogType.Error, context, ErrorPrefix + content);
+            Debug.LogError(ErrorPrefix + content, context);
 #else
             if (Main.Current.IsEnabledLogError)
             {
-                Handler.LogFormat(LogType.Error, context, content);
+                Debug.LogError(content, context);
             }
 #endif
         }
