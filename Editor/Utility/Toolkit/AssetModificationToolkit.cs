@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using CodiceApp;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 项目资源文件修改监控工具箱
     /// </summary>
-    public sealed class AssetModificationToolkit : UnityEditor.AssetModificationProcessor
+    public sealed class AssetModificationToolkit : AssetModificationProcessor
     {
         /// <summary>
         /// 新建脚本时默认引用的命名空间
@@ -26,59 +29,62 @@ namespace HT.Framework
 
         private static void OnWillCreateAsset(string path)
         {
-            path = path.Replace(".meta", "");
-            if (path.EndsWith(".cs"))
+            if (path.EndsWith(".meta"))
             {
-                bool isFix = false;
-                bool isInAwake = false;
-                List<string> codes = File.ReadAllLines(path).ToList();
-                for (int i = 0; i < codes.Count; i++)
+                path = path.Replace(".meta", "");
+                if (path.EndsWith(".cs"))
                 {
-                    if (!isFix)
+                    bool isFix = false;
+                    bool isInAwake = false;
+                    List<string> codes = File.ReadAllLines(path).ToList();
+                    for (int i = 0; i < codes.Count; i++)
                     {
-                        if (codes[i].Contains(" class ") && codes[i].EndsWith(": MonoBehaviour"))
+                        if (!isFix)
                         {
-                            codes[i] = codes[i].Replace(": MonoBehaviour", ": HTBehaviour");
-                            codes[i] = codes[i] + ", IUpdateFrame";
-                            isFix = true;
-                            continue;
+                            if (codes[i].Contains(" class ") && codes[i].EndsWith(": MonoBehaviour"))
+                            {
+                                codes[i] = codes[i].Replace(": MonoBehaviour", ": HTBehaviour");
+                                codes[i] = codes[i] + ", IUpdateFrame";
+                                isFix = true;
+                                continue;
+                            }
+                        }
+                        if (isFix)
+                        {
+                            if (codes[i].Contains("// Start"))
+                            {
+                                codes[i] = "    //初始化操作在 Awake 中完成（必须确保 base.Awake() 的存在）";
+                            }
+                            else if (codes[i].Contains("void Start()"))
+                            {
+                                codes[i] = "    protected override void Awake()";
+                                isInAwake = true;
+                            }
+                            else if (isInAwake && codes[i].Contains("{"))
+                            {
+                                codes.Insert(i + 1, "        base.Awake();");
+                                isInAwake = false;
+                            }
+                            else if (codes[i].Contains("// Update"))
+                            {
+                                codes[i] = "    //等同于 Update 方法，不过当主框架进入暂停状态时，此方法也会停止调用（Main.Current.Pause = true）";
+                            }
+                            else if (codes[i].Contains("void Update()"))
+                            {
+                                codes[i] = "    public void OnUpdateFrame()";
+                            }
                         }
                     }
                     if (isFix)
                     {
-                        if (codes[i].Contains("// Start"))
+                        foreach (var item in UsingNamespaces)
                         {
-                            codes[i] = "    //初始化操作在 Awake 中完成（必须确保 base.Awake() 的存在）";
+                            codes.Insert(0, $"using {item};");
                         }
-                        else if (codes[i].Contains("void Start()"))
-                        {
-                            codes[i] = "    protected override void Awake()";
-                            isInAwake = true;
-                        }
-                        else if (isInAwake && codes[i].Contains("{"))
-                        {
-                            codes.Insert(i + 1, "        base.Awake();");
-                            isInAwake = false;
-                        }
-                        else if (codes[i].Contains("// Update"))
-                        {
-                            codes[i] = "    //等同于 Update 方法，不过当主框架进入暂停状态时，此方法也会停止调用（Main.Current.Pause = true）";
-                        }
-                        else if (codes[i].Contains("void Update()"))
-                        {
-                            codes[i] = "    public void OnUpdateFrame()";
-                        }
-                    }
-                }
-                if (isFix)
-                {
-                    foreach (var item in UsingNamespaces)
-                    {
-                        codes.Insert(0, $"using {item};");
-                    }
 
-                    File.WriteAllLines(path, codes.ToArray());
-                    AssetDatabase.Refresh();
+                        File.WriteAllLines(path, codes.ToArray());
+                        AssetDatabase.Refresh();
+                    }
                 }
             }
         }

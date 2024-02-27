@@ -1482,9 +1482,9 @@ namespace HT.Framework
             public static readonly string SearchTextField = "SearchTextField";
             public static readonly string SearchCancelButton = "SearchCancelButton";
             public static readonly string SearchCancelButtonEmpty = "SearchCancelButtonEmpty";
-            public static readonly string ToolbarSeachTextField = "ToolbarSeachTextField";
-            public static readonly string ToolbarSeachCancelButton = "ToolbarSeachCancelButton";
-            public static readonly string ToolbarSeachCancelButtonEmpty = "ToolbarSeachCancelButtonEmpty";
+            public static readonly string ToolbarSearchTextField = "ToolbarSearchTextField";
+            public static readonly string ToolbarSearchCancelButton = "ToolbarSearchCancelButton";
+            public static readonly string ToolbarSearchCancelButtonEmpty = "ToolbarSearchCancelButtonEmpty";
         }
         #endregion
     }

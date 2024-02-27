@@ -84,8 +84,8 @@ namespace HT.Framework
 
             GUILayout.FlexibleSpace();
 
-            _itemFilter = EditorGUILayout.TextField("", _itemFilter, EditorGlobalTools.Styles.ToolbarSeachTextField);
-            if (GUILayout.Button("", _itemFilter != "" ? EditorGlobalTools.Styles.ToolbarSeachCancelButton : EditorGlobalTools.Styles.ToolbarSeachCancelButtonEmpty))
+            _itemFilter = EditorGUILayout.TextField("", _itemFilter, EditorGlobalTools.Styles.ToolbarSearchTextField);
+            if (GUILayout.Button("", string.IsNullOrEmpty(_itemFilter) ? EditorGlobalTools.Styles.ToolbarSearchCancelButtonEmpty : EditorGlobalTools.Styles.ToolbarSearchCancelButton))
             {
                 _itemFilter = "";
                 GUI.FocusControl(null);

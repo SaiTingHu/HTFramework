@@ -101,7 +101,7 @@ namespace HT.Framework
         {
             if (_colorPos <= 1)
             {
-                _colorPos += 0.002f;
+                _colorPos += 0.001f;
             }
             else
             {

@@ -119,12 +119,12 @@ namespace HT.Framework
             _isIncludeUGUI = GUILayout.Toggle(_isIncludeUGUI, "Include UGUI", EditorStyles.toolbarButton);
             _isIncludeMonoScript = GUILayout.Toggle(_isIncludeMonoScript, "Include MonoScript", EditorStyles.toolbarButton);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Clear", EditorStyles.toolbarPopup))
+            if (GUILayout.Button("Clear", EditorStyles.toolbarButton))
             {
                 ClearAssets();
                 Resources.UnloadUnusedAssets();
             }
-            if (GUILayout.Button("Refresh", EditorStyles.toolbarPopup))
+            if (GUILayout.Button("Refresh", EditorStyles.toolbarButton))
             {
                 SearchAssetsInOpenedScene();
             }
@@ -208,14 +208,14 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label("Search:", GUILayout.Width(60));
             _filterName = EditorGUILayout.TextField("", _filterName, EditorGlobalTools.Styles.SearchTextField, GUILayout.Width(300));
-            if (GUILayout.Button("", _filterName != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
+            if (GUILayout.Button("", string.IsNullOrEmpty(_filterName) ? EditorGlobalTools.Styles.SearchCancelButtonEmpty : EditorGlobalTools.Styles.SearchCancelButton))
             {
                 _filterName = "";
                 ApplyFilter();
                 ApplyIndex();
                 GUI.FocusControl(null);
             }
-            GUI.enabled = _filterName != "";
+            GUI.enabled = !string.IsNullOrEmpty(_filterName);
             if (GUILayout.Button("Search", EditorStyles.miniButton))
             {
                 ApplyFilter();

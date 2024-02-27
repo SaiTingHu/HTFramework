@@ -199,16 +199,12 @@ namespace HT.Framework
             {
                 _assemblyFilter = "Assembly-CSharp";
             }
-            if (GUILayout.Button("Assembly-CSharp-Editor", EditorStyles.miniButton))
-            {
-                _assemblyFilter = "Assembly-CSharp-Editor";
-            }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             _assemblyFilter = EditorGUILayout.TextField("", _assemblyFilter, EditorGlobalTools.Styles.SearchTextField);
-            if (GUILayout.Button("", _assemblyFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
+            if (GUILayout.Button("", string.IsNullOrEmpty(_assemblyFilter) ? EditorGlobalTools.Styles.SearchCancelButtonEmpty : EditorGlobalTools.Styles.SearchCancelButton))
             {
                 _assemblyFilter = "";
                 GUI.FocusControl(null);
@@ -289,7 +285,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             _typeFilter = EditorGUILayout.TextField("", _typeFilter, EditorGlobalTools.Styles.SearchTextField);
-            if (GUILayout.Button("", _typeFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
+            if (GUILayout.Button("", string.IsNullOrEmpty(_typeFilter) ? EditorGlobalTools.Styles.SearchCancelButtonEmpty : EditorGlobalTools.Styles.SearchCancelButton))
             {
                 _typeFilter = "";
                 GUI.FocusControl(null);
@@ -359,7 +355,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             _memberFilter = EditorGUILayout.TextField("", _memberFilter, EditorGlobalTools.Styles.SearchTextField);
-            if (GUILayout.Button("", _memberFilter != "" ? EditorGlobalTools.Styles.SearchCancelButton : EditorGlobalTools.Styles.SearchCancelButtonEmpty))
+            if (GUILayout.Button("", string.IsNullOrEmpty(_memberFilter) ? EditorGlobalTools.Styles.SearchCancelButtonEmpty : EditorGlobalTools.Styles.SearchCancelButton))
             {
                 _memberFilter = "";
                 GUI.FocusControl(null);
