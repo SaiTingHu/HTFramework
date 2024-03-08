@@ -17,7 +17,6 @@ namespace HT.Framework
         protected H _helper;
         private InternalModuleBase<H> _module;
         private List<Type> _types;
-        private HTFAction _changeHelper;
 
         protected virtual string Intro => null;
 
@@ -30,7 +29,6 @@ namespace HT.Framework
             {
                 return typeof(H).IsAssignableFrom(type) && typeof(H) != type;
             });
-            _changeHelper = ChangeHelper;
         }
         protected override void OnRuntimeEnable()
         {
@@ -50,22 +48,23 @@ namespace HT.Framework
             EditorGUILayout.BeginHorizontal();
             GUI.enabled = !EditorApplication.isPlaying && _types.Count > 0;
             EditorGUILayout.LabelField("Helper", GUILayout.Width(LabelWidth));
-            Button(_changeHelper, _module.HelperType, EditorStyles.popup);
+            if (GUILayout.Button(_module.HelperType, EditorStyles.popup))
+            {
+                GenericMenu gm = new GenericMenu();
+                for (int i = 0; i < _types.Count; i++)
+                {
+                    int j = i;
+                    gm.AddItem(new GUIContent(_types[j].FullName), _module.HelperType == _types[j].FullName, () =>
+                    {
+                        Undo.RecordObject(target, "Change Helper");
+                        _module.HelperType = _types[j].FullName;
+                        HasChanged();
+                    });
+                }
+                gm.ShowAsContext();
+            }
             GUI.enabled = true;
             EditorGUILayout.EndHorizontal();
-        }
-        private void ChangeHelper()
-        {
-            GenericMenu gm = new GenericMenu();
-            for (int i = 0; i < _types.Count; i++)
-            {
-                int j = i;
-                gm.AddItem(new GUIContent(_types[j].FullName), _module.HelperType == _types[j].FullName, () =>
-                {
-                    _module.HelperType = _types[j].FullName;
-                });
-            }
-            gm.ShowAsContext();
         }
     }
 }
