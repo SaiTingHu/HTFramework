@@ -191,6 +191,8 @@ namespace HT.Framework
         }
         private void OnGUI()
         {
+            GUI.skin = DefaultSkin;
+
             BehaviourDrawGUI();
             LicenseOnGUI();
         }
@@ -1159,6 +1161,10 @@ namespace HT.Framework
         #endregion
 
         #region Setting
+        /// <summary>
+        /// 默认的GUI皮肤
+        /// </summary>
+        public GUISkin DefaultSkin;
         /// <summary>
         /// 是否启用常规日志打印
         /// </summary>

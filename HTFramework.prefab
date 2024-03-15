@@ -454,6 +454,7 @@ MonoBehaviour:
   LicenserType: <None>
   DataModelTypes: []
   MainParameters: []
+  DefaultSkin: {fileID: 11400000, guid: 61a6dbb4fcfdbd844a1f117f7b22e1e8, type: 2}
   IsEnabledLogInfo: 1
   IsEnabledLogWarning: 1
   IsEnabledLogError: 1

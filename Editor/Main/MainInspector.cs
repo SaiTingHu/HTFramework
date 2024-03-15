@@ -531,6 +531,12 @@ namespace HT.Framework
         private void SettingGUI()
         {
             GUILayout.BeginHorizontal();
+            GUILayout.Label("GUI", EditorStyles.boldLabel);
+            GUILayout.EndHorizontal();
+
+            PropertyField(nameof(Main.DefaultSkin), "Default Skin");
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Log", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
