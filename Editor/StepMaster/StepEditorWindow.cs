@@ -153,6 +153,8 @@ namespace HT.Framework
         private GUIContent _previewGC;
         private GUIContent _advancedSearchGC;
         private GUIContent _valueEditorGC;
+        private GUIContent _editGC;
+        private GUIContent _deleteGC;
         private Rect _stepListRect;
         private Vector2 _stepListScroll = Vector3.zero;
         private string _stepListFilter = null;
@@ -162,9 +164,7 @@ namespace HT.Framework
         private int _moveToIndex = 1;
 
         private Rect _stepContentProRect;
-        private Vector2 _stepContentProScroll = Vector3.zero;
         private Rect _stepOperationProRect;
-        private Vector2 _stepOperationProScroll = Vector3.zero;
         private Rect _stepContentAreaRect;
         private bool _stepContentAreaDragging = false;
         private Rect _splitterRect;
@@ -225,6 +225,12 @@ namespace HT.Framework
             _valueEditorGC = new GUIContent();
             _valueEditorGC.image = EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image;
             _valueEditorGC.tooltip = "Edit in a new window";
+            _editGC = new GUIContent();
+            _editGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
+            _editGC.tooltip = "Edit";
+            _deleteGC = new GUIContent();
+            _deleteGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
+            _deleteGC.tooltip = "Delete";
             _background = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/Grid.png");
 
             _ct = FindObjectOfType<CameraTarget>();
@@ -742,15 +748,13 @@ namespace HT.Framework
                 #region 步骤的属性
                 if (_isShowStepContent)
                 {
-                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(210), GUILayout.Height(460));
+                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(210), GUILayout.Height(450));
 
                     GUILayout.BeginHorizontal("TE NodeBoxSelected");
                     GUILayout.Label(GetWord("Step Content Properties"), EditorStyles.boldLabel);
                     GUILayout.EndHorizontal();
 
                     GUILayout.Space(5);
-
-                    _stepContentProScroll = GUILayout.BeginScrollView(_stepContentProScroll);
 
                     GUILayout.BeginVertical("Tooltip");
 
@@ -811,9 +815,9 @@ namespace HT.Framework
                         }
                         gm.ShowAsContext();
                     }
-                    GUILayout.Label(_currentStepObj.TargetGUID == "<None>" ? GetWord(_currentStepObj.TargetGUID) : _currentStepObj.TargetGUID, GUILayout.Width(90));
+                    GUILayout.Label(_currentStepObj.TargetGUID == "<None>" ? GetWord(_currentStepObj.TargetGUID) : _currentStepObj.TargetGUID, GUILayout.Width(115));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(GetWord("Clear"), GUILayout.Width(45)))
+                    if (GUILayout.Button(_deleteGC, "InvisibleButton", GUILayout.Width(20)))
                     {
                         contentObj = _currentStepObj.Target = null;
                         _currentStepObj.TargetGUID = "<None>";
@@ -974,7 +978,7 @@ namespace HT.Framework
                     GUILayout.Label(GetWord("Helper") + ":", GUILayout.Width(55));
                     _stepHelperGC.text = _currentStepObj.Helper == "<None>" ? GetWord(_currentStepObj.Helper) : _currentStepObj.Helper;
                     _stepHelperGC.tooltip = _currentStepObj.HelperName;
-                    if (GUILayout.Button(_stepHelperGC, EditorStyles.popup, GUILayout.Width(90)))
+                    if (GUILayout.Button(_stepHelperGC, EditorStyles.popup, GUILayout.Width(105)))
                     {
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
@@ -1005,13 +1009,13 @@ namespace HT.Framework
                         gm.ShowAsContext();
                     }
                     GUI.enabled = _currentStepObj.Helper != "<None>";
-                    if (GUILayout.Button(GetWord("Edit"), GUILayout.Width(35)))
+                    if (GUILayout.Button(_editGC, "InvisibleButton", GUILayout.Width(20)))
                     {
                         OpenHelperScript(_currentStepObj.Helper);
                     }
                     GUI.enabled = true;
                     GUILayout.EndHorizontal();
-
+                    
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Parameter") + ":", GUILayout.Width(70));
                     if (GUILayout.Button(GetWord("Edit Parameter") + " " + _currentStepObj.Parameters.Count))
@@ -1019,12 +1023,10 @@ namespace HT.Framework
                         StepParameterWindow.ShowWindow(this, _contentAsset, _currentStepObj, CurrentLanguage);
                     }
                     GUILayout.EndHorizontal();
-
+                    
                     GUILayout.EndVertical();
 
                     GUILayout.FlexibleSpace();
-
-                    GUILayout.EndScrollView();
 
                     GUILayout.EndVertical();
 
@@ -1039,7 +1041,7 @@ namespace HT.Framework
                 #region 摄像机组件
                 if (_isShowCamControl)
                 {
-                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(205), GUILayout.Height(130));
+                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(210), GUILayout.Height(130));
 
                     GUILayout.BeginHorizontal("TE NodeBoxSelected");
                     GUILayout.Label(GetWord("Camera Control"), EditorStyles.boldLabel);
@@ -1052,28 +1054,28 @@ namespace HT.Framework
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("CT:", GUILayout.Width(30));
                     GUI.color = _ct ? Color.white : Color.gray;
-                    _ct = EditorGUILayout.ObjectField(_ct, typeof(CameraTarget), true, GUILayout.Width(150)) as CameraTarget;
+                    _ct = EditorGUILayout.ObjectField(_ct, typeof(CameraTarget), true, GUILayout.Width(155)) as CameraTarget;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("MR:", GUILayout.Width(30));
                     GUI.color = _mr ? Color.white : Color.gray;
-                    _mr = EditorGUILayout.ObjectField(_mr, typeof(MouseRotation), true, GUILayout.Width(150)) as MouseRotation;
+                    _mr = EditorGUILayout.ObjectField(_mr, typeof(MouseRotation), true, GUILayout.Width(155)) as MouseRotation;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("MP:", GUILayout.Width(30));
                     GUI.color = _mp ? Color.white : Color.gray;
-                    _mp = EditorGUILayout.ObjectField(_mp, typeof(MousePosition), true, GUILayout.Width(150)) as MousePosition;
+                    _mp = EditorGUILayout.ObjectField(_mp, typeof(MousePosition), true, GUILayout.Width(155)) as MousePosition;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("P:", GUILayout.Width(30));
                     GUI.color = _player ? Color.white : Color.gray;
-                    _player = EditorGUILayout.ObjectField(_player, typeof(Transform), true, GUILayout.Width(150)) as Transform;
+                    _player = EditorGUILayout.ObjectField(_player, typeof(Transform), true, GUILayout.Width(155)) as Transform;
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
 
@@ -1105,8 +1107,6 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.Space(5);
-
-                    _stepOperationProScroll = GUILayout.BeginScrollView(_stepOperationProScroll);
 
                     GUILayout.BeginVertical("Tooltip");
 
@@ -1167,9 +1167,9 @@ namespace HT.Framework
                         }
                         gm.ShowAsContext();
                     }
-                    GUILayout.Label(_currentOperationObj.TargetGUID == "<None>" ? GetWord(_currentOperationObj.TargetGUID) : _currentOperationObj.TargetGUID, GUILayout.Width(90));
+                    GUILayout.Label(_currentOperationObj.TargetGUID == "<None>" ? GetWord(_currentOperationObj.TargetGUID) : _currentOperationObj.TargetGUID, GUILayout.Width(115));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(GetWord("Clear"), GUILayout.Width(45)))
+                    if (GUILayout.Button(_deleteGC, "InvisibleButton", GUILayout.Width(20)))
                     {
                         operationObj = _currentOperationObj.Target = null;
                         _currentOperationObj.TargetGUID = "<None>";
@@ -1217,8 +1217,6 @@ namespace HT.Framework
                     GUILayout.EndVertical();
 
                     GUILayout.FlexibleSpace();
-
-                    GUILayout.EndScrollView();
 
                     GUILayout.BeginHorizontal();
                     GUI.enabled = _currentOperationObj.Target && !_currentOperationObj.PreviewTarget;

@@ -24,6 +24,8 @@ namespace HT.Framework
         private StepEditorWindow _stepEditorWindow;
         private StepContentAsset _contentAsset;
         private StepContent _content;
+        private GUIContent _valueEditorGC;
+        private GUIContent _deleteGC;
         private Vector2 _scroll;
         
         protected override void OnTitleGUI()
@@ -105,6 +107,14 @@ namespace HT.Framework
                 {
                     case StepParameter.ParameterType.String:
                         stepParameter.StringValue = EditorGUILayout.TextField(stepParameter.StringValue);
+                        if (GUILayout.Button(_valueEditorGC, "IconButton", GUILayout.Width(20)))
+                        {
+                            StringValueEditor.OpenWindow(this, stepParameter.StringValue, stepParameter.Name, (str) =>
+                            {
+                                stepParameter.StringValue = str;
+                                HasChanged(_contentAsset);
+                            });
+                        }
                         break;
                     case StepParameter.ParameterType.Integer:
                         stepParameter.IntegerValue = EditorGUILayout.IntField(stepParameter.IntegerValue);
@@ -203,14 +213,18 @@ namespace HT.Framework
                 }
                 GUILayout.EndHorizontal();
 
-                if (stepParameter.Type == StepParameter.ParameterType.GameObject)
+                if (stepParameter.Type == StepParameter.ParameterType.String)
+                {
+                    GUILayout.Space(3);
+                }
+                else if (stepParameter.Type == StepParameter.ParameterType.GameObject)
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("GUID") + ":", GUILayout.Width(45));
                     string guid = stepParameter.GameObjectGUID;
                     EditorGUILayout.TextField(guid == "<None>" ? GetWord(guid) : guid);
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(GetWord("Clear"), EditorStyles.miniButton, GUILayout.Width(45)))
+                    if (GUILayout.Button(_deleteGC, "InvisibleButton", GUILayout.Width(20)))
                     {
                         stepParameter.GameObjectValue = null;
                         stepParameter.GameObjectGUID = "<None>";
@@ -218,10 +232,13 @@ namespace HT.Framework
                         GUI.FocusControl(null);
                     }
                     GUILayout.EndHorizontal();
+
+                    GUILayout.Space(3);
                 }
 
                 GUILayout.EndVertical();
             }
+            GUILayout.FlexibleSpace();
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
@@ -263,6 +280,17 @@ namespace HT.Framework
             AddWord("是的", "Yes");
             AddWord("不", "No");
             AddWord("<无>", "<None>");
+        }
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            _valueEditorGC = new GUIContent();
+            _valueEditorGC.image = EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image;
+            _valueEditorGC.tooltip = "Edit in a new window";
+            _deleteGC = new GUIContent();
+            _deleteGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
+            _deleteGC.tooltip = "Delete";
         }
         private void Update()
         {
