@@ -79,14 +79,14 @@ namespace HT.Framework
         }
         private string GetDetail()
         {
-            StringBuilder detail = new StringBuilder();
-            detail.Append(Tex.width.ToString());
-            detail.Append("x");
-            detail.Append(Tex.height.ToString());
-            if (Tex is Cubemap) detail.Append("x6");
-            detail.Append(" - ");
-            detail.Append(Format.ToString());
-            return detail.ToString();
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat(Tex.width.ToString());
+            StringToolkit.Concat("x");
+            StringToolkit.Concat(Tex.height.ToString());
+            if (Tex is Cubemap) StringToolkit.Concat("x6");
+            StringToolkit.Concat(" - ");
+            StringToolkit.Concat(Format.ToString());
+            return StringToolkit.EndConcat();
         }
     }
 }

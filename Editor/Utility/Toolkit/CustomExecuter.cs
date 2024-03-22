@@ -470,30 +470,27 @@ namespace HT.Framework
         }
         private void FormatMethodName()
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(Method.IsFamily ? "protected " : (Method.IsPublic ? "public " : "private "));
-            if (Method.IsStatic) builder.Append("static ");
-            if (Method.IsAssembly) builder.Append("internal ");
-            if (Method.IsAbstract) builder.Append("abstract ");
-            if (Method.IsVirtual) builder.Append("virtual ");
-            builder.Append(Method.ReturnType.Name);
-            builder.Append(" ");
-            builder.Append(Method.Name);
-            builder.Append("(");
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat(Method.IsFamily ? "protected " : (Method.IsPublic ? "public " : "private "));
+            if (Method.IsStatic) StringToolkit.Concat("static ");
+            if (Method.IsAssembly) StringToolkit.Concat("internal ");
+            if (Method.IsAbstract) StringToolkit.Concat("abstract ");
+            if (Method.IsVirtual) StringToolkit.Concat("virtual ");
+            StringToolkit.Concat(Method.ReturnType.Name);
+            StringToolkit.Concat(" ");
+            StringToolkit.Concat(Method.Name);
+            StringToolkit.Concat("(");
             for (int i = 0; i < _parameters.Count; i++)
             {
-                if (i != 0)
-                {
-                    builder.Append(", ");
-                }
-                if (_parameters[i].Info.IsIn) builder.Append("in ");
-                if (_parameters[i].Info.IsOut) builder.Append("out ");
-                builder.Append(_parameters[i].Type);
-                builder.Append(" ");
-                builder.Append(_parameters[i].Name);
+                if (i != 0) StringToolkit.Concat(", ");
+                if (_parameters[i].Info.IsIn) StringToolkit.Concat("in ");
+                if (_parameters[i].Info.IsOut) StringToolkit.Concat("out ");
+                StringToolkit.Concat(_parameters[i].Type);
+                StringToolkit.Concat(" ");
+                StringToolkit.Concat(_parameters[i].Name);
             }
-            builder.Append(")");
-            _methodName = builder.ToString();
+            StringToolkit.Concat(")");
+            _methodName = StringToolkit.EndConcat();
         }
         
         public enum ExecuterMode

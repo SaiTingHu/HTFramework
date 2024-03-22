@@ -267,19 +267,19 @@ namespace HT.Framework
         }
         private IEnumerator SendRequestCoroutine(WebInterfaceBase wif, params string[] parameter)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(wif.Url);
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat(wif.Url);
             if (parameter.Length > 0)
             {
-                builder.Append("?");
-                builder.Append(parameter[0]);
+                StringToolkit.Concat("?");
+                StringToolkit.Concat(parameter[0]);
             }
             for (int i = 1; i < parameter.Length; i++)
             {
-                builder.Append("&");
-                builder.Append(parameter[i]);
+                StringToolkit.Concat("&");
+                StringToolkit.Concat(parameter[i]);
             }
-            string url = builder.ToString();
+            string url = StringToolkit.EndConcat();
 
             using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
@@ -387,19 +387,19 @@ namespace HT.Framework
         }
         private IEnumerator SendDownloadFileCoroutine(WebInterfaceDownloadFile wif, params string[] parameter)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(wif.Url);
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat(wif.Url);
             if (parameter.Length > 0)
             {
-                builder.Append("?");
-                builder.Append(parameter[0]);
+                StringToolkit.Concat("?");
+                StringToolkit.Concat(parameter[0]);
             }
             for (int i = 1; i < parameter.Length; i++)
             {
-                builder.Append("&");
-                builder.Append(parameter[i]);
+                StringToolkit.Concat("&");
+                StringToolkit.Concat(parameter[i]);
             }
-            string url = builder.ToString();
+            string url = StringToolkit.EndConcat();
             
             using (UnityWebRequest request = UnityWebRequest.Get(url))
             {

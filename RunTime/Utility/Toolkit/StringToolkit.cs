@@ -53,35 +53,61 @@ namespace HT.Framework
         private static StringBuilder StringInstance = new StringBuilder();
 
         /// <summary>
-        /// 字符串拼接
+        /// 开始字符串拼接
         /// </summary>
-        /// <param name="str">待拼接的字符串</param>
-        /// <returns>拼接成功的字符串</returns>
-        public static string Concat(params string[] str)
+        public static void BeginConcat()
         {
             StringInstance.Clear();
-            for (int i = 0; i < str.Length; i++)
-            {
-                StringInstance.Append(str[i]);
-            }
-            return StringInstance.ToString();
         }
         /// <summary>
         /// 字符串拼接
         /// </summary>
         /// <param name="str">待拼接的字符串</param>
-        /// <returns>拼接成功的字符串</returns>
-        public static string Concat(List<string> str)
+        /// <param name="isNewLine">拼接完成后是否自动换一行</param>
+        public static void Concat(string str, bool isNewLine = false)
+        {
+            StringInstance.Append(str);
+            if (isNewLine) StringInstance.Append("\r\n");
+        }
+        /// <summary>
+        /// 字符串拼接
+        /// </summary>
+        /// <param name="str">待拼接的字符串</param>
+        /// <param name="isNewLine">每一个字符串拼接完成后是否自动换一行</param>
+        public static void Concat(string[] str, bool isNewLine = false)
+        {
+            if (str == null || str.Length <= 0)
+                return;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                Concat(str[i], isNewLine);
+            }
+        }
+        /// <summary>
+        /// 字符串拼接
+        /// </summary>
+        /// <param name="str">待拼接的字符串</param>
+        /// <param name="isNewLine">每一个字符串拼接完成后是否自动换一行</param>
+        public static void Concat(List<string> str, bool isNewLine = false)
         {
             if (str == null || str.Count <= 0)
-                return null;
+                return;
 
-            StringInstance.Clear();
             for (int i = 0; i < str.Count; i++)
             {
-                StringInstance.Append(str[i]);
+                Concat(str[i], isNewLine);
             }
-            return StringInstance.ToString();
+        }
+        /// <summary>
+        /// 结束字符串拼接
+        /// </summary>
+        /// <returns>拼接完成的字符串</returns>
+        public static string EndConcat()
+        {
+            string content = StringInstance.ToString();
+            StringInstance.Clear();
+            return content;
         }
         #endregion
 

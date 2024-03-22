@@ -163,7 +163,7 @@ namespace HT.Framework
         private string GetFullStackTraceInfo(StackTrace trace)
         {
             string assetsPath = Application.dataPath.Replace("/", "\\");
-            StringBuilder info = new StringBuilder();
+            StringToolkit.BeginConcat();
             StackFrame[] frames = trace.GetFrames();
             for (int i = 0; i < frames.Length; i++)
             {
@@ -171,18 +171,18 @@ namespace HT.Framework
                 {
                     continue;
                 }
-                info.Append(frames[i].GetMethod().DeclaringType.FullName);
-                info.Append(".");
-                info.Append(frames[i].GetMethod().Name);
-                info.Append(" (");
-                info.Append("at Assets");
-                info.Append(frames[i].GetFileName().Replace(assetsPath, ""));
-                info.Append(":");
-                info.Append(frames[i].GetFileLineNumber());
-                info.Append(")");
-                info.Append("\r\n");
+                StringToolkit.Concat(frames[i].GetMethod().DeclaringType.FullName);
+                StringToolkit.Concat(".");
+                StringToolkit.Concat(frames[i].GetMethod().Name);
+                StringToolkit.Concat(" (");
+                StringToolkit.Concat("at Assets");
+                StringToolkit.Concat(frames[i].GetFileName().Replace(assetsPath, ""));
+                StringToolkit.Concat(":");
+                StringToolkit.Concat(frames[i].GetFileLineNumber().ToString());
+                StringToolkit.Concat(")");
+                StringToolkit.Concat("\r\n");
             }
-            return info.ToString();
+            return StringToolkit.EndConcat();
         }
     }
 }

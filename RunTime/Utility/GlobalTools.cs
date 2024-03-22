@@ -400,13 +400,14 @@ namespace HT.Framework
                 tfs.Add(tf);
             }
 
-            StringBuilder builder = new StringBuilder();
-            builder.Append(tfs[tfs.Count - 1].name);
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat(tfs[tfs.Count - 1].name);
             for (int i = tfs.Count - 2; i >= 0; i--)
             {
-                builder.Append("/" + tfs[i].name);
+                StringToolkit.Concat("/");
+                StringToolkit.Concat(tfs[i].name);
             }
-            return builder.ToString();
+            return StringToolkit.EndConcat();
         }
         #endregion
         
