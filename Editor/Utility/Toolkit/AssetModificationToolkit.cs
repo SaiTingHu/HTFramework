@@ -1,10 +1,7 @@
-﻿using CodiceApp;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
 
 namespace HT.Framework
 {
