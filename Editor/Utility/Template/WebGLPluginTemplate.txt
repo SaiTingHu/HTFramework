@@ -5,7 +5,7 @@ mergeInto(LibraryManager.library, {
     },
 
     HelloString: function (str) {
-        window.alert(Pointer_stringify(str));
+        window.alert(UTF8ToString(str));
     },
 
     AddNumbers: function (x, y) {
