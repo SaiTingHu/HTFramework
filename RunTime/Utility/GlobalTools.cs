@@ -104,12 +104,12 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">组件类型</typeparam>
         /// <param name="tran">自身</param>
-        /// <param name="Result">组件列表</param>
+        /// <param name="result">组件列表</param>
         /// <param name="includeInactive">是否包含未激活的子物体</param>
-        public static void GetComponentsInSons<T>(this Transform tran, List<T> Result, bool includeInactive = false) where T : Component
+        public static void GetComponentsInSons<T>(this Transform tran, List<T> result, bool includeInactive = false) where T : Component
         {
-            if (Result == null) Result = new List<T>();
-            else Result.Clear();
+            if (result == null) result = new List<T>();
+            else result.Clear();
 
             for (int i = 0; i < tran.childCount; i++)
             {
@@ -119,13 +119,13 @@ namespace HT.Framework
                 {
                     if (child.gameObject.activeSelf)
                     {
-                        Result.Add(t);
+                        result.Add(t);
                     }
                     else
                     {
                         if (includeInactive)
                         {
-                            Result.Add(t);
+                            result.Add(t);
                         }
                     }
                 }
@@ -136,12 +136,12 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">组件类型</typeparam>
         /// <param name="obj">自身</param>
-        /// <param name="Result">组件列表</param>
+        /// <param name="result">组件列表</param>
         /// <param name="includeInactive">是否包含未激活的子物体</param>
-        public static void GetComponentsInSons<T>(this GameObject obj, List<T> Result, bool includeInactive = false) where T : Component
+        public static void GetComponentsInSons<T>(this GameObject obj, List<T> result, bool includeInactive = false) where T : Component
         {
-            if (Result == null) Result = new List<T>();
-            else Result.Clear();
+            if (result == null) result = new List<T>();
+            else result.Clear();
 
             for (int i = 0; i < obj.transform.childCount; i++)
             {
@@ -151,13 +151,13 @@ namespace HT.Framework
                 {
                     if (child.gameObject.activeSelf)
                     {
-                        Result.Add(t);
+                        result.Add(t);
                     }
                     else
                     {
                         if (includeInactive)
                         {
-                            Result.Add(t);
+                            result.Add(t);
                         }
                     }
                 }
@@ -168,12 +168,12 @@ namespace HT.Framework
         /// </summary>
         /// <typeparam name="T">组件类型</typeparam>
         /// <param name="mono">自身</param>
-        /// <param name="Result">组件列表</param>
+        /// <param name="result">组件列表</param>
         /// <param name="includeInactive">是否包含未激活的子物体</param>
-        public static void GetComponentsInSons<T>(this MonoBehaviour mono, List<T> Result, bool includeInactive = false) where T : Component
+        public static void GetComponentsInSons<T>(this MonoBehaviour mono, List<T> result, bool includeInactive = false) where T : Component
         {
-            if (Result == null) Result = new List<T>();
-            else Result.Clear();
+            if (result == null) result = new List<T>();
+            else result.Clear();
 
             for (int i = 0; i < mono.transform.childCount; i++)
             {
@@ -183,13 +183,13 @@ namespace HT.Framework
                 {
                     if (child.gameObject.activeSelf)
                     {
-                        Result.Add(t);
+                        result.Add(t);
                     }
                     else
                     {
                         if (includeInactive)
                         {
-                            Result.Add(t);
+                            result.Add(t);
                         }
                     }
                 }
@@ -199,34 +199,34 @@ namespace HT.Framework
         /// 通过组件查找场景中所有的物体，包括隐藏和激活的
         /// </summary>
         /// <typeparam name="T">组件类型</typeparam>
-        /// <param name="Result">组件列表</param>
-        public static void FindObjectsOfType<T>(List<T> Result) where T : Component
+        /// <param name="result">组件列表</param>
+        public static void FindObjectsOfType<T>(List<T> result) where T : Component
         {
-            if (Result == null) Result = new List<T>();
-            else Result.Clear();
+            if (result == null) result = new List<T>();
+            else result.Clear();
 
             List<T> sub = new List<T>();
             GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
             foreach (GameObject rootObj in rootObjs)
             {
                 rootObj.transform.GetComponentsInChildren(true, sub);
-                Result.AddRange(sub);
+                result.AddRange(sub);
             }
         }
         /// <summary>
         /// 获取当前打开的所有场景中的根物体
         /// </summary>
-        /// <param name="Result">物体列表</param>
-        public static void GetRootGameObjectsInAllScene(List<GameObject> Result)
+        /// <param name="result">物体列表</param>
+        public static void GetRootGameObjectsInAllScene(List<GameObject> result)
         {
-            if (Result == null) Result = new List<GameObject>();
-            else Result.Clear();
+            if (result == null) result = new List<GameObject>();
+            else result.Clear();
 
             List<GameObject> sub = new List<GameObject>();
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 SceneManager.GetSceneAt(i).GetRootGameObjects(sub);
-                Result.AddRange(sub);
+                result.AddRange(sub);
             }
         }
         /// <summary>

@@ -158,8 +158,8 @@ namespace HT.Framework
         public bool ReadValue(string sectionName, string key, bool defaultValue)
         {
             string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
-            int Value;
-            if (int.TryParse(stringValue, out Value)) return (Value != 0);
+            int value;
+            if (int.TryParse(stringValue, out value)) return (value != 0);
             return defaultValue;
         }
         /// <summary>
@@ -172,8 +172,8 @@ namespace HT.Framework
         public int ReadValue(string sectionName, string key, int defaultValue)
         {
             string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
-            int Value;
-            if (int.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
+            int value;
+            if (int.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) return value;
             return defaultValue;
         }
         /// <summary>
@@ -186,8 +186,8 @@ namespace HT.Framework
         public long ReadValue(string sectionName, string key, long defaultValue)
         {
             string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
-            long Value;
-            if (long.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
+            long value;
+            if (long.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) return value;
             return defaultValue;
         }
         /// <summary>
@@ -200,8 +200,8 @@ namespace HT.Framework
         public double ReadValue(string sectionName, string key, double defaultValue)
         {
             string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
-            double Value;
-            if (double.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value)) return Value;
+            double value;
+            if (double.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) return value;
             return defaultValue;
         }
         /// <summary>
@@ -233,8 +233,8 @@ namespace HT.Framework
         public DateTime ReadValue(string sectionName, string key, DateTime defaultValue)
         {
             string stringValue = ReadValue(sectionName, key, defaultValue.ToString(CultureInfo.InvariantCulture));
-            DateTime Value;
-            if (DateTime.TryParse(stringValue, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AssumeLocal, out Value)) return Value;
+            DateTime value;
+            if (DateTime.TryParse(stringValue, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AssumeLocal, out value)) return value;
             return defaultValue;
         }
 
@@ -350,13 +350,13 @@ namespace HT.Framework
         /// <returns>是否存在</returns>
         public bool IsKeyExists(string sectionName, string key)
         {
-            Dictionary<string, string> Section;
+            Dictionary<string, string> section;
 
             if (_sections.ContainsKey(sectionName))
             {
-                _sections.TryGetValue(sectionName, out Section);
+                _sections.TryGetValue(sectionName, out section);
 
-                return Section.ContainsKey(key);
+                return section.ContainsKey(key);
             }
             else return false;
         }
