@@ -507,6 +507,23 @@ namespace HT.Framework
             return false;
         }
         /// <summary>
+        /// 判断数组中是否存在某元素
+        /// </summary>
+        /// <param name="array">数组</param>
+        /// <param name="value">元素</param>
+        /// <returns>是否存在</returns>
+        public static bool Contains<T>(this T[] array, T value) where T : class
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == value)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
         /// 强制转换List的类型（使用as强转）
         /// </summary>
         /// <typeparam name="TOutput">目标类型</typeparam>
