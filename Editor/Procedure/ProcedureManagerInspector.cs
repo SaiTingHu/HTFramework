@@ -172,6 +172,9 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
+            if (Target.CurrentProcedure == null)
+                return;
+
             GUILayout.BeginHorizontal();
             GUILayout.Label($"Current Procedure: {Target.CurrentProcedure.GetType().Name}");
             GUILayout.EndHorizontal();

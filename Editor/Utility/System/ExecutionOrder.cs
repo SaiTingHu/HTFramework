@@ -115,7 +115,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     GUI.backgroundColor = _classes[_functions[i].ClassName].DisplayColor;
-                    GUILayout.Label(_functions[i].ClassName + "." + _functions[i].FunctionName, "wordwrapminibutton", GUILayout.Height(20));
+                    GUILayout.Label($"{_functions[i].ClassName}.{_functions[i].FunctionName}", "wordwrapminibutton", GUILayout.Height(20));
                     GUI.backgroundColor = Color.white;
                     GUILayout.EndHorizontal();
                 }

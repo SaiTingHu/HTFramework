@@ -341,7 +341,7 @@ namespace HT.Framework
         }
         private void CreateUIScene()
         {
-            if (_isCreateUIEdit && _UIEditFolder != null && _UIEditName != "")
+            if (_isCreateUIEdit && _UIEditFolder != null && !string.IsNullOrEmpty(_UIEditName))
             {
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 string scenePath = $"{_UIEditFolder.Path}/{_UIEditName}.unity";
@@ -370,7 +370,7 @@ namespace HT.Framework
         }
         private void CreateRegularScene()
         {
-            if (_isCreateRegularEdit && _RegularEditFolder != null && _RegularEditName != "")
+            if (_isCreateRegularEdit && _RegularEditFolder != null && !string.IsNullOrEmpty(_RegularEditName))
             {
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 string scenePath = $"{_RegularEditFolder.Path}/{_RegularEditName}.unity";
@@ -387,7 +387,7 @@ namespace HT.Framework
         }
         private void CreateMainScene()
         {
-            if (_mainSceneFolder != null && _mainSceneName != "")
+            if (_mainSceneFolder != null && !string.IsNullOrEmpty(_mainSceneName))
             {
                 Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
@@ -402,7 +402,7 @@ namespace HT.Framework
 
                     if (_isCreateInitialProcedure)
                     {
-                        if (_procedureFolder != null && _initialProcedure != "")
+                        if (_procedureFolder != null && !string.IsNullOrEmpty(_initialProcedure))
                         {
                             string path = $"{_procedureFolder.FullPath}/{_initialProcedure}.cs";
                             if (!File.Exists(path))

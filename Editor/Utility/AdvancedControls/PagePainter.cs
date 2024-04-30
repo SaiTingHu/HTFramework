@@ -58,7 +58,7 @@ namespace HT.Framework
 
         public PagePainter(Editor host)
         {
-            CurrentHost = host ?? throw new HTFrameworkException(HTFrameworkModule.Utility, "初始化分页绘制器失败：宿主不能为空！");
+            CurrentHost = host != null ? host : throw new HTFrameworkException(HTFrameworkModule.Utility, "初始化分页绘制器失败：宿主不能为空！");
             _recordPageKey = $"HT.Framework.PagePainter.{CurrentHost.GetType().FullName}";
             CurrentPage = EditorPrefs.GetString(_recordPageKey, null);
         }

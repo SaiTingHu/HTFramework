@@ -202,7 +202,6 @@ namespace HT.Framework
             {
                 string code = asset.text;
                 File.AppendAllText(filePath, code, Encoding.UTF8);
-                asset = null;
                 AssetDatabase.Refresh();
             }
         }

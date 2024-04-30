@@ -26,43 +26,43 @@ namespace HT.Framework
             PropertyField(nameof(AudioManager.MuteDefault), "Mute");
             
             GUILayout.BeginHorizontal();
-            IntSlider(Target.BackgroundPriorityDefault, out Target.BackgroundPriorityDefault, 0, 256, "Background Priority");
+            IntSlider(ref Target.BackgroundPriorityDefault, 0, 256, "Background Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(Target.BackgroundVolumeDefault, out Target.BackgroundVolumeDefault, 0f, 1f, "Background Volume");
+            FloatSlider(ref Target.BackgroundVolumeDefault, 0f, 1f, "Background Volume");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(Target.SinglePriorityDefault, out Target.SinglePriorityDefault, 0, 256, "Single Priority");
+            IntSlider(ref Target.SinglePriorityDefault, 0, 256, "Single Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(Target.SingleVolumeDefault, out Target.SingleVolumeDefault, 0f, 1f, "Single Volume");
+            FloatSlider(ref Target.SingleVolumeDefault, 0f, 1f, "Single Volume");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(Target.MultiplePriorityDefault, out Target.MultiplePriorityDefault, 0, 256, "Multiple Priority");
+            IntSlider(ref Target.MultiplePriorityDefault, 0, 256, "Multiple Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(Target.MultipleVolumeDefault, out Target.MultipleVolumeDefault, 0f, 1f, "Multiple Volume");
+            FloatSlider(ref Target.MultipleVolumeDefault, 0f, 1f, "Multiple Volume");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(Target.WorldPriorityDefault, out Target.WorldPriorityDefault, 0, 256, "WorldSound Priority");
+            IntSlider(ref Target.WorldPriorityDefault, 0, 256, "WorldSound Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(Target.WorldVolumeDefault, out Target.WorldVolumeDefault, 0f, 1f, "WorldSound Volume");
+            FloatSlider(ref Target.WorldVolumeDefault, 0f, 1f, "WorldSound Volume");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            IntSlider(Target.OneShootPriorityDefault, out Target.OneShootPriorityDefault, 0, 256, "OneShoot Priority");
+            IntSlider(ref Target.OneShootPriorityDefault, 0, 256, "OneShoot Priority");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            FloatSlider(Target.OneShootVolumeDefault, out Target.OneShootVolumeDefault, 0f, 1f, "OneShoot Volume");
+            FloatSlider(ref Target.OneShootVolumeDefault, 0f, 1f, "OneShoot Volume");
             GUILayout.EndHorizontal();
 
             GUI.enabled = true;

@@ -262,7 +262,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label(GetWord("Task Content Count") + ":" + _contentAsset.Content.Count);
+            GUILayout.Label($"{GetWord("Task Content Count")}:{_contentAsset.Content.Count}");
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -388,7 +388,7 @@ namespace HT.Framework
                                 {
                                     pointName = attribute.Name;
                                 }
-                                gm.AddItem(new GUIContent(GetWord("Add Task Point") + "/" + pointName), false, () =>
+                                gm.AddItem(new GUIContent($"{GetWord("Add Task Point")}/{pointName}"), false, () =>
                                 {
                                     AddPoint(_currentContent, type, pos);
                                 });
@@ -397,7 +397,7 @@ namespace HT.Framework
                             for (int i = 0; i < _currentContent.Points.Count; i++)
                             {
                                 TaskPointBase point = _currentContent.Points[i];
-                                gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(GetWord("Find Task Point") + "/" + point.Name)), false, () =>
+                                gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName($"{GetWord("Find Task Point")}/{point.Name}")), false, () =>
                                 {
                                     FindPoint(point);
                                 });
@@ -563,7 +563,7 @@ namespace HT.Framework
             else
             {
                 string assetPath = AssetDatabase.GetAssetPath(_contentAsset);
-                gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentContent.Name), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Copy")} {_currentContent.Name}"), false, () =>
                 {
                     GUIUtility.systemCopyBuffer = $"TaskContent|{assetPath}|{_currentContent.GUID}";
                 });
@@ -600,7 +600,7 @@ namespace HT.Framework
             }
             else
             {
-                gm.AddItem(new GUIContent(GetWord("Paste") + " " + content.Name), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Paste")} {content.Name}"), false, () =>
                 {
                     CloneContent(content);
                 });
@@ -660,7 +660,7 @@ namespace HT.Framework
                             {
                                 contentName = attribute.Name;
                             }
-                            gm.AddItem(new GUIContent(GetWord("Add Task Content") + "/" + contentName), false, () =>
+                            gm.AddItem(new GUIContent($"{GetWord("Add Task Content")}/{contentName}"), false, () =>
                             {
                                 AddContent(type);
                             });
@@ -809,7 +809,7 @@ namespace HT.Framework
                 if (taskPoint.IsSelected)
                 {
                     number += 1;
-                    gm.AddItem(new GUIContent(GetWord("Copy") + " " + taskPoint.Name), false, () =>
+                    gm.AddItem(new GUIContent($"{GetWord("Copy")} {taskPoint.Name}"), false, () =>
                     {
                         GUIUtility.systemCopyBuffer = $"TaskPoint|{assetPath}|{_currentContent.GUID}|{taskPoint.GUID}";
                     });
@@ -861,7 +861,7 @@ namespace HT.Framework
             }
             else
             {
-                gm.AddItem(new GUIContent(GetWord("Paste") + " " + point.Name), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Paste")} {point.Name}"), false, () =>
                 {
                     ClonePoint(_currentContent, point, pos);
                 });

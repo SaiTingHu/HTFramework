@@ -41,7 +41,7 @@ namespace HT.Framework
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Space(20);
-                        EditorGUILayout.ObjectField(item.Value[i], typeof(DataSetBase), true);
+                        EditorGUILayout.ObjectField(item.Value[i], typeof(DataSetBase), false);
                         GUILayout.EndHorizontal();
                     }
                 }

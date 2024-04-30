@@ -61,7 +61,7 @@ namespace HT.Framework
         }
         private void GenerateID()
         {
-            if (Target.ID == "")
+            if (string.IsNullOrEmpty(Target.ID))
             {
                 Target.GenerateID();
             }

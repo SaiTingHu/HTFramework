@@ -65,10 +65,12 @@ namespace HT.Framework
                     Undo.RecordObject(_target, "Move Pivot");
                     Vector3 dir = newValue - _target.position;
                     _target.position = newValue;
+                    EditorUtility.SetDirty(_target);
                     for (int i = 0; i < _childs.Count; i++)
                     {
                         Undo.RecordObject(_childs[i], "Move Pivot");
                         _childs[i].position -= dir;
+                        EditorUtility.SetDirty(_childs[i]);
                     }
                 }
             }

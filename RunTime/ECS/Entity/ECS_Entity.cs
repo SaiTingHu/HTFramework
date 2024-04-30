@@ -10,6 +10,7 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public sealed class ECS_Entity : HTBehaviour
     {
+#if UNITY_EDITOR
         /// <summary>
         /// 创建新的实体
         /// </summary>
@@ -19,9 +20,7 @@ namespace HT.Framework
         public static ECS_Entity CreateEntity(GameObject target, string entityName = "Default")
         {
             if (target == null)
-            {
                 return null;
-            }
 
             ECS_Entity entity = target.GetComponent<ECS_Entity>();
             if (entity == null) entity = target.AddComponent<ECS_Entity>();
@@ -29,6 +28,7 @@ namespace HT.Framework
             if (string.IsNullOrEmpty(entity.ID)) entity.GenerateID();
             return entity;
         }
+#endif
 
         [SerializeField] private string _name = "";
         [SerializeField] private string _id = "";

@@ -312,6 +312,7 @@ namespace HT.Framework
             for (int i = 0; i < Selection.gameObjects.Length; i++)
             {
                 ECS_Entity.CreateEntity(Selection.gameObjects[i]);
+                EditorUtility.SetDirty(Selection.gameObjects[i]);
                 index += 1;
             }
             Log.Info($"已完成ECS实体标记 {index} 个！");
@@ -1453,7 +1454,7 @@ namespace HT.Framework
         private static void EditWithVSCode(string filePath)
         {
             string vscodePath = EditorPrefs.GetString(EditorPrefsTable.VSCodePath, null);
-            bool succeed = ExecutableToolkit.Execute(vscodePath, "\"" + filePath + "\"");
+            bool succeed = ExecutableToolkit.Execute(vscodePath, $"\"{filePath}\"");
             if (!succeed)
             {
                 EditorApplication.ExecuteMenuItem("HTFramework/HTFramework Settings...");

@@ -35,12 +35,12 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("  " + GetWord("ID Name") + ":", GUILayout.Width(90));
+            GUILayout.Label($"  {GetWord("ID Name")}:", GUILayout.Width(90));
             _contentAsset.TaskIDName = EditorGUILayout.TextField(_contentAsset.TaskIDName);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("  " + GetWord("ID Sign") + ":", GUILayout.Width(90));
+            GUILayout.Label($"  {GetWord("ID Sign")}:", GUILayout.Width(90));
             GUI.enabled = false;
             _contentAsset.TaskIDSign = EditorGUILayout.IntField(_contentAsset.TaskIDSign);
             GUI.enabled = true;
@@ -51,12 +51,12 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("  " + GetWord("ID Name") + ":", GUILayout.Width(90));
+            GUILayout.Label($"  {GetWord("ID Name")}:", GUILayout.Width(90));
             _contentAsset.TaskPointIDName = EditorGUILayout.TextField(_contentAsset.TaskPointIDName);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("  " + GetWord("ID Sign") + ":", GUILayout.Width(90));
+            GUILayout.Label($"  {GetWord("ID Sign")}:", GUILayout.Width(90));
             GUI.enabled = false;
             _contentAsset.TaskPointIDSign = EditorGUILayout.IntField(_contentAsset.TaskPointIDSign);
             GUI.enabled = true;

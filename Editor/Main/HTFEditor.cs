@@ -290,235 +290,169 @@ namespace HT.Framework
         /// <summary>
         /// 制作一个Toggle
         /// </summary>
-        protected void Toggle(bool value, out bool outValue, string name, params GUILayoutOption[] options)
+        protected void Toggle(ref bool value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set bool value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个Toggle
         /// </summary>
-        protected void Toggle(bool value, out bool outValue, string name, GUIStyle style, params GUILayoutOption[] options)
+        protected void Toggle(ref bool value, string name, GUIStyle style, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             bool newValue = EditorGUILayout.Toggle(name, value, style, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set bool value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个IntSlider
         /// </summary>
-        protected void IntSlider(int value, out int outValue, int leftValue, int rightValue, string name, params GUILayoutOption[] options)
+        protected void IntSlider(ref int value, int leftValue, int rightValue, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             int newValue = EditorGUILayout.IntSlider(name, value, leftValue, rightValue, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set int value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个FloatSlider
         /// </summary>
-        protected void FloatSlider(float value, out float outValue, float leftValue, float rightValue, string name, params GUILayoutOption[] options)
+        protected void FloatSlider(ref float value, float leftValue, float rightValue, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             float newValue = EditorGUILayout.Slider(name, value, leftValue, rightValue, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set float value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个IntField
         /// </summary>
-        protected void IntField(int value, out int outValue, string name, params GUILayoutOption[] options)
+        protected void IntField(ref int value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             int newValue = EditorGUILayout.IntField(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set int value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个FloatField
         /// </summary>
-        protected void FloatField(float value, out float outValue, string name, params GUILayoutOption[] options)
+        protected void FloatField(ref float value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             float newValue = EditorGUILayout.FloatField(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set float value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
-            }
-        }
-        /// <summary>
-        /// 制作一个TextField
-        /// </summary>
-        protected void TextField(string value, out string outValue, string name, params GUILayoutOption[] options)
-        {
-            EditorGUI.BeginChangeCheck();
-            string newValue = EditorGUILayout.TextField(name, value, options);
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(target, "Set string value");
-                outValue = newValue;
-                HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个PasswordField
         /// </summary>
-        protected void PasswordField(string value, out string outValue, string name, params GUILayoutOption[] options)
+        protected void PasswordField(ref string value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             string newValue = EditorGUILayout.PasswordField(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set string value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个ObjectField
         /// </summary>
-        protected void ObjectField<T>(T value, out T outValue, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UObject
+        protected void ObjectField<T>(ref T value, bool allowSceneObjects, string name, params GUILayoutOption[] options) where T : UObject
         {
             EditorGUI.BeginChangeCheck();
             T newValue = EditorGUILayout.ObjectField(name, value, typeof(T), allowSceneObjects, options) as T;
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set object value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个Vector2Field
         /// </summary>
-        protected void Vector2Field(Vector2 value, out Vector2 outValue, string name, params GUILayoutOption[] options)
+        protected void Vector2Field(ref Vector2 value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             Vector2 newValue = EditorGUILayout.Vector2Field(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set vector2 value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个Vector3Field
         /// </summary>
-        protected void Vector3Field(Vector3 value, out Vector3 outValue, string name, params GUILayoutOption[] options)
+        protected void Vector3Field(ref Vector3 value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             Vector3 newValue = EditorGUILayout.Vector3Field(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set vector3 value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
         /// <summary>
         /// 制作一个枚举下拉按钮
         /// </summary>
-        protected void EnumPopup<T>(Enum value, out T outValue, string name, params GUILayoutOption[] options) where T : Enum
+        protected void EnumPopup(ref Enum value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             Enum newValue = EditorGUILayout.EnumPopup(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set enum value");
-                outValue = (T)newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = (T)value;
             }
         }
         /// <summary>
         /// 制作一个ColorField
         /// </summary>
-        protected void ColorField(Color value, out Color outValue, string name, params GUILayoutOption[] options)
+        protected void ColorField(ref Color value, string name, params GUILayoutOption[] options)
         {
             EditorGUI.BeginChangeCheck();
             Color newValue = EditorGUILayout.ColorField(name, value, options);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(target, "Set color value");
-                outValue = newValue;
+                value = newValue;
                 HasChanged();
-            }
-            else
-            {
-                outValue = value;
             }
         }
 

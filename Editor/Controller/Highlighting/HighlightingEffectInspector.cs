@@ -6,7 +6,7 @@ namespace HT.Framework
     [CustomEditor(typeof(HighlightingEffect))]
     internal sealed class HighlightingEffectInspector : HTFEditor<HighlightingEffect>
     {
-        private static readonly string[] _downsampleOptions = new string[] { "None", "Half", "Quarter" };
+        private readonly string[] _downsampleOptions = new string[] { "None", "Half", "Quarter" };
         private HTFAction _default;
         private HTFAction _strong;
         private HTFAction _speed;

@@ -1402,7 +1402,7 @@ namespace HT.Framework
             _scriptsDisplay.Clear();
             _missingDisplay.Clear();
 
-            if (_filterName == "")
+            if (string.IsNullOrEmpty(_filterName))
             {
                 foreach (var item in _materials)
                 {

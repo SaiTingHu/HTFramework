@@ -51,7 +51,7 @@ namespace HT.Framework
                     PropertyField(nameof(ExceptionManager.SendMailbox), "Send Mail");
                     
                     GUILayout.BeginHorizontal();
-                    PasswordField(Target.SendMailboxPassword, out Target.SendMailboxPassword, "Password");
+                    PasswordField(ref Target.SendMailboxPassword, "Password");
                     GUILayout.EndHorizontal();
 
                     PropertyField(nameof(ExceptionManager.ReceiveMailbox), "Receive Mail");

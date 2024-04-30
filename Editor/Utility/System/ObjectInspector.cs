@@ -72,7 +72,10 @@ namespace HT.Framework
                 }
                 _methods.Sort((a, b) => { return a.Attribute.Order - b.Attribute.Order; });
             }
-            catch { }
+            catch (Exception e)
+            {
+                Log.Error($"对象公共检视器：初始化出现错误 {e.Message}。");
+            }
         }
         protected override void OnInspectorDefaultGUI()
         {

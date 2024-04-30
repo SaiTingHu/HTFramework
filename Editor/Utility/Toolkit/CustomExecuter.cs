@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -265,7 +264,7 @@ namespace HT.Framework
 
             #region Execute
             GUILayout.BeginHorizontal();
-            GUI.enabled = _code != "";
+            GUI.enabled = !string.IsNullOrEmpty(_code);
             GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Execute", EditorGlobalTools.Styles.LargeButton))
             {

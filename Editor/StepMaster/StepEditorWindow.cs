@@ -182,7 +182,7 @@ namespace HT.Framework
         private MousePosition _mp;
         private MouseRotation _mr;
         private Transform _player;
-        private Type _baseType = typeof(StepHelper);
+        private readonly Type _baseType = typeof(StepHelper);
         private HashSet<int> _operationIndexs = new HashSet<int>();
         private HTFFunc<string, string> _getWord;
         private string[] _operationTypes = new string[] {
@@ -547,7 +547,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label(GetWord("Step Count") + ":" + _contentAsset.Content.Count);
+            GUILayout.Label($"{GetWord("Step Count")}:{_contentAsset.Content.Count}");
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -654,7 +654,7 @@ namespace HT.Framework
             if (_isMoveTo)
             {
                 GUILayout.BeginHorizontal();
-                GUI.enabled = (_currentStepIndex != -1);
+                GUI.enabled = _currentStepIndex != -1;
                 GUILayout.Label(GetWord("Move To") + ": ");
                 _moveToIndex = EditorGUILayout.IntField(_moveToIndex);
                 if (GUILayout.Button(GetWord("Sure"), EditorStyles.miniButtonLeft))
@@ -881,7 +881,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(GetWord("Operation") + ": " + _currentStepObj.Operations.Count, GUILayout.Width(135));
+                    GUILayout.Label($"{GetWord("Operation")}: {_currentStepObj.Operations.Count}", GUILayout.Width(135));
                     if (GUILayout.Button(GetWord("Find"), EditorStyles.popup, GUILayout.Width(50)))
                     {
                         GUI.FocusControl(null);
@@ -1018,7 +1018,7 @@ namespace HT.Framework
                     
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(GetWord("Parameter") + ":", GUILayout.Width(70));
-                    if (GUILayout.Button(GetWord("Edit Parameter") + " " + _currentStepObj.Parameters.Count))
+                    if (GUILayout.Button($"{GetWord("Edit Parameter")} {_currentStepObj.Parameters.Count}"))
                     {
                         StepParameterWindow.ShowWindow(this, _contentAsset, _currentStepObj, CurrentLanguage);
                     }
@@ -1435,7 +1435,7 @@ namespace HT.Framework
                                 for (int i = 0; i < _currentStepObj.Operations.Count; i++)
                                 {
                                     int j = i;
-                                    gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(GetWord("Connect or break") + "/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(-1, j), () =>
+                                    gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName($"{GetWord("Connect or break")}/{_currentStepObj.Operations[j].Name}")), _currentStepObj.IsExistWired(-1, j), () =>
                                     {
                                         ConnectOrBreakWired(_currentStepObj, -1, j);
                                     });
@@ -1464,7 +1464,7 @@ namespace HT.Framework
                                     if (i != downIndex)
                                     {
                                         int j = i;
-                                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName(GetWord("Connect or break") + "/" + _currentStepObj.Operations[j].Name)), _currentStepObj.IsExistWired(downIndex, j), () =>
+                                        gm.AddItem(new GUIContent(StringToolkit.GetNoRepeatName($"{GetWord("Connect or break")}/{_currentStepObj.Operations[j].Name}")), _currentStepObj.IsExistWired(downIndex, j), () =>
                                         {
                                             ConnectOrBreakWired(_currentStepObj, downIndex, j);
                                         });
@@ -1762,7 +1762,7 @@ namespace HT.Framework
             StepContent content = new StepContent();
             content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
             _contentAsset.StepIDSign += 1;
-            content.EnterAnchor = new Vector2(position.width / 2, position.height / 2);
+            content.EnterAnchor = new Vector2(position.width * 0.5f, position.height * 0.5f);
             _contentAsset.Content.Add(content);
             AddStepContentHandler?.Invoke(content);
             SelectStepContent(_contentAsset.Content.Count - 1);
@@ -1831,7 +1831,7 @@ namespace HT.Framework
             gm.AddSeparator("");
             foreach (StepOperationType type in Enum.GetValues(typeof(StepOperationType)))
             {
-                gm.AddItem(new GUIContent(GetWord("Add Step Operation") + "/" + GetWord(type.ToString())), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Add Step Operation")}/{GetWord(type.ToString())}"), false, () =>
                 {
                     StepOperation operation = new StepOperation();
                     operation.GUID = Guid.NewGuid().ToString();
@@ -1930,7 +1930,7 @@ namespace HT.Framework
         /// </summary>
         private void FindStepOperation(Vector2 operationAnchor)
         {
-            Vector2 direction = new Vector2((position.width - _stepListGUIWidth) / 2, position.height / 2) - operationAnchor;
+            Vector2 direction = new Vector2((position.width - _stepListGUIWidth) * 0.5f, position.height * 0.5f) - operationAnchor;
             for (int i = 0; i < _currentStepObj.Operations.Count; i++)
             {
                 _currentStepObj.Operations[i].Anchor += direction;
@@ -1982,7 +1982,7 @@ namespace HT.Framework
             }
             else
             {
-                gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentStepObj.Name), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Copy")} {_currentStepObj.Name}"), false, () =>
                 {
                     GUIUtility.systemCopyBuffer = $"StepContent|{assetPath}|{_currentStepObj.GUID}";
                 });
@@ -2012,7 +2012,7 @@ namespace HT.Framework
             }
             else
             {
-                gm.AddItem(new GUIContent(GetWord("Paste") + " " + stepContent.Name), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Paste")} {stepContent.Name}"), false, () =>
                 {
                     StepContent content = stepContent.Clone();
                     content.GUID = _contentAsset.StepIDName + _contentAsset.StepIDSign.ToString();
@@ -2058,7 +2058,7 @@ namespace HT.Framework
             }
             else
             {
-                gm.AddItem(new GUIContent(GetWord("Copy") + " " + _currentOperationObj.Name), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Copy")} {_currentOperationObj.Name}"), false, () =>
                 {
                     GUIUtility.systemCopyBuffer = $"StepOperation|{assetPath}|{_currentStepObj.GUID}|{_currentOperationObj.GUID}";
                 });
@@ -2104,7 +2104,7 @@ namespace HT.Framework
             }
             else
             {
-                gm.AddItem(new GUIContent(GetWord("Paste") + " " + operation.Name), false, () =>
+                gm.AddItem(new GUIContent($"{GetWord("Paste")} {operation.Name}"), false, () =>
                 {
                     StepOperation ope = operation.Clone();
                     ope.Anchor = position - new Vector2(340, 0);
