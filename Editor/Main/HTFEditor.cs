@@ -372,6 +372,20 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 制作一个TextField
+        /// </summary>
+        protected void TextField(ref string value, string name, params GUILayoutOption[] options)
+        {
+            EditorGUI.BeginChangeCheck();
+            string newValue = EditorGUILayout.TextField(name, value, options);
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(target, "Set string value");
+                value = newValue;
+                HasChanged();
+            }
+        }
+        /// <summary>
         /// 制作一个PasswordField
         /// </summary>
         protected void PasswordField(ref string value, string name, params GUILayoutOption[] options)
