@@ -34,7 +34,7 @@
     /// <summary>
     /// 本地化词汇
     /// </summary>
-    public struct Word
+    public class Word
     {
         public string Chinese;
         public string English;

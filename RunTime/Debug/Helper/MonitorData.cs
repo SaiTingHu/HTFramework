@@ -3,7 +3,7 @@ namespace HT.Framework
     /// <summary>
     /// 监控数据
     /// </summary>
-    public struct MonitorData
+    public class MonitorData
     {
         /// <summary>
         /// 监控名称
