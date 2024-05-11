@@ -81,9 +81,9 @@ namespace HT.Framework
         {
             try
             {
-                if (_serverEndPoint == null) _serverEndPoint = new IPEndPoint(IPAddress.Parse(Main.m_Network.ServerIP), Main.m_Network.ServerPort);
+                if (_serverEndPoint == null) _serverEndPoint = Main.m_Network.ServerEndPoint;
 
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[2048];
                 int length = client.ReceiveFrom(buffer, ref _serverEndPoint);
 
                 UdpNetworkInfo info = new UdpNetworkInfo();
