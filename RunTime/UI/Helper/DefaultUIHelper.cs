@@ -153,7 +153,7 @@ namespace HT.Framework
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
                 return (type.IsSubclassOf(typeof(UILogicResident)) || type.IsSubclassOf(typeof(UILogicTemporary))) && !type.IsAbstract;
-            });
+            }, false);
             for (int i = 0; i < types.Count; i++)
             {
                 UIResourceAttribute attribute = types[i].GetCustomAttribute<UIResourceAttribute>();

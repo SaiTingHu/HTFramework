@@ -623,7 +623,7 @@ namespace HT.Framework
             {
                 if (LicenserType != "<None>")
                 {
-                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(LicenserType);
+                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(LicenserType, false);
                     if (type != null)
                     {
                         if (type.IsSubclassOf(typeof(LicenserBase)))
@@ -703,7 +703,7 @@ namespace HT.Framework
         {
             for (int i = 0; i < DataModelTypes.Count; i++)
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(DataModelTypes[i]);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(DataModelTypes[i], false);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(DataModelBase)))

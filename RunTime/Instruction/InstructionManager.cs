@@ -21,7 +21,7 @@ namespace HT.Framework
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
                 return type.IsSubclassOf(typeof(SentenceCustom)) && !type.IsAbstract;
-            });
+            }, false);
             for (int i = 0; i < types.Count; i++)
             {
                 CustomInstructionAttribute attribute = types[i].GetCustomAttribute<CustomInstructionAttribute>();

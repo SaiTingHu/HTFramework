@@ -25,16 +25,18 @@ namespace HT.Framework
             RunTimeAssemblies.Add(assembly);
         }
         /// <summary>
-        /// 从当前程序域的运行时程序集中获取所有类型
+        /// 从当前【程序域】的【运行时程序集】中获取所有类型
         /// </summary>
-        /// <returns>所有类型集合</returns>
-        public static List<Type> GetTypesInRunTimeAssemblies()
+        /// <param name="isIncludeUnity">是否包含Unity系列的程序集</param>
+        /// <returns>所有类型</returns>
+        public static List<Type> GetTypesInRunTimeAssemblies(bool isIncludeUnity = true)
         {
             List<Type> types = new List<Type>();
             Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblys.Length; i++)
             {
-                if (RunTimeAssemblies.Contains(assemblys[i].GetName().Name))
+                string name = assemblys[i].GetName().Name;
+                if (RunTimeAssemblies.Contains(name) && (isIncludeUnity || !name.StartsWith("UnityEngine")))
                 {
                     types.AddRange(assemblys[i].GetTypes());
                 }
@@ -42,17 +44,19 @@ namespace HT.Framework
             return types;
         }
         /// <summary>
-        /// 从当前程序域的运行时程序集中获取所有类型
+        /// 从当前【程序域】的【运行时程序集】中获取所有类型
         /// </summary>
         /// <param name="filter">类型筛选器</param>
-        /// <returns>所有类型集合</returns>
-        public static List<Type> GetTypesInRunTimeAssemblies(HTFFunc<Type, bool> filter)
+        /// <param name="isIncludeUnity">是否包含Unity系列的程序集</param>
+        /// <returns>所有类型</returns>
+        public static List<Type> GetTypesInRunTimeAssemblies(HTFFunc<Type, bool> filter, bool isIncludeUnity = true)
         {
             List<Type> types = new List<Type>();
             Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblys.Length; i++)
             {
-                if (RunTimeAssemblies.Contains(assemblys[i].GetName().Name))
+                string name = assemblys[i].GetName().Name;
+                if (RunTimeAssemblies.Contains(name) && (isIncludeUnity || !name.StartsWith("UnityEngine")))
                 {
                     Type[] ts = assemblys[i].GetTypes();
                     foreach (var t in ts)
@@ -67,28 +71,32 @@ namespace HT.Framework
             return types;
         }
         /// <summary>
-        /// 从当前程序域的运行时程序集中获取指定类型
+        /// 从当前【程序域】的【运行时程序集】中获取指定类型
         /// </summary>
         /// <param name="typeName">类型名称</param>
+        /// <param name="isIncludeUnity">是否包含Unity系列的程序集</param>
         /// <returns>类型</returns>
-        public static Type GetTypeInRunTimeAssemblies(string typeName)
+        public static Type GetTypeInRunTimeAssemblies(string typeName, bool isIncludeUnity = true)
         {
             Type type = null;
             foreach (string assembly in RunTimeAssemblies)
             {
-                type = Type.GetType($"{typeName},{assembly}");
-                if (type != null)
+                if (isIncludeUnity || !assembly.StartsWith("UnityEngine"))
                 {
-                    return type;
+                    type = Type.GetType($"{typeName},{assembly}");
+                    if (type != null)
+                    {
+                        return type;
+                    }
                 }
             }
             Log.Error($"获取类型 {typeName} 失败！当前运行时程序集中不存在此类型！或此类型所在的程序集未使用 ReflectionToolkit.AddRunTimeAssembly(assembly) 添加到程序域！");
             return null;
         }
         /// <summary>
-        /// 从当前程序域的所有程序集中获取所有类型
+        /// 从当前【程序域】的【所有程序集】中获取所有类型
         /// </summary>
-        /// <returns>所有类型集合</returns>
+        /// <returns>所有类型</returns>
         public static List<Type> GetTypesInAllAssemblies()
         {
             List<Type> types = new List<Type>();
@@ -100,10 +108,10 @@ namespace HT.Framework
             return types;
         }
         /// <summary>
-        /// 从当前程序域的所有程序集中获取所有类型
+        /// 从当前【程序域】的【所有程序集】中获取所有类型
         /// </summary>
         /// <param name="filter">类型筛选器</param>
-        /// <returns>所有类型集合</returns>
+        /// <returns>所有类型</returns>
         public static List<Type> GetTypesInAllAssemblies(HTFFunc<Type, bool> filter)
         {
             List<Type> types = new List<Type>();
@@ -127,7 +135,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">类型</param>
         /// <param name="filter">字段筛选器</param>
-        /// <returns>所有字段集合</returns>
+        /// <returns>所有字段</returns>
         public static List<FieldInfo> GetFields(this Type type, HTFFunc<FieldInfo, bool> filter)
         {
             List<FieldInfo> fields = new List<FieldInfo>();
@@ -146,7 +154,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">类型</param>
         /// <param name="filter">属性筛选器</param>
-        /// <returns>所有属性集合</returns>
+        /// <returns>所有属性</returns>
         public static List<PropertyInfo> GetProperties(this Type type, HTFFunc<PropertyInfo, bool> filter)
         {
             List<PropertyInfo> properties = new List<PropertyInfo>();
@@ -165,7 +173,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">类型</param>
         /// <param name="filter">方法筛选器</param>
-        /// <returns>所有方法集合</returns>
+        /// <returns>所有方法</returns>
         public static List<MethodInfo> GetMethods(this Type type, HTFFunc<MethodInfo, bool> filter)
         {
             List<MethodInfo> methods = new List<MethodInfo>();

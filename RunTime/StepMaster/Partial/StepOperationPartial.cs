@@ -206,7 +206,7 @@ namespace HT.Framework
         {
             if (StringValue != "<None>")
             {
-                Target.GetComponent<FSM>().SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue));
+                Target.GetComponent<FSM>().SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue, false));
             }
         }
         private void DelayExecute()
@@ -437,7 +437,7 @@ namespace HT.Framework
         {
             if (StringValue != "<None>")
             {
-                Target.GetComponent<FSM>().SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue));
+                Target.GetComponent<FSM>().SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue, false));
             }
         }
         private void DelaySkip()
@@ -636,7 +636,7 @@ namespace HT.Framework
         {
             if (StringValue != "<None>")
             {
-                Target.GetComponent<FSM>().SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue));
+                Target.GetComponent<FSM>().SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(StringValue, false));
             }
         }
         private void DelaySkipImmediate()

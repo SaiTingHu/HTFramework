@@ -306,7 +306,7 @@ namespace HT.Framework
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
                             return type.IsSubclassOf(typeof(DataModelBase));
-                        });
+                        }, false);
                         for (int i = 0; i < types.Count; i++)
                         {
                             int j = i;
@@ -389,7 +389,7 @@ namespace HT.Framework
                     List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                     {
                         return type.IsSubclassOf(typeof(LicenserBase)) && !type.IsAbstract;
-                    });
+                    }, false);
                     gm.AddItem(new GUIContent("<None>"), Target.LicenserType == "<None>", () =>
                     {
                         Undo.RecordObject(target, "Set Licenser");

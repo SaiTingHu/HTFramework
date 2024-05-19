@@ -28,7 +28,7 @@ namespace HT.Framework
             _types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
                 return typeof(H).IsAssignableFrom(type) && typeof(H) != type;
-            });
+            }, false);
         }
         protected override void OnRuntimeEnable()
         {

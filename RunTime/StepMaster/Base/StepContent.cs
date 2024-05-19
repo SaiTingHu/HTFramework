@@ -603,7 +603,7 @@ namespace HT.Framework
             }
             else
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(Helper);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(Helper, false);
                 if (type == null)
                 {
                     HelperName = "无效的助手";

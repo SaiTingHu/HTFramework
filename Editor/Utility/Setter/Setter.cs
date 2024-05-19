@@ -34,7 +34,7 @@ namespace HT.Framework
             List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies(type =>
             {
                 return type.IsSubclassOf(typeof(SettingItemBase)) && type.GetCustomAttribute<InternalSettingItemAttribute>() == null;
-            });
+            }, false);
             for (int i = 0; i < types.Count; i++)
             {
                 _settingItems.Add(Activator.CreateInstance(types[i]) as SettingItemBase);

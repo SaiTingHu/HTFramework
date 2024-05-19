@@ -32,7 +32,7 @@ namespace HT.Framework
         {
             if (HelperType != "<None>")
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(HelperType);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(HelperType, false);
                 if (type != null)
                 {
                     if (typeof(IInternalModuleHelper).IsAssignableFrom(type))

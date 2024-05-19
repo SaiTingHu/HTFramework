@@ -25,7 +25,7 @@ namespace HT.Framework
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
                 return type.IsSubclassOf(typeof(EventHandlerBase)) && !type.IsAbstract;
-            });
+            }, false);
             for (int i = 0; i < types.Count; i++)
             {
                 EventHandlerList.Add(types[i], null);

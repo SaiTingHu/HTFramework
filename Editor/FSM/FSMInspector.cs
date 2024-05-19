@@ -76,7 +76,7 @@ namespace HT.Framework
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
                             return type.IsSubclassOf(typeof(FiniteStateBase)) && !type.IsAbstract;
-                        });
+                        }, false);
                         for (int i = 0; i < types.Count; i++)
                         {
                             int j = i;
@@ -151,7 +151,7 @@ namespace HT.Framework
                     string stateType = property.stringValue;
                     if (!_stateNames.ContainsKey(stateType))
                     {
-                        Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(stateType);
+                        Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(stateType, false);
                         if (type != null)
                         {
                             string stateName = type.FullName;
@@ -293,7 +293,7 @@ namespace HT.Framework
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
                     return type.IsSubclassOf(typeof(FSMDataBase)) && !type.IsAbstract;
-                });
+                }, false);
                 for (int i = 0; i < types.Count; i++)
                 {
                     int j = i;
@@ -342,7 +342,7 @@ namespace HT.Framework
                 GUI.enabled = Target.CurrentState.GetType().FullName != state.Key;
                 if (GUILayout.Button("Switch", EditorStyles.miniButton))
                 {
-                    Target.SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(state.Key));
+                    Target.SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(state.Key, false));
                 }
                 GUI.enabled = true;
                 GUILayout.EndHorizontal();
@@ -390,7 +390,7 @@ namespace HT.Framework
                 List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                 {
                     return type.IsSubclassOf(typeof(FSMArgsBase)) && !type.IsAbstract;
-                });
+                }, false);
                 for (int i = 0; i < types.Count; i++)
                 {
                     int j = i;

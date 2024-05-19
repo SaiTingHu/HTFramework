@@ -98,7 +98,7 @@ namespace HT.Framework
         {
             for (int i = 0; i < channelTypes.Count; i++)
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(channelTypes[i]);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(channelTypes[i], false);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(ProtocolChannelBase)))

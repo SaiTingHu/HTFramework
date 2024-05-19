@@ -447,7 +447,7 @@ namespace HT.Framework
         /// <param name="deviceType">输入设备类型</param>
         public void LoadDevice(string deviceType)
         {
-            Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(deviceType);
+            Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(deviceType, false);
             if (type != null)
             {
                 if (type.IsSubclassOf(typeof(InputDeviceBase)))

@@ -67,7 +67,7 @@ namespace HT.Framework
             //加载数据类
             if (Data != "<None>")
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(Data);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(Data, false);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(FSMDataBase)))
@@ -88,7 +88,7 @@ namespace HT.Framework
             //加载所有状态
             for (int i = 0; i < States.Count; i++)
             {
-                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(States[i]);
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(States[i], false);
                 if (type != null)
                 {
                     if (type.IsSubclassOf(typeof(FiniteStateBase)))
@@ -115,12 +115,12 @@ namespace HT.Framework
             {
                 throw new HTFrameworkException(HTFrameworkModule.FSM, $"有限状态机 {Name} 的状态为空！或未指定默认状态、最终状态！");
             }
-            _defaultState = ReflectionToolkit.GetTypeInRunTimeAssemblies(DefaultState);
+            _defaultState = ReflectionToolkit.GetTypeInRunTimeAssemblies(DefaultState, false);
             if (_defaultState == null)
             {
                 throw new HTFrameworkException(HTFrameworkModule.FSM, $"有限状态机 {Name} 丢失了默认状态 {DefaultState}！");
             }
-            _finalState = ReflectionToolkit.GetTypeInRunTimeAssemblies(FinalState);
+            _finalState = ReflectionToolkit.GetTypeInRunTimeAssemblies(FinalState, false);
             if (_finalState == null)
             {
                 throw new HTFrameworkException(HTFrameworkModule.FSM, $"有限状态机 {Name} 丢失了最终状态 {FinalState}！");

@@ -34,7 +34,7 @@ namespace HT.Framework
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
                 return type.IsSubclassOf(typeof(ECS_System)) && !type.IsAbstract;
-            });
+            }, false);
             for (int i = 0; i < types.Count; i++)
             {
                 Systems.Add(types[i], Activator.CreateInstance(types[i]) as ECS_System);

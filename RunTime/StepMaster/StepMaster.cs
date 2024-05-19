@@ -1159,7 +1159,7 @@ namespace HT.Framework
             {
                 if (!string.IsNullOrEmpty(content.Helper) && content.Helper != "<None>")
                 {
-                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(content.Helper);
+                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(content.Helper, false);
                     if (type != null)
                     {
                         StepHelper helper = Activator.CreateInstance(type) as StepHelper;

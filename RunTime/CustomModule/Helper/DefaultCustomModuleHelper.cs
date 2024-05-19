@@ -25,7 +25,7 @@ namespace HT.Framework
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
             {
                 return type.IsSubclassOf(typeof(CustomModuleBase)) && !type.IsAbstract;
-            });
+            }, false);
             for (int i = 0; i < types.Count; i++)
             {
                 CustomModuleAttribute att = types[i].GetCustomAttribute<CustomModuleAttribute>();

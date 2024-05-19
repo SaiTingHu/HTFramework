@@ -983,7 +983,7 @@ namespace HT.Framework
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
                         {
                             return type.IsSubclassOf(_baseType) && !type.IsAbstract;
-                        });
+                        }, false);
                         GenericMenu gm = new GenericMenu();
                         StringToolkit.BeginNoRepeatNaming();
                         gm.AddItem(new GUIContent(GetWord("<None>")), _currentStepObj.Helper == "<None>", () =>

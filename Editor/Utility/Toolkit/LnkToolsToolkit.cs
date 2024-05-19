@@ -31,7 +31,7 @@ namespace HT.Framework
             if (IsEnableLnkTools)
             {
                 LnkToolss.Clear();
-                List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies();
+                List<Type> types = EditorReflectionToolkit.GetTypesInEditorAssemblies(false);
                 for (int i = 0; i < types.Count; i++)
                 {
                     MethodInfo[] methods = types[i].GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
