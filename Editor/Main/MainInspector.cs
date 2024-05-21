@@ -78,7 +78,9 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUI.enabled = false;
             EditorGUILayout.TextField(_currentScriptingDefine.Defined);
+            GUI.enabled = true;
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -139,6 +141,16 @@ namespace HT.Framework
                 if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(40)))
                 {
                     _newDefine += "DISABLE_ASPECTTRACK;";
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(10);
+                GUILayout.Label("DISABLE_BUILDER", "PR PrefabLabel");
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(40)))
+                {
+                    _newDefine += "DISABLE_BUILDER;";
                 }
                 GUILayout.EndHorizontal();
 
