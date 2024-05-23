@@ -185,19 +185,22 @@ namespace HT.Framework
 
             if (Target)
             {
-                if (_rayTargetType == TargetType.GameObject)
+                if (IsOpenHighlight && Target.IsOpenHighlight)
                 {
-                    switch (TriggerHighlighting)
+                    if (_rayTargetType == TargetType.GameObject)
                     {
-                        case HighlightingType.Normal:
-                            Target.gameObject.CloseHighLight(IsAutoDie);
-                            break;
-                        case HighlightingType.Flash:
-                            Target.gameObject.CloseFlashHighLight(IsAutoDie);
-                            break;
-                        case HighlightingType.Outline:
-                            Target.gameObject.CloseMeshOutline(IsAutoDie);
-                            break;
+                        switch (TriggerHighlighting)
+                        {
+                            case HighlightingType.Normal:
+                                Target.gameObject.CloseHighLight(IsAutoDie);
+                                break;
+                            case HighlightingType.Flash:
+                                Target.gameObject.CloseFlashHighLight(IsAutoDie);
+                                break;
+                            case HighlightingType.Outline:
+                                Target.gameObject.CloseMeshOutline(IsAutoDie);
+                                break;
+                        }
                     }
                 }
                 Target = null;
