@@ -1441,7 +1441,7 @@ namespace HT.Framework
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Color.yellow;
-            if (GUILayout.Button("Edit with VSCode", EditorStyles.miniButton))
+            if (GUILayout.Button("Edit With VSCode"))
             {
                 EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
             }
@@ -1468,6 +1468,7 @@ namespace HT.Framework
         {
             public static readonly string Box = "Box";
             public static readonly string IconButton = "IconButton";
+            public static readonly string InvisibleButton = "InvisibleButton";
             public static readonly string LargeButton = "LargeButton";
             public static readonly string LargeButtonLeft = "LargeButtonLeft";
             public static readonly string LargeButtonMid = "LargeButtonMid";

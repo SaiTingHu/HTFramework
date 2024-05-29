@@ -43,7 +43,7 @@ namespace HT.Framework
                 if (!EditorApplication.isPlaying)
                 {
                     sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Target.DefineUINames.Add("<None>");
                         Target.DefineUIEntitys.Add(null);
@@ -52,7 +52,7 @@ namespace HT.Framework
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                     GUI.enabled = _uiList.index >= 0 && _uiList.index < Target.DefineUINames.Count;
-                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _removeGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Target.DefineUINames.RemoveAt(_uiList.index);
                         Target.DefineUIEntitys.RemoveAt(_uiList.index);
@@ -188,12 +188,12 @@ namespace HT.Framework
                     {
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !ui.Value.IsOpened;
-                        if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
+                        if (GUILayout.Button("Open", EditorGlobalTools.Styles.ButtonLeft, GUILayout.Width(45)))
                         {
                             Target.OpenUI(ui.Key);
                         }
                         GUI.enabled = ui.Value.IsOpened;
-                        if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
+                        if (GUILayout.Button("Close", EditorGlobalTools.Styles.ButtonRight, GUILayout.Width(45)))
                         {
                             Target.CloseUI(ui.Key);
                         }
@@ -226,12 +226,12 @@ namespace HT.Framework
                     {
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !ui.Value.IsOpened;
-                        if (GUILayout.Button("Open", EditorStyles.miniButtonLeft, GUILayout.Width(45)))
+                        if (GUILayout.Button("Open", EditorGlobalTools.Styles.ButtonLeft, GUILayout.Width(45)))
                         {
                             Target.OpenUI(ui.Key);
                         }
                         GUI.enabled = ui.Value.IsOpened;
-                        if (GUILayout.Button("Close", EditorStyles.miniButtonRight, GUILayout.Width(45)))
+                        if (GUILayout.Button("Close", EditorGlobalTools.Styles.ButtonRight, GUILayout.Width(45)))
                         {
                             Target.CloseUI(ui.Key);
                         }

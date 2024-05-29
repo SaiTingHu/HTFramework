@@ -348,7 +348,7 @@ namespace HT.Framework
         /// <param name="paste">粘贴回调</param>
         protected void DrawCopyPaste(HTFFunc<string> copy, HTFAction<string> paste)
         {
-            if (GUILayout.Button(_copyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            if (GUILayout.Button(_copyPasteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent("Copy"), false, () =>

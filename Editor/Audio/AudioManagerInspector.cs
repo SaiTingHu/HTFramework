@@ -86,19 +86,19 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 GUI.enabled = Target.BackgroundMusicClip;
-                if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Play", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     Target.PlayBackgroundMusic(Target.BackgroundMusicClip);
                 }
-                if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
+                if (GUILayout.Button("Pause", EditorGlobalTools.Styles.ButtonMid))
                 {
                     Target.PauseBackgroundMusic();
                 }
-                if (GUILayout.Button("Resume", EditorStyles.miniButtonMid))
+                if (GUILayout.Button("Resume", EditorGlobalTools.Styles.ButtonMid))
                 {
                     Target.ResumeBackgroundMusic();
                 }
-                if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Stop", EditorGlobalTools.Styles.ButtonRight))
                 {
                     Target.StopBackgroundMusic();
                 }
@@ -135,19 +135,19 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 GUI.enabled = Target.SingleSoundClip;
-                if (GUILayout.Button("Play", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Play", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     Target.PlaySingleSound(Target.SingleSoundClip);
                 }
-                if (GUILayout.Button("Pause", EditorStyles.miniButtonMid))
+                if (GUILayout.Button("Pause", EditorGlobalTools.Styles.ButtonMid))
                 {
                     Target.PauseSingleSound();
                 }
-                if (GUILayout.Button("Resume", EditorStyles.miniButtonMid))
+                if (GUILayout.Button("Resume", EditorGlobalTools.Styles.ButtonMid))
                 {
                     Target.ResumeSingleSound();
                 }
-                if (GUILayout.Button("Stop", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Stop", EditorGlobalTools.Styles.ButtonRight))
                 {
                     Target.StopSingleSound();
                 }
@@ -183,11 +183,11 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Clear", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     Target.ClearIdleMultipleAudioSource();
                 }
-                if (GUILayout.Button("Stop All", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Stop All", EditorGlobalTools.Styles.ButtonRight))
                 {
                     Target.StopAllMultipleSound();
                 }
@@ -215,11 +215,11 @@ namespace HT.Framework
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
-                if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Clear", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     Target.ClearIdleWorldAudioSource();
                 }
-                if (GUILayout.Button("Stop All", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Stop All", EditorGlobalTools.Styles.ButtonRight))
                 {
                     Target.StopAllWorldSound();
                 }

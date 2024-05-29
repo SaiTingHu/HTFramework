@@ -187,15 +187,15 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Tag:");
-            if (GUILayout.Button("UnityEngine", EditorStyles.miniButton))
+            if (GUILayout.Button("UnityEngine"))
             {
                 _assemblyFilter = "UnityEngine";
             }
-            if (GUILayout.Button("UnityEditor", EditorStyles.miniButton))
+            if (GUILayout.Button("UnityEditor"))
             {
                 _assemblyFilter = "UnityEditor";
             }
-            if (GUILayout.Button("Assembly-CSharp", EditorStyles.miniButton))
+            if (GUILayout.Button("Assembly-CSharp"))
             {
                 _assemblyFilter = "Assembly-CSharp";
             }

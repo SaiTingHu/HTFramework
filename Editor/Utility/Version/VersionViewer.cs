@@ -181,7 +181,7 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Release", EditorStyles.miniButtonLeft))
+            if (GUILayout.Button("Release", EditorGlobalTools.Styles.ButtonLeft))
             {
                 if (EditorUtility.DisplayDialog("Prompt", $"Are you sure you want to release new version？Current version will be changed to [{_releaseVersion.GetFullNumber()}]!", "Yes", "No"))
                 {
@@ -192,7 +192,7 @@ namespace HT.Framework
                     HasChanged(_versionInfo);
                 }
             }
-            if (GUILayout.Button("Cancel", EditorStyles.miniButtonRight))
+            if (GUILayout.Button("Cancel", EditorGlobalTools.Styles.ButtonRight))
             {
                 _isRelease = false;
             }

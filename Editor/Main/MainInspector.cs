@@ -86,18 +86,18 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUI.enabled = _currentScriptingDefine.IsAnyDefined;
             GUI.backgroundColor = Color.red;
-            if (GUILayout.Button("Clear", EditorStyles.miniButtonLeft))
+            if (GUILayout.Button("Clear", EditorGlobalTools.Styles.ButtonLeft))
             {
                 _currentScriptingDefine.ClearDefines();
             }
             GUI.enabled = true;
             GUI.backgroundColor = Color.yellow;
-            if (GUILayout.Button("New", EditorStyles.miniButtonMid))
+            if (GUILayout.Button("New", EditorGlobalTools.Styles.ButtonMid))
             {
                 _isNewDefine = !_isNewDefine;
                 _newDefine = "";
             }
-            if (GUILayout.Button("Apply", EditorStyles.miniButtonRight))
+            if (GUILayout.Button("Apply", EditorGlobalTools.Styles.ButtonRight))
             {
                 _currentScriptingDefine.Apply();
             }
@@ -138,7 +138,7 @@ namespace HT.Framework
                 GUILayout.Space(10);
                 GUILayout.Label("DISABLE_ASPECTTRACK", "PR PrefabLabel");
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(40)))
+                if (GUILayout.Button("Use", GUILayout.Width(40)))
                 {
                     _newDefine += "DISABLE_ASPECTTRACK;";
                 }
@@ -148,7 +148,7 @@ namespace HT.Framework
                 GUILayout.Space(10);
                 GUILayout.Label("DISABLE_BUILDER", "PR PrefabLabel");
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(40)))
+                if (GUILayout.Button("Use", GUILayout.Width(40)))
                 {
                     _newDefine += "DISABLE_BUILDER;";
                 }
@@ -159,7 +159,7 @@ namespace HT.Framework
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("Historical Record:");
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Clear Record", EditorStyles.miniButton, GUILayout.Width(90)))
+                if (GUILayout.Button("Clear Record", GUILayout.Width(90)))
                 {
                     _currentScriptingDefine.ClearDefinesRecord();
                 }
@@ -171,7 +171,7 @@ namespace HT.Framework
                     GUILayout.Space(10);
                     GUILayout.Label(_currentScriptingDefine.DefinedsRecord[i], "PR PrefabLabel");
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("Use", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button("Use", GUILayout.Width(40)))
                     {
                         _newDefine += $"{_currentScriptingDefine.DefinedsRecord[i]};";
                     }
@@ -312,7 +312,7 @@ namespace HT.Framework
                 if (!EditorApplication.isPlaying)
                 {
                     sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         GenericMenu gm = new GenericMenu();
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
@@ -341,7 +341,7 @@ namespace HT.Framework
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                     GUI.enabled = _dataModelList.index >= 0 && _dataModelList.index < Target.DataModelTypes.Count;
-                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _removeGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Undo.RecordObject(target, "Remove Data Model");
                         Target.DataModelTypes.RemoveAt(_dataModelList.index);
@@ -361,7 +361,7 @@ namespace HT.Framework
                     if (isActive && isFocused)
                     {
                         subrect.Set(rect.x + rect.width - 20, rect.y, 20, 20);
-                        if (GUI.Button(subrect, _editGC, "InvisibleButton"))
+                        if (GUI.Button(subrect, _editGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             CSharpScriptToolkit.OpenScript(Target.DataModelTypes[index]);
                         }

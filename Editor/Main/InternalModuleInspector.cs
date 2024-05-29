@@ -48,7 +48,7 @@ namespace HT.Framework
             EditorGUILayout.BeginHorizontal();
             GUI.enabled = !EditorApplication.isPlaying && _types.Count > 0;
             EditorGUILayout.LabelField("Helper", GUILayout.Width(LabelWidth));
-            if (GUILayout.Button(_module.HelperType, EditorStyles.popup))
+            if (GUILayout.Button(_module.HelperType, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
             {
                 GenericMenu gm = new GenericMenu();
                 for (int i = 0; i < _types.Count; i++)

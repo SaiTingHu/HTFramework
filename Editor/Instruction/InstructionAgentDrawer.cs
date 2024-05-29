@@ -25,7 +25,7 @@ namespace HT.Framework
                 code.stringValue = EditorGUI.TextArea(sub, code.stringValue);
 
                 sub.Set(position.x + position.width - 220, position.y + 124, 80, 20);
-                if (GUI.Button(sub, "New Code", EditorStyles.miniButtonLeft))
+                if (GUI.Button(sub, "New Code", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     GUI.FocusControl(null);
                     string[] keywords = File.ReadAllLines(Application.dataPath + "/HTFramework/Editor/Instruction/InstructionKeywords.txt");
@@ -43,14 +43,14 @@ namespace HT.Framework
                     gm.ShowAsContext();
                 }
                 sub.Set(position.x + position.width - 140, position.y + 124, 80, 20);
-                if (GUI.Button(sub, "Clear Code", EditorStyles.miniButtonMid))
+                if (GUI.Button(sub, "Clear Code", EditorGlobalTools.Styles.ButtonMid))
                 {
                     GUI.FocusControl(null);
                     code.stringValue = "";
                 }
                 sub.Set(position.x + position.width - 60, position.y + 124, 60, 20);
                 GUI.enabled = EditorApplication.isPlaying && !_isReadOnly;
-                if (GUI.Button(sub, "Execute", EditorStyles.miniButtonRight))
+                if (GUI.Button(sub, "Execute", EditorGlobalTools.Styles.ButtonRight))
                 {
                     MethodInfo execute = fieldInfo.FieldType.GetMethod("Execute", BindingFlags.Public | BindingFlags.Instance);
                     execute.Invoke(fieldInfo.GetValue(code.serializedObject.targetObject), null);

@@ -587,7 +587,7 @@ namespace HT.Framework
                 GUI.FocusControl(null);
             }
             GUI.color = string.IsNullOrEmpty(_stepListAdvancedSearch) ? Color.white : Color.yellow;
-            if (GUILayout.Button(_advancedSearchGC, "InvisibleButton", GUILayout.Width(20)))
+            if (GUILayout.Button(_advancedSearchGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 gm.AddItem(new GUIContent(GetWord("<None>")), string.IsNullOrEmpty(_stepListAdvancedSearch), () =>
@@ -634,7 +634,7 @@ namespace HT.Framework
                             GUI.FocusControl(null);
                         }
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button(_contentAsset.Content[i].IsEnable ? _enableGC : _disableGC, "InvisibleButton", GUILayout.Height(20), GUILayout.Width(20)))
+                        if (GUILayout.Button(_contentAsset.Content[i].IsEnable ? _enableGC : _disableGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Height(20), GUILayout.Width(20)))
                         {
                             _contentAsset.Content[i].IsEnable = !_contentAsset.Content[i].IsEnable;
                             HasChanged(_contentAsset);
@@ -788,7 +788,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(45)))
+                    if (GUILayout.Button(GetWord("GUID") + ":", EditorGlobalTools.Styles.Label, GUILayout.Width(45)))
                     {
                         GenericMenu gm = new GenericMenu();
                         if (_currentStepObj.TargetGUID == "<None>")
@@ -817,7 +817,7 @@ namespace HT.Framework
                     }
                     GUILayout.Label(_currentStepObj.TargetGUID == "<None>" ? GetWord(_currentStepObj.TargetGUID) : _currentStepObj.TargetGUID, GUILayout.Width(115));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(_deleteGC, "InvisibleButton", GUILayout.Width(20)))
+                    if (GUILayout.Button(_deleteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20)))
                     {
                         contentObj = _currentStepObj.Target = null;
                         _currentStepObj.TargetGUID = "<None>";
@@ -862,7 +862,7 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     _currentStepObj.Prompt = EditorGUILayout.TextField(_currentStepObj.Prompt, GUILayout.Width(165));
-                    if (GUILayout.Button(_valueEditorGC, "IconButton", GUILayout.Width(20)))
+                    if (GUILayout.Button(_valueEditorGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20)))
                     {
                         StringValueEditor.OpenWindow(this, _currentStepObj.Prompt, $"{_currentStepIndex}.{_currentStepObj.Name}({GetWord("Prompt")})", (str) =>
                         {
@@ -1009,7 +1009,7 @@ namespace HT.Framework
                         gm.ShowAsContext();
                     }
                     GUI.enabled = _currentStepObj.Helper != "<None>";
-                    if (GUILayout.Button(_editGC, "InvisibleButton", GUILayout.Width(20)))
+                    if (GUILayout.Button(_editGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20)))
                     {
                         OpenHelperScript(_currentStepObj.Helper);
                     }
@@ -1140,7 +1140,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(GetWord("GUID") + ":", "Label", GUILayout.Width(45)))
+                    if (GUILayout.Button(GetWord("GUID") + ":", EditorGlobalTools.Styles.Label, GUILayout.Width(45)))
                     {
                         GenericMenu gm = new GenericMenu();
                         if (_currentOperationObj.TargetGUID == "<None>")
@@ -1169,7 +1169,7 @@ namespace HT.Framework
                     }
                     GUILayout.Label(_currentOperationObj.TargetGUID == "<None>" ? GetWord(_currentOperationObj.TargetGUID) : _currentOperationObj.TargetGUID, GUILayout.Width(115));
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(_deleteGC, "InvisibleButton", GUILayout.Width(20)))
+                    if (GUILayout.Button(_deleteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20)))
                     {
                         operationObj = _currentOperationObj.Target = null;
                         _currentOperationObj.TargetGUID = "<None>";

@@ -46,7 +46,7 @@ namespace HT.Framework
                         if (resource is GameObject)
                         {
                             GUILayout.FlexibleSpace();
-                            if (GUILayout.Button("Load to Scene", EditorStyles.miniButton))
+                            if (GUILayout.Button("Load to Scene"))
                             {
                                 GameObject obj = PrefabUtility.InstantiatePrefab(resource) as GameObject;
                                 Selection.activeGameObject = obj;

@@ -434,7 +434,7 @@ namespace HT.Framework
         public string Style { get; private set; }
         public int Order { get; private set; }
 
-        public ButtonAttribute(string text = null, EnableMode mode = EnableMode.Always, string style = "Button", int order = 0)
+        public ButtonAttribute(string text = null, EnableMode mode = EnableMode.Always, string style = "LargeButton", int order = 0)
         {
             Text = text;
             Mode = mode;

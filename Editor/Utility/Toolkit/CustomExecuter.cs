@@ -241,12 +241,12 @@ namespace HT.Framework
             if (_isShowCode)
             {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Clear Code", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Clear Code", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     _code = "";
                     GUI.FocusControl(null);
                 }
-                if (GUILayout.Button("Clear Console", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Clear Console", EditorGlobalTools.Styles.ButtonRight))
                 {
                     Type logEntries = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
                     MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);

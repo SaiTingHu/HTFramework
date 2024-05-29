@@ -50,7 +50,7 @@ namespace HT.Framework
                 if (!EditorApplication.isPlaying)
                 {
                     sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         GenericMenu gm = new GenericMenu();
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
@@ -85,7 +85,7 @@ namespace HT.Framework
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                     GUI.enabled = _procedureList.index >= 0 && _procedureList.index < Target.ActivatedProcedures.Count;
-                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _removeGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Undo.RecordObject(target, "Delete Procedure");
 
@@ -118,7 +118,7 @@ namespace HT.Framework
                     if (Target.DefaultProcedure == Target.ActivatedProcedures[index])
                     {
                         subrect.Set(rect.x + rect.width - size, rect.y + 2, 20, 16);
-                        if (GUI.Button(subrect, _defaultGC, "InvisibleButton"))
+                        if (GUI.Button(subrect, _defaultGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             GenericMenu gm = new GenericMenu();
                             for (int i = 0; i < Target.ActivatedProcedures.Count; i++)
@@ -138,7 +138,7 @@ namespace HT.Framework
                     if (isActive && isFocused)
                     {
                         subrect.Set(rect.x + rect.width - size, rect.y, 20, 20);
-                        if (GUI.Button(subrect, _editGC, "InvisibleButton"))
+                        if (GUI.Button(subrect, _editGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             CSharpScriptToolkit.OpenScript(Target.ActivatedProcedures[index]);
                         }
@@ -190,7 +190,7 @@ namespace HT.Framework
                 GUILayout.Label(procedure.Key.Name);
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.CurrentProcedure != procedure.Value;
-                if (GUILayout.Button("Switch", EditorStyles.miniButton))
+                if (GUILayout.Button("Switch"))
                 {
                     Target.SwitchProcedure(procedure.Key);
                 }

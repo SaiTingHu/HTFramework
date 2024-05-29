@@ -43,7 +43,7 @@ namespace HT.Framework
                 if (!EditorApplication.isPlaying)
                 {
                     sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Target.DefineEntityNames.Add("<None>");
                         Target.DefineEntityTargets.Add(null);
@@ -52,7 +52,7 @@ namespace HT.Framework
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                     GUI.enabled = _entityList.index >= 0 && _entityList.index < Target.DefineEntityNames.Count;
-                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _removeGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Target.DefineEntityNames.RemoveAt(_entityList.index);
                         Target.DefineEntityTargets.RemoveAt(_entityList.index);
@@ -184,12 +184,12 @@ namespace HT.Framework
                         EditorGUILayout.ObjectField(entity.Value[i].Entity, typeof(GameObject), true);
                         GUILayout.FlexibleSpace();
                         GUI.enabled = !entity.Value[i].IsShowed;
-                        if (GUILayout.Button("Show", EditorStyles.miniButtonLeft, GUILayout.Width(40)))
+                        if (GUILayout.Button("Show", EditorGlobalTools.Styles.ButtonLeft, GUILayout.Width(50)))
                         {
                             Target.ShowEntity(entity.Value[i]);
                         }
                         GUI.enabled = entity.Value[i].IsShowed;
-                        if (GUILayout.Button("Hide", EditorStyles.miniButtonRight, GUILayout.Width(40)))
+                        if (GUILayout.Button("Hide", EditorGlobalTools.Styles.ButtonRight, GUILayout.Width(50)))
                         {
                             Target.HideEntity(entity.Value[i]);
                         }

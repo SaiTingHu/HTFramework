@@ -49,7 +49,7 @@ namespace HT.Framework
                         GUILayout.Space(20);
                         EditorGUILayout.ObjectField(entity.gameObject, typeof(GameObject), true);
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button("Remove", EditorStyles.miniButton, GUILayout.Width(60)))
+                        if (GUILayout.Button("Remove", GUILayout.Width(60)))
                         {
                             system.Value.StarEntities.Remove(entity);
                             break;

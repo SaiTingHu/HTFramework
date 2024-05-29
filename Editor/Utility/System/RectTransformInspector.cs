@@ -152,7 +152,7 @@ namespace HT.Framework
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.childCount > 0;
             GUI.backgroundColor = Color.red;
-            if (GUILayout.Button("Detach", EditorStyles.miniButton))
+            if (GUILayout.Button("Detach"))
             {
                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to detach all children?", "Yes", "No"))
                 {
@@ -168,7 +168,7 @@ namespace HT.Framework
             GUI.backgroundColor = Color.yellow;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
+            if (GUILayout.Button("Create Empty Parent"))
             {
                 CreateEmptyParent();
             }
@@ -181,18 +181,18 @@ namespace HT.Framework
             GUI.backgroundColor = Color.yellow;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy Position", EditorStyles.miniButtonLeft))
+            if (GUILayout.Button("Copy Position", EditorGlobalTools.Styles.ButtonLeft))
             {
                 GUIUtility.systemCopyBuffer = Target.position.ToCopyString("F4");
             }
-            if (GUILayout.Button("Copy anchoredPosition", EditorStyles.miniButtonRight))
+            if (GUILayout.Button("Copy anchoredPosition", EditorGlobalTools.Styles.ButtonRight))
             {
                 GUIUtility.systemCopyBuffer = Target.anchoredPosition.ToCopyString("F2");
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy Rotation", EditorStyles.miniButtonLeft))
+            if (GUILayout.Button("Copy Rotation", EditorGlobalTools.Styles.ButtonLeft))
             {
                 if (_copyQuaternion)
                 {
@@ -207,7 +207,7 @@ namespace HT.Framework
                     GUIUtility.systemCopyBuffer = angle.ToCopyString("F1");
                 }
             }
-            if (GUILayout.Button("Copy LocalRotation", EditorStyles.miniButtonRight))
+            if (GUILayout.Button("Copy LocalRotation", EditorGlobalTools.Styles.ButtonRight))
             {
                 if (_copyQuaternion)
                 {
@@ -225,25 +225,25 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy Scale", EditorStyles.miniButton))
+            if (GUILayout.Button("Copy Scale"))
             {
                 GUIUtility.systemCopyBuffer = Target.localScale.ToCopyString("F4");
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy SizeDelta", EditorStyles.miniButton))
+            if (GUILayout.Button("Copy SizeDelta"))
             {
                 GUIUtility.systemCopyBuffer = Target.sizeDelta.ToCopyString("F2");
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy Name", EditorStyles.miniButtonLeft))
+            if (GUILayout.Button("Copy Name", EditorGlobalTools.Styles.ButtonLeft))
             {
                 GUIUtility.systemCopyBuffer = Target.name;
             }
-            if (GUILayout.Button("Copy FullName", EditorStyles.miniButtonRight))
+            if (GUILayout.Button("Copy FullName", EditorGlobalTools.Styles.ButtonRight))
             {
                 GUIUtility.systemCopyBuffer = Target.FullName();
             }
@@ -252,14 +252,14 @@ namespace HT.Framework
             GUI.backgroundColor = Color.green;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy To C# Public Field", EditorStyles.miniButton))
+            if (GUILayout.Button("Copy To C# Public Field"))
             {
                 GUIUtility.systemCopyBuffer = ToCSPublicField();
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy To C# Private Field", EditorStyles.miniButton))
+            if (GUILayout.Button("Copy To C# Private Field"))
             {
                 GUIUtility.systemCopyBuffer = ToCSPrivateField();
             }

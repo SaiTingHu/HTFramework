@@ -107,7 +107,7 @@ namespace HT.Framework
                 {
                     case StepParameter.ParameterType.String:
                         stepParameter.StringValue = EditorGUILayout.TextField(stepParameter.StringValue);
-                        if (GUILayout.Button(_valueEditorGC, "IconButton", GUILayout.Width(20)))
+                        if (GUILayout.Button(_valueEditorGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20)))
                         {
                             StringValueEditor.OpenWindow(this, stepParameter.StringValue, stepParameter.Name, (str) =>
                             {
@@ -224,7 +224,7 @@ namespace HT.Framework
                     string guid = stepParameter.GameObjectGUID;
                     EditorGUILayout.TextField(guid == "<None>" ? GetWord(guid) : guid);
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(_deleteGC, "InvisibleButton", GUILayout.Width(20)))
+                    if (GUILayout.Button(_deleteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20)))
                     {
                         stepParameter.GameObjectValue = null;
                         stepParameter.GameObjectGUID = "<None>";

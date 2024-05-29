@@ -31,7 +31,7 @@ namespace HT.Framework
                 if (item.IsRunning)
                 {
                     GUILayout.Label("[Running]");
-                    if (GUILayout.Button("Stop", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button("Stop", GUILayout.Width(40)))
                     {
                         item.IsRunning = false;
                     }
@@ -39,7 +39,7 @@ namespace HT.Framework
                 else
                 {
                     GUILayout.Label("[Stopped]");
-                    if (GUILayout.Button("Run", EditorStyles.miniButton, GUILayout.Width(40)))
+                    if (GUILayout.Button("Run", GUILayout.Width(40)))
                     {
                         item.IsRunning = true;
                     }

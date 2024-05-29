@@ -69,7 +69,7 @@ namespace HT.Framework
                 _vscodePath = vscodePath;
                 EditorPrefs.SetString(EditorPrefsTable.VSCodePath, _vscodePath);
             }
-            if (GUILayout.Button("Browse", EditorStyles.miniButton, GUILayout.Width(80)))
+            if (GUILayout.Button("Browse", GUILayout.Width(80)))
             {
                 string path = EditorUtility.OpenFilePanel("Select VSCode Path", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "exe");
                 if (path.Length != 0)
@@ -87,7 +87,7 @@ namespace HT.Framework
                 _ilspyPath = ilspyPath;
                 EditorPrefs.SetString(EditorPrefsTable.ILSpyPath, _ilspyPath);
             }
-            if (GUILayout.Button("Browse", EditorStyles.miniButton, GUILayout.Width(80)))
+            if (GUILayout.Button("Browse", GUILayout.Width(80)))
             {
                 string path = EditorUtility.OpenFilePanel("Select ILSpy Path", Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "exe");
                 if (path.Length != 0)

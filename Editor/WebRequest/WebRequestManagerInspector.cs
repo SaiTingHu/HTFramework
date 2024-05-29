@@ -27,11 +27,11 @@ namespace HT.Framework
             base.OnInspectorRuntimeGUI();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"Web Interfaces:{_helper.WebInterfaces.Count}");
+            GUILayout.Label($"Web Interfaces: {_helper.WebInterfaces.Count}");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"Connected Internet:{_helper.IsConnectedInternet}");
+            GUILayout.Label($"Connected Internet: {_helper.IsConnectedInternet}");
             GUILayout.EndHorizontal();
 
             foreach (var inter in _helper.WebInterfaces)

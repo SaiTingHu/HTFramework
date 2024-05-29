@@ -46,7 +46,7 @@ namespace HT.Framework
                 if (!EditorApplication.isPlaying)
                 {
                     sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         GenericMenu gm = new GenericMenu();
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
@@ -75,7 +75,7 @@ namespace HT.Framework
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                     GUI.enabled = _channelTypeList.index >= 0 && _channelTypeList.index < Target.ChannelTypes.Count;
-                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _removeGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Undo.RecordObject(target, "Delete Channel");
                         Target.ChannelTypes.RemoveAt(_channelTypeList.index);
@@ -96,7 +96,7 @@ namespace HT.Framework
                     if (isActive && isFocused)
                     {
                         subrect.Set(rect.x + rect.width - size, rect.y, 20, 20);
-                        if (GUI.Button(subrect, _editGC, "InvisibleButton"))
+                        if (GUI.Button(subrect, _editGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             CSharpScriptToolkit.OpenScript(Target.ChannelTypes[index]);
                         }

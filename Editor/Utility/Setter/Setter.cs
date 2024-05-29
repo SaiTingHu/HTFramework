@@ -148,12 +148,12 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 if (_settingItemSigns[_currentItem])
                 {
-                    if (GUILayout.Button(_editGUIContent, "InvisibleButton", GUILayout.Height(20), GUILayout.Width(20)))
+                    if (GUILayout.Button(_editGUIContent, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Height(20), GUILayout.Width(20)))
                     {
                         EditModule();
                     }
                 }
-                if (GUILayout.Button(_resetGUIContent, "InvisibleButton", GUILayout.Height(20), GUILayout.Width(20)))
+                if (GUILayout.Button(_resetGUIContent, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Height(20), GUILayout.Width(20)))
                 {
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("Reset"), false, ResetCurrentItem);

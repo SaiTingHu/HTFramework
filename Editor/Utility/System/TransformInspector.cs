@@ -108,7 +108,7 @@ namespace HT.Framework
                 GUI.enabled = false;
                 EditorGUILayout.Vector3Field("", Target.position);
                 GUI.enabled = true;
-                if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+                if (GUILayout.Button(CopyPasteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20), GUILayout.Height(20)))
                 {
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("Copy"), false, () =>
@@ -125,7 +125,7 @@ namespace HT.Framework
                 GUI.enabled = false;
                 EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
                 GUI.enabled = true;
-                if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+                if (GUILayout.Button(CopyPasteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20), GUILayout.Height(20)))
                 {
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("Copy"), false, () =>
@@ -153,7 +153,7 @@ namespace HT.Framework
                 GUI.enabled = false;
                 EditorGUILayout.Vector3Field("", Target.lossyScale);
                 GUI.enabled = true;
-                if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+                if (GUILayout.Button(CopyPasteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20), GUILayout.Height(20)))
                 {
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("Copy"), false, () =>
@@ -169,7 +169,7 @@ namespace HT.Framework
             GUI.enabled = !_isLockPosition;
             
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(_lpGC, "Label", GUILayout.Width(20)))
+            if (GUILayout.Button(_lpGC, EditorStyles.label, GUILayout.Width(20)))
             {
                 if (Targets.Length == 1)
                 {
@@ -198,7 +198,7 @@ namespace HT.Framework
             GUI.enabled = !_isLockRotation;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(_lrGC, "Label", GUILayout.Width(20)))
+            if (GUILayout.Button(_lrGC, EditorStyles.label, GUILayout.Width(20)))
             {
                 if (Targets.Length == 1)
                 {
@@ -230,7 +230,7 @@ namespace HT.Framework
                 }
             }
             _rotationField.Invoke(_rotationGUI, null);
-            if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            if (GUILayout.Button(CopyPasteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 if (Targets.Length == 1)
@@ -281,7 +281,7 @@ namespace HT.Framework
             GUI.enabled = !_isLockScale;
             
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(_lsGC, "Label", GUILayout.Width(20)))
+            if (GUILayout.Button(_lsGC, EditorStyles.label, GUILayout.Width(20)))
             {
                 if (Targets.Length == 1)
                 {
@@ -357,7 +357,7 @@ namespace HT.Framework
             GUILayout.Label(Target.childCount.ToString());
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Color.red;
-            if (GUILayout.Button("Detach", EditorStyles.miniButton))
+            if (GUILayout.Button("Detach"))
             {
                 if (EditorUtility.DisplayDialog("Prompt", "Are you sure you want to detach all children?", "Yes", "No"))
                 {
@@ -374,7 +374,7 @@ namespace HT.Framework
             GUI.enabled = !_isLock;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Create Empty Parent", EditorStyles.miniButton))
+            if (GUILayout.Button("Create Empty Parent"))
             {
                 CreateEmptyParent();
             }
@@ -395,11 +395,11 @@ namespace HT.Framework
             GUI.backgroundColor = Color.yellow;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy Name", EditorStyles.miniButtonLeft))
+            if (GUILayout.Button("Copy Name", EditorGlobalTools.Styles.ButtonLeft))
             {
                 GUIUtility.systemCopyBuffer = Target.name;
             }
-            if (GUILayout.Button("Copy FullName", EditorStyles.miniButtonRight))
+            if (GUILayout.Button("Copy FullName", EditorGlobalTools.Styles.ButtonRight))
             {
                 GUIUtility.systemCopyBuffer = Target.FullName();
             }
@@ -408,14 +408,14 @@ namespace HT.Framework
             GUI.backgroundColor = Color.green;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy To C# Public Field", EditorStyles.miniButton))
+            if (GUILayout.Button("Copy To C# Public Field"))
             {
                 GUIUtility.systemCopyBuffer = ToCSPublicField();
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Copy To C# Private Field", EditorStyles.miniButton))
+            if (GUILayout.Button("Copy To C# Private Field"))
             {
                 GUIUtility.systemCopyBuffer = ToCSPrivateField();
             }

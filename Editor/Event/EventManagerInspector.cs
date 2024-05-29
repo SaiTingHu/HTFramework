@@ -31,7 +31,7 @@ namespace HT.Framework
                     GUILayout.Label(item.Key.Name);
                     GUILayout.FlexibleSpace();
                     GUI.enabled = item.Value != null;
-                    if (GUILayout.Button("Throw", EditorStyles.miniButton, GUILayout.Width(50)))
+                    if (GUILayout.Button("Throw", GUILayout.Width(50)))
                     {
                         Target.Throw(item.Key);
                     }

@@ -28,14 +28,14 @@
         /// <summary>
         /// 获取资源的Resource全路径
         /// </summary>
-        internal string GetResourceFullPath()
+        public string GetResourceFullPath()
         {
             return $"ResourcesPath: Resources/{ResourcePath}";
         }
         /// <summary>
         /// 获取资源的AssetBundle全路径
         /// </summary>
-        internal string GetAssetBundleFullPath(string assetBundleRootPath)
+        public string GetAssetBundleFullPath(string assetBundleRootPath)
         {
             return $"AssetBundlePath: {assetBundleRootPath}{AssetBundleName}  AssetPath:{AssetPath}";
         }

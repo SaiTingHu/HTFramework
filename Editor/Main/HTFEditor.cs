@@ -576,7 +576,7 @@ namespace HT.Framework
             if (!IsSupportCopyPaste(property))
                 return;
 
-            if (GUILayout.Button(CopyPasteGC, "InvisibleButton", GUILayout.Width(20), GUILayout.Height(20)))
+            if (GUILayout.Button(CopyPasteGC, EditorGlobalTools.Styles.InvisibleButton, GUILayout.Width(20), GUILayout.Height(20)))
             {
                 GenericMenu gm = new GenericMenu();
                 if (Targets.Length == 1)

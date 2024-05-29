@@ -11,9 +11,9 @@ namespace HT.Framework
             window.titleContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             window.titleContent.text = "Texture Alarm Value";
             window._assetsMaster = assetsMaster;
-            window.minSize = new Vector2(250, 160);
-            window.maxSize = new Vector2(250, 160);
-            window.position = new Rect(pos.x, pos.y, 250, 150);
+            window.minSize = new Vector2(250, 170);
+            window.maxSize = new Vector2(250, 170);
+            window.position = new Rect(pos.x, pos.y, 250, 170);
             window.Show();
         }
 

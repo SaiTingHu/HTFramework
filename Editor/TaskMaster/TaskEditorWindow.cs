@@ -640,7 +640,7 @@ namespace HT.Framework
                     GUI.Label(sub, GetWord("Task Content List") + ":");
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         GenericMenu gm = new GenericMenu();
                         gm.AddItem(new GUIContent(GetWord("Add Task Content") + "/默认"), false, () =>
@@ -686,13 +686,13 @@ namespace HT.Framework
                         if (isActive)
                         {
                             sub.Set(rect.x + rect.width - 40, rect.y, 20, 20);
-                            if (GUI.Button(sub, _editGC, "InvisibleButton"))
+                            if (GUI.Button(sub, _editGC, EditorGlobalTools.Styles.InvisibleButton))
                             {
                                 MonoScript monoScript = MonoScript.FromScriptableObject(_contentAsset.Content[index]);
                                 AssetDatabase.OpenAsset(monoScript);
                             }
                             sub.Set(rect.x + rect.width - 20, rect.y, 20, 20);
-                            if (GUI.Button(sub, _deleteGC, "InvisibleButton"))
+                            if (GUI.Button(sub, _deleteGC, EditorGlobalTools.Styles.InvisibleButton))
                             {
                                 if (EditorUtility.DisplayDialog("Prompt", $"Are you sure delete task [{_contentAsset.Content[index].Name}]?", "Yes", "No"))
                                 {

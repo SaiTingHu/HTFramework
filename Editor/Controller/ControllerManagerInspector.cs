@@ -76,11 +76,11 @@ namespace HT.Framework
                 GUILayout.Space(20);
                 GUILayout.Label(Target.LookPoint.ToString());
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Copy", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Copy", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     GUIUtility.systemCopyBuffer = Target.LookPoint.ToCopyString("F2");
                 }
-                if (GUILayout.Button("Paste", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Paste", EditorGlobalTools.Styles.ButtonRight))
                 {
                     Target.SetLookPoint(GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero));
                 }
@@ -94,11 +94,11 @@ namespace HT.Framework
                 GUILayout.Space(20);
                 GUILayout.Label(Target.LookAngle.ToString());
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Copy", EditorStyles.miniButtonLeft))
+                if (GUILayout.Button("Copy", EditorGlobalTools.Styles.ButtonLeft))
                 {
                     GUIUtility.systemCopyBuffer = Target.LookAngle.ToCopyString("F2");
                 }
-                if (GUILayout.Button("Paste", EditorStyles.miniButtonRight))
+                if (GUILayout.Button("Paste", EditorGlobalTools.Styles.ButtonRight))
                 {
                     Target.SetLookAngle(GUIUtility.systemCopyBuffer.ToPasteVector3(Vector3.zero));
                 }

@@ -70,7 +70,7 @@ namespace HT.Framework
                 if (!EditorApplication.isPlaying)
                 {
                     sub.Set(rect.x + rect.width - 40, rect.y - 2, 20, 20);
-                    if (GUI.Button(sub, _addGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         GenericMenu gm = new GenericMenu();
                         List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
@@ -114,7 +114,7 @@ namespace HT.Framework
 
                     sub.Set(rect.x + rect.width - 20, rect.y - 2, 20, 20);
                     GUI.enabled = _stateList.index >= 0 && _stateList.index < Target.States.Count;
-                    if (GUI.Button(sub, _removeGC, "InvisibleButton"))
+                    if (GUI.Button(sub, _removeGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         Undo.RecordObject(target, "Delete FSM State");
 
@@ -179,7 +179,7 @@ namespace HT.Framework
                     if (Target.FinalState == stateType)
                     {
                         subrect.Set(rect.x + rect.width - size, rect.y + 2, 20, 16);
-                        if (GUI.Button(subrect, _finalGC, "InvisibleButton"))
+                        if (GUI.Button(subrect, _finalGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             GenericMenu gm = new GenericMenu();
                             foreach (var state in _stateNames)
@@ -198,7 +198,7 @@ namespace HT.Framework
                     if (Target.DefaultState == stateType)
                     {
                         subrect.Set(rect.x + rect.width - size, rect.y + 2, 20, 16);
-                        if (GUI.Button(subrect, _defaultGC, "InvisibleButton"))
+                        if (GUI.Button(subrect, _defaultGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             GenericMenu gm = new GenericMenu();
                             foreach (var state in _stateNames)
@@ -217,7 +217,7 @@ namespace HT.Framework
                     if (isActive && isFocused)
                     {
                         subrect.Set(rect.x + rect.width - size, rect.y, 20, 20);
-                        if (GUI.Button(subrect, _editGC, "InvisibleButton"))
+                        if (GUI.Button(subrect, _editGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             CSharpScriptToolkit.OpenScript(stateType);
                         }
@@ -340,7 +340,7 @@ namespace HT.Framework
                 GUILayout.Label(state.Value);
                 GUILayout.FlexibleSpace();
                 GUI.enabled = Target.CurrentState.GetType().FullName != state.Key;
-                if (GUILayout.Button("Switch", EditorStyles.miniButton))
+                if (GUILayout.Button("Switch"))
                 {
                     Target.SwitchState(ReflectionToolkit.GetTypeInRunTimeAssemblies(state.Key, false));
                 }
@@ -349,11 +349,11 @@ namespace HT.Framework
             }
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Renewal", EditorStyles.miniButtonLeft))
+            if (GUILayout.Button("Renewal", EditorGlobalTools.Styles.ButtonLeft))
             {
                 Target.Renewal();
             }
-            if (GUILayout.Button("Final", EditorStyles.miniButtonRight))
+            if (GUILayout.Button("Final", EditorGlobalTools.Styles.ButtonRight))
             {
                 Target.Final();
             }
