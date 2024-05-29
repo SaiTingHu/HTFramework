@@ -136,6 +136,9 @@ namespace HT.Framework
         /// <param name="info">封装后的消息字节数组</param>
         public void InjectMessage(byte[] info)
         {
+            if (info == null || info.Length == 0)
+                return;
+
             _isCanSend = false;
             _sendDataBuffer.Add(info);
             _isCanSend = true;
