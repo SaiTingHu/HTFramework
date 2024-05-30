@@ -87,13 +87,13 @@ namespace HT.Framework
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false);
+        IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects);
         /// <summary>
         /// 卸载所有资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects = false);
+        IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects);
         /// <summary>
         /// 卸载场景（异步）
         /// </summary>

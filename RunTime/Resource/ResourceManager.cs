@@ -112,7 +112,7 @@ namespace HT.Framework
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程</returns>
-        public Coroutine UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
+        public Coroutine UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = true)
         {
             return Main.Current.StartCoroutine(_helper.UnLoadAsset(assetBundleName, unloadAllLoadedObjects));
         }
@@ -121,7 +121,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程</returns>
-        public Coroutine UnLoadAllAsset(bool unloadAllLoadedObjects = false)
+        public Coroutine UnLoadAllAsset(bool unloadAllLoadedObjects = true)
         {
             return Main.Current.StartCoroutine(_helper.UnLoadAllAsset(unloadAllLoadedObjects));
         }

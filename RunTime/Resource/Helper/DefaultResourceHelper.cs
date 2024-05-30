@@ -89,6 +89,7 @@ namespace HT.Framework
         public void OnTerminate()
         {
             UnLoadAllAsset(true);
+            UnLoadAllScene();
             ClearMemory();
         }
         /// <summary>
@@ -403,7 +404,7 @@ namespace HT.Framework
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        public IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects = false)
+        public IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects)
         {
             if (LoadMode == ResourceLoadMode.Resource)
             {
@@ -413,14 +414,13 @@ namespace HT.Framework
             {
                 if (AssetBundles.ContainsKey(assetBundleName))
                 {
-                    AssetBundles[assetBundleName].Unload(unloadAllLoadedObjects);
+                    yield return AssetBundles[assetBundleName].UnloadAsync(unloadAllLoadedObjects);
                     AssetBundles.Remove(assetBundleName);
                 }
                 if (AssetBundleHashs.ContainsKey(assetBundleName))
                 {
                     AssetBundleHashs.Remove(assetBundleName);
                 }
-                yield return null;
             }
         }
         /// <summary>
@@ -428,7 +428,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        public IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects = false)
+        public IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects)
         {
             if (LoadMode == ResourceLoadMode.Resource)
             {
@@ -438,12 +438,11 @@ namespace HT.Framework
             {
                 foreach (var assetBundle in AssetBundles)
                 {
-                    assetBundle.Value.Unload(unloadAllLoadedObjects);
+                    yield return assetBundle.Value.UnloadAsync(unloadAllLoadedObjects);
                 }
                 AssetBundles.Clear();
                 AssetBundleHashs.Clear();
                 AssetBundle.UnloadAllAssetBundles(unloadAllLoadedObjects);
-                yield return null;
             }
         }
         /// <summary>
@@ -587,7 +586,7 @@ namespace HT.Framework
                     if (AssetBundles.ContainsKey(AssetBundleManifestName))
                     {
                         AssetBundleManifest = AssetBundles[AssetBundleManifestName].LoadAsset<AssetBundleManifest>("AssetBundleManifest");
-                        UnLoadAsset(AssetBundleManifestName);
+                        yield return UnLoadAsset(AssetBundleManifestName, false);
                     }
                 }
             }
