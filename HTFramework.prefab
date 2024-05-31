@@ -551,6 +551,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HelperType: HT.Framework.DefaultWebRequestHelper
   IsOfflineState: 1
+  IsLogDetail: 0
   DownloadAudioType: 20
 --- !u!1 &1754517609766808
 GameObject:

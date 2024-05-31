@@ -291,15 +291,13 @@ namespace HT.Framework
 
                 if (request.result == UnityWebRequest.Result.Success)
                 {
-                    Log.Info(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
-                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, wif.OnGetDownloadString(request.downloadHandler)));
+                    LogSuccessDetail(wif, request.downloadHandler, url, begin, end);
 
                     wif.OnRequestFinished(request.downloadHandler);
                 }
                 else
                 {
-                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}"
-                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.error));
+                    LogFailDetail(wif, request.error, url, begin, end);
 
                     wif.OnRequestFinished(null);
                 }
@@ -345,15 +343,13 @@ namespace HT.Framework
 
                 if (request.result == UnityWebRequest.Result.Success)
                 {
-                    Log.Info(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 收到回复：{4}字节  string:{5}"
-                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.downloadHandler.data.Length, wif.OnGetDownloadString(request.downloadHandler)));
+                    LogSuccessDetail(wif, request.downloadHandler, url, begin, end);
 
                     wif.OnRequestFinished(request.downloadHandler);
                 }
                 else
                 {
-                    Log.Error(string.Format("[{0}] 发起网络请求：[{1}] {2}\r\n[{3}] 网络请求出错：{4}"
-                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.error));
+                    LogFailDetail(wif, request.error, url, begin, end);
 
                     wif.OnRequestFinished(null);
                 }
@@ -418,19 +414,131 @@ namespace HT.Framework
 
                 if (request.result == UnityWebRequest.Result.Success)
                 {
-                    Log.Info(string.Format("[{0}] 发起下载文件请求：[{1}] {2}\r\n[{3}] 成功下载至：{4}"
-                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), wif.Path));
+                    LogLoadFileSuccessDetail(wif, url, begin, end);
 
                     wif.OnFinished(true);
                 }
                 else
                 {
-                    Log.Error(string.Format("[{0}] 发起下载文件请求：[{1}] {2}\r\n[{3}] 下载失败：{4}"
-                        , begin.ToString("mm:ss:fff"), wif.Name, url, end.ToString("mm:ss:fff"), request.error));
+                    LogLoadFileFailDetail(wif, request.error, url, begin, end);
 
                     wif.OnFinished(false);
                 }
             }
+        }
+
+        /// <summary>
+        /// 打印网络请求细节（请求成功）
+        /// </summary>
+        /// <param name="wif">网络接口</param>
+        /// <param name="handler">请求下载处理器</param>
+        /// <param name="url">请求链接</param>
+        /// <param name="beginTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        private void LogSuccessDetail(WebInterfaceBase wif, DownloadHandler handler, string url, DateTime beginTime, DateTime endTime)
+        {
+            if (!_module.IsLogDetail)
+                return;
+
+#if UNITY_EDITOR
+            string apiStr = $"<color=cyan>{wif.Name}</color>";
+            string urlStr = $"<color=cyan>{url}</color>";
+            string dataStr = $"<color=cyan>{handler.data.Length}</color>";
+            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
+            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+            string content = wif.OnGetDownloadString(handler);
+#else
+            string apiStr = wif.Name;
+            string urlStr = url;
+            string dataStr = handler.data.Length.ToString();
+            string begin = beginTime.ToString("mm:ss:fff");
+            string end = endTime.ToString("mm:ss:fff");
+            string content = wif.OnGetDownloadString(handler);
+#endif
+            Log.Info($"【发起网络请求】接口：{apiStr}，URL：{urlStr}，收到回复：{dataStr}字节，开始时间：{begin}，结束时间：{end}，回复内容：{content}。");
+        }
+        /// <summary>
+        /// 打印网络请求细节（请求失败）
+        /// </summary>
+        /// <param name="wif">网络接口</param>
+        /// <param name="error">错误信息</param>
+        /// <param name="url">请求链接</param>
+        /// <param name="beginTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        private void LogFailDetail(WebInterfaceBase wif, string error, string url, DateTime beginTime, DateTime endTime)
+        {
+            if (!_module.IsLogDetail)
+                return;
+
+#if UNITY_EDITOR
+            string apiStr = $"<color=cyan>{wif.Name}</color>";
+            string urlStr = $"<color=cyan>{url}</color>";
+            string errorStr = $"<color=cyan>{error}</color>";
+            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
+            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+#else
+            string apiStr = wif.Name;
+            string urlStr = url;
+            string errorStr = error;
+            string begin = beginTime.ToString("mm:ss:fff");
+            string end = endTime.ToString("mm:ss:fff");
+#endif
+            Log.Error($"【发起网络请求】接口：{apiStr}，URL：{urlStr}，请求失败：{errorStr}，开始时间：{begin}，结束时间：{end}。");
+        }
+        /// <summary>
+        /// 打印下载文件细节（请求成功）
+        /// </summary>
+        /// <param name="wif">网络接口</param>
+        /// <param name="url">请求链接</param>
+        /// <param name="beginTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        private void LogLoadFileSuccessDetail(WebInterfaceDownloadFile wif, string url, DateTime beginTime, DateTime endTime)
+        {
+            if (!_module.IsLogDetail)
+                return;
+
+#if UNITY_EDITOR
+            string apiStr = $"<color=cyan>{wif.Name}</color>";
+            string urlStr = $"<color=cyan>{url}</color>";
+            string path = $"<color=cyan>{wif.Path}</color>";
+            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
+            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+#else
+            string apiStr = wif.Name;
+            string urlStr = url;
+            string path = wif.Path;
+            string begin = beginTime.ToString("mm:ss:fff");
+            string end = endTime.ToString("mm:ss:fff");
+#endif
+            Log.Info($"【发起下载文件请求】接口：{apiStr}，URL：{urlStr}，保存路径：{path}，开始时间：{begin}，结束时间：{end}。");
+        }
+        /// <summary>
+        /// 打印下载文件细节（请求失败）
+        /// </summary>
+        /// <param name="wif">网络接口</param>
+        /// <param name="error">错误信息</param>
+        /// <param name="url">请求链接</param>
+        /// <param name="beginTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        private void LogLoadFileFailDetail(WebInterfaceDownloadFile wif, string error, string url, DateTime beginTime, DateTime endTime)
+        {
+            if (!_module.IsLogDetail)
+                return;
+
+#if UNITY_EDITOR
+            string apiStr = $"<color=cyan>{wif.Name}</color>";
+            string urlStr = $"<color=cyan>{url}</color>";
+            string errorStr = $"<color=cyan>{error}</color>";
+            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
+            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+#else
+            string apiStr = wif.Name;
+            string urlStr = url;
+            string errorStr = error;
+            string begin = beginTime.ToString("mm:ss:fff");
+            string end = endTime.ToString("mm:ss:fff");
+#endif
+            Log.Error($"【发起下载文件请求】接口：{apiStr}，URL：{urlStr}，下载失败：{errorStr}，开始时间：{begin}，结束时间：{end}。");
         }
     }
 }

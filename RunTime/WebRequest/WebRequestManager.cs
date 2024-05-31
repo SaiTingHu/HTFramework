@@ -13,6 +13,10 @@ namespace HT.Framework
         /// </summary>
         public bool IsOfflineState = false;
         /// <summary>
+        /// 是否打印网络请求细节日志
+        /// </summary>
+        public bool IsLogDetail = false;
+        /// <summary>
         /// 下载音频的格式
         /// </summary>
         public AudioType DownloadAudioType = AudioType.WAV;

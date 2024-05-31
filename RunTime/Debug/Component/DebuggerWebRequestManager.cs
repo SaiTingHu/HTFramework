@@ -12,6 +12,7 @@ namespace HT.Framework
         public override void OnDebuggerGUI()
         {
             _target.IsOfflineState = BoolField("Is Offline State", _target.IsOfflineState);
+            _target.IsLogDetail = BoolField("Is Log Detail", _target.IsLogDetail);
         }
     }
 }

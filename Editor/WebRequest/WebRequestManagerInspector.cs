@@ -17,7 +17,8 @@ namespace HT.Framework
 
             GUI.enabled = !EditorApplication.isPlaying;
 
-            PropertyField(nameof(WebRequestManager.IsOfflineState), "OfflineState");
+            PropertyField(nameof(WebRequestManager.IsOfflineState), "Offline State");
+            PropertyField(nameof(WebRequestManager.IsLogDetail), "Is Log Detail");
             PropertyField(nameof(WebRequestManager.DownloadAudioType), "Audio Type");
             
             GUI.enabled = true;
