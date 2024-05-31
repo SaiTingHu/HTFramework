@@ -19,6 +19,10 @@ namespace HT.Framework
         /// </summary>
         bool IsEditorMode { get; }
         /// <summary>
+        /// 是否打印资源加载细节日志
+        /// </summary>
+        bool IsLogDetail { get; }
+        /// <summary>
         /// AssetBundle资源加载根路径
         /// </summary>
         string AssetBundleRootPath { get; }
@@ -49,7 +53,8 @@ namespace HT.Framework
         /// <param name="loadMode">加载模式</param>
         /// <param name="isEditorMode">是否是编辑器模式</param>
         /// <param name="manifestName">AB包清单名称</param>
-        void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName);
+        /// <param name="isLogDetail">是否打印资源加载细节日志</param>
+        void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName, bool isLogDetail);
         /// <summary>
         /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
         /// </summary>

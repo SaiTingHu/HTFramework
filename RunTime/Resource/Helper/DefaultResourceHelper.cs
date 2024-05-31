@@ -38,6 +38,10 @@ namespace HT.Framework
         /// </summary>
         public bool IsEditorMode { get; private set; }
         /// <summary>
+        /// 是否打印资源加载细节日志
+        /// </summary>
+        public bool IsLogDetail { get; private set; }
+        /// <summary>
         /// AssetBundle资源加载根路径
         /// </summary>
         public string AssetBundleRootPath { get; private set; }
@@ -113,10 +117,12 @@ namespace HT.Framework
         /// <param name="loadMode">加载模式</param>
         /// <param name="isEditorMode">是否是编辑器模式</param>
         /// <param name="manifestName">AB包清单名称</param>
-        public void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName)
+        /// <param name="isLogDetail">是否打印资源加载细节日志</param>
+        public void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName, bool isLogDetail)
         {
             LoadMode = loadMode;
             IsEditorMode = isEditorMode;
+            IsLogDetail = isLogDetail;
             AssetBundleRootPath = Application.persistentDataPath + "/";
             AssetBundleManifestName = manifestName;
             _loadWait = new WaitUntil(() => { return !_isLoading; });
@@ -262,12 +268,7 @@ namespace HT.Framework
 
             float endTime = Time.realtimeSinceStartup;
 
-            Log.Info(string.Format("异步加载资源{0}[{1}模式]：\r\n{2}\r\n等待耗时：{3}秒  加载耗时：{4}秒"
-                , asset ? "成功" : "失败"
-                , LoadMode.ToString()
-                , LoadMode == ResourceLoadMode.Resource ? info.GetResourceFullPath() : info.GetAssetBundleFullPath(AssetBundleRootPath)
-                , waitTime - beginTime
-                , endTime - waitTime));
+            LogResourceDetail(info, asset != null, beginTime, waitTime, endTime);
 
             if (asset)
             {
@@ -387,11 +388,7 @@ namespace HT.Framework
 
             float endTime = Time.realtimeSinceStartup;
 
-            Log.Info(string.Format("异步加载场景完成[{0}模式]：{1}\r\n等待耗时：{2}秒  加载耗时：{3}秒"
-                , LoadMode.ToString()
-                , info.ResourcePath
-                , waitTime - beginTime
-                , endTime - waitTime));
+            LogSceneDetail(info, beginTime, waitTime, endTime);
 
             onLoadDone?.Invoke();
 
@@ -565,7 +562,6 @@ namespace HT.Framework
                 }
 #endif
             }
-            yield return null;
         }
         /// <summary>
         /// 异步加载AB包清单
@@ -590,7 +586,6 @@ namespace HT.Framework
                     }
                 }
             }
-            yield return null;
         }
         /// <summary>
         /// 异步加载AB包
@@ -625,7 +620,6 @@ namespace HT.Framework
                     }
                 }
             }
-            yield return null;
         }
         /// <summary>
         /// 异步加载AB包（提供进度回调）
@@ -667,7 +661,6 @@ namespace HT.Framework
                 }
             }
             onLoading?.Invoke(1);
-            yield return null;
         }
         /// <summary>
         /// 获取AB包的hash值
@@ -686,6 +679,71 @@ namespace HT.Framework
                 AssetBundleHashs.Add(assetBundleName, hash);
                 return hash;
             }
+        }
+        /// <summary>
+        /// 打印资源加载细节
+        /// </summary>
+        /// <param name="info">资源信息</param>
+        /// <param name="isSucceed">加载是否成功</param>
+        /// <param name="beginTime">加载开始时间</param>
+        /// <param name="waitTime">加载等待时间</param>
+        /// <param name="endTime">加载结束时间</param>
+        private void LogResourceDetail(ResourceInfoBase info, bool isSucceed, float beginTime, float waitTime, float endTime)
+        {
+            if (!IsLogDetail)
+                return;
+
+#if UNITY_EDITOR
+            string result = isSucceed ? "<color=cyan>成功</color>" : "<color=red>失败</color>";
+            string path;
+            if (LoadMode == ResourceLoadMode.Resource)
+            {
+                path = $"<color=cyan>Resources/{info.ResourcePath}</color>";
+            }
+            else
+            {
+                path = Log.Hyperlink(info.AssetPath, info.AssetPath);
+            }
+            string wait = $"<color=cyan>{waitTime - beginTime}</color>";
+            string load = $"<color=cyan>{endTime - waitTime}</color>";
+#else
+            string result = isSucceed ? "成功" : "失败";
+            string path;
+            if (LoadMode == ResourceLoadMode.Resource)
+            {
+                path = $"Resources/{info.ResourcePath}";
+            }
+            else
+            {
+                path = info.AssetPath;
+            }
+            string wait = (waitTime - beginTime).ToString();
+            string load = (endTime - waitTime).ToString();
+#endif
+            Log.Info($"【加载资源{result}】资源路径：{path}，等待耗时：{wait}秒，加载耗时：{load}秒。");
+        }
+        /// <summary>
+        /// 打印场景加载细节
+        /// </summary>
+        /// <param name="info">资源信息</param>
+        /// <param name="beginTime">加载开始时间</param>
+        /// <param name="waitTime">加载等待时间</param>
+        /// <param name="endTime">加载结束时间</param>
+        private void LogSceneDetail(ResourceInfoBase info, float beginTime, float waitTime, float endTime)
+        {
+            if (!IsLogDetail)
+                return;
+
+#if UNITY_EDITOR
+            string path = Log.Hyperlink(info.AssetPath, info.AssetPath);
+            string wait = $"<color=cyan>{waitTime - beginTime}</color>";
+            string load = $"<color=cyan>{endTime - waitTime}</color>";
+#else
+            string path = info.AssetPath;
+            string wait = (waitTime - beginTime).ToString();
+            string load = (endTime - waitTime).ToString();
+#endif
+            Log.Info($"【加载场景完成】场景路径：{path}，等待耗时：{wait}秒，加载耗时：{load}秒。");
         }
     }
 }

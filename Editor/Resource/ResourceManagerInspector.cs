@@ -41,6 +41,8 @@ namespace HT.Framework
                 PropertyField(nameof(ResourceManager.IsEditorMode), "Editor Mode");
             }
 
+            PropertyField(nameof(ResourceManager.IsLogDetail), "Is Log Detail");
+
             GUI.enabled = true;
         }
         protected override void OnInspectorRuntimeGUI()

@@ -20,7 +20,11 @@ namespace HT.Framework
         /// 所有AssetBundle资源包清单的名称【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string AssetBundleManifestName;
-        
+        /// <summary>
+        /// 是否打印资源加载细节日志【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal bool IsLogDetail = false;
+
         /// <summary>
         /// 当前的资源加载模式
         /// </summary>
@@ -36,7 +40,7 @@ namespace HT.Framework
         {
             base.OnInit();
 
-            _helper.SetLoader(Mode, IsEditorMode, AssetBundleManifestName);
+            _helper.SetLoader(Mode, IsEditorMode, AssetBundleManifestName, IsLogDetail);
         }
 
         /// <summary>
