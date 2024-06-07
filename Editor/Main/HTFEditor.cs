@@ -581,14 +581,33 @@ namespace HT.Framework
                 GenericMenu gm = new GenericMenu();
                 if (Targets.Length == 1)
                 {
-                    gm.AddItem(new GUIContent("Copy"), false, () =>
+                    if (!property.isArray)
                     {
-                        CopyValue(property);
-                    });
-                    gm.AddItem(new GUIContent("Paste"), false, () =>
+                        gm.AddItem(new GUIContent("Copy"), false, () =>
+                        {
+                            CopyValue(property);
+                        });
+                        gm.AddItem(new GUIContent("Paste"), false, () =>
+                        {
+                            PasteValue(property);
+                        });
+                    }
+                    else
                     {
-                        PasteValue(property);
-                    });
+                        for (int i = 0; i < property.arraySize; i++)
+                        {
+                            int j = i;
+                            SerializedProperty sub = property.GetArrayElementAtIndex(j);
+                            gm.AddItem(new GUIContent("Copy/Index " + j), false, () =>
+                            {
+                                CopyValue(sub);
+                            });
+                            gm.AddItem(new GUIContent("Paste/Index " + j), false, () =>
+                            {
+                                PasteValue(sub);
+                            });
+                        }
+                    }
                 }
                 else
                 {
@@ -603,16 +622,26 @@ namespace HT.Framework
         /// </summary>
         private bool IsSupportCopyPaste(SerializedProperty property)
         {
-            if (property.propertyType == SerializedPropertyType.Vector2
-                || property.propertyType == SerializedPropertyType.Vector3
-                || property.propertyType == SerializedPropertyType.Vector4
-                || property.propertyType == SerializedPropertyType.Vector2Int
-                || property.propertyType == SerializedPropertyType.Vector3Int
-                || property.propertyType == SerializedPropertyType.Quaternion
-                || property.propertyType == SerializedPropertyType.Bounds
-                || property.propertyType == SerializedPropertyType.BoundsInt
-                || (property.propertyType == SerializedPropertyType.Generic && property.hasChildren && property.type == "Location"))
-                return true;
+            if (!property.isArray)
+            {
+                if (property.propertyType == SerializedPropertyType.Vector2
+                    || property.propertyType == SerializedPropertyType.Vector3
+                    || property.propertyType == SerializedPropertyType.Vector4
+                    || property.propertyType == SerializedPropertyType.Vector2Int
+                    || property.propertyType == SerializedPropertyType.Vector3Int
+                    || property.propertyType == SerializedPropertyType.Quaternion
+                    || property.propertyType == SerializedPropertyType.Bounds
+                    || property.propertyType == SerializedPropertyType.BoundsInt
+                    || (property.propertyType == SerializedPropertyType.Generic && property.hasVisibleChildren && property.type == "Location"))
+                    return true;
+            }
+            else
+            {
+                if ((property.propertyType == SerializedPropertyType.Generic && property.hasVisibleChildren && property.arrayElementType == "Vector2")
+                     || (property.propertyType == SerializedPropertyType.Generic && property.hasVisibleChildren && property.arrayElementType == "Vector3")
+                     || (property.propertyType == SerializedPropertyType.Generic && property.hasVisibleChildren && property.arrayElementType == "Location"))
+                    return true;
+            }
             return false;
         }
         /// <summary>
@@ -620,6 +649,9 @@ namespace HT.Framework
         /// </summary>
         private void CopyValue(SerializedProperty property)
         {
+            if (property.isArray)
+                return;
+
             if (property.propertyType == SerializedPropertyType.Vector2)
             {
                 GUIUtility.systemCopyBuffer = property.vector2Value.ToCopyString("F4");
@@ -652,7 +684,7 @@ namespace HT.Framework
             {
                 GUIUtility.systemCopyBuffer = property.boundsIntValue.ToCopyString();
             }
-            else if (property.propertyType == SerializedPropertyType.Generic && property.hasChildren && property.type == "Location")
+            else if (property.propertyType == SerializedPropertyType.Generic && property.hasVisibleChildren && property.type == "Location")
             {
                 SerializedProperty position = property.FindPropertyRelative("Position");
                 SerializedProperty rotation = property.FindPropertyRelative("Rotation");
@@ -673,6 +705,9 @@ namespace HT.Framework
         /// </summary>
         private void PasteValue(SerializedProperty property)
         {
+            if (property.isArray)
+                return;
+
             if (string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
                 return;
 
@@ -708,7 +743,7 @@ namespace HT.Framework
             {
                 property.boundsIntValue = GUIUtility.systemCopyBuffer.ToPasteBoundsInt();
             }
-            else if (property.propertyType == SerializedPropertyType.Generic && property.hasChildren && property.type == "Location")
+            else if (property.propertyType == SerializedPropertyType.Generic && property.hasVisibleChildren && property.type == "Location")
             {
                 SerializedProperty position = property.FindPropertyRelative("Position");
                 SerializedProperty rotation = property.FindPropertyRelative("Rotation");
