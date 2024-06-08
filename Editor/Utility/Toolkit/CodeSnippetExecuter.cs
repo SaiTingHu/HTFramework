@@ -104,13 +104,14 @@ namespace HT.Framework
         }
         #endregion
 
-        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/102971712";
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/139546629";
 
         public void Initialization()
         {
             _assembliesPath = EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/")) + "/Data/Managed";
 
-            _assemblies.Add(typeof(Type).Assembly.Location);
+            _assemblies.Clear();
+            _assemblies.Add(EditorApplication.applicationPath.Substring(0, EditorApplication.applicationPath.LastIndexOf("/")) + "/Data/MonoBleedingEdge/lib/mono/unityjit-win32/Facades/netstandard.dll");
             _assemblies.Add(typeof(Button).Assembly.Location);
             _assemblies.Add(typeof(Main).Assembly.Location);
             _assemblies.Add(typeof(DOTween).Assembly.Location);
@@ -201,14 +202,16 @@ namespace HT.Framework
 
             if (_mode == ExecuterMode.Dynamic)
             {
-                DynamicGUI();
+                OnDynamicGUI();
             }
             else
             {
-                StaticGUI();
+                OnStaticGUI();
             }
         }
-        private void DynamicGUI()
+
+        #region Dynamic Method
+        private void OnDynamicGUI()
         {
             #region Namespace
             GUILayout.BeginHorizontal("AC BoldHeader");
@@ -311,7 +314,97 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
             #endregion
         }
-        private void StaticGUI()
+        private void DynamicExecute()
+        {
+            EditorUtility.DisplayProgressBar("Compiling", "Code Snippet Compiling......", 0);
+            CompilerResults results = _csharpCodeProvider.CompileAssemblyFromSource(GenerateParameters(), GenerateCode());
+            Error error = new Error(results);
+            try
+            {
+                if (error.IsExists)
+                {
+                    Log.Error("执行代码片段失败：代码片段存在如下编译错误！");
+                    error.LogError();
+                }
+                else
+                {
+                    Assembly assembly = results.CompiledAssembly;
+                    Type type = assembly.DefinedTypes.First((t) => { return t.Name == "DynamicClass"; });
+                    MethodInfo method = type.GetMethod("DynamicMethod", BindingFlags.Static | BindingFlags.NonPublic);
+                    method.Invoke(null, null);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("执行代码片段出错：" + e.Message);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+        }
+        private CompilerParameters GenerateParameters()
+        {
+            CompilerParameters compilerParameters = new CompilerParameters();
+            for (int i = 0; i < _assemblies.Count; i++)
+            {
+                if (File.Exists(_assemblies[i]) && !compilerParameters.ReferencedAssemblies.Contains(_assemblies[i]))
+                {
+                    compilerParameters.ReferencedAssemblies.Add(_assemblies[i]);
+                }
+            }
+            compilerParameters.GenerateExecutable = false;
+            compilerParameters.GenerateInMemory = true;
+            compilerParameters.CompilerOptions = "/unsafe /optimize";
+            return compilerParameters;
+        }
+        private string GenerateCode()
+        {
+            string code = _codeTemplate;
+            code = code.Replace("#NAMESPACE#", _namespace);
+            code = code.Replace("#CODE#", _code);
+            return code;
+        }
+
+        public class Error
+        {
+            private List<string> _errors = new List<string>();
+
+            public bool IsExists
+            {
+                get
+                {
+                    return _errors.Count > 0;
+                }
+            }
+
+            public Error(CompilerResults results)
+            {
+                if (results.Errors.HasErrors)
+                {
+                    for (int i = 0; i < results.Errors.Count; i++)
+                    {
+                        CompilerError error = results.Errors[i];
+                        if (error.IsWarning)
+                            continue;
+
+                        _errors.Add($"【Compiler Error】Error Number: {error.ErrorNumber}, Error Text: {error.ErrorText}.");
+                    }
+                }
+            }
+
+            public void LogError()
+            {
+                for (int i = 0; i < _errors.Count; i++)
+                {
+                    Log.Error(_errors[i]);
+                }
+            }
+        }
+        #endregion
+
+        #region Static Method
+        private void OnStaticGUI()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Entity:", GUILayout.Width(60));
@@ -342,7 +435,7 @@ namespace HT.Framework
             }
             GUILayout.EndHorizontal();
             GUI.enabled = true;
-            
+
             GUI.enabled = Target != null;
             GUILayout.BeginHorizontal();
             GUILayout.Label("Method:", GUILayout.Width(60));
@@ -368,7 +461,7 @@ namespace HT.Framework
                 gm.ShowAsContext();
             }
             GUILayout.EndHorizontal();
-            
+
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             GUILayout.BeginHorizontal();
             GUILayout.Label("Parameters:", EditorStyles.boldLabel);
@@ -440,51 +533,6 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
             #endregion
         }
-
-        private void DynamicExecute()
-        {
-            EditorUtility.DisplayProgressBar("Compiling", "Code Snippet Compiling......", 0);
-            CompilerResults results = _csharpCodeProvider.CompileAssemblyFromSource(GenerateParameters(), GenerateCode());
-            if (results.Errors.HasErrors)
-            {
-                Log.Error("执行代码片段失败：代码片段存在如下编译错误！");
-                for (int i = 0; i < results.Errors.Count; i++)
-                {
-                    Log.Error(results.Errors[i].ToString());
-                }
-            }
-            else
-            {
-                Assembly assembly = results.CompiledAssembly;
-                Type type = assembly.DefinedTypes.First((t) => { return t.Name == "DynamicClass"; });
-                MethodInfo method = type.GetMethod("DynamicMethod", BindingFlags.Static | BindingFlags.NonPublic);
-                method.Invoke(null, null);
-            }
-            EditorUtility.ClearProgressBar();
-        }
-        private CompilerParameters GenerateParameters()
-        {
-            CompilerParameters compilerParameters = new CompilerParameters();
-            for (int i = 0; i < _assemblies.Count; i++)
-            {
-                if (File.Exists(_assemblies[i]))
-                {
-                    compilerParameters.ReferencedAssemblies.Add(_assemblies[i]);
-                }
-            }
-            compilerParameters.GenerateExecutable = false;
-            compilerParameters.GenerateInMemory = true;
-            compilerParameters.CompilerOptions = "/unsafe /optimize";
-            return compilerParameters;
-        }
-        private string GenerateCode()
-        {
-            string code = _codeTemplate;
-            code = code.Replace("#NAMESPACE#", _namespace);
-            code = code.Replace("#CODE#", _code);
-            return code;
-        }
-
         private void StaticExecute()
         {
             object[] parameters = new object[_parameters.Count];
@@ -547,12 +595,7 @@ namespace HT.Framework
             StringToolkit.Concat(")");
             _methodName = StringToolkit.EndConcat();
         }
-        
-        public enum ExecuterMode
-        {
-            Dynamic,
-            Static
-        }
+
         public class Parameter
         {
             public ParameterInfo Info { get; private set; }
@@ -561,7 +604,7 @@ namespace HT.Framework
             public bool IsEnum { get; private set; }
             public bool IsObject { get; private set; }
             public Type ObjectType { get; private set; }
-            
+
             public string StringValue;
             public int IntValue;
             public float FloatValue;
@@ -627,6 +670,13 @@ namespace HT.Framework
                         }
                 }
             }
+        }
+        #endregion
+
+        public enum ExecuterMode
+        {
+            Dynamic,
+            Static
         }
     }
 }

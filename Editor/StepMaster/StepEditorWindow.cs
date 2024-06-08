@@ -627,7 +627,7 @@ namespace HT.Framework
                         GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
                         GUI.backgroundColor = _currentStepIndex == i ? Color.cyan : Color.white;
                         string style = _currentStepIndex == i ? "TV Selection" : "PrefixLabel";
-                        if (GUILayout.Button($"{i}.{showName}", style, GUILayout.Height(20), GUILayout.ExpandWidth(true)))
+                        if (GUILayout.Button($"{i}.{showName}", style, GUILayout.Height(24), GUILayout.MinWidth(100)))
                         {
                             SelectStepContent(i);
                             SelectStepOperation(-1);
