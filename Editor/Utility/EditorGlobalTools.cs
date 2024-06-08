@@ -446,17 +446,17 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 打开 Custom Executer
+        /// 打开 Code Snippet Executer
         /// </summary>
-        [MenuItem("HTFramework/Tools/Custom Executer", false, 107)]
-        private static void OpenCustomExecuter()
+        [MenuItem("HTFramework/Tools/Code Snippet Executer", false, 107)]
+        private static void OpenCodeSnippetExecuter()
         {
-            CustomExecuter tools = EditorWindow.GetWindow<CustomExecuter>();
-            tools.titleContent.image = EditorGUIUtility.IconContent("LightProbeProxyVolume Icon").image;
-            tools.titleContent.text = "Custom Executer";
-            tools.minSize = new Vector2(500, 600);
-            tools.Initialization();
-            tools.Show();
+            CodeSnippetExecuter executer = EditorWindow.GetWindow<CodeSnippetExecuter>();
+            executer.titleContent.image = EditorGUIUtility.IconContent("LightProbeProxyVolume Icon").image;
+            executer.titleContent.text = "Code Snippet Executer";
+            executer.minSize = new Vector2(500, 600);
+            executer.Initialization();
+            executer.Show();
         }
 
         /// <summary>

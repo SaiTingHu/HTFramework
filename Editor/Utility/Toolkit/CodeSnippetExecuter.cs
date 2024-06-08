@@ -14,9 +14,9 @@ using UObject = UnityEngine.Object;
 namespace HT.Framework
 {
     /// <summary>
-    /// 自定义执行器
+    /// 代码片段执行器
     /// </summary>
-    internal sealed class CustomExecuter : HTFEditorWindow
+    internal sealed class CodeSnippetExecuter : HTFEditorWindow
     {
         private ExecuterMode _mode = ExecuterMode.Dynamic;
 
@@ -36,6 +36,7 @@ namespace HT.Framework
         #endregion
 
         #region Static Field
+        private HashSet<string> _excludeMethod = new HashSet<string>();
         private GameObject _entity;
         private Component _target;
         private MethodInfo _method;
@@ -133,6 +134,40 @@ namespace HT.Framework
 
             _csharpCodeProvider = new CSharpCodeProvider();
             Entity = null;
+            _excludeMethod.Add("Invoke");
+            _excludeMethod.Add("InvokeRepeating");
+            _excludeMethod.Add("CancelInvoke");
+            _excludeMethod.Add("IsInvoking");
+            _excludeMethod.Add("StartCoroutine");
+            _excludeMethod.Add("StartCoroutine_Auto");
+            _excludeMethod.Add("StopCoroutine");
+            _excludeMethod.Add("StopAllCoroutines");
+            _excludeMethod.Add("GetComponent");
+            _excludeMethod.Add("TryGetComponent");
+            _excludeMethod.Add("GetComponentInChildren");
+            _excludeMethod.Add("GetComponentInParent");
+            _excludeMethod.Add("GetComponents");
+            _excludeMethod.Add("GetComponentsInChildren");
+            _excludeMethod.Add("GetComponentsInParent");
+            _excludeMethod.Add("GetComponentFastPath");
+            _excludeMethod.Add("GetCoupledComponent");
+            _excludeMethod.Add("IsCoupledComponent");
+            _excludeMethod.Add("SendMessage");
+            _excludeMethod.Add("SendMessageUpwards");
+            _excludeMethod.Add("BroadcastMessage");
+            _excludeMethod.Add("GetInstanceID");
+            _excludeMethod.Add("GetHashCode");
+            _excludeMethod.Add("Finalize");
+            _excludeMethod.Add("MemberwiseClone");
+            _excludeMethod.Add("Awake");
+            _excludeMethod.Add("Start");
+            _excludeMethod.Add("Update");
+            _excludeMethod.Add("FixedUpdate");
+            _excludeMethod.Add("OnDestroy");
+            _excludeMethod.Add("OnUpdateFrame");
+            _excludeMethod.Add("OnUpdateSecond");
+            _excludeMethod.Add("OnDrawGUI");
+            _excludeMethod.Add("OnSafetyCheck");
             _methodName = "<None>";
         }
         private void OnDestroy()
@@ -198,6 +233,7 @@ namespace HT.Framework
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box, GUILayout.Height(150));
 
                 _scrollAssemblies = GUILayout.BeginScrollView(_scrollAssemblies);
+
                 for (int i = 0; i < _assemblies.Count; i++)
                 {
                     GUILayout.BeginHorizontal();
@@ -207,7 +243,7 @@ namespace HT.Framework
                     {
                         string initialPath = File.Exists(_assemblies[i]) ? Path.GetDirectoryName(_assemblies[i]) : _assembliesPath;
                         string path = EditorUtility.OpenFilePanel("Browse Assembly Path", initialPath, "*.dll");
-                        if (path.Length != 0)
+                        if (!string.IsNullOrEmpty(path))
                         {
                             _assemblies[i] = path;
                             GUI.FocusControl(null);
@@ -220,6 +256,7 @@ namespace HT.Framework
                     }
                     GUILayout.EndHorizontal();
                 }
+
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Add", EditorStyles.miniButton, GUILayout.Width(50)))
@@ -227,6 +264,7 @@ namespace HT.Framework
                     _assemblies.Add("");
                 }
                 GUILayout.EndHorizontal();
+
                 GUILayout.EndScrollView();
 
                 GUILayout.EndVertical();
@@ -235,7 +273,7 @@ namespace HT.Framework
 
             #region Code
             GUILayout.BeginHorizontal("AC BoldHeader");
-            _isShowCode = EditorGUILayout.Foldout(_isShowCode, "Code", true);
+            _isShowCode = EditorGUILayout.Foldout(_isShowCode, "Code Snippet", true);
             GUILayout.EndHorizontal();
 
             if (_isShowCode)
@@ -248,9 +286,7 @@ namespace HT.Framework
                 }
                 if (GUILayout.Button("Clear Console", EditorGlobalTools.Styles.ButtonRight))
                 {
-                    Type logEntries = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
-                    MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
-                    clearMethod.Invoke(null, null);
+                    EditorApplication.ExecuteMenuItem("HTFramework/Console/Clear");
                     GUI.FocusControl(null);
                 }
                 GUILayout.FlexibleSpace();
@@ -321,11 +357,10 @@ namespace HT.Framework
                 for (int i = 0; i < methods.Length; i++)
                 {
                     MethodInfo method = methods[i];
-                    if (method.Name.Contains("get_") || method.Name.Contains("set_"))
-                    {
+                    if (_excludeMethod.Contains(method.Name) || method.Name.Contains("get_") || method.Name.Contains("set_"))
                         continue;
-                    }
-                    gm.AddItem(new GUIContent(method.Name + "()"), Method == method, () =>
+
+                    gm.AddItem(new GUIContent(GetMethodFullName(method)), Method == method, () =>
                     {
                         Method = method;
                     });
@@ -336,48 +371,49 @@ namespace HT.Framework
             
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Parameters:");
+            GUILayout.Label("Parameters:", EditorStyles.boldLabel);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             bool isValid = true;
             for (int i = 0; i < _parameters.Count; i++)
             {
+                Parameter parameter = _parameters[i];
                 GUILayout.BeginHorizontal();
-                GUILayout.Label($"{i + 1}.{_parameters[i].Name}:", GUILayout.Width(200));
-                switch (_parameters[i].Type)
+                GUILayout.Label($"{i + 1}.{parameter.Name}:", GUILayout.Width(200));
+                switch (parameter.Type)
                 {
                     case "String":
-                        _parameters[i].StringValue = EditorGUILayout.TextField(_parameters[i].StringValue);
+                        parameter.StringValue = EditorGUILayout.TextField(parameter.StringValue);
                         break;
                     case "Int32":
-                        _parameters[i].IntValue = EditorGUILayout.IntField(_parameters[i].IntValue);
+                        parameter.IntValue = EditorGUILayout.IntField(parameter.IntValue);
                         break;
                     case "Single":
-                        _parameters[i].FloatValue = EditorGUILayout.FloatField(_parameters[i].FloatValue);
+                        parameter.FloatValue = EditorGUILayout.FloatField(parameter.FloatValue);
                         break;
                     case "Double":
-                        _parameters[i].DoubleValue = EditorGUILayout.DoubleField(_parameters[i].DoubleValue);
+                        parameter.DoubleValue = EditorGUILayout.DoubleField(parameter.DoubleValue);
                         break;
                     case "Boolean":
-                        _parameters[i].BoolValue = EditorGUILayout.Toggle(_parameters[i].BoolValue);
+                        parameter.BoolValue = EditorGUILayout.Toggle(parameter.BoolValue);
                         break;
                     case "Vector2":
-                        _parameters[i].Vector2Value = EditorGUILayout.Vector2Field("", _parameters[i].Vector2Value);
+                        parameter.Vector2Value = EditorGUILayout.Vector2Field("", parameter.Vector2Value);
                         break;
                     case "Vector3":
-                        _parameters[i].Vector3Value = EditorGUILayout.Vector3Field("", _parameters[i].Vector3Value);
+                        parameter.Vector3Value = EditorGUILayout.Vector3Field("", parameter.Vector3Value);
                         break;
                     case "Color":
-                        _parameters[i].ColorValue = EditorGUILayout.ColorField(_parameters[i].ColorValue);
+                        parameter.ColorValue = EditorGUILayout.ColorField(parameter.ColorValue);
                         break;
                     default:
-                        if (_parameters[i].IsEnum)
+                        if (parameter.IsEnum)
                         {
-                            _parameters[i].EnumValue = EditorGUILayout.EnumPopup(_parameters[i].EnumValue);
+                            parameter.EnumValue = EditorGUILayout.EnumPopup(parameter.EnumValue);
                         }
-                        else if (_parameters[i].IsObject)
+                        else if (parameter.IsObject)
                         {
-                            _parameters[i].ObjectValue = EditorGUILayout.ObjectField(_parameters[i].ObjectValue, _parameters[i].ObjectType, true);
+                            parameter.ObjectValue = EditorGUILayout.ObjectField(parameter.ObjectValue, parameter.ObjectType, true);
                         }
                         else
                         {
@@ -407,10 +443,11 @@ namespace HT.Framework
 
         private void DynamicExecute()
         {
+            EditorUtility.DisplayProgressBar("Compiling", "Code Snippet Compiling......", 0);
             CompilerResults results = _csharpCodeProvider.CompileAssemblyFromSource(GenerateParameters(), GenerateCode());
             if (results.Errors.HasErrors)
             {
-                Log.Error("执行动态工具失败：工具代码存在如下编译错误！");
+                Log.Error("执行代码片段失败：代码片段存在如下编译错误！");
                 for (int i = 0; i < results.Errors.Count; i++)
                 {
                     Log.Error(results.Errors[i].ToString());
@@ -423,13 +460,17 @@ namespace HT.Framework
                 MethodInfo method = type.GetMethod("DynamicMethod", BindingFlags.Static | BindingFlags.NonPublic);
                 method.Invoke(null, null);
             }
+            EditorUtility.ClearProgressBar();
         }
         private CompilerParameters GenerateParameters()
         {
             CompilerParameters compilerParameters = new CompilerParameters();
             for (int i = 0; i < _assemblies.Count; i++)
             {
-                compilerParameters.ReferencedAssemblies.Add(_assemblies[i]);
+                if (File.Exists(_assemblies[i]))
+                {
+                    compilerParameters.ReferencedAssemblies.Add(_assemblies[i]);
+                }
             }
             compilerParameters.GenerateExecutable = false;
             compilerParameters.GenerateInMemory = true;
@@ -443,6 +484,7 @@ namespace HT.Framework
             code = code.Replace("#CODE#", _code);
             return code;
         }
+
         private void StaticExecute()
         {
             object[] parameters = new object[_parameters.Count];
@@ -467,6 +509,20 @@ namespace HT.Framework
                 }
             }
         }
+        private string GetMethodFullName(MethodInfo methodInfo)
+        {
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat(methodInfo.Name);
+            StringToolkit.Concat(" (");
+            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+            for (int i = 0; i < parameterInfos.Length; i++)
+            {
+                if (i != 0) StringToolkit.Concat(", ");
+                StringToolkit.Concat(parameterInfos[i].ParameterType.Name);
+            }
+            StringToolkit.Concat(")");
+            return StringToolkit.EndConcat();
+        }
         private void FormatMethodName()
         {
             StringToolkit.BeginConcat();
@@ -478,7 +534,7 @@ namespace HT.Framework
             StringToolkit.Concat(Method.ReturnType.Name);
             StringToolkit.Concat(" ");
             StringToolkit.Concat(Method.Name);
-            StringToolkit.Concat("(");
+            StringToolkit.Concat(" (");
             for (int i = 0; i < _parameters.Count; i++)
             {
                 if (i != 0) StringToolkit.Concat(", ");
@@ -497,7 +553,6 @@ namespace HT.Framework
             Dynamic,
             Static
         }
-
         public class Parameter
         {
             public ParameterInfo Info { get; private set; }
