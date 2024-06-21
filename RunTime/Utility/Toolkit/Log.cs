@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text;
+using UnityEngine;
 
 namespace HT.Framework
 {
@@ -72,34 +73,15 @@ namespace HT.Framework
         /// 打印信息日志
         /// </summary>
         /// <param name="content">日志内容</param>
-        public static void Info(this string content)
-        {
-            Info(content, null);
-        }
-        /// <summary>
-        /// 打印警告日志
-        /// </summary>
-        /// <param name="content">日志内容</param>
-        public static void Warning(this string content)
-        {
-            Warning(content, null);
-        }
-        /// <summary>
-        /// 打印错误日志
-        /// </summary>
-        /// <param name="content">日志内容</param>
-        public static void Error(this string content)
-        {
-            Error(content, null);
-        }
-        /// <summary>
-        /// 打印信息日志
-        /// </summary>
-        /// <param name="content">日志内容</param>
         /// <param name="context">上下文目标</param>
-        public static void Info(this string content, Object context)
+        /// <param name="isLinkStackTrace">为日志内容中的堆栈跟踪信息建立超链接</param>
+        public static void Info(this string content, Object context = null, bool isLinkStackTrace = false)
         {
 #if UNITY_EDITOR
+            if (isLinkStackTrace)
+            {
+                content = LinkStackTrace(content);
+            }
             Debug.Log(InfoPrefix + content, context);
 #else
             if (Main.Current.IsEnabledLogInfo)
@@ -113,9 +95,14 @@ namespace HT.Framework
         /// </summary>
         /// <param name="content">日志内容</param>
         /// <param name="context">上下文目标</param>
-        public static void Warning(this string content, Object context)
+        /// <param name="isLinkStackTrace">为日志内容中的堆栈跟踪信息建立超链接</param>
+        public static void Warning(this string content, Object context = null, bool isLinkStackTrace = false)
         {
 #if UNITY_EDITOR
+            if (isLinkStackTrace)
+            {
+                content = LinkStackTrace(content);
+            }
             Debug.LogWarning(WarningPrefix + content, context);
 #else
             if (Main.Current.IsEnabledLogWarning)
@@ -129,9 +116,14 @@ namespace HT.Framework
         /// </summary>
         /// <param name="content">日志内容</param>
         /// <param name="context">上下文目标</param>
-        public static void Error(this string content, Object context)
+        /// <param name="isLinkStackTrace">为日志内容中的堆栈跟踪信息建立超链接</param>
+        public static void Error(this string content, Object context = null, bool isLinkStackTrace = false)
         {
 #if UNITY_EDITOR
+            if (isLinkStackTrace)
+            {
+                content = LinkStackTrace(content);
+            }
             Debug.LogError(ErrorPrefix + content, context);
 #else
             if (Main.Current.IsEnabledLogError)
@@ -139,6 +131,53 @@ namespace HT.Framework
                 Debug.LogError(content, context);
             }
 #endif
+        }
+
+        private static string LinkStackTrace(string content)
+        {
+            StringBuilder sb = new StringBuilder();
+            string[] texts = content.Split('\n');
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i].Contains(" at ") && texts[i].Contains(" in "))
+                {
+                    string path;
+                    int line;
+                    SplitPathAndLine(texts[i], out path, out line);
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        string str = $"{path}:{line}";
+                        texts[i] = texts[i].Replace(str, Hyperlink(str, path, line));
+                    }
+                }
+                sb.Append(texts[i]);
+                sb.Append('\n');
+            }
+            return sb.ToString();
+        }
+        private static void SplitPathAndLine(string text, out string path, out int line)
+        {
+            string[] texts = text.Split(" in ");
+            if (texts.Length == 2)
+            {
+                texts = texts[1].Split(':');
+                if (texts.Length >= 2)
+                {
+                    path = texts[texts.Length - 2].Trim();
+                    path = path.Substring(path.IndexOf("\\Assets\\") + 1);
+                    int.TryParse(texts[texts.Length - 1].Trim(), out line);
+                }
+                else
+                {
+                    path = null;
+                    line = 0;
+                }
+            }
+            else
+            {
+                path = null;
+                line = 0;
+            }
         }
     }
 }

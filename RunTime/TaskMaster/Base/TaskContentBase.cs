@@ -151,7 +151,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：开始任务内容【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：开始任务内容【{Name}】时出错！错误描述：{e}", null, true);
             }
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentStart>().Fill(this));
@@ -208,7 +208,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：完成任务内容【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：完成任务内容【{Name}】时出错！错误描述：{e}", null, true);
             }
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskContentComplete>().Fill(this, false));
@@ -236,7 +236,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：完成任务内容【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：完成任务内容【{Name}】时出错！错误描述：{e}", null, true);
             }
 
             List<TaskPointBase> uncompletePoints = new List<TaskPointBase>();
@@ -276,7 +276,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：结束任务内容【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：结束任务内容【{Name}】时出错！错误描述：{e}", null, true);
             }
         }
 

@@ -204,7 +204,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：开始任务点【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：开始任务点【{Name}】时出错！错误描述：{e}", null, true);
             }
 
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventTaskPointStart>().Fill(this, IsEnable && IsEnableRunTime, isAuto));
@@ -237,7 +237,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：指引任务点【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：指引任务点【{Name}】时出错！错误描述：{e}", null, true);
             }
         }
         /// <summary>
@@ -300,7 +300,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：自动完成任务点【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：自动完成任务点【{Name}】时出错！错误描述：{e}", null, true);
             }
 
             if (GetTaskTarget != null)
@@ -328,7 +328,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"任务控制器：结束任务点【{Name}】时出错！错误描述：{e}");
+                Log.Error($"任务控制器：结束任务点【{Name}】时出错！错误描述：{e}", null, true);
             }
         }
 

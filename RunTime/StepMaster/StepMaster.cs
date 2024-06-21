@@ -1190,7 +1190,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"步骤控制器：创建步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
+                Log.Error($"步骤控制器：创建步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
                 return null;
             }
         }
@@ -1208,7 +1208,7 @@ namespace HT.Framework
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"步骤控制器：跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
+                    Log.Error($"步骤控制器：跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
                 }
                 if (_currentHelper.SkipLifeTime > 0)
                 {
@@ -1231,7 +1231,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"步骤控制器：立即跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
+                Log.Error($"步骤控制器：立即跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
             }
         }
         /// <summary>
@@ -1249,7 +1249,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"步骤控制器：恢复步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
+                Log.Error($"步骤控制器：恢复步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
             }
         }
         /// <summary>
@@ -1267,7 +1267,7 @@ namespace HT.Framework
             }
             catch (Exception e)
             {
-                Log.Error($"步骤控制器：销毁步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
+                Log.Error($"步骤控制器：销毁步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
             }
         }
         /// <summary>
