@@ -135,6 +135,9 @@ namespace HT.Framework
 
         private static string LinkStackTrace(string content)
         {
+            if (string.IsNullOrEmpty(content))
+                return content;
+
             StringBuilder sb = new StringBuilder();
             string[] texts = content.Split('\n');
             for (int i = 0; i < texts.Length; i++)
