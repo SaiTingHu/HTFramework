@@ -50,7 +50,7 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [Instruction](https://wanderer.blog.csdn.net/article/details/130918484) - 指令系统，可在运行时编译并执行任意指令代码，达到最快速度修补程序的功能。
 
-- [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口，还支持快捷设置脚本定义、指定全局主要数据类、设置项目授权、以及配置全局参数等。
+- [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口，还支持快捷设置脚本定义、指定全局主要数据类、设置项目授权、以及配置全局参数等，且支持[HybridCLR](https://wanderer.blog.csdn.net/article/details/140084724)热更新。
 
 - [Network](https://wanderer.blog.csdn.net/article/details/103575999) - 网络客户端模块，以单个通信管道为单位，每个管道均支持TCP/UDP等协议，可以为每个管道定义通信消息格式，基本能胜任一些常见的通信环境。
 
