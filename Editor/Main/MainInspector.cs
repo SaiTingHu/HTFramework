@@ -8,7 +8,6 @@ using UnityEditorInternal;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("HTFramework.AI.Editor")]
-[assembly: InternalsVisibleTo("HTFramework.ILHotfix.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.GC.Editor")]
 
 namespace HT.Framework
