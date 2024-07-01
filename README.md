@@ -74,10 +74,6 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [AI](https://github.com/SaiTingHu/HTFrameworkAI)【可选模块】 - AI相关模块，比如A*寻路以及各种人工智能模块。
 
-- [ILHotfix](https://github.com/SaiTingHu/HTFrameworkILHotfix)【可选模块】 - 基于ILRuntime实现的跨平台热更新框架，开发非常方便，新项目只需要拉取框架源码及本模块，一键即可创建热更新环境，之后便可以正常开发。
-
-- [XLua](https://github.com/SaiTingHu/HTFrameworkXLua)【可选模块】 - 本模块旨在结合XLua与框架的资源加载策略，快速实现热更流程，并优化了开发环境，使得开发人员可以最低成本的投入到Lua业务开发。
-
 - [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于文件系统、本地化系统、新手引导系统、时间系统、AVG2D系统、FTG2D系统、RPG2D系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
 
 ## 内置工具

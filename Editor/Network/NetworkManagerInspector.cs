@@ -49,7 +49,7 @@ namespace HT.Framework
                     if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         GenericMenu gm = new GenericMenu();
-                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                        List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                         {
                             return type.IsSubclassOf(typeof(ProtocolChannelBase)) && !type.IsAbstract;
                         }, false);

@@ -980,7 +980,7 @@ namespace HT.Framework
                     _stepHelperGC.tooltip = _currentStepObj.HelperName;
                     if (GUILayout.Button(_stepHelperGC, EditorStyles.popup, GUILayout.Width(105)))
                     {
-                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                        List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                         {
                             return type.IsSubclassOf(_baseType) && !type.IsAbstract;
                         }, false);

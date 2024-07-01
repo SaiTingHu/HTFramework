@@ -208,14 +208,14 @@ namespace HT.Framework
                 List<Type> types = null;
                 if (showType == ShowType.Hierarchy)
                 {
-                    types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                    types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                     {
                         return type.IsSubclassOf(typeof(Component)) && !type.IsAbstract;
                     });
                 }
                 else
                 {
-                    types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                    types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                     {
                         return type.IsSubclassOf(typeof(UnityEngine.Object)) && !type.IsSubclassOf(typeof(Component)) && !type.IsAbstract;
                     });

@@ -73,7 +73,7 @@ namespace HT.Framework
                     if (GUI.Button(sub, _addGC, EditorGlobalTools.Styles.InvisibleButton))
                     {
                         GenericMenu gm = new GenericMenu();
-                        List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                        List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                         {
                             return type.IsSubclassOf(typeof(FiniteStateBase)) && !type.IsAbstract;
                         }, false);
@@ -290,7 +290,7 @@ namespace HT.Framework
                     EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_FSMData_Folder, "FSMData", "FSMDataTemplate");
                 });
                 gm.AddSeparator("");
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                 {
                     return type.IsSubclassOf(typeof(FSMDataBase)) && !type.IsAbstract;
                 }, false);
@@ -387,7 +387,7 @@ namespace HT.Framework
                 });
                 gm.AddSeparator("");
                 Type argsType = Target.Args != null ? Target.Args.GetType() : null;
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                 {
                     return type.IsSubclassOf(typeof(FSMArgsBase)) && !type.IsAbstract;
                 }, false);

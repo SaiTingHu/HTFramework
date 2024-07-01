@@ -75,7 +75,7 @@ namespace HT.Framework
                         if (GUI.Button(subrect, Target.DefineUINames[index], EditorGlobalTools.Styles.MiniPopup))
                         {
                             GenericMenu gm = new GenericMenu();
-                            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                            List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                             {
                                 return type.IsSubclassOf(typeof(UILogicBase)) && !type.IsAbstract;
                             }, false);

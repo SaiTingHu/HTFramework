@@ -68,7 +68,7 @@ namespace HT.Framework
             if (GUILayout.Button(_componentType != null ? _componentType.FullName : "<None>", EditorGlobalTools.Styles.MiniPopup))
             {
                 GenericMenu gm = new GenericMenu();
-                List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+                List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
                 {
                     return type.IsSubclassOf(typeof(Component)) && type.FullName.ToLower().Contains(_componentTypeFilter.ToLower());
                 });

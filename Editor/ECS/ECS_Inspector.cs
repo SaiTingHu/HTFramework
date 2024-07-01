@@ -44,7 +44,7 @@ namespace HT.Framework
 
             _components.Clear();
             _componentInfos.Clear();
-            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies((type) =>
+            List<Type> types = ReflectionToolkit.GetTypesInAllAssemblies((type) =>
             {
                 return type.IsSubclassOf(typeof(ECS_Component)) && !type.IsAbstract;
             }, false);
@@ -56,7 +56,7 @@ namespace HT.Framework
 
             _systems.Clear();
             _systemInfos.Clear();
-            types = ReflectionToolkit.GetTypesInRunTimeAssemblies((type) =>
+            types = ReflectionToolkit.GetTypesInAllAssemblies((type) =>
             {
                 return type.IsSubclassOf(typeof(ECS_System)) && !type.IsAbstract;
             }, false);

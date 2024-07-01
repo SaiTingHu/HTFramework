@@ -164,6 +164,15 @@ namespace HT.Framework
         #endregion
 
         #region Lifecycle
+        /// <summary>
+        /// 框架是否已完成初始化（包含所有内置模块的初始化）
+        /// </summary>
+        public bool IsInitCompleted { get; private set; } = false;
+        /// <summary>
+        /// 框架是否已完成准备工作（包含所有内置模块的准备工作）
+        /// </summary>
+        public bool IsReadyCompleted { get; private set; } = false;
+
         protected override void Awake()
         {
             base.Awake();
@@ -179,36 +188,57 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.Main, "框架致命错误：不能存在两个及以上Main主模块！");
             }
 
+#if !HOTFIX_HybridCLR
             OnInit();
+#else
+            HybridCLRInit();
+#endif
         }
         private void Start()
         {
+#if !HOTFIX_HybridCLR
             OnReady();
+#endif
         }
         private void Update()
         {
-            OnUpdate();
+            if (IsInitCompleted && IsReadyCompleted)
+            {
+                OnUpdate();
+            }
         }
         private void OnGUI()
         {
-            GUI.skin = DefaultSkin;
+            if (IsInitCompleted && IsReadyCompleted)
+            {
+                GUI.skin = DefaultSkin;
 
-            BehaviourDrawGUI();
-            LicenseOnGUI();
+                BehaviourDrawGUI();
+                LicenseOnGUI();
+            }
         }
         protected override void OnDestroy()
         {
             base.OnDestroy();
 
-            OnTerminate();
+            if (IsInitCompleted && IsReadyCompleted)
+            {
+                OnTerminate();
+            }
         }
         private void OnApplicationFocus(bool focus)
         {
-            ApplicationFocusEvent?.Invoke(focus);
+            if (IsInitCompleted && IsReadyCompleted)
+            {
+                ApplicationFocusEvent?.Invoke(focus);
+            }
         }
         private void OnApplicationQuit()
         {
-            ApplicationQuitEvent?.Invoke();
+            if (IsInitCompleted && IsReadyCompleted)
+            {
+                ApplicationQuitEvent?.Invoke();
+            }
         }
         #endregion
 
@@ -1181,6 +1211,34 @@ namespace HT.Framework
         /// 是否允许将场景添加到发布界面
         /// </summary>
         public bool IsAllowSceneAddBuild = false;
+        #endregion
+
+        #region HybridCLR
+        /// <summary>
+        /// 热更新程序集名称【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal string[] HotfixAssemblyNames;
+
+        private void HybridCLRInit()
+        {
+#if HOTFIX_HybridCLR
+            for (int i = 0; i < HotfixAssemblyNames.Length; i++)
+            {
+                ReflectionToolkit.AddRunTimeAssembly(HotfixAssemblyNames[i]);
+            }
+#endif
+        }
+
+        /// <summary>
+        /// HybridCLR 热更新程序集已加载完成
+        /// </summary>
+        public void HybridCLRCompleted()
+        {
+#if HOTFIX_HybridCLR
+            if (!IsInitCompleted) OnInit();
+            if (!IsReadyCompleted) OnReady();
+#endif
+        }
         #endregion
 
         #region Utility

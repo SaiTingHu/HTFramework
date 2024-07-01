@@ -13,7 +13,7 @@ namespace HT.Framework
         /// 当前的运行时程序集
         /// </summary>
         private static HashSet<string> RunTimeAssemblies = new HashSet<string>() {
-            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.ILHotfix.RunTime", "HTFramework.GC.RunTime",
+            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.GC.RunTime",
             "UnityEngine", "UnityEngine.CoreModule", "UnityEngine.UI", "UnityEngine.PhysicsModule" };
 
         /// <summary>
@@ -22,7 +22,10 @@ namespace HT.Framework
         /// <param name="assembly">运行时程序集</param>
         public static void AddRunTimeAssembly(string assembly)
         {
-            RunTimeAssemblies.Add(assembly);
+            if (!string.IsNullOrEmpty(assembly))
+            {
+                RunTimeAssemblies.Add(assembly);
+            }
         }
         /// <summary>
         /// 从当前【程序域】的【运行时程序集】中获取所有类型
@@ -36,7 +39,7 @@ namespace HT.Framework
             for (int i = 0; i < assemblys.Length; i++)
             {
                 string name = assemblys[i].GetName().Name;
-                if (RunTimeAssemblies.Contains(name) && (isIncludeUnity || !name.StartsWith("UnityEngine")))
+                if (RunTimeAssemblies.Contains(name) && (isIncludeUnity || (!name.StartsWith("UnityEngine") && !name.StartsWith("UnityEditor"))))
                 {
                     types.AddRange(assemblys[i].GetTypes());
                 }
@@ -56,7 +59,7 @@ namespace HT.Framework
             for (int i = 0; i < assemblys.Length; i++)
             {
                 string name = assemblys[i].GetName().Name;
-                if (RunTimeAssemblies.Contains(name) && (isIncludeUnity || !name.StartsWith("UnityEngine")))
+                if (RunTimeAssemblies.Contains(name) && (isIncludeUnity || (!name.StartsWith("UnityEngine") && !name.StartsWith("UnityEditor"))))
                 {
                     Type[] ts = assemblys[i].GetTypes();
                     foreach (var t in ts)
@@ -81,7 +84,7 @@ namespace HT.Framework
             Type type = null;
             foreach (string assembly in RunTimeAssemblies)
             {
-                if (isIncludeUnity || !assembly.StartsWith("UnityEngine"))
+                if (isIncludeUnity || (!assembly.StartsWith("UnityEngine") && !assembly.StartsWith("UnityEditor")))
                 {
                     type = Type.GetType($"{typeName},{assembly}");
                     if (type != null)
@@ -96,14 +99,19 @@ namespace HT.Framework
         /// <summary>
         /// 从当前【程序域】的【所有程序集】中获取所有类型
         /// </summary>
+        /// <param name="isIncludeUnity">是否包含Unity系列的程序集</param>
         /// <returns>所有类型</returns>
-        public static List<Type> GetTypesInAllAssemblies()
+        public static List<Type> GetTypesInAllAssemblies(bool isIncludeUnity = true)
         {
             List<Type> types = new List<Type>();
             Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblys.Length; i++)
             {
-                types.AddRange(assemblys[i].GetTypes());
+                string name = assemblys[i].GetName().Name;
+                if (isIncludeUnity || (!name.StartsWith("UnityEngine") && !name.StartsWith("UnityEditor")))
+                {
+                    types.AddRange(assemblys[i].GetTypes());
+                }
             }
             return types;
         }
@@ -111,23 +119,52 @@ namespace HT.Framework
         /// 从当前【程序域】的【所有程序集】中获取所有类型
         /// </summary>
         /// <param name="filter">类型筛选器</param>
+        /// <param name="isIncludeUnity">是否包含Unity系列的程序集</param>
         /// <returns>所有类型</returns>
-        public static List<Type> GetTypesInAllAssemblies(HTFFunc<Type, bool> filter)
+        public static List<Type> GetTypesInAllAssemblies(HTFFunc<Type, bool> filter, bool isIncludeUnity = true)
         {
             List<Type> types = new List<Type>();
             Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblys.Length; i++)
             {
-                Type[] ts = assemblys[i].GetTypes();
-                foreach (var t in ts)
+                string name = assemblys[i].GetName().Name;
+                if (isIncludeUnity || (!name.StartsWith("UnityEngine") && !name.StartsWith("UnityEditor")))
                 {
-                    if (filter(t))
+                    Type[] ts = assemblys[i].GetTypes();
+                    foreach (var t in ts)
                     {
-                        types.Add(t);
+                        if (filter(t))
+                        {
+                            types.Add(t);
+                        }
                     }
                 }
             }
             return types;
+        }
+        /// <summary>
+        /// 从当前【程序域】的【所有程序集】中获取指定类型
+        /// </summary>
+        /// <param name="typeName">类型名称</param>
+        /// <param name="isIncludeUnity">是否包含Unity系列的程序集</param>
+        /// <returns>类型</returns>
+        public static Type GetTypeInAllAssemblies(string typeName, bool isIncludeUnity = true)
+        {
+            Type type = null;
+            Assembly[] assemblys = AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblys.Length; i++)
+            {
+                string name = assemblys[i].GetName().Name;
+                if (isIncludeUnity || (!name.StartsWith("UnityEngine") && !name.StartsWith("UnityEditor")))
+                {
+                    type = Type.GetType($"{typeName},{name}");
+                    if (type != null)
+                    {
+                        return type;
+                    }
+                }
+            }
+            return type;
         }
 
         /// <summary>

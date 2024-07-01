@@ -19,13 +19,20 @@ namespace HT.Framework
         private List<Type> _types;
 
         protected virtual string Intro => null;
+        protected override bool IsEnableRuntimeData
+        {
+            get
+            {
+                return Main.Current != null && Main.Current.IsInitCompleted && Main.Current.IsReadyCompleted;
+            }
+        }
 
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();
 
             _module = Target as InternalModuleBase<H>;
-            _types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
+            _types = ReflectionToolkit.GetTypesInAllAssemblies(type =>
             {
                 return typeof(H).IsAssignableFrom(type) && typeof(H) != type;
             }, false);

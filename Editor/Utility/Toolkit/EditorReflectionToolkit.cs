@@ -17,7 +17,7 @@ namespace HT.Framework
         /// 当前的编辑器程序集
         /// </summary>
         private static HashSet<string> EditorAssemblies = new HashSet<string>() {
-            "Assembly-CSharp-Editor", "HTFramework.Editor", "HTFramework.AI.Editor", "HTFramework.ILHotfix.Editor", "HTFramework.GC.Editor",
+            "Assembly-CSharp-Editor", "HTFramework.Editor", "HTFramework.AI.Editor", "HTFramework.GC.Editor",
             "UnityEditor", "UnityEditorInternal" };
 
         /// <summary>

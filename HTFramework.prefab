@@ -459,6 +459,7 @@ MonoBehaviour:
   IsEnabledLogWarning: 1
   IsEnabledLogError: 1
   IsAllowSceneAddBuild: 0
+  HotfixAssemblyNames: []
   _version: 
 --- !u!1 &1704541190228656
 GameObject:
