@@ -129,7 +129,7 @@ namespace HT.Framework
         {
             GUI.skin = _skin;
 
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
             GUIUtility.ScaleAroundPivot(new Vector2(2, 2), Vector2.zero);
 #endif
 

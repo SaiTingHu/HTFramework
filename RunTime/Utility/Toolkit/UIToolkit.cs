@@ -22,7 +22,7 @@ namespace HT.Framework
             {
                 if (EventSystem.current)
                 {
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
                     if (Input.touchCount > 0)
                     {
                         return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
