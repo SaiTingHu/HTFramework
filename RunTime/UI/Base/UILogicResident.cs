@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace HT.Framework
 {
@@ -15,7 +16,22 @@ namespace HT.Framework
         /// </summary>
         public override void OnInit()
         {
-            base.OnInit();
+            //base.OnInit();
+
+            //重写父类的自动化任务
+            int injectCount = 0;
+            int bindCount = 0;
+
+            if (IsAutomate)
+            {
+                FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(GetType());
+                injectCount = AutomaticTask.ApplyInject(this, fieldInfos);
+
+                if (IsSupportedDataDriver)
+                {
+                    bindCount = AutomaticTask.ApplyDataBinding(this, fieldInfos);
+                }
+            }
 
             Type[] types = DefineRegions();
             if (types != null)
@@ -30,6 +46,17 @@ namespace HT.Framework
                             UIRegion region = Activator.CreateInstance(type) as UIRegion;
                             region.Host = this;
                             _regions.Add(type, region);
+
+                            if (IsAutomate)
+                            {
+                                FieldInfo[] fieldInfos = AutomaticTask.GetAutomaticFields(type);
+                                injectCount += AutomaticTask.ApplyInject(region, fieldInfos);
+
+                                if (IsSupportedDataDriver)
+                                {
+                                    bindCount += AutomaticTask.ApplyDataBinding(region, fieldInfos);
+                                }
+                            }
                         }
                     }
                     else
@@ -46,6 +73,10 @@ namespace HT.Framework
                     region.Value.OnInit();
                 }
             }
+
+#if UNITY_EDITOR
+            SafetyChecker.DoSafetyCheck(this, injectCount, bindCount);
+#endif
         }
         /// <summary>
         /// 打开UI

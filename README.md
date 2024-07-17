@@ -92,6 +92,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [应用级Demo - FTG2D横版自由格斗](https://blog.csdn.net/qq992817263/category_10732753.html)。
 
+- [应用级Demo - RPG2D角色扮演与回合制战棋](https://blog.csdn.net/qq992817263/category_12698179.html)。
+
 ## 注意事项
 
 - 1.框架中所有On开头的函数为生命周期函数或回调函数，均由框架呼叫，请勿手动调用。

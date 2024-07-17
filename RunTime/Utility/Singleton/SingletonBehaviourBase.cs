@@ -8,7 +8,7 @@ namespace HT.Framework
     /// 单例模式 Behaviour 基类
     /// </summary>
     [DisallowMultipleComponent]
-    public abstract class SingletonBehaviourBase<T> : HTBehaviour, IUpdateFrame where T : class
+    public abstract class SingletonBehaviourBase<T> : HTBehaviour, IUpdateFrame where T : HTBehaviour
     {
         private static T _current;
         /// <summary>

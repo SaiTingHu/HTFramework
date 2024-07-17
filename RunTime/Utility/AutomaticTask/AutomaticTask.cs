@@ -34,6 +34,16 @@ namespace HT.Framework
             return ApplyInject(uILogicBase, uILogicBase.UIEntity, fieldInfos);
         }
         /// <summary>
+        /// 应用UI逻辑类（常驻UI）的UI区域的依赖注入
+        /// </summary>
+        /// <param name="uIRegion">UI区域实例</param>
+        /// <param name="fieldInfos">所有自动化字段</param>
+        /// <returns>完成注入的数量</returns>
+        public static int ApplyInject(UILogicResident.UIRegion uIRegion, FieldInfo[] fieldInfos)
+        {
+            return ApplyInject(uIRegion, uIRegion.Host.UIEntity, fieldInfos);
+        }
+        /// <summary>
         /// 应用实体逻辑类的依赖注入
         /// </summary>
         /// <param name="entityLogicBase">实体逻辑实例</param>
