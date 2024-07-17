@@ -1,4 +1,7 @@
-﻿using UnityEngine.Events;
+﻿#if UNITY_TMP_3_0_9
+using TMPro;
+#endif
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -106,6 +109,31 @@ namespace HT.Framework
                 OnValueChanged += (value) => { if (dropdown) dropdown.value = value; };
                 _bindedControls.Add(control);
             }
+#if UNITY_TMP_3_0_9
+            else if (control is TMP_InputField)
+            {
+                TMP_InputField inputField = control as TMP_InputField;
+                inputField.text = Value.ToString();
+                inputField.onValueChanged.AddListener(_callbackString);
+                OnValueChanged += (value) => { if (inputField) inputField.text = value.ToString(); };
+                _bindedControls.Add(control);
+            }
+            else if (control is TextMeshProUGUI)
+            {
+                TextMeshProUGUI text = control as TextMeshProUGUI;
+                text.text = Value.ToString();
+                OnValueChanged += (value) => { if (text) text.text = value.ToString(); };
+                _bindedControls.Add(control);
+            }
+            else if (control is TMP_Dropdown)
+            {
+                TMP_Dropdown dropdown = control as TMP_Dropdown;
+                dropdown.value = Value;
+                dropdown.onValueChanged.AddListener(_callbackInt);
+                OnValueChanged += (value) => { if (dropdown) dropdown.value = value; };
+                _bindedControls.Add(control);
+            }
+#endif
             else
             {
                 Log.Warning($"自动化任务：数据绑定失败，当前不支持控件 {control.GetType().FullName} 与 BindableInt 类型的数据绑定！");
@@ -138,6 +166,18 @@ namespace HT.Framework
                     Dropdown dropdown = control as Dropdown;
                     dropdown.onValueChanged.RemoveListener(_callbackInt);
                 }
+#if UNITY_TMP_3_0_9
+                else if (control is TMP_InputField)
+                {
+                    TMP_InputField inputField = control as TMP_InputField;
+                    inputField.onValueChanged.RemoveListener(_callbackString);
+                }
+                else if (control is TMP_Dropdown)
+                {
+                    TMP_Dropdown dropdown = control as TMP_Dropdown;
+                    dropdown.onValueChanged.RemoveListener(_callbackInt);
+                }
+#endif
             }
             OnValueChanged = null;
             _bindedControls.Clear();

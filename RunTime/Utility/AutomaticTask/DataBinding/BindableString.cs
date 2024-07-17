@@ -1,4 +1,7 @@
-﻿using UnityEngine.Events;
+﻿#if UNITY_TMP_3_0_9
+using TMPro;
+#endif
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -72,6 +75,23 @@ namespace HT.Framework
                 OnValueChanged += (value) => { if (text) text.text = value; };
                 _bindedControls.Add(control);
             }
+#if UNITY_TMP_3_0_9
+            else if (control is TMP_InputField)
+            {
+                TMP_InputField inputField = control as TMP_InputField;
+                inputField.text = Value;
+                inputField.onValueChanged.AddListener(_callback);
+                OnValueChanged += (value) => { if (inputField) inputField.text = value; };
+                _bindedControls.Add(control);
+            }
+            else if (control is TextMeshProUGUI)
+            {
+                TextMeshProUGUI text = control as TextMeshProUGUI;
+                text.text = Value;
+                OnValueChanged += (value) => { if (text) text.text = value; };
+                _bindedControls.Add(control);
+            }
+#endif
             else
             {
                 Log.Warning($"自动化任务：数据绑定失败，当前不支持控件 {control.GetType().FullName} 与 BindableString 类型的数据绑定！");
@@ -94,6 +114,13 @@ namespace HT.Framework
                     InputField inputField = control as InputField;
                     inputField.onValueChanged.RemoveListener(_callback);
                 }
+#if UNITY_TMP_3_0_9
+                else if (control is TMP_InputField)
+                {
+                    TMP_InputField inputField = control as TMP_InputField;
+                    inputField.onValueChanged.RemoveListener(_callback);
+                }
+#endif
             }
             OnValueChanged = null;
             _bindedControls.Clear();
