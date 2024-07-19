@@ -13,6 +13,10 @@ namespace HT.Framework
     public sealed class Builder : HTFEditorWindow
     {
         /// <summary>
+        /// 构建器打开事件
+        /// </summary>
+        public static event HTFAction OnOpened;
+        /// <summary>
         /// 检查项目构建的前置条件，如果至少有一个条件返回false，将禁止打包，全部返回true，才启用打包
         /// </summary>
         public static List<HTFFunc<bool>> CheckBuildPreconditions = new List<HTFFunc<bool>>();
@@ -42,6 +46,8 @@ namespace HT.Framework
                 Builder builder = GetWindow<Builder>(true, "HTFramework Builder", true);
                 builder.minSize = new Vector2(640, 580);
                 builder.Show();
+
+                OnOpened?.Invoke();
             }
         }
         
