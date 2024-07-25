@@ -161,6 +161,14 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
+            if (_helper == null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+                return;
+            }
+
             if (_helper.Entities.Count == 0 && _helper.ObjectPools.Count == 0)
             {
                 GUILayout.BeginHorizontal();

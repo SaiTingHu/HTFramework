@@ -15,6 +15,14 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
+            if (_helper == null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+                return;
+            }
+
             GUILayout.BeginHorizontal();
             GUILayout.Label($"CustomModules: {_helper.GetAllCustomModule().Count}");
             GUILayout.EndHorizontal();

@@ -25,11 +25,12 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
-            if (_helper.SpawnPools.Count == 0)
+            if (_helper == null || _helper.SpawnPools.Count == 0)
             {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("No Runtime Data!");
                 GUILayout.EndHorizontal();
+                return;
             }
 
             foreach (var pool in _helper.SpawnPools)

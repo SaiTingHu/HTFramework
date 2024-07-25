@@ -153,6 +153,14 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
+            if (_helper == null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+                return;
+            }
+
             GUILayout.BeginHorizontal();
             Target.IsHideAll = EditorGUILayout.Toggle("Hide All", Target.IsHideAll);
             GUILayout.EndHorizontal();

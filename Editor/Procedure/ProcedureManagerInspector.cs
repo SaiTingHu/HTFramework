@@ -172,8 +172,13 @@ namespace HT.Framework
         {
             base.OnInspectorRuntimeGUI();
 
-            if (Target.CurrentProcedure == null)
+            if (_helper == null || Target.CurrentProcedure == null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
                 return;
+            }
 
             GUILayout.BeginHorizontal();
             GUILayout.Label($"Current Procedure: {Target.CurrentProcedure.GetType().Name}");

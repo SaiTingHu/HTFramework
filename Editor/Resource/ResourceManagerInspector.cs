@@ -35,8 +35,6 @@ namespace HT.Framework
                 GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
 
-                PropertyField(nameof(ResourceManager.IsLogDetail), "Is Log Detail");
-
                 if (Target.HelperType == "HT.Framework.AddressablesHelper")
                 {
                     GUILayout.BeginHorizontal();
@@ -50,8 +48,6 @@ namespace HT.Framework
             {
                 PropertyField(nameof(ResourceManager.AssetBundleManifestName), "Manifest Name");
                 PropertyField(nameof(ResourceManager.IsEditorMode), "Editor Mode");
-
-                PropertyField(nameof(ResourceManager.IsLogDetail), "Is Log Detail");
 
                 if (Target.HelperType == "HT.Framework.AddressablesHelper")
                 {
@@ -87,11 +83,21 @@ namespace HT.Framework
                 }
             }
 
+            PropertyField(nameof(ResourceManager.IsLogDetail), "Is Log Detail");
+
             GUI.enabled = true;
         }
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
+
+            if (_helper == null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+                return;
+            }
 
             if (Target.Mode == ResourceLoadMode.AssetBundle)
             {

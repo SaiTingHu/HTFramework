@@ -28,7 +28,15 @@ namespace HT.Framework
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();
-            
+
+            if (_helper == null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("No Runtime Data!");
+                GUILayout.EndHorizontal();
+                return;
+            }
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("FSMs: " + _helper.FSMs.Count);
             GUILayout.EndHorizontal();
