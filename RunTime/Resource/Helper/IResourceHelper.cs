@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace HT.Framework
 {
@@ -42,10 +41,6 @@ namespace HT.Framework
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
         Dictionary<string, Hash128> AssetBundleHashs { get; }
-        /// <summary>
-        /// 已加载的所有场景【场景名称、场景】
-        /// </summary>
-        Dictionary<string, Scene> Scenes { get; }
 
         /// <summary>
         /// 设置加载器
@@ -56,7 +51,7 @@ namespace HT.Framework
         /// <param name="isLogDetail">是否打印资源加载细节日志</param>
         void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName, bool isLogDetail);
         /// <summary>
-        /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
+        /// 设置AssetBundle资源根路径
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         void SetAssetBundlePath(string path);
@@ -66,6 +61,7 @@ namespace HT.Framework
         /// <param name="assetBundleName">名称</param>
         /// <returns>AssetBundle</returns>
         AssetBundle GetAssetBundle(string assetBundleName);
+
         /// <summary>
         /// 加载资源（异步）
         /// </summary>
@@ -86,30 +82,32 @@ namespace HT.Framework
         /// <param name="onLoadDone">加载完成事件</param>
         /// <returns>加载协程迭代器</returns>
         IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> onLoading, HTFAction onLoadDone);
+
         /// <summary>
-        /// 卸载资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
+        /// 卸载AB包（异步）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects);
+        IEnumerator UnLoadAssetBundleAsync(string assetBundleName, bool unloadAllLoadedObjects);
         /// <summary>
-        /// 卸载所有资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
+        /// 卸载所有AB包（异步）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects);
+        IEnumerator UnLoadAllAssetBundleAsync(bool unloadAllLoadedObjects);
         /// <summary>
         /// 卸载场景（异步）
         /// </summary>
         /// <param name="info">资源信息标记</param>
         /// <returns>卸载协程迭代器</returns>
-        IEnumerator UnLoadScene(SceneInfo info);
+        IEnumerator UnLoadSceneAsync(SceneInfo info);
         /// <summary>
         /// 卸载所有场景（异步）
         /// </summary>
         /// <returns>卸载协程迭代器</returns>
-        IEnumerator UnLoadAllScene();
+        IEnumerator UnLoadAllSceneAsync();
+
         /// <summary>
         /// 清理内存，释放空闲内存（异步）
         /// </summary>

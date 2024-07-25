@@ -1,4 +1,4 @@
-﻿#if UNITY_TMP_3_0_9
+﻿#if UNITY_TMP_3_0
 using TMPro;
 #endif
 using UnityEngine.Events;
@@ -109,7 +109,7 @@ namespace HT.Framework
                 OnValueChanged += (value) => { if (dropdown) dropdown.value = value; };
                 _bindedControls.Add(control);
             }
-#if UNITY_TMP_3_0_9
+#if UNITY_TMP_3_0
             else if (control is TMP_InputField)
             {
                 TMP_InputField inputField = control as TMP_InputField;
@@ -166,7 +166,7 @@ namespace HT.Framework
                     Dropdown dropdown = control as Dropdown;
                     dropdown.onValueChanged.RemoveListener(_callbackInt);
                 }
-#if UNITY_TMP_3_0_9
+#if UNITY_TMP_3_0
                 else if (control is TMP_InputField)
                 {
                     TMP_InputField inputField = control as TMP_InputField;

@@ -34,14 +34,58 @@ namespace HT.Framework
                 }
                 GUI.backgroundColor = Color.white;
                 GUILayout.EndHorizontal();
+
+                PropertyField(nameof(ResourceManager.IsLogDetail), "Is Log Detail");
+
+                if (Target.HelperType == "HT.Framework.AddressablesHelper")
+                {
+                    GUILayout.BeginHorizontal();
+                    GUI.color = Color.red;
+                    GUILayout.Label("Error: The AddressablesHelper is not capable of Resource mode!");
+                    GUI.color = Color.white;
+                    GUILayout.EndHorizontal();
+                }
             }
             else if (Target.Mode == ResourceLoadMode.AssetBundle)
             {
                 PropertyField(nameof(ResourceManager.AssetBundleManifestName), "Manifest Name");
                 PropertyField(nameof(ResourceManager.IsEditorMode), "Editor Mode");
-            }
 
-            PropertyField(nameof(ResourceManager.IsLogDetail), "Is Log Detail");
+                PropertyField(nameof(ResourceManager.IsLogDetail), "Is Log Detail");
+
+                if (Target.HelperType == "HT.Framework.AddressablesHelper")
+                {
+                    GUILayout.BeginHorizontal();
+                    GUI.color = Color.red;
+                    GUILayout.Label("Error: The AddressablesHelper is not capable of AssetBundle mode!");
+                    GUI.color = Color.white;
+                    GUILayout.EndHorizontal();
+                }
+            }
+            else if (Target.Mode == ResourceLoadMode.Addressables)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Addressables", GUILayout.Width(LabelWidth));
+#if UNITY_ADDRESSABLES_1_20
+                GUI.color = Color.cyan;
+                GUILayout.Label("Installed");
+                GUI.color = Color.white;
+#else
+                GUI.color = Color.red;
+                GUILayout.Label("Removed");
+                GUI.color = Color.white;
+#endif
+                GUILayout.EndHorizontal();
+
+                if (Target.HelperType == "HT.Framework.DefaultResourceHelper")
+                {
+                    GUILayout.BeginHorizontal();
+                    GUI.color = Color.red;
+                    GUILayout.Label("Error: The DefaultResourceHelper is not capable of Addressables mode!");
+                    GUI.color = Color.white;
+                    GUILayout.EndHorizontal();
+                }
+            }
 
             GUI.enabled = true;
         }

@@ -1,5 +1,6 @@
 {
     "name": "HTFramework.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:83f631a6180cc5a41982c9354b6cc704"
     ],
@@ -12,6 +13,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.addressables",
+            "expression": "[1.20.0,1.30.0)",
+            "define": "UNITY_ADDRESSABLES_1_20"
+        }
+    ],
     "noEngineReferences": false
 }

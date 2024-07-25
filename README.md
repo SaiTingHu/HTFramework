@@ -60,7 +60,7 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [ReferencePool](https://wanderer.blog.csdn.net/article/details/87191712) - 可用于任意引用类型（除GameObject）的对象池，可以复用任意引用类型对象，以达到减少系统在频繁创建和删除对象时的开销。
 
-- [Resource](https://wanderer.blog.csdn.net/article/details/88852698) - 资源加载管理器，主要用于动态加载资源（只支持异步加载），在加载中或加载完成后都可以进行自定义操作，现在主要支持Resource直接加载和AssetBundle加载，比如，UI模块就会自动调用资源管理器加载UI实体。
+- [Resource](https://wanderer.blog.csdn.net/article/details/88852698) - 资源加载管理器，主要用于动态加载资源（只支持异步加载），在加载中或加载完成后都可以进行自定义操作，现在主要支持Resource加载模式、AssetBundle加载模式、Addressables加载模式，比如，UI模块就会自动调用资源管理器加载UI实体。
 
 - [StepMaster](https://wanderer.blog.csdn.net/article/details/87712995) - 步骤编辑器，严格来说，StepEditor只是框架的一个内置工具，他最开始的用途是用来解决一系列冗长的线性任务，为了实现可视化和降低后期改动的复杂度，当然，也可以用作流程控制器。
 

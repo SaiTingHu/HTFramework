@@ -1,4 +1,4 @@
-﻿#if UNITY_TMP_3_0_9
+﻿#if UNITY_TMP_3_0
 using TMPro;
 #endif
 using System.Collections.Generic;
@@ -123,7 +123,7 @@ namespace HT.Framework
                 OnValueChanged += (value) => { if (text) text.text = ValueString; };
                 _bindedControls.Add(control);
             }
-#if UNITY_TMP_3_0_9
+#if UNITY_TMP_3_0
             else if (control is TextMeshProUGUI)
             {
                 TextMeshProUGUI text = control as TextMeshProUGUI;
@@ -177,7 +177,7 @@ namespace HT.Framework
                     Dropdown dropdown = control as Dropdown;
                     dropdown.onValueChanged.RemoveListener(_callback);
                 }
-#if UNITY_TMP_3_0_9
+#if UNITY_TMP_3_0
                 else if (control is TMP_Dropdown)
                 {
                     TMP_Dropdown dropdown = control as TMP_Dropdown;

@@ -92,8 +92,8 @@ namespace HT.Framework
         /// </summary>
         public void OnTerminate()
         {
-            UnLoadAllAsset(true);
-            UnLoadAllScene();
+            UnLoadAllAssetBundleAsync(true);
+            UnLoadAllSceneAsync();
             ClearMemory();
         }
         /// <summary>
@@ -126,9 +126,14 @@ namespace HT.Framework
             AssetBundleRootPath = Application.persistentDataPath + "/";
             AssetBundleManifestName = manifestName;
             _loadWait = new WaitUntil(() => { return !_isLoading; });
+
+            if (LoadMode == ResourceLoadMode.Addressables)
+            {
+                Log.Error("DefaultResourceHelper：缺省的资源加载助手不支持 Addressables 模式，请更换助手!");
+            }
         }
         /// <summary>
-        /// 设置AssetBundle资源根路径（仅当使用AssetBundle加载时有效）
+        /// 设置AssetBundle资源根路径
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         public void SetAssetBundlePath(string path)
@@ -151,6 +156,7 @@ namespace HT.Framework
                 return null;
             }
         }
+
         /// <summary>
         /// 加载资源（异步）
         /// </summary>
@@ -204,7 +210,7 @@ namespace HT.Framework
                     throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源失败：Resources文件夹中不存在资源 {info.ResourcePath}！");
                 }
             }
-            else
+            else if (LoadMode == ResourceLoadMode.AssetBundle)
             {
 #if UNITY_EDITOR
                 if (IsEditorMode)
@@ -298,6 +304,12 @@ namespace HT.Framework
         /// <returns>加载协程迭代器</returns>
         public IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> onLoading, HTFAction onLoadDone)
         {
+            if (string.IsNullOrEmpty(info.ResourcePath))
+            {
+                Log.Warning($"加载场景失败：场景名称不能为空！");
+                yield break;
+            }
+
             if (Scenes.ContainsKey(info.ResourcePath))
             {
                 Log.Warning($"加载场景失败：名为 {info.ResourcePath} 的场景已加载！");
@@ -339,7 +351,7 @@ namespace HT.Framework
                     throw new HTFrameworkException(HTFrameworkModule.Resource, "加载场景失败：若要在Resource模式下加载其他场景，请在Main模块的检视面板勾选 Allow Scene Add Build！");
                 }
             }
-            else
+            else if (LoadMode == ResourceLoadMode.AssetBundle)
             {
 #if UNITY_EDITOR
                 if (IsEditorMode)
@@ -395,19 +407,16 @@ namespace HT.Framework
             //本线路加载资源结束
             _isLoading = false;
         }
+
         /// <summary>
-        /// 卸载资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
+        /// 卸载AB包（异步）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        public IEnumerator UnLoadAsset(string assetBundleName, bool unloadAllLoadedObjects)
+        public IEnumerator UnLoadAssetBundleAsync(string assetBundleName, bool unloadAllLoadedObjects)
         {
-            if (LoadMode == ResourceLoadMode.Resource)
-            {
-                yield return Resources.UnloadUnusedAssets();
-            }
-            else
+            if (LoadMode == ResourceLoadMode.AssetBundle)
             {
                 if (AssetBundles.ContainsKey(assetBundleName))
                 {
@@ -421,17 +430,17 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 卸载所有资源（异步，Resource模式：卸载未使用的资源，AssetBundle模式：卸载AB包）
+        /// 卸载所有AB包（异步）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
-        public IEnumerator UnLoadAllAsset(bool unloadAllLoadedObjects)
+        public IEnumerator UnLoadAllAssetBundleAsync(bool unloadAllLoadedObjects)
         {
             if (LoadMode == ResourceLoadMode.Resource)
             {
                 yield return Resources.UnloadUnusedAssets();
             }
-            else
+            else if (LoadMode == ResourceLoadMode.AssetBundle)
             {
                 foreach (var assetBundle in AssetBundles)
                 {
@@ -447,8 +456,14 @@ namespace HT.Framework
         /// </summary>
         /// <param name="info">资源信息标记</param>
         /// <returns>卸载协程迭代器</returns>
-        public IEnumerator UnLoadScene(SceneInfo info)
+        public IEnumerator UnLoadSceneAsync(SceneInfo info)
         {
+            if (string.IsNullOrEmpty(info.ResourcePath))
+            {
+                Log.Warning($"卸载场景失败：场景名称不能为空！");
+                yield break;
+            }
+
             if (!Scenes.ContainsKey(info.ResourcePath))
             {
                 Log.Warning($"卸载场景失败：名为 {info.ResourcePath} 的场景还未加载！");
@@ -462,7 +477,7 @@ namespace HT.Framework
         /// 卸载所有场景（异步）
         /// </summary>
         /// <returns>卸载协程迭代器</returns>
-        public IEnumerator UnLoadAllScene()
+        public IEnumerator UnLoadAllSceneAsync()
         {
             foreach (var scene in Scenes)
             {
@@ -470,6 +485,7 @@ namespace HT.Framework
             }
             Scenes.Clear();
         }
+
         /// <summary>
         /// 清理内存，释放空闲内存（异步）
         /// </summary>
@@ -582,7 +598,7 @@ namespace HT.Framework
                     if (AssetBundles.ContainsKey(AssetBundleManifestName))
                     {
                         AssetBundleManifest = AssetBundles[AssetBundleManifestName].LoadAsset<AssetBundleManifest>("AssetBundleManifest");
-                        yield return UnLoadAsset(AssetBundleManifestName, false);
+                        yield return UnLoadAssetBundleAsync(AssetBundleManifestName, false);
                     }
                 }
             }

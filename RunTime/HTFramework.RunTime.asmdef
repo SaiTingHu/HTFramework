@@ -2,7 +2,9 @@
     "name": "HTFramework.RunTime",
     "rootNamespace": "",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:84651a3751eca9349aac36a66bba901b",
+        "GUID:9e24947de15b9834991c9d8411ea37cf"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,8 +16,13 @@
     "versionDefines": [
         {
             "name": "com.unity.textmeshpro",
-            "expression": "[3.0.9]",
-            "define": "UNITY_TMP_3_0_9"
+            "expression": "[3.0.0,3.1.0)",
+            "define": "UNITY_TMP_3_0"
+        },
+        {
+            "name": "com.unity.addressables",
+            "expression": "[1.20.0,1.30.0)",
+            "define": "UNITY_ADDRESSABLES_1_20"
         }
     ],
     "noEngineReferences": false
