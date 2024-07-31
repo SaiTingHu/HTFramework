@@ -8,6 +8,7 @@ using UnityEditorInternal;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("HTFramework.AI.Editor")]
+[assembly: InternalsVisibleTo("HTFramework.Deployment.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.GC.Editor")]
 
 namespace HT.Framework
@@ -626,6 +627,7 @@ namespace HT.Framework
 
             EditorGUI.indentLevel = 1;
 
+            PropertyField(nameof(Main.MetadataNames), "Metadata Names");
             PropertyField(nameof(Main.HotfixAssemblyNames), "Hotfix Assembly Names");
 
             EditorGUI.indentLevel = 0;

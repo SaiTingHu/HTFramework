@@ -13,7 +13,7 @@ namespace HT.Framework
         /// 当前的运行时程序集
         /// </summary>
         private static HashSet<string> RunTimeAssemblies = new HashSet<string>() {
-            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.GC.RunTime",
+            "Assembly-CSharp", "HTFramework.RunTime", "HTFramework.AI.RunTime", "HTFramework.Deployment.RunTime", "HTFramework.GC.RunTime",
             "UnityEngine", "UnityEngine.CoreModule", "UnityEngine.UI", "UnityEngine.PhysicsModule" };
 
         /// <summary>

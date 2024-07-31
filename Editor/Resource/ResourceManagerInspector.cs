@@ -110,7 +110,7 @@ namespace HT.Framework
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Manifest: ", GUILayout.Width(LabelWidth));
-                    EditorGUILayout.ObjectField(_helper.AssetBundleManifest, typeof(AssetBundleManifest), false);
+                    EditorGUILayout.ObjectField(_helper.Manifest, typeof(AssetBundleManifest), false);
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();

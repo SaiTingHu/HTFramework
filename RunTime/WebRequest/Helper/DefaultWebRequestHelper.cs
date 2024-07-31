@@ -408,7 +408,6 @@ namespace HT.Framework
                     yield return null;
                 }
                 wif.OnLoading(1f);
-                yield return null;
 
                 DateTime end = DateTime.Now;
 

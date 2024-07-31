@@ -11,6 +11,8 @@ using UObject = UnityEngine.Object;
 [assembly: InternalsVisibleTo("HTFramework.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.RunTime")]
+[assembly: InternalsVisibleTo("HTFramework.Deployment.Editor")]
+[assembly: InternalsVisibleTo("HTFramework.Deployment.RunTime")]
 [assembly: InternalsVisibleTo("HTFramework.GC.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.GC.RunTime")]
 
@@ -1213,6 +1215,10 @@ namespace HT.Framework
 
         #region HybridCLR
         /// <summary>
+        /// 补充元数据名称【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal string[] MetadataNames;
+        /// <summary>
         /// 热更新程序集名称【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal string[] HotfixAssemblyNames;
@@ -1234,7 +1240,7 @@ namespace HT.Framework
         {
 #if HOTFIX_HybridCLR
             if (!IsInitCompleted) OnInit();
-            if (!IsReadyCompleted) OnReady();
+            if (!IsReadyCompleted) this.NextFrameExecute(OnReady);
 #endif
         }
         #endregion

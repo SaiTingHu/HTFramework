@@ -47,7 +47,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有AssetBundle资源包清单
         /// </summary>
-        public AssetBundleManifest AssetBundleManifest { get; private set; }
+        public AssetBundleManifest Manifest { get; private set; }
         /// <summary>
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
@@ -85,9 +85,7 @@ namespace HT.Framework
         /// </summary>
         public void OnTerminate()
         {
-            UnLoadAllAssetBundleAsync(true);
-            UnLoadAllSceneAsync();
-            ClearMemory();
+            
         }
         /// <summary>
         /// 暂停助手
@@ -121,7 +119,7 @@ namespace HT.Framework
 
             if (LoadMode != ResourceLoadMode.Addressables)
             {
-                Log.Error("AddressablesHelper：此资源加载助手仅支持 Addressables 模式，请更换助手!");
+                throw new HTFrameworkException(HTFrameworkModule.Resource, "AddressablesHelper：此资源加载助手仅支持 Addressables 模式，请更换助手!");
             }
         }
         /// <summary>

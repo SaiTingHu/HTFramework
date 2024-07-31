@@ -56,7 +56,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有AssetBundle资源包清单
         /// </summary>
-        public AssetBundleManifest AssetBundleManifest { get; private set; }
+        public AssetBundleManifest Manifest { get; private set; }
         /// <summary>
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
@@ -92,9 +92,7 @@ namespace HT.Framework
         /// </summary>
         public void OnTerminate()
         {
-            UnLoadAllAssetBundleAsync(true);
-            UnLoadAllSceneAsync();
-            ClearMemory();
+            
         }
         /// <summary>
         /// 暂停助手
@@ -129,7 +127,7 @@ namespace HT.Framework
 
             if (LoadMode == ResourceLoadMode.Addressables)
             {
-                Log.Error("DefaultResourceHelper：缺省的资源加载助手不支持 Addressables 模式，请更换助手!");
+                throw new HTFrameworkException(HTFrameworkModule.Resource, "DefaultResourceHelper：缺省的资源加载助手不支持 Addressables 模式，请更换助手!");
             }
         }
         /// <summary>
@@ -546,9 +544,9 @@ namespace HT.Framework
                 {
                     yield return LoadAssetBundleManifestAsync();
 
-                    if (AssetBundleManifest != null)
+                    if (Manifest != null)
                     {
-                        string[] dependencies = AssetBundleManifest.GetAllDependencies(assetBundleName);
+                        string[] dependencies = Manifest.GetAllDependencies(assetBundleName);
                         foreach (string item in dependencies)
                         {
                             if (AssetBundles.ContainsKey(item))
@@ -563,9 +561,9 @@ namespace HT.Framework
 #else
                 yield return LoadAssetBundleManifestAsync();
 
-                if (AssetBundleManifest != null)
+                if (Manifest != null)
                 {
-                    string[] dependencies = AssetBundleManifest.GetAllDependencies(assetBundleName);
+                    string[] dependencies = Manifest.GetAllDependencies(assetBundleName);
                     foreach (string item in dependencies)
                     {
                         if (AssetBundles.ContainsKey(item))
@@ -591,13 +589,13 @@ namespace HT.Framework
             }
             else
             {
-                if (AssetBundleManifest == null)
+                if (Manifest == null)
                 {
                     yield return LoadAssetBundleAsync(AssetBundleManifestName, true);
 
                     if (AssetBundles.ContainsKey(AssetBundleManifestName))
                     {
-                        AssetBundleManifest = AssetBundles[AssetBundleManifestName].LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+                        Manifest = AssetBundles[AssetBundleManifestName].LoadAsset<AssetBundleManifest>("AssetBundleManifest");
                         yield return UnLoadAssetBundleAsync(AssetBundleManifestName, false);
                     }
                 }
@@ -613,6 +611,7 @@ namespace HT.Framework
         {
             if (!AssetBundles.ContainsKey(assetBundleName))
             {
+#if UNITY_WEBGL
                 using (UnityWebRequest request = isManifest
                     ? UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName)
                     : UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName, GetAssetBundleHash(assetBundleName)))
@@ -635,6 +634,18 @@ namespace HT.Framework
                         throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{request.url} 遇到网络错误：{request.error}！");
                     }
                 }
+#else
+                AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(AssetBundleRootPath + assetBundleName);
+                yield return request;
+                if (request.assetBundle)
+                {
+                    AssetBundles.Add(assetBundleName, request.assetBundle);
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{AssetBundleRootPath + assetBundleName} 未加载到AB包！");
+                }
+#endif
             }
         }
         /// <summary>
@@ -648,6 +659,7 @@ namespace HT.Framework
         {
             if (!AssetBundles.ContainsKey(assetBundleName))
             {
+#if UNITY_WEBGL
                 using (UnityWebRequest request = isManifest
                     ? UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName)
                     : UnityWebRequestAssetBundle.GetAssetBundle(AssetBundleRootPath + assetBundleName, GetAssetBundleHash(assetBundleName)))
@@ -675,6 +687,22 @@ namespace HT.Framework
                         throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{request.url} 遇到网络错误：{request.error}！");
                     }
                 }
+#else
+                AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(AssetBundleRootPath + assetBundleName);
+                while (!request.isDone)
+                {
+                    onLoading?.Invoke(request.progress);
+                    yield return null;
+                }
+                if (request.assetBundle)
+                {
+                    AssetBundles.Add(assetBundleName, request.assetBundle);
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, $"请求：{AssetBundleRootPath + assetBundleName} 未加载到AB包！");
+                }
+#endif
             }
             onLoading?.Invoke(1);
         }
@@ -691,7 +719,7 @@ namespace HT.Framework
             }
             else
             {
-                Hash128 hash = AssetBundleManifest.GetAssetBundleHash(assetBundleName);
+                Hash128 hash = Manifest.GetAssetBundleHash(assetBundleName);
                 AssetBundleHashs.Add(assetBundleName, hash);
                 return hash;
             }

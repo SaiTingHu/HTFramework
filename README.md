@@ -74,6 +74,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [AI](https://github.com/SaiTingHu/HTFrameworkAI)【可选模块】 - AI相关模块，比如A*寻路以及各种人工智能模块。
 
+- [Deployment](https://github.com/SaiTingHu/HTFrameworkDeployment)【可选模块】 - 轻量级资源部署管线，整合资源打包、资源版本构建、资源版本更新为一体，快速实现资源部署和交付游戏。
+
 - [GameComponent](https://github.com/SaiTingHu/HTFrameworkGameComponent)【可选模块】 - 游戏组件模块，本模块整合了多个游戏开发过程中可能会涉及到的子系统或组件，包括但不仅限于文件系统、本地化系统、新手引导系统、时间系统、AVG2D系统、FTG2D系统、RPG2D系统等，且各个系统或组件均为可插拨式，可一键移除不需要的系统或组件，或再次一键导入。
 
 ## 内置工具

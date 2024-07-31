@@ -36,7 +36,7 @@ namespace HT.Framework
         /// <summary>
         /// 所有AssetBundle资源包清单
         /// </summary>
-        AssetBundleManifest AssetBundleManifest { get; }
+        AssetBundleManifest Manifest { get; }
         /// <summary>
         /// 所有AssetBundle的Hash128值【AB包名称、Hash128值】
         /// </summary>
