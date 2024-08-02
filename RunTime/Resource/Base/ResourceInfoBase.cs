@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 资源信息基类
+    /// 资源信息标记基类
     /// </summary>
     public abstract class ResourceInfoBase
     {

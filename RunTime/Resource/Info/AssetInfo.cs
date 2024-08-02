@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 资源信息
+    /// 资源信息标记
     /// </summary>
     public sealed class AssetInfo : ResourceInfoBase
     {

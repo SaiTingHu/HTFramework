@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,26 @@ namespace HT.Framework
         /// 单线下载等待
         /// </summary>
         private WaitUntil _loadWait;
+        /// <summary>
+        /// 资源定位
+        /// </summary>
+        private Dictionary<string, ResourceLocation> _resourceLocations = new Dictionary<string, ResourceLocation>();
+        /// <summary>
+        /// 公共资源信息
+        /// </summary>
+        private AssetInfo _assetInfo = new AssetInfo(null, null, null);
+        /// <summary>
+        /// 公共数据集信息
+        /// </summary>
+        private DataSetInfo _dataSetInfo = new DataSetInfo(null, null, null, null);
+        /// <summary>
+        /// 公共预制体信息
+        /// </summary>
+        private PrefabInfo _prefabInfo = new PrefabInfo(null, null, null);
+        /// <summary>
+        /// 公共场景信息
+        /// </summary>
+        private SceneInfo _sceneInfo = new SceneInfo(null, null, null);
 
         /// <summary>
         /// 所属的内置模块
@@ -131,12 +152,38 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 设置AssetBundle资源根路径
+        /// 设置AssetBundle资源根路径（必须以 / 结尾）
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         public void SetAssetBundlePath(string path)
         {
             AssetBundleRootPath = path;
+
+#if !UNITY_WEBGL
+            if (LoadMode == ResourceLoadMode.AssetBundle)
+            {
+                _resourceLocations.Clear();
+                string locPath = AssetBundleRootPath + "ResourceLocation.loc";
+                if (File.Exists(locPath))
+                {
+                    string[] contents = File.ReadAllLines(locPath);
+                    for (int i = 0; i < contents.Length; i++)
+                    {
+                        string[] datas = contents[i].Split('|');
+                        if (datas.Length == 2)
+                        {
+                            ResourceLocation rl = new ResourceLocation()
+                            {
+                                ABName = datas[0],
+                                Name = Path.GetFileNameWithoutExtension(datas[1]),
+                                AssetPath = datas[1]
+                            };
+                            _resourceLocations.Add(rl.AssetPath, rl);
+                        }
+                    }
+                }
+            }
+#endif
         }
         /// <summary>
         /// 通过名称获取指定的AssetBundle
@@ -198,7 +245,7 @@ namespace HT.Framework
                 asset = request.asset;
                 if (asset)
                 {
-                    if (isPrefab)
+                    if (isPrefab && asset is GameObject)
                     {
                         asset = ClonePrefab(asset as GameObject, parent, isUI);
                     }
@@ -219,7 +266,7 @@ namespace HT.Framework
                     asset = AssetDatabase.LoadAssetAtPath<T>(info.AssetPath);
                     if (asset)
                     {
-                        if (isPrefab)
+                        if (isPrefab && asset is GameObject)
                         {
                             asset = ClonePrefab(asset as GameObject, parent, isUI);
                         }
@@ -238,7 +285,7 @@ namespace HT.Framework
                         asset = AssetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
                         if (asset)
                         {
-                            if (isPrefab)
+                            if (isPrefab && asset is GameObject)
                             {
                                 asset = ClonePrefab(asset as GameObject, parent, isUI);
                             }
@@ -257,7 +304,7 @@ namespace HT.Framework
                     asset = AssetBundles[info.AssetBundleName].LoadAsset<T>(info.AssetPath);
                     if (asset)
                     {
-                        if (isPrefab)
+                        if (isPrefab && asset is GameObject)
                         {
                             asset = ClonePrefab(asset as GameObject, parent, isUI);
                         }
@@ -279,7 +326,8 @@ namespace HT.Framework
                 DataSetInfo dataSet = info as DataSetInfo;
                 if (dataSet != null && dataSet.Data != null)
                 {
-                    asset.Cast<DataSetBase>().Fill(dataSet.Data);
+                    DataSetBase dsb = asset as DataSetBase;
+                    if (dsb) dsb.Fill(dataSet.Data);
                 }
 
                 onLoadDone?.Invoke(asset as T);
@@ -405,6 +453,91 @@ namespace HT.Framework
             //本线路加载资源结束
             _isLoading = false;
         }
+        /// <summary>
+        /// 加载资源（异步）
+        /// </summary>
+        /// <typeparam name="T">资源类型</typeparam>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="type">资源标记类型</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
+        /// <param name="isPrefab">是否是加载预制体</param>
+        /// <param name="parent">预制体加载完成后的父级</param>
+        /// <param name="isUI">是否是加载UI</param>
+        /// <returns>加载协程迭代器</returns>
+        public IEnumerator LoadAssetAsync<T>(string location, Type type, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object
+        {
+            ResourceInfoBase info = null;
+            if (type == typeof(AssetInfo)) info = _assetInfo;
+            else if (type == typeof(DataSetInfo)) info = _dataSetInfo;
+            else if (type == typeof(PrefabInfo)) info = _prefabInfo;
+
+            if (info != null)
+            {
+                if (LoadMode == ResourceLoadMode.Resource)
+                {
+                    info.AssetBundleName = null;
+                    info.AssetPath = null;
+                    info.ResourcePath = location;
+
+                    yield return LoadAssetAsync(info, onLoading, onLoadDone, isPrefab, parent, isUI);
+                }
+                else if (LoadMode == ResourceLoadMode.AssetBundle)
+                {
+                    ResourceLocation rl = GetResourceLocation(location);
+                    if (rl != null)
+                    {
+                        info.AssetBundleName = rl.ABName;
+                        info.AssetPath = rl.AssetPath;
+                        info.ResourcePath = rl.Name;
+
+                        yield return LoadAssetAsync(info, onLoading, onLoadDone, isPrefab, parent, isUI);
+                    }
+                    else
+                    {
+                        throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源失败：未找到资源定位Key【{location}】所指向的资源文件！");
+                    }
+                }
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源失败：未知的资源信息标记类型 {type}！");
+            }
+        }
+        /// <summary>
+        /// 加载场景（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
+        /// <returns>加载协程迭代器</returns>
+        public IEnumerator LoadSceneAsync(string location, HTFAction<float> onLoading, HTFAction onLoadDone)
+        {
+            if (LoadMode == ResourceLoadMode.Resource)
+            {
+                _sceneInfo.AssetBundleName = null;
+                _sceneInfo.AssetPath = location;
+                _sceneInfo.ResourcePath = Path.GetFileNameWithoutExtension(location);
+
+                yield return LoadSceneAsync(_sceneInfo, onLoading, onLoadDone);
+            }
+            else if (LoadMode == ResourceLoadMode.AssetBundle)
+            {
+                ResourceLocation rl = GetResourceLocation(location);
+                if (rl != null)
+                {
+                    _sceneInfo.AssetBundleName = rl.ABName;
+                    _sceneInfo.AssetPath = rl.AssetPath;
+                    _sceneInfo.ResourcePath = rl.Name;
+
+                    yield return LoadSceneAsync(_sceneInfo, onLoading, onLoadDone);
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载场景失败：未找到资源定位Key【{location}】所指向的场景！");
+                }
+            }
+        }
 
         /// <summary>
         /// 卸载AB包（异步）
@@ -472,6 +605,38 @@ namespace HT.Framework
             yield return SceneManager.UnloadSceneAsync(info.ResourcePath);
         }
         /// <summary>
+        /// 卸载场景（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <returns>卸载协程迭代器</returns>
+        public IEnumerator UnLoadSceneAsync(string location)
+        {
+            if (LoadMode == ResourceLoadMode.Resource)
+            {
+                _sceneInfo.AssetBundleName = null;
+                _sceneInfo.AssetPath = location;
+                _sceneInfo.ResourcePath = Path.GetFileNameWithoutExtension(location);
+
+                yield return UnLoadSceneAsync(_sceneInfo);
+            }
+            else if (LoadMode == ResourceLoadMode.AssetBundle)
+            {
+                ResourceLocation rl = GetResourceLocation(location);
+                if (rl != null)
+                {
+                    _sceneInfo.AssetBundleName = rl.ABName;
+                    _sceneInfo.AssetPath = rl.AssetPath;
+                    _sceneInfo.ResourcePath = rl.Name;
+
+                    yield return UnLoadSceneAsync(_sceneInfo);
+                }
+                else
+                {
+                    throw new HTFrameworkException(HTFrameworkModule.Resource, $"卸载场景失败：未找到资源定位Key【{location}】所指向的场景！");
+                }
+            }
+        }
+        /// <summary>
         /// 卸载所有场景（异步）
         /// </summary>
         /// <returns>卸载协程迭代器</returns>
@@ -494,7 +659,31 @@ namespace HT.Framework
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
-        
+
+        /// <summary>
+        /// 获取资源定位
+        /// </summary>
+        /// <param name="location">资源定位Key</param>
+        private ResourceLocation GetResourceLocation(string location)
+        {
+            ResourceLocation rl = null;
+            if (_resourceLocations.ContainsKey(location))
+            {
+                rl = _resourceLocations[location];
+            }
+            else
+            {
+                foreach (var item in _resourceLocations)
+                {
+                    if (item.Value.Name == location)
+                    {
+                        rl = item.Value;
+                        break;
+                    }
+                }
+            }
+            return rl;
+        }
         /// <summary>
         /// 克隆预制体
         /// </summary>
@@ -788,6 +977,25 @@ namespace HT.Framework
             string load = (endTime - waitTime).ToString();
 #endif
             Log.Info($"【加载场景完成】场景路径：{path}，等待耗时：{wait}秒，加载耗时：{load}秒。");
+        }
+
+        /// <summary>
+        /// 资源定位
+        /// </summary>
+        public class ResourceLocation
+        {
+            /// <summary>
+            /// 资源所在的AB包名称
+            /// </summary>
+            public string ABName;
+            /// <summary>
+            /// 资源名称
+            /// </summary>
+            public string Name;
+            /// <summary>
+            /// 资源路径
+            /// </summary>
+            public string AssetPath;
         }
     }
 }

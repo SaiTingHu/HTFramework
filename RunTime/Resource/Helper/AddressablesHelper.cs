@@ -54,7 +54,7 @@ namespace HT.Framework
         public Dictionary<string, Hash128> AssetBundleHashs { get; private set; } = new Dictionary<string, Hash128>();
 #if UNITY_ADDRESSABLES_1_20
         /// <summary>
-        /// 已加载的所有场景【场景名称、场景】
+        /// 已加载的所有场景【场景路径、场景】
         /// </summary>
         public Dictionary<string, SceneInstance> Scenes { get; private set; } = new Dictionary<string, SceneInstance>();
 #endif
@@ -123,7 +123,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 设置AssetBundle资源根路径
+        /// 设置AssetBundle资源根路径（必须以 / 结尾）
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         public void SetAssetBundlePath(string path)
@@ -153,12 +153,39 @@ namespace HT.Framework
         /// <returns>加载协程迭代器</returns>
         public IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object
         {
+            yield return LoadAssetAsync(info.AssetPath, null, onLoading, onLoadDone, isPrefab, parent, isUI);
+        }
+        /// <summary>
+        /// 加载场景（异步）
+        /// </summary>
+        /// <param name="info">资源信息标记</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
+        /// <returns>加载协程迭代器</returns>
+        public IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> onLoading, HTFAction onLoadDone)
+        {
+            yield return LoadSceneAsync(info.AssetPath, onLoading, onLoadDone);
+        }
+        /// <summary>
+        /// 加载资源（异步）
+        /// </summary>
+        /// <typeparam name="T">资源类型</typeparam>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="type">资源标记类型</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
+        /// <param name="isPrefab">是否是加载预制体</param>
+        /// <param name="parent">预制体加载完成后的父级</param>
+        /// <param name="isUI">是否是加载UI</param>
+        /// <returns>加载协程迭代器</returns>
+        public IEnumerator LoadAssetAsync<T>(string location, Type type, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object
+        {
             float beginTime = Time.realtimeSinceStartup;
 
             UnityEngine.Object asset = null;
 
 #if UNITY_ADDRESSABLES_1_20
-            var handle = Addressables.LoadAssetAsync<T>(info.AssetPath);
+            var handle = Addressables.LoadAssetAsync<T>(location);
             while (!handle.IsDone)
             {
                 onLoading?.Invoke(handle.PercentComplete);
@@ -168,7 +195,7 @@ namespace HT.Framework
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 asset = handle.Result;
-                if (asset)
+                if (asset && asset is GameObject)
                 {
                     if (isPrefab)
                     {
@@ -181,7 +208,7 @@ namespace HT.Framework
             {
                 string msg = handle.OperationException.Message;
                 Addressables.Release(handle);
-                throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源 {info.AssetPath} 出错：{msg}");
+                throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源 {location} 出错：{msg}");
             }
 #else
             yield return null;
@@ -189,16 +216,10 @@ namespace HT.Framework
 
             float endTime = Time.realtimeSinceStartup;
 
-            LogResourceDetail(info, asset != null, beginTime, endTime);
+            LogResourceDetail(location, asset != null, beginTime, endTime);
 
             if (asset)
             {
-                DataSetInfo dataSet = info as DataSetInfo;
-                if (dataSet != null && dataSet.Data != null)
-                {
-                    asset.Cast<DataSetBase>().Fill(dataSet.Data);
-                }
-
                 onLoadDone?.Invoke(asset as T);
             }
             else
@@ -210,22 +231,22 @@ namespace HT.Framework
         /// <summary>
         /// 加载场景（异步）
         /// </summary>
-        /// <param name="info">资源信息标记</param>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
         /// <param name="onLoading">加载中事件</param>
         /// <param name="onLoadDone">加载完成事件</param>
         /// <returns>加载协程迭代器</returns>
-        public IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> onLoading, HTFAction onLoadDone)
+        public IEnumerator LoadSceneAsync(string location, HTFAction<float> onLoading, HTFAction onLoadDone)
         {
-            if (string.IsNullOrEmpty(info.ResourcePath))
+            if (string.IsNullOrEmpty(location))
             {
-                Log.Warning($"加载场景失败：场景名称不能为空！");
+                Log.Warning($"加载场景失败：场景路径不能为空！");
                 yield break;
             }
 
 #if UNITY_ADDRESSABLES_1_20
-            if (Scenes.ContainsKey(info.ResourcePath))
+            if (Scenes.ContainsKey(location))
             {
-                Log.Warning($"加载场景失败：名为 {info.ResourcePath} 的场景已加载！");
+                Log.Warning($"加载场景失败：名为 {location} 的场景已加载！");
                 yield break;
             }
 #endif
@@ -233,7 +254,7 @@ namespace HT.Framework
             float beginTime = Time.realtimeSinceStartup;
 
 #if UNITY_ADDRESSABLES_1_20
-            var handle = Addressables.LoadSceneAsync(info.AssetPath, LoadSceneMode.Additive);
+            var handle = Addressables.LoadSceneAsync(location, LoadSceneMode.Additive);
             while (!handle.IsDone)
             {
                 onLoading?.Invoke(handle.PercentComplete);
@@ -242,13 +263,13 @@ namespace HT.Framework
             onLoading?.Invoke(1);
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                Scenes.Add(info.ResourcePath, handle.Result);
+                Scenes.Add(location, handle.Result);
             }
             else
             {
                 string msg = handle.OperationException.Message;
                 Addressables.Release(handle);
-                throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载场景 {info.AssetPath} 出错：{msg}");
+                throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载场景 {location} 出错：{msg}");
             }
 #else
             yield return null;
@@ -256,7 +277,7 @@ namespace HT.Framework
 
             float endTime = Time.realtimeSinceStartup;
 
-            LogSceneDetail(info, beginTime, endTime);
+            LogSceneDetail(location, beginTime, endTime);
 
             onLoadDone?.Invoke();
         }
@@ -287,22 +308,31 @@ namespace HT.Framework
         /// <returns>卸载协程迭代器</returns>
         public IEnumerator UnLoadSceneAsync(SceneInfo info)
         {
-            if (string.IsNullOrEmpty(info.ResourcePath))
+            yield return UnLoadSceneAsync(info.AssetPath);
+        }
+        /// <summary>
+        /// 卸载场景（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <returns>卸载协程迭代器</returns>
+        public IEnumerator UnLoadSceneAsync(string location)
+        {
+            if (string.IsNullOrEmpty(location))
             {
                 Log.Warning($"卸载场景失败：场景名称不能为空！");
                 yield break;
             }
 
 #if UNITY_ADDRESSABLES_1_20
-            if (!Scenes.ContainsKey(info.ResourcePath))
+            if (!Scenes.ContainsKey(location))
             {
-                Log.Warning($"卸载场景失败：名为 {info.ResourcePath} 的场景还未加载！");
+                Log.Warning($"卸载场景失败：名为 {location} 的场景还未加载！");
                 yield break;
             }
 
-            yield return Addressables.UnloadSceneAsync(Scenes[info.ResourcePath]);
+            yield return Addressables.UnloadSceneAsync(Scenes[location]);
 
-            Scenes.Remove(info.ResourcePath);
+            Scenes.Remove(location);
 #endif
         }
         /// <summary>
@@ -371,23 +401,22 @@ namespace HT.Framework
         /// <summary>
         /// 打印资源加载细节
         /// </summary>
-        /// <param name="info">资源信息</param>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
         /// <param name="isSucceed">加载是否成功</param>
         /// <param name="beginTime">加载开始时间</param>
-        /// <param name="waitTime">加载等待时间</param>
         /// <param name="endTime">加载结束时间</param>
-        private void LogResourceDetail(ResourceInfoBase info, bool isSucceed, float beginTime, float endTime)
+        private void LogResourceDetail(string location, bool isSucceed, float beginTime, float endTime)
         {
             if (!IsLogDetail)
                 return;
 
 #if UNITY_EDITOR
             string result = isSucceed ? "<color=cyan>成功</color>" : "<color=red>失败</color>";
-            string path = Log.Hyperlink(info.AssetPath, info.AssetPath);
+            string path = Log.Hyperlink(location, location);
             string load = $"<color=cyan>{endTime - beginTime}</color>";
 #else
             string result = isSucceed ? "成功" : "失败";
-            string path = info.AssetPath;
+            string path = location;
             string load = (endTime - beginTime).ToString();
 #endif
             Log.Info($"【加载资源{result}】资源路径：{path}，加载耗时：{load}秒。");
@@ -395,20 +424,19 @@ namespace HT.Framework
         /// <summary>
         /// 打印场景加载细节
         /// </summary>
-        /// <param name="info">资源信息</param>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
         /// <param name="beginTime">加载开始时间</param>
-        /// <param name="waitTime">加载等待时间</param>
         /// <param name="endTime">加载结束时间</param>
-        private void LogSceneDetail(ResourceInfoBase info, float beginTime, float endTime)
+        private void LogSceneDetail(string location, float beginTime, float endTime)
         {
             if (!IsLogDetail)
                 return;
 
 #if UNITY_EDITOR
-            string path = Log.Hyperlink(info.AssetPath, info.AssetPath);
+            string path = Log.Hyperlink(location, location);
             string load = $"<color=cyan>{endTime - beginTime}</color>";
 #else
-            string path = info.AssetPath;
+            string path = location;
             string load = (endTime - beginTime).ToString();
 #endif
             Log.Info($"【加载场景完成】场景路径：{path}，加载耗时：{load}秒。");

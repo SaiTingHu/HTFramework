@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -73,7 +74,7 @@ namespace HT.Framework
         /// <param name="parent">预制体加载完成后的父级</param>
         /// <param name="isUI">是否是加载UI</param>
         /// <returns>加载协程迭代器</returns>
-        IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : Object;
+        IEnumerator LoadAssetAsync<T>(ResourceInfoBase info, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object;
         /// <summary>
         /// 加载场景（异步）
         /// </summary>
@@ -82,6 +83,27 @@ namespace HT.Framework
         /// <param name="onLoadDone">加载完成事件</param>
         /// <returns>加载协程迭代器</returns>
         IEnumerator LoadSceneAsync(SceneInfo info, HTFAction<float> onLoading, HTFAction onLoadDone);
+        /// <summary>
+        /// 加载资源（异步）
+        /// </summary>
+        /// <typeparam name="T">资源类型</typeparam>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="type">资源标记类型</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
+        /// <param name="isPrefab">是否是加载预制体</param>
+        /// <param name="parent">预制体加载完成后的父级</param>
+        /// <param name="isUI">是否是加载UI</param>
+        /// <returns>加载协程迭代器</returns>
+        IEnumerator LoadAssetAsync<T>(string location, Type type, HTFAction<float> onLoading, HTFAction<T> onLoadDone, bool isPrefab, Transform parent, bool isUI) where T : UnityEngine.Object;
+        /// <summary>
+        /// 加载场景（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="onLoading">加载中事件</param>
+        /// <param name="onLoadDone">加载完成事件</param>
+        /// <returns>加载协程迭代器</returns>
+        IEnumerator LoadSceneAsync(string location, HTFAction<float> onLoading, HTFAction onLoadDone);
 
         /// <summary>
         /// 卸载AB包（异步）
@@ -102,6 +124,12 @@ namespace HT.Framework
         /// <param name="info">资源信息标记</param>
         /// <returns>卸载协程迭代器</returns>
         IEnumerator UnLoadSceneAsync(SceneInfo info);
+        /// <summary>
+        /// 卸载场景（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <returns>卸载协程迭代器</returns>
+        IEnumerator UnLoadSceneAsync(string location);
         /// <summary>
         /// 卸载所有场景（异步）
         /// </summary>

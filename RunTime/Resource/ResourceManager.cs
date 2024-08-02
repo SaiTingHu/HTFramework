@@ -44,7 +44,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 设置AssetBundle资源根路径
+        /// 设置AssetBundle资源根路径（必须以 / 结尾）
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         public void SetAssetBundlePath(string path)
@@ -109,6 +109,54 @@ namespace HT.Framework
         {
             return Main.Current.StartCoroutine(_helper.LoadSceneAsync(info, onLoading, onLoadDone));
         }
+        /// <summary>
+        /// 加载资源（异步）
+        /// </summary>
+        /// <typeparam name="T">资源类型</typeparam>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="onLoading">资源加载中回调</param>
+        /// <param name="onLoadDone">资源加载完成回调</param>
+        /// <returns>加载协程</returns>
+        public Coroutine LoadAsset<T>(string location, HTFAction<float> onLoading = null, HTFAction<T> onLoadDone = null) where T : Object
+        {
+            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(location, typeof(AssetInfo), onLoading, onLoadDone, false, null, false));
+        }
+        /// <summary>
+        /// 加载数据集（异步）
+        /// </summary>
+        /// <typeparam name="T">数据集类型</typeparam>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="onLoading">数据集加载中回调</param>
+        /// <param name="onLoadDone">数据集加载完成回调</param>
+        /// <returns>加载协程</returns>
+        public Coroutine LoadDataSet<T>(string location, HTFAction<float> onLoading = null, HTFAction<T> onLoadDone = null) where T : DataSetBase
+        {
+            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(location, typeof(DataSetInfo), onLoading, onLoadDone, false, null, false));
+        }
+        /// <summary>
+        /// 加载预制体（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="parent">预制体的预设父物体</param>
+        /// <param name="onLoading">预制体加载中回调</param>
+        /// <param name="onLoadDone">预制体加载完成回调</param>
+        /// <param name="isUI">预制体是否是UI</param>
+        /// <returns>加载协程</returns>
+        public Coroutine LoadPrefab(string location, Transform parent, HTFAction<float> onLoading = null, HTFAction<GameObject> onLoadDone = null, bool isUI = false)
+        {
+            return Main.Current.StartCoroutine(_helper.LoadAssetAsync(location, typeof(PrefabInfo), onLoading, onLoadDone, true, parent, isUI));
+        }
+        /// <summary>
+        /// 加载场景（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="onLoading">场景加载中回调</param>
+        /// <param name="onLoadDone">场景加载完成回调</param>
+        /// <returns>加载协程</returns>
+        public Coroutine LoadScene(string location, HTFAction<float> onLoading = null, HTFAction onLoadDone = null)
+        {
+            return Main.Current.StartCoroutine(_helper.LoadSceneAsync(location, onLoading, onLoadDone));
+        }
 
         /// <summary>
         /// 卸载AB包（异步）
@@ -137,6 +185,15 @@ namespace HT.Framework
         public Coroutine UnLoadScene(SceneInfo info)
         {
             return Main.Current.StartCoroutine(_helper.UnLoadSceneAsync(info));
+        }
+        /// <summary>
+        /// 卸载场景（异步）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <returns>卸载协程</returns>
+        public Coroutine UnLoadScene(string location)
+        {
+            return Main.Current.StartCoroutine(_helper.UnLoadSceneAsync(location));
         }
         /// <summary>
         /// 卸载所有场景（异步）

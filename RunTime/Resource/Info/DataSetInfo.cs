@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 数据集信息
+    /// 数据集信息标记
     /// </summary>
     public sealed class DataSetInfo : ResourceInfoBase
     {

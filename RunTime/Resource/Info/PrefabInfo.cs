@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 预制体信息
+    /// 预制体信息标记
     /// </summary>
     public sealed class PrefabInfo : ResourceInfoBase
     {
