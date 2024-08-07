@@ -734,6 +734,7 @@ namespace HT.Framework
             operation.AnimationEase = AnimationEase;
 
             operation.Vector3Value2 = Vector3Value2;
+            operation.FloatValue2 = FloatValue2;
             operation.StringValue2 = StringValue2;
             operation.BoolValue2 = BoolValue2;
 
