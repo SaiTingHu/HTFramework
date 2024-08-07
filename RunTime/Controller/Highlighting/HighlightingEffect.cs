@@ -4,7 +4,7 @@ namespace HT.Framework
 {
     [DisallowMultipleComponent]
     [DefaultExecutionOrder(-800)]
-    internal sealed class HighlightingEffect : HTBehaviour
+    public sealed class HighlightingEffect : HTBehaviour
     {
         #region Static Fields
         /// <summary>
