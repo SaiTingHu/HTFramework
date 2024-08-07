@@ -848,7 +848,6 @@ MonoBehaviour:
   CanControl: 1
   IsCanOnUGUI: 0
   IsCanByKey: 1
-  DampingTime: 1
   XSpeed: 0.1
   YSpeed: 0.1
   ZSpeed: 0.1

@@ -29,14 +29,6 @@ namespace HT.Framework
             PropertyField(nameof(MousePosition.ZSpeed), "Z");
             GUILayout.EndVertical();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Damping", EditorStyles.boldLabel);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
-            PropertyField(nameof(MousePosition.DampingTime), "Damping Time");
-            GUILayout.EndVertical();
-
             GUI.enabled = true;
         }
     }

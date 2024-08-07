@@ -27,6 +27,7 @@ namespace HT.Framework
 
         #region Value2
         [SerializeField] internal Vector3 Vector3Value2 = Vector3.zero;
+        [SerializeField] internal float FloatValue2 = 0;
         [SerializeField] internal string StringValue2 = "<None>";
         [SerializeField] internal bool BoolValue2 = false;
         #endregion
@@ -186,8 +187,16 @@ namespace HT.Framework
         }
         private void CameraFollowExecute()
         {
-            Main.m_Controller.SetLookPoint(Vector3Value, false);
-            Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, true);
+            if (FloatValue2 <= 0)
+            {
+                Main.m_Controller.SetLookPoint(Vector3Value, false);
+                Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, true);
+            }
+            else
+            {
+                Main.m_Controller.SetLookPoint(Vector3Value, true, FloatValue2);
+                Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, true);
+            }
         }
         private void TextMeshExecute()
         {
@@ -417,8 +426,16 @@ namespace HT.Framework
         }
         private void CameraFollowSkip()
         {
-            Main.m_Controller.SetLookPoint(Vector3Value, false);
-            Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, true);
+            if (FloatValue2 <= 0)
+            {
+                Main.m_Controller.SetLookPoint(Vector3Value, false);
+                Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, true);
+            }
+            else
+            {
+                Main.m_Controller.SetLookPoint(Vector3Value, true, FloatValue2);
+                Main.m_Controller.SetLookAngle(Vector2Value, FloatValue, true);
+            }
         }
         private void TextMeshSkip()
         {
@@ -1159,6 +1176,11 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label(getWord("Look Distance") + ":", GUILayout.Width(100));
             FloatValue = EditorGUILayout.FloatField("", FloatValue, GUILayout.Width(85));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(getWord("Follow Time") + ":", GUILayout.Width(100));
+            FloatValue2 = EditorGUILayout.FloatField("", FloatValue2, GUILayout.Width(85));
             GUILayout.EndHorizontal();
         }
         private void TextMeshGUI(HTFFunc<string, string> getWord)

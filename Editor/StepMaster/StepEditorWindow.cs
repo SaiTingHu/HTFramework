@@ -497,6 +497,7 @@ namespace HT.Framework
             AddWord("状态机", "FSM");
             AddWord("网格文本", "TextMesh");
             AddWord("摄像机跟随", "CameraFollow");
+            AddWord("跟随时间", "Follow Time");
             AddWord("激活组件", "ActiveComponent");
             AddWord("变换", "Transform");
             AddWord("改变父级", "ChangeParent");
@@ -505,6 +506,7 @@ namespace HT.Framework
             AddWord("初始的时间", "Initial Time");
             AddWord("启用所有步骤", "Enable All Steps");
             AddWord("禁用所有步骤", "Disable All Steps");
+            AddWord("立即模式", "Immediately");
         }
         protected override void OnLanguageChanged()
         {
@@ -1100,7 +1102,7 @@ namespace HT.Framework
                 #region 步骤操作的属性
                 if (_isShowStepOperation && _currentOperationIndex != -1)
                 {
-                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(210), GUILayout.Height(340));
+                    GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(210), GUILayout.Height(360));
 
                     GUILayout.BeginHorizontal("TE NodeBoxSelected");
                     GUILayout.Label(GetWord("Step Operation Properties"), EditorStyles.boldLabel);

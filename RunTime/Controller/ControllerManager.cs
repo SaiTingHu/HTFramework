@@ -353,9 +353,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="point">目标位置</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetLookPoint(Vector3 point, bool damping = false)
+        /// <param name="dampingTime">阻尼缓动时长</param>
+        public void SetLookPoint(Vector3 point, bool damping = false, float dampingTime = 1)
         {
-            _helper.SetLookPoint(point, damping);
+            _helper.SetLookPoint(point, damping, dampingTime);
         }
         /// <summary>
         /// 自由控制：设置摄像机注视角度

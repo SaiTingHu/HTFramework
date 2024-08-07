@@ -22,10 +22,6 @@ namespace HT.Framework
         /// </summary>
         public bool IsCanByKey = true;
         /// <summary>
-        /// 阻尼缓冲时长
-        /// </summary>
-        public float DampingTime = 1;
-        /// <summary>
         /// x轴移动速度，y轴移动速度，z轴移动速度
         /// </summary>
         public float XSpeed = 0.1f, YSpeed = 0.1f, ZSpeed = 0.1f;
@@ -51,13 +47,14 @@ namespace HT.Framework
         /// 操作控制器
         /// </summary>
         public ControllerManager Controller { get; set; }
-        
+
         /// <summary>
         /// 平移注视视野
         /// </summary>
         /// <param name="position">目标位置</param>
         /// <param name="damping">阻尼缓动模式</param>
-        public void SetPosition(Vector3 position, bool damping)
+        /// <param name="dampingTime">阻尼缓动时长</param>
+        public void SetPosition(Vector3 position, bool damping, float dampingTime)
         {
             if (_isKeepTrack)
                 return;
@@ -76,7 +73,7 @@ namespace HT.Framework
 
             if (damping)
             {
-                _moveTweener = Target.transform.DOMove(position, DampingTime);
+                _moveTweener = Target.transform.DOMove(position, dampingTime);
             }
             else
             {
