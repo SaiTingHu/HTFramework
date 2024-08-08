@@ -93,7 +93,6 @@ namespace HT.Framework
         //材质的模糊强度
         public float BlurIntensity = 0.3f;
 
-#if UNITY_EDITOR
         /// <summary>
         /// 是否启用Z缓冲深度
         /// </summary>
@@ -111,9 +110,8 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
-        /// 采样因子
+        /// 降采样因子
         /// </summary>
         public int DownSampleFactorProperty
         {
@@ -148,7 +146,6 @@ namespace HT.Framework
                 }
             }
         }
-
         /// <summary>
         /// 材质的模糊强度
         /// </summary>
@@ -171,7 +168,6 @@ namespace HT.Framework
                 }
             }
         }
-#endif
         #endregion
 
         #region Private Fields
