@@ -115,7 +115,7 @@ namespace HT.Framework
         public DebuggerScene()
         {
             Type baseType = typeof(DebuggerComponentBase);
-            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(false);
+            List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies();
             for (int i = 0; i < types.Count; i++)
             {
                 if (types[i].IsSubclassOf(baseType) && !types[i].IsAbstract)
