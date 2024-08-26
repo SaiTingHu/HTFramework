@@ -226,6 +226,7 @@ namespace HT.Framework
                 if (RayTarget != null)
                 {
                     RayTarget.OnMouseClick.Invoke();
+                    Main.m_Audio.PlayOneShoot(RayTarget.OnMouseClickSound);
                 }
             }
             if (Main.m_Input.GetButtonDown(InputButtonType.MouseLeftDoubleClick))

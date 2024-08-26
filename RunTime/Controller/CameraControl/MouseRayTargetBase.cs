@@ -26,6 +26,10 @@ namespace HT.Framework
         /// </summary>
         public bool IsOpenHighlight = true;
         /// <summary>
+        /// 鼠标左键点击音效
+        /// </summary>
+        public AudioClip OnMouseClickSound;
+        /// <summary>
         /// 鼠标左键点击事件
         /// </summary>
         public UnityEvent OnMouseClick;
