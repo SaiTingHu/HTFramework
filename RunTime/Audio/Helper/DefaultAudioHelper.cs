@@ -585,9 +585,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="attachTarget">附加目标</param>
         /// <param name="clip">音乐剪辑</param>
+        /// <param name="is3D">是否为3D模式，否则为2D模式</param>
         /// <param name="isLoop">是否循环</param>
         /// <param name="speed">播放速度</param>
-        public void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool isLoop = false, float speed = 1)
+        public void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool is3D = true, bool isLoop = false, float speed = 1)
         {
             if (attachTarget == null || clip == null)
                 return;
@@ -604,11 +605,12 @@ namespace HT.Framework
                 audio.loop = isLoop;
                 audio.pitch = speed;
                 audio.volume = WorldVolume;
+                audio.spatialBlend = is3D ? 1 : 0;
                 audio.Play();
             }
             else
             {
-                AudioSource audio = AudioToolkit.AttachAudioSource(attachTarget, WorldPriority, WorldVolume, 1, 1, Mute);
+                AudioSource audio = AudioToolkit.AttachAudioSource(attachTarget, WorldPriority, WorldVolume, 1, is3D ? 1 : 0, Mute);
                 _worldSources.Add(attachTarget, audio);
                 audio.clip = clip;
                 audio.loop = isLoop;

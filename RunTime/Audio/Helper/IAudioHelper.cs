@@ -148,9 +148,10 @@ namespace HT.Framework
         /// </summary>
         /// <param name="attachTarget">附加目标</param>
         /// <param name="clip">音乐剪辑</param>
+        /// <param name="is3D">是否为3D模式，否则为2D模式</param>
         /// <param name="isLoop">是否循环</param>
         /// <param name="speed">播放速度</param>
-        void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool isLoop = false, float speed = 1);
+        void PlayWorldSound(GameObject attachTarget, AudioClip clip, bool is3D = true, bool isLoop = false, float speed = 1);
         /// <summary>
         /// 暂停播放指定的世界音效
         /// </summary>

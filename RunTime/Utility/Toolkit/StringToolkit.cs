@@ -183,6 +183,9 @@ namespace HT.Framework
         #endregion
 
         #region 正则表达式
+        private static HashSet<char> Blanks = new HashSet<char>() { ' ', '\0', '\u0020', '\u3000' };
+        private static HashSet<char> Tabs = new HashSet<char>() { '\t', '\r', '\n' };
+
         /// <summary>
         /// 是否为整型内容
         /// </summary>
@@ -200,6 +203,46 @@ namespace HT.Framework
         public static bool IsFloat(this string value)
         {
             return Regex.IsMatch(value, "^([-]?[0-9]{1,}[.][0-9]*)$");
+        }
+        /// <summary>
+        /// 获取字符串长度（忽略空白符及制表符）
+        /// </summary>
+        /// <param name="value">字符串值</param>
+        /// <returns>字符串长度</returns>
+        public static int LengthIgnoreBlank(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return 0;
+
+            int length = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (!Blanks.Contains(value[i]) && !Tabs.Contains(value[i]))
+                {
+                    length += 1;
+                }
+            }
+            return length;
+        }
+        /// <summary>
+        /// 获取字符串长度（忽略空白符及制表符）
+        /// </summary>
+        /// <param name="value">字符串值</param>
+        /// <returns>字符串长度</returns>
+        public static int LengthIgnoreBlank(this StringBuilder value)
+        {
+            if (value.Length <= 0)
+                return 0;
+
+            int length = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (!Blanks.Contains(value[i]) && !Tabs.Contains(value[i]))
+                {
+                    length += 1;
+                }
+            }
+            return length;
         }
         #endregion
     }
