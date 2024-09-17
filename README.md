@@ -50,7 +50,7 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [Instruction](https://wanderer.blog.csdn.net/article/details/130918484) - 指令系统，可在运行时编译并执行任意指令代码，达到最快速度修补程序的功能。
 
-- [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口，还支持快捷设置脚本定义、指定全局主要数据类、设置项目授权、以及配置全局参数等，且支持[HybridCLR](https://wanderer.blog.csdn.net/article/details/140084724)热更新。
+- [Main](https://wanderer.blog.csdn.net/article/details/102956756) - 框架主模块，提供访问其他模块的快捷接口，还支持快捷设置脚本定义、指定全局主要数据类、设置项目授权、以及配置全局参数等。
 
 - [Network](https://wanderer.blog.csdn.net/article/details/103575999) - 网络客户端模块，以单个通信管道为单位，每个管道均支持TCP/UDP等协议，可以为每个管道定义通信消息格式，基本能胜任一些常见的通信环境。
 
@@ -107,6 +107,34 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 - 1.入口场景为一切的开始，也为一切的结束，整个游戏的生命周期都将在入口场景中完成，不建议使用多场景切换模式，如果确实需要使用，可以将其他场景打入AB包内加载。
 
 - 2.入口场景中只包含框架主模块（或其他自定义主模块、主控制器），其他任何东西都应该是动态加载的。
+
+## 其他特性
+
+- [Addressables](https://blog.csdn.net/qq992817263/article/details/140700085) - 接入Addressables可寻址系统。
+
+- [Assets Master](https://blog.csdn.net/qq992817263/article/details/107974865) - 资产管理器，允许你在编辑模式或是运行模式非常直观的查看和管理当前打开场景中的你感兴趣的资产。
+
+- [Code Snippet Executer](https://blog.csdn.net/qq992817263/article/details/139546629) - 适用于代码片段测试、单元测试的编辑器工具。
+
+- [HybridCLR](https://blog.csdn.net/qq992817263/article/details/140084724) - 接入HybridCLR热更新。
+
+- [Inspector](https://blog.csdn.net/qq992817263/article/details/108117002) - 支持通过简单的在序列化字段上添加特性标记从而实现在Inspector界面自定义多种实用的检视器效果。
+
+- [License](https://blog.csdn.net/qq992817263/article/details/104614122) - 授权验证功能支持在你的游戏启动时，执行指定的授权检查，可以是本地授权检查，也可以是远程授权检查，只有授权检查通过才能正常进入游戏，如果授权检查失败，框架将会瘫痪整个程序，无论用户做出任何补救措施都将是徒劳。
+
+- [Markdown Text](https://blog.csdn.net/qq992817263/article/details/142280249) - MarkdownText为Text的扩展加强版，支持在运行时解析并显示Markdown格式的文本。
+
+- [MVVM](https://blog.csdn.net/qq992817263/article/details/109245614) - UI的数据驱动模式。
+
+- [Scene Handler](https://blog.csdn.net/qq992817263/article/details/108281901) - 支持通过简单的在序列化字段上添加特性标记从而实现在Scene界面自定义多种实用的控制柄。
+
+- [Settings](https://blog.csdn.net/qq992817263/article/details/104610857) - 全局设置面板可以快捷、统一的设置全局的一些参数，还可以自定义设置项，用来设置自己的任何游戏参数。
+
+- [Table View](https://blog.csdn.net/qq992817263/article/details/120796924) - 使用TableView可以很方便的在编辑器中绘制表格视图。
+
+- [控制反转](https://blog.csdn.net/qq992817263/article/details/122300055) - 在Unity中使用控制反转模式。
+
+- [标准化命名](https://blog.csdn.net/qq992817263/article/details/124470077) - 建立统一的标准化命名规范。
 
 ## 使用方法
 
