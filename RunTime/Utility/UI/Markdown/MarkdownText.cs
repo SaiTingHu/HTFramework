@@ -190,6 +190,13 @@ namespace HT.Framework
 
                 if (!string.IsNullOrEmpty(rawText))
                 {
+                    //解析代码块
+                    bool isCode = false;
+                    Parse_Code(rawText, out isCode);
+                    if (isCode)
+                        continue;
+
+                    //解析表格
                     bool isTable = false;
                     bool isSign = false;
                     Parse_Table(rawText, out richText, out pureText, out isTable, out isSign);
@@ -200,9 +207,13 @@ namespace HT.Framework
                     {
                         Parse_TableDone();
 
+                        //解析强调文本
                         Parse_Emphasize(rawText, out richText, out pureText);
+                        //解析标题
                         Parse_Title(richText, pureText, out richText, out pureText);
+                        //解析嵌入图像
                         yield return Parse_EmbedTexture(richText, pureText, (r, p) => { richText = r; pureText = p; });
+                        //解析超链接
                         Parse_Hyperlink(richText, pureText, out richText, out pureText);
                     }
 
@@ -233,6 +244,13 @@ namespace HT.Framework
             text = _richTextBuilder.ToString();
             PureText = _pureTextBuilder.ToString();
             onParseEnd?.Invoke();
+        }
+        /// <summary>
+        /// 解析代码块
+        /// </summary>
+        private void Parse_Code(string rawText, out bool isCode)
+        {
+            isCode = rawText.StartsWith("```");
         }
         /// <summary>
         /// 解析表格
