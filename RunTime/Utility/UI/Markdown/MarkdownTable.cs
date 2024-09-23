@@ -15,18 +15,22 @@ namespace HT.Framework
         /// 行高度偏移值
         /// </summary>
         public float RowHeightOffset = 5;
+        /// <summary>
+        /// 表格的可点击按钮
+        /// </summary>
+        public Button TableButton;
 
         protected List<CellAlignment> _cellAlignments = new List<CellAlignment>();
-        protected float _rowY;
-        protected float _cellX;
         protected bool _isDirty = false;
 
         private RectTransform _rectTransform;
         private CanvasGroup _group;
         private bool _isShow = true;
-        private float _width;
+        private float _width = 0;
+        private float _height = 0;
+        private float _border = 0;
 
-        public RectTransform Rect
+        protected RectTransform Rect
         {
             get
             {
@@ -37,7 +41,7 @@ namespace HT.Framework
                 return _rectTransform;
             }
         }
-        public CanvasGroup Group
+        protected CanvasGroup Group
         {
             get
             {
@@ -51,7 +55,7 @@ namespace HT.Framework
         /// <summary>
         /// 是否显示表格
         /// </summary>
-        public virtual bool IsShow
+        public bool IsShow
         {
             get
             {
@@ -64,9 +68,23 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 表格位置
+        /// </summary>
+        public Vector2 Pos
+        {
+            get
+            {
+                return Rect.anchoredPosition;
+            }
+            set
+            {
+                Rect.anchoredPosition = value;
+            }
+        }
+        /// <summary>
         /// 表格宽度
         /// </summary>
-        public virtual float Width
+        public float Width
         {
             get
             {
@@ -79,9 +97,47 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 表格高度
+        /// </summary>
+        public float Height
+        {
+            get
+            {
+                return _height;
+            }
+            set
+            {
+                _height = value;
+                _isDirty = true;
+            }
+        }
+        /// <summary>
         /// 表格边框厚度
         /// </summary>
-        protected virtual float Border { get; private set; } = 2;
+        public float Border
+        {
+            get
+            {
+                return _border;
+            }
+            set
+            {
+                _border = value;
+                _isDirty = true;
+            }
+        }
+        /// <summary>
+        /// 表格行数
+        /// </summary>
+        public int RowNumber { get; private set; }
+        /// <summary>
+        /// 表格列数
+        /// </summary>
+        public int ColumnNumber { get; private set; }
+        /// <summary>
+        /// 初始的高度
+        /// </summary>
+        public float InitialHeight { get; private set; }
 
         /// <summary>
         /// 生成表格
@@ -94,23 +150,20 @@ namespace HT.Framework
                 return;
             }
 
-            float tabelWidth = tableMark.Width;
-            float tableHeight = (tableMark.RowHeight + RowHeightOffset) * tableMark.Rows.Count;
-            Rect.sizeDelta = new Vector2(tabelWidth, tableHeight);
-
             GenerateCellAlignment(tableMark.Signs);
 
-            _rowY = -Border;
-            float rowHeight = (tableHeight - Border * (tableMark.Rows.Count + 1)) / tableMark.Rows.Count;
             RectTransform rowTemp = transform.Find("RowTemp").rectTransform();
             for (int i = 0; i < tableMark.Rows.Count; i++)
             {
-                GenerateRow(rowTemp, rowHeight, tableMark.Rows[i]);
-                _rowY -= rowHeight;
-                _rowY -= Border;
+                GenerateRow(rowTemp, tableMark.Rows[i]);
             }
 
-            Width = tabelWidth;
+            Width = tableMark.Width;
+            Height = (tableMark.RowHeight + RowHeightOffset) * tableMark.Rows.Count;
+            Border = 2;
+            RowNumber = tableMark.Rows.Count;
+            ColumnNumber = _cellAlignments.Count;
+            InitialHeight = Height;
         }
         /// <summary>
         /// 帧更新
@@ -124,35 +177,42 @@ namespace HT.Framework
                 Group.alpha = IsShow ? 1 : 0;
                 Group.blocksRaycasts = IsShow;
 
-                UpdateWidth();
+                if (IsShow) UpdateTableSize();
             }
         }
         /// <summary>
-        /// 更新表格宽度
+        /// 更新表格大小
         /// </summary>
-        protected virtual void UpdateWidth()
+        protected virtual void UpdateTableSize()
         {
-            SetWidth(Rect, Width);
+            Rect.sizeDelta = new Vector2(Width, Height);
 
-            float cellWidth = (Width - Border * (_cellAlignments.Count + 1)) / _cellAlignments.Count;
+            float rowHeight = (Height - Border * (RowNumber + 1)) / RowNumber;
+            float cellWidth = (Width - Border * (ColumnNumber + 1)) / ColumnNumber;
+
+            float rowY = -Border;
             for (int i = 0; i < transform.childCount; i++)
             {
-                Transform row = transform.GetChild(i);
+                RectTransform row = transform.GetChild(i) as RectTransform;
                 if (row.name == "BG" || !row.gameObject.activeSelf)
                     continue;
 
-                _cellX = Border;
+                row.anchoredPosition = new Vector2(0, rowY);
+                SetHeight(row, rowHeight);
+                rowY -= rowHeight;
+                rowY -= Border;
+
+                float cellX = Border;
                 for (int j = 0; j < row.childCount; j++)
                 {
-                    Transform cell = row.GetChild(j);
+                    RectTransform cell = row.GetChild(j) as RectTransform;
                     if (!cell.gameObject.activeSelf)
                         continue;
 
-                    RectTransform cellRect = cell.rectTransform();
-                    cellRect.anchoredPosition = new Vector2(_cellX, 0);
-                    SetWidth(cellRect, cellWidth);
-                    _cellX += cellWidth;
-                    _cellX += Border;
+                    cell.anchoredPosition = new Vector2(cellX, 0);
+                    SetWidth(cell, cellWidth);
+                    cellX += cellWidth;
+                    cellX += Border;
                 }
             }
         }
@@ -190,13 +250,12 @@ namespace HT.Framework
         /// <summary>
         /// 生成行
         /// </summary>
-        private void GenerateRow(RectTransform rowTemp, float height, string[] rowData)
+        private void GenerateRow(RectTransform rowTemp, string[] rowData)
         {
             RectTransform row = Main.CloneGameObject(rowTemp.gameObject, true).rectTransform();
-            row.transform.localRotation = Quaternion.identity;
-            row.transform.localScale = Vector3.one;
-            row.anchoredPosition = new Vector2(0, _rowY);
-            SetHeight(row, height);
+            row.localRotation = Quaternion.identity;
+            row.localScale = Vector3.one;
+            row.anchoredPosition = Vector2.zero;
 
             RectTransform cellTemp = row.Find("CellTemp").rectTransform();
             for (int i = 0; i < _cellAlignments.Count; i++)
@@ -210,10 +269,9 @@ namespace HT.Framework
         private void GenerateCell(RectTransform cellTemp, CellAlignment cellAlignment, string cellData)
         {
             RectTransform cell = Main.CloneGameObject(cellTemp.gameObject, true).rectTransform();
-            cell.transform.localRotation = Quaternion.identity;
-            cell.transform.localScale = Vector3.one;
+            cell.localRotation = Quaternion.identity;
+            cell.localScale = Vector3.one;
             cell.anchoredPosition = Vector2.zero;
-            SetWidth(cell, 100);
 
             Text text = cell.Find("Text").GetComponent<Text>();
             text.text = cellData;

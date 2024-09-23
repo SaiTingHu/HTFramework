@@ -16,6 +16,7 @@ namespace HT.Framework
         private SerializedProperty _tableTemplate;
         private SerializedProperty _onClickHyperlink;
         private SerializedProperty _onClickEmbedTexture;
+        private SerializedProperty _onClickTable;
         private GUIContent _isParseInAwakeGC;
         private GUIContent _isHyperlinkUnderlineGC;
 
@@ -31,6 +32,7 @@ namespace HT.Framework
             _tableTemplate = serializedObject.FindProperty("TableTemplate");
             _onClickHyperlink = serializedObject.FindProperty("OnClickHyperlink");
             _onClickEmbedTexture = serializedObject.FindProperty("OnClickEmbedTexture");
+            _onClickTable = serializedObject.FindProperty("OnClickTable");
             _isParseInAwakeGC = new GUIContent("Parse In Awake");
             _isHyperlinkUnderlineGC = new GUIContent("Hyperlink Underline");
 
@@ -96,6 +98,10 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(_onClickEmbedTexture);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(_onClickTable);
                 GUILayout.EndHorizontal();
 
                 EditorGUI.indentLevel = 0;

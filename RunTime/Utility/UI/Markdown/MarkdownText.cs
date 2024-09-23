@@ -47,6 +47,10 @@ namespace HT.Framework
         /// 点击嵌入的图像事件（参数1：图像）
         /// </summary>
         public UnityEvent<Sprite> OnClickEmbedTexture;
+        /// <summary>
+        /// 点击表格事件（参数1：表格）
+        /// </summary>
+        public UnityEvent<MarkdownTable> OnClickTable;
 
         /// <summary>
         /// 原始文本
@@ -257,51 +261,55 @@ namespace HT.Framework
         /// </summary>
         private void Parse_Table(string rawText, out string richText, out string pureText, out bool isTable, out bool isSign)
         {
+            string[] values = null;
             if (rawText.StartsWith('|') && rawText.EndsWith('|'))
             {
-                string[] values = rawText.Split('|');
-                if (values.Length >= 3)
-                {
-                    if (_tableMark == null)
-                    {
-                        _tableMark = Main.m_ReferencePool.Spawn<TableMark>();
-                        _tableMark.RichStartIndex = _richTextCount;
-                        _tableMark.PureStartIndex = _pureTextCount;
-                        _tableMark.Width = rectTransform.rect.width;
-                        _tableMark.RowHeight = TableRowHeight;
-                    }
-                    
-                    if (_tableMark.Signs.Count == 0 && IsTableSign(values))
-                    {
-                        for (int i = 1; i < (values.Length - 1); i++) _tableMark.Signs.Add(values[i]);
-
-                        richText = null;
-                        pureText = null;
-                        isTable = true;
-                        isSign = true;
-                        return;
-                    }
-                    else
-                    {
-                        string[] row = new string[values.Length - 2];
-                        for (int i = 1; i < (values.Length - 1); i++) row[i - 1] = values[i];
-                        _tableMark.Rows.Add(row);
-
-                        _tableMark.RichQuadIndexs.Add(_richTextCount);
-                        _tableMark.PureQuadIndexs.Add(_pureTextCount);
-                        richText = $"<quad size={TableRowHeight}/>";
-                        pureText = "?";
-                        isTable = true;
-                        isSign = false;
-                        return;
-                    }
-                }
+                values = rawText.Split('|');
+            }
+            else if (rawText.StartsWith('+') && rawText.EndsWith('+'))
+            {
+                values = rawText.Split('+');
             }
 
-            richText = null;
-            pureText = null;
+            if (values != null && values.Length >= 3)
+            {
+                if (_tableMark == null)
+                {
+                    _tableMark = Main.m_ReferencePool.Spawn<TableMark>();
+                    _tableMark.RichStartIndex = _richTextCount;
+                    _tableMark.PureStartIndex = _pureTextCount;
+                    _tableMark.Width = rectTransform.rect.width;
+                    _tableMark.RowHeight = TableRowHeight;
+                }
+
+                isTable = true;
+                isSign = IsTableSign(values);
+                if (isSign)
+                {
+                    if (_tableMark.Signs.Count == 0)
+                    {
+                        for (int i = 1; i < (values.Length - 1); i++) _tableMark.Signs.Add(values[i]);
+                    }
+                    richText = null;
+                    pureText = null;
+                }
+                else
+                {
+                    string[] row = new string[values.Length - 2];
+                    for (int i = 1; i < (values.Length - 1); i++) row[i - 1] = values[i];
+                    _tableMark.Rows.Add(row);
+                    _tableMark.RichQuadIndexs.Add(_richTextCount);
+                    _tableMark.PureQuadIndexs.Add(_pureTextCount);
+                    richText = $"<quad size={TableRowHeight}/>";
+                    pureText = "?";
+                }
+                return;
+            }
+
             isTable = false;
             isSign = false;
+            richText = null;
+            pureText = null;
         }
         /// <summary>
         /// 解析表格完成
@@ -312,7 +320,11 @@ namespace HT.Framework
             {
                 if (TableTemplate)
                 {
-                    _tableMark.Generate(rectTransform, TableTemplate);
+                    MarkdownTable table = _tableMark.Generate(rectTransform, TableTemplate);
+                    table.TableButton.onClick.AddListener(() =>
+                    {
+                        OnClickTable.Invoke(table);
+                    });
                     AllTableMarks.Add(_tableMark);
                 }
                 else
@@ -937,13 +949,13 @@ namespace HT.Framework
             {
                 get
                 {
-                    return Table != null ? Table.Rect.anchoredPosition : Vector2.zero;
+                    return Table != null ? Table.Pos : Vector2.zero;
                 }
                 set
                 {
                     if (Table != null)
                     {
-                        Table.Rect.anchoredPosition = value;
+                        Table.Pos = value;
                     }
                 }
             }
@@ -951,7 +963,7 @@ namespace HT.Framework
             /// <summary>
             /// 生成
             /// </summary>
-            public void Generate(RectTransform parent, MarkdownTable template)
+            public MarkdownTable Generate(RectTransform parent, MarkdownTable template)
             {
                 GameObject obj = Main.CloneGameObject(template.gameObject, true);
                 obj.name = "表格";
@@ -960,6 +972,7 @@ namespace HT.Framework
                 obj.transform.localScale = Vector3.one;
                 Table = obj.GetComponent<MarkdownTable>();
                 Table.Generate(this);
+                return Table;
             }
             public void Reset()
             {
