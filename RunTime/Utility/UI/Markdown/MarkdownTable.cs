@@ -129,15 +129,15 @@ namespace HT.Framework
         /// <summary>
         /// 表格行数
         /// </summary>
-        public int RowNumber { get; private set; }
+        public int RowNumber { get; protected set; }
         /// <summary>
         /// 表格列数
         /// </summary>
-        public int ColumnNumber { get; private set; }
+        public int ColumnNumber { get; protected set; }
         /// <summary>
         /// 初始的高度
         /// </summary>
-        public float InitialHeight { get; private set; }
+        public float InitialHeight { get; protected set; }
 
         /// <summary>
         /// 生成表格

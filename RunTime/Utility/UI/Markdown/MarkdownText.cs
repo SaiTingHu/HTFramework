@@ -678,6 +678,9 @@ namespace HT.Framework
             {
                 TableMark tableMark = AllTableMarks[i];
 
+                if (tableMark.Table.transform.parent != transform)
+                    continue;
+
                 int startVertIndex = isCrossBorder ? (tableMark.RichStartIndex * 4) : (tableMark.PureStartIndex * 4);
                 if (startVertIndex < toFill.currentVertCount)
                 {
