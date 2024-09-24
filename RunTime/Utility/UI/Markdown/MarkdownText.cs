@@ -262,16 +262,20 @@ namespace HT.Framework
         private void Parse_Table(string rawText, out string richText, out string pureText, out bool isTable, out bool isSign)
         {
             string[] values = null;
-            if (rawText.StartsWith('|') && rawText.EndsWith('|'))
+            if (rawText.StartsWith('+') && rawText.EndsWith('+'))
+            {
+                values = RemoveTwoEnds(rawText.Split('+'));
+            }
+            else if (rawText.StartsWith('|') && rawText.EndsWith('|'))
+            {
+                values = RemoveTwoEnds(rawText.Split('|'));
+            }
+            else if (rawText.Contains('|'))
             {
                 values = rawText.Split('|');
             }
-            else if (rawText.StartsWith('+') && rawText.EndsWith('+'))
-            {
-                values = rawText.Split('+');
-            }
 
-            if (values != null && values.Length >= 3)
+            if (values != null && values.Length > 0)
             {
                 if (_tableMark == null)
                 {
@@ -288,18 +292,13 @@ namespace HT.Framework
                 isSign = IsTableSign(values);
                 if (isSign)
                 {
-                    if (_tableMark.Signs.Count == 0)
-                    {
-                        for (int i = 1; i < (values.Length - 1); i++) _tableMark.Signs.Add(values[i]);
-                    }
+                    if (_tableMark.Signs.Count == 0) _tableMark.Signs.AddRange(values);
                     richText = null;
                     pureText = null;
                 }
                 else
                 {
-                    string[] row = new string[values.Length - 2];
-                    for (int i = 1; i < (values.Length - 1); i++) row[i - 1] = values[i];
-                    _tableMark.Rows.Add(row);
+                    _tableMark.Rows.Add(values);
                     _tableMark.RichQuadIndexs.Add(_richTextCount);
                     _tableMark.PureQuadIndexs.Add(_pureTextCount);
                     richText = $"<quad size={TableRowHeight}/>";
@@ -613,7 +612,7 @@ namespace HT.Framework
         /// </summary>
         private bool IsTableSign(string[] row)
         {
-            for (int i = 1; i < (row.Length - 1); i++)
+            for (int i = 0; i < row.Length; i++)
             {
                 string value = row[i];
                 if (!TableRegex.IsMatch(value))
@@ -622,6 +621,21 @@ namespace HT.Framework
                 }
             }
             return true;
+        }
+        /// <summary>
+        /// 去掉表格数据的两端
+        /// </summary>
+        private string[] RemoveTwoEnds(string[] row)
+        {
+            if (row.Length < 2)
+                return row;
+
+            string[] newRow = new string[row.Length - 2];
+            for (int i = 1; i < (row.Length - 1); i++)
+            {
+                newRow[i - 1] = row[i];
+            }
+            return newRow;
         }
         /// <summary>
         /// 下载网络链接图片
