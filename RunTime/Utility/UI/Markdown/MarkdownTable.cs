@@ -225,7 +225,7 @@ namespace HT.Framework
             _cellAlignments.Clear();
             for (int i = 0; i < signs.Count; i++)
             {
-                string sign = signs[i].Trim();
+                string sign = signs[i];
                 CellAlignment cellAlignment;
                 if (sign.StartsWith(":") && !sign.EndsWith(":"))
                 {

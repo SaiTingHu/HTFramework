@@ -282,6 +282,8 @@ namespace HT.Framework
                     _tableMark.RowHeight = TableRowHeight;
                 }
 
+                for (int i = 0; i < values.Length; i++) values[i] = values[i].Trim();
+
                 isTable = true;
                 isSign = IsTableSign(values);
                 if (isSign)
@@ -613,7 +615,7 @@ namespace HT.Framework
         {
             for (int i = 1; i < (row.Length - 1); i++)
             {
-                string value = row[i].Trim();
+                string value = row[i];
                 if (!TableRegex.IsMatch(value))
                 {
                     return false;
