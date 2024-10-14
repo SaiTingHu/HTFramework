@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using UnityEngine;
@@ -743,30 +742,6 @@ namespace HT.Framework
         public static T Cast<T>(this object target) where T : class
         {
             return target as T;
-        }
-        /// <summary>
-        /// 加载外部图片，并转换为Sprite
-        /// </summary>
-        /// <param name="path">图片路径</param>
-        /// <returns>转换后的Sprite</returns>
-        public static Sprite LoadSprite(string path)
-        {
-            if (!File.Exists(path))
-                return null;
-
-            FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, (int)stream.Length);
-
-            Texture2D texture = new Texture2D(80, 80);
-            texture.LoadImage(buffer);
-
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-
-            stream.Close();
-
-            return sprite;
         }
         /// <summary>
         /// 设置Transform的位置
