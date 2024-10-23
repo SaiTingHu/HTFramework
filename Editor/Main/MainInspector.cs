@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
+[assembly: InternalsVisibleTo("Assembly-CSharp-Editor")]
 [assembly: InternalsVisibleTo("HTFramework.AI.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.Deployment.Editor")]
 [assembly: InternalsVisibleTo("HTFramework.GC.Editor")]
