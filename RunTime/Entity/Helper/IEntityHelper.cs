@@ -28,6 +28,12 @@ namespace HT.Framework
         /// <param name="defineEntityNames">预定义的实体名称</param>
         /// <param name="defineEntityTargets">预定义的实体对象</param>
         void SetDefine(List<string> defineEntityNames, List<GameObject> defineEntityTargets);
+        /// <summary>
+        /// 添加预定义（如果已存在则覆盖，已创建的实体不受影响，销毁后再次创建生效）
+        /// </summary>
+        /// <param name="defineEntityName">预定义的实体名称</param>
+        /// <param name="defineEntityTarget">预定义的实体对象</param>
+        void AddDefine(string defineEntityName, GameObject defineEntityTarget);
 
         /// <summary>
         /// 创建实体

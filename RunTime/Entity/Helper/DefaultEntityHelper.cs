@@ -158,6 +158,22 @@ namespace HT.Framework
                 }
             }
         }
+        /// <summary>
+        /// 添加预定义（如果已存在则覆盖，已创建的实体不受影响，销毁后再次创建生效）
+        /// </summary>
+        /// <param name="defineEntityName">预定义的实体名称</param>
+        /// <param name="defineEntityTarget">预定义的实体对象</param>
+        public void AddDefine(string defineEntityName, GameObject defineEntityTarget)
+        {
+            if (_defineEntities.ContainsKey(defineEntityName))
+            {
+                _defineEntities[defineEntityName] = defineEntityTarget;
+            }
+            else
+            {
+                _defineEntities.Add(defineEntityName, defineEntityTarget);
+            }
+        }
 
         /// <summary>
         /// 创建实体
