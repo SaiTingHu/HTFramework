@@ -1447,6 +1447,16 @@ namespace HT.Framework
             }
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUI.backgroundColor = Color.yellow;
+            if (GUILayout.Button("Edit .meta With VSCode"))
+            {
+                EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target) + ".meta");
+            }
+            GUI.backgroundColor = Color.white;
+            EditorGUILayout.EndHorizontal();
         }
         /// <summary>
         /// 打开 VSCode 编辑
