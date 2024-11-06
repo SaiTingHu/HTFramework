@@ -762,6 +762,59 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 添加数据模型
+        /// </summary>
+        /// <typeparam name="T">数据模型类</typeparam>
+        public void AddDataModel<T>() where T : DataModelBase
+        {
+            AddDataModel(typeof(T));
+        }
+        /// <summary>
+        /// 添加数据模型
+        /// </summary>
+        /// <param name="type">数据模型类</param>
+        public void AddDataModel(Type type)
+        {
+            if (!_dataModels.ContainsKey(type))
+            {
+                if (type.IsSubclassOf(typeof(DataModelBase)))
+                {
+                    DataModelBase dataModel = Activator.CreateInstance(type) as DataModelBase;
+                    _dataModels.Add(type, dataModel);
+                    dataModel.OnInit();
+                    this.NextFrameExecute(dataModel.OnReady);
+                }
+                else
+                {
+                    Log.Error($"添加数据模型失败：数据模型类 {type} 必须继承至基类：HT.Framework.DataModelBase！");
+                }
+            }
+        }
+        /// <summary>
+        /// 移除数据模型
+        /// </summary>
+        /// <typeparam name="T">数据模型类</typeparam>
+        public void RemoveDataModel<T>() where T : DataModelBase
+        {
+            RemoveDataModel(typeof(T));
+        }
+        /// <summary>
+        /// 移除数据模型
+        /// </summary>
+        /// <param name="type">数据模型类</param>
+        public void RemoveDataModel(Type type)
+        {
+            if (_dataModels.ContainsKey(type))
+            {
+                if (type.IsSubclassOf(typeof(DataModelBase)))
+                {
+                    ClearDataBinding(type);
+                    _dataModels.Remove(type);
+                }
+            }
+        }
+
+        /// <summary>
         /// 获取数据模型
         /// </summary>
         /// <typeparam name="T">数据模型类</typeparam>
