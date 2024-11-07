@@ -275,7 +275,7 @@ namespace HT.Framework
                 values = rawText.Split('|');
             }
 
-            if (values != null && values.Length > 0)
+            if (values != null && values.Length > 0 && (_tableMark == null || _tableMark.Columns == values.Length))
             {
                 if (_tableMark == null)
                 {
@@ -284,6 +284,7 @@ namespace HT.Framework
                     _tableMark.PureStartIndex = _pureTextCount;
                     _tableMark.Width = rectTransform.rect.width;
                     _tableMark.RowHeight = TableRowHeight;
+                    _tableMark.Columns = values.Length;
                 }
 
                 for (int i = 0; i < values.Length; i++) values[i] = values[i].Trim();
@@ -955,6 +956,7 @@ namespace HT.Framework
             public int PureStartIndex;
             public float Width;
             public float RowHeight;
+            public int Columns;
             public List<string> Signs = new List<string>();
             public List<string[]> Rows = new List<string[]>();
             public List<int> RichQuadIndexs = new List<int>();
