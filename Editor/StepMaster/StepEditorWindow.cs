@@ -361,6 +361,12 @@ namespace HT.Framework
                 {
                     StopPreviewInAllStep();
                 });
+                gm.AddSeparator("");
+                content = GetWord("Refind All Step Helper");
+                gm.AddItem(new GUIContent(content), false, () =>
+                {
+                    RefindAllStepHelper();
+                });
                 gm.ShowAsContext();
             }
             if (GUILayout.Button(GetWord("Minimize"), EditorStyles.toolbarPopup))
@@ -507,6 +513,7 @@ namespace HT.Framework
             AddWord("启用所有步骤", "Enable All Steps");
             AddWord("禁用所有步骤", "Disable All Steps");
             AddWord("立即模式", "Immediately");
+            AddWord("重新查找所有步骤助手", "Refind All Step Helper");
         }
         protected override void OnLanguageChanged()
         {
@@ -2203,6 +2210,24 @@ namespace HT.Framework
         private void NewHelperScript()
         {
             _currentStepObj.Helper = EditorGlobalTools.CreateScriptFormTemplate(EditorPrefsTable.Script_StepHelper_Folder, "StepHelper", "StepHelperTemplate", NewHelperScriptHandler, "#HELPERNAME#");
+        }
+        /// <summary>
+        /// 重新查找所有步骤助手
+        /// </summary>
+        private void RefindAllStepHelper()
+        {
+            for (int i = 0; i < _contentAsset.Content.Count; i++)
+            {
+                EditorUtility.DisplayProgressBar("Refind......", $"{i}/{_contentAsset.Content.Count}", (float)i / _contentAsset.Content.Count);
+                StepContent content = _contentAsset.Content[i];
+                if (content.Helper != "<None>")
+                {
+                    content.Helper = CSharpScriptToolkit.GetScriptFullName(content.Helper);
+                }
+            }
+            EditorUtility.ClearProgressBar();
+
+            HasChanged(_contentAsset);
         }
 
         /// <summary>

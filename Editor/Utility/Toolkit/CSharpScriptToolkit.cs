@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 
 namespace HT.Framework
@@ -101,6 +102,35 @@ namespace HT.Framework
             {
                 Log.Error($"打开脚本文件失败：没有找到 {name} 脚本文件！");
             }
+        }
+        /// <summary>
+        /// 获取C#脚本的类名全称（包含命名空间）
+        /// </summary>
+        /// <param name="name">C#脚本文件名称（文件名称必须与类名一致）</param>
+        /// <returns>C#类名全称（包含命名空间）</returns>
+        public static string GetScriptFullName(string name)
+        {
+            if (!Scripts.ContainsKey(name))
+            {
+                string[] values = name.Split('.');
+                name = values[values.Length - 1];
+            }
+
+            if (Scripts.ContainsKey(name))
+            {
+                MonoScript monoScript = AssetDatabase.LoadAssetAtPath<MonoScript>(Scripts[name]);
+                if (monoScript)
+                {
+                    Type type = monoScript.GetClass();
+                    if (type != null)
+                    {
+                        return type.FullName;
+                    }
+                }
+            }
+
+            Log.Error($"获取脚本的类名全称失败：没有找到 {name} 脚本文件！");
+            return name;
         }
     }
 }

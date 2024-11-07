@@ -613,7 +613,7 @@ namespace HT.Framework
                     CustomHelperAttribute helper = type.GetCustomAttribute<CustomHelperAttribute>();
                     if (helper != null)
                     {
-                        HelperName = helper.Name;
+                        HelperName = $"{type.FullName} 【{helper.Name}】";
                     }
                     else
                     {
