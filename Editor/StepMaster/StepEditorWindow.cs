@@ -59,7 +59,11 @@ namespace HT.Framework
                     return o.OperationType == StepOperationType.PlayTimeline;
                 });
             });
-            AdvancedSearchHandlers.Add("包含自定义<Custom>参数的步骤", (stepContent) =>
+            AdvancedSearchHandlers.Add("包含<String>类型参数的步骤", (stepContent) =>
+            {
+                return stepContent.Parameters.Exists((p) => { return p.Type == StepParameter.ParameterType.String; });
+            });
+            AdvancedSearchHandlers.Add("包含<Custom>类型参数的步骤", (stepContent) =>
             {
                 return stepContent.Parameters.Exists((p) => { return p.Type == StepParameter.ParameterType.Custom; });
             });
