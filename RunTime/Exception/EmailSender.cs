@@ -10,7 +10,7 @@ namespace HT.Framework
     /// <summary>
     /// 邮件发送者
     /// </summary>
-    public  sealed class EmailSender : IDisposable
+    public sealed class EmailSender : IDisposable
     {
         private MailMessage _mailMessage;
         private SmtpClient _smtpClient;
@@ -30,7 +30,7 @@ namespace HT.Framework
             _smtpClient.Host = host;
             _smtpClient.Port = port;
             _smtpClient.UseDefaultCredentials = false;
-            _smtpClient.Credentials = new NetworkCredential(fromEmail, fromEmailPassword) as ICredentialsByHost;
+            _smtpClient.Credentials = new NetworkCredential(fromEmail, fromEmailPassword);
             _smtpClient.EnableSsl = false;
             _smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
         }
