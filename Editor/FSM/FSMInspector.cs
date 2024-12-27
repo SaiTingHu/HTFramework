@@ -171,6 +171,7 @@ namespace HT.Framework
                     Rect subrect = rect;
                     subrect.Set(rect.x, rect.y + 2, rect.width, 16);
                     _stateGC.text = _stateNames[stateType];
+                    _stateGC.tooltip = stateType;
                     GUI.color = _stateGC.text != "<Missing>" ? Color.white : Color.red;
                     GUI.Label(subrect, _stateGC);
                     GUI.color = Color.white;

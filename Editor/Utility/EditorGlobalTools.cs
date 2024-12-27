@@ -539,6 +539,30 @@ namespace HT.Framework
             Selection.activeObject = mesh;
             EditorGUIUtility.PingObject(mesh);
         }
+
+        /// <summary>
+        /// 通过 Tag 搜索物体
+        /// </summary>
+        [MenuItem("HTFramework/Tools/Search GameObject By Tag", false, priority = 121)]
+        private static void SearchByTag()
+        {
+            SearchByTagToolkit sw = EditorWindow.GetWindow<SearchByTagToolkit>();
+            sw.titleContent.image = EditorGUIUtility.IconContent("Search On Icon").image;
+            sw.titleContent.text = "Search By Tag";
+            sw.Show();
+        }
+
+        /// <summary>
+        /// 通过 Layer 搜索物体
+        /// </summary>
+        [MenuItem("HTFramework/Tools/Search GameObject By Layer", false, priority = 122)]
+        private static void SearchByLayer()
+        {
+            SearchByLayerToolkit sw = EditorWindow.GetWindow<SearchByLayerToolkit>();
+            sw.titleContent.image = EditorGUIUtility.IconContent("Search On Icon").image;
+            sw.titleContent.text = "Search By Layer";
+            sw.Show();
+        }
         #endregion
 
         #region ProjectWizard 【优先级10000】
