@@ -83,6 +83,24 @@ namespace HT.Framework
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            GUI.enabled = _targets.Count > 0;
+            if (GUILayout.Button("Modify Tag Batch"))
+            {
+                GenericMenu gm = new GenericMenu();
+                for (int i = 0; i < InternalEditorUtility.tags.Length; i++)
+                {
+                    string tag = InternalEditorUtility.tags[i];
+                    gm.AddItem(new GUIContent(tag), false, () =>
+                    {
+                        ModifyTagBatch(tag);
+                    });
+                }
+                gm.ShowAsContext();
+            }
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
         }
 
         private void CheckTarget(GameObject target)
@@ -99,6 +117,14 @@ namespace HT.Framework
             for (int i = 0; i < target.transform.childCount; i++)
             {
                 CheckTarget(target.transform.GetChild(i).gameObject);
+            }
+        }
+        private void ModifyTagBatch(string tag)
+        {
+            for (int i = 0; i < _targets.Count; i++)
+            {
+                _targets[i].tag = tag;
+                EditorUtility.SetDirty(_targets[i]);
             }
         }
     }

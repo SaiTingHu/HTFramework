@@ -84,6 +84,25 @@ namespace HT.Framework
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+
+            GUILayout.BeginHorizontal();
+            GUI.enabled = _targets.Count > 0;
+            if (GUILayout.Button("Modify Layer Batch"))
+            {
+                GenericMenu gm = new GenericMenu();
+                for (int i = 0; i < InternalEditorUtility.layers.Length; i++)
+                {
+                    string layer = InternalEditorUtility.layers[i];
+                    gm.AddItem(new GUIContent(layer), false, () =>
+                    {
+                        int l = LayerMask.NameToLayer(layer);
+                        ModifyLayerBatch(l);
+                    });
+                }
+                gm.ShowAsContext();
+            }
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
         }
 
         private void CheckTarget(GameObject target, int layer)
@@ -100,6 +119,14 @@ namespace HT.Framework
             for (int i = 0; i < target.transform.childCount; i++)
             {
                 CheckTarget(target.transform.GetChild(i).gameObject, layer);
+            }
+        }
+        private void ModifyLayerBatch(int layer)
+        {
+            for (int i = 0; i < _targets.Count; i++)
+            {
+                _targets[i].layer = layer;
+                EditorUtility.SetDirty(_targets[i]);
             }
         }
     }
