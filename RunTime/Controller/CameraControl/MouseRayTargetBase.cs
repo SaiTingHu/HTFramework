@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace HT.Framework
@@ -9,6 +10,11 @@ namespace HT.Framework
     [DisallowMultipleComponent]
     public abstract class MouseRayTargetBase : HTBehaviour
     {
+        /// <summary>
+        /// 所有目标集合
+        /// </summary>
+        public static HashSet<MouseRayTargetBase> AllTargetSet { get; private set; } = new HashSet<MouseRayTargetBase>();
+
         /// <summary>
         /// 目标显示的名称
         /// </summary>
@@ -26,6 +32,10 @@ namespace HT.Framework
         /// </summary>
         public bool IsOpenHighlight = true;
         /// <summary>
+        /// 注视时视角（自由视角）
+        /// </summary>
+        public Vector3 LookAtAngle = Vector3.zero;
+        /// <summary>
         /// 鼠标左键点击音效
         /// </summary>
         public AudioClip OnMouseClickSound;
@@ -34,6 +44,18 @@ namespace HT.Framework
         /// </summary>
         public UnityEvent OnMouseClick;
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            AllTargetSet.Add(this);
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            AllTargetSet.Remove(this);
+        }
         public override bool OnSafetyCheck(params object[] args)
         {
             if (!base.OnSafetyCheck(args))
@@ -55,5 +77,20 @@ namespace HT.Framework
             }
             return true;
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            if (LookAtAngle.Approximately(Vector3.zero))
+                return;
+
+            Gizmos.color = Color.white;
+            Quaternion rot = Quaternion.Euler(LookAtAngle.y, LookAtAngle.x, 0f);
+            Vector3 dis = new Vector3(0f, 0f, LookAtAngle.z < 0 ? 0 : -LookAtAngle.z);
+            Vector3 camera = transform.position + rot * dis;
+            Gizmos.DrawLine(transform.position, camera);
+            Gizmos.DrawIcon(camera, "ViewToolOrbit On@2x");
+        }
+#endif
     }
 }

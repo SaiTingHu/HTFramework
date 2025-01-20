@@ -237,6 +237,10 @@ namespace HT.Framework
                     if (target && target.IsDoubleClickFocus)
                     {
                         SetLookPoint(target.transform.position, false, 1);
+                        if (!target.LookAtAngle.Approximately(Vector3.zero))
+                        {
+                            SetLookAngle(target.LookAtAngle.x, target.LookAtAngle.y, target.LookAtAngle.z, true);
+                        }
                     }
                 }
             }
