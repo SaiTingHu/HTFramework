@@ -79,7 +79,7 @@ namespace HT.Framework
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        protected void OnDrawGizmosSelected()
         {
             if (LookAtAngle.Approximately(Vector3.zero))
                 return;
@@ -90,6 +90,18 @@ namespace HT.Framework
             Vector3 camera = transform.position + rot * dis;
             Gizmos.DrawLine(transform.position, camera);
             Gizmos.DrawIcon(camera, "ViewToolOrbit On@2x");
+        }
+        [Button("Look At This", ButtonAttribute.EnableMode.Playmode)]
+        protected void LookAtThis()
+        {
+            if (Main.m_Controller)
+            {
+                Main.m_Controller.SetLookPoint(transform.position);
+                if (!LookAtAngle.Approximately(Vector3.zero))
+                {
+                    Main.m_Controller.SetLookAngle(LookAtAngle);
+                }
+            }
         }
 #endif
     }
