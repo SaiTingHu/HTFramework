@@ -1,6 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+#if UNITY_EDITOR
+using System;
+using System.Reflection;
+using UnityEditor;
+#endif
 
 namespace HT.Framework
 {
@@ -90,6 +95,36 @@ namespace HT.Framework
             Vector3 camera = transform.position + rot * dis;
             Gizmos.DrawLine(transform.position, camera);
             Gizmos.DrawIcon(camera, "ViewToolOrbit On@2x");
+        }
+        protected void ShowOrHideGizmos(string className, bool isBuiltin)
+        {
+            Type type = Type.GetType("UnityEditor.AnnotationWindow,UnityEditor");
+            FieldInfo annotations = type.GetField(isBuiltin ? "m_BuiltinAnnotations" : "m_ScriptAnnotations", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo showAtPosition = type.GetMethod("ShowAtPosition", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo setGizmoState = type.GetMethod("SetGizmoState", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            showAtPosition.Invoke(null, new object[] { Rect.zero, true });
+            EditorWindow window = EditorWindow.GetWindow(type);
+            List<GizmoInfo> gizmoInfos = annotations.GetValue(window) as List<GizmoInfo>;
+            GizmoInfo gizmoInfo = gizmoInfos.Find((g) => { return g.name == className; });
+            gizmoInfo.gizmoEnabled = !gizmoInfo.gizmoEnabled;
+            setGizmoState.Invoke(window, new object[] { gizmoInfo, true });
+            window.Close();
+        }
+
+        [Button("Show/Hide This Gizmos", ButtonAttribute.EnableMode.Always)]
+        protected void ShowOrHideThisGizmos()
+        {
+            ShowOrHideGizmos(GetType().Name, false);
+        }
+        [Button("Show/Hide Collider Gizmos", ButtonAttribute.EnableMode.Always)]
+        protected void ShowOrHideColliderGizmos()
+        {
+            Collider collider = GetComponent<Collider>();
+            if (collider)
+            {
+                ShowOrHideGizmos(collider.GetType().Name, true);
+            }
         }
         [Button("Look At This", ButtonAttribute.EnableMode.Playmode)]
         protected void LookAtThis()
