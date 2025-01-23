@@ -103,7 +103,7 @@ namespace HT.Framework
             MethodInfo showAtPosition = type.GetMethod("ShowAtPosition", BindingFlags.Static | BindingFlags.NonPublic);
             MethodInfo setGizmoState = type.GetMethod("SetGizmoState", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            showAtPosition.Invoke(null, new object[] { Rect.zero, true });
+            showAtPosition.Invoke(null, new object[] { Rect.zero, false });
             EditorWindow window = EditorWindow.GetWindow(type);
             List<GizmoInfo> gizmoInfos = annotations.GetValue(window) as List<GizmoInfo>;
             GizmoInfo gizmoInfo = gizmoInfos.Find((g) => { return g.name == className; });
