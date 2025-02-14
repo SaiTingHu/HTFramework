@@ -27,8 +27,8 @@ namespace HT.Framework
 
             if (!File.Exists(fullPath))
                 return false;
-            
-            Process process = new Process();
+
+            using Process process = new Process();
             process.StartInfo = new ProcessStartInfo(fullPath, args);
             process.Start();
             return true;
@@ -48,7 +48,7 @@ namespace HT.Framework
                 return false;
             }
 
-            Process process = new Process();
+            using Process process = new Process();
             process.StartInfo = new ProcessStartInfo("Explorer.exe", args);
             process.Start();
             return true;
