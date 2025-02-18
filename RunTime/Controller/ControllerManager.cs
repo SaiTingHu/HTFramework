@@ -317,6 +317,28 @@ namespace HT.Framework
             FreeControlBounds.Add(bounds);
         }
         /// <summary>
+        /// 自由控制：物体是否在边界盒范围内
+        /// </summary>
+        /// <param name="target">目标物体</param>
+        /// <param name="isIgnoreY">忽略物体Y坐标</param>
+        /// <returns>是否在边界盒范围内</returns>
+        public bool IsInBounds(GameObject target, bool isIgnoreY = false)
+        {
+            if (target == null)
+                return false;
+
+            if (Mode != ControlMode.FreeControl || !IsEnableBounds)
+                return true;
+
+            Vector3 pos = target.transform.position;
+            for (int i = 0; i < FreeControlBounds.Count; i++)
+            {
+                if (isIgnoreY) pos.y = FreeControlBounds[i].center.y;
+                if (FreeControlBounds[i].Contains(pos)) return true;
+            }
+            return false;
+        }
+        /// <summary>
         /// 自由控制：清空边界盒
         /// </summary>
         public void ClearBounds()
