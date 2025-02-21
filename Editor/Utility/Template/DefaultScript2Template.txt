@@ -1,0 +1,23 @@
+﻿#CUSTOMUSING#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace #NAMESPACE#
+{
+    public class #CLASSNAME# : HTBehaviour, IUpdateFrame
+    {
+        //初始化操作在 Awake 中完成（必须确保 base.Awake() 的存在）
+        protected override void Awake()
+        {
+            base.Awake();
+
+        }
+
+        //等同于 Update 方法，不过当主框架进入暂停状态时，此方法也会停止调用（Main.Current.Pause = true）
+        public void OnUpdateFrame()
+        {
+
+        }
+    }
+}
