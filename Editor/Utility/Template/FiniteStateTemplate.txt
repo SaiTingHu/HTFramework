@@ -13,6 +13,10 @@ public class #SCRIPTNAME# : FiniteStateBase
     /// 所属状态机的数据
     /// </summary>
     private FSMDataBase _data;
+    /// <summary>
+    /// 所属状态机的参数
+    /// </summary>
+    private FSMArgsBase _args;
 
 	/// <summary>
 	/// 初始化
@@ -22,6 +26,7 @@ public class #SCRIPTNAME# : FiniteStateBase
         base.OnInit();
 
 		_data = StateMachine.CurrentData;
+        _args = StateMachine.CurrentArgs;
     }
     /// <summary>
     /// 进入状态

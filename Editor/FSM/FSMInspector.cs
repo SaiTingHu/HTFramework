@@ -9,9 +9,6 @@ namespace HT.Framework
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(FSM))]
-    [GiteeURL("https://gitee.com/SaiTingHu/HTFramework")]
-    [GithubURL("https://github.com/SaiTingHu/HTFramework")]
-    [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/86073351")]
     internal sealed class FSMInspector : HTFEditor<FSM>
     {
         private GUIContent _stateGC;
@@ -183,6 +180,8 @@ namespace HT.Framework
                         if (GUI.Button(subrect, _finalGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             GenericMenu gm = new GenericMenu();
+                            gm.AddDisabledItem(new GUIContent("Set Final State"));
+                            gm.AddSeparator("");
                             foreach (var state in _stateNames)
                             {
                                 gm.AddItem(new GUIContent(state.Value), Target.FinalState == state.Key, () =>
@@ -202,6 +201,8 @@ namespace HT.Framework
                         if (GUI.Button(subrect, _defaultGC, EditorGlobalTools.Styles.InvisibleButton))
                         {
                             GenericMenu gm = new GenericMenu();
+                            gm.AddDisabledItem(new GUIContent("Set Default State"));
+                            gm.AddSeparator("");
                             foreach (var state in _stateNames)
                             {
                                 gm.AddItem(new GUIContent(state.Value), Target.DefaultState == state.Key, () =>
@@ -264,10 +265,6 @@ namespace HT.Framework
             }
 
             GUI.enabled = !EditorApplication.isPlaying;
-
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox("Finite state machine!", MessageType.Info);
-            GUILayout.EndHorizontal();
 
             PropertyField(nameof(FSM.IsAutoRegister), "Auto Register");
             PropertyField(nameof(FSM.Name), "Name");
