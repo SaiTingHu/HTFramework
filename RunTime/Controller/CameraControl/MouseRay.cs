@@ -22,6 +22,14 @@ namespace HT.Framework
         /// </summary>
         public bool IsOpenHighlight = true;
         /// <summary>
+        /// 是否为3D射线检测，否则为2D
+        /// </summary>
+        public bool Is3DRay = true;
+        /// <summary>
+        /// 射线检测的最大距离
+        /// </summary>
+        public int RayMaxDistance = 100;
+        /// <summary>
         /// 射线投射的有效层
         /// </summary>
         public LayerMask ActivatedLayer;
@@ -74,8 +82,6 @@ namespace HT.Framework
         /// </summary>
         public event HTFAction<MouseRayTargetBase, Vector3, Vector2> RayEvent;
 
-        private Ray _ray;
-        private RaycastHit _hit;
         private GameObject _rayTarget;
         private TargetType _rayTargetType;
         private Vector2 _rayHitBGPos;
@@ -144,15 +150,33 @@ namespace HT.Framework
                 }
                 else
                 {
-                    _ray = RayCamera.ScreenPointToRay(Main.m_Input.MousePosition);
-                    if (Physics.Raycast(_ray, out _hit, 100, ActivatedLayer))
+                    if (Is3DRay)
                     {
-                        HitPoint = _hit.point;
-                        RaycastHiting(_hit.transform.gameObject);
+                        Ray ray = RayCamera.ScreenPointToRay(Main.m_Input.MousePosition);
+                        RaycastHit hit;
+                        if (Physics.Raycast(ray, out hit, RayMaxDistance, ActivatedLayer))
+                        {
+                            HitPoint = hit.point;
+                            RaycastHiting(hit.transform.gameObject);
+                        }
+                        else
+                        {
+                            RaycastHiting(null);
+                        }
                     }
                     else
                     {
-                        RaycastHiting(null);
+                        Vector2 origin = RayCamera.ScreenToWorldPoint(Main.m_Input.MousePosition);
+                        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.zero, RayMaxDistance, ActivatedLayer);
+                        if (hit.collider != null)
+                        {
+                            HitPoint = hit.point;
+                            RaycastHiting(hit.transform.gameObject);
+                        }
+                        else
+                        {
+                            RaycastHiting(null);
+                        }
                     }
                 }
 

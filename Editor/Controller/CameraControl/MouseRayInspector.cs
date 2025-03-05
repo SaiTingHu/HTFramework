@@ -18,6 +18,8 @@ namespace HT.Framework
 
             PropertyField(nameof(MouseRay.IsOpenPrompt), "Open Prompt");
             PropertyField(nameof(MouseRay.IsOpenHighlight), "Open Highlight");
+            PropertyField(nameof(MouseRay.Is3DRay), "3D Ray");
+            PropertyField(nameof(MouseRay.RayMaxDistance), "Ray Max Distance");
             PropertyField(nameof(MouseRay.ActivatedLayer), "Activated Layer");
             
             if (Target.IsOpenHighlight)

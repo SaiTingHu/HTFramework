@@ -884,6 +884,8 @@ MonoBehaviour:
   IsOpenRay: 1
   IsOpenPrompt: 1
   IsOpenHighlight: 1
+  Is3DRay: 1
+  RayMaxDistance: 100
   ActivatedLayer:
     serializedVersion: 2
     m_Bits: 3
