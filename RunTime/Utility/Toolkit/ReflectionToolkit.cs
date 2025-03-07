@@ -17,7 +17,7 @@ namespace HT.Framework
             "UnityEngine", "UnityEngine.CoreModule", "UnityEngine.UI", "UnityEngine.PhysicsModule" };
 
         /// <summary>
-        /// 添加自定义程序集到运行时程序域（建议在类的【静态构造方法】中添加，以使其位于框架的所有行为之前）
+        /// 添加自定义程序集到运行时程序域（建议调用时机：类的【静态构造方法】中，以使其位于框架的所有行为之前）
         /// </summary>
         /// <param name="assembly">运行时程序集</param>
         public static void AddRunTimeAssembly(string assembly)

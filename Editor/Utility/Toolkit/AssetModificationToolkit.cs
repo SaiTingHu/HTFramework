@@ -20,7 +20,7 @@ namespace HT.Framework
         private static string AttachNamespace = null;
 
         /// <summary>
-        /// 添加新建脚本时默认引用的命名空间（建议在类的【静态构造方法】中添加）
+        /// 添加新建脚本时默认引用的命名空间（建议调用时机：标记了[InitializeOnLoad]类的【静态构造方法】中，标记了[InitializeOnLoadMethod]的静态方法中）
         /// </summary>
         /// <param name="usingNamespace">命名空间</param>
         public static void AddUsingNamespace(string usingNamespace)
@@ -31,7 +31,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 设置新建脚本时默认附加的命名空间（建议在类的【静态构造方法】中设置）
+        /// 设置新建脚本时默认附加的命名空间（建议调用时机：标记了[InitializeOnLoad]类的【静态构造方法】中，标记了[InitializeOnLoadMethod]的静态方法中）
         /// </summary>
         /// <param name="attachNamespace">命名空间</param>
         public static void SetAttachNamespace(string attachNamespace)

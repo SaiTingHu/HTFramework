@@ -165,7 +165,8 @@ namespace HT.Framework
                     StepParameter stepParameter = Target.Content[i].Parameters[j];
                     if (ShowParameterNames.Contains(stepParameter.Name))
                     {
-                        GUILayout.Label(stepParameter.ToString() + " ");
+                        GUILayout.Label(stepParameter.ToString());
+                        GUILayout.Space(5);
                     }
                 }
                 GUILayout.EndHorizontal();

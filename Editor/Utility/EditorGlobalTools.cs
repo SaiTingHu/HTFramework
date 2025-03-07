@@ -1333,7 +1333,6 @@ namespace HT.Framework
         #region Hierarchy窗口扩展
         private static GUIStyle HierarchyIconStyle;
         private static Texture HTFrameworkLOGO;
-        private static Texture HTFSMIcon;
 
         /// <summary>
         /// 编辑器初始化
@@ -1344,7 +1343,6 @@ namespace HT.Framework
             HierarchyIconStyle.alignment = TextAnchor.MiddleRight;
             HierarchyIconStyle.normal.textColor = Color.cyan;
             HTFrameworkLOGO = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGO.png");
-            HTFSMIcon = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFSMIcon.png");
 
             EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowItemOnGUI;
         }
@@ -1360,10 +1358,6 @@ namespace HT.Framework
                 {
                     GUI.Box(selectionRect, HTFrameworkLOGO, HierarchyIconStyle);
                 }
-                else if (instance.GetComponent<FSM>())
-                {
-                    GUI.Box(selectionRect, HTFSMIcon, HierarchyIconStyle);
-                }
             }
         }
         #endregion
@@ -1374,6 +1368,7 @@ namespace HT.Framework
         private static Texture HTFrameworkLOGOTitle;
         private static Texture HTFolderLarge;
         private static Texture HTFolderSmall;
+        private static string MainFolderGUID;
 
         /// <summary>
         /// 编辑器初始化
@@ -1389,6 +1384,7 @@ namespace HT.Framework
             HTFrameworkLOGOTitle = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFrameworkLOGOTitle.png");
             HTFolderLarge = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFolderLarge.png");
             HTFolderSmall = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/HTFolderSmall.png");
+            MainFolderGUID = AssetDatabase.AssetPathToGUID("Assets/HTFramework");
 
             Editor.finishedDefaultHeaderGUI += OnFinishedDefaultHeaderGUI;
             EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
@@ -1436,16 +1432,12 @@ namespace HT.Framework
         /// </summary>
         private static void OnProjectWindowItemOnGUI(string guid, Rect selectionRect)
         {
-            if (IsSmallIcon(selectionRect))
+            if (IsSmallIcon(selectionRect) && guid == MainFolderGUID)
             {
-                string mainFolder = AssetDatabase.GUIDToAssetPath(guid);
-                if (AssetDatabase.IsValidFolder(mainFolder) && string.Equals(mainFolder, "Assets/HTFramework"))
-                {
-                    GUI.Box(selectionRect, HTFrameworkLOGOTitle, ProjectIconStyle);
+                GUI.Box(selectionRect, HTFrameworkLOGOTitle, ProjectIconStyle);
 
-                    if (selectionRect.x < 16) selectionRect.x += 3;
-                    GUI.Box(selectionRect, HTFolderSmall, ProjectFolderStyle);
-                }
+                if (selectionRect.x < 16) selectionRect.x += 3;
+                GUI.Box(selectionRect, HTFolderSmall, ProjectFolderStyle);
             }
         }
         /// <summary>
