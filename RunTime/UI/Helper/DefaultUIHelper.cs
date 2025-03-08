@@ -16,6 +16,10 @@ namespace HT.Framework
         private Dictionary<string, GameObject> _defineUIAndEntitys = new Dictionary<string, GameObject>();
         //当前定义的UI的所有资源标记
         private Dictionary<Type, UIResourceAttribute> _allUIResource = new Dictionary<Type, UIResourceAttribute>();
+        //当前定义的Overlay类型的UI的所有深度界面
+        private Dictionary<int, RectTransform> _allOverlayDepth = new Dictionary<int, RectTransform>();
+        //当前定义的Camera类型的UI的所有深度界面
+        private Dictionary<int, RectTransform> _allCameraDepth = new Dictionary<int, RectTransform>();
         //当前打开的Overlay类型的临时UI（临时UI同时只能打开一个）
         private UILogicTemporary _currentOverlayTemporaryUI;
         //当前打开的Camera类型的临时UI（临时UI同时只能打开一个）
@@ -139,12 +143,14 @@ namespace HT.Framework
                             if (_module.IsEnableOverlayUI)
                             {
                                 OverlayUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
+                                CreateDepthPanel(types[i], attribute.Depth, _overlayResidentPanel.Find("DepthPanel"), _allOverlayDepth);
                             }
                             break;
                         case UIType.Camera:
                             if (_module.IsEnableCameraUI)
                             {
                                 CameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
+                                CreateDepthPanel(types[i], attribute.Depth, _cameraResidentPanel.Find("DepthPanel"), _allCameraDepth);
                             }
                             break;
                     }
@@ -154,6 +160,9 @@ namespace HT.Framework
                     throw new HTFrameworkException(HTFrameworkModule.UI, $"创建UI逻辑对象失败：UI逻辑类 {types[i].Name} 丢失 UIResourceAttribute 标记！");
                 }
             }
+
+            SortDepthPanel(_allOverlayDepth);
+            SortDepthPanel(_allCameraDepth);
         }
         /// <summary>
         /// 助手准备工作
@@ -208,6 +217,9 @@ namespace HT.Framework
                 DestroyUIEntity(ui.Value);
             }
             CameraUIs.Clear();
+
+            DestroyDepthPanel(_allOverlayDepth);
+            DestroyDepthPanel(_allCameraDepth);
         }
         /// <summary>
         /// 暂停助手
@@ -272,7 +284,8 @@ namespace HT.Framework
                     case UIType.Overlay:
                         if (OverlayUIs.ContainsKey(type))
                         {
-                            return CreateUIEntity(attribute, type.FullName, OverlayUIs[type], _overlayResidentPanel);
+                            RectTransform depthPanel = GetDepthPanel(type, attribute.Depth, _allOverlayDepth);
+                            return CreateUIEntity(attribute, type.FullName, OverlayUIs[type], depthPanel != null ? depthPanel : _overlayResidentPanel);
                         }
                         else
                         {
@@ -281,7 +294,8 @@ namespace HT.Framework
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
                         {
-                            return CreateUIEntity(attribute, type.FullName, CameraUIs[type], _cameraResidentPanel);
+                            RectTransform depthPanel = GetDepthPanel(type, attribute.Depth, _allCameraDepth);
+                            return CreateUIEntity(attribute, type.FullName, CameraUIs[type], depthPanel != null ? depthPanel : _cameraResidentPanel);
                         }
                         else
                         {
@@ -341,7 +355,8 @@ namespace HT.Framework
                     case UIType.Overlay:
                         if (OverlayUIs.ContainsKey(type))
                         {
-                            return CreateOpenUIEntity(attribute, type.FullName, OverlayUIs[type], _overlayResidentPanel, args);
+                            RectTransform depthPanel = GetDepthPanel(type, attribute.Depth, _allOverlayDepth);
+                            return CreateOpenUIEntity(attribute, type.FullName, OverlayUIs[type], depthPanel != null ? depthPanel : _overlayResidentPanel, args);
                         }
                         else
                         {
@@ -350,7 +365,8 @@ namespace HT.Framework
                     case UIType.Camera:
                         if (CameraUIs.ContainsKey(type))
                         {
-                            return CreateOpenUIEntity(attribute, type.FullName, CameraUIs[type], _cameraResidentPanel, args);
+                            RectTransform depthPanel = GetDepthPanel(type, attribute.Depth, _allCameraDepth);
+                            return CreateOpenUIEntity(attribute, type.FullName, CameraUIs[type], depthPanel != null ? depthPanel : _cameraResidentPanel, args);
                         }
                         else
                         {
@@ -583,18 +599,48 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 获取UI资源标记
+        /// 显示同属于一个深度的所有UI界面
         /// </summary>
-        /// <param name="type">UI逻辑类型</param>
-        /// <returns>UI资源标记</returns>
-        private UIResourceAttribute GetUIResource(Type type)
+        /// <param name="depth">深度</param>
+        public void ShowAllUIOfDepth(int depth)
         {
-            if (_allUIResource.ContainsKey(type))
+            foreach (var item in _allOverlayDepth)
             {
-                return _allUIResource[type];
+                if (item.Key == depth)
+                {
+                    item.Value.gameObject.SetActive(true);
+                }
             }
-            return null;
+            foreach (var item in _allCameraDepth)
+            {
+                if (item.Key == depth)
+                {
+                    item.Value.gameObject.SetActive(true);
+                }
+            }
         }
+        /// <summary>
+        /// 隐藏同属于一个深度的所有UI界面
+        /// </summary>
+        /// <param name="depth">深度</param>
+        public void HideAllUIOfDepth(int depth)
+        {
+            foreach (var item in _allOverlayDepth)
+            {
+                if (item.Key == depth)
+                {
+                    item.Value.gameObject.SetActive(false);
+                }
+            }
+            foreach (var item in _allCameraDepth)
+            {
+                if (item.Key == depth)
+                {
+                    item.Value.gameObject.SetActive(false);
+                }
+            }
+        }
+
         /// <summary>
         /// 创建UI实体
         /// </summary>
@@ -715,6 +761,110 @@ namespace HT.Framework
             uILogic.OnDestroy();
             Main.Kill(uILogic.UIEntity);
             uILogic.UIEntity = null;
+        }
+
+        /// <summary>
+        /// 获取UI资源标记
+        /// </summary>
+        /// <param name="type">UI逻辑类型</param>
+        /// <returns>UI资源标记</returns>
+        private UIResourceAttribute GetUIResource(Type type)
+        {
+            if (_allUIResource.ContainsKey(type))
+            {
+                return _allUIResource[type];
+            }
+            return null;
+        }
+        /// <summary>
+        /// 创建深度界面
+        /// </summary>
+        /// <param name="type">UI逻辑类型</param>
+        /// <param name="depth">深度</param>
+        /// <param name="parent">深度界面父级</param>
+        /// <param name="allDepth">深度界面集合</param>
+        private void CreateDepthPanel(Type type, int depth, Transform parent, Dictionary<int, RectTransform> allDepth)
+        {
+            if (depth < 0)
+                return;
+
+            if (!type.IsSubclassOf(typeof(UILogicResident)))
+                return;
+
+            if (!allDepth.ContainsKey(depth))
+            {
+                GameObject panel = new GameObject(depth.ToString());
+                panel.layer = parent.gameObject.layer;
+                panel.transform.SetParent(parent);
+                RectTransform rectTransform = panel.AddComponent<RectTransform>();
+                rectTransform.localPosition = Vector3.zero;
+                rectTransform.localRotation = Quaternion.identity;
+                rectTransform.localScale = Vector3.one;
+                rectTransform.anchorMin = Vector2.zero;
+                rectTransform.anchorMax = Vector2.one;
+                rectTransform.sizeDelta = Vector2.zero;
+                rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                rectTransform.anchoredPosition = Vector2.zero;
+                allDepth.Add(depth, rectTransform);
+            }
+        }
+        /// <summary>
+        /// 排序深度界面
+        /// </summary>
+        /// <param name="allDepth">深度界面集合</param>
+        private void SortDepthPanel(Dictionary<int, RectTransform> allDepth)
+        {
+            if (allDepth.Count <= 1)
+                return;
+
+            List<RectTransform> depths = new List<RectTransform>();
+            foreach (var item in allDepth)
+            {
+                depths.Add(item.Value);
+            }
+            depths.Sort((a, b) =>
+            {
+                int aIndex = int.Parse(a.name);
+                int bIndex = int.Parse(b.name);
+                return aIndex - bIndex;
+            });
+            for (int i = 0; i < depths.Count; i++)
+            {
+                depths[i].SetSiblingIndex(i);
+            }
+        }
+        /// <summary>
+        /// 获取深度界面
+        /// </summary>
+        /// <param name="type">UI逻辑类型</param>
+        /// <param name="depth">深度</param>
+        /// <param name="allDepth">深度界面集合</param>
+        /// <returns>深度界面</returns>
+        private RectTransform GetDepthPanel(Type type, int depth, Dictionary<int, RectTransform> allDepth)
+        {
+            if (depth < 0)
+                return null;
+
+            if (!type.IsSubclassOf(typeof(UILogicResident)))
+                return null;
+
+            if (allDepth.ContainsKey(depth))
+            {
+                return allDepth[depth];
+            }
+            return null;
+        }
+        /// <summary>
+        /// 销毁深度界面
+        /// </summary>
+        /// <param name="allDepth">深度界面集合</param>
+        private void DestroyDepthPanel(Dictionary<int, RectTransform> allDepth)
+        {
+            foreach (var item in allDepth)
+            {
+                Main.Kill(item.Value.gameObject);
+            }
+            allDepth.Clear();
         }
     }
 }

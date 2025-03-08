@@ -293,5 +293,22 @@ namespace HT.Framework
                 _helper.DestroyUI(type);
             }
         }
+
+        /// <summary>
+        /// 显示同属于一个深度的所有UI界面
+        /// </summary>
+        /// <param name="depth">深度</param>
+        public void ShowAllUIOfDepth(int depth)
+        {
+            _helper.ShowAllUIOfDepth(depth);
+        }
+        /// <summary>
+        /// 隐藏同属于一个深度的所有UI界面
+        /// </summary>
+        /// <param name="depth">深度</param>
+        public void HideAllUIOfDepth(int depth)
+        {
+            _helper.HideAllUIOfDepth(depth);
+        }
     }
 }

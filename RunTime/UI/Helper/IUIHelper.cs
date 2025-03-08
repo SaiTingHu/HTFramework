@@ -108,5 +108,16 @@ namespace HT.Framework
         /// </summary>
         /// <param name="type">UI逻辑类</param>
         void DestroyUI(Type type);
+
+        /// <summary>
+        /// 显示同属于一个深度的所有UI界面
+        /// </summary>
+        /// <param name="depth">深度</param>
+        void ShowAllUIOfDepth(int depth);
+        /// <summary>
+        /// 隐藏同属于一个深度的所有UI界面
+        /// </summary>
+        /// <param name="depth">深度</param>
+        void HideAllUIOfDepth(int depth);
     }
 }
