@@ -143,7 +143,6 @@ namespace HT.Framework
 
             PropertyField(nameof(UIManager.IsEnableOverlayUI), "Enable Overlay UI");
             PropertyField(nameof(UIManager.IsEnableCameraUI), "Enable Camera UI");
-            PropertyField(nameof(UIManager.IsEnableWorldUI), "Enable World UI");
             
             _uiList.DoLayoutList();
 

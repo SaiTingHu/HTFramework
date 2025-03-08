@@ -18,14 +18,6 @@ namespace HT.Framework
         /// </summary>
         Dictionary<Type, UILogicBase> CameraUIs { get; }
         /// <summary>
-        /// 所有World类型的UI
-        /// </summary>
-        Dictionary<string, UIWorldDomain> WorldUIs { get; }
-        /// <summary>
-        /// Camera类型UI的摄像机
-        /// </summary>
-        Camera UICamera { get; }
-        /// <summary>
         /// Overlay类型的UI根节点
         /// </summary>
         RectTransform OverlayUIRoot { get; }
@@ -34,13 +26,11 @@ namespace HT.Framework
         /// </summary>
         RectTransform CameraUIRoot { get; }
         /// <summary>
-        /// World类型的UI域根节点
+        /// Camera类型UI的摄像机
         /// </summary>
-        /// <param name="domainName">域名</param>
-        /// <returns>域根节点</returns>
-        RectTransform WorldUIDomainRoot(string domainName);
+        Camera UICamera { get; }
         /// <summary>
-        /// 是否锁住当前打开的非常驻UI（World类型UI无效），锁住后打开其他非常驻UI将无法顶掉当前打开的UI，使其显示于绝对顶端
+        /// 是否锁住当前打开的临时UI，锁住后打开其他临时UI将无法顶掉当前打开的UI，使其显示于绝对顶端
         /// </summary>
         bool IsLockTemporaryUI { get; set; }
         /// <summary>
@@ -72,9 +62,9 @@ namespace HT.Framework
         /// <returns>加载协程</returns>
         Coroutine PreloadingResidentUI(Type type);
         /// <summary>
-        /// 预加载非常驻UI
+        /// 预加载临时UI
         /// </summary>
-        /// <param name="type">非常驻UI逻辑类</param>
+        /// <param name="type">临时UI逻辑类</param>
         /// <returns>加载协程</returns>
         Coroutine PreloadingTemporaryUI(Type type);
         /// <summary>
@@ -85,9 +75,9 @@ namespace HT.Framework
         /// <returns>加载协程</returns>
         Coroutine OpenResidentUI(Type type, params object[] args);
         /// <summary>
-        /// 打开非常驻UI
+        /// 打开临时UI
         /// </summary>
-        /// <param name="type">非常驻UI逻辑类</param>
+        /// <param name="type">临时UI逻辑类</param>
         /// <param name="args">可选参数</param>
         /// <returns>加载协程</returns>
         Coroutine OpenTemporaryUI(Type type, params object[] args);

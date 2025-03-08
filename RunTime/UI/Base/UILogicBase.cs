@@ -4,7 +4,7 @@ using UnityEngine;
 namespace HT.Framework
 {
     /// <summary>
-    /// UI逻辑基类
+    /// UI逻辑类
     /// </summary>
     public abstract class UILogicBase : ISafetyCheckTarget
     {
@@ -48,7 +48,7 @@ namespace HT.Framework
         protected virtual bool IsAutomate => true;
 
         /// <summary>
-        /// 初始化
+        /// 当UI初始化时
         /// </summary>
         public virtual void OnInit()
         {
@@ -71,29 +71,29 @@ namespace HT.Framework
 #endif
         }
         /// <summary>
-        /// 打开UI
+        /// 当UI打开时
         /// </summary>
-        /// <param name="args">可选参数</param>
+        /// <param name="args">打开UI时传入的可选参数</param>
         public virtual void OnOpen(params object[] args)
         {
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventUIOpened>().Fill(this));
         }
         /// <summary>
-        /// 关闭UI
+        /// 当UI关闭时
         /// </summary>
         public virtual void OnClose()
         {
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventUIClosed>().Fill(this));
         }
         /// <summary>
-        /// 销毁UI
+        /// 当UI销毁时（UI实体被销毁）
         /// </summary>
         public virtual void OnDestroy()
         {
             
         }
         /// <summary>
-        /// UI逻辑更新
+        /// 当UI逻辑帧更新
         /// </summary>
         public virtual void OnUpdate()
         {

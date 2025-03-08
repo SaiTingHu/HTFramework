@@ -1,7 +1,7 @@
 ﻿namespace HT.Framework
 {
     /// <summary>
-    /// 非常驻UI
+    /// UI逻辑类（临时UI）
     /// </summary>
     public abstract class UILogicTemporary : UILogicBase
     {

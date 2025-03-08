@@ -92,9 +92,6 @@ namespace HT.Framework
                     case UIType.Camera:
                         RectTransformUtility.ScreenPointToLocalPointInRectangle(reference != null ? reference : Main.m_UI.CameraUIRoot, position, Main.m_UI.UICamera, out anchoredPos);
                         break;
-                    case UIType.World:
-                        RectTransformUtility.ScreenPointToLocalPointInRectangle(reference, position, Main.m_Controller.MainCamera, out anchoredPos);
-                        break;
                 }
             }
             return anchoredPos;

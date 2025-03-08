@@ -19,10 +19,6 @@ namespace HT.Framework
         /// </summary>
         [SerializeField] internal bool IsEnableCameraUI = false;
         /// <summary>
-        /// 是否启用World类型的UI【请勿在代码中修改】
-        /// </summary>
-        [SerializeField] internal bool IsEnableWorldUI = false;
-        /// <summary>
         /// 当前定义的UI名称【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal List<string> DefineUINames = new List<string>();
@@ -62,16 +58,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// World类型的UI域根节点
-        /// </summary>
-        /// <param name="domainName">域名</param>
-        /// <returns>域根节点</returns>
-        public RectTransform WorldUIDomainRoot(string domainName)
-        {
-            return _helper.WorldUIDomainRoot(domainName);
-        }
-        /// <summary>
-        /// 是否锁住当前打开的非常驻UI（World类型UI无效），锁住后打开其他非常驻UI将无法顶掉当前打开的UI，使其显示于绝对顶端
+        /// 是否锁住当前打开的临时UI，锁住后打开其他临时UI将无法顶掉当前打开的UI，使其显示于绝对顶端
         /// </summary>
         public bool IsLockTemporaryUI
         {

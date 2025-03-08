@@ -5,14 +5,14 @@ using System.Reflection;
 namespace HT.Framework
 {
     /// <summary>
-    /// 常驻UI
+    /// UI逻辑类（常驻UI）
     /// </summary>
     public abstract class UILogicResident : UILogicBase
     {
         private Dictionary<Type, UIRegion> _regions = new Dictionary<Type, UIRegion>();
 
         /// <summary>
-        /// 初始化
+        /// 当UI初始化时
         /// </summary>
         public override void OnInit()
         {
@@ -79,9 +79,9 @@ namespace HT.Framework
 #endif
         }
         /// <summary>
-        /// 打开UI
+        /// 当UI打开时
         /// </summary>
-        /// <param name="args">可选参数</param>
+        /// <param name="args">打开UI时传入的可选参数</param>
         public override void OnOpen(params object[] args)
         {
             base.OnOpen(args);
@@ -95,7 +95,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 置顶UI
+        /// 当UI置顶时
         /// </summary>
         public virtual void OnPlaceTop()
         {
@@ -108,7 +108,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 关闭UI
+        /// 当UI关闭时
         /// </summary>
         public override void OnClose()
         {
@@ -123,7 +123,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 销毁UI
+        /// 当UI销毁时（UI实体被销毁）
         /// </summary>
         public override void OnDestroy()
         {
@@ -139,7 +139,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// UI逻辑更新
+        /// 当UI逻辑帧更新
         /// </summary>
         public override void OnUpdate()
         {
@@ -155,27 +155,27 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 定义所有区域
+        /// 定义所有逻辑区域
         /// </summary>
-        /// <returns>所有区域类型</returns>
+        /// <returns>所有逻辑区域类型</returns>
         protected virtual Type[] DefineRegions()
         {
             return null;
         }
         /// <summary>
-        /// 获取一个区域
+        /// 获取一个逻辑区域
         /// </summary>
-        /// <typeparam name="T">区域类型</typeparam>
-        /// <returns>区域</returns>
+        /// <typeparam name="T">逻辑区域类型</typeparam>
+        /// <returns>逻辑区域实例</returns>
         public T GetRegion<T>() where T : UIRegion
         {
             return GetRegion(typeof(T)) as T;
         }
         /// <summary>
-        /// 获取一个区域
+        /// 获取一个逻辑区域
         /// </summary>
-        /// <param name="type">区域类型</param>
-        /// <returns>区域</returns>
+        /// <param name="type">逻辑区域类型</param>
+        /// <returns>逻辑区域实例</returns>
         public UIRegion GetRegion(Type type)
         {
             if (_regions.ContainsKey(type))
@@ -186,52 +186,52 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// UI区域基类
+        /// UI逻辑区域基类
         /// </summary>
         public abstract class UIRegion
         {
             /// <summary>
-            /// 区域的宿主
+            /// 逻辑区域的宿主
             /// </summary>
             public UILogicResident Host;
 
             /// <summary>
-            /// 初始化
+            /// 当宿主UI初始化时
             /// </summary>
             public virtual void OnInit()
             {
                 
             }
             /// <summary>
-            /// 宿主UI打开时
+            /// 当宿主UI打开时
             /// </summary>
             public virtual void OnOpen(params object[] args)
             {
                 
             }
             /// <summary>
-            /// 宿主UI置顶时
+            /// 当宿主UI置顶时
             /// </summary>
             public virtual void OnPlaceTop()
             {
                 
             }
             /// <summary>
-            /// 宿主UI关闭时
+            /// 当宿主UI关闭时
             /// </summary>
             public virtual void OnClose()
             {
                 
             }
             /// <summary>
-            /// 宿主UI销毁时
+            /// 当宿主UI销毁时
             /// </summary>
             public virtual void OnDestroy()
             {
                 
             }
             /// <summary>
-            /// 宿主UI逻辑帧更新
+            /// 当宿主UI逻辑帧更新
             /// </summary>
             public virtual void OnUpdate()
             {

@@ -14,24 +14,22 @@ namespace HT.Framework
         private UIManager _module;
         //当前定义的UI与实体对应关系
         private Dictionary<string, GameObject> _defineUIAndEntitys = new Dictionary<string, GameObject>();
-        //当前打开的Overlay类型的非常驻UI（非常驻UI同时只能打开一个）
+        //当前定义的UI的所有资源标记
+        private Dictionary<Type, UIResourceAttribute> _allUIResource = new Dictionary<Type, UIResourceAttribute>();
+        //当前打开的Overlay类型的临时UI（临时UI同时只能打开一个）
         private UILogicTemporary _currentOverlayTemporaryUI;
-        //当前打开的Camera类型的非常驻UI（非常驻UI同时只能打开一个）
+        //当前打开的Camera类型的临时UI（临时UI同时只能打开一个）
         private UILogicTemporary _currentCameraTemporaryUI;
         //所有UI根节点
         private GameObject _uiRoot;
         //Overlay类型的UI根节点
-        private Transform _overlayUIRoot;
-        private RectTransform _overlayUIRootRect;
-        private Transform _overlayResidentPanel;
-        private Transform _overlayTemporaryPanel;
+        private RectTransform _overlayUIRoot;
+        private RectTransform _overlayResidentPanel;
+        private RectTransform _overlayTemporaryPanel;
         //Camera类型的UI根节点
-        private Transform _cameraUIRoot;
-        private RectTransform _cameraUIRootRect;
-        private Transform _cameraResidentPanel;
-        private Transform _cameraTemporaryPanel;
-        //World类型的UI根节点
-        private Transform _worldUIRoot;
+        private RectTransform _cameraUIRoot;
+        private RectTransform _cameraResidentPanel;
+        private RectTransform _cameraTemporaryPanel;
         //遮罩面板
         private GameObject _maskPanel;
 
@@ -48,21 +46,13 @@ namespace HT.Framework
         /// </summary>
         public Dictionary<Type, UILogicBase> CameraUIs { get; private set; } = new Dictionary<Type, UILogicBase>();
         /// <summary>
-        /// 所有World类型的UI
-        /// </summary>
-        public Dictionary<string, UIWorldDomain> WorldUIs { get; private set; } = new Dictionary<string, UIWorldDomain>();
-        /// <summary>
-        /// Camera类型UI的摄像机
-        /// </summary>
-        public Camera UICamera { get; private set; }
-        /// <summary>
         /// Overlay类型的UI根节点
         /// </summary>
         public RectTransform OverlayUIRoot
         {
             get
             {
-                return _overlayUIRootRect;
+                return _overlayUIRoot;
             }
         }
         /// <summary>
@@ -72,28 +62,15 @@ namespace HT.Framework
         {
             get
             {
-                return _cameraUIRootRect;
+                return _cameraUIRoot;
             }
         }
         /// <summary>
-        /// World类型的UI域根节点
+        /// Camera类型UI的摄像机
         /// </summary>
-        /// <param name="domainName">域名</param>
-        /// <returns>域根节点</returns>
-        public RectTransform WorldUIDomainRoot(string domainName)
-        {
-            if (WorldUIs.ContainsKey(domainName))
-            {
-                return WorldUIs[domainName].WorldUIRoot;
-            }
-            else
-            {
-                Log.Warning($"获取世界UI域的根节点失败：不存在名为 {domainName} 的世界UI域！");
-                return null;
-            }
-        }
+        public Camera UICamera { get; private set; }
         /// <summary>
-        /// 是否锁住当前打开的非常驻UI（World类型UI无效），锁住后打开其他非常驻UI将无法顶掉当前打开的UI，使其显示于绝对顶端
+        /// 是否锁住当前打开的临时UI，锁住后打开其他临时UI将无法顶掉当前打开的UI，使其显示于绝对顶端
         /// </summary>
         public bool IsLockTemporaryUI { get; set; } = false;
         /// <summary>
@@ -132,22 +109,18 @@ namespace HT.Framework
         {
             _module = Module as UIManager;
             _uiRoot = _module.transform.FindChildren("UIRoot");
-            _overlayUIRoot = _uiRoot.transform.Find("OverlayUIRoot");
-            _overlayUIRootRect = _overlayUIRoot.rectTransform();
-            _overlayResidentPanel = _overlayUIRoot.Find("ResidentPanel");
-            _overlayTemporaryPanel = _overlayUIRoot.Find("TemporaryPanel");
-            _cameraUIRoot = _uiRoot.transform.Find("CameraUIRoot");
-            _cameraUIRootRect = _cameraUIRoot.rectTransform();
-            _cameraResidentPanel = _cameraUIRoot.Find("ResidentPanel");
-            _cameraTemporaryPanel = _cameraUIRoot.Find("TemporaryPanel");
-            _worldUIRoot = _uiRoot.transform.Find("WorldUIRoot");
+            _overlayUIRoot = _uiRoot.transform.Find("OverlayUIRoot").rectTransform();
+            _overlayResidentPanel = _overlayUIRoot.Find("ResidentPanel").rectTransform();
+            _overlayTemporaryPanel = _overlayUIRoot.Find("TemporaryPanel").rectTransform();
+            _cameraUIRoot = _uiRoot.transform.Find("CameraUIRoot").rectTransform();
+            _cameraResidentPanel = _cameraUIRoot.Find("ResidentPanel").rectTransform();
+            _cameraTemporaryPanel = _cameraUIRoot.Find("TemporaryPanel").rectTransform();
             _maskPanel = _overlayUIRoot.FindChildren("MaskPanel");
-            UICamera = _uiRoot.GetComponentByChild<Camera>("UICamera");
+            UICamera = _uiRoot.transform.Find("UICamera").GetComponent<Camera>();
 
             _overlayUIRoot.gameObject.SetActive(_module.IsEnableOverlayUI);
             _cameraUIRoot.gameObject.SetActive(_module.IsEnableCameraUI);
             UICamera.gameObject.SetActive(_module.IsEnableCameraUI);
-            _worldUIRoot.gameObject.SetActive(_module.IsEnableWorldUI);
 
             //创建所有UI的逻辑对象
             List<Type> types = ReflectionToolkit.GetTypesInRunTimeAssemblies(type =>
@@ -159,6 +132,7 @@ namespace HT.Framework
                 UIResourceAttribute attribute = types[i].GetCustomAttribute<UIResourceAttribute>();
                 if (attribute != null)
                 {
+                    _allUIResource.Add(types[i], attribute);
                     switch (attribute.EntityType)
                     {
                         case UIType.Overlay:
@@ -171,16 +145,6 @@ namespace HT.Framework
                             if (_module.IsEnableCameraUI)
                             {
                                 CameraUIs.Add(types[i], Activator.CreateInstance(types[i]) as UILogicBase);
-                            }
-                            break;
-                        case UIType.World:
-                            if (_module.IsEnableWorldUI)
-                            {
-                                if (!WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                                {
-                                    WorldUIs.Add(attribute.WorldUIDomainName, new UIWorldDomain(attribute.WorldUIDomainName, _worldUIRoot.FindChildren("CanvasTem")));
-                                }
-                                WorldUIs[attribute.WorldUIDomainName].Injection(types[i]);
                             }
                             break;
                     }
@@ -224,14 +188,6 @@ namespace HT.Framework
                     }
                 }
             }
-
-            if (_module.IsEnableWorldUI)
-            {
-                foreach (var ui in WorldUIs)
-                {
-                    ui.Value.OnUpdate();
-                }
-            }
         }
         /// <summary>
         /// 终结助手
@@ -239,6 +195,7 @@ namespace HT.Framework
         public void OnTerminate()
         {
             _defineUIAndEntitys.Clear();
+            _allUIResource.Clear();
 
             foreach (var ui in OverlayUIs)
             {
@@ -251,12 +208,6 @@ namespace HT.Framework
                 DestroyUIEntity(ui.Value);
             }
             CameraUIs.Clear();
-
-            foreach (var ui in WorldUIs)
-            {
-                ui.Value.OnTerminate();
-            }
-            WorldUIs.Clear();
         }
         /// <summary>
         /// 暂停助手
@@ -313,7 +264,7 @@ namespace HT.Framework
         /// <returns>加载协程</returns>
         public Coroutine PreloadingResidentUI(Type type)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -336,27 +287,18 @@ namespace HT.Framework
                         {
                             throw new HTFrameworkException(HTFrameworkModule.UI, $"预加载UI失败：UI对象 {type.Name} 并未存在！");
                         }
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            return WorldUIs[attribute.WorldUIDomainName].PreloadingResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, $"预加载UI失败：UI对象 {type.Name} 的域 {attribute.WorldUIDomainName} 并未存在！");
-                        }
                 }
             }
             return null;
         }
         /// <summary>
-        /// 预加载非常驻UI
+        /// 预加载临时UI
         /// </summary>
-        /// <param name="type">非常驻UI逻辑类</param>
+        /// <param name="type">临时UI逻辑类</param>
         /// <returns>加载协程</returns>
         public Coroutine PreloadingTemporaryUI(Type type)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -379,15 +321,6 @@ namespace HT.Framework
                         {
                             throw new HTFrameworkException(HTFrameworkModule.UI, $"预加载UI失败：UI对象 {type.Name} 并未存在！");
                         }
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            return WorldUIs[attribute.WorldUIDomainName].PreloadingTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null);
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, $"预加载UI失败：UI对象 {type.Name} 的域 {attribute.WorldUIDomainName} 并未存在！");
-                        }
                 }
             }
             return null;
@@ -400,7 +333,7 @@ namespace HT.Framework
         /// <returns>加载协程</returns>
         public Coroutine OpenResidentUI(Type type, params object[] args)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -423,28 +356,19 @@ namespace HT.Framework
                         {
                             throw new HTFrameworkException(HTFrameworkModule.UI, $"打开UI失败：UI对象 {type.Name} 并未存在！");
                         }
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            return WorldUIs[attribute.WorldUIDomainName].OpenResidentUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, $"打开UI失败：UI对象 {type.Name} 的域 {attribute.WorldUIDomainName} 并未存在！");
-                        }
                 }
             }
             return null;
         }
         /// <summary>
-        /// 打开非常驻UI
+        /// 打开临时UI
         /// </summary>
-        /// <param name="type">非常驻UI逻辑类</param>
+        /// <param name="type">临时UI逻辑类</param>
         /// <param name="args">可选参数</param>
         /// <returns>加载协程</returns>
         public Coroutine OpenTemporaryUI(Type type, params object[] args)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -487,15 +411,6 @@ namespace HT.Framework
                         {
                             throw new HTFrameworkException(HTFrameworkModule.UI, $"打开UI失败：UI对象 {type.Name} 并未存在！");
                         }
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            return WorldUIs[attribute.WorldUIDomainName].OpenTemporaryUI(type, _defineUIAndEntitys.ContainsKey(type.FullName) ? _defineUIAndEntitys[type.FullName] : null, args);
-                        }
-                        else
-                        {
-                            throw new HTFrameworkException(HTFrameworkModule.UI, $"打开UI失败：UI对象 {type.Name} 的域 {attribute.WorldUIDomainName} 并未存在！");
-                        }
                 }
             }
             return null;
@@ -507,7 +422,7 @@ namespace HT.Framework
         /// <returns>UI逻辑对象</returns>
         public UILogicBase GetOpenedUI(Type type)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -543,15 +458,6 @@ namespace HT.Framework
                             {
                                 return null;
                             }
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            return WorldUIs[attribute.WorldUIDomainName].GetOpenedUI(type);
                         }
                         else
                         {
@@ -568,7 +474,7 @@ namespace HT.Framework
         /// <returns>UI逻辑对象</returns>
         public UILogicBase GetUI(Type type)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -593,15 +499,6 @@ namespace HT.Framework
                         {
                             return null;
                         }
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            return WorldUIs[attribute.WorldUIDomainName].GetUI(type);
-                        }
-                        else
-                        {
-                            return null;
-                        }
                 }
             }
             return null;
@@ -612,7 +509,7 @@ namespace HT.Framework
         /// <param name="type">常驻UI逻辑类</param>
         public void PlaceTopUI(Type type)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -629,12 +526,6 @@ namespace HT.Framework
                             PlaceTopUIEntity(CameraUIs[type] as UILogicResident);
                         }
                         break;
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            WorldUIs[attribute.WorldUIDomainName].PlaceTop(type);
-                        }
-                        break;
                 }
             }
         }
@@ -644,7 +535,7 @@ namespace HT.Framework
         /// <param name="type">UI逻辑类</param>
         public void CloseUI(Type type)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -661,12 +552,6 @@ namespace HT.Framework
                             CloseUIEntity(CameraUIs[type]);
                         }
                         break;
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            WorldUIs[attribute.WorldUIDomainName].CloseUI(type);
-                        }
-                        break;
                 }
             }
         }
@@ -676,7 +561,7 @@ namespace HT.Framework
         /// <param name="type">UI逻辑类</param>
         public void DestroyUI(Type type)
         {
-            UIResourceAttribute attribute = type.GetCustomAttribute<UIResourceAttribute>();
+            UIResourceAttribute attribute = GetUIResource(type);
             if (attribute != null)
             {
                 switch (attribute.EntityType)
@@ -693,16 +578,23 @@ namespace HT.Framework
                             DestroyUIEntity(CameraUIs[type]);
                         }
                         break;
-                    case UIType.World:
-                        if (WorldUIs.ContainsKey(attribute.WorldUIDomainName))
-                        {
-                            WorldUIs[attribute.WorldUIDomainName].DestroyUI(type);
-                        }
-                        break;
                 }
             }
         }
 
+        /// <summary>
+        /// 获取UI资源标记
+        /// </summary>
+        /// <param name="type">UI逻辑类型</param>
+        /// <returns>UI资源标记</returns>
+        private UIResourceAttribute GetUIResource(Type type)
+        {
+            if (_allUIResource.ContainsKey(type))
+            {
+                return _allUIResource[type];
+            }
+            return null;
+        }
         /// <summary>
         /// 创建UI实体
         /// </summary>
@@ -716,20 +608,21 @@ namespace HT.Framework
             if (uILogic.IsCreated)
                 return null;
 
-            if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)
+            void Create(GameObject entity)
             {
-                uILogic.UIEntity = Main.Clone(_defineUIAndEntitys[uITypeName], uIParent);
+                uILogic.UIEntity = entity;
                 uILogic.UIEntity.SetActive(false);
                 uILogic.OnInit();
+            }
+
+            if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)
+            {
+                Create(Main.Clone(_defineUIAndEntitys[uITypeName], uIParent));
                 return null;
             }
             else
             {
-                return Main.m_Resource.LoadPrefab(new PrefabInfo(uIResource), uIParent, null, (obj) =>
-                {
-                    uILogic.UIEntity = obj;
-                    uILogic.OnInit();
-                }, true);
+                return Main.m_Resource.LoadPrefab(new PrefabInfo(uIResource), uIParent, null, Create, true);
             }
         }
         /// <summary>
@@ -746,34 +639,37 @@ namespace HT.Framework
             if (uILogic.IsOpened)
                 return null;
 
-            if (!uILogic.IsCreated)
+            void CreateAndOpen(GameObject entity)
             {
-                if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)
-                {
-                    uILogic.UIEntity = Main.Clone(_defineUIAndEntitys[uITypeName], uIParent);
-                    uILogic.UIEntity.SetActive(true);
-                    uILogic.OnInit();
-                    uILogic.OnOpen(args);
-                    PlaceTopUIEntity(uILogic as UILogicResident);
-                    return null;
-                }
-                else
-                {
-                    return Main.m_Resource.LoadPrefab(new PrefabInfo(uIResource), uIParent, null, (obj) =>
-                    {
-                        uILogic.UIEntity = obj;
-                        uILogic.UIEntity.SetActive(true);
-                        uILogic.OnInit();
-                        uILogic.OnOpen(args);
-                        PlaceTopUIEntity(uILogic as UILogicResident);
-                    }, true);
-                }
+                uILogic.UIEntity = entity;
+                uILogic.UIEntity.SetActive(true);
+                uILogic.OnInit();
+                uILogic.OnOpen(args);
+                PlaceTopUIEntity(uILogic as UILogicResident);
             }
-            else
+
+            void Open()
             {
                 uILogic.UIEntity.SetActive(true);
                 uILogic.OnOpen(args);
                 PlaceTopUIEntity(uILogic as UILogicResident);
+            }
+
+            if (!uILogic.IsCreated)
+            {
+                if (_defineUIAndEntitys.ContainsKey(uITypeName) && _defineUIAndEntitys[uITypeName] != null)
+                {
+                    CreateAndOpen(Main.Clone(_defineUIAndEntitys[uITypeName], uIParent));
+                    return null;
+                }
+                else
+                {
+                    return Main.m_Resource.LoadPrefab(new PrefabInfo(uIResource), uIParent, null, CreateAndOpen, true);
+                }
+            }
+            else
+            {
+                Open();
                 return null;
             }
         }
