@@ -26,8 +26,12 @@ namespace HT.Framework
             EditorApplication.delayCall += InitLockerAsync;
             EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
         }
-        private static async void InitLockerAsync()
+        internal static async void InitLockerAsync()
         {
+            AssetTree = null;
+            FolderItems.Clear();
+            ChangeExpandedState = null;
+
             Type projectBrowserType = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.ProjectBrowser");
             FieldInfo m_AssetTree = projectBrowserType.GetField("m_AssetTree", BindingFlags.Instance | BindingFlags.NonPublic);
             FieldInfo m_ViewMode = projectBrowserType.GetField("m_ViewMode", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -55,7 +59,6 @@ namespace HT.Framework
                     Type treeViewControllerType = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.IMGUI.Controls.TreeViewController");
                     MethodInfo FindItem = treeViewControllerType.GetMethod("FindItem", BindingFlags.Instance | BindingFlags.Public);
 
-                    FolderItems.Clear();
                     object[] para = new object[1];
                     foreach (var folderPath in FolderPaths)
                     {
@@ -92,6 +95,8 @@ namespace HT.Framework
                     LockedGC.image = EditorGUIUtility.IconContent("d_AssemblyLock").image;
 
                     OnExpandedStateChanged();
+
+                    projectBrowser.Repaint();
                 }
             }
         }

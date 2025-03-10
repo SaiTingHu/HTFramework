@@ -299,6 +299,15 @@ namespace HT.Framework
             ProcessStartInfo psi = new ProcessStartInfo(path);
             Process.Start(psi);
         }
+
+        /// <summary>
+        /// 锁定Project视图所有文件夹（已加锁的文件夹）
+        /// </summary>
+        [MenuItem("HTFramework/Editor/Lock All Folder &L", false, 120)]
+        private static void LockAllFolder()
+        {
+            ProjectFolderLocker.InitLockerAsync();
+        }
         #endregion
 
         #region ECS 【优先级103】
