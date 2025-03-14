@@ -42,6 +42,36 @@ namespace HT.Framework
             return sourceValue.x.Approximately(targetValue.x) && sourceValue.y.Approximately(targetValue.y) && sourceValue.z.Approximately(targetValue.z);
         }
         /// <summary>
+        /// 是否约等于另一个向量
+        /// </summary>
+        /// <param name="sourceValue">源向量</param>
+        /// <param name="targetValue">目标向量</param>
+        /// <returns>是否约等于</returns>
+        public static bool Approximately(this Vector4 sourceValue, Vector4 targetValue)
+        {
+            return sourceValue.x.Approximately(targetValue.x) && sourceValue.y.Approximately(targetValue.y) && sourceValue.z.Approximately(targetValue.z) && sourceValue.w.Approximately(targetValue.w);
+        }
+        /// <summary>
+        /// 是否约等于另一个Bounds
+        /// </summary>
+        /// <param name="sourceValue">源Bounds</param>
+        /// <param name="targetValue">目标Bounds</param>
+        /// <returns>是否约等于</returns>
+        public static bool Approximately(this Bounds sourceValue, Bounds targetValue)
+        {
+            return sourceValue.center.Approximately(targetValue.center) && sourceValue.size.Approximately(targetValue.size);
+        }
+        /// <summary>
+        /// 是否约等于另一个颜色
+        /// </summary>
+        /// <param name="sourceValue">源颜色</param>
+        /// <param name="targetValue">目标颜色</param>
+        /// <returns>是否约等于</returns>
+        public static bool Approximately(this Color sourceValue, Color targetValue)
+        {
+            return sourceValue.r.Approximately(targetValue.r) && sourceValue.g.Approximately(targetValue.g) && sourceValue.b.Approximately(targetValue.b) && sourceValue.a.Approximately(targetValue.a);
+        }
+        /// <summary>
         /// 从数组中随机获取一个值
         /// </summary>
         /// <typeparam name="T">值类型</typeparam>

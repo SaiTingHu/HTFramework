@@ -1087,6 +1087,16 @@ namespace HT.Framework
                 , value.size.x, value.size.y, value.size.z);
         }
         /// <summary>
+        /// Color转换为标准Copy字符串
+        /// </summary>
+        /// <param name="value">Color值</param>
+        /// <param name="format">格式</param>
+        /// <returns>Copy字符串</returns>
+        public static string ToCopyString(this Color value, string format)
+        {
+            return $"Color({value.r.ToString(format)}f,{value.g.ToString(format)}f,{value.b.ToString(format)}f,{value.a.ToString(format)}f)";
+        }
+        /// <summary>
         /// 标准Paste字符串转换为Vector2
         /// </summary>
         /// <param name="value">Paste字符串</param>
@@ -1290,6 +1300,40 @@ namespace HT.Framework
                         && int.TryParse(bounds[3], out sizeX) && int.TryParse(bounds[4], out sizeY) && int.TryParse(bounds[5], out sizeZ))
                     {
                         return new BoundsInt(new Vector3Int(centerX, centerY, centerZ), new Vector3Int(sizeX, sizeY, sizeZ));
+                    }
+                }
+            }
+            return defaultValue;
+        }
+        /// <summary>
+        /// 标准Paste字符串转换为Color
+        /// </summary>
+        /// <param name="value">Paste字符串</param>
+        /// <param name="defaultValue">转换失败时的默认值</param>
+        /// <returns>Color值</returns>
+        public static Color ToPasteColor(this string value, Color defaultValue = default)
+        {
+            if (value.StartsWith("Color("))
+            {
+                value = value.Replace("Color(", "");
+                value = value.Replace(")", "");
+                value = value.Replace("f", "");
+
+                string[] color = value.Split(',');
+                if (color.Length == 4)
+                {
+                    float r, g, b, a;
+                    if (float.TryParse(color[0], out r) && float.TryParse(color[1], out g) && float.TryParse(color[2], out b) && float.TryParse(color[3], out a))
+                    {
+                        return new Color(r, g, b, a);
+                    }
+                }
+                else if (color.Length == 3)
+                {
+                    float r, g, b;
+                    if (float.TryParse(color[0], out r) && float.TryParse(color[1], out g) && float.TryParse(color[2], out b))
+                    {
+                        return new Color(r, g, b, 1);
                     }
                 }
             }
