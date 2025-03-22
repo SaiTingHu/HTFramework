@@ -9,8 +9,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/103390089")]
     internal sealed class CustomModuleManagerInspector : InternalModuleInspector<CustomModuleManager, ICustomModuleHelper>
     {
-        protected override string Intro => "CustomModule Manager, manager of all custom modules, such as starting or stopping a custom module!";
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

@@ -85,7 +85,7 @@ namespace HT.Framework
             {
                 _CSDNGC = new GUIContent();
                 _CSDNGC.image = AssetDatabase.LoadAssetAtPath<Texture>("Assets/HTFramework/Editor/Main/Texture/CSDN.png");
-                _CSDNGC.tooltip = "CSDN";
+                _CSDNGC.tooltip = "CSDN Blog";
             }
             _serializedPropertys.Clear();
             
@@ -117,8 +117,10 @@ namespace HT.Framework
             if (_GithubURL != null || _GiteeURL != null || _CSDNURL != null)
             {
                 EditorGUILayout.BeginHorizontal();
+                GUI.enabled = false;
+                GUILayout.Label("Document", GUILayout.Width(LabelWidth));
+                GUI.enabled = true;
                 GUILayout.FlexibleSpace();
-
                 if (_GiteeURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_GiteeURL.URL);
@@ -129,7 +131,6 @@ namespace HT.Framework
                     EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
                     GUI.enabled = true;
                 }
-
                 if (_GithubURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_GithubURL.URL);
@@ -140,7 +141,6 @@ namespace HT.Framework
                     EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
                     GUI.enabled = true;
                 }
-
                 if (_CSDNURL != null)
                 {
                     GUI.enabled = !string.IsNullOrEmpty(_CSDNURL.URL);
@@ -151,7 +151,6 @@ namespace HT.Framework
                     EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
                     GUI.enabled = true;
                 }
-
                 EditorGUILayout.EndHorizontal();
             }
 

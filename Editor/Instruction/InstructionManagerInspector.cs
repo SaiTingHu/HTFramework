@@ -9,8 +9,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/130918484")]
     internal sealed class InstructionManagerInspector : InternalModuleInspector<InstructionManager, IInstructionHelper>
     {
-        protected override string Intro => "Instruction Manager, compile and execute dynamic instructions!";
-
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

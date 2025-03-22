@@ -9,8 +9,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/85617377")]
     internal sealed class AspectTrackManagerInspector : InternalModuleInspector<AspectTrackManager, IAspectTrackHelper>
     {
-        protected override string Intro => "Aspect Track Manager, you can track code calls anywhere in the program, or intercept him.";
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

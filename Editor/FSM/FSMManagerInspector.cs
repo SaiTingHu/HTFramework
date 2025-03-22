@@ -12,8 +12,6 @@ namespace HT.Framework
     {
         private Dictionary<string, bool> _fsmGroupsShow;
 
-        protected override string Intro => "FSM manager, this is the master manager for all FSM!";
-
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();

@@ -9,8 +9,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/88852698")]
     internal sealed class ResourceManagerInspector : InternalModuleInspector<ResourceManager, IResourceHelper>
     {
-        protected override string Intro => "Resource Manager, use this to complete the loading and unloading of resources!";
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

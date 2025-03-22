@@ -9,8 +9,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/104317219")]
     internal sealed class TaskMasterInspector : InternalModuleInspector<TaskMaster, ITaskMasterHelper>
     {
-        protected override string Intro => "Task Master, the tasks controller!";
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

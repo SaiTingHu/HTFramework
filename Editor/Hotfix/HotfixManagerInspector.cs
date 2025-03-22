@@ -35,8 +35,6 @@ namespace HT.Framework
         private string _hotfixEnvironmentPath = "/Hotfix/Environment/HotfixEnvironment.cs";
         private string _hotfixAssemblyDefinitionPath = "/Hotfix/Hotfix.asmdef";
 
-        protected override string Intro => "Hotfix manager, help you implement basic hot fixes in your game!";
-
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();

@@ -13,8 +13,6 @@ namespace HT.Framework
     {
         private List<BoxBoundsHandle> _handles = new List<BoxBoundsHandle>();
 
-        protected override string Intro => "Controller Manager, it encapsulation free view controller, first person controller, third person controller, etc!";
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

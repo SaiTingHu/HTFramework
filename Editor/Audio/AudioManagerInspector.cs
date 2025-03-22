@@ -15,8 +15,6 @@ namespace HT.Framework
         private bool _worldAudioFoldout = true;
         private bool _oneShootAudioFoldout = true;
 
-        protected override string Intro => "Audio Manager, manage all audio playback, pause, stop, etc.";
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

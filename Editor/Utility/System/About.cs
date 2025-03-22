@@ -151,7 +151,7 @@ namespace HT.Framework
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
             if (GUILayout.Button(_csdnGUIContent, EditorGlobalTools.Styles.Label))
             {
-                Application.OpenURL("https://blog.csdn.net/qq992817263/category_9283445.html");
+                Application.OpenURL("https://wanderer.blog.csdn.net/category_9283445.html");
             }
             EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
             GUILayout.EndHorizontal();

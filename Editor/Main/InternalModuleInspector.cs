@@ -18,7 +18,6 @@ namespace HT.Framework
         private InternalModuleBase<H> _module;
         private List<Type> _types;
 
-        protected virtual string Intro => null;
         protected override bool IsEnableRuntimeData
         {
             get
@@ -47,10 +46,6 @@ namespace HT.Framework
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox(Intro, MessageType.Info);
-            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             GUI.enabled = !EditorApplication.isPlaying && _types.Count > 0;

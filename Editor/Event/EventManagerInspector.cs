@@ -11,8 +11,6 @@ namespace HT.Framework
     {
         private bool _isShowEvent = false;
 
-        protected override string Intro => "Event Manager, this is a global event system, you can subscribe any events, also custom events!";
-        
         protected override void OnInspectorRuntimeGUI()
         {
             base.OnInspectorRuntimeGUI();

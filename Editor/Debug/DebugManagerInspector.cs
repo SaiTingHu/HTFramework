@@ -9,8 +9,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102570194")]
     internal sealed class DebugManagerInspector : InternalModuleInspector<DebugManager, IDebugHelper>
     {
-        protected override string Intro => "Debug Manager, this is a runtime debugger for games!";
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

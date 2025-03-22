@@ -18,8 +18,6 @@ namespace HT.Framework
         private Dictionary<Type, bool> _entityFoldouts;
         private Dictionary<Type, bool> _objectPoolFoldouts;
 
-        protected override string Intro => "Entity Manager, Everything is entity except UI, this is a controller of all entity!";
-
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();

@@ -9,8 +9,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102894933")]
     internal sealed class ExceptionManagerInspector : InternalModuleInspector<ExceptionManager, IExceptionHelper>
     {
-        protected override string Intro => "Exception Manager, when any exception occurs, he catches it!";
-
         protected override void OnInspectorDefaultGUI()
         {
             base.OnInspectorDefaultGUI();

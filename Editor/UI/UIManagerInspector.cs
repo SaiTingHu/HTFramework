@@ -18,8 +18,6 @@ namespace HT.Framework
         private bool _overlayUIFoldout = true;
         private bool _cameraUIFoldout = true;
 
-        protected override string Intro => "UI Manager, this is the master controller for all UIs!";
-
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();

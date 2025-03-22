@@ -20,8 +20,6 @@ namespace HT.Framework
     [CSDNBlogURL("https://wanderer.blog.csdn.net/article/details/102956756")]
     internal sealed class MainInspector : InternalModuleInspector<Main, IMainHelper>
     {
-        protected override string Intro => "HTFramework Main Module!";
-
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();

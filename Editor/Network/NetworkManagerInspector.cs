@@ -18,8 +18,6 @@ namespace HT.Framework
         private SerializedProperty _channelTypes;
         private ReorderableList _channelTypeList;
 
-        protected override string Intro => "Network Manager, help you implementing basic network client with socket!";
-
         protected override void OnDefaultEnable()
         {
             base.OnDefaultEnable();

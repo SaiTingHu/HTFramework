@@ -1311,7 +1311,7 @@ namespace HT.Framework
                 {
                     if (DynamicMultiple < 2)
                     {
-                        DynamicMultiple += 0.005f;
+                        DynamicMultiple += 0.001f;
                     }
                     else
                     {
@@ -1405,7 +1405,7 @@ namespace HT.Framework
                 {
                     if (DynamicMultiple < 1)
                     {
-                        DynamicMultiple += 0.0025f;
+                        DynamicMultiple += 0.001f;
                     }
                     else
                     {
@@ -1614,7 +1614,7 @@ namespace HT.Framework
                     {
                         EditorGUILayout.BeginHorizontal();
                         GUILayout.Space(30);
-                        EditorGUILayout.LabelField($"{delegates[i].Target}->{delegates[i].Method}", "Textfield");
+                        EditorGUILayout.LabelField($"{delegates[i].Target}->{delegates[i].Method}", EditorStyles.textField);
                         EditorGUILayout.EndHorizontal();
                     }
                 }

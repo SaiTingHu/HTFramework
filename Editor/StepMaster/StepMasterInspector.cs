@@ -14,14 +14,6 @@ namespace HT.Framework
         private Dictionary<string, StepContent> _stepContentIDs;
         private Dictionary<string, string> _customOrder;
 
-        protected override string Intro
-        {
-            get
-            {
-                return "Step Master, the stepflow controller!";
-            }
-        }
-
         protected override void OnRuntimeEnable()
         {
             base.OnRuntimeEnable();
