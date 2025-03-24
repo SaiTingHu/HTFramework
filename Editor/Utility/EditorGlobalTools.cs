@@ -1481,7 +1481,7 @@ namespace HT.Framework
                     {
                         GUI.DrawTexture(new Rect(6, 6, 32, 32), HTFolderLarge);
 
-                        EditorGUILayout.HelpBox("Unity HTFramework, a rapid development framework of client to the unity.", MessageType.Info);
+                        EditorGUILayout.HelpBox("Unity HTFramework, a rapid development framework of client based on Unity.", MessageType.Info);
                     }
                 }
                 else
