@@ -95,7 +95,7 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Components", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Components", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             _scrollComponent = GUILayout.BeginScrollView(_scrollComponent);
@@ -143,7 +143,7 @@ namespace HT.Framework
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Systems", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Systems", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             _scrollSystem = GUILayout.BeginScrollView(_scrollSystem);

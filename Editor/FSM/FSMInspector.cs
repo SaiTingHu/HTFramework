@@ -273,7 +273,7 @@ namespace HT.Framework
             _stateList.DoLayoutList();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Data", GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField("Data", GUILayout.Width(LabelWidth));
             if (GUILayout.Button(Target.Data, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
             {
                 GenericMenu gm = new GenericMenu();
@@ -360,7 +360,7 @@ namespace HT.Framework
         private void OnArgsGUI()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Args", GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField("Args", GUILayout.Width(LabelWidth));
             string argsName = Target.Args != null ? Target.Args.GetType().FullName : "<None>";
             if (GUILayout.Button(argsName, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
             {

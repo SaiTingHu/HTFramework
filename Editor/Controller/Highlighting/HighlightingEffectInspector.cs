@@ -78,7 +78,7 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Preset:", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Preset:", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

@@ -82,7 +82,7 @@ namespace HT.Framework
         private void ScriptingDefineGUI()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Defined");
+            EditorGUILayout.LabelField("Defined");
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -152,7 +152,7 @@ namespace HT.Framework
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Predefined:");
+                EditorGUILayout.LabelField("Predefined:");
                 GUILayout.EndHorizontal();
 
                 DrawPredefined("DISABLE_ASPECTTRACK", "禁用 AspectTrack 模块");
@@ -162,7 +162,7 @@ namespace HT.Framework
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Historical Record:");
+                EditorGUILayout.LabelField("Historical Record:");
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Clear Record", GUILayout.Width(90)))
                 {
@@ -431,7 +431,7 @@ namespace HT.Framework
             if (!Target.IsPermanentLicense)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Licenser", GUILayout.Width(LabelWidth));
+                EditorGUILayout.LabelField("Licenser", GUILayout.Width(LabelWidth));
                 if (GUILayout.Button(Target.LicenserType, EditorGlobalTools.Styles.MiniPopup))
                 {
                     GenericMenu gm = new GenericMenu();
@@ -580,13 +580,13 @@ namespace HT.Framework
         private void SettingGUI()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("GUI", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("GUI", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             PropertyField(nameof(Main.DefaultSkin), "Default Skin");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Log", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Log", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             PropertyField(nameof(Main.IsEnabledLogInfo), "Enabled Log Info");
@@ -594,7 +594,7 @@ namespace HT.Framework
             PropertyField(nameof(Main.IsEnabledLogError), "Enabled Log Error");
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Build", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Build", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             PropertyField(nameof(Main.IsAllowSceneAddBuild), "Allow Scene Add Build");

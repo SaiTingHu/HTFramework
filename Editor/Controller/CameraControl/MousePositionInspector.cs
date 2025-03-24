@@ -20,7 +20,7 @@ namespace HT.Framework
             PropertyField(nameof(MousePosition.IsCanByKey), "Can Control By Key");
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Speed", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);

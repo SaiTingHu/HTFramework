@@ -118,7 +118,7 @@ namespace HT.Framework
             {
                 EditorGUILayout.BeginHorizontal();
                 GUI.enabled = false;
-                GUILayout.Label("Document", GUILayout.Width(LabelWidth));
+                EditorGUILayout.LabelField("Document", GUILayout.Width(LabelWidth));
                 GUI.enabled = true;
                 GUILayout.FlexibleSpace();
                 if (_GiteeURL != null)

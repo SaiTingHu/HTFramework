@@ -20,7 +20,7 @@ namespace HT.Framework
             PropertyField(nameof(MouseRotation.AllowOverstepDistance), "Allow Overstep Distance");
             
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Speed", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -30,7 +30,7 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Angle Limit", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Angle Limit", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -39,7 +39,7 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Distance", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Distance", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -49,7 +49,7 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Damping", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Damping", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
@@ -58,7 +58,7 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Angle", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Angle", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);

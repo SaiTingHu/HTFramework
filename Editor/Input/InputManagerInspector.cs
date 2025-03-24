@@ -18,7 +18,7 @@ namespace HT.Framework
             GUI.enabled = !EditorApplication.isPlaying;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("InputDevice ", GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField("InputDevice ", GUILayout.Width(LabelWidth));
             if (GUILayout.Button(Target.InputDeviceType, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
             {
                 GenericMenu gm = new GenericMenu();

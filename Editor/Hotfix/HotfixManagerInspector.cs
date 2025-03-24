@@ -68,13 +68,13 @@ namespace HT.Framework
                 GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("HotfixDll AssetBundleName");
+                EditorGUILayout.LabelField("HotfixDll AssetBundleName");
                 GUILayout.EndHorizontal();
 
                 PropertyField(nameof(HotfixManager.HotfixDllAssetBundleName), "");
                 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("HotfixDll AssetsPath");
+                EditorGUILayout.LabelField("HotfixDll AssetsPath");
                 GUILayout.EndHorizontal();
 
                 PropertyField(nameof(HotfixManager.HotfixDllAssetsPath), "");
@@ -92,7 +92,7 @@ namespace HT.Framework
                     GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Hotfix Directory");
+                    EditorGUILayout.LabelField("Hotfix Directory");
                     GUILayout.EndHorizontal();
 
                     GUILayout.BeginHorizontal();

@@ -28,7 +28,7 @@ namespace HT.Framework
                     GUILayout.BeginVertical(EditorGlobalTools.Styles.Box);
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label("Feedback Program Path");
+                    EditorGUILayout.LabelField("Feedback Program Path");
                     GUILayout.EndHorizontal();
 
                     PropertyField(nameof(ExceptionManager.FeedbackProgramPath), "");

@@ -658,14 +658,28 @@ namespace HT.Framework
         [MenuItem("GameObject/HTFramework/FSM", false, 101)]
         private static void CreateFSM()
         {
-            GameObject fsm = new GameObject();
-            fsm.name = "New FSM";
-            fsm.transform.localPosition = Vector3.zero;
-            fsm.transform.localRotation = Quaternion.identity;
-            fsm.transform.localScale = Vector3.one;
-            fsm.AddComponent<FSM>();
-            Selection.activeGameObject = fsm;
-            EditorSceneManager.MarkSceneDirty(fsm.scene);
+            GameObject[] objs = Selection.gameObjects;
+            if (objs == null || objs.Length == 0)
+            {
+                GameObject fsm = new GameObject();
+                fsm.name = "New FSM";
+                fsm.transform.localPosition = Vector3.zero;
+                fsm.transform.localRotation = Quaternion.identity;
+                fsm.transform.localScale = Vector3.one;
+                fsm.AddComponent<FSM>();
+                Selection.activeGameObject = fsm;
+                EditorUtility.SetDirty(fsm);
+                EditorSceneManager.MarkSceneDirty(fsm.scene);
+            }
+            else
+            {
+                for (int i = 0; i < objs.Length; i++)
+                {
+                    objs[i].AddComponent<FSM>();
+                    EditorUtility.SetDirty(objs[i]);
+                    EditorSceneManager.MarkSceneDirty(objs[i].scene);
+                }
+            }
         }
         #endregion
 

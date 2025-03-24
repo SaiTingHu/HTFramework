@@ -104,7 +104,7 @@ namespace HT.Framework
             if (!_onlyShowLocal && Targets.Length == 1)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("P", GUILayout.Width(20));
+                EditorGUILayout.LabelField("P", GUILayout.Width(20));
                 GUI.enabled = false;
                 EditorGUILayout.Vector3Field("", Target.position);
                 GUI.enabled = true;
@@ -121,7 +121,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("R", GUILayout.Width(20));
+                EditorGUILayout.LabelField("R", GUILayout.Width(20));
                 GUI.enabled = false;
                 EditorGUILayout.Vector3Field("", Target.rotation.eulerAngles);
                 GUI.enabled = true;
@@ -149,7 +149,7 @@ namespace HT.Framework
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("S", GUILayout.Width(20));
+                EditorGUILayout.LabelField("S", GUILayout.Width(20));
                 GUI.enabled = false;
                 EditorGUILayout.Vector3Field("", Target.lossyScale);
                 GUI.enabled = true;
@@ -333,12 +333,12 @@ namespace HT.Framework
             GUI.enabled = !_isLock;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Root", GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField("Root", GUILayout.Width(LabelWidth));
             EditorGUILayout.ObjectField(Target.root, typeof(Transform), true);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Parent", GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField("Parent", GUILayout.Width(LabelWidth));
             GUI.color = Target.parent ? Color.white : Color.gray;
             Transform parent = EditorGUILayout.ObjectField(Target.parent, typeof(Transform), true) as Transform;
             if (parent != Target.parent)
@@ -353,8 +353,8 @@ namespace HT.Framework
             GUI.enabled = !_isLock && Target.childCount > 0;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Child Count", GUILayout.Width(LabelWidth));
-            GUILayout.Label(Target.childCount.ToString());
+            EditorGUILayout.LabelField("Child Count", GUILayout.Width(LabelWidth));
+            EditorGUILayout.LabelField(Target.childCount.ToString());
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Color.red;
             if (GUILayout.Button("Detach"))

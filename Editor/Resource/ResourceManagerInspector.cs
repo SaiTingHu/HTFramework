@@ -37,7 +37,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     GUI.color = Color.red;
-                    GUILayout.Label("Error: The AddressablesHelper is not capable of Resource mode!");
+                    EditorGUILayout.LabelField("Error: The AddressablesHelper is not capable of Resource mode!");
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
                 }
@@ -51,7 +51,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     GUI.color = Color.red;
-                    GUILayout.Label("Error: The AddressablesHelper is not capable of AssetBundle mode!");
+                    EditorGUILayout.LabelField("Error: The AddressablesHelper is not capable of AssetBundle mode!");
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
                 }
@@ -59,14 +59,14 @@ namespace HT.Framework
             else if (Target.Mode == ResourceLoadMode.Addressables)
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Addressables", GUILayout.Width(LabelWidth));
+                EditorGUILayout.LabelField("Addressables", GUILayout.Width(LabelWidth));
 #if UNITY_ADDRESSABLES_1_20
                 GUI.color = Color.cyan;
-                GUILayout.Label("Installed");
+                EditorGUILayout.LabelField("Installed");
                 GUI.color = Color.white;
 #else
                 GUI.color = Color.red;
-                GUILayout.Label("Removed");
+                EditorGUILayout.LabelField("Removed");
                 GUI.color = Color.white;
 #endif
                 GUILayout.EndHorizontal();
@@ -75,7 +75,7 @@ namespace HT.Framework
                 {
                     GUILayout.BeginHorizontal();
                     GUI.color = Color.red;
-                    GUILayout.Label("Error: The DefaultResourceHelper is not capable of Addressables mode!");
+                    EditorGUILayout.LabelField("Error: The DefaultResourceHelper is not capable of Addressables mode!");
                     GUI.color = Color.white;
                     GUILayout.EndHorizontal();
                 }
