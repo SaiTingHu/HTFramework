@@ -9,7 +9,7 @@ using UObject = UnityEngine.Object;
 namespace HT.Framework
 {
     /// <summary>
-    /// 自定义编辑器行为基类
+    /// 自定义检视器基类
     /// </summary>
     /// <typeparam name="E">自定义的组件</typeparam>
     public abstract class HTFEditor<E> : Editor where E : UObject

@@ -641,7 +641,7 @@ namespace HT.Framework
                 };
                 List.elementHeightCallback = (int index) =>
                 {
-                    return EditorGUI.GetPropertyHeight(fieldInspector.Property.GetArrayElementAtIndex(index)) + 6;
+                    return EditorGUI.GetPropertyHeight(fieldInspector.Property.GetArrayElementAtIndex(index)) + 2;
                 };
             }
         }
