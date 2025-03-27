@@ -12,7 +12,7 @@ namespace HT.Framework
             StepParameterWindow window = GetWindow<StepParameterWindow>();
             window.CurrentLanguage = language;
             window.titleContent.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
-            window.titleContent.text = "Parameters";
+            window.titleContent.text = "Step Parameters";
             window._stepEditorWindow = stepEditorWindow;
             window._contentAsset = contentAsset;
             window._content = content;
@@ -195,6 +195,11 @@ namespace HT.Framework
                     case StepParameter.ParameterType.Material:
                         GUI.color = stepParameter.MaterialValue ? Color.white : Color.gray;
                         stepParameter.MaterialValue = EditorGUILayout.ObjectField(stepParameter.MaterialValue, typeof(Material), false) as Material;
+                        GUI.color = Color.white;
+                        break;
+                    case StepParameter.ParameterType.DataSet:
+                        GUI.color = stepParameter.DataSetValue ? Color.white : Color.gray;
+                        stepParameter.DataSetValue = EditorGUILayout.ObjectField(stepParameter.DataSetValue, typeof(DataSetBase), false) as DataSetBase;
                         GUI.color = Color.white;
                         break;
                     case StepParameter.ParameterType.Custom:

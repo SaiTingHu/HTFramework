@@ -24,6 +24,7 @@ namespace HT.Framework
         public Texture TextureValue = null;
         public AudioClip AudioClipValue = null;
         public Material MaterialValue = null;
+        public DataSetBase DataSetValue = null;
 
         public override string ToString()
         {
@@ -51,6 +52,8 @@ namespace HT.Framework
                     return $"{Name}:{AudioClipValue}";
                 case ParameterType.Material:
                     return $"{Name}:{MaterialValue}";
+                case ParameterType.DataSet:
+                    return $"{Name}:{DataSetValue}";
                 case ParameterType.Custom:
                     return $"{Name}:{StringValue}";
                 default:
@@ -67,51 +70,55 @@ namespace HT.Framework
             /// <summary>
             /// 字符串
             /// </summary>
-            String,
+            String = 0,
             /// <summary>
             /// 整型
             /// </summary>
-            Integer,
+            Integer = 1,
             /// <summary>
             /// 小数
             /// </summary>
-            Float,
+            Float = 2,
             /// <summary>
             /// bool
             /// </summary>
-            Boolean,
+            Boolean = 3,
             /// <summary>
             /// 二维向量
             /// </summary>
-            Vector2,
+            Vector2 = 4,
             /// <summary>
             /// 三维向量
             /// </summary>
-            Vector3,
+            Vector3 = 5,
             /// <summary>
             /// 颜色
             /// </summary>
-            Color,
+            Color = 6,
             /// <summary>
             /// 游戏物体
             /// </summary>
-            GameObject,
+            GameObject = 7,
             /// <summary>
             /// 图片
             /// </summary>
-            Texture,
+            Texture = 8,
             /// <summary>
             /// 音频
             /// </summary>
-            AudioClip,
+            AudioClip = 9,
             /// <summary>
             /// 材质
             /// </summary>
-            Material,
+            Material = 10,
+            /// <summary>
+            /// 数据集
+            /// </summary>
+            DataSet = 12,
             /// <summary>
             /// 自定义
             /// </summary>
-            Custom
+            Custom = 11
         }
 
 #if UNITY_EDITOR
@@ -137,6 +144,7 @@ namespace HT.Framework
             parameter.TextureValue = TextureValue;
             parameter.AudioClipValue = AudioClipValue;
             parameter.MaterialValue = MaterialValue;
+            parameter.DataSetValue = DataSetValue;
 
             return parameter;
         }

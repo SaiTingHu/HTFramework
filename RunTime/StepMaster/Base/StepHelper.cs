@@ -333,6 +333,16 @@ namespace HT.Framework
             return (stepParameter != null) ? stepParameter.MaterialValue : null;
         }
         /// <summary>
+        /// 通过名称获取DataSet参数
+        /// </summary>
+        /// <param name="parameterName">参数名称</param>
+        /// <returns>参数</returns>
+        protected DataSetBase GetDataSetParameter(string parameterName)
+        {
+            StepParameter stepParameter = GetParameter(parameterName, StepParameter.ParameterType.DataSet);
+            return (stepParameter != null) ? stepParameter.DataSetValue : null;
+        }
+        /// <summary>
         /// 通过名称获取Custom参数
         /// </summary>
         /// <param name="parameterName">参数名称</param>
