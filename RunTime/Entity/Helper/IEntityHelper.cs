@@ -68,6 +68,12 @@ namespace HT.Framework
         /// <param name="type">实体逻辑类</param>
         /// <returns>实体组</returns>
         List<EntityLogicBase> GetEntities(Type type);
+        /// <summary>
+        /// 获取 transform 的最顶层父级所属的实体
+        /// </summary>
+        /// <param name="transform">目标 transform</param>
+        /// <returns>实体</returns>
+        EntityLogicBase GetEntityByTransform(Transform transform);
 
         /// <summary>
         /// 显示实体

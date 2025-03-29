@@ -277,6 +277,25 @@ namespace HT.Framework
                 throw new HTFrameworkException(HTFrameworkModule.Entity, $"获取实体组失败：实体对象 {type.Name} 并未存在！");
             }
         }
+        /// <summary>
+        /// 获取 transform 的最顶层父级所属的实体
+        /// </summary>
+        /// <param name="transform">目标 transform</param>
+        /// <returns>实体</returns>
+        public EntityLogicBase GetEntityByTransform(Transform transform)
+        {
+            foreach (var item in Entities)
+            {
+                for (int i = 0; i < item.Value.Count; i++)
+                {
+                    if (transform.IsChildOf(item.Value[i].Entity.transform))
+                    {
+                        return item.Value[i];
+                    }
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// 显示实体

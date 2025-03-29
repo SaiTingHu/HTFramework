@@ -484,6 +484,29 @@ namespace HT.Framework
             return null;
         }
         /// <summary>
+        /// 获取 transform 的最顶层父级所属的UI
+        /// </summary>
+        /// <param name="transform">目标 transform</param>
+        /// <returns>UI逻辑对象</returns>
+        public UILogicBase GetUIByTransform(Transform transform)
+        {
+            foreach (var item in OverlayUIs)
+            {
+                if (transform.IsChildOf(item.Value.UIEntity.transform))
+                {
+                    return item.Value;
+                }
+            }
+            foreach (var item in CameraUIs)
+            {
+                if (transform.IsChildOf(item.Value.UIEntity.transform))
+                {
+                    return item.Value;
+                }
+            }
+            return null;
+        }
+        /// <summary>
         /// 获取UI
         /// </summary>
         /// <param name="type">UI逻辑类</param>

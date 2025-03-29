@@ -124,6 +124,20 @@ namespace HT.Framework
                     }
                     count += 1;
                 }
+                else if (fieldInfos[i].IsDefined(typeof(InjectComponentAttribute), true))
+                {
+                    Type type = fieldInfos[i].FieldType;
+                    if (type.IsSubclassOf(typeof(Component)))
+                    {
+                        Component component = entity.GetComponentInChildren(type);
+                        fieldInfos[i].SetValue(instance, component);
+                    }
+                    else
+                    {
+                        Log.Error($"自动化任务：依赖注入（Component）失败，字段 {fieldInfos[i].Name} 的类型不被支持！");
+                    }
+                    count += 1;
+                }
                 else if (fieldInfos[i].IsDefined(typeof(InjectUIAttribute), true))
                 {
                     Type type = fieldInfos[i].FieldType;

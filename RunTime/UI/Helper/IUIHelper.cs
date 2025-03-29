@@ -88,6 +88,12 @@ namespace HT.Framework
         /// <returns>UI逻辑对象</returns>
         UILogicBase GetOpenedUI(Type type);
         /// <summary>
+        /// 获取 transform 的最顶层父级所属的UI
+        /// </summary>
+        /// <param name="transform">目标 transform</param>
+        /// <returns>UI逻辑对象</returns>
+        UILogicBase GetUIByTransform(Transform transform);
+        /// <summary>
         /// 获取UI
         /// </summary>
         /// <param name="type">UI逻辑类</param>

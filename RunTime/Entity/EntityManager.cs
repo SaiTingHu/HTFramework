@@ -138,7 +138,16 @@ namespace HT.Framework
         {
             return _helper.GetEntities(type);
         }
-        
+        /// <summary>
+        /// 获取 transform 的最顶层父级所属的实体
+        /// </summary>
+        /// <param name="transform">目标 transform</param>
+        /// <returns>实体</returns>
+        public EntityLogicBase GetEntityByTransform(Transform transform)
+        {
+            return _helper.GetEntityByTransform(transform);
+        }
+
         /// <summary>
         /// 显示实体
         /// </summary>
