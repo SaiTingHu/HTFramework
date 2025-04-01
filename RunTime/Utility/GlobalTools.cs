@@ -407,8 +407,40 @@ namespace HT.Framework
             }
             return StringToolkit.EndConcat();
         }
+        /// <summary>
+        /// 获取自身基于目标 Transform 的子级路径（如果不是其子级或孙级，则返回 null）
+        /// </summary>
+        /// <param name="tran">自身 Transform</param>
+        /// <param name="target">目标 Transform</param>
+        /// <returns>子级路径</returns>
+        public static string ChildPathOf(this Transform tran, Transform target)
+        {
+            if (tran == null || target == null || tran == target)
+                return null;
+
+            if (!tran.IsChildOf(target))
+                return null;
+
+            List<Transform> tfs = new List<Transform>();
+            Transform tf = tran;
+            tfs.Add(tf);
+            while (tf.parent && tf.parent != target)
+            {
+                tf = tf.parent;
+                tfs.Add(tf);
+            }
+
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat(tfs[tfs.Count - 1].name);
+            for (int i = tfs.Count - 2; i >= 0; i--)
+            {
+                StringToolkit.Concat("/");
+                StringToolkit.Concat(tfs[i].name);
+            }
+            return StringToolkit.EndConcat();
+        }
         #endregion
-        
+
         #region 时间工具
         /// <summary>
         /// 转换为标准时间字符串（yyyy/MM/dd HH:mm:ss）

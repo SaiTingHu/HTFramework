@@ -10,6 +10,7 @@ namespace HT.Framework
         private Main _main;
         private bool _isDeveloperMode = false;
         private bool _isEnableLnkTools = false;
+        private bool _isEnableSaveDataRuntime = false;
         private string _vscodePath;
         private string _ilspyPath;
 
@@ -33,6 +34,7 @@ namespace HT.Framework
 
             _isDeveloperMode = Unsupported.IsDeveloperMode();
             _isEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, true);
+            _isEnableSaveDataRuntime = EditorPrefs.GetBool(EditorPrefsTable.SaveDataRuntime_Enable, true);
             _vscodePath = EditorPrefs.GetString(EditorPrefsTable.VSCodePath, null);
             _ilspyPath = EditorPrefs.GetString(EditorPrefsTable.ILSpyPath, null);
         }
@@ -41,7 +43,7 @@ namespace HT.Framework
             base.OnSettingGUI();
 
             GUILayout.BeginHorizontal();
-            bool isDeveloperMode = EditorGUILayout.Toggle("Is Developer Mode", _isDeveloperMode);
+            bool isDeveloperMode = EditorGUILayout.Toggle("Developer Mode", _isDeveloperMode);
             if (isDeveloperMode != _isDeveloperMode)
             {
                 _isDeveloperMode = isDeveloperMode;
@@ -50,13 +52,26 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            bool isEnableLnkTools = EditorGUILayout.Toggle("Is Enable LnkTools", _isEnableLnkTools);
+            bool isEnableLnkTools = EditorGUILayout.Toggle("Enable LnkTools", _isEnableLnkTools);
             if (isEnableLnkTools != _isEnableLnkTools)
             {
                 if (!EditorApplication.isCompiling)
                 {
                     _isEnableLnkTools = isEnableLnkTools;
                     EditorPrefs.SetBool(EditorPrefsTable.LnkTools_Enable, _isEnableLnkTools);
+                    EditorUtility.RequestScriptReload();
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            bool isEnableSaveDataRuntime = EditorGUILayout.Toggle("Enable SaveDataRuntime", _isEnableSaveDataRuntime);
+            if (isEnableSaveDataRuntime != _isEnableSaveDataRuntime)
+            {
+                if (!EditorApplication.isCompiling)
+                {
+                    _isEnableSaveDataRuntime = isEnableSaveDataRuntime;
+                    EditorPrefs.SetBool(EditorPrefsTable.SaveDataRuntime_Enable, _isEnableSaveDataRuntime);
                     EditorUtility.RequestScriptReload();
                 }
             }

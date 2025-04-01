@@ -490,16 +490,19 @@ namespace HT.Framework
         /// <returns>UI逻辑对象</returns>
         public UILogicBase GetUIByTransform(Transform transform)
         {
+            if (transform == null)
+                return null;
+
             foreach (var item in OverlayUIs)
             {
-                if (transform.IsChildOf(item.Value.UIEntity.transform))
+                if (item.Value.UIEntity != null && transform.IsChildOf(item.Value.UIEntity.transform))
                 {
                     return item.Value;
                 }
             }
             foreach (var item in CameraUIs)
             {
-                if (transform.IsChildOf(item.Value.UIEntity.transform))
+                if (item.Value.UIEntity != null && transform.IsChildOf(item.Value.UIEntity.transform))
                 {
                     return item.Value;
                 }

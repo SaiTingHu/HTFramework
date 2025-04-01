@@ -33,7 +33,7 @@ namespace HT.Framework
             if (_webRequestManager)
             {
                 GUILayout.BeginHorizontal();
-                _webRequestManager.IsOfflineState = EditorGUILayout.Toggle("Is OfflineState", _webRequestManager.IsOfflineState);
+                _webRequestManager.IsOfflineState = EditorGUILayout.Toggle("OfflineState", _webRequestManager.IsOfflineState);
                 GUILayout.EndHorizontal();
                 
                 if (GUI.changed)

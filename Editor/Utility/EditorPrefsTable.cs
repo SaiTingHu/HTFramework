@@ -117,6 +117,10 @@ namespace HT.Framework
         /// </summary>
         public static readonly string LnkTools_Enable = "HT.Framework.LnkTools.Enable";
         /// <summary>
+        /// 运行时存储数据功能是否启用
+        /// </summary>
+        public static readonly string SaveDataRuntime_Enable = "HT.Framework.SaveDataRuntime.Enable";
+        /// <summary>
         /// VSCode的启动路径
         /// </summary>
         public static readonly string VSCodePath = "HT.Framework.VSCodePath";

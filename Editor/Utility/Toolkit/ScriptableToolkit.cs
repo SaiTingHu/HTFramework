@@ -1,11 +1,13 @@
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace HT.Framework
 {
     /// <summary>
-    /// 脚本化工具箱
+    /// 脚本化、序列化工具箱
     /// </summary>
     public static class ScriptableToolkit
     {
@@ -69,6 +71,41 @@ namespace HT.Framework
             EditorUtility.SetDirty(mainAsset);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 保存GameObject到文件中
+        /// </summary>
+        /// <param name="gameObject">目标GameObject</param>
+        /// <param name="filePath">文件全路径</param>
+        public static void SaveGameObjectToFile(GameObject gameObject, string filePath)
+        {
+            Component[] components = gameObject.GetComponents<Component>();
+            Object[] objects = new Object[components.Length + 1];
+            objects[0] = gameObject;
+            for (int i = 0; i < components.Length; i++)
+            {
+                objects[i + 1] = components[i];
+            }
+
+            InternalEditorUtility.SaveToSerializedFileAndForget(objects, filePath, true);
+        }
+        /// <summary>
+        /// 从文件加载GameObject
+        /// </summary>
+        /// <param name="filePath">文件全路径</param>
+        public static GameObject LoadGameObjectFromFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                return null;
+
+            Object[] objects = InternalEditorUtility.LoadSerializedFileAndForget(filePath);
+            if (objects.Length > 0)
+            {
+                GameObject gameObject = objects[0] as GameObject;
+                return gameObject;
+            }
+            return null;
         }
     }
 }

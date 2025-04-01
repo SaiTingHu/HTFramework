@@ -284,11 +284,14 @@ namespace HT.Framework
         /// <returns>实体</returns>
         public EntityLogicBase GetEntityByTransform(Transform transform)
         {
+            if (transform == null)
+                return null;
+
             foreach (var item in Entities)
             {
                 for (int i = 0; i < item.Value.Count; i++)
                 {
-                    if (transform.IsChildOf(item.Value[i].Entity.transform))
+                    if (item.Value[i].Entity != null && transform.IsChildOf(item.Value[i].Entity.transform))
                     {
                         return item.Value[i];
                     }

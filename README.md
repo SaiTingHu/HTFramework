@@ -146,6 +146,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [SerializableDictionary](https://wanderer.blog.csdn.net//article/details/146536539) - 可序列化字典、可序列化哈希集，用于替代不可序列化的Dictionary、HashSet类型。
 
+- [SaveDataRuntime](https://wanderer.blog.csdn.net/article/details/146909158) - 运行时保存组件参数、预制体。
+
 - [Table View](https://wanderer.blog.csdn.net/article/details/120796924) - 使用TableView可以很方便的在编辑器中绘制表格视图。
 
 - [控制反转](https://wanderer.blog.csdn.net/article/details/122300055) - 在Unity中使用控制反转模式。
