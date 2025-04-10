@@ -820,6 +820,7 @@ MonoBehaviour:
   CanControl: 1
   IsCanOnUGUI: 0
   AllowOverstepDistance: 1
+  RotateKey: MouseRight
   XSpeed: 150
   YSpeed: 150
   MSpeed: 50
@@ -847,6 +848,7 @@ MonoBehaviour:
   CanControl: 1
   IsCanOnUGUI: 0
   IsCanByKey: 1
+  TranslateKey: MouseMiddle
   XSpeed: 0.1
   YSpeed: 0.1
   ZSpeed: 0.1

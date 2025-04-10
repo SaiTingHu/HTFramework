@@ -18,7 +18,34 @@ namespace HT.Framework
 
             PropertyField(nameof(MouseRotation.IsCanOnUGUI), "Can Control On UGUI");
             PropertyField(nameof(MouseRotation.AllowOverstepDistance), "Allow Overstep Distance");
-            
+
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Rotate Key", GUILayout.Width(LabelWidth));
+            if (GUILayout.Button(Target.RotateKey, EditorStyles.popup, GUILayout.Width(EditorGUIUtility.currentViewWidth - LabelWidth - 25)))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("Mouse Left"), Target.RotateKey == "MouseLeft", () =>
+                {
+                    Undo.RecordObject(target, "Change Rotate Key");
+                    Target.RotateKey = "MouseLeft";
+                    HasChanged();
+                });
+                gm.AddItem(new GUIContent("Mouse Right"), Target.RotateKey == "MouseRight", () =>
+                {
+                    Undo.RecordObject(target, "Change Rotate Key");
+                    Target.RotateKey = "MouseRight";
+                    HasChanged();
+                });
+                gm.AddItem(new GUIContent("Mouse Middle"), Target.RotateKey == "MouseMiddle", () =>
+                {
+                    Undo.RecordObject(target, "Change Rotate Key");
+                    Target.RotateKey = "MouseMiddle";
+                    HasChanged();
+                });
+                gm.ShowAsContext();
+            }
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Speed", EditorStyles.boldLabel);
             GUILayout.EndHorizontal();

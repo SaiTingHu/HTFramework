@@ -21,6 +21,10 @@ namespace HT.Framework
         /// </summary>
         public bool AllowOverstepDistance = true;
         /// <summary>
+        /// 控制旋转的按键
+        /// </summary>
+        public string RotateKey = "MouseRight";
+        /// <summary>
         /// x轴旋转速度，y轴旋转速度，滚轮缩放速度
         /// </summary>
         public float XSpeed = 150, YSpeed = 150, MSpeed = 30;
@@ -111,7 +115,7 @@ namespace HT.Framework
             if (!IsCanOnUGUI && UIToolkit.IsStayUINotWorld)
                 return;
 
-            if (Main.m_Input.GetButton(InputButtonType.MouseRight))
+            if (Main.m_Input.GetButton(RotateKey))
             {
                 X += Main.m_Input.GetAxis(InputAxisType.MouseX) * XSpeed * Time.deltaTime;
                 Y -= Main.m_Input.GetAxis(InputAxisType.MouseY) * YSpeed * Time.deltaTime;

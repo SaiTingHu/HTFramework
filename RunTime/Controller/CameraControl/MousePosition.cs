@@ -22,6 +22,10 @@ namespace HT.Framework
         /// </summary>
         public bool IsCanByKey = true;
         /// <summary>
+        /// 控制移动的按键
+        /// </summary>
+        public string TranslateKey = "MouseMiddle";
+        /// <summary>
         /// x轴移动速度，y轴移动速度，z轴移动速度
         /// </summary>
         public float XSpeed = 0.1f, YSpeed = 0.1f, ZSpeed = 0.1f;
@@ -131,7 +135,7 @@ namespace HT.Framework
             if (!IsCanOnUGUI && UIToolkit.IsStayUINotWorld)
                 return;
 
-            if (Main.m_Input.GetButton(InputButtonType.MouseMiddle))
+            if (Main.m_Input.GetButton(TranslateKey))
             {
                 if (_moveTweener != null)
                 {
