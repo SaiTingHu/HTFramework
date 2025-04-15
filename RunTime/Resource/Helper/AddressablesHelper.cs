@@ -16,6 +16,13 @@ namespace HT.Framework
     /// </summary>
     internal sealed class AddressablesHelper : IResourceHelper
     {
+#if UNITY_ADDRESSABLES_1_20
+        /// <summary>
+        /// 资源标记
+        /// </summary>
+        private Dictionary<string, ResourceTag> _resourceTags = new Dictionary<string, ResourceTag>();
+#endif
+
         /// <summary>
         /// 所属的内置模块
         /// </summary>
@@ -78,7 +85,7 @@ namespace HT.Framework
         /// </summary>
         public void OnUpdate()
         {
-
+            
         }
         /// <summary>
         /// 终结助手
@@ -123,7 +130,7 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 设置AssetBundle资源根路径（必须以 / 结尾）
+        /// 设置AssetBundle资源根路径（仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         public void SetAssetBundlePath(string path)
@@ -131,7 +138,7 @@ namespace HT.Framework
             AssetBundleRootPath = path;
         }
         /// <summary>
-        /// 通过名称获取指定的AssetBundle
+        /// 通过名称获取指定的AssetBundle（仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="assetBundleName">名称</param>
         /// <returns>AssetBundle</returns>
@@ -202,12 +209,14 @@ namespace HT.Framework
                         asset = ClonePrefab(asset as GameObject, parent, isUI);
                     }
                 }
-                Addressables.Release(handle);
+                if (handle.Result != null)
+                {
+                    AdditionReferenceCount(location, handle.Result);
+                }
             }
             else
             {
                 string msg = handle.OperationException.Message;
-                Addressables.Release(handle);
                 throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载资源 {location} 出错：{msg}");
             }
 #else
@@ -268,7 +277,6 @@ namespace HT.Framework
             else
             {
                 string msg = handle.OperationException.Message;
-                Addressables.Release(handle);
                 throw new HTFrameworkException(HTFrameworkModule.Resource, $"加载场景 {location} 出错：{msg}");
             }
 #else
@@ -283,7 +291,15 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 卸载AB包（异步）
+        /// 卸载资源（仅限 Addressables 模式）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        public void UnLoadAsset(string location)
+        {
+            SubtractionReferenceCount(location);
+        }
+        /// <summary>
+        /// 卸载AB包（异步，仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
@@ -293,7 +309,7 @@ namespace HT.Framework
             yield return null;
         }
         /// <summary>
-        /// 卸载所有AB包（异步）
+        /// 卸载所有AB包（异步，仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
@@ -399,6 +415,49 @@ namespace HT.Framework
             return prefab;
         }
         /// <summary>
+        /// 增加资源引用计数
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        /// <param name="entity">资源实体</param>
+        private void AdditionReferenceCount(string location, UnityEngine.Object entity)
+        {
+#if UNITY_ADDRESSABLES_1_20
+            if (_resourceTags.ContainsKey(location))
+            {
+                _resourceTags[location].ReferenceCount += 1;
+            }
+            else
+            {
+                ResourceTag resourceTag = new ResourceTag()
+                {
+                    Location = location,
+                    Entity = entity,
+                    ReferenceCount = 1
+                };
+                _resourceTags.Add(location, resourceTag);
+            }
+#endif
+        }
+        /// <summary>
+        /// 减少资源引用计数
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        private void SubtractionReferenceCount(string location)
+        {
+#if UNITY_ADDRESSABLES_1_20
+            if (_resourceTags.ContainsKey(location))
+            {
+                Addressables.Release(_resourceTags[location].Entity);
+                _resourceTags[location].ReferenceCount -= 1;
+
+                if (_resourceTags[location].ReferenceCount <= 0)
+                {
+                    _resourceTags.Remove(location);
+                }
+            }
+#endif
+        }
+        /// <summary>
         /// 打印资源加载细节
         /// </summary>
         /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
@@ -440,6 +499,25 @@ namespace HT.Framework
             string load = (endTime - beginTime).ToString();
 #endif
             Log.Info($"【加载场景完成】场景路径：{path}，加载耗时：{load}秒。");
+        }
+
+        /// <summary>
+        /// 资源标记
+        /// </summary>
+        public class ResourceTag
+        {
+            /// <summary>
+            /// 资源定位Key
+            /// </summary>
+            public string Location;
+            /// <summary>
+            /// 资源实体
+            /// </summary>
+            public UnityEngine.Object Entity;
+            /// <summary>
+            /// 资源引用计数
+            /// </summary>
+            public int ReferenceCount;
         }
     }
 }

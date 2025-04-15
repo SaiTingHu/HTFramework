@@ -44,7 +44,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 设置AssetBundle资源根路径（必须以 / 结尾）
+        /// 设置AssetBundle资源根路径（必须以 / 结尾，仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         public void SetAssetBundlePath(string path)
@@ -52,7 +52,7 @@ namespace HT.Framework
             _helper.SetAssetBundlePath(path);
         }
         /// <summary>
-        /// 通过名称获取指定的AssetBundle
+        /// 通过名称获取指定的AssetBundle（仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="assetBundleName">名称</param>
         /// <returns>AssetBundle</returns>
@@ -159,7 +159,15 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 卸载AB包（异步）
+        /// 卸载资源（仅限 Addressables 模式）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        public void UnLoadAsset(string location)
+        {
+            _helper.UnLoadAsset(location);
+        }
+        /// <summary>
+        /// 卸载AB包（异步，仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
@@ -169,7 +177,7 @@ namespace HT.Framework
             return Main.Current.StartCoroutine(_helper.UnLoadAssetBundleAsync(assetBundleName, unloadAllLoadedObjects));
         }
         /// <summary>
-        /// 卸载所有AB包（异步）
+        /// 卸载所有AB包（异步，仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程</returns>

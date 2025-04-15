@@ -52,12 +52,12 @@ namespace HT.Framework
         /// <param name="isLogDetail">是否打印资源加载细节日志</param>
         void SetLoader(ResourceLoadMode loadMode, bool isEditorMode, string manifestName, bool isLogDetail);
         /// <summary>
-        /// 设置AssetBundle资源根路径
+        /// 设置AssetBundle资源根路径（仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="path">AssetBundle资源根路径</param>
         void SetAssetBundlePath(string path);
         /// <summary>
-        /// 通过名称获取指定的AssetBundle
+        /// 通过名称获取指定的AssetBundle（仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="assetBundleName">名称</param>
         /// <returns>AssetBundle</returns>
@@ -106,14 +106,19 @@ namespace HT.Framework
         IEnumerator LoadSceneAsync(string location, HTFAction<float> onLoading, HTFAction onLoadDone);
 
         /// <summary>
-        /// 卸载AB包（异步）
+        /// 卸载资源（仅限 Addressables 模式）
+        /// </summary>
+        /// <param name="location">资源定位Key，可以为资源路径、或资源名称</param>
+        void UnLoadAsset(string location);
+        /// <summary>
+        /// 卸载AB包（异步，仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="assetBundleName">AB包名称</param>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
         IEnumerator UnLoadAssetBundleAsync(string assetBundleName, bool unloadAllLoadedObjects);
         /// <summary>
-        /// 卸载所有AB包（异步）
+        /// 卸载所有AB包（异步，仅限 AssetBundle 模式）
         /// </summary>
         /// <param name="unloadAllLoadedObjects">是否同时卸载所有实体对象</param>
         /// <returns>卸载协程迭代器</returns>
