@@ -447,13 +447,13 @@ namespace HT.Framework
 #if UNITY_ADDRESSABLES_1_20
             if (_resourceTags.ContainsKey(location))
             {
-                Addressables.Release(_resourceTags[location].Entity);
-                _resourceTags[location].ReferenceCount -= 1;
-
-                if (_resourceTags[location].ReferenceCount <= 0)
+                while (_resourceTags[location].ReferenceCount > 0)
                 {
-                    _resourceTags.Remove(location);
+                    Addressables.Release(_resourceTags[location].Entity);
+                    _resourceTags[location].ReferenceCount -= 1;
                 }
+
+                _resourceTags.Remove(location);
             }
 #endif
         }
