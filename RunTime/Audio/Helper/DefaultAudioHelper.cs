@@ -301,12 +301,16 @@ namespace HT.Framework
         /// 初始化助手
         /// </summary>
         public void OnInit()
-        { }
+        { 
+        
+        }
         /// <summary>
         /// 助手准备工作
         /// </summary>
         public void OnReady()
-        { }
+        { 
+        
+        }
         /// <summary>
         /// 刷新助手
         /// </summary>
@@ -325,20 +329,22 @@ namespace HT.Framework
         /// 终结助手
         /// </summary>
         public void OnTerminate()
-        { }
+        { 
+        
+        }
         /// <summary>
         /// 暂停助手
         /// </summary>
         public void OnPause()
         {
-            Mute = true;
+
         }
         /// <summary>
         /// 恢复助手
         /// </summary>
         public void OnResume()
         {
-            Mute = false;
+
         }
 
         /// <summary>
