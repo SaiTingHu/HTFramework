@@ -7,7 +7,7 @@ namespace HT.Framework
     /// 鼠标位置射线发射器
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class MouseRay : HTBehaviour
+    public sealed class MouseRay : HTBehaviour
     {
         /// <summary>
         /// 是否开启射线投射
@@ -92,7 +92,7 @@ namespace HT.Framework
         /// <summary>
         /// 射线发射摄像机
         /// </summary>
-        public Camera RayCamera { get; set; }
+        public Camera RayCamera { get; internal set; }
         /// <summary>
         /// 当前被射线捕获的目标
         /// </summary>
@@ -139,7 +139,7 @@ namespace HT.Framework
         /// <summary>
         /// 更新
         /// </summary>
-        public void OnUpdate()
+        internal void OnUpdate()
         {
             if (IsOpenRay)
             {
@@ -188,7 +188,7 @@ namespace HT.Framework
         /// <summary>
         /// 关闭射线投射
         /// </summary>
-        public void CloseRay()
+        internal void CloseRay()
         {
             IsOpenRay = false;
             RaycastHiting(null);
@@ -325,7 +325,6 @@ namespace HT.Framework
             /// </summary>
             Outline
         }
-
         /// <summary>
         /// 射线捕获的目标类型
         /// </summary>

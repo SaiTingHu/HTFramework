@@ -7,7 +7,7 @@ namespace HT.Framework
     /// 摄像机注视目标移动控制
     /// </summary>
     [DisallowMultipleComponent]
-    internal sealed class MousePosition : HTBehaviour
+    public sealed class MousePosition : HTBehaviour
     {
         /// <summary>
         /// 是否可以控制
@@ -46,11 +46,11 @@ namespace HT.Framework
         /// <summary>
         /// 注视目标
         /// </summary>
-        public CameraTarget Target { get; set; }
+        public CameraTarget Target { get; internal set; }
         /// <summary>
         /// 操作控制器
         /// </summary>
-        public ControllerManager Controller { get; set; }
+        public ControllerManager Controller { get; internal set; }
 
         /// <summary>
         /// 平移注视视野
@@ -103,17 +103,17 @@ namespace HT.Framework
         {
             _isKeepTrack = false;
         }
+
         /// <summary>
         /// 更新
         /// </summary>
-        public void OnUpdate()
+        internal void OnUpdate()
         {
             //控制
             Control();
             //应用
             ApplyPosition();
         }
-        
         private void Control()
         {
             if (_isKeepTrack)
