@@ -203,7 +203,7 @@ namespace HT.Framework
                         GUI.color = Color.white;
                         break;
                     case StepParameter.ParameterType.Custom:
-                        if (GUILayout.Button(stepParameter.StringValue, EditorStyles.popup, GUILayout.Width(225)))
+                        if (GUILayout.Button(stepParameter.StringValue, EditorStyles.popup, GUILayout.Width(205)))
                         {
                             if (StepEditorWindow.CustomParameterHandler != null)
                             {
@@ -214,6 +214,15 @@ namespace HT.Framework
                                 Log.Error("无法编辑自定义参数：请使用 StepEditorWindow.RegisterCustomParameterHandler() 注册处理者，需注意，自定义参数存储的值为 StepParameter.StringValue 字段！");
                             }
                         }
+                        DrawCopyPaste(
+                        () =>
+                        {
+                            return stepParameter.StringValue;
+                        },
+                        (str) =>
+                        {
+                            stepParameter.StringValue = str;
+                        });
                         break;
                 }
                 GUILayout.EndHorizontal();
