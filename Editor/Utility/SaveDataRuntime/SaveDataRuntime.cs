@@ -163,7 +163,7 @@ namespace HT.Framework
                     }
                     else
                     {
-                        Log.Error("SaveDataRuntime：此组件不支持运行时保存数据，只有隶属于 Entity 模块和 UI 模块的预制体支持运行时保存数据。");
+                        Log.Error("SaveDataRuntime：此组件不支持运行时保存数据，只有隶属于 Entity 模块和 UI 模块的预制体（其子级物体上的组件）支持运行时保存数据。");
                     }
                 }
             }

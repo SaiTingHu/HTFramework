@@ -218,12 +218,35 @@ namespace HT.Framework
                     if (gameObject)
                     {
                         Undo.RecordObject(savedComponent.TargetComponent, "Apply Runtime Data");
-                        EditorUtility.CopySerialized(gameObject.GetComponent(savedComponent.ComponentType), savedComponent.TargetComponent);
+                        CopySerializedIgnoreObjectReference(gameObject.GetComponent(savedComponent.ComponentType), savedComponent.TargetComponent);
                         HasChanged(savedComponent.TargetComponent);
                         DestroyImmediate(gameObject);
                     }
                 }
             }
+        }
+        private void CopySerializedIgnoreObjectReference(Component source, Component dest)
+        {
+            Editor sourceEditor = Editor.CreateEditor(source);
+            Editor destEditor = Editor.CreateEditor(dest);
+
+            using (SerializedProperty iterator = sourceEditor.serializedObject.GetIterator())
+            {
+                while (iterator.NextVisible(true))
+                {
+                    if (iterator.propertyType == SerializedPropertyType.Generic
+                        || iterator.propertyType == SerializedPropertyType.ObjectReference
+                        || iterator.propertyType == SerializedPropertyType.ExposedReference
+                        || iterator.propertyType == SerializedPropertyType.ManagedReference)
+                        continue;
+
+                    destEditor.serializedObject.CopyFromSerializedProperty(iterator);
+                }
+            }
+            destEditor.serializedObject.ApplyModifiedProperties();
+
+            DestroyImmediate(sourceEditor);
+            DestroyImmediate(destEditor);
         }
 
         [Serializable]
