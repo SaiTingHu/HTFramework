@@ -681,6 +681,35 @@ namespace HT.Framework
                 }
             }
         }
+
+        /// <summary>
+        /// 新建ScrollList
+        /// </summary>
+        [MenuItem("GameObject/HTFramework/UI/Scroll List", false, 102)]
+        private static void CreateScrollList()
+        {
+            Transform parent = null;
+            if (Selection.activeGameObject)
+            {
+                parent = Selection.activeGameObject.transform;
+            }
+            else
+            {
+                PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabStage != null)
+                {
+                    parent = prefabStage.prefabContentsRoot.transform;
+                }
+                else
+                {
+                    parent = null;
+                }
+            }
+
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HTFramework/RunTime/Utility/UI/ScrollList/ScrollList.prefab");
+            GameObject obj = UnityEngine.Object.Instantiate(asset, parent);
+            Selection.activeGameObject = obj;
+        }
         #endregion
 
         #region 工程视图新建菜单 【优先级100】
