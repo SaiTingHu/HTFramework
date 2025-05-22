@@ -84,9 +84,13 @@ namespace HT.Framework
                         if (_debuggerComponents.ContainsKey(type))
                         {
                             CurrentDebuggerComponent = Main.m_ReferencePool.Spawn(_debuggerComponents[type]) as DebuggerComponentBase;
-                            CurrentDebuggerComponent.Target = _currentComponent;
-                            CurrentDebuggerComponent.OnEnable();
                         }
+                        else
+                        {
+                            CurrentDebuggerComponent = Main.m_ReferencePool.Spawn<DebuggerComponentDefault>();
+                        }
+                        CurrentDebuggerComponent.Target = _currentComponent;
+                        CurrentDebuggerComponent.OnEnable();
                     }
                 }
             }

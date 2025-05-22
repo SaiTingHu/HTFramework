@@ -6,7 +6,7 @@ using UnityEngine.Events;
 namespace HT.Framework
 {
     /// <summary>
-    /// 调试器组件基类
+    /// 调试器中的组件检视器基类
     /// </summary>
     public abstract class DebuggerComponentBase : IReference
     {
@@ -25,6 +25,45 @@ namespace HT.Framework
             _drawer.Clear();
         }
 
+        /// <summary>
+        /// 创建一个Vector4字段
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        /// <returns>新的值</returns>
+        protected Vector4 Vector4Field(string name, Vector4 value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            string valueX = value.x.ToString();
+            string valueY = value.y.ToString();
+            string valueZ = value.z.ToString();
+            string valueW = value.w.ToString();
+            string newX = GUILayout.TextField(valueX, options);
+            string newY = GUILayout.TextField(valueY, options);
+            string newZ = GUILayout.TextField(valueZ, options);
+            string newW = GUILayout.TextField(valueW, options);
+            GUILayout.EndHorizontal();
+
+            if (!string.Equals(newX, valueX) || !string.Equals(newY, valueY) || !string.Equals(newZ, valueZ) || !string.Equals(newW, valueW))
+            {
+                float x, y, z, w;
+                if (float.TryParse(newX, out x) && float.TryParse(newY, out y) && float.TryParse(newZ, out z) && float.TryParse(newW, out w))
+                {
+                    value.Set(x, y, z, w);
+                    return value;
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                return value;
+            }
+        }
         /// <summary>
         /// 创建一个Vector3字段
         /// </summary>
@@ -69,7 +108,7 @@ namespace HT.Framework
         /// <param name="value">旧的值</param>
         /// <param name="nameLength">名称长度</param>
         /// <returns>新的值</returns>
-        protected Vector3 Vector2Field(string name, Vector2 value, int nameLength = 120, params GUILayoutOption[] options)
+        protected Vector2 Vector2Field(string name, Vector2 value, int nameLength = 120, params GUILayoutOption[] options)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(name, GUILayout.Width(nameLength));
@@ -98,6 +137,167 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 创建一个Vector3Int字段
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        /// <returns>新的值</returns>
+        protected Vector3Int Vector3IntField(string name, Vector3Int value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            string valueX = value.x.ToString();
+            string valueY = value.y.ToString();
+            string valueZ = value.z.ToString();
+            string newX = GUILayout.TextField(valueX, options);
+            string newY = GUILayout.TextField(valueY, options);
+            string newZ = GUILayout.TextField(valueZ, options);
+            GUILayout.EndHorizontal();
+
+            if (!string.Equals(newX, valueX) || !string.Equals(newY, valueY) || !string.Equals(newZ, valueZ))
+            {
+                int x, y, z;
+                if (int.TryParse(newX, out x) && int.TryParse(newY, out y) && int.TryParse(newZ, out z))
+                {
+                    value.Set(x, y, z);
+                    return value;
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                return value;
+            }
+        }
+        /// <summary>
+        /// 创建一个Vector2Int字段
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        /// <returns>新的值</returns>
+        protected Vector2Int Vector2IntField(string name, Vector2Int value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            string valueX = value.x.ToString();
+            string valueY = value.y.ToString();
+            string newX = GUILayout.TextField(valueX, options);
+            string newY = GUILayout.TextField(valueY, options);
+            GUILayout.EndHorizontal();
+
+            if (!string.Equals(newX, valueX) || !string.Equals(newY, valueY))
+            {
+                int x, y;
+                if (int.TryParse(newX, out x) && int.TryParse(newY, out y))
+                {
+                    value.Set(x, y);
+                    return value;
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                return value;
+            }
+        }
+        /// <summary>
+        /// 创建一个Rect字段
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        /// <returns>新的值</returns>
+        protected Rect RectField(string name, Rect value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            string valueX = value.x.ToString();
+            string valueY = value.y.ToString();
+            string valueWidth = value.width.ToString();
+            string valueHeight = value.height.ToString();
+            string newX = GUILayout.TextField(valueX, options);
+            string newY = GUILayout.TextField(valueY, options);
+            string newWidth = GUILayout.TextField(valueWidth, options);
+            string newHeight = GUILayout.TextField(valueHeight, options);
+            GUILayout.EndHorizontal();
+
+            if (!string.Equals(newX, valueX) || !string.Equals(newY, valueY) || !string.Equals(newWidth, valueWidth) || !string.Equals(newHeight, valueHeight))
+            {
+                float x, y, width, height;
+                if (float.TryParse(newX, out x) && float.TryParse(newY, out y) && float.TryParse(newWidth, out width) && float.TryParse(newHeight, out height))
+                {
+                    value.Set(x, y, width, height);
+                    return value;
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                return value;
+            }
+        }
+        /// <summary>
+        /// 创建一个Bounds字段
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        /// <returns>新的值</returns>
+        protected Bounds BoundsField(string name, Bounds value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            string valueX = value.center.x.ToString();
+            string valueY = value.center.y.ToString();
+            string valueZ = value.center.z.ToString();
+            string newX = GUILayout.TextField(valueX, options);
+            string newY = GUILayout.TextField(valueY, options);
+            string newZ = GUILayout.TextField(valueZ, options);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(nameLength);
+            string valueSX = value.size.x.ToString();
+            string valueSY = value.size.y.ToString();
+            string valueSZ = value.size.z.ToString();
+            string newSX = GUILayout.TextField(valueSX, options);
+            string newSY = GUILayout.TextField(valueSY, options);
+            string newSZ = GUILayout.TextField(valueSZ, options);
+            GUILayout.EndHorizontal();
+
+            if (!string.Equals(newX, valueX) || !string.Equals(newY, valueY) || !string.Equals(newZ, valueZ)
+                || !string.Equals(newSX, valueSX) || !string.Equals(newSY, valueSY) || !string.Equals(newSZ, valueSZ))
+            {
+                float x, y, z, sx, sy, sz;
+                if (float.TryParse(newX, out x) && float.TryParse(newY, out y) && float.TryParse(newZ, out z)
+                    && float.TryParse(newSX, out sx) && float.TryParse(newSY, out sy) && float.TryParse(newSZ, out sz))
+                {
+                    value.center = new Vector3(x, y, z);
+                    value.size = new Vector3(sx, sy, sz);
+                    return value;
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                return value;
+            }
+        }
+        /// <summary>
         /// 创建一个String字段
         /// </summary>
         /// <param name="name">字段名称</param>
@@ -111,14 +311,7 @@ namespace HT.Framework
             string newS = GUILayout.TextField(value, options);
             GUILayout.EndHorizontal();
 
-            if (newS != value)
-            {
-                return newS;
-            }
-            else
-            {
-                return value;
-            }
+            return newS;
         }
         /// <summary>
         /// 创建一个Bool字段
@@ -214,7 +407,7 @@ namespace HT.Framework
             GUILayout.BeginHorizontal();
             GUILayout.Label(name, GUILayout.Width(nameLength));
             Color lastColor = GUI.color;
-            GUI.color = value;
+            GUI.color = new Color(value.r, value.g, value.b, 1);
             _drawer[name] = GUILayout.Toggle(_drawer[name], "COLOR", "Button", options);
             GUI.color = lastColor;
             GUILayout.EndHorizontal();
@@ -319,6 +512,25 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 创建一个Vector4字段（只读）
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        protected void Vector4FieldReadOnly(string name, Vector4 value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            bool lastEnabled = GUI.enabled;
+            GUI.enabled = false;
+            GUILayout.TextField(value.x.ToString(), options);
+            GUILayout.TextField(value.y.ToString(), options);
+            GUILayout.TextField(value.z.ToString(), options);
+            GUILayout.TextField(value.w.ToString(), options);
+            GUI.enabled = lastEnabled;
+            GUILayout.EndHorizontal();
+        }
+        /// <summary>
         /// 创建一个Vector3字段（只读）
         /// </summary>
         /// <param name="name">字段名称</param>
@@ -352,6 +564,87 @@ namespace HT.Framework
             GUILayout.TextField(value.y.ToString(), options);
             GUI.enabled = lastEnabled;
             GUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 创建一个Vector3Int字段（只读）
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        protected void Vector3IntFieldReadOnly(string name, Vector3Int value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            bool lastEnabled = GUI.enabled;
+            GUI.enabled = false;
+            GUILayout.TextField(value.x.ToString(), options);
+            GUILayout.TextField(value.y.ToString(), options);
+            GUILayout.TextField(value.z.ToString(), options);
+            GUI.enabled = lastEnabled;
+            GUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 创建一个Vector2Int字段（只读）
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        protected void Vector2IntFieldReadOnly(string name, Vector2Int value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            bool lastEnabled = GUI.enabled;
+            GUI.enabled = false;
+            GUILayout.TextField(value.x.ToString(), options);
+            GUILayout.TextField(value.y.ToString(), options);
+            GUI.enabled = lastEnabled;
+            GUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 创建一个Rect字段（只读）
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        protected void RectFieldReadOnly(string name, Rect value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            bool lastEnabled = GUI.enabled;
+            GUI.enabled = false;
+            GUILayout.TextField(value.x.ToString(), options);
+            GUILayout.TextField(value.y.ToString(), options);
+            GUILayout.TextField(value.width.ToString(), options);
+            GUILayout.TextField(value.height.ToString(), options);
+            GUI.enabled = lastEnabled;
+            GUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 创建一个Bounds字段（只读）
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        protected void BoundsFieldReadOnly(string name, Bounds value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            bool lastEnabled = GUI.enabled;
+            GUI.enabled = false;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            GUILayout.TextField(value.center.x.ToString(), options);
+            GUILayout.TextField(value.center.y.ToString(), options);
+            GUILayout.TextField(value.center.z.ToString(), options);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(nameLength);
+            GUILayout.TextField(value.size.x.ToString(), options);
+            GUILayout.TextField(value.size.y.ToString(), options);
+            GUILayout.TextField(value.size.z.ToString(), options);
+            GUILayout.EndHorizontal();
+
+            GUI.enabled = lastEnabled;
         }
         /// <summary>
         /// 创建一个String字段（只读）
@@ -414,6 +707,25 @@ namespace HT.Framework
             bool lastEnabled = GUI.enabled;
             GUI.enabled = false;
             GUILayout.TextField(value.ToString(), options);
+            GUI.enabled = lastEnabled;
+            GUILayout.EndHorizontal();
+        }
+        /// <summary>
+        /// 创建一个Quaternion字段（只读）
+        /// </summary>
+        /// <param name="name">字段名称</param>
+        /// <param name="value">旧的值</param>
+        /// <param name="nameLength">名称长度</param>
+        protected void QuaternionFieldReadOnly(string name, Quaternion value, int nameLength = 120, params GUILayoutOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name, GUILayout.Width(nameLength));
+            bool lastEnabled = GUI.enabled;
+            GUI.enabled = false;
+            GUILayout.TextField(value.x.ToString(), options);
+            GUILayout.TextField(value.y.ToString(), options);
+            GUILayout.TextField(value.z.ToString(), options);
+            GUILayout.TextField(value.w.ToString(), options);
             GUI.enabled = lastEnabled;
             GUILayout.EndHorizontal();
         }
