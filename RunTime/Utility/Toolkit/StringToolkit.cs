@@ -62,6 +62,16 @@ namespace HT.Framework
         /// <summary>
         /// 字符串拼接
         /// </summary>
+        /// <param name="c">待拼接的字符</param>
+        /// <param name="isNewLine">拼接完成后是否自动换一行</param>
+        public static void Concat(char c, bool isNewLine = false)
+        {
+            StringInstance.Append(c);
+            if (isNewLine) StringInstance.Append("\r\n");
+        }
+        /// <summary>
+        /// 字符串拼接
+        /// </summary>
         /// <param name="str">待拼接的字符串</param>
         /// <param name="isNewLine">拼接完成后是否自动换一行</param>
         public static void Concat(string str, bool isNewLine = false)
