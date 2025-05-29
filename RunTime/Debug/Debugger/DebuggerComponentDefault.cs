@@ -471,7 +471,7 @@ namespace HT.Framework
                 else
                 {
                     FieldType = DisplayableType.Other;
-                    OtherValue = value.ToString();
+                    OtherValue = value != null ? value.ToString() : "<None>";
                 }
             }
             /// <summary>
@@ -651,7 +651,7 @@ namespace HT.Framework
                 else
                 {
                     PropertyType = DisplayableType.Other;
-                    OtherValue = value.ToString();
+                    OtherValue = value != null ? value.ToString() : "<None>";
                 }
             }
             /// <summary>

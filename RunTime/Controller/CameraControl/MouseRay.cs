@@ -110,7 +110,7 @@ namespace HT.Framework
             {
                 if (_rayHitTextFitter == null)
                 {
-                    _rayHitTextFitter = RayHitText.GetComponent<ContentSizeFitter>();
+                    if (RayHitText) _rayHitTextFitter = RayHitText.GetComponent<ContentSizeFitter>();
                 }
                 return _rayHitTextFitter;
             }
