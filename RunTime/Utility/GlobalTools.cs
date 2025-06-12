@@ -461,17 +461,12 @@ namespace HT.Framework
         /// <param name="array">数组</param>
         public static void Disrupt<T>(this T[] array)
         {
-            int index = 0;
-            T tmp;
             for (int i = 0; i < array.Length; i++)
             {
-                index = UnityEngine.Random.Range(0, array.Length);
-                if (index != i)
-                {
-                    tmp = array[i];
-                    array[i] = array[index];
-                    array[index] = tmp;
-                }
+                int j = UnityEngine.Random.Range(i, array.Length);
+                T temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
         /// <summary>
@@ -481,17 +476,12 @@ namespace HT.Framework
         /// <param name="array">集合</param>
         public static void Disrupt<T>(this List<T> array)
         {
-            int index = 0;
-            T tmp;
             for (int i = 0; i < array.Count; i++)
             {
-                index = UnityEngine.Random.Range(0, array.Count);
-                if (index != i)
-                {
-                    tmp = array[i];
-                    array[i] = array[index];
-                    array[index] = tmp;
-                }
+                int j = UnityEngine.Random.Range(i, array.Count);
+                T temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
         /// <summary>
