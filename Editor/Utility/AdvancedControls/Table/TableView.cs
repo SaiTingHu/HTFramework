@@ -118,7 +118,7 @@ namespace HT.Framework
         protected override IList<TreeViewItem> BuildRows(TreeViewItem root)
         {
             _drawItems.Clear();
-            if (hasSearch && OnSearch != null)
+            if (OnSearch != null)
             {
                 for (int i = 0; i < _items.Count; i++)
                 {
