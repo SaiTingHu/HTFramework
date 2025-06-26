@@ -1,52 +1,54 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEditor;
 using HT.Framework;
-using DG.Tweening;
-/// <summary>
-/// 新建设置项
-/// </summary>
-public class #SCRIPTNAME# : SettingItemBase
+
+namespace #NAMESPACE#
 {
     /// <summary>
-    /// 设置面板的显示名称
+    /// 新建设置项
     /// </summary>
-    public override string Name
+    public class #SCRIPTNAME# : SettingItemBase
     {
-        get
+        /// <summary>
+        /// 设置面板的显示名称
+        /// </summary>
+        public override string Name
         {
-            return base.Name;
+            get
+            {
+                return base.Name;
+            }
         }
-    }
 
-    /// <summary>
-    /// 开始设置
-    /// </summary>
-    public override void OnBeginSetting()
-    {
-        base.OnBeginSetting();
-    }
-    /// <summary>
-    /// 设置面板UI
-    /// </summary>
-    public override void OnSettingGUI()
-    {
-        base.OnSettingGUI();
-    }
-    /// <summary>
-    /// 结束设置
-    /// </summary>
-    public override void OnEndSetting()
-    {
-        base.OnEndSetting();
-    }
-    /// <summary>
-    /// 重置所有设置
-    /// </summary>
-    public override void OnReset()
-    {
-        base.OnReset();
+        /// <summary>
+        /// 开始设置
+        /// </summary>
+        public override void OnBeginSetting()
+        {
+            base.OnBeginSetting();
+        }
+        /// <summary>
+        /// 设置面板UI
+        /// </summary>
+        public override void OnSettingGUI()
+        {
+            base.OnSettingGUI();
+        }
+        /// <summary>
+        /// 结束设置
+        /// </summary>
+        public override void OnEndSetting()
+        {
+            base.OnEndSetting();
+        }
+        /// <summary>
+        /// 重置所有设置
+        /// </summary>
+        public override void OnReset()
+        {
+            base.OnReset();
+        }
     }
 }

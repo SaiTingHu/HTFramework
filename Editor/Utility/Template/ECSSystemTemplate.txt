@@ -1,23 +1,26 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
 
-/// <summary>
-/// 新建系统
-/// </summary>
-//[StarComponent(typeof(组件类名1), typeof(组件类名2))]
-[SystemName("#SCRIPTNAME#")]
-public sealed class #SCRIPTNAME# : ECS_System
+namespace #NAMESPACE#
 {
     /// <summary>
-    /// 系统逻辑更新
+    /// 新建系统
     /// </summary>
-    /// <param name="entities">系统关注的所有实体</param>
-    public override void OnUpdate(HashSet<ECS_Entity> entities)
+    //[StarComponent(typeof(组件类名1), typeof(组件类名2))]
+    [SystemName("#SCRIPTNAME#")]
+    public sealed class #SCRIPTNAME# : ECS_System
     {
-        
+        /// <summary>
+        /// 系统逻辑更新
+        /// </summary>
+        /// <param name="entities">系统关注的所有实体</param>
+        public override void OnUpdate(HashSet<ECS_Entity> entities)
+        {
+
+        }
     }
 }

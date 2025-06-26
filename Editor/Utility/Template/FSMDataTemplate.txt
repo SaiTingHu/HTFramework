@@ -1,13 +1,17 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
 
-/// <summary>
-/// 新建有限状态机数据
-/// </summary>
-public class #SCRIPTNAME#: FSMDataBase
+namespace #NAMESPACE#
 {
-    
+    /// <summary>
+    /// 新建有限状态机数据
+    /// </summary>
+    public class #SCRIPTNAME#: FSMDataBase
+    {
+
+    }
 }

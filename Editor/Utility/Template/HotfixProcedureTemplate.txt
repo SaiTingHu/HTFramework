@@ -1,47 +1,52 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
-/// <summary>
-/// 新建热更新流程
-/// </summary>
-[HotfixProcedureState(HotfixProcedureState.Normal)]
-public class #SCRIPTNAME# : HotfixProcedureBase
+
+namespace #NAMESPACE#
 {
     /// <summary>
-    /// 流程初始化
+    /// 新建热更新流程
     /// </summary>
-    public override void OnInit()
+    [HotfixProcedureState(HotfixProcedureState.Normal)]
+    public class #SCRIPTNAME# : HotfixProcedureBase
     {
-		base.OnInit();
-    }
-    /// <summary>
-    /// 进入流程
-    /// </summary>
-    public override void OnEnter()
-    {
-        base.OnEnter();
-    }
-    /// <summary>
-    /// 离开流程
-    /// </summary>
-    public override void OnLeave()
-    {
-        base.OnLeave();
-    }
-    /// <summary>
-    /// 流程帧刷新
-    /// </summary>
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-    /// <summary>
-    /// 流程帧刷新（秒）
-    /// </summary>
-    public override void OnUpdateSecond()
-    {
-        base.OnUpdateSecond();
+        /// <summary>
+        /// 流程初始化
+        /// </summary>
+        public override void OnInit()
+        {
+            base.OnInit();
+        }
+        /// <summary>
+        /// 进入流程
+        /// </summary>
+        public override void OnEnter()
+        {
+            base.OnEnter();
+        }
+        /// <summary>
+        /// 离开流程
+        /// </summary>
+        public override void OnLeave()
+        {
+            base.OnLeave();
+        }
+        /// <summary>
+        /// 流程帧刷新
+        /// </summary>
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        /// <summary>
+        /// 流程帧刷新（秒）
+        /// </summary>
+        public override void OnUpdateSecond()
+        {
+            base.OnUpdateSecond();
+        }
     }
 }

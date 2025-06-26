@@ -1,16 +1,19 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
 
-/// <summary>
-/// 新建组件
-/// </summary>
-[DisallowMultipleComponent]
-[ComponentName("#SCRIPTNAME#")]
-public sealed class #SCRIPTNAME# : ECS_Component
+namespace #NAMESPACE#
 {
-	
+    /// <summary>
+    /// 新建组件
+    /// </summary>
+    [DisallowMultipleComponent]
+    [ComponentName("#SCRIPTNAME#")]
+    public sealed class #SCRIPTNAME# : ECS_Component
+    {
+
+    }
 }

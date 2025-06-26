@@ -1,54 +1,59 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
-/// <summary>
-/// 新建实体逻辑类
-/// </summary>
-[EntityResource("AssetBundleName", "AssetPath", "ResourcePath")]
-public class #SCRIPTNAME# : EntityLogicBase
+
+namespace #NAMESPACE#
 {
     /// <summary>
-    /// 初始化
+    /// 新建实体逻辑类
     /// </summary>
-    public override void OnInit()
+    [EntityResource("AssetBundleName", "AssetPath", "ResourcePath")]
+    public class #SCRIPTNAME# : EntityLogicBase
     {
-        base.OnInit();
-    }
-    /// <summary>
-    /// 显示实体
-    /// </summary>
-    public override void OnShow()
-    {
-        base.OnShow();
-    }
-    /// <summary>
-    /// 隐藏实体
-    /// </summary>
-    public override void OnHide()
-    {
-        base.OnHide();
-    }
-    /// <summary>
-    /// 销毁实体
-    /// </summary>
-    public override void OnDestroy()
-    {
-        base.OnDestroy();
-    }
-    /// <summary>
-    /// 实体逻辑刷新
-    /// </summary>
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-    /// <summary>
-    /// 重置实体
-    /// </summary>
-    public override void Reset()
-    {
-        base.Reset();
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public override void OnInit()
+        {
+            base.OnInit();
+        }
+        /// <summary>
+        /// 显示实体
+        /// </summary>
+        public override void OnShow()
+        {
+            base.OnShow();
+        }
+        /// <summary>
+        /// 隐藏实体
+        /// </summary>
+        public override void OnHide()
+        {
+            base.OnHide();
+        }
+        /// <summary>
+        /// 销毁实体
+        /// </summary>
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+        /// <summary>
+        /// 实体逻辑刷新
+        /// </summary>
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        /// <summary>
+        /// 重置实体
+        /// </summary>
+        public override void Reset()
+        {
+            base.Reset();
+        }
     }
 }

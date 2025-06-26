@@ -926,57 +926,7 @@ namespace HT.Framework
         /// <returns>脚本名称</returns>
         public static string CreateScriptFormTemplate(string prefsKey, string scriptType, string templateName, params string[] replace)
         {
-            string directory = EditorPrefs.GetString(prefsKey, "");
-            string fullPath = Application.dataPath + directory;
-            if (!Directory.Exists(fullPath)) fullPath = Application.dataPath;
-
-            string path = EditorUtility.SaveFilePanel($"Create {scriptType} Class", fullPath, $"New{scriptType}", "cs");
-            if (!string.IsNullOrEmpty(path))
-            {
-                if (!path.Contains(Application.dataPath))
-                {
-                    Log.Error($"新建 {scriptType} 失败：创建路径必须在当前项目的 Assets 路径下！");
-                    return "<None>";
-                }
-
-                string className = path.Substring(path.LastIndexOf("/") + 1).Replace(".cs", "");
-                if (!File.Exists(path))
-                {
-                    TextAsset asset = AssetDatabase.LoadAssetAtPath($"{EditorPrefsTable.ScriptTemplateFolder}{templateName}.txt", typeof(TextAsset)) as TextAsset;
-                    if (asset)
-                    {
-                        string code = asset.text;
-                        code = code.Replace("#SCRIPTNAME#", className);
-                        if (replace != null && replace.Length > 0)
-                        {
-                            for (int i = 0; i < replace.Length; i++)
-                            {
-                                code = code.Replace(replace[i], className);
-                            }
-                        }
-                        File.AppendAllText(path, code, Encoding.UTF8);
-                        asset = null;
-                        AssetDatabase.Refresh();
-
-                        string assetPath = path.Substring(path.LastIndexOf("Assets"));
-                        TextAsset csFile = AssetDatabase.LoadAssetAtPath(assetPath, typeof(TextAsset)) as TextAsset;
-                        EditorGUIUtility.PingObject(csFile);
-                        Selection.activeObject = csFile;
-                        AssetDatabase.OpenAsset(csFile);
-                        EditorPrefs.SetString(prefsKey, path.Substring(0, path.LastIndexOf("/")).Replace(Application.dataPath, ""));
-                        return className;
-                    }
-                    else
-                    {
-                        Log.Error($"新建 {scriptType} 失败：丢失脚本模板文件！");
-                    }
-                }
-                else
-                {
-                    Log.Error($"新建 {scriptType} 失败：已存在类文件 {className}！");
-                }
-            }
-            return "<None>";
+            return CreateScriptFormTemplate(prefsKey, scriptType, templateName, null, replace);
         }
         /// <summary>
         /// 从模板创建脚本

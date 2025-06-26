@@ -1,72 +1,77 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
-/// <summary>
-/// 新建自定义模块
-/// </summary>
-[CustomModule("#MODULENAME#", true)]
-public class #SCRIPTNAME# : CustomModuleBase
+
+namespace #NAMESPACE#
 {
     /// <summary>
-    /// 是否运行中
+    /// 新建自定义模块
     /// </summary>
-    public override bool IsRunning
+    [CustomModule("#MODULENAME#", true)]
+    public class #SCRIPTNAME# : CustomModuleBase
     {
-        get
+        /// <summary>
+        /// 是否运行中
+        /// </summary>
+        public override bool IsRunning
         {
-            return base.IsRunning;
+            get
+            {
+                return base.IsRunning;
+            }
+            set
+            {
+                base.IsRunning = value;
+            }
         }
-        set
+
+        /// <summary>
+        /// 初始化模块
+        /// </summary>
+        public override void OnInit()
         {
-            base.IsRunning = value;
+            base.OnInit();
         }
-    }
+        /// <summary>
+        /// 模块准备工作
+        /// </summary>
+        public override void OnReady()
+        {
+            base.OnReady();
 
-    /// <summary>
-    /// 初始化模块
-    /// </summary>
-    public override void OnInit()
-    {
-        base.OnInit();
-    }
-    /// <summary>
-    /// 模块准备工作
-    /// </summary>
-    public override void OnReady()
-    {
-        base.OnReady();
-
-		//自动启动
-        IsRunning = true;
-    }
-    /// <summary>
-    /// 更新模块
-    /// </summary>
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-    /// <summary>
-    /// 终结模块
-    /// </summary>
-    public override void OnTerminate()
-    {
-        base.OnTerminate();
-    }
-    /// <summary>
-    /// 暂停模块
-    /// </summary>
-    public override void OnPause()
-    {
-        base.OnPause();
-    }
-    /// <summary>
-    /// 恢复模块
-    /// </summary>
-    public override void OnResume()
-    {
-        base.OnResume();
+            //自动启动
+            IsRunning = true;
+        }
+        /// <summary>
+        /// 更新模块
+        /// </summary>
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        /// <summary>
+        /// 终结模块
+        /// </summary>
+        public override void OnTerminate()
+        {
+            base.OnTerminate();
+        }
+        /// <summary>
+        /// 暂停模块
+        /// </summary>
+        public override void OnPause()
+        {
+            base.OnPause();
+        }
+        /// <summary>
+        /// 恢复模块
+        /// </summary>
+        public override void OnResume()
+        {
+            base.OnResume();
+        }
     }
 }

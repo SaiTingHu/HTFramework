@@ -1,39 +1,43 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
-using System.Reflection;
 
-/// <summary>
-/// 新建切面代理者
-/// </summary>
-public class #SCRIPTNAME#<T> : AspectProxyBase<T> where T : I#SCRIPTNAME#
+namespace #NAMESPACE#
 {
-    public #SCRIPTNAME#(T realObject) : base(realObject) { }
-
-	/// <summary>
-    /// 方法调用前
+    /// <summary>
+    /// 新建切面代理者
     /// </summary>
-    /// <param name="method">方法</param>
-    /// <param name="args">参数</param>
-    /// <returns>修正后的参数</returns>
-    protected override object[] OnBeforeInvoke(MethodBase method, object[] args)
+    public class #SCRIPTNAME#<T> : AspectProxyBase<T> where T : I#SCRIPTNAME#
     {
-		return args;
-    }
-	/// <summary>
-    /// 方法调用后
-    /// </summary>
-    /// <param name="method">方法</param>
-    /// <param name="returnValue">返回值</param>
-    protected override void OnAfterInvoke(MethodBase method, object returnValue)
-    {
-		
-    }
-}
+        public #SCRIPTNAME#(T realObject) : base(realObject) { }
 
-public interface I#SCRIPTNAME# : IAspectTrackObject
-{
-	
+	    /// <summary>
+        /// 方法调用前
+        /// </summary>
+        /// <param name="method">方法</param>
+        /// <param name="args">参数</param>
+        /// <returns>修正后的参数</returns>
+        protected override object[] OnBeforeInvoke(MethodBase method, object[] args)
+        {
+            return args;
+        }
+        /// <summary>
+        /// 方法调用后
+        /// </summary>
+        /// <param name="method">方法</param>
+        /// <param name="returnValue">返回值</param>
+        protected override void OnAfterInvoke(MethodBase method, object returnValue)
+        {
+
+        }
+    }
+
+    public interface I#SCRIPTNAME# : IAspectTrackObject
+    {
+
+    }
 }

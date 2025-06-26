@@ -1,29 +1,34 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
-using System;
-/// <summary>
-/// 新建数据集
-/// </summary>
-[Serializable]
-[CreateAssetMenu(menuName = "HTFramework DataSet/#SCRIPTNAME#")]
-public class #SCRIPTNAME# : DataSetBase
+
+namespace #NAMESPACE#
 {
-	/// <summary>
-    /// 通过Json数据填充数据集
+    /// <summary>
+    /// 新建数据集
     /// </summary>
-    public override void Fill(JsonData data)
+    [Serializable]
+    [CreateAssetMenu(menuName = "HTFramework DataSet/#SCRIPTNAME#")]
+    public class #SCRIPTNAME# : DataSetBase
     {
-        base.Fill(data);
-    }
-	/// <summary>
-    /// 将数据集打包为Json数据
-    /// </summary>
-    public override JsonData Pack()
-    {
-        JsonData data = new JsonData();
-        return data;
+        /// <summary>
+        /// 通过Json数据填充数据集
+        /// </summary>
+        public override void Fill(JsonData data)
+        {
+            base.Fill(data);
+        }
+        /// <summary>
+        /// 将数据集打包为Json数据
+        /// </summary>
+        public override JsonData Pack()
+        {
+            JsonData data = new JsonData();
+            return data;
+        }
     }
 }

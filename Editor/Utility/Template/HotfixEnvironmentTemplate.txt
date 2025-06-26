@@ -1,15 +1,23 @@
-﻿using HT.Framework;
+﻿#CUSTOMUSING#using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
+using UnityEngine.UI;
+using HT.Framework;
+using DG.Tweening;
 
-/// <summary>
-/// 热更新环境
-/// </summary>
-public sealed class HotfixEnvironment : HotfixBasicEnvironment
+namespace #NAMESPACE#
 {
-    public static HotfixEnvironment Environment;
-
-    public HotfixEnvironment() : base(Assembly.GetExecutingAssembly())
+    /// <summary>
+    /// 热更新环境
+    /// </summary>
+    public sealed class HotfixEnvironment : HotfixBasicEnvironment
     {
-        Environment = this;
+        public static HotfixEnvironment Environment;
+
+        public HotfixEnvironment() : base(Assembly.GetExecutingAssembly())
+        {
+            Environment = this;
+        }
     }
 }

@@ -1,72 +1,77 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
-/// <summary>
-/// 新建助手
-/// </summary>
-[CustomHelper("新建助手组/#HELPERNAME#")]
-public class #SCRIPTNAME# : StepHelper
-{
-	/// <summary>
-    /// 跳过时生命周期（仅在跳过时生效）
-    /// </summary>
-    public override float SkipLifeTime
-    {
-        get
-        {
-            return 0;
-        }
-    }
 
-	/// <summary>
-	/// 初始化
-	/// </summary>
-    public override void OnInit()
-    {
-        base.OnInit();
-    }
-	/// <summary>
-	/// 跳过步骤（仅在跳过时执行）
-	/// </summary>
-    public override void OnSkip()
-    {
-        base.OnSkip();
-    }
-	/// <summary>
-    /// 跳过步骤，立即模式（仅在立即跳过时执行）
-    /// </summary>
-    public override void OnSkipImmediate()
-    {
-		base.OnSkipImmediate();
-    }
-	/// <summary>
-	/// 恢复步骤（仅在倒退时执行）
-	/// </summary>
-    public override void OnRestore()
-    {
-        base.OnRestore();
-    }
+namespace #NAMESPACE#
+{
     /// <summary>
-    /// 步骤指引
+    /// 新建助手
     /// </summary>
-    public override void OnGuide()
+    [CustomHelper("新建助手组/#HELPERNAME#")]
+    public class #SCRIPTNAME# : StepHelper
     {
-	    base.OnGuide();
-    }
-	/// <summary>
-	/// 帧刷新
-	/// </summary>
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-	/// <summary>
-	/// 销毁
-	/// </summary>
-    public override void OnTermination()
-    {
-        base.OnTermination();
+        /// <summary>
+        /// 跳过时生命周期（仅在跳过时生效）
+        /// </summary>
+        public override float SkipLifeTime
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public override void OnInit()
+        {
+            base.OnInit();
+        }
+        /// <summary>
+        /// 跳过步骤（仅在跳过时执行）
+        /// </summary>
+        public override void OnSkip()
+        {
+            base.OnSkip();
+        }
+        /// <summary>
+        /// 跳过步骤，立即模式（仅在立即跳过时执行）
+        /// </summary>
+        public override void OnSkipImmediate()
+        {
+            base.OnSkipImmediate();
+        }
+        /// <summary>
+        /// 恢复步骤（仅在倒退时执行）
+        /// </summary>
+        public override void OnRestore()
+        {
+            base.OnRestore();
+        }
+        /// <summary>
+        /// 步骤指引
+        /// </summary>
+        public override void OnGuide()
+        {
+            base.OnGuide();
+        }
+        /// <summary>
+        /// 帧刷新
+        /// </summary>
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        /// <summary>
+        /// 销毁
+        /// </summary>
+        public override void OnTermination()
+        {
+            base.OnTermination();
+        }
     }
 }

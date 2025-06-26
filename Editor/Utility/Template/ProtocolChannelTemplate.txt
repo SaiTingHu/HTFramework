@@ -1,72 +1,77 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using HT.Framework;
-using DG.Tweening;
 using System.Net.Sockets;
 using System.Threading;
-/// <summary>
-/// 新建通信管道
-/// </summary>
-public class #SCRIPTNAME# : ProtocolChannelBase
+using UnityEngine;
+using UnityEngine.UI;
+using HT.Framework;
+using DG.Tweening;
+
+namespace #NAMESPACE#
 {
     /// <summary>
-    /// 通信协议
+    /// 新建通信管道
     /// </summary>
-    public override ProtocolType Protocol
+    public class #SCRIPTNAME# : ProtocolChannelBase
     {
-        get
+        /// <summary>
+        /// 通信协议
+        /// </summary>
+        public override ProtocolType Protocol
         {
-            return ProtocolType.Tcp;
+            get
+            {
+                return ProtocolType.Tcp;
+            }
         }
-    }
-    /// <summary>
-    /// 通道类型
-    /// </summary>
-    public override SocketType Way
-    {
-        get
+        /// <summary>
+        /// 通道类型
+        /// </summary>
+        public override SocketType Way
         {
-            return SocketType.Stream;
+            get
+            {
+                return SocketType.Stream;
+            }
         }
-    }
-    /// <summary>
-    /// 是否需要保持连接
-    /// </summary>
-    public override bool IsNeedConnect
-    {
-        get
+        /// <summary>
+        /// 是否需要保持连接
+        /// </summary>
+        public override bool IsNeedConnect
         {
-            return true;
+            get
+            {
+                return true;
+            }
         }
-    }
 
-    /// <summary>
-    /// 是否是断开连接请求
-    /// </summary>
-    /// <param name="message">消息对象</param>
-    /// <returns>是否是断开连接请求</returns>
-    public override bool IsDisconnectRequest(INetworkMessage message)
-    {
-        return false;
-    }
-    /// <summary>
-    /// 封装消息
-    /// </summary>
-    /// <param name="message">消息对象</param>
-    /// <returns>封装后的字节数组</returns>
-    public override byte[] EncapsulatedMessage(INetworkMessage message)
-    {
-        return null;
-    }
-    /// <summary>
-    /// 接收消息
-    /// </summary>
-    /// <param name="client">客户端</param>
-    /// <returns>接收到的消息对象</returns>
-    protected override INetworkMessage ReceiveMessage(Socket client)
-    {
-        Thread.Sleep(5000);
-        return null;
+        /// <summary>
+        /// 是否是断开连接请求
+        /// </summary>
+        /// <param name="message">消息对象</param>
+        /// <returns>是否是断开连接请求</returns>
+        public override bool IsDisconnectRequest(INetworkMessage message)
+        {
+            return false;
+        }
+        /// <summary>
+        /// 封装消息
+        /// </summary>
+        /// <param name="message">消息对象</param>
+        /// <returns>封装后的字节数组</returns>
+        public override byte[] EncapsulatedMessage(INetworkMessage message)
+        {
+            return null;
+        }
+        /// <summary>
+        /// 接收消息
+        /// </summary>
+        /// <param name="client">客户端</param>
+        /// <returns>接收到的消息对象</returns>
+        protected override INetworkMessage ReceiveMessage(Socket client)
+        {
+            Thread.Sleep(5000);
+            return null;
+        }
     }
 }

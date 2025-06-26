@@ -1,68 +1,73 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
-/// <summary>
-/// 新建状态
-/// </summary>
-[FiniteStateName("新建状态组/#STATENAME#")]
-public class #SCRIPTNAME# : FiniteStateBase
+
+namespace #NAMESPACE#
 {
     /// <summary>
-    /// 所属状态机的数据
+    /// 新建状态
     /// </summary>
-    private FSMDataBase _data;
-    /// <summary>
-    /// 所属状态机的参数
-    /// </summary>
-    private FSMArgsBase _args;
+    [FiniteStateName("新建状态组/#STATENAME#")]
+    public class #SCRIPTNAME# : FiniteStateBase
+    {
+        /// <summary>
+        /// 所属状态机的数据
+        /// </summary>
+        private FSMDataBase _data;
+        /// <summary>
+        /// 所属状态机的参数
+        /// </summary>
+        private FSMArgsBase _args;
 
-	/// <summary>
-	/// 初始化
-	/// </summary>
-    public override void OnInit()
-    {
-        base.OnInit();
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        public override void OnInit()
+        {
+            base.OnInit();
 
-		_data = StateMachine.CurrentData;
-        _args = StateMachine.CurrentArgs;
-    }
-    /// <summary>
-    /// 进入状态
-    /// </summary>
-    /// <param name="lastState">上一个离开的状态</param>
-    public override void OnEnter(FiniteStateBase lastState)
-    {
-        base.OnEnter(lastState);
-    }
-    /// <summary>
-    /// 离开状态
-    /// </summary>
-    /// <param name="nextState">下一个进入的状态</param>
-    public override void OnLeave(FiniteStateBase nextState)
-    {
-        base.OnLeave(nextState);
-    }
-	/// <summary>
-	/// 切换状态的动机
-	/// </summary>
-    public override void OnReason()
-    {
-        base.OnReason();
-    }
-	/// <summary>
-	/// 状态帧刷新
-	/// </summary>
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-	/// <summary>
-	/// 状态终结
-	/// </summary>
-    public override void OnTerminate()
-    {
-        base.OnTerminate();
+            _data = StateMachine.CurrentData;
+            _args = StateMachine.CurrentArgs;
+        }
+        /// <summary>
+        /// 进入状态
+        /// </summary>
+        /// <param name="lastState">上一个离开的状态</param>
+        public override void OnEnter(FiniteStateBase lastState)
+        {
+            base.OnEnter(lastState);
+        }
+        /// <summary>
+        /// 离开状态
+        /// </summary>
+        /// <param name="nextState">下一个进入的状态</param>
+        public override void OnLeave(FiniteStateBase nextState)
+        {
+            base.OnLeave(nextState);
+        }
+        /// <summary>
+        /// 切换状态的动机
+        /// </summary>
+        public override void OnReason()
+        {
+            base.OnReason();
+        }
+        /// <summary>
+        /// 状态帧刷新
+        /// </summary>
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        /// <summary>
+        /// 状态终结
+        /// </summary>
+        public override void OnTerminate()
+        {
+            base.OnTerminate();
+        }
     }
 }

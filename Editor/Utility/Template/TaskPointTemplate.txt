@@ -1,55 +1,59 @@
-﻿using System.Collections;
+﻿#CUSTOMUSING#using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using HT.Framework;
 using DG.Tweening;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-/// <summary>
-/// 新建任务点
-/// </summary>
-[TaskPoint("#SCRIPTNAME#")]
-public class #SCRIPTNAME# : TaskPointBase
+namespace #NAMESPACE#
 {
-	protected override void OnStart()
+    /// <summary>
+    /// 新建任务点
+    /// </summary>
+    [TaskPoint("#SCRIPTNAME#")]
+    public class #SCRIPTNAME# : TaskPointBase
     {
-        base.OnStart();
-    }
-    protected override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-	protected override void OnGuide()
-    {
-        base.OnGuide();
-    }
-	protected override IEnumerator OnComplete()
-    {
-        yield return base.OnComplete();
-    }
-	protected override void OnAutoComplete()
-    {
-        base.OnAutoComplete();
-    }
-    protected override void OnEnd()
-    {
-        base.OnEnd();
-    }
+        protected override void OnStart()
+        {
+            base.OnStart();
+        }
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+        }
+        protected override void OnGuide()
+        {
+            base.OnGuide();
+        }
+        protected override IEnumerator OnComplete()
+        {
+            yield return base.OnComplete();
+        }
+        protected override void OnAutoComplete()
+        {
+            base.OnAutoComplete();
+        }
+        protected override void OnEnd()
+        {
+            base.OnEnd();
+        }
 
 #if UNITY_EDITOR
-    protected override int OnPropertyGUI()
-    {
-        int height = base.OnPropertyGUI();
+        protected override int OnPropertyGUI()
+        {
+            int height = base.OnPropertyGUI();
 
-		GUILayout.BeginHorizontal();
-        GUILayout.Label("[新建任务点]");
-        GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("[新建任务点]");
+            GUILayout.EndHorizontal();
 
-		height += 20;
+            height += 20;
 
-        return height;
-    }
+            return height;
+        }
 #endif
+    }
 }
