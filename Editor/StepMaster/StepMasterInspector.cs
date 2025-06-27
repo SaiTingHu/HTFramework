@@ -96,31 +96,37 @@ namespace HT.Framework
                 GUILayout.Label(Target.CurrentStepHelper != null ? Target.CurrentStepHelper.GetType().Name : "<None>");
                 GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Disabled Steps: ");
-                GUILayout.EndHorizontal();
-
-                foreach (var step in _stepContentIDs)
+                if (_stepContentIDs != null)
                 {
-                    if (!step.Value.IsEnable || !step.Value.IsEnableRunTime)
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Disabled Steps: ");
+                    GUILayout.EndHorizontal();
+
+                    foreach (var step in _stepContentIDs)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(20);
-                        GUILayout.Label(step.Value.Name);
-                        GUILayout.EndHorizontal();
+                        if (!step.Value.IsEnable || !step.Value.IsEnableRunTime)
+                        {
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(20);
+                            GUILayout.Label(step.Value.Name);
+                            GUILayout.EndHorizontal();
+                        }
                     }
                 }
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Label($"Custom Order: {_customOrder.Count}");
-                GUILayout.EndHorizontal();
-
-                foreach (var order in _customOrder)
+                if (_customOrder != null)
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Space(20);
-                    GUILayout.Label($"{_stepContentIDs[order.Key].Name} -> {_stepContentIDs[order.Value].Name}");
+                    GUILayout.Label($"Custom Order: {_customOrder.Count}");
                     GUILayout.EndHorizontal();
+
+                    foreach (var order in _customOrder)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(20);
+                        GUILayout.Label($"{_stepContentIDs[order.Key].Name} -> {_stepContentIDs[order.Value].Name}");
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
             else
