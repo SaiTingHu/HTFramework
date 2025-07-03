@@ -113,6 +113,10 @@ namespace HT.Framework
         /// </summary>
         public static readonly string Transform_OnlyShowLocal = "HT.Framework.Transform.OnlyShowLocal";
         /// <summary>
+        /// Transform组件Inspector面板配置：是否拷贝InjectPath路径
+        /// </summary>
+        public static readonly string Transform_CopyInjectPath = "HT.Framework.Transform.CopyInjectPath";
+        /// <summary>
         /// 快捷工具是否启用
         /// </summary>
         public static readonly string LnkTools_Enable = "HT.Framework.LnkTools.Enable";

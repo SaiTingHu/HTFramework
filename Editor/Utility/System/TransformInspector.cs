@@ -486,7 +486,10 @@ namespace HT.Framework
             string fieldName = Target.name.Trim().Replace(" ", "");
             char[] fieldNames = fieldName.ToCharArray();
             fieldNames[0] = char.ToLower(fieldNames[0]);
-            string field = $"[InjectPath(\"{Target.FullName()}\")] private GameObject _{new string(fieldNames)};";
+            bool copyInjectPath = EditorPrefs.GetBool(EditorPrefsTable.Transform_CopyInjectPath, false);
+            string field = null;
+            if (copyInjectPath) field = $"[InjectPath(\"{Target.FullName()}\")] private GameObject _{new string(fieldNames)};";
+            else field = $"private GameObject _{new string(fieldNames)};";
             return field;
         }
     }
