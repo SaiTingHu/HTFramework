@@ -186,7 +186,7 @@ namespace HT.Framework
                 }
             }
         }
-        
+
         #region Field
         /// <summary>
         /// 字段检视器
@@ -272,6 +272,16 @@ namespace HT.Framework
                         }
                     }
                     return condition;
+                }
+            }
+            /// <summary>
+            /// 是否为空引用字段
+            /// </summary>
+            public bool IsNullObjectReference
+            {
+                get
+                {
+                    return Property.propertyType == SerializedPropertyType.ObjectReference && Property.objectReferenceValue == null;
                 }
             }
 
@@ -402,12 +412,12 @@ namespace HT.Framework
                     }
                 }
             }
-            
+
             public void Painting(ObjectInspector inspector)
             {
                 if (IsDisplay)
                 {
-                    GUI.color = UseColor;
+                    GUI.color = (inspector.targets.Length == 1 && IsNullObjectReference) ? Color.gray : UseColor;
                     if (Painters.Count > 0 && inspector.targets.Length == 1)
                     {
                         GUI.enabled = IsEnable;
@@ -421,20 +431,20 @@ namespace HT.Framework
                     {
                         if (Property.name == "m_Script")
                         {
-                            GUI.enabled = false;
                             EditorGUILayout.BeginHorizontal();
+                            GUI.enabled = false;
                             EditorGUILayout.PropertyField(Property);
-                            EditorGUILayout.EndHorizontal();
                             GUI.enabled = true;
+                            EditorGUILayout.EndHorizontal();
                         }
                         else
                         {
-                            GUI.enabled = IsEnable;
                             EditorGUILayout.BeginHorizontal();
+                            GUI.enabled = IsEnable;
                             EditorGUILayout.PropertyField(Property, new GUIContent(Label), true);
                             inspector.DrawCopyPaste(Property);
-                            EditorGUILayout.EndHorizontal();
                             GUI.enabled = true;
+                            EditorGUILayout.EndHorizontal();
                         }
                     }
                     GUI.color = Color.white;
@@ -1034,7 +1044,7 @@ namespace HT.Framework
                 {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PropertyField(fieldInspector.Property, new GUIContent(fieldInspector.Label), true);
-                    if (GUILayout.Button(OpenGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(16), GUILayout.Height(16)))
+                    if (GUILayout.Button(OpenGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20), GUILayout.Height(20)))
                     {
                         GenericTableWindow.OpenWindow(inspector.target, fieldInspector.Field.Name);
                     }
