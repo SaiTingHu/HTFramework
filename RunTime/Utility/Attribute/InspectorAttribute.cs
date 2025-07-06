@@ -73,11 +73,21 @@ namespace HT.Framework
     }
 
     /// <summary>
-    /// 层级检视器（支持 string 类型）
+    /// 层级检视器（支持 string、int 类型）
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
     public sealed class LayerAttribute : InspectorAttribute
+    {
+
+    }
+
+    /// <summary>
+    /// 标签检视器（支持 string 类型）
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public sealed class TagAttribute : InspectorAttribute
     {
 
     }

@@ -305,6 +305,10 @@ namespace HT.Framework
                         {
                             Painters.Add(new LayerPainter(iattributes[i]));
                         }
+                        else if (iattributes[i] is TagAttribute)
+                        {
+                            Painters.Add(new TagPainter(iattributes[i]));
+                        }
                         else if (iattributes[i] is ReorderableListAttribute)
                         {
                             Painters.Add(new ReorderableListPainter(iattributes[i]));
@@ -587,6 +591,43 @@ namespace HT.Framework
                 {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used Layer! because the types don't match!", MessageType.Error);
+                    EditorGUILayout.EndHorizontal();
+                }
+            }
+        }
+        /// <summary>
+        /// 字段绘制器 - 标签检视
+        /// </summary>
+        private sealed class TagPainter : FieldPainter
+        {
+            public TagAttribute TAttribute;
+
+            public TagPainter(InspectorAttribute attribute) : base(attribute)
+            {
+                TAttribute = attribute as TagAttribute;
+            }
+
+            public override void Painting(ObjectInspector inspector, FieldInspector fieldInspector)
+            {
+                if (fieldInspector.Field.FieldType == typeof(string))
+                {
+                    string tag = (string)fieldInspector.Field.GetValue(inspector.target);
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUI.BeginChangeCheck();
+                    string newTag = EditorGUILayout.TagField(fieldInspector.Label, tag);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(inspector.target, "Tag");
+                        fieldInspector.Field.SetValue(inspector.target, newTag);
+                        inspector.HasChanged();
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+                else
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.HelpBox($"[{fieldInspector.Field.Name}] can't used Tag! because the types don't match!", MessageType.Error);
                     EditorGUILayout.EndHorizontal();
                 }
             }
