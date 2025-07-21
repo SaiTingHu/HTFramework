@@ -21,6 +21,17 @@ namespace HT.Framework
             "UnityEditor", "UnityEditorInternal" };
 
         /// <summary>
+        /// 添加自定义程序集到编辑器程序域（建议调用时机：标记了[InitializeOnLoad]类的【静态构造方法】中，标记了[InitializeOnLoadMethod]的静态方法中）
+        /// </summary>
+        /// <param name="assembly">编辑器程序集</param>
+        public static void AddEditorAssembly(string assembly)
+        {
+            if (!string.IsNullOrEmpty(assembly))
+            {
+                EditorAssemblies.Add(assembly);
+            }
+        }
+        /// <summary>
         /// 从当前【程序域】的【热更新程序集】中获取所有类型
         /// </summary>
         /// <returns>所有类型</returns>
