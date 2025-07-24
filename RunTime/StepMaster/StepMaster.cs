@@ -749,7 +749,7 @@ namespace HT.Framework
                     }
                     catch (Exception e)
                     {
-                        Log.Error($"步骤控制器：指引步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}");
+                        Log.Error($"步骤控制器：指引步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
                     }
                 }
                 else
@@ -1221,17 +1221,17 @@ namespace HT.Framework
         /// </summary>
         private void SkipImmediateHelper()
         {
-            try
+            if (_currentHelper != null)
             {
-                if (_currentHelper != null)
+                _currentHelper.Task = StepHelperTask.SkipImmediate;
+                try
                 {
-                    _currentHelper.Task = StepHelperTask.SkipImmediate;
                     _currentHelper.OnSkipImmediate();
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Error($"步骤控制器：立即跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
+                catch (Exception e)
+                {
+                    Log.Error($"步骤控制器：立即跳过步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
+                }
             }
         }
         /// <summary>
@@ -1239,17 +1239,17 @@ namespace HT.Framework
         /// </summary>
         private void RestoreHelper()
         {
-            try
+            if (_currentHelper != null)
             {
-                if (_currentHelper != null)
+                _currentHelper.Task = StepHelperTask.Restore;
+                try
                 {
-                    _currentHelper.Task = StepHelperTask.Restore;
                     _currentHelper.OnRestore();
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Error($"步骤控制器：恢复步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
+                catch (Exception e)
+                {
+                    Log.Error($"步骤控制器：恢复步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
+                }
             }
         }
         /// <summary>
@@ -1257,17 +1257,20 @@ namespace HT.Framework
         /// </summary>
         private void DestroyHelper()
         {
-            try
+            if (_currentHelper != null)
             {
-                if (_currentHelper != null)
+                try
                 {
                     _currentHelper.OnTermination();
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"步骤控制器：销毁步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
+                }
+                finally
+                {
                     _currentHelper = null;
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Error($"步骤控制器：销毁步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
             }
         }
         /// <summary>
