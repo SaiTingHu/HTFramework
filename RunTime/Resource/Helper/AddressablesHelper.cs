@@ -121,7 +121,11 @@ namespace HT.Framework
             LoadMode = loadMode;
             IsEditorMode = isEditorMode;
             IsLogDetail = isLogDetail;
-            AssetBundleRootPath = Application.persistentDataPath + "/";
+#if UNITY_WEBGL
+            AssetBundleRootPath = Application.streamingAssetsPath + "/AssetBundles/";
+#else
+            AssetBundleRootPath = Application.persistentDataPath + "/AssetBundles/";
+#endif
             AssetBundleManifestName = manifestName;
 
             if (LoadMode != ResourceLoadMode.Addressables)
