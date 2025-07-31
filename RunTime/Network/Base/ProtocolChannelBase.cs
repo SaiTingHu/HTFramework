@@ -139,9 +139,12 @@ namespace HT.Framework
             if (info == null || info.Length == 0)
                 return;
 
-            _isCanSend = false;
-            _sendDataBuffer.Add(info);
-            _isCanSend = true;
+            lock (_sendDataBuffer)
+            {
+                _isCanSend = false;
+                _sendDataBuffer.Add(info);
+                _isCanSend = true;
+            }
         }
         /// <summary>
         /// 转换为字符串
@@ -171,13 +174,17 @@ namespace HT.Framework
             {
                 if (IsNeedConnect && IsConnect)
                 {
-                    Client.Shutdown(SocketShutdown.Both);
-                    Client.Disconnect(false);
+                    try
+                    {
+                        Client.Shutdown(SocketShutdown.Both);
+                        Client.Disconnect(false);
+                    }
+                    catch (Exception)
+                    { }
 
                     DisconnectServerEvent?.Invoke(this);
                 }
                 Client.Close();
-                Client.Dispose();
                 Client = null;
             }
         }
@@ -210,10 +217,23 @@ namespace HT.Framework
             {
                 if (IsConnect && _isCanSend && _sendDataBuffer.Count > 0)
                 {
-                    int sendCount = Client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, 0);
+                    int sendCount = 0;
+                    try
+                    {
+                        sendCount = Client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, SocketFlags.None);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"{this} 发送消息出错：{e.Message}");
+                        sendCount = 0;
+                    }
+
                     if (sendCount > 0)
                     {
-                        _sendDataBuffer.RemoveAt(0);
+                        lock (_sendDataBuffer)
+                        {
+                            _sendDataBuffer.RemoveAt(0);
+                        }
 
                         Main.Current.QueueOnMainThread(() =>
                         {
@@ -258,10 +278,23 @@ namespace HT.Framework
             {
                 if (_isCanSend && _sendDataBuffer.Count > 0)
                 {
-                    int sendCount = Client.SendTo(_sendDataBuffer[0], Main.m_Network.ServerEndPoint);
+                    int sendCount = 0;
+                    try
+                    {
+                        sendCount = Client.SendTo(_sendDataBuffer[0], Main.m_Network.ServerEndPoint);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"{this} 发送消息出错：{e.Message}");
+                        sendCount = 0;
+                    }
+
                     if (sendCount > 0)
                     {
-                        _sendDataBuffer.RemoveAt(0);
+                        lock (_sendDataBuffer)
+                        {
+                            _sendDataBuffer.RemoveAt(0);
+                        }
 
                         Main.Current.QueueOnMainThread(() =>
                         {

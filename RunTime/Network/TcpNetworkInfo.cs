@@ -46,6 +46,27 @@ namespace HT.Framework
         }
         public TcpNetworkInfo()
         {
+
+        }
+
+        public override string ToString()
+        {
+            StringToolkit.BeginConcat();
+            StringToolkit.Concat($"校验码：{CheckCode}，消息体长度：{BodyLength}，身份ID：{Sessionid}，主命令：{Command}，子命令：{Subcommand}，加密方式：{Encrypt}，返回码：{ReturnCode}，");
+            if (Messages != null && Messages.Count > 0)
+            {
+                StringToolkit.Concat($"消息体（{Messages.Count}条）：");
+                for (int i = 0; i < Messages.Count; i++)
+                {
+                    StringToolkit.Concat(Messages[i]);
+                    StringToolkit.Concat(i == (Messages.Count - 1) ? "。" : "、");
+                }
+            }
+            else
+            {
+                StringToolkit.Concat("消息体（0条）。");
+            }
+            return StringToolkit.EndConcat();
         }
     }
 }

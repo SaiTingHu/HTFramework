@@ -11,6 +11,7 @@ namespace HT.Framework
     public sealed class UdpChannel : ProtocolChannelBase
     {
         private EndPoint _serverEndPoint;
+        private byte[] _receiveBuffer = new byte[2048];
 
         /// <summary>
         /// 通信协议
@@ -83,11 +84,10 @@ namespace HT.Framework
             {
                 if (_serverEndPoint == null) _serverEndPoint = Main.m_Network.ServerEndPoint;
 
-                byte[] buffer = new byte[2048];
-                int length = client.ReceiveFrom(buffer, ref _serverEndPoint);
+                int length = client.ReceiveFrom(_receiveBuffer, ref _serverEndPoint);
 
                 UdpNetworkInfo info = new UdpNetworkInfo();
-                info.Message = Encoding.UTF8.GetString(buffer, 0, length);
+                info.Message = Encoding.UTF8.GetString(_receiveBuffer, 0, length);
                 return info;
             }
             catch (Exception)
