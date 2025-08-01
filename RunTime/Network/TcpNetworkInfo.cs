@@ -1,72 +1,81 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Net;
 using System.Text;
 
 namespace HT.Framework
 {
     /// <summary>
     /// 默认的Tcp协议网络消息
-    /// 消息头：消息校验码4字节 + 消息体长度4字节 + 身份ID8字节 + 主命令4字节 + 子命令4字节 + 加密方式4字节 + 返回码4字节 = 32字节
-    /// 消息体：消息1长度4字节 + 消息1 + 消息2长度4字节 + 消息2......（消息体的长度存储在消息头的4至8索引位置的字节里）
+    /// 消息校验码：4字节
+    /// 消息头：消息体长度4字节 + 身份ID8字节 + 主命令4字节 + 子命令4字节 + 加密方式4字节 + 返回码4字节 = 28字节
+    /// 消息体：消息体内容（消息体内容的长度存储在消息头的0-4索引位置的字节里）
     /// </summary>
     public sealed class TcpNetworkInfo : INetworkMessage
     {
+        /// <summary>
+        /// 校验码
+        /// </summary>
         public int CheckCode;
-        public int BodyLength;
+        /// <summary>
+        /// 身份ID
+        /// </summary>
         public long Sessionid;
+        /// <summary>
+        /// 主命令
+        /// </summary>
         public int Command;
+        /// <summary>
+        /// 子命令
+        /// </summary>
         public int Subcommand;
+        /// <summary>
+        /// 加密方式
+        /// </summary>
         public int Encrypt;
+        /// <summary>
+        /// 返回码
+        /// </summary>
         public int ReturnCode;
-        public List<string> Messages;
-        
-        public TcpNetworkInfo(int checkCode, long sessionid, int command, int subcommand, int encrypt, int returnCode, List<string> messages)
-        {
-            CheckCode = checkCode;
-            BodyLength = 0;
-            Sessionid = sessionid;
-            Command = command;
-            Subcommand = subcommand;
-            Encrypt = encrypt;
-            ReturnCode = returnCode;
-            Messages = messages;
-            if (Messages != null && Messages.Count > 0)
-            {
-                for (int i = 0; i < Messages.Count; i++)
-                {
-                    if (string.IsNullOrEmpty(Messages[i]))
-                    {
-                        Messages.RemoveAt(i);
-                        i -= 1;
-                        continue;
-                    }
-                    BodyLength += Encoding.UTF8.GetBytes(Messages[i]).Length;
-                }
-                BodyLength += Messages.Count * 4;
-            }
-        }
-        public TcpNetworkInfo()
-        {
+        /// <summary>
+        /// 消息内容
+        /// </summary>
+        public string Message;
 
-        }
+        /// <summary>
+        /// 封装消息为字节数组
+        /// </summary>
+        /// <returns>封装后的字节数组</returns>
+        public byte[] Encapsulate()
+        {
+            byte[] messageBodyByte = string.IsNullOrEmpty(Message) ? null : Encoding.UTF8.GetBytes(Message);
+            int bodyLength = messageBodyByte == null ? 0 : messageBodyByte.Length;
+            byte[] checkCodeByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(CheckCode));
+            byte[] bodyLengthByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(bodyLength));
+            byte[] sessionidByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Sessionid));
+            byte[] commandByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Command));
+            byte[] subcommandByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Subcommand));
+            byte[] encryptByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Encrypt));
+            byte[] returnCodeByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(ReturnCode));
 
+            byte[] totalByte = new byte[32 + bodyLength];
+            checkCodeByte.CopyTo(totalByte, 0);
+            bodyLengthByte.CopyTo(totalByte, 4);
+            sessionidByte.CopyTo(totalByte, 8);
+            commandByte.CopyTo(totalByte, 16);
+            subcommandByte.CopyTo(totalByte, 20);
+            encryptByte.CopyTo(totalByte, 24);
+            returnCodeByte.CopyTo(totalByte, 28);
+            if (messageBodyByte != null) messageBodyByte.CopyTo(totalByte, 32);
+
+            return totalByte;
+        }
         public override string ToString()
         {
-            StringToolkit.BeginConcat();
-            StringToolkit.Concat($"校验码：{CheckCode}，消息体长度：{BodyLength}，身份ID：{Sessionid}，主命令：{Command}，子命令：{Subcommand}，加密方式：{Encrypt}，返回码：{ReturnCode}，");
-            if (Messages != null && Messages.Count > 0)
-            {
-                StringToolkit.Concat($"消息体（{Messages.Count}条）：");
-                for (int i = 0; i < Messages.Count; i++)
-                {
-                    StringToolkit.Concat(Messages[i]);
-                    StringToolkit.Concat(i == (Messages.Count - 1) ? "。" : "、");
-                }
-            }
-            else
-            {
-                StringToolkit.Concat("消息体（0条）。");
-            }
-            return StringToolkit.EndConcat();
+            return $"校验码：{CheckCode}，身份ID：{Sessionid}，主命令：{Command}，子命令：{Subcommand}，加密方式：{Encrypt}，返回码：{ReturnCode}，消息体：{Message}。";
+        }
+        public void Reset()
+        {
+
         }
     }
 }

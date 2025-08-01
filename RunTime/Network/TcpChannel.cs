@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -25,7 +24,6 @@ namespace HT.Framework
         private byte[] _receiveBuffer = new byte[256];
         private byte[] _receiveCodeData = new byte[4];
         private byte[] _receiveHeadData = new byte[28];
-        private byte[] _bodyLengthData = new byte[4];
 
         /// <summary>
         /// 通信协议
@@ -88,40 +86,7 @@ namespace HT.Framework
         /// <returns>封装后的字节数组</returns>
         public override byte[] EncapsulatedMessage(INetworkMessage message)
         {
-            TcpNetworkInfo networkInfo = message as TcpNetworkInfo;
-            byte[] checkCodeByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.CheckCode));
-            byte[] bodyLengthByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.BodyLength));
-            byte[] sessionidByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Sessionid));
-            byte[] commandByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Command));
-            byte[] subcommandByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Subcommand));
-            byte[] encryptByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.Encrypt));
-            byte[] returnCodeByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(networkInfo.ReturnCode));
-
-            byte[] messageBodyByte = new byte[networkInfo.BodyLength];
-            if (networkInfo.Messages != null)
-            {
-                int copyIndex = 0;
-                for (int i = 0; i < networkInfo.Messages.Count; i++)
-                {
-                    byte[] bytes = Encoding.UTF8.GetBytes(networkInfo.Messages[i]);
-                    BitConverter.GetBytes(IPAddress.HostToNetworkOrder(bytes.Length)).CopyTo(messageBodyByte, copyIndex);
-                    copyIndex += 4;
-                    bytes.CopyTo(messageBodyByte, copyIndex);
-                    copyIndex += bytes.Length;
-                }
-            }
-
-            byte[] totalByte = new byte[32 + networkInfo.BodyLength];
-            checkCodeByte.CopyTo(totalByte, 0);
-            bodyLengthByte.CopyTo(totalByte, 4);
-            sessionidByte.CopyTo(totalByte, 8);
-            commandByte.CopyTo(totalByte, 16);
-            subcommandByte.CopyTo(totalByte, 20);
-            encryptByte.CopyTo(totalByte, 24);
-            returnCodeByte.CopyTo(totalByte, 28);
-            messageBodyByte.CopyTo(totalByte, 32);
-
-            return totalByte;
+            return message.Encapsulate();
         }
         /// <summary>
         /// 接收消息
@@ -153,38 +118,25 @@ namespace HT.Framework
                     ReceiveFixedBytes(client, _receiveBuffer, _receiveHeadData);
 
                     //接收消息体（消息体的长度存储在消息头的0-4索引位置的字节里）
-                    Array.Copy(_receiveHeadData, 0, _bodyLengthData, 0, 4);
-                    int recvBodyLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_bodyLengthData, 0));
+                    int recvBodyLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 0));
                     byte[] receiveBodyData = new byte[recvBodyLength];
                     ReceiveFixedBytes(client, _receiveBuffer, receiveBodyData);
 
                     //解析消息
-                    TcpNetworkInfo info = new TcpNetworkInfo();
+                    TcpNetworkInfo info = Main.m_ReferencePool.Spawn<TcpNetworkInfo>();
                     info.CheckCode = code;
-                    info.BodyLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 0));
                     info.Sessionid = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(_receiveHeadData, 4));
                     info.Command = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 12));
                     info.Subcommand = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 16));
                     info.Encrypt = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 20));
                     info.ReturnCode = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 24));
-                    info.Messages = new List<string>();
-                    for (int i = 0; i < receiveBodyData.Length;)
-                    {
-                        Array.Copy(receiveBodyData, i, _bodyLengthData, 0, 4);
-                        i += 4;
-                        int number = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_bodyLengthData, 0));
-
-                        byte[] bytes = new byte[number];
-                        Array.Copy(receiveBodyData, i, bytes, 0, number);
-                        i += number;
-                        info.Messages.Add(Encoding.UTF8.GetString(bytes, 0, bytes.Length));
-                    }
+                    info.Message = Encoding.UTF8.GetString(receiveBodyData, 0, receiveBodyData.Length);
                     return info;
                 }
                 else
                 {
                     return null;
-                }                
+                }
             }
             catch (Exception)
             {

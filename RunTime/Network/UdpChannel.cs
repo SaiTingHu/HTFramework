@@ -69,9 +69,7 @@ namespace HT.Framework
         /// <returns>封装后的字节数组</returns>
         public override byte[] EncapsulatedMessage(INetworkMessage message)
         {
-            UdpNetworkInfo networkInfo = message as UdpNetworkInfo;
-            byte[] bytes = Encoding.UTF8.GetBytes(networkInfo.Message);
-            return bytes;
+            return message.Encapsulate();
         }
         /// <summary>
         /// 接收消息
@@ -86,7 +84,7 @@ namespace HT.Framework
 
                 int length = client.ReceiveFrom(_receiveBuffer, ref _serverEndPoint);
 
-                UdpNetworkInfo info = new UdpNetworkInfo();
+                UdpNetworkInfo info = Main.m_ReferencePool.Spawn<UdpNetworkInfo>();
                 info.Message = Encoding.UTF8.GetString(_receiveBuffer, 0, length);
                 return info;
             }

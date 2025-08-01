@@ -259,11 +259,11 @@ namespace HT.Framework
                         Main.Current.QueueOnMainThread(() =>
                         {
                             ReceiveMessageEvent?.Invoke(this, message);
-
                             if (IsDisconnectRequest(message))
                             {
                                 DisconnectServer();
                             }
+                            Main.m_ReferencePool.Despawn(message);
                         });
                     }
                 }
@@ -318,6 +318,7 @@ namespace HT.Framework
                     Main.Current.QueueOnMainThread(() =>
                     {
                         ReceiveMessageEvent?.Invoke(this, message);
+                        Main.m_ReferencePool.Despawn(message);
                     });
                 }
             }

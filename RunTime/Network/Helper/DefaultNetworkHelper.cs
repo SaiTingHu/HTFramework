@@ -250,6 +250,7 @@ namespace HT.Framework
                     if (ProtocolChannels[channelType].IsConnect)
                     {
                         ProtocolChannels[channelType].InjectMessage(ProtocolChannels[channelType].EncapsulatedMessage(message));
+                        Main.m_ReferencePool.Despawn(message);
                         return true;
                     }
                     else
@@ -261,6 +262,7 @@ namespace HT.Framework
                 else
                 {
                     ProtocolChannels[channelType].InjectMessage(ProtocolChannels[channelType].EncapsulatedMessage(message));
+                    Main.m_ReferencePool.Despawn(message);
                     return true;
                 }
             }
