@@ -710,6 +710,64 @@ namespace HT.Framework
             GameObject obj = UnityEngine.Object.Instantiate(asset, parent);
             Selection.activeGameObject = obj;
         }
+
+        /// <summary>
+        /// 新建UDateTimeField
+        /// </summary>
+        [MenuItem("GameObject/HTFramework/UI/UDateTime Field", false, 103)]
+        private static void CreateUDateTimeField()
+        {
+            Transform parent = null;
+            if (Selection.activeGameObject)
+            {
+                parent = Selection.activeGameObject.transform;
+            }
+            else
+            {
+                PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabStage != null)
+                {
+                    parent = prefabStage.prefabContentsRoot.transform;
+                }
+                else
+                {
+                    parent = null;
+                }
+            }
+
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HTFramework/RunTime/Utility/UI/UDateTime/UDateTimeField.prefab");
+            GameObject obj = UnityEngine.Object.Instantiate(asset, parent);
+            Selection.activeGameObject = obj;
+        }
+
+        /// <summary>
+        /// 新建UDateTimePicker
+        /// </summary>
+        [MenuItem("GameObject/HTFramework/UI/UDateTime Picker", false, 104)]
+        private static void CreateUDateTimePicker()
+        {
+            Transform parent = null;
+            if (Selection.activeGameObject)
+            {
+                parent = Selection.activeGameObject.transform;
+            }
+            else
+            {
+                PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabStage != null)
+                {
+                    parent = prefabStage.prefabContentsRoot.transform;
+                }
+                else
+                {
+                    parent = null;
+                }
+            }
+
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HTFramework/RunTime/Utility/UI/UDateTime/UDateTimePicker.prefab");
+            GameObject obj = UnityEngine.Object.Instantiate(asset, parent);
+            Selection.activeGameObject = obj;
+        }
         #endregion
 
         #region 工程视图新建菜单 【优先级100】

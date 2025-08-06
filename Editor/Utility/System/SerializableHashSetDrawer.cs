@@ -10,6 +10,12 @@ namespace HT.Framework
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (property.serializedObject.targetObjects.Length > 1)
+            {
+                EditorGUI.HelpBox(position, "SerializableHashSet cannot be multi-edited.", MessageType.None);
+                return;
+            }
+
             InitDrawer(property);
 
             bool last = GUI.enabled;

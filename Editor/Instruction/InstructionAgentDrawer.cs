@@ -12,6 +12,12 @@ namespace HT.Framework
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            if (property.serializedObject.targetObjects.Length > 1)
+            {
+                EditorGUI.HelpBox(position, "InstructionAgent cannot be multi-edited.", MessageType.None);
+                return;
+            }
+
             SerializedProperty code = property.FindPropertyRelative("Code");
             _isReadOnly = !GUI.enabled;
 
