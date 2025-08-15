@@ -256,6 +256,7 @@ namespace HT.Framework
                     else
                     {
                         Log.Error("发送消息出错：客户端已断开连接！");
+                        Main.m_ReferencePool.Despawn(message);
                         return false;
                     }
                 }
@@ -269,7 +270,8 @@ namespace HT.Framework
             else
             {
                 Log.Warning($"发送消息出错：{channelType.FullName} 未启用或并不是有效的通信协议！");
-                return true;
+                Main.m_ReferencePool.Despawn(message);
+                return false;
             }
         }
     }
