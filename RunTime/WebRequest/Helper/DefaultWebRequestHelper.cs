@@ -284,6 +284,13 @@ namespace HT.Framework
             {
                 DateTime begin = DateTime.Now;
 
+                if (wif.RequestHeaders != null)
+                {
+                    foreach (var header in wif.RequestHeaders)
+                    {
+                        request.SetRequestHeader(header.Key, header.Value);
+                    }
+                }
                 wif.OnSetDownloadHandler(request);
                 yield return request.SendWebRequest();
 
@@ -336,6 +343,13 @@ namespace HT.Framework
             {
                 DateTime begin = DateTime.Now;
 
+                if (wif.RequestHeaders != null)
+                {
+                    foreach (var header in wif.RequestHeaders)
+                    {
+                        request.SetRequestHeader(header.Key, header.Value);
+                    }
+                }
                 wif.OnSetDownloadHandler(request);
                 yield return request.SendWebRequest();
 
@@ -400,6 +414,13 @@ namespace HT.Framework
             {
                 DateTime begin = DateTime.Now;
 
+                if (wif.RequestHeaders != null)
+                {
+                    foreach (var header in wif.RequestHeaders)
+                    {
+                        request.SetRequestHeader(header.Key, header.Value);
+                    }
+                }
                 wif.OnSetDownloadHandler(request);
                 request.SendWebRequest();
                 while (!request.isDone)

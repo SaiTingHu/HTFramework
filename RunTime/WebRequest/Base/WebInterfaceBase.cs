@@ -1,4 +1,5 @@
-﻿using UnityEngine.Networking;
+﻿using System.Collections.Generic;
+using UnityEngine.Networking;
 
 namespace HT.Framework
 {
@@ -23,6 +24,10 @@ namespace HT.Framework
         /// 离线模式处理者
         /// </summary>
         public HTFAction OfflineHandler;
+        /// <summary>
+        /// 发起请求时的头部信息
+        /// </summary>
+        public Dictionary<string, string> RequestHeaders;
 
         /// <summary>
         /// 请求完成
