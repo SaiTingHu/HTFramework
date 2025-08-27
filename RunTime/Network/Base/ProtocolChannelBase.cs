@@ -16,6 +16,7 @@ namespace HT.Framework
         private Thread _receiveThread;
         private List<byte[]> _sendDataBuffer = new List<byte[]>();
         private bool _isCanSend = false;
+        private object _lockObj = new object();
 
         /// <summary>
         /// 通信协议
@@ -139,7 +140,7 @@ namespace HT.Framework
             if (info == null || info.Length == 0)
                 return;
 
-            lock (_sendDataBuffer)
+            lock (_lockObj)
             {
                 _isCanSend = false;
                 _sendDataBuffer.Add(info);
@@ -215,30 +216,38 @@ namespace HT.Framework
         {
             while (_isEnableThread)
             {
-                if (IsConnect && _isCanSend && _sendDataBuffer.Count > 0)
+                if (IsConnect && _isCanSend)
                 {
-                    int sendCount = 0;
-                    try
+                    byte[] sendBuffer = null;
+                    lock (_lockObj)
                     {
-                        sendCount = Client.Send(_sendDataBuffer[0], _sendDataBuffer[0].Length, SocketFlags.None);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error($"{this} 发送消息出错：{e.Message}");
-                        sendCount = 0;
-                    }
-
-                    if (sendCount > 0)
-                    {
-                        lock (_sendDataBuffer)
+                        if (_sendDataBuffer.Count > 0)
                         {
+                            sendBuffer = _sendDataBuffer[0];
                             _sendDataBuffer.RemoveAt(0);
                         }
+                    }
 
-                        Main.Current.QueueOnMainThread(() =>
+                    if (sendBuffer != null)
+                    {
+                        int sendCount = 0;
+                        try
                         {
-                            SendMessageEvent?.Invoke(this);
-                        });
+                            sendCount = Client.Send(sendBuffer, sendBuffer.Length, SocketFlags.None);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error($"{this} 发送消息出错：{e.Message}");
+                            sendCount = 0;
+                        }
+
+                        if (sendCount > 0)
+                        {
+                            Main.Current.QueueOnMainThread(() =>
+                            {
+                                SendMessageEvent?.Invoke(this);
+                            });
+                        }
                     }
                 }
             }
@@ -276,30 +285,38 @@ namespace HT.Framework
         {
             while (_isEnableThread)
             {
-                if (_isCanSend && _sendDataBuffer.Count > 0)
+                if (_isCanSend)
                 {
-                    int sendCount = 0;
-                    try
+                    byte[] sendBuffer = null;
+                    lock (_lockObj)
                     {
-                        sendCount = Client.SendTo(_sendDataBuffer[0], Main.m_Network.ServerEndPoint);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error($"{this} 发送消息出错：{e.Message}");
-                        sendCount = 0;
-                    }
-
-                    if (sendCount > 0)
-                    {
-                        lock (_sendDataBuffer)
+                        if (_sendDataBuffer.Count > 0)
                         {
+                            sendBuffer = _sendDataBuffer[0];
                             _sendDataBuffer.RemoveAt(0);
                         }
+                    }
 
-                        Main.Current.QueueOnMainThread(() =>
+                    if (sendBuffer != null)
+                    {
+                        int sendCount = 0;
+                        try
                         {
-                            SendMessageEvent?.Invoke(this);
-                        });
+                            sendCount = Client.SendTo(sendBuffer, Main.m_Network.ServerEndPoint);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error($"{this} 发送消息出错：{e.Message}");
+                            sendCount = 0;
+                        }
+
+                        if (sendCount > 0)
+                        {
+                            Main.Current.QueueOnMainThread(() =>
+                            {
+                                SendMessageEvent?.Invoke(this);
+                            });
+                        }
                     }
                 }
             }
