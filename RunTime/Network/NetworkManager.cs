@@ -136,7 +136,7 @@ namespace HT.Framework
                 _serverEndPoint.Port = ServerPort;
             }
         }
-
+        
         /// <summary>
         /// 通道是否已连接
         /// </summary>
@@ -211,6 +211,25 @@ namespace HT.Framework
         public bool SendMessage(Type channelType, INetworkMessage message)
         {
             return _helper.SendMessage(channelType, message);
+        }
+
+        /// <summary>
+        /// 获取指定的通信管道
+        /// </summary>
+        /// <typeparam name="T">通信协议通道类型</typeparam>
+        /// <returns>通信协议通道实例</returns>
+        public T GetProtocolChannel<T>() where T : ProtocolChannelBase
+        {
+            return GetProtocolChannel(typeof(T)) as T;
+        }
+        /// <summary>
+        /// 获取指定的通信管道
+        /// </summary>
+        /// <param name="channelType">通信协议通道类型</param>
+        /// <returns>通信协议通道实例</returns>
+        public ProtocolChannelBase GetProtocolChannel(Type channelType)
+        {
+            return _helper.GetProtocolChannel(channelType);
         }
     }
 }

@@ -274,5 +274,21 @@ namespace HT.Framework
                 return false;
             }
         }
+        /// <summary>
+        /// 获取指定的通信管道
+        /// </summary>
+        /// <param name="channelType">通信协议通道类型</param>
+        /// <returns>通信协议通道实例</returns>
+        public ProtocolChannelBase GetProtocolChannel(Type channelType)
+        {
+            if (ProtocolChannels.ContainsKey(channelType))
+            {
+                return ProtocolChannels[channelType];
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

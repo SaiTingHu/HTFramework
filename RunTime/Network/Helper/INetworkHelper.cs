@@ -66,5 +66,11 @@ namespace HT.Framework
         /// <param name="message">消息对象</param>
         /// <returns>是否发送成功</returns>
         bool SendMessage(Type channelType, INetworkMessage message);
+        /// <summary>
+        /// 获取指定的通信管道
+        /// </summary>
+        /// <param name="channelType">通信管道类型</param>
+        /// <returns>通信管道实例</returns>
+        ProtocolChannelBase GetProtocolChannel(Type channelType);
     }
 }
