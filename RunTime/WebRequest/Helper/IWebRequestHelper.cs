@@ -94,6 +94,13 @@ namespace HT.Framework
         /// <returns>请求的协程</returns>
         Coroutine SendRequest(string interfaceName, WWWForm form);
         /// <summary>
+        /// 发起提交Json数据请求
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="jsonData">json数据</param>
+        /// <returns>请求的协程</returns>
+        Coroutine SendPostJson(string interfaceName, string jsonData);
+        /// <summary>
         /// 发起下载文件请求
         /// </summary>
         /// <param name="interfaceName">接口名称</param>

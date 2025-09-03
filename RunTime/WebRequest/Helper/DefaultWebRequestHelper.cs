@@ -370,6 +370,64 @@ namespace HT.Framework
             }
         }
         /// <summary>
+        /// 发起提交Json数据请求
+        /// </summary>
+        /// <param name="interfaceName">接口名称</param>
+        /// <param name="jsonData">json数据</param>
+        /// <returns>请求的协程</returns>
+        public Coroutine SendPostJson(string interfaceName, string jsonData)
+        {
+            if (WebInterfaces.ContainsKey(interfaceName))
+            {
+                if (_module.IsOfflineState || WebInterfaces[interfaceName].IsOffline || !IsConnectedInternet)
+                {
+                    WebInterfaces[interfaceName].OfflineHandler?.Invoke();
+                }
+                else
+                {
+                    return Main.Current.StartCoroutine(SendPostJsonCoroutine(WebInterfaces[interfaceName], jsonData));
+                }
+            }
+            else
+            {
+                throw new HTFrameworkException(HTFrameworkModule.WebRequest, $"发起提交Json数据请求失败：不存在名为 {interfaceName} 的网络接口！");
+            }
+            return null;
+        }
+        private IEnumerator SendPostJsonCoroutine(WebInterfaceBase wif, string jsonData)
+        {
+            string url = wif.Url;
+            using (UnityWebRequest request = UnityWebRequest.Post(url, jsonData, "application/json"))
+            {
+                DateTime begin = DateTime.Now;
+
+                if (wif.RequestHeaders != null)
+                {
+                    foreach (var header in wif.RequestHeaders)
+                    {
+                        request.SetRequestHeader(header.Key, header.Value);
+                    }
+                }
+                wif.OnSetDownloadHandler(request);
+                yield return request.SendWebRequest();
+
+                DateTime end = DateTime.Now;
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    LogSuccessDetail(wif, request.downloadHandler, url, begin, end);
+
+                    wif.OnRequestFinished(request.downloadHandler);
+                }
+                else
+                {
+                    LogFailDetail(wif, request.error, url, begin, end);
+
+                    wif.OnRequestFinished(null);
+                }
+            }
+        }
+        /// <summary>
         /// 发起下载文件请求
         /// </summary>
         /// <param name="interfaceName">接口名称</param>
