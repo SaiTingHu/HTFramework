@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Text;
 
 namespace HT.Framework
 {
@@ -39,7 +38,7 @@ namespace HT.Framework
         /// <summary>
         /// 消息内容
         /// </summary>
-        public string Message;
+        public byte[] Message;
 
         /// <summary>
         /// 封装消息为字节数组
@@ -47,8 +46,7 @@ namespace HT.Framework
         /// <returns>封装后的字节数组</returns>
         public byte[] Encapsulate()
         {
-            byte[] messageBodyByte = string.IsNullOrEmpty(Message) ? null : Encoding.UTF8.GetBytes(Message);
-            int bodyLength = messageBodyByte == null ? 0 : messageBodyByte.Length;
+            int bodyLength = Message == null ? 0 : Message.Length;
             byte[] checkCodeByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(CheckCode));
             byte[] bodyLengthByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(bodyLength));
             byte[] sessionidByte = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Sessionid));
@@ -65,13 +63,13 @@ namespace HT.Framework
             subcommandByte.CopyTo(totalByte, 20);
             encryptByte.CopyTo(totalByte, 24);
             returnCodeByte.CopyTo(totalByte, 28);
-            if (messageBodyByte != null) messageBodyByte.CopyTo(totalByte, 32);
+            if (Message != null) Message.CopyTo(totalByte, 32);
 
             return totalByte;
         }
         public override string ToString()
         {
-            return $"校验码：{CheckCode}，身份ID：{Sessionid}，主命令：{Command}，子命令：{Subcommand}，加密方式：{Encrypt}，返回码：{ReturnCode}，消息体：{Message}。";
+            return $"校验码：{CheckCode}，身份ID：{Sessionid}，主命令：{Command}，子命令：{Subcommand}，加密方式：{Encrypt}，返回码：{ReturnCode}，消息体长度：{(Message != null ? Message.Length : 0)}字节。";
         }
         public void Reset()
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using UnityEngine;
 
 namespace HT.Framework
@@ -106,7 +105,7 @@ namespace HT.Framework
                 {
                     //响应心跳包
 #if UNITY_EDITOR
-                    Log.Info($"{this}：接收到心跳包【校验码：{code}】，已响应心跳包！[{DateTime.Now}]");
+                    //Log.Info($"{this}：接收到心跳包【校验码：{code}】，已响应心跳包！[{DateTime.Now}]");
 #endif
                     InjectMessage(_heartbeatPackage);
                     return null;
@@ -130,7 +129,7 @@ namespace HT.Framework
                     info.Subcommand = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 16));
                     info.Encrypt = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 20));
                     info.ReturnCode = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(_receiveHeadData, 24));
-                    info.Message = Encoding.UTF8.GetString(receiveBodyData, 0, receiveBodyData.Length);
+                    info.Message = receiveBodyData;
                     return info;
                 }
                 else
