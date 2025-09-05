@@ -11,7 +11,7 @@ namespace HT.Framework
     public sealed class UdpChannel : ProtocolChannelBase
     {
         private EndPoint _serverEndPoint;
-        private byte[] _receiveBuffer = new byte[2048];
+        private byte[] _receiveBuffer = new byte[64 * 1024];
 
         /// <summary>
         /// 通信协议

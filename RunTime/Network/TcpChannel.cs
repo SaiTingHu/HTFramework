@@ -20,7 +20,7 @@ namespace HT.Framework
         public const int NORMAL = 65536;
 
         private byte[] _heartbeatPackage;
-        private byte[] _receiveBuffer = new byte[256];
+        private byte[] _receiveBuffer = new byte[64 * 1024];
         private byte[] _receiveCodeData = new byte[4];
         private byte[] _receiveHeadData = new byte[28];
 
