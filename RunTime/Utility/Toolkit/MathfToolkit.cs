@@ -232,5 +232,25 @@ namespace HT.Framework
             value.z = Mathf.Clamp(value.z, minZ, maxZ);
             return value;
         }
+        /// <summary>
+        /// 计算2个整型坐标之间的曼哈顿距离
+        /// </summary>
+        /// <param name="value1">坐标1</param>
+        /// <param name="value2">坐标2</param>
+        /// <returns>曼哈顿距离</returns>
+        public static int ManhattanDistance(this Vector2Int value1, Vector2Int value2)
+        {
+            return Mathf.Abs(value1.x - value2.x) + Mathf.Abs(value1.y - value2.y);
+        }
+        /// <summary>
+        /// 计算2个整型坐标之间的曼哈顿距离
+        /// </summary>
+        /// <param name="value1">坐标1</param>
+        /// <param name="value2">坐标2</param>
+        /// <returns>曼哈顿距离</returns>
+        public static int ManhattanDistance(this Vector3Int value1, Vector3Int value2)
+        {
+            return Mathf.Abs(value1.x - value2.x) + Mathf.Abs(value1.y - value2.y) + Mathf.Abs(value1.z - value2.z);
+        }
     }
 }
