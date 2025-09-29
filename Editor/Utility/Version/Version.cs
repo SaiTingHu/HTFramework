@@ -31,7 +31,7 @@ namespace HT.Framework
         /// <summary>
         /// 版本号支持的Unity版本
         /// </summary>
-        public string UnityVersions = "2022.3.17";
+        public string UnityVersions = "2022.3.34";
         /// <summary>
         /// 版本号支持的.Net API版本
         /// </summary>
