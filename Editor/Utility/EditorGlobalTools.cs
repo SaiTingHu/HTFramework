@@ -1523,11 +1523,13 @@ namespace HT.Framework
                 }
                 else
                 {
+                    DrawNotepadButton(editor);
                     DrawVSCodeButton(editor);
                 }
             }
             else
             {
+                DrawNotepadButton(editor);
                 DrawVSCodeButton(editor);
             }
         }
@@ -1554,23 +1556,30 @@ namespace HT.Framework
             return rect.width > rect.height;
         }
         /// <summary>
+        /// 绘制 Open with Notepad 按钮
+        /// </summary>
+        private static void DrawNotepadButton(Editor editor)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Open with Notepad"))
+            {
+                ExecutableToolkit.ExecuteNotepad(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+        /// <summary>
         /// 绘制 Edit with VSCode 按钮
         /// </summary>
         private static void DrawVSCodeButton(Editor editor)
         {
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            GUI.backgroundColor = Color.yellow;
+            GUI.backgroundColor = Color.cyan;
             if (GUILayout.Button("Edit With VSCode"))
             {
                 EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
             }
-            GUI.backgroundColor = Color.white;
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUI.backgroundColor = Color.yellow;
             if (GUILayout.Button("Edit .meta With VSCode"))
             {
                 EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target) + ".meta");
