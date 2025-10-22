@@ -887,7 +887,7 @@ namespace HT.Framework
                 {
                     string value = (string)fieldInspector.Field.GetValue(inspector.target);
                     string showName = value;
-                    if (!CAttribute.IsShowFullName && value != "<None>")
+                    if (!CAttribute.IsShowFullName && !string.IsNullOrEmpty(value) && value != "<None>")
                     {
                         int index = value.LastIndexOf('.');
                         if (index != -1)
