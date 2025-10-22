@@ -203,7 +203,7 @@ namespace HT.Framework
         /// <returns>封装后的字节数组</returns>
         public abstract byte[] EncapsulatedMessage(INetworkMessage message);
         /// <summary>
-        /// 接收消息
+        /// 接收消息（此方法将在子线程中调用）
         /// </summary>
         /// <param name="client">客户端</param>
         /// <returns>接收到的消息对象</returns>

@@ -12,6 +12,7 @@ namespace HT.Framework
         /// 对象池默认上限
         /// </summary>
         private int _limit;
+        private object _lockObj = new object();
 
         /// <summary>
         /// 所属的内置模块
@@ -74,7 +75,12 @@ namespace HT.Framework
         {
             if (SpawnPools.ContainsKey(type))
             {
-                return SpawnPools[type].Count;
+                int count = 0;
+                lock (_lockObj)
+                {
+                    count = SpawnPools[type].Count;
+                }
+                return count;
             }
             else
             {
@@ -89,11 +95,16 @@ namespace HT.Framework
         public T Spawn<T>() where T : class, IReference, new()
         {
             Type type = typeof(T);
-            if (!SpawnPools.ContainsKey(type))
+            T obj = null;
+            lock (_lockObj)
             {
-                SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                if (!SpawnPools.ContainsKey(type))
+                {
+                    SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                }
+                obj = SpawnPools[type].Spawn<T>();
             }
-            return SpawnPools[type].Spawn<T>();
+            return obj;
         }
         /// <summary>
         /// 生成引用
@@ -102,11 +113,16 @@ namespace HT.Framework
         /// <returns>对象</returns>
         public IReference Spawn(Type type)
         {
-            if (!SpawnPools.ContainsKey(type))
+            IReference obj = null;
+            lock (_lockObj)
             {
-                SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                if (!SpawnPools.ContainsKey(type))
+                {
+                    SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                }
+                obj = SpawnPools[type].Spawn(type);
             }
-            return SpawnPools[type].Spawn(type);
+            return obj;
         }
         /// <summary>
         /// 回收引用
@@ -118,12 +134,14 @@ namespace HT.Framework
                 return;
 
             Type type = refe.GetType();
-            if (!SpawnPools.ContainsKey(type))
+            lock (_lockObj)
             {
-                SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                if (!SpawnPools.ContainsKey(type))
+                {
+                    SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                }
+                SpawnPools[type].Despawn(refe);
             }
-
-            SpawnPools[type].Despawn(refe);
         }
         /// <summary>
         /// 批量回收引用
@@ -136,14 +154,16 @@ namespace HT.Framework
                 return;
 
             Type type = typeof(T);
-            if (!SpawnPools.ContainsKey(type))
+            lock (_lockObj)
             {
-                SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
-            }
-
-            for (int i = 0; i < refes.Count; i++)
-            {
-                SpawnPools[type].Despawn(refes[i]);
+                if (!SpawnPools.ContainsKey(type))
+                {
+                    SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                }
+                for (int i = 0; i < refes.Count; i++)
+                {
+                    SpawnPools[type].Despawn(refes[i]);
+                }
             }
             refes.Clear();
         }
@@ -158,14 +178,16 @@ namespace HT.Framework
                 return;
 
             Type type = typeof(T);
-            if (!SpawnPools.ContainsKey(type))
+            lock (_lockObj)
             {
-                SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
-            }
-
-            for (int i = 0; i < refes.Length; i++)
-            {
-                SpawnPools[type].Despawn(refes[i]);
+                if (!SpawnPools.ContainsKey(type))
+                {
+                    SpawnPools.Add(type, new ReferenceSpawnPool(_limit));
+                }
+                for (int i = 0; i < refes.Length; i++)
+                {
+                    SpawnPools[type].Despawn(refes[i]);
+                }
             }
         }
         /// <summary>
@@ -174,9 +196,12 @@ namespace HT.Framework
         /// <param name="type">引用类型</param>
         public void Clear(Type type)
         {
-            if (SpawnPools.ContainsKey(type))
+            lock (_lockObj)
             {
-                SpawnPools[type].Clear();
+                if (SpawnPools.ContainsKey(type))
+                {
+                    SpawnPools[type].Clear();
+                }
             }
         }
         /// <summary>
@@ -184,9 +209,12 @@ namespace HT.Framework
         /// </summary>
         public void ClearAll()
         {
-            foreach (var spawnPool in SpawnPools)
+            lock (_lockObj)
             {
-                spawnPool.Value.Clear();
+                foreach (var spawnPool in SpawnPools)
+                {
+                    spawnPool.Value.Clear();
+                }
             }
         }
     }
