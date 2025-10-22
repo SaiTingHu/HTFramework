@@ -886,10 +886,19 @@ namespace HT.Framework
                 if (fieldInspector.Field.FieldType == typeof(string))
                 {
                     string value = (string)fieldInspector.Field.GetValue(inspector.target);
+                    string showName = value;
+                    if (!CAttribute.IsShowFullName && value != "<None>")
+                    {
+                        int index = value.LastIndexOf('.');
+                        if (index != -1)
+                        {
+                            showName = value.Substring(index + 1);
+                        }
+                    }
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField(fieldInspector.Label, GUILayout.Width(inspector.LabelWidth));
-                    if (GUILayout.Button(value, EditorStyles.popup))
+                    if (GUILayout.Button(showName, EditorStyles.popup))
                     {
                         GenericMenu gm = new GenericMenu();
                         List<Type> types;

@@ -168,6 +168,7 @@ namespace HT.Framework
     public sealed class ClassTypeAttribute : InspectorAttribute
     {
         public Type ParentClass { get; private set; }
+        public bool IsShowFullName { get; private set; }
         public bool IsIgnoreAbstract { get; private set; }
         public bool IsOnlyRuntime { get; private set; }
 
@@ -175,11 +176,13 @@ namespace HT.Framework
         /// Class类型检视器（支持 string 类型）
         /// </summary>
         /// <param name="parentClass">检索类型的父类</param>
+        /// <param name="isShowFullName">是否显示类型全称，否则只显示类名</param>
         /// <param name="isIgnoreAbstract">是否忽略抽象类</param>
         /// <param name="isOnlyRuntime">是否仅检索运行时程序集，否则检索所有程序集</param>
-        public ClassTypeAttribute(Type parentClass, bool isIgnoreAbstract = true, bool isOnlyRuntime = true)
+        public ClassTypeAttribute(Type parentClass, bool isShowFullName = true, bool isIgnoreAbstract = true, bool isOnlyRuntime = true)
         {
             ParentClass = parentClass;
+            IsShowFullName = isShowFullName;
             IsIgnoreAbstract = isIgnoreAbstract;
             IsOnlyRuntime = isOnlyRuntime;
         }
