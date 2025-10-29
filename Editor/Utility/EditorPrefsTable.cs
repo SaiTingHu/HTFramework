@@ -125,6 +125,10 @@ namespace HT.Framework
         /// </summary>
         public static readonly string SaveDataRuntime_Enable = "HT.Framework.SaveDataRuntime.Enable";
         /// <summary>
+        /// 支持自动使用记事本打开的文件格式
+        /// </summary>
+        public static readonly string OpenWithNotepadFormat = "HT.Framework.OpenWithNotepadFormat";
+        /// <summary>
         /// VSCode的启动路径
         /// </summary>
         public static readonly string VSCodePath = "HT.Framework.VSCodePath";

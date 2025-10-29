@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -64,6 +65,10 @@ namespace HT.Framework
         [OnOpenAsset(-1)]
         private static bool OnOpenAsset(int instanceID, int line)
         {
+            bool isOpened = OpenWithNotepad(instanceID);
+            if (isOpened)
+                return true;
+
             if (LogFileID == instanceID)
             {
                 object activeText = ActiveText.GetValue(ConsoleWindow.GetValue(null));
@@ -74,6 +79,29 @@ namespace HT.Framework
                     if (IsDebugByLog(texts))
                     {
                         return OpenFirstLinkExcludeLog(texts);
+                    }
+                }
+            }
+            return false;
+        }
+
+        private static bool OpenWithNotepad(int instanceID)
+        {
+            string openWithNotepadFormat = EditorPrefs.GetString(EditorPrefsTable.OpenWithNotepadFormat, "");
+            if (string.IsNullOrEmpty(openWithNotepadFormat))
+                return false;
+
+            UObject obj = EditorUtility.InstanceIDToObject(instanceID);
+            if (obj != null)
+            {
+                string path = AssetDatabase.GetAssetPath(obj);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    string ext = Path.GetExtension(path).Trim() + ";";
+                    if (openWithNotepadFormat.Contains(ext))
+                    {
+                        ExecutableToolkit.ExecuteNotepad(PathToolkit.ProjectPath + path);
+                        return true;
                     }
                 }
             }

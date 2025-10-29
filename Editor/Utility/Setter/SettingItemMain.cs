@@ -11,6 +11,7 @@ namespace HT.Framework
         private bool _isDeveloperMode = false;
         private bool _isEnableLnkTools = false;
         private bool _isEnableSaveDataRuntime = false;
+        private string _openWithNotepadFormat;
         private string _vscodePath;
         private string _ilspyPath;
 
@@ -21,7 +22,7 @@ namespace HT.Framework
                 return "Main";
             }
         }
-        
+
         public override void OnBeginSetting()
         {
             base.OnBeginSetting();
@@ -35,6 +36,7 @@ namespace HT.Framework
             _isDeveloperMode = Unsupported.IsDeveloperMode();
             _isEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, true);
             _isEnableSaveDataRuntime = EditorPrefs.GetBool(EditorPrefsTable.SaveDataRuntime_Enable, true);
+            _openWithNotepadFormat = EditorPrefs.GetString(EditorPrefsTable.OpenWithNotepadFormat, "");
             _vscodePath = EditorPrefs.GetString(EditorPrefsTable.VSCodePath, null);
             _ilspyPath = EditorPrefs.GetString(EditorPrefsTable.ILSpyPath, null);
         }
@@ -78,6 +80,18 @@ namespace HT.Framework
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            string openWithNotepadFormat = EditorGUILayout.TextField("Open With Notepad", _openWithNotepadFormat);
+            if (openWithNotepadFormat != _openWithNotepadFormat)
+            {
+                SaveOpenWithNotepadFormat(openWithNotepadFormat);
+            }
+            if (GUILayout.Button("Select", GUILayout.Width(80)))
+            {
+                OnSelectOpenWithNotepadFormat();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             string vscodePath = EditorGUILayout.TextField("VSCode Path", _vscodePath);
             if (vscodePath != _vscodePath)
             {
@@ -112,6 +126,44 @@ namespace HT.Framework
                 }
             }
             GUILayout.EndHorizontal();
+        }
+
+        private void OnSelectOpenWithNotepadFormat()
+        {
+            string[] exts = new string[] { ".bytes", ".csv", ".fnt", ".htm", ".html", ".json", ".md", ".txt", ".xml", ".yaml", ".ini" };
+            GenericMenu gm = new GenericMenu();
+            for (int i = 0; i < exts.Length; i++)
+            {
+                string ext = exts[i];
+                string extFull = ext + ";";
+                bool isExist = _openWithNotepadFormat.Contains(extFull);
+                gm.AddItem(new GUIContent(ext), isExist, () =>
+                {
+                    if (isExist) SaveOpenWithNotepadFormat(_openWithNotepadFormat.Replace(extFull, ""));
+                    else SaveOpenWithNotepadFormat(_openWithNotepadFormat + extFull);
+                });
+            }
+            gm.AddSeparator("");
+            gm.AddItem(new GUIContent("Select All"), false, () =>
+            {
+                StringToolkit.BeginConcat();
+                for (int i = 0; i < exts.Length; i++)
+                {
+                    StringToolkit.Concat(exts[i]);
+                    StringToolkit.Concat(';');
+                }
+                SaveOpenWithNotepadFormat(StringToolkit.EndConcat());
+            });
+            gm.AddItem(new GUIContent("Clear"), false, () =>
+            {
+                SaveOpenWithNotepadFormat("");
+            });
+            gm.ShowAsContext();
+        }
+        private void SaveOpenWithNotepadFormat(string value)
+        {
+            _openWithNotepadFormat = value;
+            EditorPrefs.SetString(EditorPrefsTable.OpenWithNotepadFormat, _openWithNotepadFormat);
         }
     }
 }

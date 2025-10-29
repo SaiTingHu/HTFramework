@@ -1576,11 +1576,11 @@ namespace HT.Framework
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Color.cyan;
-            if (GUILayout.Button("Edit With VSCode"))
+            if (GUILayout.Button("Edit with VSCode"))
             {
                 EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target));
             }
-            if (GUILayout.Button("Edit .meta With VSCode"))
+            if (GUILayout.Button("Edit .meta with VSCode"))
             {
                 EditWithVSCode(PathToolkit.ProjectPath + AssetDatabase.GetAssetPath(editor.target) + ".meta");
             }
