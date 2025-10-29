@@ -13,7 +13,7 @@ namespace HT.Framework
     {
         [SerializeField] private List<TKey> _keys = new List<TKey>();
         [SerializeField] private List<TValue> _values = new List<TValue>();
-        private bool _isFillDictionary = false;
+        [NonSerialized] private bool _isFillDictionary = false;
         private Dictionary<TKey, TValue> _dictionary = new Dictionary<TKey, TValue>();
 
         /// <summary>

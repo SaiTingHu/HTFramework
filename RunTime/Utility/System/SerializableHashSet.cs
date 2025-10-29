@@ -12,7 +12,7 @@ namespace HT.Framework
     public sealed class SerializableHashSet<T> : ISet<T>
     {
         [SerializeField] private List<T> _values = new List<T>();
-        private bool _isFillHashSet = false;
+        [NonSerialized] private bool _isFillHashSet = false;
         private HashSet<T> _hashSet = new HashSet<T>();
 
         /// <summary>
