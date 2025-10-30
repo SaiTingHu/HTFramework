@@ -23,11 +23,17 @@ namespace HT.Framework
         [InitializeOnLoadMethod]
         private static void InitLocker()
         {
+            if (!EditorPrefs.GetBool(EditorPrefsTable.ProjectFolderLocker_Enable, true))
+                return;
+
             EditorApplication.delayCall += InitLockerAsync;
             EditorApplication.projectWindowItemOnGUI += OnProjectWindowItemOnGUI;
         }
         internal static async void InitLockerAsync()
         {
+            if (!EditorPrefs.GetBool(EditorPrefsTable.ProjectFolderLocker_Enable, true))
+                return;
+
             AssetTree = null;
             FolderItems.Clear();
             ChangeExpandedState = null;

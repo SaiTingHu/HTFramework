@@ -11,6 +11,7 @@ namespace HT.Framework
         private bool _isDeveloperMode = false;
         private bool _isEnableLnkTools = false;
         private bool _isEnableSaveDataRuntime = false;
+        private bool _isEnableProjectFolderLocker = false;
         private string _openWithNotepadFormat;
         private string _vscodePath;
         private string _ilspyPath;
@@ -36,6 +37,7 @@ namespace HT.Framework
             _isDeveloperMode = Unsupported.IsDeveloperMode();
             _isEnableLnkTools = EditorPrefs.GetBool(EditorPrefsTable.LnkTools_Enable, true);
             _isEnableSaveDataRuntime = EditorPrefs.GetBool(EditorPrefsTable.SaveDataRuntime_Enable, true);
+            _isEnableProjectFolderLocker = EditorPrefs.GetBool(EditorPrefsTable.ProjectFolderLocker_Enable, true);
             _openWithNotepadFormat = EditorPrefs.GetString(EditorPrefsTable.OpenWithNotepadFormat, "");
             _vscodePath = EditorPrefs.GetString(EditorPrefsTable.VSCodePath, null);
             _ilspyPath = EditorPrefs.GetString(EditorPrefsTable.ILSpyPath, null);
@@ -74,6 +76,19 @@ namespace HT.Framework
                 {
                     _isEnableSaveDataRuntime = isEnableSaveDataRuntime;
                     EditorPrefs.SetBool(EditorPrefsTable.SaveDataRuntime_Enable, _isEnableSaveDataRuntime);
+                    EditorUtility.RequestScriptReload();
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            bool isEnableFolderLocker = EditorGUILayout.Toggle("Enable FolderLocker", _isEnableProjectFolderLocker);
+            if (isEnableFolderLocker != _isEnableProjectFolderLocker)
+            {
+                if (!EditorApplication.isCompiling)
+                {
+                    _isEnableProjectFolderLocker = isEnableFolderLocker;
+                    EditorPrefs.SetBool(EditorPrefsTable.ProjectFolderLocker_Enable, _isEnableProjectFolderLocker);
                     EditorUtility.RequestScriptReload();
                 }
             }
