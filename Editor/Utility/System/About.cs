@@ -68,7 +68,7 @@ namespace HT.Framework
             _giteeGUIContent.text = "Gitee";
             _pcGUIContent = new GUIContent();
             _pcGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.Standalone.Small").image;
-            _pcGUIContent.text = "PC,Mac & Linux Standalone";
+            _pcGUIContent.text = "Windows, Mac, Linux";
             _androidGUIContent = new GUIContent();
             _androidGUIContent.image = EditorGUIUtility.IconContent("BuildSettings.Android.Small").image;
             _androidGUIContent.text = "Android";
