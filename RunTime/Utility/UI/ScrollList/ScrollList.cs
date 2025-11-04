@@ -102,6 +102,7 @@ namespace HT.Framework
 
             ScrollListElement element = ExtractIdleElement();
             element.Data = data;
+            element.List = this;
             _elements.Add(data, element);
 
             _isdirty = true;
@@ -137,16 +138,6 @@ namespace HT.Framework
         public ScrollListData FindData(Predicate<ScrollListData> match)
         {
             return _datas.Find(match);
-        }
-        /// <summary>
-        /// 更新所有数据
-        /// </summary>
-        public void UpdateAllData()
-        {
-            foreach (var item in _elements)
-            {
-                item.Value.UpdateData();
-            }
         }
         /// <summary>
         /// 移除一条数据
@@ -188,9 +179,27 @@ namespace HT.Framework
 
             _isdirty = true;
         }
+        /// <summary>
+        /// 更新所有数据
+        /// </summary>
+        public void UpdateAllData()
+        {
+            foreach (var item in _elements)
+            {
+                item.Value.UpdateData();
+            }
+            _isdirty = true;
+        }
+        /// <summary>
+        /// 更新列表布局
+        /// </summary>
+        public void UpdateLayout()
+        {
+            _isdirty = true;
+        }
 
         /// <summary>
-        /// 刷新滚动视图
+        /// 更新滚动视图
         /// </summary>
         private void RefreshScrollView()
         {
@@ -283,6 +292,7 @@ namespace HT.Framework
         private void RecycleElement(ScrollListElement element)
         {
             element.Data = null;
+            element.List = null;
             element.gameObject.SetActive(false);
             _elementsPool.Enqueue(element);
         }

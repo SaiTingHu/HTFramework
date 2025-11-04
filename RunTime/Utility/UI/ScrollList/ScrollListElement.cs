@@ -39,6 +39,10 @@ namespace HT.Framework
                 UpdateData();
             }
         }
+        /// <summary>
+        /// 所属的滚动数据列表
+        /// </summary>
+        public ScrollList List { get; internal set; }
 
         /// <summary>
         /// 更新显示数据
