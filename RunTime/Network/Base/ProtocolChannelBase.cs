@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -63,6 +64,26 @@ namespace HT.Framework
                 {
                     return false;
                 }
+            }
+        }
+        /// <summary>
+        /// 服务器地址
+        /// </summary>
+        public virtual IPEndPoint ServerEndPoint
+        {
+            get
+            {
+                return Main.m_Network.ServerEndPoint;
+            }
+        }
+        /// <summary>
+        /// 客户端地址
+        /// </summary>
+        public virtual IPEndPoint ClientEndPoint
+        {
+            get
+            {
+                return Main.m_Network.ClientEndPoint;
             }
         }
         /// <summary>
@@ -163,7 +184,7 @@ namespace HT.Framework
             if (Client == null)
             {
                 Client = new Socket(AddressFamily.InterNetwork, Way, Protocol);
-                Client.Connect(Main.m_Network.ServerEndPoint);
+                Client.Connect(ServerEndPoint);
             }
         }
         /// <summary>
@@ -302,7 +323,7 @@ namespace HT.Framework
                         int sendCount = 0;
                         try
                         {
-                            sendCount = Client.SendTo(sendBuffer, Main.m_Network.ServerEndPoint);
+                            sendCount = Client.SendTo(sendBuffer, ServerEndPoint);
                         }
                         catch (Exception e)
                         {

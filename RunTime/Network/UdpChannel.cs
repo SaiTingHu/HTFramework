@@ -51,7 +51,7 @@ namespace HT.Framework
         {
             base.OnInit();
 
-            Client.Bind(Main.m_Network.ClientEndPoint);
+            Client.Bind(ClientEndPoint);
         }
         /// <summary>
         /// 是否是断开连接请求
@@ -80,7 +80,7 @@ namespace HT.Framework
         {
             try
             {
-                if (_serverEndPoint == null) _serverEndPoint = Main.m_Network.ServerEndPoint;
+                if (_serverEndPoint == null) _serverEndPoint = ServerEndPoint;
 
                 int length = client.ReceiveFrom(_receiveBuffer, ref _serverEndPoint);
 
