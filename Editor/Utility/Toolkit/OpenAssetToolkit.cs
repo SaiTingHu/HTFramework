@@ -98,7 +98,7 @@ namespace HT.Framework
                 if (!string.IsNullOrEmpty(path))
                 {
                     string ext = Path.GetExtension(path).Trim() + ";";
-                    if (openWithNotepadFormat.Contains(ext))
+                    if (ext != ";" && openWithNotepadFormat.Contains(ext))
                     {
                         ExecutableToolkit.ExecuteNotepad(PathToolkit.ProjectPath + path);
                         return true;
