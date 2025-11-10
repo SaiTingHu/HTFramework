@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -196,6 +197,23 @@ namespace HT.Framework
         public void UpdateLayout()
         {
             _isdirty = true;
+        }
+        /// <summary>
+        /// 使列表滚动到指定元素的位置
+        /// </summary>
+        /// <param name="element">元素</param>
+        /// <param name="duration">滚动动画时长</param>
+        /// <param name="ease">滚动动画类型</param>
+        public void ScrollToElement(ScrollListElement element, float duration = 0.5f, Ease ease = Ease.Linear)
+        {
+            if (ScrollDirection == Direction.Vertical)
+            {
+                content.DOAnchorPos(new Vector2(0, Mathf.Abs(element.rectTransform.anchoredPosition.y)), duration).SetEase(ease);
+            }
+            else
+            {
+                content.DOAnchorPos(new Vector2(Mathf.Abs(element.rectTransform.anchoredPosition.x), 0), duration).SetEase(ease);
+            }
         }
 
         /// <summary>
