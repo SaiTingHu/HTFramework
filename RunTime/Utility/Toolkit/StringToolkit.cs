@@ -193,8 +193,9 @@ namespace HT.Framework
         #endregion
 
         #region 正则表达式
-        private static HashSet<char> Blanks = new HashSet<char>() { ' ', '\0', '\u0020', '\u3000' };
-        private static HashSet<char> Tabs = new HashSet<char>() { '\t', '\r', '\n' };
+        private static readonly Regex IntRegex = new Regex("^([-]?[0-9]{1,})$");
+        private static readonly Regex FloatRegex = new Regex("^([-]?[0-9]{1,}[.][0-9]*)$");
+        private static HashSet<char> Tabs = new HashSet<char>() { '\t', '\r', '\n', '\v', '\f' };
 
         /// <summary>
         /// 是否为整型内容
@@ -203,7 +204,7 @@ namespace HT.Framework
         /// <returns>是否为整型内容</returns>
         public static bool IsInt(this string value)
         {
-            return Regex.IsMatch(value, "^([-]?[0-9]{1,})$");
+            return IntRegex.IsMatch(value);
         }
         /// <summary>
         /// 是否为浮点型内容
@@ -212,7 +213,7 @@ namespace HT.Framework
         /// <returns>是否为浮点型内容</returns>
         public static bool IsFloat(this string value)
         {
-            return Regex.IsMatch(value, "^([-]?[0-9]{1,}[.][0-9]*)$");
+            return FloatRegex.IsMatch(value);
         }
         /// <summary>
         /// 获取字符串长度（忽略空白符及制表符）
@@ -227,7 +228,7 @@ namespace HT.Framework
             int length = 0;
             for (int i = 0; i < value.Length; i++)
             {
-                if (!Blanks.Contains(value[i]) && !Tabs.Contains(value[i]))
+                if (!char.IsWhiteSpace(value[i]) && !Tabs.Contains(value[i]))
                 {
                     length += 1;
                 }
@@ -247,7 +248,7 @@ namespace HT.Framework
             int length = 0;
             for (int i = 0; i < value.Length; i++)
             {
-                if (!Blanks.Contains(value[i]) && !Tabs.Contains(value[i]))
+                if (!char.IsWhiteSpace(value[i]) && !Tabs.Contains(value[i]))
                 {
                     length += 1;
                 }

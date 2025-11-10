@@ -47,7 +47,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    if (code[i] == ' ' || code[i] == '\0')
+                    if (char.IsWhiteSpace(code[i]) || code[i] == '\0')
                     {
                         if (Builder.Length > 0)
                         {
