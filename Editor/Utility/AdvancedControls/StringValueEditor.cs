@@ -31,8 +31,16 @@ namespace HT.Framework
         private string _value;
         private string _title;
         private HTFAction<string> _editEnd;
+        private GUIStyle _valueGS;
         private Vector2 _scroll;
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            _valueGS = new GUIStyle(EditorStyles.label);
+            _valueGS.wordWrap = true;
+        }
         protected override void OnTitleGUI()
         {
             base.OnTitleGUI();
@@ -45,7 +53,7 @@ namespace HT.Framework
             base.OnBodyGUI();
 
             _scroll = GUILayout.BeginScrollView(_scroll, "TextField");
-            _value = EditorGUILayout.TextArea(_value, EditorGlobalTools.Styles.Label);
+            _value = EditorGUILayout.TextArea(_value, _valueGS);
             GUILayout.EndScrollView();
 
             GUILayout.BeginHorizontal();
