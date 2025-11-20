@@ -295,8 +295,8 @@ namespace HT.Framework
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
-                _scrollCode = GUILayout.BeginScrollView(_scrollCode, "TextField");
-                _code = EditorGUILayout.TextArea(_code, EditorGlobalTools.Styles.Label);
+                _scrollCode = GUILayout.BeginScrollView(_scrollCode);
+                _code = EditorGUILayout.TextArea(_code, GUILayout.ExpandHeight(true));
                 GUILayout.EndScrollView();
             }
             #endregion

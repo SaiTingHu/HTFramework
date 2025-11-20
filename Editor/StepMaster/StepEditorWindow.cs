@@ -228,7 +228,7 @@ namespace HT.Framework
             _advancedSearchGC.tooltip = "Advanced Search";
             _valueEditorGC = new GUIContent();
             _valueEditorGC.image = EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image;
-            _valueEditorGC.tooltip = "Edit in a new window";
+            _valueEditorGC.tooltip = "Edit in String Editor";
             _editGC = new GUIContent();
             _editGC.image = EditorGUIUtility.IconContent("d_editicon.sml").image;
             _editGC.tooltip = "Edit";

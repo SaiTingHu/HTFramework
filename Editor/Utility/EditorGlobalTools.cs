@@ -550,9 +550,20 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 打开字符串编辑器
+        /// </summary>
+        [MenuItem("HTFramework/Tools/String Editor  &S", false, priority = 121)]
+        private static void OpenStringEditor()
+        {
+            EditorWindow sceneView = EditorWindow.GetWindow<SceneView>();
+            string content = GUIUtility.systemCopyBuffer;
+            StringValueEditor.OpenWindow(sceneView, content, "Edit the content of Clipboard", null);
+        }
+
+        /// <summary>
         /// 通过 Tag 搜索物体
         /// </summary>
-        [MenuItem("HTFramework/Tools/Search GameObject By Tag", false, priority = 121)]
+        [MenuItem("HTFramework/Tools/Search GameObject By Tag", false, priority = 141)]
         private static void SearchByTag()
         {
             SearchByTagToolkit sw = EditorWindow.GetWindow<SearchByTagToolkit>();
@@ -564,7 +575,7 @@ namespace HT.Framework
         /// <summary>
         /// 通过 Layer 搜索物体
         /// </summary>
-        [MenuItem("HTFramework/Tools/Search GameObject By Layer", false, priority = 122)]
+        [MenuItem("HTFramework/Tools/Search GameObject By Layer", false, priority = 142)]
         private static void SearchByLayer()
         {
             SearchByLayerToolkit sw = EditorWindow.GetWindow<SearchByLayerToolkit>();

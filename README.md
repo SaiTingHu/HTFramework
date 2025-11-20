@@ -154,6 +154,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [ScrollList](https://wanderer.blog.csdn.net/article/details/148016087) - 滚动数据列表，更方便的进行数据的增、删、改、显示。
 
+- [StringEditor](https://wanderer.blog.csdn.net/article/details/155063207) - 字符串复杂编辑器，支持一些基础的复杂编辑功能，比如Html标签语法，Markdown语法，Json语法等。
+
 - [Table View](https://wanderer.blog.csdn.net/article/details/120796924) - 使用TableView可以很方便的在编辑器中绘制表格视图。
 
 - [UDateTime](https://wanderer.blog.csdn.net/article/details/149958396) - 可序列化日期时间（附运行时、编辑器日期拾取器）。

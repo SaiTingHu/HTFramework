@@ -301,7 +301,7 @@ namespace HT.Framework
 
             _valueEditorGC = new GUIContent();
             _valueEditorGC.image = EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image;
-            _valueEditorGC.tooltip = "Edit in a new window";
+            _valueEditorGC.tooltip = "Edit in a String Editor";
             _deleteGC = new GUIContent();
             _deleteGC.image = EditorGUIUtility.IconContent("TreeEditor.Trash").image;
             _deleteGC.tooltip = "Delete";
