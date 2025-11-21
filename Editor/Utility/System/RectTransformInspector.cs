@@ -148,7 +148,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Child Count", GUILayout.Width(LabelWidth));
-            EditorGUILayout.LabelField(Target.childCount.ToString());
+            GUILayout.Label(Target.childCount.ToString());
             GUILayout.FlexibleSpace();
             GUI.enabled = Target.childCount > 0;
             GUI.backgroundColor = Color.red;

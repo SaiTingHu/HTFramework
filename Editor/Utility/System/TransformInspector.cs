@@ -354,7 +354,7 @@ namespace HT.Framework
 
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Child Count", GUILayout.Width(LabelWidth));
-            EditorGUILayout.LabelField(Target.childCount.ToString());
+            GUILayout.Label(Target.childCount.ToString());
             GUILayout.FlexibleSpace();
             GUI.backgroundColor = Color.red;
             if (GUILayout.Button("Detach"))
