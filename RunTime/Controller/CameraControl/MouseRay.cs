@@ -157,7 +157,7 @@ namespace HT.Framework
                         if (Physics.Raycast(ray, out hit, RayMaxDistance, ActivatedLayer))
                         {
                             HitPoint = hit.point;
-                            RaycastHiting(hit.transform.gameObject);
+                            RaycastHiting(hit.collider.gameObject);
                         }
                         else
                         {
@@ -171,7 +171,7 @@ namespace HT.Framework
                         if (hit.collider != null)
                         {
                             HitPoint = hit.point;
-                            RaycastHiting(hit.transform.gameObject);
+                            RaycastHiting(hit.collider.gameObject);
                         }
                         else
                         {
