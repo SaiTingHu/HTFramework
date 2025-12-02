@@ -622,6 +622,17 @@ namespace HT.Framework
                 }
             }
         }
+        /// <summary>
+        /// 当前是否存在步骤目标实例，且步骤目标的ID匹配
+        /// </summary>
+        internal bool IsTargetMatched()
+        {
+            if (Target == null)
+                return false;
+
+            StepTarget target = Target.GetComponent<StepTarget>();
+            return target && TargetGUID == target.GUID;
+        }
 #endif
         #endregion
     }

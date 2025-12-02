@@ -106,15 +106,16 @@ namespace HT.Framework
             if (taskGameObjects.GUIDs[index] == "<None>")
                 return;
 
-            if (taskGameObjects._gameObjects[index] != null)
+            if (taskGameObjects.IsEntityMatched(index))
                 return;
 
             PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
             if (prefabStage != null)
             {
                 taskGameObjects._gameObjects[index] = prefabStage.prefabContentsRoot.FindChildren(taskGameObjects.Paths[index]);
-                if (taskGameObjects._gameObjects[index] == null)
+                if (!taskGameObjects.IsEntityMatched(index))
                 {
+                    taskGameObjects._gameObjects[index] = null;
                     TaskTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<TaskTarget>(true);
                     foreach (TaskTarget target in targets)
                     {
@@ -131,8 +132,9 @@ namespace HT.Framework
             else
             {
                 taskGameObjects._gameObjects[index] = GameObject.Find(taskGameObjects.Paths[index]);
-                if (taskGameObjects._gameObjects[index] == null)
+                if (!taskGameObjects.IsEntityMatched(index))
                 {
+                    taskGameObjects._gameObjects[index] = null;
                     TaskTarget[] targets = UnityEngine.Object.FindObjectsOfType<TaskTarget>(true);
                     foreach (TaskTarget target in targets)
                     {
@@ -145,19 +147,22 @@ namespace HT.Framework
                     }
                 }
             }
-
-            if (taskGameObjects._gameObjects[index] != null)
-            {
-                TaskTarget target = taskGameObjects._gameObjects[index].GetComponent<TaskTarget>();
-                if (!target)
-                {
-                    target = taskGameObjects._gameObjects[index].AddComponent<TaskTarget>();
-                    target.GUID = taskGameObjects.GUIDs[index];
-                    EditorUtility.SetDirty(taskGameObjects._gameObjects[index]);
-                }
-            }
         }
 
+        /// <summary>
+        /// 当前是否存在游戏物体实例，且游戏物体的ID匹配
+        /// </summary>
+        private bool IsEntityMatched(int index)
+        {
+            if (index < 0 || index >= _gameObjects.Count)
+                return false;
+
+            if (_gameObjects[index] == null)
+                return false;
+
+            TaskTarget target = _gameObjects[index].GetComponent<TaskTarget>();
+            return target && GUIDs[index] == target.GUID;
+        }
         /// <summary>
         /// 初始化编辑器数据
         /// </summary>

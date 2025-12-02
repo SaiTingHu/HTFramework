@@ -357,15 +357,16 @@ namespace HT.Framework
             if (para.GameObjectGUID == "<None>")
                 return;
 
-            if (para.GameObjectValue != null)
+            if (para.IsTargetMatched())
                 return;
 
             PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
             if (prefabStage != null)
             {
                 para.GameObjectValue = prefabStage.prefabContentsRoot.FindChildren(para.GameObjectPath);
-                if (para.GameObjectValue == null)
+                if (!para.IsTargetMatched())
                 {
+                    para.GameObjectValue = null;
                     StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
@@ -382,8 +383,9 @@ namespace HT.Framework
             else
             {
                 para.GameObjectValue = GameObject.Find(para.GameObjectPath);
-                if (para.GameObjectValue == null)
+                if (!para.IsTargetMatched())
                 {
+                    para.GameObjectValue = null;
                     StepTarget[] targets = FindObjectsOfType<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
@@ -394,17 +396,6 @@ namespace HT.Framework
                             break;
                         }
                     }
-                }
-            }
-
-            if (para.GameObjectValue != null)
-            {
-                StepTarget target = para.GameObjectValue.GetComponent<StepTarget>();
-                if (!target)
-                {
-                    target = para.GameObjectValue.AddComponent<StepTarget>();
-                    target.GUID = para.GameObjectGUID;
-                    HasChanged(para.GameObjectValue);
                 }
             }
         }

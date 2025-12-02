@@ -148,6 +148,17 @@ namespace HT.Framework
 
             return parameter;
         }
+        /// <summary>
+        /// 当前是否存在GameObject实例，且GameObject的ID匹配
+        /// </summary>
+        internal bool IsTargetMatched()
+        {
+            if (GameObjectValue == null)
+                return false;
+
+            StepTarget target = GameObjectValue.GetComponent<StepTarget>();
+            return target && GameObjectGUID == target.GUID;
+        }
 #endif
     }
 }

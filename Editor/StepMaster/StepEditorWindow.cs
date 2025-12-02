@@ -2275,15 +2275,16 @@ namespace HT.Framework
             if (content.TargetGUID == "<None>")
                 return;
 
-            if (content.Target != null)
+            if (content.IsTargetMatched())
                 return;
 
             PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
             if (prefabStage != null)
             {
                 content.Target = prefabStage.prefabContentsRoot.FindChildren(content.TargetPath);
-                if (content.Target == null)
+                if (!content.IsTargetMatched())
                 {
+                    content.Target = null;
                     StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
@@ -2300,8 +2301,9 @@ namespace HT.Framework
             else
             {
                 content.Target = GameObject.Find(content.TargetPath);
-                if (content.Target == null)
+                if (!content.IsTargetMatched())
                 {
+                    content.Target = null;
                     StepTarget[] targets = FindObjectsOfType<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
@@ -2314,17 +2316,6 @@ namespace HT.Framework
                     }
                 }
             }
-
-            if (content.Target != null)
-            {
-                StepTarget target = content.Target.GetComponent<StepTarget>();
-                if (!target)
-                {
-                    target = content.Target.AddComponent<StepTarget>();
-                    target.GUID = content.TargetGUID;
-                    HasChanged(content.Target);
-                }
-            }
         }
         /// <summary>
         /// 在场景中搜索步骤（操作）目标
@@ -2334,15 +2325,16 @@ namespace HT.Framework
             if (operation.TargetGUID == "<None>")
                 return;
 
-            if (operation.Target != null)
+            if (operation.IsTargetMatched())
                 return;
 
             PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
             if (prefabStage != null)
             {
                 operation.Target = prefabStage.prefabContentsRoot.FindChildren(operation.TargetPath);
-                if (operation.Target == null)
+                if (!operation.IsTargetMatched())
                 {
+                    operation.Target = null;
                     StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
@@ -2359,8 +2351,9 @@ namespace HT.Framework
             else
             {
                 operation.Target = GameObject.Find(operation.TargetPath);
-                if (operation.Target == null)
+                if (!operation.IsTargetMatched())
                 {
+                    operation.Target = null;
                     StepTarget[] targets = FindObjectsOfType<StepTarget>(true);
                     foreach (StepTarget target in targets)
                     {
@@ -2371,17 +2364,6 @@ namespace HT.Framework
                             break;
                         }
                     }
-                }
-            }
-
-            if (operation.Target != null)
-            {
-                StepTarget target = operation.Target.GetComponent<StepTarget>();
-                if (!target)
-                {
-                    target = operation.Target.AddComponent<StepTarget>();
-                    target.GUID = operation.TargetGUID;
-                    HasChanged(operation.Target);
                 }
             }
         }

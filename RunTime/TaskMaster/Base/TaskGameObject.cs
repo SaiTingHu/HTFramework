@@ -146,15 +146,16 @@ namespace HT.Framework
             if (taskGameObject.GUID == "<None>")
                 return;
 
-            if (taskGameObject.AgentEntity != null)
+            if (taskGameObject.IsEntityMatched())
                 return;
 
             PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
             if (prefabStage != null)
             {
                 taskGameObject.AgentEntity = prefabStage.prefabContentsRoot.FindChildren(taskGameObject.Path);
-                if (taskGameObject.AgentEntity == null)
+                if (!taskGameObject.IsEntityMatched())
                 {
+                    taskGameObject.AgentEntity = null;
                     TaskTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<TaskTarget>(true);
                     foreach (TaskTarget target in targets)
                     {
@@ -171,8 +172,9 @@ namespace HT.Framework
             else
             {
                 taskGameObject.AgentEntity = GameObject.Find(taskGameObject.Path);
-                if (taskGameObject.AgentEntity == null)
+                if (!taskGameObject.IsEntityMatched())
                 {
+                    taskGameObject.AgentEntity = null;
                     TaskTarget[] targets = UnityEngine.Object.FindObjectsOfType<TaskTarget>(true);
                     foreach (TaskTarget target in targets)
                     {
@@ -185,17 +187,18 @@ namespace HT.Framework
                     }
                 }
             }
+        }
 
-            if (taskGameObject.AgentEntity != null)
-            {
-                TaskTarget target = taskGameObject.AgentEntity.GetComponent<TaskTarget>();
-                if (!target)
-                {
-                    target = taskGameObject.AgentEntity.AddComponent<TaskTarget>();
-                    target.GUID = taskGameObject.GUID;
-                    EditorUtility.SetDirty(taskGameObject.AgentEntity);
-                }
-            }
+        /// <summary>
+        /// 当前是否存在游戏物体实例，且游戏物体的ID匹配
+        /// </summary>
+        private bool IsEntityMatched()
+        {
+            if (AgentEntity == null)
+                return false;
+
+            TaskTarget target = AgentEntity.GetComponent<TaskTarget>();
+            return target && GUID == target.GUID;
         }
 #endif
     }

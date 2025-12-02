@@ -1350,16 +1350,17 @@ namespace HT.Framework
         private void ChangeParentGUI(HTFFunc<string, string> getWord)
         {
             #region 父级目标物体丢失，根据目标GUID重新搜寻
-            if (GameObjectValue == null)
+            if (StringValue != "<None>")
             {
-                if (StringValue != "<None>")
+                if (!IsParentMatched())
                 {
                     PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
                     if (prefabStage != null)
                     {
                         GameObjectValue = prefabStage.prefabContentsRoot.FindChildren(StringValue2);
-                        if (GameObjectValue == null)
+                        if (!IsParentMatched())
                         {
+                            GameObjectValue = null;
                             StepTarget[] targets = prefabStage.prefabContentsRoot.GetComponentsInChildren<StepTarget>(true);
                             foreach (StepTarget target in targets)
                             {
@@ -1376,8 +1377,9 @@ namespace HT.Framework
                     else
                     {
                         GameObjectValue = GameObject.Find(StringValue2);
-                        if (GameObjectValue == null)
+                        if (!IsParentMatched())
                         {
+                            GameObjectValue = null;
                             StepTarget[] targets = UnityEngine.Object.FindObjectsOfType<StepTarget>(true);
                             foreach (StepTarget target in targets)
                             {
@@ -1388,17 +1390,6 @@ namespace HT.Framework
                                     break;
                                 }
                             }
-                        }
-                    }
-
-                    if (GameObjectValue != null)
-                    {
-                        StepTarget target = GameObjectValue.GetComponent<StepTarget>();
-                        if (!target)
-                        {
-                            target = GameObjectValue.AddComponent<StepTarget>();
-                            target.GUID = StringValue;
-                            EditorUtility.SetDirty(GameObjectValue);
                         }
                     }
                 }
@@ -1599,6 +1590,14 @@ namespace HT.Framework
             {
                 PreviewTarget.transform.SetParent(GameObjectValue.transform);
             }
+        }
+        private bool IsParentMatched()
+        {
+            if (GameObjectValue == null)
+                return false;
+
+            StepTarget target = GameObjectValue.GetComponent<StepTarget>();
+            return target && StringValue == target.GUID;
         }
 
         private void OpenScriptAction(GameObject target, string methodName)
