@@ -24,8 +24,16 @@ namespace HT.Framework
             InitDrawer(property);
 
             Rect sub = position;
-            sub.Set(position.x, position.y, position.width, 20);
+            sub.Set(position.x, position.y, position.width - 45, 20);
+            label.text += $" [{_keys.arraySize}]";
             property.isExpanded = EditorGUI.Foldout(sub, property.isExpanded, label, true);
+
+            sub.Set(position.x + position.width - 45, position.y + 1, 45, 18);
+            if (GUI.Button(sub, "Clear"))
+            {
+                _keys.ClearArray();
+                _values.ClearArray();
+            }
 
             if (property.isExpanded)
             {
@@ -43,13 +51,6 @@ namespace HT.Framework
                     GUI.color = Color.red;
                     EditorGUI.LabelField(sub, EditorGUIUtility.TrTextContent("The data in the dictionary is incorrect, please clear the data."));
                     GUI.color = Color.white;
-
-                    sub.Set(position.x + position.width - 45, position.y + 20,  45, 20);
-                    if (GUI.Button(sub, "Clear"))
-                    {
-                        _keys.ClearArray();
-                        _values.ClearArray();
-                    }
                 }
 
                 GUI.enabled = last;

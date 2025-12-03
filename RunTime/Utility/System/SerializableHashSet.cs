@@ -327,7 +327,14 @@ namespace HT.Framework
             _hashSet.Clear();
             for (int i = 0; i < _values.Count; i++)
             {
-                _hashSet.Add(_values[i]);
+                if (!_hashSet.Contains(_values[i]))
+                {
+                    _hashSet.Add(_values[i]);
+                }
+                else
+                {
+                    Log.Warning($"可序列化的哈希集：哈希集中存在多个【{_values[i]}】值！");
+                }
             }
             _isFillHashSet = true;
         }

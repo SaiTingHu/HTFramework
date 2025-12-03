@@ -332,6 +332,10 @@ namespace HT.Framework
                 {
                     _dictionary.Add(_keys[i], _values[i]);
                 }
+                else
+                {
+                    Log.Warning($"可序列化的字典：字典中名为【{_keys[i]}】的 Key 存在多个值！");
+                }
             }
             _isFillDictionary = true;
         }
