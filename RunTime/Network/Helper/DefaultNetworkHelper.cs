@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HT.Framework
 {
@@ -33,10 +34,6 @@ namespace HT.Framework
         /// 与服务器断开连接事件
         /// </summary>
         public event HTFAction<ProtocolChannelBase> DisconnectServerEvent;
-        /// <summary>
-        /// 发送消息成功事件
-        /// </summary>
-        public event HTFAction<ProtocolChannelBase> SendMessageEvent;
         /// <summary>
         /// 接收消息成功事件
         /// </summary>
@@ -120,10 +117,6 @@ namespace HT.Framework
             foreach (var channel in ProtocolChannels)
             {
                 channel.Value.OnInit();
-                channel.Value.SendMessageEvent += (cha) =>
-                {
-                    SendMessageEvent?.Invoke(cha);
-                };
                 channel.Value.ReceiveMessageEvent += (cha, message) =>
                 {
                     ReceiveMessageEvent?.Invoke(cha, message);
@@ -218,7 +211,7 @@ namespace HT.Framework
 
                     if (ProtocolChannels[channelType].IsDisconnectRequest(message))
                     {
-                        SendMessage(channelType, message);
+                        SendMessage(channelType, message).ConfigureAwait(false);
                     }
                     else
                     {
@@ -241,7 +234,7 @@ namespace HT.Framework
         /// <param name="channelType">通信协议通道类型</param>
         /// <param name="message">消息对象</param>
         /// <returns>是否发送成功</returns>
-        public bool SendMessage(Type channelType, INetworkMessage message)
+        public async Task<int> SendMessage(Type channelType, INetworkMessage message)
         {
             if (ProtocolChannels.ContainsKey(channelType))
             {
@@ -249,29 +242,29 @@ namespace HT.Framework
                 {
                     if (ProtocolChannels[channelType].IsConnect)
                     {
-                        ProtocolChannels[channelType].InjectMessage(ProtocolChannels[channelType].EncapsulatedMessage(message));
+                        int count = await ProtocolChannels[channelType].SendMessage(message.Encapsulate());
                         Main.m_ReferencePool.Despawn(message);
-                        return true;
+                        return count;
                     }
                     else
                     {
                         Log.Error("发送消息出错：客户端已断开连接！");
                         Main.m_ReferencePool.Despawn(message);
-                        return false;
+                        return 0;
                     }
                 }
                 else
                 {
-                    ProtocolChannels[channelType].InjectMessage(ProtocolChannels[channelType].EncapsulatedMessage(message));
+                    int count = await ProtocolChannels[channelType].SendMessage(message.Encapsulate());
                     Main.m_ReferencePool.Despawn(message);
-                    return true;
+                    return count;
                 }
             }
             else
             {
                 Log.Warning($"发送消息出错：{channelType.FullName} 未启用或并不是有效的通信协议！");
                 Main.m_ReferencePool.Despawn(message);
-                return false;
+                return 0;
             }
         }
         /// <summary>

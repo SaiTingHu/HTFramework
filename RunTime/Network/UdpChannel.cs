@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace HT.Framework
 {
@@ -63,13 +64,26 @@ namespace HT.Framework
             return false;
         }
         /// <summary>
-        /// 封装消息
+        /// 发送消息
         /// </summary>
-        /// <param name="message">消息对象</param>
-        /// <returns>封装后的字节数组</returns>
-        public override byte[] EncapsulatedMessage(INetworkMessage message)
+        /// <param name="info">封装后的消息字节数组</param>
+        /// <returns>已发送字节</returns>
+        public override async Task<int> SendMessage(byte[] info)
         {
-            return message.Encapsulate();
+            if (info == null || info.Length == 0)
+                return 0;
+
+            int count = 0;
+            try
+            {
+                count = await Client.SendToAsync(info, SocketFlags.None, ServerEndPoint);
+            }
+            catch (Exception e)
+            {
+                Log.Error($"{this} 发送消息出错：{e.Message}");
+                count = 0;
+            }
+            return count;
         }
         /// <summary>
         /// 接收消息

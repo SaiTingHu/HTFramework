@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HT.Framework
 {
@@ -28,10 +29,6 @@ namespace HT.Framework
         /// 与服务器断开连接事件
         /// </summary>
         event HTFAction<ProtocolChannelBase> DisconnectServerEvent;
-        /// <summary>
-        /// 发送消息成功事件
-        /// </summary>
-        event HTFAction<ProtocolChannelBase> SendMessageEvent;
         /// <summary>
         /// 接收消息成功事件
         /// </summary>
@@ -64,8 +61,8 @@ namespace HT.Framework
         /// </summary>
         /// <param name="channelType">通信协议通道类型</param>
         /// <param name="message">消息对象</param>
-        /// <returns>是否发送成功</returns>
-        bool SendMessage(Type channelType, INetworkMessage message);
+        /// <returns>已发送字节</returns>
+        Task<int> SendMessage(Type channelType, INetworkMessage message);
         /// <summary>
         /// 获取指定的通信管道
         /// </summary>
