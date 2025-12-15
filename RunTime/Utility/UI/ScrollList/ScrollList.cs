@@ -22,6 +22,10 @@ namespace HT.Framework
         /// </summary>
         public Direction ScrollDirection = Direction.Vertical;
         /// <summary>
+        /// 数据变化时列表停留位置
+        /// </summary>
+        public StayPosition StayPos = StayPosition.Zero;
+        /// <summary>
         /// 第一个元素的位置
         /// </summary>
         public Vector2 FirstPosition;
@@ -251,7 +255,8 @@ namespace HT.Framework
                 }
 
                 content.sizeDelta = new Vector2(0, Mathf.Abs(y));
-                normalizedPosition = Vector2.zero;
+                if (StayPos == StayPosition.Zero) normalizedPosition = Vector2.zero;
+                else if (StayPos == StayPosition.One) normalizedPosition = Vector2.one;
             }
             else
             {
@@ -283,7 +288,8 @@ namespace HT.Framework
                 }
 
                 content.sizeDelta = new Vector2(Mathf.Abs(x), 0);
-                normalizedPosition = Vector2.zero;
+                if (StayPos == StayPosition.Zero) normalizedPosition = Vector2.zero;
+                else if (StayPos == StayPosition.One) normalizedPosition = Vector2.one;
             }
         }
         /// <summary>
@@ -328,6 +334,24 @@ namespace HT.Framework
             /// 垂直
             /// </summary>
             Vertical = 1
+        }
+        /// <summary>
+        /// 列表停留位置
+        /// </summary>
+        public enum StayPosition
+        {
+            /// <summary>
+            /// 停留到滚动视图Zero位置
+            /// </summary>
+            Zero = 0,
+            /// <summary>
+            /// 停留到滚动视图One位置
+            /// </summary>
+            One = 1,
+            /// <summary>
+            /// 保持位置不动
+            /// </summary>
+            None = 2
         }
     }
 }

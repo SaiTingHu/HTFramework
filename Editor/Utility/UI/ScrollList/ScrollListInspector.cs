@@ -10,6 +10,7 @@ namespace HT.Framework
 
         private SerializedProperty _elementTemplate;
         private SerializedProperty _scrollDirection;
+        private SerializedProperty _stayPos;
         private SerializedProperty _firstPosition;
         private SerializedProperty _rowNumber;
         private SerializedProperty _spacing;
@@ -22,6 +23,7 @@ namespace HT.Framework
 
             _elementTemplate = serializedObject.FindProperty("ElementTemplate");
             _scrollDirection = serializedObject.FindProperty("ScrollDirection");
+            _stayPos = serializedObject.FindProperty("StayPos");
             _firstPosition = serializedObject.FindProperty("FirstPosition");
             _rowNumber = serializedObject.FindProperty("RowNumber");
             _spacing = serializedObject.FindProperty("Spacing");
@@ -41,6 +43,10 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(_scrollDirection);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(_stayPos);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
