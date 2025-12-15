@@ -82,7 +82,8 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 string 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<string> handler, HTFAction offlineHandle)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<string> handler, HTFAction offlineHandle, HTFAction<long, string> errorHandle)
         {
             if (!WebInterfaces.ContainsKey(interfaceName))
             {
@@ -90,6 +91,7 @@ namespace HT.Framework
                 wi.Name = interfaceName;
                 wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
+                wi.ErrorHandler = errorHandle;
                 wi.Handler = handler;
                 WebInterfaces.Add(interfaceName, wi);
             }
@@ -105,7 +107,8 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 Texture2D 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<Texture2D> handler, HTFAction offlineHandle)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<Texture2D> handler, HTFAction offlineHandle, HTFAction<long, string> errorHandle)
         {
             if (!WebInterfaces.ContainsKey(interfaceName))
             {
@@ -113,6 +116,7 @@ namespace HT.Framework
                 wi.Name = interfaceName;
                 wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
+                wi.ErrorHandler = errorHandle;
                 wi.Handler = handler;
                 WebInterfaces.Add(interfaceName, wi);
             }
@@ -128,7 +132,8 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 AudioClip 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle, HTFAction<long, string> errorHandle)
         {
             if (!WebInterfaces.ContainsKey(interfaceName))
             {
@@ -136,6 +141,7 @@ namespace HT.Framework
                 wi.Name = interfaceName;
                 wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
+                wi.ErrorHandler = errorHandle;
                 wi.Handler = handler;
                 WebInterfaces.Add(interfaceName, wi);
             }
@@ -153,7 +159,8 @@ namespace HT.Framework
         /// <param name="loadingHandler">下载过程中回调</param>
         /// <param name="finishedHandler">下载完成回调</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler, HTFAction<bool> finishedHandler, HTFAction offlineHandle)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler, HTFAction<bool> finishedHandler, HTFAction offlineHandle, HTFAction<long, string> errorHandle)
         {
             if (!WebInterfaces.ContainsKey(interfaceName))
             {
@@ -161,6 +168,7 @@ namespace HT.Framework
                 wi.Name = interfaceName;
                 wi.Url = interfaceUrl;
                 wi.OfflineHandler = offlineHandle;
+                wi.ErrorHandler = errorHandle;
                 wi.LoadingHandler = loadingHandler;
                 wi.FinishedHandler = finishedHandler;
                 wi.Path = savePath;
@@ -176,13 +184,15 @@ namespace HT.Framework
         /// </summary>
         /// <param name="interfaceName">接口名称</param>
         /// <param name="interfaceUrl">接口url</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<long, string> errorHandle)
         {
             if (!WebInterfaces.ContainsKey(interfaceName))
             {
                 WebInterfacePost wi = Main.m_ReferencePool.Spawn<WebInterfacePost>();
                 wi.Name = interfaceName;
                 wi.Url = interfaceUrl;
+                wi.ErrorHandler = errorHandle;
                 WebInterfaces.Add(interfaceName, wi);
             }
             else
@@ -307,6 +317,7 @@ namespace HT.Framework
                     LogFailDetail(wif, request.error, url, begin, end);
 
                     wif.OnRequestFinished(null);
+                    wif.ErrorHandler?.Invoke(request.responseCode, request.error);
                 }
             }
         }
@@ -366,6 +377,7 @@ namespace HT.Framework
                     LogFailDetail(wif, request.error, url, begin, end);
 
                     wif.OnRequestFinished(null);
+                    wif.ErrorHandler?.Invoke(request.responseCode, request.error);
                 }
             }
         }
@@ -424,6 +436,7 @@ namespace HT.Framework
                     LogFailDetail(wif, request.error, url, begin, end);
 
                     wif.OnRequestFinished(null);
+                    wif.ErrorHandler?.Invoke(request.responseCode, request.error);
                 }
             }
         }
@@ -501,6 +514,7 @@ namespace HT.Framework
                     LogLoadFileFailDetail(wif, request.error, url, begin, end);
 
                     wif.OnFinished(false);
+                    wif.ErrorHandler?.Invoke(request.responseCode, request.error);
                 }
             }
         }

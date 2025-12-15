@@ -24,7 +24,8 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 string 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<string> handler, HTFAction offlineHandle);
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<string> handler, HTFAction offlineHandle, HTFAction<long, string> errorHandle);
         /// <summary>
         /// 注册接口（获取 Texture2D）
         /// </summary>
@@ -32,7 +33,8 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 Texture2D 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<Texture2D> handler, HTFAction offlineHandle);
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<Texture2D> handler, HTFAction offlineHandle, HTFAction<long, string> errorHandle);
         /// <summary>
         /// 注册接口（获取 AudioClip）
         /// </summary>
@@ -40,7 +42,8 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 AudioClip 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle);
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle, HTFAction<long, string> errorHandle);
         /// <summary>
         /// 注册接口（获取 File）
         /// </summary>
@@ -50,13 +53,15 @@ namespace HT.Framework
         /// <param name="loadingHandler">下载过程中回调</param>
         /// <param name="finishedHandler">下载完成回调</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler, HTFAction<bool> finishedHandler, HTFAction offlineHandle);
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler, HTFAction<bool> finishedHandler, HTFAction offlineHandle, HTFAction<long, string> errorHandle);
         /// <summary>
         /// 注册接口（提交 表单）
         /// </summary>
         /// <param name="interfaceName">接口名称</param>
         /// <param name="interfaceUrl">接口url</param>
-        void RegisterInterface(string interfaceName, string interfaceUrl);
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<long, string> errorHandle);
         /// <summary>
         /// 通过名称获取接口
         /// </summary>

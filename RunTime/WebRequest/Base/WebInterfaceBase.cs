@@ -25,6 +25,10 @@ namespace HT.Framework
         /// </summary>
         public HTFAction OfflineHandler;
         /// <summary>
+        /// 出现错误时的处理者
+        /// </summary>
+        public HTFAction<long, string> ErrorHandler;
+        /// <summary>
         /// 发起请求时的头部信息
         /// </summary>
         public Dictionary<string, string> RequestHeaders;

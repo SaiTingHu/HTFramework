@@ -31,7 +31,7 @@ namespace HT.Framework
                 return _helper.IsConnectedInternet;
             }
         }
-        
+
         /// <summary>
         /// 注册接口（获取 string）
         /// </summary>
@@ -39,9 +39,10 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 string 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<string> handler, HTFAction offlineHandle = null)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<string> handler, HTFAction offlineHandle = null, HTFAction<long, string> errorHandle = null)
         {
-            _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle);
+            _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle, errorHandle);
         }
         /// <summary>
         /// 注册接口（获取 Texture2D）
@@ -50,9 +51,10 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 Texture2D 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<Texture2D> handler, HTFAction offlineHandle = null)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<Texture2D> handler, HTFAction offlineHandle = null, HTFAction<long, string> errorHandle = null)
         {
-            _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle);
+            _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle, errorHandle);
         }
         /// <summary>
         /// 注册接口（获取 AudioClip）
@@ -61,9 +63,10 @@ namespace HT.Framework
         /// <param name="interfaceUrl">接口url</param>
         /// <param name="handler">获取 AudioClip 之后的处理者</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle = null)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<AudioClip> handler, HTFAction offlineHandle = null, HTFAction<long, string> errorHandle = null)
         {
-            _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle);
+            _helper.RegisterInterface(interfaceName, interfaceUrl, handler, offlineHandle, errorHandle);
         }
         /// <summary>
         /// 注册接口（获取 File）
@@ -74,18 +77,20 @@ namespace HT.Framework
         /// <param name="loadingHandler">下载过程中回调</param>
         /// <param name="finishedHandler">下载完成回调</param>
         /// <param name="offlineHandle">离线模式处理者</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler = null, HTFAction<bool> finishedHandler = null, HTFAction offlineHandle = null)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, string savePath, HTFAction<float> loadingHandler = null, HTFAction<bool> finishedHandler = null, HTFAction offlineHandle = null, HTFAction<long, string> errorHandle = null)
         {
-            _helper.RegisterInterface(interfaceName, interfaceUrl, savePath, loadingHandler, finishedHandler, offlineHandle);
+            _helper.RegisterInterface(interfaceName, interfaceUrl, savePath, loadingHandler, finishedHandler, offlineHandle, errorHandle);
         }
         /// <summary>
         /// 注册接口（提交 表单）
         /// </summary>
         /// <param name="interfaceName">接口名称</param>
         /// <param name="interfaceUrl">接口url</param>
-        public void RegisterInterface(string interfaceName, string interfaceUrl)
+        /// <param name="errorHandle">出现错误时的处理者</param>
+        public void RegisterInterface(string interfaceName, string interfaceUrl, HTFAction<long, string> errorHandle = null)
         {
-            _helper.RegisterInterface(interfaceName, interfaceUrl);
+            _helper.RegisterInterface(interfaceName, interfaceUrl, errorHandle);
         }
         /// <summary>
         /// 通过名称获取接口
