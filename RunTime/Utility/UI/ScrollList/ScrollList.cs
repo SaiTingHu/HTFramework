@@ -37,6 +37,10 @@ namespace HT.Framework
         /// 元素之间的间隔
         /// </summary>
         public Vector2 Spacing;
+        /// <summary>
+        /// 自定义列表布局
+        /// </summary>
+        public HTFAction<ScrollList> OnCustomLayoutHandler;
 
         private List<ScrollListData> _datas = new List<ScrollListData>();
         private HashSet<ScrollListData> _dataIndexs = new HashSet<ScrollListData>();
@@ -225,6 +229,12 @@ namespace HT.Framework
         /// </summary>
         private void RefreshScrollView()
         {
+            if (OnCustomLayoutHandler != null)
+            {
+                OnCustomLayoutHandler(this);
+                return;
+            }
+
             if (ScrollDirection == Direction.Vertical)
             {
                 float x = FirstPosition.x;
