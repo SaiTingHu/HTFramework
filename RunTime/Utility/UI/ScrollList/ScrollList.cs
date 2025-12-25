@@ -244,6 +244,7 @@ namespace HT.Framework
                 for (int i = 0; i < _datas.Count; i++)
                 {
                     ScrollListElement element = _elements[_datas[i]];
+                    element.gameObject.SetActive(true);
                     element.rectTransform.anchoredPosition = new Vector2(x, y);
                     height = element.rectTransform.sizeDelta.y;
                     row++;
@@ -277,6 +278,7 @@ namespace HT.Framework
                 for (int i = 0; i < _datas.Count; i++)
                 {
                     ScrollListElement element = _elements[_datas[i]];
+                    element.gameObject.SetActive(true);
                     element.rectTransform.anchoredPosition = new Vector2(x, y);
                     width = element.rectTransform.sizeDelta.x;
                     row++;
@@ -310,13 +312,13 @@ namespace HT.Framework
             if (_elementsPool.Count > 0)
             {
                 ScrollListElement element = _elementsPool.Dequeue();
-                element.gameObject.SetActive(true);
+                element.gameObject.SetActive(false);
                 return element;
             }
             else
             {
                 GameObject element = Instantiate(ElementTemplate.gameObject, content);
-                element.SetActive(true);
+                element.SetActive(false);
                 return element.GetComponent<ScrollListElement>();
             }
         }
