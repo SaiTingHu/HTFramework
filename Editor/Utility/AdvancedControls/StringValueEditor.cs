@@ -181,6 +181,24 @@ namespace HT.Framework
                 {
                     JsonFormat();
                 });
+                gm.AddSeparator("");
+                gm.AddItem(new GUIContent("JSON.cn"), false, () =>
+                {
+                    Application.OpenURL("https://www.json.cn");
+                });
+                gm.AddItem(new GUIContent("BEJSON"), false, () =>
+                {
+                    Application.OpenURL("https://www.bejson.com/");
+                });
+                gm.ShowAsContext();
+            }
+            if (GUILayout.Button("$", EditorStyles.toolbarPopup))
+            {
+                GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent("Set Superscript"), false, () =>
+                {
+                    SetSuperscript();
+                });
                 gm.ShowAsContext();
             }
         }
@@ -582,6 +600,62 @@ namespace HT.Framework
                 int code = int.Parse(hexValue, NumberStyles.HexNumber);
                 return ((char)code).ToString();
             });
+        }
+
+        /// <summary>
+        /// 设置为上标
+        /// </summary>
+        private void SetSuperscript()
+        {
+            GUIUtility.systemCopyBuffer = null;
+            SimulateKeyboardEvent("^c");
+
+            EditorApplication.delayCall += () =>
+            {
+                if (!string.IsNullOrEmpty(GUIUtility.systemCopyBuffer))
+                {
+                    string content = GUIUtility.systemCopyBuffer;
+                    content = ReplaceAllSuperscript(content);
+                    GUIUtility.systemCopyBuffer = content;
+
+                    SimulateKeyboardEvent("^v");
+                }
+            };
+        }
+        /// <summary>
+        /// 替换字符串中所有字符为上标（存在上标格式的字符）
+        /// </summary>
+        private string ReplaceAllSuperscript(string content)
+        {
+            char[] chars = content.ToCharArray();
+            for (int i = 0; i < chars.Length; i++)
+            {
+                switch (chars[i])
+                {
+                    case '0': chars[i] = '⁰'; break;
+                    case '1': chars[i] = '¹'; break;
+                    case '2': chars[i] = '²'; break;
+                    case '3': chars[i] = '³'; break;
+                    case '4': chars[i] = '⁴'; break;
+                    case '5': chars[i] = '⁵'; break;
+                    case '6': chars[i] = '⁶'; break;
+                    case '7': chars[i] = '⁷'; break;
+                    case '8': chars[i] = '⁸'; break;
+                    case '9': chars[i] = '⁹'; break;
+                    case '+': chars[i] = '⁺'; break;
+                    case '-': chars[i] = '⁻'; break;
+                    case '=': chars[i] = '⁼'; break;
+                    case '(': chars[i] = '⁽'; break;
+                    case ')': chars[i] = '⁾'; break;
+                    case 'a': chars[i] = 'ᵃ'; break;
+                    case 'b': chars[i] = 'ᵇ'; break;
+                    case 'n': chars[i] = 'ⁿ'; break;
+                    case 'i': chars[i] = 'ⁱ'; break;
+                    case 'x': chars[i] = 'ˣ'; break;
+                    default: break;
+                }
+            }
+            return new string(chars);
         }
 
         /// <summary>
