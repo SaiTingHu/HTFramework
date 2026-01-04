@@ -34,6 +34,13 @@ namespace HT.Framework
         }
 
         private EditorWindow _parasitifer;
+        private string[] _specials = new string[] {
+            "≠", "≈", "≤", "≥", "№", "√", "×", "★", "↓", "↑", "←", "→", "½", "¼", "¾", "℃",
+            "〔", "〕", "〈", "〉", "「", "」", "『", "』", "±", "∑", "∈", "≮", "≯", "∞", "∵", "∴",
+            "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩",
+            "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ", "Ⅹ", "Ⅺ", "Ⅻ"
+        };
+        private bool _isShowSpecial = false;
         private bool _isShowRichText = false;
         private string _value;
         private string _title;
@@ -195,6 +202,11 @@ namespace HT.Framework
             if (GUILayout.Button("$", EditorStyles.toolbarPopup))
             {
                 GenericMenu gm = new GenericMenu();
+                gm.AddItem(new GUIContent(_isShowSpecial ? "Hide Special Panel" : "Show Special Panel"), false, () =>
+                {
+                    _isShowSpecial = !_isShowSpecial;
+                });
+                gm.AddSeparator("");
                 gm.AddItem(new GUIContent("Set Superscript"), false, () =>
                 {
                     SetSuperscript();
@@ -205,6 +217,24 @@ namespace HT.Framework
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();
+
+            if (_isShowSpecial)
+            {
+                int rowNumber = (int)position.width / 33;
+                for (int i = 0; i < _specials.Length; i += rowNumber)
+                {
+                    GUILayout.BeginHorizontal();
+                    for (int j = 0; j < rowNumber && (i + j) < _specials.Length; j++)
+                    {
+                        string str = _specials[i + j];
+                        if (GUILayout.Button(str, GUILayout.Width(30)))
+                        {
+                            AddSpecial(str);
+                        }
+                    }
+                    GUILayout.EndHorizontal();
+                }
+            }
 
             _scroll = GUILayout.BeginScrollView(_scroll);
             _valueGS.richText = _isShowRichText;
@@ -602,6 +632,18 @@ namespace HT.Framework
             });
         }
 
+        /// <summary>
+        /// 在当前光标位置插入一个特殊字符
+        /// </summary>
+        private void AddSpecial(string str)
+        {
+            EditorApplication.delayCall += () =>
+            {
+                GUIUtility.systemCopyBuffer = str;
+
+                SimulateKeyboardEvent("^v");
+            };
+        }
         /// <summary>
         /// 设置为上标
         /// </summary>
