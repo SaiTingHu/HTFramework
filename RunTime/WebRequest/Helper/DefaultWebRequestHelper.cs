@@ -520,7 +520,7 @@ namespace HT.Framework
         }
 
         /// <summary>
-        /// 打印网络请求细节（请求成功）
+        /// 打印Web网络请求细节（请求成功）
         /// </summary>
         /// <param name="wif">网络接口</param>
         /// <param name="handler">请求下载处理器</param>
@@ -536,8 +536,8 @@ namespace HT.Framework
             string apiStr = $"<color=cyan>{wif.Name}</color>";
             string urlStr = $"<color=cyan>{url}</color>";
             string dataStr = $"<color=cyan>{handler.data.Length}</color>";
-            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
-            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+            string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
+            string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
             string content = wif.OnGetDownloadString(handler);
 #else
             string apiStr = wif.Name;
@@ -547,10 +547,10 @@ namespace HT.Framework
             string end = endTime.ToString("mm:ss:fff");
             string content = wif.OnGetDownloadString(handler);
 #endif
-            Log.Info($"【发起网络请求】接口：{apiStr}，URL：{urlStr}，收到回复：{dataStr}字节，开始时间：{begin}，结束时间：{end}，回复内容：{content}。");
+            Log.Info($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，收到回复：{dataStr}字节，开始时间：{begin}，结束时间：{end}，回复内容：{content}。");
         }
         /// <summary>
-        /// 打印网络请求细节（请求失败）
+        /// 打印Web网络请求细节（请求失败）
         /// </summary>
         /// <param name="wif">网络接口</param>
         /// <param name="error">错误信息</param>
@@ -566,8 +566,8 @@ namespace HT.Framework
             string apiStr = $"<color=cyan>{wif.Name}</color>";
             string urlStr = $"<color=cyan>{url}</color>";
             string errorStr = $"<color=cyan>{error}</color>";
-            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
-            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+            string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
+            string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
 #else
             string apiStr = wif.Name;
             string urlStr = url;
@@ -575,7 +575,7 @@ namespace HT.Framework
             string begin = beginTime.ToString("mm:ss:fff");
             string end = endTime.ToString("mm:ss:fff");
 #endif
-            Log.Error($"【发起网络请求】接口：{apiStr}，URL：{urlStr}，请求失败：{errorStr}，开始时间：{begin}，结束时间：{end}。");
+            Log.Error($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，请求失败：{errorStr}，开始时间：{begin}，结束时间：{end}。");
         }
         /// <summary>
         /// 打印下载文件细节（请求成功）
@@ -593,8 +593,8 @@ namespace HT.Framework
             string apiStr = $"<color=cyan>{wif.Name}</color>";
             string urlStr = $"<color=cyan>{url}</color>";
             string path = $"<color=cyan>{wif.Path}</color>";
-            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
-            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+            string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
+            string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
 #else
             string apiStr = wif.Name;
             string urlStr = url;
@@ -621,8 +621,8 @@ namespace HT.Framework
             string apiStr = $"<color=cyan>{wif.Name}</color>";
             string urlStr = $"<color=cyan>{url}</color>";
             string errorStr = $"<color=cyan>{error}</color>";
-            string begin = $"<color=cyan>{beginTime.ToString("mm:ss:fff")}</color>";
-            string end = $"<color=cyan>{endTime.ToString("mm:ss:fff")}</color>";
+            string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
+            string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
 #else
             string apiStr = wif.Name;
             string urlStr = url;
