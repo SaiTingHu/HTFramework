@@ -13,6 +13,7 @@ namespace HT.Framework
     internal static class OpenAssetToolkit
     {
         private static int _logFileID = 0;
+        private static int _clccFileID = 0;
         private static Type _consoleWindowType = null;
         private static FieldInfo _activeText = null;
         private static FieldInfo _consoleWindow = null;
@@ -26,6 +27,17 @@ namespace HT.Framework
                     _logFileID = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/HTFramework/RunTime/Utility/Toolkit/Log.cs").GetInstanceID();
                 }
                 return _logFileID;
+            }
+        }
+        private static int ClccFileID
+        {
+            get
+            {
+                if (_clccFileID == 0)
+                {
+                    _clccFileID = AssetDatabase.LoadAssetAtPath<DefaultAsset>("Assets/HTFramework/Editor/Utility/Toolkit/Log.clcc").GetInstanceID();
+                }
+                return _clccFileID;
             }
         }
         private static Type ConsoleWindowType
@@ -65,6 +77,10 @@ namespace HT.Framework
         [OnOpenAsset(-1)]
         private static bool OnOpenAsset(int instanceID, int line)
         {
+            bool isClicked = CustomLogClick(instanceID, line);
+            if (isClicked)
+                return true;
+
             bool isOpened = OpenWithNotepad(instanceID);
             if (isOpened)
                 return true;
@@ -85,6 +101,15 @@ namespace HT.Framework
             return false;
         }
 
+        private static bool CustomLogClick(int instanceID, int index)
+        {
+            if (instanceID == ClccFileID && index >= 0)
+            {
+                Log.DoCustomLogClickCallback(index);
+                return true;
+            }
+            return false;
+        }
         private static bool OpenWithNotepad(int instanceID)
         {
             string openWithNotepadFormat = EditorPrefs.GetString(EditorPrefsTable.OpenWithNotepadFormat, "");

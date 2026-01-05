@@ -539,6 +539,10 @@ namespace HT.Framework
             string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
             string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
             string content = wif.OnGetDownloadString(handler);
+            string contentName = Log.CustomLogClick("回复内容（点击可复制）：", () =>
+            {
+                GUIUtility.systemCopyBuffer = content;
+            });
 #else
             string apiStr = wif.Name;
             string urlStr = url;
@@ -546,8 +550,9 @@ namespace HT.Framework
             string begin = beginTime.ToString("mm:ss:fff");
             string end = endTime.ToString("mm:ss:fff");
             string content = wif.OnGetDownloadString(handler);
+            string contentName = "回复内容：";
 #endif
-            Log.Info($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，收到回复：{dataStr}字节，开始时间：{begin}，结束时间：{end}，回复内容：{content}。");
+            Log.Info($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，收到回复：{dataStr}字节，开始时间：{begin}，结束时间：{end}，{contentName}{content}。");
         }
         /// <summary>
         /// 打印Web网络请求细节（请求失败）

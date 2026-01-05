@@ -216,6 +216,8 @@ namespace HT.Framework
             Type logEntries = EditorReflectionToolkit.GetTypeInEditorAssemblies("UnityEditor.LogEntries");
             MethodInfo clearMethod = logEntries.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
             clearMethod.Invoke(null, null);
+
+            Log.Clear();
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace HT.Framework
@@ -12,6 +13,7 @@ namespace HT.Framework
         private const string InfoPrefix = "<b><color=cyan>[HTFramework.Info]</color></b> ";
         private const string WarningPrefix = "<b><color=yellow>[HTFramework.Warning]</color></b> ";
         private const string ErrorPrefix = "<b><color=red>[HTFramework.Error]</color></b> ";
+        private static List<HTFAction> CustomLogClickCallbacks = new List<HTFAction>();
 #endif
 
         /// <summary>
@@ -70,11 +72,28 @@ namespace HT.Framework
 #endif
         }
         /// <summary>
+        /// 转换为自定义点击事件（仅在编辑器中控制台生效）
+        /// </summary>
+        /// <param name="content">原文本</param>
+        /// <param name="clickCallback">自定义点击回调</param>
+        /// <returns>转换后的文本</returns>
+        public static string CustomLogClick(this string content, HTFAction clickCallback)
+        {
+#if UNITY_EDITOR
+            int index = CustomLogClickCallbacks.Count;
+            CustomLogClickCallbacks.Add(clickCallback);
+            return $"<a href=\"Assets/HTFramework/Editor/Utility/Toolkit/Log.clcc\" line=\"{index}\">{content}</a>";
+#else
+            return content;
+#endif
+        }
+
+        /// <summary>
         /// 打印信息日志
         /// </summary>
         /// <param name="content">日志内容</param>
         /// <param name="context">上下文目标</param>
-        /// <param name="isLinkStackTrace">为日志内容中的堆栈跟踪信息建立超链接</param>
+        /// <param name="isLinkStackTrace">为日志内容中的堆栈调用信息建立超链接（仅编辑器内有效）</param>
         public static void Info(this string content, Object context = null, bool isLinkStackTrace = false)
         {
 #if UNITY_EDITOR
@@ -95,7 +114,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="content">日志内容</param>
         /// <param name="context">上下文目标</param>
-        /// <param name="isLinkStackTrace">为日志内容中的堆栈跟踪信息建立超链接</param>
+        /// <param name="isLinkStackTrace">为日志内容中的堆栈调用信息建立超链接（仅编辑器内有效）</param>
         public static void Warning(this string content, Object context = null, bool isLinkStackTrace = false)
         {
 #if UNITY_EDITOR
@@ -116,7 +135,7 @@ namespace HT.Framework
         /// </summary>
         /// <param name="content">日志内容</param>
         /// <param name="context">上下文目标</param>
-        /// <param name="isLinkStackTrace">为日志内容中的堆栈跟踪信息建立超链接</param>
+        /// <param name="isLinkStackTrace">为日志内容中的堆栈调用信息建立超链接（仅编辑器内有效）</param>
         public static void Error(this string content, Object context = null, bool isLinkStackTrace = false)
         {
 #if UNITY_EDITOR
@@ -132,7 +151,25 @@ namespace HT.Framework
             }
 #endif
         }
+        /// <summary>
+        /// 清空日志中的自定义对象（比如：自定义点击事件）
+        /// </summary>
+        public static void Clear()
+        {
+#if UNITY_EDITOR
+            CustomLogClickCallbacks.Clear();
+#endif
+        }
 
+        internal static void DoCustomLogClickCallback(int index)
+        {
+#if UNITY_EDITOR
+            if (index >= 0 && index < CustomLogClickCallbacks.Count)
+            {
+                CustomLogClickCallbacks[index]?.Invoke();
+            }
+#endif
+        }
         private static string LinkStackTrace(string content)
         {
             if (string.IsNullOrEmpty(content))
