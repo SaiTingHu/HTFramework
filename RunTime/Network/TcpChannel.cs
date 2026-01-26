@@ -118,9 +118,6 @@ namespace HT.Framework
                 if (code == HEARTBEAT)
                 {
                     //响应心跳包
-#if UNITY_EDITOR
-                    //Log.Info($"{this}：接收到心跳包【校验码：{code}】，已响应心跳包！[{DateTime.Now}]");
-#endif
                     SendMessage(_heartbeatPackage).ConfigureAwait(false);
                     return null;
                 }

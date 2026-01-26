@@ -9,7 +9,6 @@ namespace HT.Framework
     /// <summary>
     /// 通信协议通道的基类
     /// </summary>
-    /// </summary>
     public abstract class ProtocolChannelBase
     {
         private bool _isEnableThread = false;
