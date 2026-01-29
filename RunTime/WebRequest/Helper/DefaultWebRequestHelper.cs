@@ -316,7 +316,7 @@ namespace HT.Framework
                 {
                     LogFailDetail(wif, request.error, url, begin, end);
 
-                    wif.OnRequestFinished(null);
+                    wif.OnRequestFinished(request.downloadHandler);
                     wif.ErrorHandler?.Invoke(request.responseCode, request.error);
                 }
             }
@@ -376,7 +376,7 @@ namespace HT.Framework
                 {
                     LogFailDetail(wif, request.error, url, begin, end);
 
-                    wif.OnRequestFinished(null);
+                    wif.OnRequestFinished(request.downloadHandler);
                     wif.ErrorHandler?.Invoke(request.responseCode, request.error);
                 }
             }
@@ -435,7 +435,7 @@ namespace HT.Framework
                 {
                     LogFailDetail(wif, request.error, url, begin, end);
 
-                    wif.OnRequestFinished(null);
+                    wif.OnRequestFinished(request.downloadHandler);
                     wif.ErrorHandler?.Invoke(request.responseCode, request.error);
                 }
             }
