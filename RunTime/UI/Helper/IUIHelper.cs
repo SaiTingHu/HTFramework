@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,28 +60,28 @@ namespace HT.Framework
         /// 预加载常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
-        /// <returns>加载协程</returns>
-        Coroutine PreloadingResidentUI(Type type);
+        /// <returns>加载的协程迭代器</returns>
+        IEnumerator PreloadingResidentUI(Type type);
         /// <summary>
         /// 预加载临时UI
         /// </summary>
         /// <param name="type">临时UI逻辑类</param>
-        /// <returns>加载协程</returns>
-        Coroutine PreloadingTemporaryUI(Type type);
+        /// <returns>加载的协程迭代器</returns>
+        IEnumerator PreloadingTemporaryUI(Type type);
         /// <summary>
         /// 打开常驻UI
         /// </summary>
         /// <param name="type">常驻UI逻辑类</param>
         /// <param name="args">可选参数</param>
-        /// <returns>加载协程</returns>
-        Coroutine OpenResidentUI(Type type, params object[] args);
+        /// <returns>加载的协程迭代器</returns>
+        IEnumerator OpenResidentUI(Type type, params object[] args);
         /// <summary>
         /// 打开临时UI
         /// </summary>
         /// <param name="type">临时UI逻辑类</param>
         /// <param name="args">可选参数</param>
-        /// <returns>加载协程</returns>
-        Coroutine OpenTemporaryUI(Type type, params object[] args);
+        /// <returns>加载的协程迭代器</returns>
+        IEnumerator OpenTemporaryUI(Type type, params object[] args);
         /// <summary>
         /// 获取已经打开的UI
         /// </summary>
@@ -108,7 +109,8 @@ namespace HT.Framework
         /// 关闭UI
         /// </summary>
         /// <param name="type">UI逻辑类</param>
-        void CloseUI(Type type);
+        /// <returns>加载的协程迭代器</returns>
+        IEnumerator CloseUI(Type type);
         /// <summary>
         /// 销毁UI
         /// </summary>

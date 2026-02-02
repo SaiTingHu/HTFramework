@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
 using UnityEngine;
 
 namespace HT.Framework
@@ -77,6 +78,22 @@ namespace HT.Framework
         public virtual void OnOpen(params object[] args)
         {
             Main.m_Event.Throw(Main.m_ReferencePool.Spawn<EventUIOpened>().Fill(this));
+        }
+        /// <summary>
+        /// 当UI打开时的淡入动画（在 OnOpen 回调之后）
+        /// </summary>
+        /// <returns>动画协程</returns>
+        public virtual IEnumerator OnFadeIn()
+        {
+            yield return null;
+        }
+        /// <summary>
+        /// 当UI关闭时的淡出动画（在 OnClose 回调之前）
+        /// </summary>
+        /// <returns>动画协程</returns>
+        public virtual IEnumerator OnFadeOut()
+        {
+            yield return null;
         }
         /// <summary>
         /// 当UI关闭时

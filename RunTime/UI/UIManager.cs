@@ -138,11 +138,11 @@ namespace HT.Framework
 
             if (type.IsSubclassOf(typeof(UILogicResident)))
             {
-                return _helper.PreloadingResidentUI(type);
+                return Main.Current.StartCoroutine(_helper.PreloadingResidentUI(type));
             }
             else if (type.IsSubclassOf(typeof(UILogicTemporary)))
             {
-                return _helper.PreloadingTemporaryUI(type);
+                return Main.Current.StartCoroutine(_helper.PreloadingTemporaryUI(type));
             }
             return null;
         }
@@ -169,11 +169,11 @@ namespace HT.Framework
 
             if (type.IsSubclassOf(typeof(UILogicResident)))
             {
-                return _helper.OpenResidentUI(type, args);
+                return Main.Current.StartCoroutine(_helper.OpenResidentUI(type, args));
             }
             else if (type.IsSubclassOf(typeof(UILogicTemporary)))
             {
-                return _helper.OpenTemporaryUI(type, args);
+                return Main.Current.StartCoroutine(_helper.OpenTemporaryUI(type, args));
             }
             return null;
         }
@@ -262,23 +262,26 @@ namespace HT.Framework
         /// 关闭UI
         /// </summary>
         /// <typeparam name="T">UI逻辑类</typeparam>
-        public void CloseUI<T>() where T : UILogicBase
+        /// <returns>加载协程</returns>
+        public Coroutine CloseUI<T>() where T : UILogicBase
         {
-            CloseUI(typeof(T));
+            return CloseUI(typeof(T));
         }
         /// <summary>
         /// 关闭UI
         /// </summary>
         /// <param name="type">UI逻辑类</param>
-        public void CloseUI(Type type)
+        /// <returns>加载协程</returns>
+        public Coroutine CloseUI(Type type)
         {
             if (type.IsAbstract)
-                return;
+                return null;
 
             if (type.IsSubclassOf(typeof(UILogicBase)))
             {
-                _helper.CloseUI(type);
+                return Main.Current.StartCoroutine(_helper.CloseUI(type));
             }
+            return null;
         }
         /// <summary>
         /// 销毁UI

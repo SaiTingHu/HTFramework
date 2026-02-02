@@ -28,6 +28,22 @@ namespace #NAMESPACE#
             base.OnOpen(args);
         }
         /// <summary>
+        /// 当UI打开时的淡入动画（在 OnOpen 回调之后）
+        /// </summary>
+        /// <returns>动画协程</returns>
+        public override IEnumerator OnFadeIn()
+        {
+            yield return base.OnFadeIn();
+        }
+        /// <summary>
+        /// 当UI关闭时的淡出动画（在 OnClose 回调之前）
+        /// </summary>
+        /// <returns>动画协程</returns>
+        public override IEnumerator OnFadeOut()
+        {
+            yield return base.OnFadeOut();
+        }
+        /// <summary>
         /// 关闭UI
         /// </summary>
         public override void OnClose()
