@@ -11,6 +11,9 @@ namespace HT.Framework
         private MarkdownText _markdownText;
         private SerializedProperty _isParseInAwake;
         private SerializedProperty _isHyperlinkUnderline;
+        private SerializedProperty _hyperlinkColor;
+        private SerializedProperty _textureMinSize;
+        private SerializedProperty _textureMaxSize;
         private SerializedProperty _tableRowHeight;
         private SerializedProperty _spriteAssets;
         private SerializedProperty _tableTemplate;
@@ -27,6 +30,9 @@ namespace HT.Framework
             _markdownText = target as MarkdownText;
             _isParseInAwake = serializedObject.FindProperty("IsParseInAwake");
             _isHyperlinkUnderline = serializedObject.FindProperty("IsHyperlinkUnderline");
+            _hyperlinkColor = serializedObject.FindProperty("HyperlinkColor");
+            _textureMinSize = serializedObject.FindProperty("TextureMinSize");
+            _textureMaxSize = serializedObject.FindProperty("TextureMaxSize");
             _tableRowHeight = serializedObject.FindProperty("TableRowHeight");
             _spriteAssets = serializedObject.FindProperty("SpriteAssets");
             _tableTemplate = serializedObject.FindProperty("TableTemplate");
@@ -59,6 +65,32 @@ namespace HT.Framework
 
                 GUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(_isHyperlinkUnderline, _isHyperlinkUnderlineGC);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(_hyperlinkColor);
+                if (GUILayout.Button("Preset", GUILayout.Width(50)))
+                {
+                    GenericMenu gm = new GenericMenu();
+                    GenarateColorMenuItem(gm, "red", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "green", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "blue", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "white", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "black", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "yellow", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "cyan", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "magenta", _hyperlinkColor);
+                    GenarateColorMenuItem(gm, "gray", _hyperlinkColor);
+                    gm.ShowAsContext();
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(_textureMinSize);
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(_textureMaxSize);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -110,6 +142,15 @@ namespace HT.Framework
             }
 
             base.OnInspectorGUI();
+        }
+
+        private void GenarateColorMenuItem(GenericMenu genericMenu, string color, SerializedProperty property)
+        {
+            genericMenu.AddItem(new GUIContent(color), property.stringValue == color, () =>
+            {
+                property.stringValue = color;
+                serializedObject.ApplyModifiedProperties();
+            });
         }
     }
 }

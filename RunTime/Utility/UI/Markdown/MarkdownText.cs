@@ -28,6 +28,18 @@ namespace HT.Framework
         /// </summary>
         public bool IsHyperlinkUnderline = false;
         /// <summary>
+        /// 超链接文本颜色
+        /// </summary>
+        public string HyperlinkColor = "cyan";
+        /// <summary>
+        /// 嵌入图像的最小尺寸
+        /// </summary>
+        public int TextureMinSize = 32;
+        /// <summary>
+        /// 嵌入图像的最大尺寸
+        /// </summary>
+        public int TextureMaxSize = 256;
+        /// <summary>
         /// 表格行高度
         /// </summary>
         public float TableRowHeight = 20;
@@ -526,6 +538,7 @@ namespace HT.Framework
                         }
                     }
 
+                    size = Mathf.Clamp(size, TextureMinSize, TextureMaxSize);
                     embedTextureMark.Generate(rectTransform, sprite, size);
                     embedTextureMark.EmbedButton.onClick.AddListener(() =>
                     {
@@ -582,7 +595,7 @@ namespace HT.Framework
                     _pureTextBlock.Append(oldPureText.Substring(pureIndex, pureMatch.Index - pureIndex));
 
                     //存储超链接文本内容
-                    _richTextBlock.Append("<color=blue>");
+                    _richTextBlock.Append($"<color={HyperlinkColor}>");
                     hyperlinkMark.RichStartIndex = _richTextCount + _richTextBlock.Length;
                     _richTextBlock.Append(hyperlinkMark.Name);
                     hyperlinkMark.RichEndIndex = _richTextCount + _richTextBlock.Length - 1;
@@ -1062,8 +1075,12 @@ namespace HT.Framework
             {
                 if (IsNetwork && EmbedSprite != null)
                 {
+                    Texture2D texture = EmbedSprite.texture;
+
                     Main.Kill(EmbedSprite);
                     EmbedSprite = null;
+
+                    Main.Kill(texture);
                 }
                 if (EmbedImage != null)
                 {

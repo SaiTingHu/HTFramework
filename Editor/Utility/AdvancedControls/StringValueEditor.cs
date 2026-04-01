@@ -694,6 +694,7 @@ namespace HT.Framework
                     case 'n': chars[i] = 'ⁿ'; break;
                     case 'i': chars[i] = 'ⁱ'; break;
                     case 'x': chars[i] = 'ˣ'; break;
+                    case 'y': chars[i] = 'ʸ'; break;
                     default: break;
                 }
             }
