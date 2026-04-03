@@ -32,6 +32,10 @@ namespace HT.Framework
         /// </summary>
         public string HyperlinkColor = "cyan";
         /// <summary>
+        /// 是否使用下划线解析强调文本
+        /// </summary>
+        public bool IsUseUnderlineEmphasize = true;
+        /// <summary>
         /// 嵌入图像的最小尺寸
         /// </summary>
         public int TextureMinSize = 32;
@@ -126,6 +130,7 @@ namespace HT.Framework
         #region Parser
         private static readonly Regex TableRegex = new Regex(@"[:]?[-]{3,}[:]?", RegexOptions.Singleline);
         private static readonly Regex EmphasizeRegex = new Regex(@"([*_]{1,3})([^*_]+?)([*_]{1,3})", RegexOptions.Singleline);
+        private static readonly Regex EmphasizeNoUnderlineRegex = new Regex(@"([*]{1,3})([^*]+?)([*]{1,3})", RegexOptions.Singleline);
         private static readonly Regex EmbedTextureRegex = new Regex(@"!\[(.+?)\]\((.+?)\)", RegexOptions.Singleline);
         private static readonly Regex HyperlinkRegex = new Regex(@"\[(.+?)\]\((https?://.+?)\)", RegexOptions.Singleline);
         private const int Title1FontSize = 24;
@@ -356,7 +361,18 @@ namespace HT.Framework
             int index = 0;
             _richTextBlock.Clear();
             _pureTextBlock.Clear();
-            foreach (Match match in EmphasizeRegex.Matches(rawText))
+
+            MatchCollection collection = null;
+            if (IsUseUnderlineEmphasize)
+            {
+                collection = EmphasizeRegex.Matches(rawText);
+            }
+            else
+            {
+                collection = EmphasizeNoUnderlineRegex.Matches(rawText);
+            }
+
+            foreach (Match match in collection)
             {
                 if (match.Groups.Count == 4)
                 {
@@ -667,7 +683,7 @@ namespace HT.Framework
                 }
                 else
                 {
-                    Log.Warning("下载网络图片失败：" + request.error);
+                    Log.Warning($"下载网络图片失败：{request.error}，图片链接：{url}");
 
                     callback?.Invoke(null);
                 }

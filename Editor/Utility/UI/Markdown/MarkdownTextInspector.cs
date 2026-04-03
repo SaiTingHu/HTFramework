@@ -12,6 +12,7 @@ namespace HT.Framework
         private SerializedProperty _isParseInAwake;
         private SerializedProperty _isHyperlinkUnderline;
         private SerializedProperty _hyperlinkColor;
+        private SerializedProperty _isUseUnderlineEmphasize;
         private SerializedProperty _textureMinSize;
         private SerializedProperty _textureMaxSize;
         private SerializedProperty _tableRowHeight;
@@ -22,6 +23,7 @@ namespace HT.Framework
         private SerializedProperty _onClickTable;
         private GUIContent _isParseInAwakeGC;
         private GUIContent _isHyperlinkUnderlineGC;
+        private GUIContent _isUseUnderlineEmphasizeGC;
 
         protected override void OnEnable()
         {
@@ -31,6 +33,7 @@ namespace HT.Framework
             _isParseInAwake = serializedObject.FindProperty("IsParseInAwake");
             _isHyperlinkUnderline = serializedObject.FindProperty("IsHyperlinkUnderline");
             _hyperlinkColor = serializedObject.FindProperty("HyperlinkColor");
+            _isUseUnderlineEmphasize = serializedObject.FindProperty("IsUseUnderlineEmphasize");
             _textureMinSize = serializedObject.FindProperty("TextureMinSize");
             _textureMaxSize = serializedObject.FindProperty("TextureMaxSize");
             _tableRowHeight = serializedObject.FindProperty("TableRowHeight");
@@ -41,6 +44,7 @@ namespace HT.Framework
             _onClickTable = serializedObject.FindProperty("OnClickTable");
             _isParseInAwakeGC = new GUIContent("Parse In Awake");
             _isHyperlinkUnderlineGC = new GUIContent("Hyperlink Underline");
+            _isUseUnderlineEmphasizeGC = new GUIContent("Use _ Emphasize");
 
             if (!EditorApplication.isPlaying)
             {
@@ -83,6 +87,10 @@ namespace HT.Framework
                     GenarateColorMenuItem(gm, "gray", _hyperlinkColor);
                     gm.ShowAsContext();
                 }
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(_isUseUnderlineEmphasize, _isUseUnderlineEmphasizeGC);
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
