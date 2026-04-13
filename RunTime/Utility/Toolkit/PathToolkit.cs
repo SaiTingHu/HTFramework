@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 namespace HT.Framework
@@ -22,6 +23,20 @@ namespace HT.Framework
                 }
                 return _projectPath;
             }
+        }
+
+        /// <summary>
+        /// 指定的文件夹是否为一个空文件夹
+        /// </summary>
+        /// <param name="path">文件夹路径</param>
+        public static bool IsEmptyFolder(this string path)
+        {
+            if (Directory.Exists(path))
+            {
+                string[] entries = Directory.GetFileSystemEntries(path);
+                return entries.Length == 0;
+            }
+            return true;
         }
     }
 }

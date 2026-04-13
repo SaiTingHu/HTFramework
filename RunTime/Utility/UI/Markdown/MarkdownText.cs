@@ -1083,6 +1083,7 @@ namespace HT.Framework
                 EmbedImage.rectTransform.sizeDelta = new Vector2(Size, Size);
                 EmbedImage.rectTransform.pivot = new Vector2(0, 1);
                 EmbedImage.sprite = EmbedSprite;
+                EmbedImage.preserveAspect = true;
                 EmbedButton = obj.AddComponent<Button>();
                 EmbedButton.targetGraphic = EmbedImage;
                 EmbedButton.transition = Selectable.Transition.None;
