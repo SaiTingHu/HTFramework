@@ -331,7 +331,19 @@ namespace HT.Framework
                     _scrollCurrentLogView = GUILayout.BeginScrollView(_scrollCurrentLogView, "Box");
                     if (_currentLogIndex != -1)
                     {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.FlexibleSpace();
+                        GUI.contentColor = Color.yellow;
+                        if (GUILayout.Button(GetWord("Copy to clipboard")))
+                        {
+                            ClipboardToolkit.CopyToClipboard($"{_consoleLogs[_currentLogIndex].Message}\r\n\r\n{_consoleLogs[_currentLogIndex].StackTrace}");
+                        }
+                        GUI.contentColor = Color.white;
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.BeginHorizontal();
                         GUILayout.Label($"{_consoleLogs[_currentLogIndex].Message}\r\n\r\n{_consoleLogs[_currentLogIndex].StackTrace}");
+                        GUILayout.EndHorizontal();
                     }
                     GUILayout.EndScrollView();
                     #endregion
@@ -929,6 +941,7 @@ namespace HT.Framework
             _words.Add("Warning", "警告日志");
             _words.Add("Error", "错误日志");
             _words.Add("Fatal", "致命错误");
+            _words.Add("Copy to clipboard", "复制到剪切板");
             #endregion
 
             #region Scene
