@@ -194,6 +194,7 @@ namespace HT.Framework
         }
         private IEnumerator ParseRawText(string content, HTFAction onParseEnd)
         {
+            text = null;
             _richTextBuilder.Clear();
             _pureTextBuilder.Clear();
             _richTextCount = 0;
@@ -1084,6 +1085,7 @@ namespace HT.Framework
                 EmbedImage.rectTransform.pivot = new Vector2(0, 1);
                 EmbedImage.sprite = EmbedSprite;
                 EmbedImage.preserveAspect = true;
+                EmbedImage.IsShow = false;
                 EmbedButton = obj.AddComponent<Button>();
                 EmbedButton.targetGraphic = EmbedImage;
                 EmbedButton.transition = Selectable.Transition.None;

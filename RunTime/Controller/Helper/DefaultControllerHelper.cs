@@ -225,7 +225,7 @@ namespace HT.Framework
             {
                 if (RayTarget != null)
                 {
-                    RayTarget.OnMouseClick.Invoke();
+                    RayTarget.OnMouseClick?.Invoke();
                     Main.m_Audio.PlayOneShoot(RayTarget.OnMouseClickSound);
                 }
             }
@@ -412,7 +412,7 @@ namespace HT.Framework
             MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
             if (mouseRayTargetBase)
             {
-                mouseRayTargetBase.OnMouseClick.AddListener(callback);
+                mouseRayTargetBase.OnMouseClick?.AddListener(callback);
             }
         }
         /// <summary>
@@ -428,7 +428,7 @@ namespace HT.Framework
             MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
             if (mouseRayTargetBase)
             {
-                mouseRayTargetBase.OnMouseClick.RemoveListener(callback);
+                mouseRayTargetBase.OnMouseClick?.RemoveListener(callback);
             }
         }
         /// <summary>
@@ -443,7 +443,7 @@ namespace HT.Framework
             MouseRayTargetBase mouseRayTargetBase = target.GetComponent<MouseRayTargetBase>();
             if (mouseRayTargetBase)
             {
-                mouseRayTargetBase.OnMouseClick.RemoveAllListeners();
+                mouseRayTargetBase.OnMouseClick?.RemoveAllListeners();
             }
         }
     }
