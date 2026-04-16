@@ -8,7 +8,7 @@ namespace HT.Framework
     /// </summary>
     public static class ClipboardToolkit
     {
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
         internal static extern void CopyToClipboardWebGL(string content);
 #endif
@@ -19,12 +19,10 @@ namespace HT.Framework
         /// <param name="content">文本内容</param>
         public static void CopyToClipboard(string content)
         {
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-            GUIUtility.systemCopyBuffer = content;
-#elif UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
             CopyToClipboardWebGL(content);
 #else
-            Log.Warning("复制文本内容到剪切板失败：当前平台不支持该操作。");
+            GUIUtility.systemCopyBuffer = content;
 #endif
         }
     }
