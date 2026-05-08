@@ -219,18 +219,32 @@ namespace HT.Framework
         /// 获取字符串长度（忽略空白符及制表符）
         /// </summary>
         /// <param name="value">字符串值</param>
+        /// <param name="isOnlyIgnoreSpace">是否仅忽略标准空格U0020（一般为键盘空格键输入的空格），否则忽略所有空白符</param>
         /// <returns>字符串长度</returns>
-        public static int LengthIgnoreBlank(this string value)
+        public static int LengthIgnoreBlank(this string value, bool isOnlyIgnoreSpace = true)
         {
             if (string.IsNullOrEmpty(value))
                 return 0;
 
             int length = 0;
-            for (int i = 0; i < value.Length; i++)
+            if (isOnlyIgnoreSpace)
             {
-                if (!char.IsWhiteSpace(value[i]) && !Tabs.Contains(value[i]))
+                for (int i = 0; i < value.Length; i++)
                 {
-                    length += 1;
+                    if (value[i] != ' ' && !Tabs.Contains(value[i]))
+                    {
+                        length += 1;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (!char.IsWhiteSpace(value[i]) && !Tabs.Contains(value[i]))
+                    {
+                        length += 1;
+                    }
                 }
             }
             return length;
@@ -239,18 +253,32 @@ namespace HT.Framework
         /// 获取字符串长度（忽略空白符及制表符）
         /// </summary>
         /// <param name="value">字符串值</param>
+        /// <param name="isOnlyIgnoreSpace">是否仅忽略标准空格U0020（一般为键盘空格键输入的空格），否则忽略所有空白符</param>
         /// <returns>字符串长度</returns>
-        public static int LengthIgnoreBlank(this StringBuilder value)
+        public static int LengthIgnoreBlank(this StringBuilder value, bool isOnlyIgnoreSpace = true)
         {
             if (value.Length <= 0)
                 return 0;
 
             int length = 0;
-            for (int i = 0; i < value.Length; i++)
+            if (isOnlyIgnoreSpace)
             {
-                if (!char.IsWhiteSpace(value[i]) && !Tabs.Contains(value[i]))
+                for (int i = 0; i < value.Length; i++)
                 {
-                    length += 1;
+                    if (value[i] != ' ' && !Tabs.Contains(value[i]))
+                    {
+                        length += 1;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (!char.IsWhiteSpace(value[i]) && !Tabs.Contains(value[i]))
+                    {
+                        length += 1;
+                    }
                 }
             }
             return length;
