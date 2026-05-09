@@ -144,6 +144,7 @@ namespace HT.Framework
         private StringBuilder _pureTextBuilder = new StringBuilder();
         private int _richTextCount;
         private int _pureTextCount;
+        private Color _hyperlinkColor = Color.cyan;
 
         private StringBuilder _richTextBlock = new StringBuilder();
         private StringBuilder _pureTextBlock = new StringBuilder();
@@ -199,6 +200,7 @@ namespace HT.Framework
             _pureTextBuilder.Clear();
             _richTextCount = 0;
             _pureTextCount = 0;
+            _hyperlinkColor = RecognizeHyperlinkColor(HyperlinkColor);
             _contentSizeFitter = GetComponent<ContentSizeFitter>();
 
             string[] rawTexts = content.Split('\n');
@@ -621,7 +623,7 @@ namespace HT.Framework
                     _pureTextBlock.Append(hyperlinkMark.Name);
                     hyperlinkMark.PureEndIndex = _pureTextCount + _pureTextBlock.LengthIgnoreBlank() - 1;
 
-                    int richChangedIndex = (12 - 1) + (8 - hyperlinkMark.Url.Length - 3);
+                    int richChangedIndex = (8 + HyperlinkColor.Length - 1) + (8 - hyperlinkMark.Url.Length - 3);
                     int pureChangedIndex = (0 - 1) + (0 - hyperlinkMark.Url.Length - 3);
                     UpdateEmbedTextureMarksIndex(richMatch.Index, pureMatch.Index, richChangedIndex, pureChangedIndex);
 
@@ -703,6 +705,34 @@ namespace HT.Framework
                     _embedTextureMarksLine[i].PureStartIndex += pureChangedIndex;
                 }
             }
+        }
+        /// <summary>
+        /// 识别超链接文本颜色
+        /// </summary>
+        private Color RecognizeHyperlinkColor(string colorStr)
+        {
+            switch (colorStr)
+            {
+                case "red":
+                    return Color.red;
+                case "green":
+                    return Color.green;
+                case "blue":
+                    return Color.blue;
+                case "white":
+                    return Color.white;
+                case "black":
+                    return Color.black;
+                case "yellow":
+                    return Color.yellow;
+                case "cyan":
+                    return Color.cyan;
+                case "magenta":
+                    return Color.magenta;
+                case "gray":
+                    return Color.gray;
+            }
+            return Color.cyan;
         }
         #endregion
 
@@ -858,7 +888,7 @@ namespace HT.Framework
                                 for (int v = 0; v < 4; v++)
                                 {
                                     _underlineVertices[v] = vertexs[v];
-                                    _underlineVertices[v].color = Color.blue;
+                                    _underlineVertices[v].color = _hyperlinkColor;
                                 }
                                 _underlineVertices[0].position = new Vector3(x, y);
                                 _underlineVertices[1].position = _underlineVertices[0].position + new Vector3(width, 0, 0);
@@ -1084,7 +1114,7 @@ namespace HT.Framework
                 EmbedImage.rectTransform.sizeDelta = new Vector2(Size, Size);
                 EmbedImage.rectTransform.pivot = new Vector2(0, 1);
                 EmbedImage.sprite = EmbedSprite;
-                EmbedImage.preserveAspect = true;
+                EmbedImage.preserveAspect = false;
                 EmbedImage.IsShow = false;
                 EmbedButton = obj.AddComponent<Button>();
                 EmbedButton.targetGraphic = EmbedImage;
