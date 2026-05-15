@@ -19,7 +19,7 @@ namespace HT.Framework
         /// <summary>
         /// 框架相关目录
         /// </summary>
-        public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkDeployment", "HTFrameworkGameComponent" };
+        public static readonly HashSet<string> HTFrameworkFolder = new HashSet<string>() { "HTFramework", "HTFrameworkAI", "HTFrameworkAIAgent", "HTFrameworkDeployment", "HTFrameworkGameComponent" };
         #endregion
 
         #region Editor PrefsKey

@@ -14,7 +14,16 @@ namespace HT.Framework
     /// </summary>
     public static class ProjectFolderLocker
     {
-        private static HashSet<string> FolderPaths = new HashSet<string>() { "Assets/HTFramework", "Assets/HTFrameworkAI", "Assets/HTFrameworkDeployment", "Assets/HTFrameworkGameComponent", "Assets/HTModuleManager", "Assets/Plugins" };
+        private static HashSet<string> FolderPaths = new HashSet<string>() {
+            "Assets/HTFramework",
+            "Assets/HTFrameworkAI",
+            "Assets/HTFrameworkAIAgent",
+            "Assets/HTFrameworkDeployment",
+            "Assets/HTFrameworkGameComponent",
+            "Assets/HTModuleManager",
+            "Assets/HTModules",
+            "Assets/Plugins"
+        };
         private static object AssetTree;
         private static Dictionary<string, FolderItem> FolderItems = new Dictionary<string, FolderItem>();
         private static Action<TreeViewItem, bool, bool> ChangeExpandedState;
