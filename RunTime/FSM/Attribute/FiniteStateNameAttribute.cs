@@ -10,11 +10,15 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class FiniteStateNameAttribute : Attribute
     {
+#if UNITY_EDITOR
         public string Name;
+#endif
 
         public FiniteStateNameAttribute(string name)
         {
+#if UNITY_EDITOR
             Name = name;
+#endif
         }
     }
 }

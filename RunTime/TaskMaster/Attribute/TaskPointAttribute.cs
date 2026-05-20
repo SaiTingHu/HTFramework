@@ -10,13 +10,18 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class TaskPointAttribute : Attribute
     {
+#if UNITY_EDITOR
         public string Name;
+#endif
 
         public TaskPointAttribute(string name)
         {
+#if UNITY_EDITOR
             Name = name;
+#endif
         }
 
+#if UNITY_EDITOR
         public string GetLastName()
         {
             int index = Name.LastIndexOf("/");
@@ -29,5 +34,6 @@ namespace HT.Framework
                 return Name;
             }
         }
+#endif
     }
 }

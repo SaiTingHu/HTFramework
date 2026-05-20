@@ -10,9 +10,11 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class LockTransformAttribute : Attribute
     {
+#if UNITY_EDITOR
         public bool IsLockPosition { get; private set; }
         public bool IsLockRotation { get; private set; }
         public bool IsLockScale { get; private set; }
+#endif
 
         /// <summary>
         /// 锁定 Transform 组件，仅可标记 HTBehaviour 的子类，挂载后将锁定目标 GameObject 的 Transform 组件，禁止在检视面板修改属性值
@@ -22,9 +24,11 @@ namespace HT.Framework
         /// <param name="isLockScale">锁定 Scale</param>
         public LockTransformAttribute(bool isLockPosition = true, bool isLockRotation = true, bool isLockScale = true)
         {
+#if UNITY_EDITOR
             IsLockPosition = isLockPosition;
             IsLockRotation = isLockRotation;
             IsLockScale = isLockScale;
+#endif
         }
     }
 }

@@ -119,7 +119,9 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class HyperlinkAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Name { get; private set; }
+#endif
 
         /// <summary>
         /// 超链接检视器（支持 string 类型）
@@ -127,7 +129,9 @@ namespace HT.Framework
         /// <param name="name">显示名称</param>
         public HyperlinkAttribute(string name)
         {
+#if UNITY_EDITOR
             Name = name;
+#endif
         }
     }
 
@@ -138,7 +142,9 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class FilePathAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Extension { get; private set; }
+#endif
 
         /// <summary>
         /// 文件路径检视器（支持 string 类型）
@@ -146,7 +152,9 @@ namespace HT.Framework
         /// <param name="extension">文件扩展名</param>
         public FilePathAttribute(string extension = "*.*")
         {
+#if UNITY_EDITOR
             Extension = extension;
+#endif
         }
     }
 
@@ -167,10 +175,12 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class ClassTypeAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public Type ParentClass { get; private set; }
         public bool IsShowFullName { get; private set; }
         public bool IsIgnoreAbstract { get; private set; }
         public bool IsOnlyRuntime { get; private set; }
+#endif
 
         /// <summary>
         /// Class类型检视器（支持 string 类型）
@@ -181,10 +191,12 @@ namespace HT.Framework
         /// <param name="isOnlyRuntime">是否仅检索运行时程序集，否则检索所有程序集</param>
         public ClassTypeAttribute(Type parentClass, bool isShowFullName = true, bool isIgnoreAbstract = true, bool isOnlyRuntime = true)
         {
+#if UNITY_EDITOR
             ParentClass = parentClass;
             IsShowFullName = isShowFullName;
             IsIgnoreAbstract = isIgnoreAbstract;
             IsOnlyRuntime = isOnlyRuntime;
+#endif
         }
     }
 
@@ -195,7 +207,9 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class EnableAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Condition { get; private set; }
+#endif
 
         /// <summary>
         /// 激活状态检视器
@@ -203,7 +217,9 @@ namespace HT.Framework
         /// <param name="condition">激活条件判断方法的名称，返回值必须为bool</param>
         public EnableAttribute(string condition)
         {
+#if UNITY_EDITOR
             Condition = condition;
+#endif
         }
     }
 
@@ -214,7 +230,9 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class DisplayAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Condition { get; private set; }
+#endif
 
         /// <summary>
         /// 显示状态检视器
@@ -222,7 +240,9 @@ namespace HT.Framework
         /// <param name="condition">显示条件判断方法的名称，返回值必须为bool</param>
         public DisplayAttribute(string condition)
         {
+#if UNITY_EDITOR
             Condition = condition;
+#endif
         }
     }
 
@@ -233,7 +253,9 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class LabelAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Name { get; private set; }
+#endif
 
         /// <summary>
         /// 标签检视器
@@ -241,7 +263,9 @@ namespace HT.Framework
         /// <param name="name">标签</param>
         public LabelAttribute(string name)
         {
+#if UNITY_EDITOR
             Name = name;
+#endif
         }
     }
 
@@ -252,10 +276,12 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class ColorAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public float R { get; private set; }
         public float G { get; private set; }
         public float B { get; private set; }
         public float A { get; private set; }
+#endif
 
         /// <summary>
         /// 颜色检视器
@@ -266,10 +292,12 @@ namespace HT.Framework
         /// <param name="a">颜色a值</param>
         public ColorAttribute(float r, float g, float b, float a)
         {
+#if UNITY_EDITOR
             R = r;
             G = g;
             B = b;
             A = a;
+#endif
         }
     }
 
@@ -290,7 +318,9 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class PreviewAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public float Size { get; private set; }
+#endif
 
         /// <summary>
         /// 预览检视器
@@ -298,7 +328,9 @@ namespace HT.Framework
         /// <param name="size">预览框的大小</param>
         public PreviewAttribute(float size = 100)
         {
+#if UNITY_EDITOR
             Size = size;
+#endif
         }
     }
 
@@ -309,8 +341,10 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class GenericMenuAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string GenerateMenu { get; private set; }
         public string ChooseMenu { get; private set; }
+#endif
 
         /// <summary>
         /// 通用菜单检视器（支持 string 类型）
@@ -319,8 +353,10 @@ namespace HT.Framework
         /// <param name="chooseMenu">选择菜单选项后调用的方法名称，必须带有一个string参数</param>
         public GenericMenuAttribute(string generateMenu, string chooseMenu = null)
         {
+#if UNITY_EDITOR
             GenerateMenu = generateMenu;
             ChooseMenu = chooseMenu;
+#endif
         }
     }
 
@@ -341,11 +377,13 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class DrawerAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Name { get; private set; }
         public string Condition { get; private set; }
         public string Style { get; private set; }
         public bool DefaultOpened { get; private set; }
         public bool ToggleOnLabelClick { get; private set; }
+#endif
 
         /// <summary>
         /// 抽屉检视器
@@ -355,11 +393,13 @@ namespace HT.Framework
         /// <param name="toggleOnLabelClick">抽屉的标签是否也可点击</param>
         public DrawerAttribute(string name, bool defaultOpened = false, bool toggleOnLabelClick = true)
         {
+#if UNITY_EDITOR
             Name = name;
             Condition = null;
             Style = null;
             DefaultOpened = defaultOpened;
             ToggleOnLabelClick = toggleOnLabelClick;
+#endif
         }
         /// <summary>
         /// 抽屉检视器
@@ -370,11 +410,13 @@ namespace HT.Framework
         /// <param name="toggleOnLabelClick">抽屉的标签是否也可点击</param>
         public DrawerAttribute(string name, string condition, bool defaultOpened = false, bool toggleOnLabelClick = true)
         {
+#if UNITY_EDITOR
             Name = name;
             Condition = condition;
             Style = null;
             DefaultOpened = defaultOpened;
             ToggleOnLabelClick = toggleOnLabelClick;
+#endif
         }
         /// <summary>
         /// 抽屉检视器
@@ -386,11 +428,13 @@ namespace HT.Framework
         /// <param name="toggleOnLabelClick">抽屉的标签是否也可点击</param>
         public DrawerAttribute(string name, string condition, string style, bool defaultOpened = false, bool toggleOnLabelClick = true)
         {
+#if UNITY_EDITOR
             Name = name;
             Condition = condition;
             Style = style;
             DefaultOpened = defaultOpened;
             ToggleOnLabelClick = toggleOnLabelClick;
+#endif
         }
     }
 
@@ -401,8 +445,10 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class PropertyDisplayAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Text { get; private set; }
         public bool DisplayOnlyRuntime { get; private set; }
+#endif
 
         /// <summary>
         /// 公共属性检视器
@@ -411,8 +457,10 @@ namespace HT.Framework
         /// <param name="displayOnlyRuntime">是否仅在编辑器运行时显示</param>
         public PropertyDisplayAttribute(string text = null, bool displayOnlyRuntime = true)
         {
+#if UNITY_EDITOR
             Text = text;
             DisplayOnlyRuntime = displayOnlyRuntime;
+#endif
         }
     }
 
@@ -423,7 +471,9 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class EventAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Text { get; private set; }
+#endif
 
         /// <summary>
         /// 事件、委托检视器
@@ -431,7 +481,9 @@ namespace HT.Framework
         /// <param name="text">显示名称</param>
         public EventAttribute(string text = null)
         {
+#if UNITY_EDITOR
             Text = text;
+#endif
         }
     }
 
@@ -442,17 +494,21 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class ButtonAttribute : InspectorAttribute
     {
+#if UNITY_EDITOR
         public string Text { get; private set; }
         public EnableMode Mode { get; private set; }
         public string Style { get; private set; }
         public int Order { get; private set; }
+#endif
 
         public ButtonAttribute(string text = null, EnableMode mode = EnableMode.Always, string style = "LargeButton", int order = 0)
         {
+#if UNITY_EDITOR
             Text = text;
             Mode = mode;
             Style = style;
             Order = order;
+#endif
         }
 
         /// <summary>

@@ -10,11 +10,15 @@ namespace HT.Framework
     [Conditional("UNITY_EDITOR")]
     public sealed class ComponentNameAttribute : Attribute
     {
+#if UNITY_EDITOR
         public string Name;
+#endif
 
         public ComponentNameAttribute(string name)
         {
+#if UNITY_EDITOR
             Name = name;
+#endif
         }
     }
 }
