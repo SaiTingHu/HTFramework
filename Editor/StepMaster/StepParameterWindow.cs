@@ -258,10 +258,12 @@ namespace HT.Framework
             GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button(GetWord("Add"), EditorGlobalTools.Styles.ButtonLeft))
             {
                 AddParameter();
             }
+            GUI.backgroundColor = Color.red;
             if (GUILayout.Button(GetWord("Clear"), EditorGlobalTools.Styles.ButtonRight))
             {
                 string prompt = CurrentLanguage == Language.English ? "Are you sure delete all parameter？" : "你确定要删除所有的参数吗？";
@@ -270,12 +272,14 @@ namespace HT.Framework
                     ClearParameter();
                 }
             }
+            GUI.backgroundColor = Color.green;
             GUILayout.FlexibleSpace();
             if (GUILayout.Button(GetWord("Apply")))
             {
                 GUI.FocusControl(null);
                 HasChanged(_contentAsset);
             }
+            GUI.backgroundColor = Color.white;
             GUILayout.EndHorizontal();
         }
         protected override void GenerateWords()

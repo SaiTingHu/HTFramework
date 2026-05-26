@@ -629,18 +629,48 @@ namespace HT.Framework
                 {
                     if (string.IsNullOrEmpty(_stepListAdvancedSearch) || _contentAsset.Content[i].IsSearched)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
+                        if (_contentAsset.Content[i].IsEnable)
+                        {
+                            if (_currentStepIndex == i)
+                            {
+                                GUI.backgroundColor = Color.yellow;
+                                GUI.contentColor = Color.yellow;
+                            }
+                            else
+                            {
+                                GUI.backgroundColor = Color.clear;
+                                GUI.contentColor = Color.white;
+                            }
+                        }
+                        else
+                        {
+                            if (_currentStepIndex == i)
+                            {
+                                GUI.backgroundColor = Color.yellow * 0.7f;
+                                GUI.contentColor = Color.yellow;
+                            }
+                            else
+                            {
+                                GUI.backgroundColor = Color.clear;
+                                GUI.contentColor = Color.gray;
+                            }
+                        }
+
+                        GUILayout.BeginHorizontal("SelectionRect");
                         GUILayout.Label(_stepGC, GUILayout.Height(20), GUILayout.Width(20));
                         if (_isShowAncillary && !string.IsNullOrEmpty(_contentAsset.Content[i].Ancillary))
                         {
-                            GUI.color = Color.yellow;
-                            GUILayout.Label($"[{_contentAsset.Content[i].Ancillary}]", GUILayout.Height(16));
+                            Color oldColor = GUI.contentColor;
+                            GUI.contentColor = Color.cyan;
+                            if (GUILayout.Button($"[{_contentAsset.Content[i].Ancillary}]", EditorStyles.label, GUILayout.Height(20)))
+                            {
+                                SelectStepContent(i);
+                                SelectStepOperation(-1);
+                                GUI.FocusControl(null);
+                            }
+                            GUI.contentColor = oldColor;
                         }
-                        GUI.color = _contentAsset.Content[i].IsEnable ? Color.white : Color.gray;
-                        GUI.backgroundColor = _currentStepIndex == i ? Color.cyan : Color.white;
-                        string style = _currentStepIndex == i ? "TV Selection" : "PrefixLabel";
-                        if (GUILayout.Button($"{i}.{showName}", style, GUILayout.Height(24), GUILayout.MinWidth(100)))
+                        if (GUILayout.Button($"{i}.{showName}", EditorStyles.label, GUILayout.Height(20), GUILayout.MinWidth(100)))
                         {
                             SelectStepContent(i);
                             SelectStepOperation(-1);
@@ -653,6 +683,9 @@ namespace HT.Framework
                             HasChanged(_contentAsset);
                         }
                         GUILayout.EndHorizontal();
+
+                        GUI.backgroundColor = Color.white;
+                        GUI.contentColor = Color.white;
                     }
                 }
             }
@@ -696,10 +729,12 @@ namespace HT.Framework
 
             #region 添加、移动、克隆、删除步骤
             GUILayout.BeginHorizontal();
+            GUI.backgroundColor = Color.green;
             if (GUILayout.Button(GetWord("Add"), EditorGlobalTools.Styles.ButtonLeft))
             {
                 AddStepContent();
             }
+            GUI.backgroundColor = Color.white;
             GUI.enabled = (_currentStepIndex != -1);
             if (GUILayout.Button(GetWord("Move Up"), EditorGlobalTools.Styles.ButtonMid))
             {
@@ -736,7 +771,7 @@ namespace HT.Framework
         /// </summary>
         private void SplitterGUI()
         {
-            GUILayout.Box("", "PreVerticalScrollbarThumb", GUILayout.Width(_splitterWidth), GUILayout.MaxWidth(_splitterWidth), GUILayout.MinWidth(_splitterWidth), GUILayout.ExpandHeight(true));
+            GUILayout.Box("", "Tooltip", GUILayout.Width(_splitterWidth), GUILayout.MaxWidth(_splitterWidth), GUILayout.MinWidth(_splitterWidth), GUILayout.ExpandHeight(true));
             _splitterRect = GUILayoutUtility.GetLastRect();
             EditorGUIUtility.AddCursorRect(_splitterRect, MouseCursor.SplitResizeLeftRight);
         }
