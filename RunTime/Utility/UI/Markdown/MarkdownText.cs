@@ -917,32 +917,30 @@ namespace HT.Framework
                 EmbedTextureMark embedTextureMark = AllEmbedTextureMarks[i];
 
                 int startVertIndex = isCrossBorder ? (embedTextureMark.RichStartIndex * 4) : (embedTextureMark.PureStartIndex * 4);
-                if (startVertIndex < toFill.currentVertCount)
+                if ((startVertIndex + 3) < toFill.currentVertCount)
                 {
                     UIVertex vertex = new UIVertex();
-                    toFill.PopulateUIVertex(ref vertex, startVertIndex);
+                    toFill.PopulateUIVertex(ref vertex, startVertIndex + 3);
                     float x = vertex.position.x + (rectTransform.pivot.x - 0.5f) * rectTransform.rect.width;
                     float y = vertex.position.y + (rectTransform.pivot.y - 0.5f) * rectTransform.rect.height;
                     embedTextureMark.EmbedImage.IsShow = true;
                     embedTextureMark.Pos = new Vector2(x, y);
 
-                    if ((startVertIndex + 3) < toFill.currentVertCount)
-                    {
-                        vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
-                        toFill.SetUIVertex(vertex, startVertIndex);
+                    toFill.PopulateUIVertex(ref vertex, startVertIndex);
+                    vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
+                    toFill.SetUIVertex(vertex, startVertIndex);
 
-                        toFill.PopulateUIVertex(ref vertex, startVertIndex + 1);
-                        vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
-                        toFill.SetUIVertex(vertex, startVertIndex + 1);
+                    toFill.PopulateUIVertex(ref vertex, startVertIndex + 1);
+                    vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
+                    toFill.SetUIVertex(vertex, startVertIndex + 1);
 
-                        toFill.PopulateUIVertex(ref vertex, startVertIndex + 2);
-                        vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
-                        toFill.SetUIVertex(vertex, startVertIndex + 2);
+                    toFill.PopulateUIVertex(ref vertex, startVertIndex + 2);
+                    vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
+                    toFill.SetUIVertex(vertex, startVertIndex + 2);
 
-                        toFill.PopulateUIVertex(ref vertex, startVertIndex + 3);
-                        vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
-                        toFill.SetUIVertex(vertex, startVertIndex + 3);
-                    }
+                    toFill.PopulateUIVertex(ref vertex, startVertIndex + 3);
+                    vertex.uv0 = vertex.uv1 = vertex.uv2 = vertex.uv3 = Vector4.zero;
+                    toFill.SetUIVertex(vertex, startVertIndex + 3);
                 }
                 else
                 {
@@ -1112,9 +1110,9 @@ namespace HT.Framework
                 obj.transform.localScale = Vector3.one;
                 EmbedImage = obj.AddComponent<MarkdownImage>();
                 EmbedImage.rectTransform.sizeDelta = new Vector2(Size, Size);
-                EmbedImage.rectTransform.pivot = new Vector2(0, 1);
+                EmbedImage.rectTransform.pivot = new Vector2(0, 0);
                 EmbedImage.sprite = EmbedSprite;
-                EmbedImage.preserveAspect = false;
+                EmbedImage.preserveAspect = true;
                 EmbedImage.IsShow = false;
                 EmbedButton = obj.AddComponent<Button>();
                 EmbedButton.targetGraphic = EmbedImage;
