@@ -29,6 +29,10 @@ namespace HT.Framework
         /// </summary>
         public bool IsExpand = false;
         /// <summary>
+        /// 在Inspector界面是否显示头部属性栏
+        /// </summary>
+        public bool IsShowInspectorHeader = false;
+        /// <summary>
         /// 父对象
         /// </summary>
         public DebuggerGameObject Parent;
@@ -44,6 +48,7 @@ namespace HT.Framework
             Layer = null;
             IsMain = false;
             IsExpand = false;
+            IsShowInspectorHeader = false;
             Parent = null;
             Childrens.Clear();
         }

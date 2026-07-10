@@ -466,35 +466,42 @@ namespace HT.Framework
 
                             GUILayout.BeginHorizontal();
                             GUI.contentColor = Color.cyan;
+                            if (GUILayout.Button(_debuggerScene.CurrentGameObject.IsShowInspectorHeader ? _expandTexture : _retractTexture, "Label", GUILayout.Width(16), GUILayout.Height(16)))
+                            {
+                                _debuggerScene.CurrentGameObject.IsShowInspectorHeader = !_debuggerScene.CurrentGameObject.IsShowInspectorHeader;
+                            }
                             GUILayout.Label(_debuggerScene.CurrentGameObject.Name);
                             GUI.contentColor = Color.white;
                             GUILayout.EndHorizontal();
 
-                            GUILayout.BeginHorizontal();
-                            GUI.enabled = !_debuggerScene.CurrentGameObject.IsMain;
-                            bool active = GUILayout.Toggle(_debuggerScene.CurrentGameObject.Target.activeSelf, GetWord("Active"));
-                            if (active != _debuggerScene.CurrentGameObject.Target.activeSelf)
+                            if (_debuggerScene.CurrentGameObject.IsShowInspectorHeader)
                             {
-                                _debuggerScene.CurrentGameObject.Target.SetActive(active);
-                            }
-                            GUILayout.FlexibleSpace();
-                            if (GUILayout.Button(GetWord("Look at")))
-                            {
-                                Main.m_Controller.Mode = ControlMode.FreeControl;
-                                Main.m_Controller.SetLookPoint(_debuggerScene.CurrentGameObject.Target.transform.position);
-                            }
-                            if (GUILayout.Button(GetWord("Delete")))
-                            {
-                                Main.Kill(_debuggerScene.CurrentGameObject.Target);
-                                _debuggerScene.Refresh();
-                            }
-                            GUI.enabled = true;
-                            GUILayout.EndHorizontal();
+                                GUILayout.BeginHorizontal();
+                                GUI.enabled = !_debuggerScene.CurrentGameObject.IsMain;
+                                bool active = GUILayout.Toggle(_debuggerScene.CurrentGameObject.Target.activeSelf, GetWord("Active"));
+                                if (active != _debuggerScene.CurrentGameObject.Target.activeSelf)
+                                {
+                                    _debuggerScene.CurrentGameObject.Target.SetActive(active);
+                                }
+                                GUILayout.FlexibleSpace();
+                                if (GUILayout.Button(GetWord("Look at")))
+                                {
+                                    Main.m_Controller.Mode = ControlMode.FreeControl;
+                                    Main.m_Controller.SetLookPoint(_debuggerScene.CurrentGameObject.Target.transform.position);
+                                }
+                                if (GUILayout.Button(GetWord("Delete")))
+                                {
+                                    Main.Kill(_debuggerScene.CurrentGameObject.Target);
+                                    _debuggerScene.Refresh();
+                                }
+                                GUI.enabled = true;
+                                GUILayout.EndHorizontal();
 
-                            GUILayout.BeginHorizontal();
-                            GUILayout.Label($"{GetWord("Tag")}: {_debuggerScene.CurrentGameObject.Target.tag}");
-                            GUILayout.Label($"{GetWord("Layer")}: {_debuggerScene.CurrentGameObject.Layer}");
-                            GUILayout.EndHorizontal();
+                                GUILayout.BeginHorizontal();
+                                GUILayout.Label($"{GetWord("Tag")}: {_debuggerScene.CurrentGameObject.Target.tag}");
+                                GUILayout.Label($"{GetWord("Layer")}: {_debuggerScene.CurrentGameObject.Layer}");
+                                GUILayout.EndHorizontal();
+                            }
 
                             GUILayout.EndVertical();
                         }
