@@ -98,12 +98,14 @@ namespace HT.Framework
         /// </summary>
         /// <param name="debuggerSkin">调试器皮肤</param>
         /// <param name="isChinese">是否切换为中文</param>
-        public void OnInitDebugger(GUISkin debuggerSkin, bool isChinese)
+        /// <param name="isLimitNumberOfLog">是否限制日志的显示条数</param>
+        /// <param name="numberOfLog">日志的显示条数</param>
+        public void OnInitDebugger(GUISkin debuggerSkin, bool isChinese, bool isLimitNumberOfLog, int numberOfLog)
         {
             if (_debugManager.IsEnableDebugger)
             {
                 _debugger = new Debugger();
-                _debugger.OnInit(debuggerSkin, isChinese);
+                _debugger.OnInit(debuggerSkin, isChinese, isLimitNumberOfLog, numberOfLog);
             }
         }
         /// <summary>

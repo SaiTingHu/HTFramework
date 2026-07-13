@@ -53,6 +53,8 @@ namespace HT.Framework
         #region Private Field
         private GUISkin _skin;
         private bool _isChinese;
+        private bool _isLimitNumberOfLog;
+        private int _numberOfLog;
         private Rect _dragWindowRect;
         private Rect _minWindowRect;
         private Rect _maxWindowRect;
@@ -105,12 +107,14 @@ namespace HT.Framework
         #endregion
 
         #region Lifecycle Function
-        public void OnInit(GUISkin skin, bool isChinese)
+        public void OnInit(GUISkin skin, bool isChinese, bool isLimitNumberOfLog, int numberOfLog)
         {
             Application.logMessageReceived += OnLogMessageReceived;
 
             _skin = skin;
             _isChinese = isChinese;
+            _isLimitNumberOfLog = isLimitNumberOfLog;
+            _numberOfLog = numberOfLog;
             _dragWindowRect = new Rect(0, 0, 10000, 20);
             _minWindowRect = new Rect(0, 0, 100, 60);
             _maxWindowRect = new Rect(0, 0, 700, 400);
@@ -275,6 +279,7 @@ namespace HT.Framework
                         _currentLogIndex = -1;
                         _fpsColor = Color.white;
                     }
+                    _isLimitNumberOfLog = GUILayout.Toggle(_isLimitNumberOfLog, $"{_numberOfLog} {GetWord("Items")}", GUILayout.Height(20));
                     GUI.contentColor = (_showInfoLog ? Color.white : Color.gray);
                     _showInfoLog = GUILayout.Toggle(_showInfoLog, $"{GetWord("Info")} [{_infoLogCount}]", GUILayout.Height(20));
                     GUI.contentColor = (_showWarningLog ? Color.white : Color.gray);
@@ -287,6 +292,7 @@ namespace HT.Framework
                     GUILayout.EndHorizontal();
 
                     _scrollLogView = GUILayout.BeginScrollView(_scrollLogView, "Box", GUILayout.Height(200));
+                    int count = 0;
                     for (int i = 0; i < _consoleLogs.Count; i++)
                     {
                         bool show = false;
@@ -324,6 +330,16 @@ namespace HT.Framework
                             GUILayout.FlexibleSpace();
                             GUI.contentColor = Color.white;
                             GUILayout.EndHorizontal();
+
+                            count += 1;
+                        }
+
+                        if (_isLimitNumberOfLog)
+                        {
+                            if (count >= _numberOfLog)
+                            {
+                                break;
+                            }
                         }
                     }
                     GUILayout.EndScrollView();
@@ -944,6 +960,7 @@ namespace HT.Framework
 
             #region Console
             _words.Add("Clear", "清除");
+            _words.Add("Items", "条");
             _words.Add("Info", "常规信息");
             _words.Add("Warning", "警告日志");
             _words.Add("Error", "错误日志");

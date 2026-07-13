@@ -20,7 +20,15 @@ namespace HT.Framework
         /// 是否切换为中文【请勿在代码中修改】
         /// </summary>
         [SerializeField] internal bool IsChinese = false;
-        
+        /// <summary>
+        /// 是否限制日志的显示条数【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal bool IsLimitNumberOfLog = false;
+        /// <summary>
+        /// 日志的显示条数【请勿在代码中修改】
+        /// </summary>
+        [SerializeField] internal int NumberOfLog = 100;
+
         /// <summary>
         /// 当前的帧率
         /// </summary>
@@ -35,8 +43,8 @@ namespace HT.Framework
         public override void OnInit()
         {
             base.OnInit();
-            
-            _helper.OnInitDebugger(DebuggerSkin, IsChinese);
+
+            _helper.OnInitDebugger(DebuggerSkin, IsChinese, IsLimitNumberOfLog, NumberOfLog);
         }
         public void OnDrawGUI()
         {

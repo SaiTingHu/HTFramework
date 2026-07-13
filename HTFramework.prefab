@@ -2187,3 +2187,5 @@ MonoBehaviour:
   DebuggerSkin: {fileID: 11400000, guid: 61a6dbb4fcfdbd844a1f117f7b22e1e8, type: 2}
   IsEnableDebugger: 0
   IsChinese: 0
+  IsLimitNumberOfLog: 0
+  NumberOfLog: 100

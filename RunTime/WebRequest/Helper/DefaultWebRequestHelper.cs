@@ -538,6 +538,7 @@ namespace HT.Framework
             string dataStr = $"<color=cyan>{handler.data.Length}</color>";
             string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
             string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
+            string duration = $"<color=cyan>{(endTime - beginTime).TotalMilliseconds:F0}ms</color>";
             string content = wif.OnGetDownloadString(handler);
             string contentName = Log.CustomLogClick("回复内容（点击可复制）：", () =>
             {
@@ -549,10 +550,11 @@ namespace HT.Framework
             string dataStr = handler.data.Length.ToString();
             string begin = beginTime.ToString("mm:ss:fff");
             string end = endTime.ToString("mm:ss:fff");
+            string duration = (endTime - beginTime).TotalMilliseconds.ToString("F0") + "ms";
             string content = wif.OnGetDownloadString(handler);
             string contentName = "回复内容：";
 #endif
-            Log.Info($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，收到回复：{dataStr}字节，开始时间：{begin}，结束时间：{end}，{contentName}{content}。");
+            Log.Info($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，收到回复：{dataStr}字节，开始时间：{begin}，结束时间：{end}，耗时：{duration}，{contentName}{content}。");
         }
         /// <summary>
         /// 打印Web网络请求细节（请求失败）
@@ -573,14 +575,16 @@ namespace HT.Framework
             string errorStr = $"<color=cyan>{error}</color>";
             string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
             string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
+            string duration = $"<color=cyan>{(endTime - beginTime).TotalMilliseconds:F0}ms</color>";
 #else
             string apiStr = wif.Name;
             string urlStr = url;
             string errorStr = error;
             string begin = beginTime.ToString("mm:ss:fff");
             string end = endTime.ToString("mm:ss:fff");
+            string duration = (endTime - beginTime).TotalMilliseconds.ToString("F0") + "ms";
 #endif
-            Log.Error($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，请求失败：{errorStr}，开始时间：{begin}，结束时间：{end}。");
+            Log.Error($"【发起Web网络请求】接口：{apiStr}，URL：{urlStr}，请求失败：{errorStr}，开始时间：{begin}，结束时间：{end}，耗时：{duration}。");
         }
         /// <summary>
         /// 打印下载文件细节（请求成功）
@@ -600,14 +604,16 @@ namespace HT.Framework
             string path = $"<color=cyan>{wif.Path}</color>";
             string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
             string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
+            string duration = $"<color=cyan>{(endTime - beginTime).TotalMilliseconds:F0}ms</color>";
 #else
             string apiStr = wif.Name;
             string urlStr = url;
             string path = wif.Path;
             string begin = beginTime.ToString("mm:ss:fff");
             string end = endTime.ToString("mm:ss:fff");
+            string duration = (endTime - beginTime).TotalMilliseconds.ToString("F0") + "ms";
 #endif
-            Log.Info($"【发起下载文件请求】接口：{apiStr}，URL：{urlStr}，保存路径：{path}，开始时间：{begin}，结束时间：{end}。");
+            Log.Info($"【发起下载文件请求】接口：{apiStr}，URL：{urlStr}，保存路径：{path}，开始时间：{begin}，结束时间：{end}，耗时：{duration}。");
         }
         /// <summary>
         /// 打印下载文件细节（请求失败）
@@ -628,14 +634,16 @@ namespace HT.Framework
             string errorStr = $"<color=cyan>{error}</color>";
             string begin = $"<color=cyan>{beginTime:mm:ss:fff}</color>";
             string end = $"<color=cyan>{endTime:mm:ss:fff}</color>";
+            string duration = $"<color=cyan>{(endTime - beginTime).TotalMilliseconds:F0}ms</color>";
 #else
             string apiStr = wif.Name;
             string urlStr = url;
             string errorStr = error;
             string begin = beginTime.ToString("mm:ss:fff");
             string end = endTime.ToString("mm:ss:fff");
+            string duration = (endTime - beginTime).TotalMilliseconds.ToString("F0") + "ms";
 #endif
-            Log.Error($"【发起下载文件请求】接口：{apiStr}，URL：{urlStr}，下载失败：{errorStr}，开始时间：{begin}，结束时间：{end}。");
+            Log.Error($"【发起下载文件请求】接口：{apiStr}，URL：{urlStr}，下载失败：{errorStr}，开始时间：{begin}，结束时间：{end}，耗时：{duration}。");
         }
     }
 }

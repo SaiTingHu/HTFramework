@@ -19,6 +19,11 @@ namespace HT.Framework
             {
                 PropertyField(nameof(DebugManager.DebuggerSkin), "Debugger Skin");
                 PropertyField(nameof(DebugManager.IsChinese), "Use Chinese");
+                PropertyField(nameof(DebugManager.IsLimitNumberOfLog), "Limit Number Of Log");
+                if (Target.IsLimitNumberOfLog)
+                {
+                    PropertyField(nameof(DebugManager.NumberOfLog), "Number Of Log");
+                }
             }
         }
         protected override void OnInspectorRuntimeGUI()

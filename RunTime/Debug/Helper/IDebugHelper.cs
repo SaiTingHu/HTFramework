@@ -17,7 +17,9 @@ namespace HT.Framework
         /// </summary>
         /// <param name="debuggerSkin">调试器皮肤</param>
         /// <param name="isChinese">是否切换为中文</param>
-        void OnInitDebugger(GUISkin debuggerSkin, bool isChinese);
+        /// <param name="isLimitNumberOfLog">是否限制日志的显示条数</param>
+        /// <param name="numberOfLog">日志的显示条数</param>
+        void OnInitDebugger(GUISkin debuggerSkin, bool isChinese, bool isLimitNumberOfLog, int numberOfLog);
         /// <summary>
         /// 调试器UI刷新
         /// </summary>
