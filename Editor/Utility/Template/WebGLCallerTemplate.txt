@@ -14,7 +14,7 @@ namespace #NAMESPACE#
         public static extern void HelloString(string str);
 
         [DllImport("__Internal")]
-        public static extern void AddNumbers(int x, int y);
+        public static extern int AddNumbers(int x, int y);
 
         [DllImport("__Internal")]
         public static extern string StringReturnValueFunction();
