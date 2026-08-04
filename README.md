@@ -30,7 +30,9 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - ![图标](Editor/Main/Texture/ReadMeIcon/RPG2D.png) [游戏实战教程 - RPG2D角色扮演与回合制战棋](https://wanderer.blog.csdn.net/category_12698179.html)。
 
-- ![图标](Editor/Main/Texture/ReadMeIcon/MMORPG.png) [网络游戏实战教程 - MMORPG大型多人在线角色扮演 + 中国象棋联网对战](https://wanderer.blog.csdn.net/category_13061562.html)。
+- ![图标](Editor/Main/Texture/ReadMeIcon/MMORPG.png) [网络游戏实战教程 - MMORPG大型多人在线角色扮演 + 中国象棋联网对战（状态同步）](https://wanderer.blog.csdn.net/category_13061562.html)。
+
+- ![图标](Editor/Main/Texture/ReadMeIcon/TankBattle.png) [网络游戏实战教程 - 联机坦克大战（帧同步）](https://wanderer.blog.csdn.net/category_13197071.html)。
 
 ## 模块简介
 
