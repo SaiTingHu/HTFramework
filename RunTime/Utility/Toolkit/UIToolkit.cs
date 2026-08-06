@@ -125,11 +125,12 @@ namespace HT.Framework
             }
         }
         /// <summary>
-        /// 设置下拉框值，若该下拉框不存在该值，则无效
+        /// 设置下拉框值，若该下拉框不存在该值，则无效（或者自动生成一个该值的选项）
         /// </summary>
         /// <param name="dropdown">下拉框</param>
         /// <param name="value">目标值</param>
-        public static void SetValue(this Dropdown dropdown, string value)
+        /// <param name="isAutoNewOption">是否自动生成目标值选项（当下拉框不存在目标值时），否则无效</param>
+        public static void SetValue(this Dropdown dropdown, string value, bool isAutoNewOption = false)
         {
             for (int i = 0; i < dropdown.options.Count; i++)
             {
@@ -138,6 +139,12 @@ namespace HT.Framework
                     dropdown.value = i;
                     return;
                 }
+            }
+
+            if (isAutoNewOption)
+            {
+                dropdown.AddOptions(new List<string>() { value });
+                dropdown.value = dropdown.options.Count - 1;
             }
         }
         /// <summary>
