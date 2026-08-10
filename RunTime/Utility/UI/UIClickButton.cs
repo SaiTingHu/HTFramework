@@ -8,7 +8,7 @@ namespace HT.Framework
     /// <summary>
     /// UGUI点击按钮
     /// </summary>
-    [AddComponentMenu("HTFramework/UI/UIClickButton")]
+    [AddComponentMenu("HTFramework/UI/UIClickButton", 22)]
     [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
     public sealed class UIClickButton : HTBehaviour, IPointerClickHandler, IUpdateFrame

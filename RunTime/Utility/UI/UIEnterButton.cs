@@ -8,7 +8,7 @@ namespace HT.Framework
     /// <summary>
     /// UGUI靠近按钮
     /// </summary>
-    [AddComponentMenu("HTFramework/UI/UIEnterButton")]
+    [AddComponentMenu("HTFramework/UI/UIEnterButton", 25)]
     [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
     public sealed class UIEnterButton : HTBehaviour, IPointerEnterHandler, IPointerExitHandler

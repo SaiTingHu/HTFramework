@@ -14,9 +14,10 @@ namespace HT.Framework
     /// <summary>
     /// 支持解析并显示Markdown的Text
     /// </summary>
+    [AddComponentMenu("HTFramework/UI/Markdown Text", 1)]
+    [RequireComponent(typeof(RectTransform))]
     [DisallowMultipleComponent]
     [ExecuteInEditMode]
-    [AddComponentMenu("HTFramework/UI/Markdown Text")]
     public sealed class MarkdownText : Text, IPointerClickHandler
     {
         /// <summary>
@@ -158,7 +159,7 @@ namespace HT.Framework
         public void ClearParseContent()
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
                 return;
 #endif
             RawText = null;
@@ -177,7 +178,7 @@ namespace HT.Framework
         public Coroutine ParseRawText(HTFAction onParseEnd = null)
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
             {
                 onParseEnd?.Invoke();
                 return null;
@@ -746,7 +747,7 @@ namespace HT.Framework
         private void OnPopulateTableMark(VertexHelper toFill)
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
                 return;
 #endif
             //填充表格区域
@@ -804,7 +805,7 @@ namespace HT.Framework
         private void OnPopulateHyperlinkBoxes(VertexHelper toFill)
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
                 return;
 #endif
             //填充包围盒
@@ -907,7 +908,7 @@ namespace HT.Framework
         private void OnPopulateEmbedTexture(VertexHelper toFill)
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
                 return;
 #endif
             //填充图片区域
@@ -974,7 +975,7 @@ namespace HT.Framework
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
                 return;
 
             for (int i = 0; i < AllHyperlinkMarks.Count; i++)

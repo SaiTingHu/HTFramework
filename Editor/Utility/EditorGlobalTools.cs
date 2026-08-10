@@ -696,9 +696,38 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 新建MultiChoiceDropdown
+        /// </summary>
+        [MenuItem("GameObject/HTFramework/UI/MultiChoice Dropdown", false, 102)]
+        private static void CreateMultiChoiceDropdown()
+        {
+            Transform parent = null;
+            if (Selection.activeGameObject)
+            {
+                parent = Selection.activeGameObject.transform;
+            }
+            else
+            {
+                PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabStage != null)
+                {
+                    parent = prefabStage.prefabContentsRoot.transform;
+                }
+                else
+                {
+                    parent = null;
+                }
+            }
+
+            GameObject asset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HTFramework/RunTime/Utility/UI/MultiChoiceDropdown/MultiChoiceDropdown.prefab");
+            GameObject obj = UnityEngine.Object.Instantiate(asset, parent);
+            Selection.activeGameObject = obj;
+        }
+
+        /// <summary>
         /// 新建ScrollList
         /// </summary>
-        [MenuItem("GameObject/HTFramework/UI/Scroll List", false, 102)]
+        [MenuItem("GameObject/HTFramework/UI/Scroll List", false, 103)]
         private static void CreateScrollList()
         {
             Transform parent = null;
@@ -727,7 +756,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UDateTimeField
         /// </summary>
-        [MenuItem("GameObject/HTFramework/UI/UDateTime Field", false, 103)]
+        [MenuItem("GameObject/HTFramework/UI/UDateTime Field", false, 104)]
         private static void CreateUDateTimeField()
         {
             Transform parent = null;
@@ -756,7 +785,7 @@ namespace HT.Framework
         /// <summary>
         /// 新建UDateTimePicker
         /// </summary>
-        [MenuItem("GameObject/HTFramework/UI/UDateTime Picker", false, 104)]
+        [MenuItem("GameObject/HTFramework/UI/UDateTime Picker", false, 105)]
         private static void CreateUDateTimePicker()
         {
             Transform parent = null;

@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// UGUI可拖动对象
     /// </summary>
-    [AddComponentMenu("HTFramework/UI/UIDragObject")]
+    [AddComponentMenu("HTFramework/UI/UIDragObject", 23)]
     public sealed class UIDragObject : HTBehaviour, ICanvasRaycastFilter
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace HT.Framework
     /// <summary>
     /// UI控件动画
     /// </summary>
-    [AddComponentMenu("HTFramework/UI/UIAnimation")]
+    [AddComponentMenu("HTFramework/UI/UIAnimation", 21)]
     public sealed class UIAnimation : HTBehaviour
     {
         public UIAnimationType TheAnimationType = UIAnimationType.Move;

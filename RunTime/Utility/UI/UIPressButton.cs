@@ -8,7 +8,7 @@ namespace HT.Framework
     /// <summary>
     /// UGUI按住按钮
     /// </summary>
-    [AddComponentMenu("HTFramework/UI/UIPressButton")]
+    [AddComponentMenu("HTFramework/UI/UIPressButton", 26)]
     [RequireComponent(typeof(Graphic))]
     [DisallowMultipleComponent]
     public sealed class UIPressButton : HTBehaviour, IPointerDownHandler, IPointerUpHandler, IUpdateFrame

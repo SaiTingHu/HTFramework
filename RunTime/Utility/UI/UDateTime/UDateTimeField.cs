@@ -8,6 +8,10 @@ namespace HT.Framework
     /// <summary>
     /// UDateTime 的显示字段
     /// </summary>
+    [AddComponentMenu("HTFramework/UI/UDateTime Field", 4)]
+    [RequireComponent(typeof(RectTransform))]
+    [DisallowMultipleComponent]
+    [ExecuteInEditMode]
     public class UDateTimeField : Selectable, IPointerClickHandler
     {
         /// <summary>

@@ -9,6 +9,8 @@ namespace HT.Framework
     /// <summary>
     /// 滚动数据列表
     /// </summary>
+    [AddComponentMenu("HTFramework/UI/Scroll List", 3)]
+    [RequireComponent(typeof(RectTransform))]
     [DisallowMultipleComponent]
     [ExecuteInEditMode]
     public sealed class ScrollList : ScrollRect
@@ -84,7 +86,7 @@ namespace HT.Framework
         private void Update()
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!Application.isPlaying)
                 return;
 #endif
             if (_isdirty)

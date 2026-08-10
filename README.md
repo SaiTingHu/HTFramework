@@ -138,6 +138,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [Markdown Text](https://wanderer.blog.csdn.net/article/details/142280249) - MarkdownText为Text的扩展加强版，支持在运行时解析并显示Markdown格式的文本。
 
+- [MultiChoice Dropdown](https://wanderer.blog.csdn.net/article/details/163638831) - MultiChoiceDropdown为可多选的下拉菜单。
+
 - [MVVM](https://wanderer.blog.csdn.net/article/details/109245614) - UI的数据驱动模式。
 
 - [Project Folder Locker](https://wanderer.blog.csdn.net/article/details/146094956) - 在Project窗口中将插件文件夹、或不需要经常访问的文件夹加锁，保持Project窗口的干净整洁。

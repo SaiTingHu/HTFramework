@@ -6,7 +6,7 @@ namespace HT.Framework
     /// <summary>
     /// UGUI可拖动目标
     /// </summary>
-    [AddComponentMenu("HTFramework/UI/UIDragTarget")]
+    [AddComponentMenu("HTFramework/UI/UIDragTarget", 24)]
     public sealed class UIDragTarget : HTBehaviour, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         /// <summary>

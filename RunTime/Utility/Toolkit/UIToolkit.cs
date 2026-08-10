@@ -132,6 +132,9 @@ namespace HT.Framework
         /// <param name="isAutoNewOption">是否自动生成目标值选项（当下拉框不存在目标值时），否则无效</param>
         public static void SetValue(this Dropdown dropdown, string value, bool isAutoNewOption = false)
         {
+            if (string.IsNullOrEmpty(value))
+                return;
+
             for (int i = 0; i < dropdown.options.Count; i++)
             {
                 if (dropdown.options[i].text == value)
