@@ -271,13 +271,7 @@ namespace HT.Framework
                     GUI.contentColor = Color.white;
                     if (GUILayout.Button(GetWord("Clear"), GUILayout.Width(60), GUILayout.Height(20)))
                     {
-                        Main.m_ReferencePool.Despawns(_consoleLogs);
-                        _fatalLogCount = 0;
-                        _warningLogCount = 0;
-                        _errorLogCount = 0;
-                        _infoLogCount = 0;
-                        _currentLogIndex = -1;
-                        _fpsColor = Color.white;
+                        ClearLog();
                     }
                     _isLimitNumberOfLog = GUILayout.Toggle(_isLimitNumberOfLog, $"{_numberOfLog} {GetWord("Items")}", GUILayout.Height(20));
                     GUI.contentColor = (_showInfoLog ? Color.white : Color.gray);
@@ -1130,6 +1124,73 @@ namespace HT.Framework
             {
                 Log.Warning("当前平台不支持截屏！");
                 yield return null;
+            }
+        }
+        /// <summary>
+        /// 清理日志
+        /// </summary>
+        private void ClearLog()
+        {
+            if (_isLimitNumberOfLog)
+            {
+                int count = 0;
+                for (int i = 0; i < _consoleLogs.Count; i++)
+                {
+                    bool show = false;
+                    switch (_consoleLogs[i].Type)
+                    {
+                        case "Fatal":
+                            show = _showFatalLog;
+                            if (_showFatalLog) _fatalLogCount -= 1;
+                            break;
+                        case "Error":
+                            show = _showErrorLog;
+                            if (_showErrorLog) _errorLogCount -= 1;
+                            break;
+                        case "Info":
+                            show = _showInfoLog;
+                            if (_showInfoLog) _infoLogCount -= 1;
+                            break;
+                        case "Warning":
+                            show = _showWarningLog;
+                            if (_showWarningLog) _warningLogCount -= 1;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (show)
+                    {
+                        Main.m_ReferencePool.Despawn(_consoleLogs[i]);
+                        _consoleLogs.RemoveAt(i);
+                        i -= 1;
+                        count += 1;
+                    }
+
+                    if (count >= _numberOfLog)
+                        break;
+                }
+
+                _currentLogIndex = -1;
+                _fpsColor = Color.white;
+                if (_warningLogCount > 0)
+                {
+                    _fpsColor = Color.yellow;
+                }
+                if (_errorLogCount > 0)
+                {
+                    _fpsColor = Color.red;
+                }
+            }
+            else
+            {
+                Main.m_ReferencePool.Despawns(_consoleLogs);
+                _fatalLogCount = 0;
+                _warningLogCount = 0;
+                _errorLogCount = 0;
+                _infoLogCount = 0;
+                _currentLogIndex = -1;
+                _fpsColor = Color.white;
             }
         }
         #endregion
