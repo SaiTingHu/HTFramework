@@ -116,11 +116,13 @@ namespace HT.Framework
         private static void SaveScene()
         {
             EditorApplication.ExecuteMenuItem("File/Save");
+            Log.Info("Scene saved.");
         }
         [LnkTools("Save Project", 0, 1, 0, 1, "SaveAs", LnkToolsMode.OnlyEditor, -4)]
         private static void SaveProject()
         {
             EditorApplication.ExecuteMenuItem("File/Save Project");
+            Log.Info("Project saved.");
         }
         [LnkTools("Set Mouse Ray Target", 1, 0.92f, 0.016f, 1, "PhysicsRaycaster Icon", LnkToolsMode.OnlyEditor, -3)]
         private static void SetMouseRayTarget()
