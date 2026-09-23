@@ -803,7 +803,8 @@ namespace HT.Framework
                         if (path.Length != 0)
                         {
                             Undo.RecordObject(inspector.target, "FilePath");
-                            fieldInspector.Field.SetValue(inspector.target, "Assets" + path.Replace(Application.dataPath, ""));
+                            string newPath = path.StartsWith(Application.dataPath) ? ("Assets" + path.Replace(Application.dataPath, "")) : path;
+                            fieldInspector.Field.SetValue(inspector.target, newPath);
                             inspector.HasChanged();
                         }
                     }
@@ -855,7 +856,8 @@ namespace HT.Framework
                         if (path.Length != 0)
                         {
                             Undo.RecordObject(inspector.target, "FolderPath");
-                            fieldInspector.Field.SetValue(inspector.target, "Assets" + path.Replace(Application.dataPath, ""));
+                            string newPath = path.StartsWith(Application.dataPath) ? ("Assets" + path.Replace(Application.dataPath, "")) : path;
+                            fieldInspector.Field.SetValue(inspector.target, newPath);
                             inspector.HasChanged();
                         }
                     }
