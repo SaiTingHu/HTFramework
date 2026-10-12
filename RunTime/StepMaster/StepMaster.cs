@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -1155,43 +1156,127 @@ namespace HT.Framework
         /// </summary>
         private StepHelper CreateHelper(StepContent content, StepHelperTask task)
         {
-            try
+            if (!string.IsNullOrEmpty(content.Helper) && content.Helper != "<None>")
             {
-                if (!string.IsNullOrEmpty(content.Helper) && content.Helper != "<None>")
+                Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(content.Helper, false);
+                if (type != null)
                 {
-                    Type type = ReflectionToolkit.GetTypeInRunTimeAssemblies(content.Helper, false);
-                    if (type != null)
+                    StepHelper helper = Activator.CreateInstance(type) as StepHelper;
+                    //初始化步骤参数
+                    for (int i = 0; i < content.Parameters.Count; i++)
                     {
-                        StepHelper helper = Activator.CreateInstance(type) as StepHelper;
-                        for (int i = 0; i < content.Parameters.Count; i++)
+                        StepParameter parameter = content.Parameters[i];
+                        if (parameter.Type == StepParameter.ParameterType.GameObject)
                         {
-                            StepParameter parameter = content.Parameters[i];
-                            if (parameter.Type == StepParameter.ParameterType.GameObject)
+                            if (_targets.ContainsKey(parameter.GameObjectGUID))
                             {
-                                if (_targets.ContainsKey(parameter.GameObjectGUID))
-                                {
-                                    parameter.GameObjectValue = _targets[parameter.GameObjectGUID].gameObject;
-                                }
+                                parameter.GameObjectValue = _targets[parameter.GameObjectGUID].gameObject;
                             }
-                            helper.Parameters.Add(parameter);
                         }
-                        helper.Content = content;
-                        helper.Target = content.Target.GetComponent<StepTarget>();
-                        helper.Task = task;
-                        helper.OnInit();
-                        return helper;
+                        helper.Parameters.Add(parameter);
                     }
-                    else
+                    //自动填充参数
+                    AutoPopulateParameter(type, helper);
+
+                    helper.Content = content;
+                    helper.Target = content.Target.GetComponent<StepTarget>();
+                    helper.Task = task;
+                    try
                     {
-                        Log.Error($"步骤控制器：步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】丢失！");
+                        helper.OnInit();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"步骤控制器：创建步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
+                    }
+                    return helper;
+                }
+                else
+                {
+                    Log.Error($"步骤控制器：步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】丢失！");
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// 自动填充步骤助手的参数
+        /// </summary>
+        private void AutoPopulateParameter(Type helperType, StepHelper stepHelper)
+        {
+            FieldInfo[] fieldInfos = helperType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            for (int i = 0; i < fieldInfos.Length; i++)
+            {
+                FieldInfo fieldInfo = fieldInfos[i];
+                if (fieldInfo.IsDefined(typeof(PopulateParameterAttribute), true))
+                {
+                    PopulateParameterAttribute attribute = fieldInfo.GetCustomAttribute<PopulateParameterAttribute>();
+                    Type fieldType = fieldInfo.FieldType;
+                    if (fieldType == typeof(string))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && (p.Type == StepParameter.ParameterType.String || p.Type == StepParameter.ParameterType.Custom); });
+                        if (parameter != null) fieldInfo.SetValue(stepHelper, parameter.StringValue);
+                    }
+                    else if (fieldType == typeof(int))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Integer; });
+                        if (parameter != null) fieldInfo.SetValue(stepHelper, parameter.IntegerValue);
+                    }
+                    else if (fieldType == typeof(float))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Float; });
+                        if (parameter != null) fieldInfo.SetValue(stepHelper, parameter.FloatValue);
+                    }
+                    else if (fieldType == typeof(bool))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Boolean; });
+                        if (parameter != null) fieldInfo.SetValue(stepHelper, parameter.BooleanValue);
+                    }
+                    else if (fieldType == typeof(Vector2))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Vector2; });
+                        if (parameter != null) fieldInfo.SetValue(stepHelper, parameter.Vector2Value);
+                    }
+                    else if (fieldType == typeof(Vector3))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Vector3; });
+                        if (parameter != null) fieldInfo.SetValue(stepHelper, parameter.Vector3Value);
+                    }
+                    else if (fieldType == typeof(Color))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Color; });
+                        if (parameter != null) fieldInfo.SetValue(stepHelper, parameter.ColorValue);
+                    }
+                    else if (fieldType == typeof(GameObject))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.GameObject; });
+                        if (parameter != null && parameter.GameObjectValue != null) fieldInfo.SetValue(stepHelper, parameter.GameObjectValue);
+                    }
+                    else if (fieldType == typeof(Texture2D))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Texture; });
+                        if (parameter != null && parameter.TextureValue != null) fieldInfo.SetValue(stepHelper, parameter.TextureValue);
+                    }
+                    else if (fieldType == typeof(AudioClip))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.AudioClip; });
+                        if (parameter != null && parameter.AudioClipValue != null) fieldInfo.SetValue(stepHelper, parameter.AudioClipValue);
+                    }
+                    else if (fieldType == typeof(Material))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.Material; });
+                        if (parameter != null && parameter.MaterialValue != null) fieldInfo.SetValue(stepHelper, parameter.MaterialValue);
+                    }
+                    else if (fieldType.IsSubclassOf(typeof(DataSetBase)))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.DataSet; });
+                        if (parameter != null && parameter.DataSetValue != null) fieldInfo.SetValue(stepHelper, parameter.DataSetValue);
+                    }
+                    else if (fieldType.IsSubclassOf(typeof(Component)))
+                    {
+                        StepParameter parameter = stepHelper.Parameters.Find((p) => { return p.Name == attribute.Name && p.Type == StepParameter.ParameterType.GameObject; });
+                        if (parameter != null && parameter.GameObjectValue != null) fieldInfo.SetValue(stepHelper, parameter.GameObjectValue.GetComponent(fieldType));
                     }
                 }
-                return null;
-            }
-            catch (Exception e)
-            {
-                Log.Error($"步骤控制器：创建步骤【{CurrentStepIndex}.{CurrentStepContent.Name}】的助手【{CurrentStepContent.Helper}】时出错！错误描述：{e}", null, true);
-                return null;
             }
         }
         /// <summary>
