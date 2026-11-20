@@ -1,3 +1,5 @@
+using System;
+
 namespace HT.Framework
 {
     /// <summary>
@@ -60,6 +62,33 @@ namespace HT.Framework
         /// 字符串转换为Json对象
         /// </summary>
         /// <param name="value">字符串</param>
+        /// <param name="convertType">转换的类型</param>
+        /// <returns>Json对象</returns>
+        public static object StringToJson(string value, Type convertType)
+        {
+            if (string.IsNullOrEmpty(value) || convertType == null)
+            {
+                return default;
+            }
+            else
+            {
+                object jsonData = default;
+                try
+                {
+                    jsonData = JsonMapper.ToObject(value, convertType);
+                }
+                catch
+                {
+                    jsonData = default;
+                }
+                return jsonData;
+            }
+        }
+        /// <summary>
+        /// 字符串转换为Json对象
+        /// </summary>
+        /// <typeparam name="T">转换的类型</typeparam>
+        /// <param name="value">字符串/param>
         /// <returns>Json对象</returns>
         public static T StringToJson<T>(string value)
         {
