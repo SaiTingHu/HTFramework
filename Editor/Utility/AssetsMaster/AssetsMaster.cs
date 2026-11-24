@@ -56,6 +56,7 @@ namespace HT.Framework
         private GUIContent _scriptObjGC;
         private GUIContent _prefabGC;
         private GUIContent _alarmGC;
+        private GUIContent _replacerGC;
 
         private string _filterName = "";
         private int _totalMeshVertices = 0;
@@ -82,7 +83,7 @@ namespace HT.Framework
             base.OnEnable();
 
             _sortGC = new GUIContent();
-            _sortGC.image = EditorGUIUtility.IconContent("Audio Mixer").image;
+            _sortGC.image = EditorGUIUtility.IconContent("AlphabeticalSorting").image;
             _sortGC.tooltip = "Sort";
             _meshGC = EditorGUIUtility.IconContent("Mesh Icon");
             _scriptGC = EditorGUIUtility.IconContent("cs Script Icon");
@@ -90,6 +91,9 @@ namespace HT.Framework
             _prefabGC = EditorGUIUtility.IconContent("Prefab Icon");
             _alarmGC = new GUIContent();
             _alarmGC.image = EditorGUIUtility.IconContent("console.warnicon.sml").image;
+            _replacerGC = new GUIContent();
+            _replacerGC.image = EditorGUIUtility.IconContent("Custom").image;
+            _replacerGC.tooltip = "Add To Asset Reference Replacer";
 
             EditorApplication.playModeStateChanged += OnPlayModeStateChange;
 
@@ -343,6 +347,11 @@ namespace HT.Framework
                         Selection.objects = content.InGameObjects.ToArray();
                     }
                     GUI.enabled = true;
+                    GUILayout.Space(5);
+                    if (GUILayout.Button(_replacerGC, EditorGlobalTools.Styles.IconButton, GUILayout.Width(20)))
+                    {
+                        AssetReferenceReplacer.AddAssetByObject(content.Mat);
+                    }
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 }

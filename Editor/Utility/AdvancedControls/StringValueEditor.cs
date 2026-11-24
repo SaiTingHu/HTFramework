@@ -23,10 +23,23 @@ namespace HT.Framework
         /// <param name="editEnd">编辑完成回调（如果为空，将保存到剪贴板）</param>
         public static void OpenWindow(EditorWindow parasitifer, string value, string title, HTFAction<string> editEnd)
         {
+            OpenWindow(parasitifer, value, title, false, editEnd);
+        }
+        /// <summary>
+        /// 打开字符串编辑器
+        /// </summary>
+        /// <param name="parasitifer">宿主窗口</param>
+        /// <param name="value">字符串</param>
+        /// <param name="title">窗口显示标题</param>
+        /// <param name="isShowRichText">是否显示富文本</param>
+        /// <param name="editEnd">编辑完成回调（如果为空，将保存到剪贴板）</param>
+        public static void OpenWindow(EditorWindow parasitifer, string value, string title, bool isShowRichText, HTFAction<string> editEnd)
+        {
             StringValueEditor valueEditor = GetWindow<StringValueEditor>();
             valueEditor.titleContent.image = EditorGUIUtility.IconContent("UnityEditor.ConsoleWindow").image;
             valueEditor.titleContent.text = "String Editor";
             valueEditor._parasitifer = parasitifer;
+            valueEditor._isShowRichText = isShowRichText;
             valueEditor._value = value;
             valueEditor._title = title;
             valueEditor._editEnd = editEnd;

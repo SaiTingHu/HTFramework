@@ -445,9 +445,18 @@ namespace HT.Framework
         }
 
         /// <summary>
+        /// 打开 Asset Reference Replacer
+        /// </summary>
+        [MenuItem("HTFramework/Tools/Asset Reference Replacer", false, 106)]
+        private static void OpenAssetReferenceReplacer()
+        {
+            AssetReferenceReplacer.AddAssetByObject(null);
+        }
+
+        /// <summary>
         /// 打开 Assembly Viewer
         /// </summary>
-        [MenuItem("HTFramework/Tools/Assembly Viewer", false, 106)]
+        [MenuItem("HTFramework/Tools/Assembly Viewer", false, 107)]
         private static void OpenAssemblyViewer()
         {
             AssemblyViewer viewer = EditorWindow.GetWindow<AssemblyViewer>();
@@ -459,7 +468,7 @@ namespace HT.Framework
         /// <summary>
         /// 打开 Code Snippet Executer
         /// </summary>
-        [MenuItem("HTFramework/Tools/Code Snippet Executer", false, 107)]
+        [MenuItem("HTFramework/Tools/Code Snippet Executer", false, 108)]
         private static void OpenCodeSnippetExecuter()
         {
             CodeSnippetExecuter executer = EditorWindow.GetWindow<CodeSnippetExecuter>();
@@ -473,7 +482,7 @@ namespace HT.Framework
         /// <summary>
         /// 合并多个静态网格
         /// </summary>
-        [MenuItem("HTFramework/Tools/Mesh Combines", false, 108)]
+        [MenuItem("HTFramework/Tools/Mesh Combines", false, 109)]
         private static void MeshCombines()
         {
             if (Selection.gameObjects.Length <= 1)
@@ -523,7 +532,7 @@ namespace HT.Framework
         /// <summary>
         /// 截取蒙皮网格当前帧，保存为静态网格
         /// </summary>
-        [MenuItem("HTFramework/Tools/SkinnedMesh Bake", false, 109)]
+        [MenuItem("HTFramework/Tools/SkinnedMesh Bake", false, 110)]
         private static void SkinnedMeshBake()
         {
             if (Selection.gameObjects.Length != 1)
