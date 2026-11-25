@@ -48,6 +48,14 @@ namespace HT.Framework
         private bool _hasScene = true;
         private Vector2 _searchFoldersScroll;
 
+        protected override string HelpUrl => "https://wanderer.blog.csdn.net/article/details/171351058";
+
+        protected override void OnTitleGUI()
+        {
+            base.OnTitleGUI();
+
+            GUILayout.FlexibleSpace();
+        }
         protected override void OnBodyGUI()
         {
             base.OnBodyGUI();

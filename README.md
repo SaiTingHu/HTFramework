@@ -124,6 +124,8 @@ HTFramework是基于Unity的一个快速开发框架，集需求模块化、代�
 
 - [Assets Master](https://wanderer.blog.csdn.net/article/details/107974865) - 资产管理器，允许你在编辑模式或是运行模式非常直观的查看和管理当前打开场景中的你感兴趣的资产。
 
+- [Asset Reference Replacer](https://wanderer.blog.csdn.net/article/details/171351058) - 资产引用替换器，一键查找并替换引用。
+
 - [Auto Attach Namespace](https://wanderer.blog.csdn.net/article/details/139263711) - 新建脚本时，自动向脚本添加命名空间。
 
 - [Code Snippet Executer](https://wanderer.blog.csdn.net/article/details/139546629) - 适用于代码片段测试、单元测试的编辑器工具。
